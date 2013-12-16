@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e50bbc16-e747-4132-8269-004dc2c0e3e1">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="58"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="ide_sucu" class="java.lang.Integer"/>
 	<parameter name="ide_empr" class="java.lang.Integer"/>
@@ -21,20 +21,6 @@
 	</background>
 	<title>
 		<band height="57" splitType="Stretch">
-			<textField isBlankWhenNull="true">
-				<reportElement uuid="295003f7-554e-439a-be5e-68520e1e339f" positionType="Float" x="448" y="39" width="50" height="18"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="7" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Pagina"+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
-			</textField>
-			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement uuid="50a1306e-3801-466d-941b-4c6a23dc03df" positionType="Float" x="498" y="39" width="40" height="18"/>
-				<textElement verticalAlignment="Middle">
-					<font size="7" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
 			<subreport>
 				<reportElement uuid="d780b1d5-9546-4853-af47-a37e9df239c0" x="0" y="0" width="554" height="37"/>
 				<subreportParameter name="SUBREPORT_DIR">
@@ -160,7 +146,22 @@
 		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band splitType="Stretch"/>
+		<band height="12" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="295003f7-554e-439a-be5e-68520e1e339f" positionType="Float" x="465" y="0" width="50" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina"+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" isBlankWhenNull="true">
+				<reportElement uuid="50a1306e-3801-466d-941b-4c6a23dc03df" positionType="Float" x="515" y="0" width="40" height="12"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
 	</pageFooter>
 	<summary>
 		<band splitType="Stretch"/>
