@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="23e08ac2-605f-450b-bc53-784a791ed2cc">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="23e08ac2-605f-450b-bc53-784a791ed2cc">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -39,36 +39,36 @@
 left join SIS_ACCION_AUDITORIA accion_auditoria on ACCION_AUDITORIA.IDE_ACAU=AUDITORIA_ACCESO.IDE_ACAU
 LEFT JOIN SIS_USUARIO USUARIO ON USUARIO.IDE_USUA=auditoria_acceso.SIS_IDE_USUA
 where ACCION_AUDITORIA.IDE_ACAU in ($P!{ide_acau})
-and AUDITORIA_ACCESO.FECHA_AUAC BETWEEN TO_DATE($P{fecha_ini},'yy-mm-dd')
-and TO_DATE($P{fecha_fin}, 'yy-mm-dd')
-and AUDITORIA_ACCESO.HORA_AUAC BETWEEN to_timestamp($P{hora_ini},'HH24:MI:SS')
-and to_timestamp($P{hora_fin},'HH24:MI:SS')
+and AUDITORIA_ACCESO.FECHA_AUAC BETWEEN convert(varchar,$P{fecha_ini},111)
+and convert(varchar,$P{fecha_fin}, 111)
+and AUDITORIA_ACCESO.HORA_AUAC BETWEEN convert(varchar,$P{hora_ini},108)
+and convert(varchar,$P{hora_fin},108)
 and AUDITORIA_ACCESO.SIS_IDE_USUA in ($P!{ide_usua})
 order by AUDITORIA_ACCESO.FECHA_AUAC ASC,AUDITORIA_ACCESO.HORA_AUAC asc]]>
 	</queryString>
 	<field name="IDE_AUAC" class="java.math.BigDecimal"/>
-	<field name="IDE_USUA" class="java.math.BigDecimal"/>
-	<field name="IDE_ACAU" class="java.math.BigDecimal"/>
-	<field name="SIS_IDE_USUA" class="java.math.BigDecimal"/>
+	<field name="IDE_USUA" class="java.lang.Long"/>
+	<field name="IDE_ACAU" class="java.lang.Integer"/>
+	<field name="SIS_IDE_USUA" class="java.lang.Long"/>
 	<field name="FECHA_AUAC" class="java.sql.Timestamp"/>
 	<field name="HORA_AUAC" class="java.sql.Timestamp"/>
 	<field name="IP_AUAC" class="java.lang.String"/>
-	<field name="DETALLE_AUAC" class="java.lang.String"/>
 	<field name="ID_SESSION_AUAC" class="java.lang.String"/>
-	<field name="FIN_AUAC" class="java.math.BigDecimal"/>
+	<field name="FIN_AUAC" class="java.lang.Boolean"/>
+	<field name="DETALLE_AUAC" class="java.lang.String"/>
 	<field name="NOM_ACAU" class="java.lang.String"/>
 	<field name="DESCRIPCION_ACAU" class="java.lang.String"/>
-	<field name="IDE_EMPR" class="java.math.BigDecimal"/>
-	<field name="IDE_PERF" class="java.math.BigDecimal"/>
+	<field name="IDE_EMPR" class="java.lang.Integer"/>
+	<field name="IDE_PERF" class="java.lang.Long"/>
 	<field name="NOM_USUA" class="java.lang.String"/>
 	<field name="NICK_USUA" class="java.lang.String"/>
 	<field name="MAIL_USUA" class="java.lang.String"/>
 	<field name="FECHA_REG_USUA" class="java.sql.Timestamp"/>
 	<field name="FECHA_CADUC_USUA" class="java.sql.Timestamp"/>
-	<field name="ACTIVO_USUA" class="java.math.BigDecimal"/>
+	<field name="ACTIVO_USUA" class="java.lang.Boolean"/>
 	<field name="TEMA_USUA" class="java.lang.String"/>
-	<field name="BLOQUEADO_USUA" class="java.math.BigDecimal"/>
-	<field name="CAMBIA_CLAVE_USUA" class="java.math.BigDecimal"/>
+	<field name="BLOQUEADO_USUA" class="java.lang.Boolean"/>
+	<field name="CAMBIA_CLAVE_USUA" class="java.lang.Boolean"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -112,9 +112,9 @@ order by AUDITORIA_ACCESO.FECHA_AUAC ASC,AUDITORIA_ACCESO.HORA_AUAC asc]]>
 		</band>
 	</title>
 	<columnHeader>
-		<band height="40" splitType="Stretch">
+		<band height="15" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="bb7df2b3-e0dd-4501-b293-53d827ea9327" x="0" y="20" width="100" height="20"/>
+				<reportElement uuid="bb7df2b3-e0dd-4501-b293-53d827ea9327" x="0" y="0" width="100" height="15"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -128,7 +128,7 @@ order by AUDITORIA_ACCESO.FECHA_AUAC ASC,AUDITORIA_ACCESO.HORA_AUAC asc]]>
 				<text><![CDATA[ACCION]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="dcfc5661-b9cf-4034-bb5a-ab2ff617ce14" x="100" y="20" width="100" height="20"/>
+				<reportElement uuid="dcfc5661-b9cf-4034-bb5a-ab2ff617ce14" x="100" y="0" width="100" height="15"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -142,7 +142,7 @@ order by AUDITORIA_ACCESO.FECHA_AUAC ASC,AUDITORIA_ACCESO.HORA_AUAC asc]]>
 				<text><![CDATA[USUARIO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="5a981ee4-1e24-4c2a-b15d-8fd6a6438673" x="200" y="20" width="103" height="20"/>
+				<reportElement uuid="5a981ee4-1e24-4c2a-b15d-8fd6a6438673" x="200" y="0" width="103" height="15"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -156,7 +156,7 @@ order by AUDITORIA_ACCESO.FECHA_AUAC ASC,AUDITORIA_ACCESO.HORA_AUAC asc]]>
 				<text><![CDATA[FECHA/HORA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="dc57b1a1-6c16-4f45-a1ad-37f340422930" x="303" y="20" width="100" height="20"/>
+				<reportElement uuid="dc57b1a1-6c16-4f45-a1ad-37f340422930" x="303" y="0" width="100" height="15"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -170,7 +170,7 @@ order by AUDITORIA_ACCESO.FECHA_AUAC ASC,AUDITORIA_ACCESO.HORA_AUAC asc]]>
 				<text><![CDATA[IP]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="5539cb5a-694c-4993-9aaa-01e38ecdba17" x="403" y="20" width="152" height="20"/>
+				<reportElement uuid="5539cb5a-694c-4993-9aaa-01e38ecdba17" x="403" y="0" width="152" height="15"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -183,26 +183,12 @@ order by AUDITORIA_ACCESO.FECHA_AUAC ASC,AUDITORIA_ACCESO.HORA_AUAC asc]]>
 				</textElement>
 				<text><![CDATA[DETALLE]]></text>
 			</staticText>
-			<textField>
-				<reportElement uuid="73ba18aa-5074-4b3d-a0a7-c99637d47322" positionType="Float" x="465" y="0" width="51" height="13"/>
-				<textElement>
-					<font size="8" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
-			</textField>
-			<textField evaluationTime="Report">
-				<reportElement uuid="edd488c5-8199-4b3e-9021-26b8efdfaca3" positionType="Float" x="511" y="0" width="42" height="13"/>
-				<textElement>
-					<font size="8" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="15" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="7bcb5f70-2244-4a98-a2c1-c9482c1ee902" x="0" y="0" width="100" height="15"/>
+				<reportElement uuid="7bcb5f70-2244-4a98-a2c1-c9482c1ee902" stretchType="RelativeToBandHeight" x="0" y="0" width="100" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -216,7 +202,7 @@ order by AUDITORIA_ACCESO.FECHA_AUAC ASC,AUDITORIA_ACCESO.HORA_AUAC asc]]>
 				<textFieldExpression><![CDATA[$F{NOM_ACAU}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="906b7314-afc5-439b-8771-ba20f84297cc" x="100" y="0" width="100" height="15"/>
+				<reportElement uuid="906b7314-afc5-439b-8771-ba20f84297cc" stretchType="RelativeToBandHeight" x="100" y="0" width="100" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -230,7 +216,7 @@ order by AUDITORIA_ACCESO.FECHA_AUAC ASC,AUDITORIA_ACCESO.HORA_AUAC asc]]>
 				<textFieldExpression><![CDATA[$F{NICK_USUA}]]></textFieldExpression>
 			</textField>
 			<textField pattern="yyyy/MM/dd">
-				<reportElement uuid="370bcca3-66e9-44b2-8546-6cf386386c41" x="200" y="0" width="51" height="15"/>
+				<reportElement uuid="370bcca3-66e9-44b2-8546-6cf386386c41" stretchType="RelativeToBandHeight" x="200" y="0" width="51" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -244,7 +230,7 @@ order by AUDITORIA_ACCESO.FECHA_AUAC ASC,AUDITORIA_ACCESO.HORA_AUAC asc]]>
 				<textFieldExpression><![CDATA[$F{FECHA_AUAC}]]></textFieldExpression>
 			</textField>
 			<textField pattern="h:mm a">
-				<reportElement uuid="63911f33-99be-4a7a-bb50-d99cc2bf9ba6" x="251" y="0" width="52" height="15"/>
+				<reportElement uuid="63911f33-99be-4a7a-bb50-d99cc2bf9ba6" stretchType="RelativeToBandHeight" x="251" y="0" width="52" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -258,7 +244,7 @@ order by AUDITORIA_ACCESO.FECHA_AUAC ASC,AUDITORIA_ACCESO.HORA_AUAC asc]]>
 				<textFieldExpression><![CDATA[$F{HORA_AUAC}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="c7ee64a0-c1f9-41bb-bcdc-12dc560e19d7" x="303" y="0" width="100" height="15"/>
+				<reportElement uuid="c7ee64a0-c1f9-41bb-bcdc-12dc560e19d7" stretchType="RelativeToBandHeight" x="303" y="0" width="100" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -272,7 +258,7 @@ order by AUDITORIA_ACCESO.FECHA_AUAC ASC,AUDITORIA_ACCESO.HORA_AUAC asc]]>
 				<textFieldExpression><![CDATA[$F{IP_AUAC}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="a459f5c0-61fa-4cec-83a2-ab17b22a2f3c" x="403" y="0" width="152" height="15"/>
+				<reportElement uuid="a459f5c0-61fa-4cec-83a2-ab17b22a2f3c" stretchType="RelativeToBandHeight" x="403" y="0" width="152" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -288,12 +274,27 @@ order by AUDITORIA_ACCESO.FECHA_AUAC ASC,AUDITORIA_ACCESO.HORA_AUAC asc]]>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="45" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="54" splitType="Stretch"/>
+		<band height="10" splitType="Stretch">
+			<textField>
+				<reportElement uuid="03ac6f25-0f30-4b07-ab53-c362edd9511d" x="436" y="0" width="80" height="10"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="70e6ccf9-a240-4f59-becf-0c19efb313dd" x="516" y="0" width="40" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
 	</pageFooter>
 	<summary>
-		<band height="42" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</summary>
 </jasperReport>
