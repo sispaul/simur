@@ -16,7 +16,7 @@
 	</parameter>
 	<queryString>
 		<![CDATA[select FECHA_AUAC,COUNT(ide_auac)AS IDE_AUAC from SIS_AUDITORIA_ACCESO
-where FECHA_AUAC  BETWEEN convert(varchar,$P{fecha_ini}, 111) and convert(varchar,$P{fecha_fin}, 111)
+where FECHA_AUAC  BETWEEN convert(datetime,$P{fecha_ini}, 111) and convert(datetime,$P{fecha_fin}, 111)
 and IDE_ACAU=0
 group by FECHA_AUAC]]>
 	</queryString>
