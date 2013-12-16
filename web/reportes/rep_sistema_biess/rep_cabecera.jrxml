@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="0" bottomMargin="0" uuid="1db0eac9-51a2-4883-86a3-aa5c1e4fb0da">
+	<property name="ireport.zoom" value="3.0"/>
+	<property name="ireport.x" value="1016"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_usua" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from SIS_EMPRESA empresa,SIS_SUCURSAL sucursal
+left join SIS_USUARIO_SUCURSAL usuario_sucursal on USUARIO_SUCURSAL.IDE_SUCU=SUCURSAL.IDE_SUCU
+left join SIS_USUARIO usuario on USUARIO.IDE_USUA=USUARIO_SUCURSAL.IDE_USUA
+where SUCURSAL.IDE_EMPR=$P{ide_empr}
+and SUCURSAL.IDE_SUCU=$P{ide_sucu}
+and USUARIO_SUCURSAL.IDE_USUA=$P{ide_usua}]]>
+	</queryString>
+	<field name="IDE_EMPR" class="java.math.BigDecimal"/>
+	<field name="NOM_EMPR" class="java.lang.String"/>
+	<field name="CONTACTO_EMPR" class="java.lang.String"/>
+	<field name="REPRESENTANTE_EMPR" class="java.lang.String"/>
+	<field name="NOM_CORTO_EMPR" class="java.lang.String"/>
+	<field name="MAIL_EMPR" class="java.lang.String"/>
+	<field name="PAGINA_EMPR" class="java.lang.String"/>
+	<field name="IDENTIFICACION_EMPR" class="java.lang.String"/>
+	<field name="DIRECCION_EMPR" class="java.lang.String"/>
+	<field name="TELEFONO_EMPR" class="java.lang.String"/>
+	<field name="LOGO_EMPR" class="java.lang.String"/>
+	<field name="IDE_SUCU" class="java.math.BigDecimal"/>
+	<field name="NOM_SUCU" class="java.lang.String"/>
+	<field name="TELEFONOS_SUCU" class="java.lang.String"/>
+	<field name="DIRECCION_SUCU" class="java.lang.String"/>
+	<field name="CONTACTO_SUCU" class="java.lang.String"/>
+	<field name="IDE_USSU" class="java.math.BigDecimal"/>
+	<field name="SIS_IDE_SUCU" class="java.math.BigDecimal"/>
+	<field name="IDE_USUA" class="java.math.BigDecimal"/>
+	<field name="IDE_PERF" class="java.math.BigDecimal"/>
+	<field name="NOM_USUA" class="java.lang.String"/>
+	<field name="NICK_USUA" class="java.lang.String"/>
+	<field name="MAIL_USUA" class="java.lang.String"/>
+	<field name="FECHA_REG_USUA" class="java.sql.Timestamp"/>
+	<field name="FECHA_CADUC_USUA" class="java.sql.Timestamp"/>
+	<field name="ACTIVO_USUA" class="java.math.BigDecimal"/>
+	<field name="TEMA_USUA" class="java.lang.String"/>
+	<field name="BLOQUEADO_USUA" class="java.math.BigDecimal"/>
+	<field name="CAMBIA_CLAVE_USUA" class="java.math.BigDecimal"/>
+	<title>
+		<band height="80" splitType="Stretch">
+			<image>
+				<reportElement uuid="d5c00b06-65f2-4781-b061-08710acdf763" x="4" y="11" width="82" height="44"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+$F{LOGO_EMPR}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement uuid="00503b86-f390-4a05-aded-2a2c7baa396d" x="0" y="53" width="86" height="10"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DIRECCION_EMPR}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f741c9dd-ddd3-413b-8a5c-6dda48632717" x="0" y="63" width="86" height="10"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Teléfono: "+$F{TELEFONO_EMPR}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="50b64175-d8ce-45f9-913c-8d1dbe5e25f1" x="85" y="11" width="357" height="62"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{titulo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="h:mm a" isBlankWhenNull="true">
+				<reportElement uuid="6f56b00b-a8d1-4924-9c77-29984bf66787" x="472" y="44" width="65" height="13"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a84f382d-c899-48fb-8389-a4dfbcc867fc" x="472" y="57" width="65" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NICK_USUA}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="1aff2c3f-ff78-4cc7-978b-8bf06ee9cef4" x="442" y="44" width="31" height="13"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Hora:]]></text>
+			</staticText>
+			<textField pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="8754c165-b5ab-4726-a63a-8d4bffb7d59e" x="472" y="31" width="65" height="13"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f069b8a4-0e14-419d-a7d3-f77f4ca6275f" x="442" y="31" width="31" height="13"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="323643ec-ffd5-428f-8e4b-5d779ae00194" x="442" y="57" width="31" height="13"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Usua:]]></text>
+			</staticText>
+		</band>
+	</title>
+</jasperReport>

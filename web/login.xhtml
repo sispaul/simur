@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Login</title>                
+        <h:outputScript library="sistema" name="sistema.js"/>
+        <h:outputStylesheet library="sistema" name="estilo.css"/>                  
+    </h:head>      
+    <h:body style="margin: 0px;padding: 0px;background: url(imagenes/bg.png) repeat;">           
+        <p:growl autoUpdate="true" showDetail="true" sticky="true"/>  
+        <div class="ui-widget-content" align="center"  style="overflow: hidden;width: 85%; margin: 0px auto;height: 1000px;" >
+            <h:panelGrid   style="padding-left: 5%;padding-right: 5%;"  width="100%" columns="3">
+                <p:graphicImage value="imagenes/logo.png" alt="Banco del IESS"/>                    
+                <h:form  id="formulario" binding="#{pre_login.formulario}" style="padding-left:20px;padding-right: 10px;"/>                                    
+            </h:panelGrid>
+            <h:outputText id="txt" value="Sistema de Administración de Talento Humano" style="font-style: italic;font-size: 26px;border: none;text-shadow: 0px 2px 3px #ccc;background: none"/>    
+            <div class="ui-widget-header ui-corner-all" style=" width: 90%;height: 16px;margin-top:  15px;"/>                 
+        </div>  
+    </h:body>
+</html>
+
