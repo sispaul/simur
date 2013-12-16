@@ -14,11 +14,11 @@ WHERE USUARIO.BLOQUEADO_USUA IN ($P!{bloqueado})
 ORDER BY USUARIO.BLOQUEADO_USUA ASC]]>
 	</queryString>
 	<field name="NOM_USUA" class="java.lang.String"/>
-	<field name="NOM_PERFIL" class="java.lang.String"/>
+	<field name="nom_perfil" class="java.lang.String"/>
 	<field name="NICK_USUA" class="java.lang.String"/>
-	<field name="FECHA_REG_USUA" class="java.sql.Timestamp"/>
-	<field name="FECHA_CADUC_USUA" class="java.sql.Timestamp"/>
-	<field name="BLOQUEADO_USUA" class="java.math.BigDecimal"/>
+	<field name="FECHA_REG_USUA" class="java.lang.String"/>
+	<field name="FECHA_CADUC_USUA" class="java.lang.String"/>
+	<field name="BLOQUEADO_USUA" class="java.lang.Boolean"/>
 	<group name="BLOQUEADO">
 		<groupExpression><![CDATA[$F{BLOQUEADO_USUA}]]></groupExpression>
 		<groupHeader>
@@ -133,21 +133,6 @@ ORDER BY USUARIO.BLOQUEADO_USUA ASC]]>
 				<textFieldExpression><![CDATA[$F{NOM_USUA}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="cc3e3a7e-674f-4d6c-a8e9-05423b549150" x="140" y="0" width="117" height="15"/>
-				<box leftPadding="3">
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font size="8"/>
-					<paragraph leftIndent="2"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{NOM_PERFIL}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="c30f03f4-4e2d-4f67-b235-fba9a480aea6" x="257" y="0" width="78" height="15"/>
 				<box leftPadding="3">
 					<pen lineWidth="0.5"/>
@@ -191,6 +176,20 @@ ORDER BY USUARIO.BLOQUEADO_USUA ASC]]>
 					<paragraph leftIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{FECHA_CADUC_USUA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="3080d52d-98a0-484e-a0da-8a91db07ba7a" x="140" y="0" width="117" height="15"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nom_perfil}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

@@ -20,17 +20,17 @@ INNER join sis_perfil sp on sus.ide_perf=sp.ide_perf
 where activo_usua IN ($P!{activo})
 order by ACTIVO_USUA ASC]]>
 	</queryString>
-	<field name="NOM_USUA" class="java.lang.String"/>
-	<field name="NOM_PERF" class="java.lang.String"/>
-	<field name="NICK_USUA" class="java.lang.String"/>
-	<field name="FECHA_CADUC_USUA" class="java.sql.Timestamp"/>
+	<field name="nom_usua" class="java.lang.String"/>
+	<field name="nom_perf" class="java.lang.String"/>
+	<field name="nick_usua" class="java.lang.String"/>
+	<field name="fecha_caduc_usua" class="java.lang.String"/>
 	<field name="FECHA_REG_USUA" class="java.sql.Timestamp"/>
-	<field name="ACTIVO_USUA" class="java.math.BigDecimal"/>
+	<field name="activo_usua" class="java.lang.Boolean"/>
 	<variable name="estado" class="java.lang.String">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
 	<group name="ACTIVO">
-		<groupExpression><![CDATA[$F{ACTIVO_USUA}]]></groupExpression>
+		<groupExpression><![CDATA[$F{activo_usua}]]></groupExpression>
 		<groupHeader>
 			<band height="50">
 				<staticText>
@@ -121,8 +121,8 @@ order by ACTIVO_USUA ASC]]>
 						<font size="10" isBold="true" isItalic="false"/>
 						<paragraph leftIndent="2"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{ACTIVO_USUA}.toString().equals("0")?"USUARIOS INACTIVOS ":
-"USUARIOS ACTIVOS "]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{activo_usua}.toString().equals("0")?"USUARIOS INACTIVOS ":
+"USUARIOS ACTIVOS "   ]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
@@ -187,7 +187,7 @@ order by ACTIVO_USUA ASC]]>
 					<font size="8"/>
 					<paragraph leftIndent="2"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{NOM_USUA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nom_usua}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="63421b13-1f05-493c-aa3e-0ad537f6d54b" x="140" y="0" width="117" height="15"/>
@@ -202,7 +202,7 @@ order by ACTIVO_USUA ASC]]>
 					<font size="8"/>
 					<paragraph leftIndent="2"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{NOM_PERF}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nom_perf}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="d16fa591-eb5a-45ed-9e36-f78362d72ebe" x="257" y="0" width="78" height="15"/>
@@ -217,7 +217,7 @@ order by ACTIVO_USUA ASC]]>
 					<font size="8"/>
 					<paragraph leftIndent="2"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{NICK_USUA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nick_usua}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
 				<reportElement uuid="aba27e89-a03f-4512-b7a5-3e9be3d1fd4f" x="335" y="0" width="110" height="15"/>
@@ -247,7 +247,7 @@ order by ACTIVO_USUA ASC]]>
 					<font size="8"/>
 					<paragraph leftIndent="2"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{FECHA_CADUC_USUA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{fecha_caduc_usua}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
