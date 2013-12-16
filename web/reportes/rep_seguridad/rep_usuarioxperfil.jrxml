@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="670be778-2e49-4258-9ef6-f225f42c4925">
-	<property name="ireport.zoom" value="2.0"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="670be778-2e49-4258-9ef6-f225f42c4925">
+	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="2"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="ide_perf" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -19,10 +19,10 @@ left join sis_perfil perf on perf.ide_perf=su.ide_perf
 where perf.ide_perf in($P!{ide_perf})
 ORDER BY perf.ide_perf asc]]>
 	</queryString>
-	<field name="NOM_USUA" class="java.lang.String"/>
-	<field name="NICK_USUA" class="java.lang.String"/>
-	<field name="NOM_PERF" class="java.lang.String"/>
-	<field name="IDE_PERF" class="java.math.BigDecimal"/>
+	<field name="nom_usua" class="java.lang.String"/>
+	<field name="nick_usua" class="java.lang.String"/>
+	<field name="nom_perf" class="java.lang.String"/>
+	<field name="ide_perf" class="java.lang.Long"/>
 	<field name="FECHA_REG_USUA" class="java.sql.Timestamp"/>
 	<field name="FECHA_CADUC_USUA" class="java.sql.Timestamp"/>
 	<variable name="estado" class="java.lang.String">
@@ -35,9 +35,9 @@ ORDER BY perf.ide_perf asc]]>
 		<groupExpression><![CDATA[$P{ide_perf}]]></groupExpression>
 	</group>
 	<group name="jk">
-		<groupExpression><![CDATA[$F{IDE_PERF}]]></groupExpression>
+		<groupExpression><![CDATA[$F{ide_perf}]]></groupExpression>
 		<groupHeader>
-			<band height="46">
+			<band height="41">
 				<textField pattern="" isBlankWhenNull="true">
 					<reportElement uuid="6a2d930e-aa19-4aff-89db-87e07d97145b" x="0" y="2" width="556" height="18"/>
 					<box bottomPadding="0">
@@ -51,10 +51,10 @@ ORDER BY perf.ide_perf asc]]>
 						<font size="10" isBold="true"/>
 						<paragraph leftIndent="2"/>
 					</textElement>
-					<textFieldExpression><![CDATA["Perfil: "+$F{NOM_PERF}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{nom_perf}==null?"Perfil: ":"Perfil: "+$F{nom_perf}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement uuid="866bf1b6-7ca9-4b1c-b588-bbaa51bd1238" mode="Transparent" x="0" y="26" width="200" height="20"/>
+					<reportElement uuid="866bf1b6-7ca9-4b1c-b588-bbaa51bd1238" mode="Transparent" x="0" y="26" width="200" height="15"/>
 					<box leftPadding="3">
 						<pen lineWidth="0.5" lineStyle="Solid"/>
 						<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -65,10 +65,10 @@ ORDER BY perf.ide_perf asc]]>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="10" isBold="true" isItalic="false"/>
 					</textElement>
-					<text><![CDATA[Nombre]]></text>
+					<text><![CDATA[NOMBRE]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="e6368f80-a74d-4107-9d20-fe3ea84be402" mode="Transparent" x="200" y="26" width="130" height="20"/>
+					<reportElement uuid="e6368f80-a74d-4107-9d20-fe3ea84be402" mode="Transparent" x="200" y="26" width="130" height="15"/>
 					<box>
 						<pen lineWidth="0.5" lineStyle="Solid"/>
 						<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -79,10 +79,10 @@ ORDER BY perf.ide_perf asc]]>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="10" isBold="true" isItalic="false"/>
 					</textElement>
-					<text><![CDATA[Usuario]]></text>
+					<text><![CDATA[USUARIO]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="726b6a9f-1cac-4e82-b83d-392c83befaa0" x="330" y="26" width="110" height="20"/>
+					<reportElement uuid="726b6a9f-1cac-4e82-b83d-392c83befaa0" x="330" y="26" width="110" height="15"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -90,11 +90,13 @@ ORDER BY perf.ide_perf asc]]>
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
 					<text><![CDATA[FECHA CREACIÓN]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="a3db1955-fef6-42ac-8cdc-d271cc7a83d7" x="440" y="26" width="115" height="20"/>
+					<reportElement uuid="a3db1955-fef6-42ac-8cdc-d271cc7a83d7" x="440" y="26" width="115" height="15"/>
 					<box>
 						<pen lineWidth="0.5"/>
 						<topPen lineWidth="0.5"/>
@@ -102,7 +104,9 @@ ORDER BY perf.ide_perf asc]]>
 						<bottomPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
 					<text><![CDATA[FECHA CADUCIDAD]]></text>
 				</staticText>
 			</band>
@@ -155,8 +159,8 @@ ORDER BY perf.ide_perf asc]]>
 	<detail>
 		<band height="15" splitType="Stretch">
 			<elementGroup/>
-			<textField>
-				<reportElement uuid="b05e5849-8c8b-4e53-a3c1-0664c028e959" x="200" y="0" width="130" height="15"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="b05e5849-8c8b-4e53-a3c1-0664c028e959" stretchType="RelativeToBandHeight" x="200" y="0" width="130" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
 				<box leftPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -168,10 +172,10 @@ ORDER BY perf.ide_perf asc]]>
 					<font size="8"/>
 					<paragraph leftIndent="2"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{NICK_USUA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nick_usua}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="8414e559-0099-4dc4-95fe-514c9f5e59d3" x="0" y="0" width="200" height="15"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="8414e559-0099-4dc4-95fe-514c9f5e59d3" stretchType="RelativeToBandHeight" x="0" y="0" width="200" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
 				<box leftPadding="3">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -183,10 +187,10 @@ ORDER BY perf.ide_perf asc]]>
 					<font size="8"/>
 					<paragraph leftIndent="2"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{NOM_USUA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nom_usua}]]></textFieldExpression>
 			</textField>
-			<textField pattern="yyyy/MM/dd" isBlankWhenNull="true">
-				<reportElement uuid="34fa9489-6d83-43cd-be63-0901a2774802" x="330" y="0" width="110" height="15"/>
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="34fa9489-6d83-43cd-be63-0901a2774802" stretchType="RelativeToBandHeight" x="330" y="0" width="110" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -199,8 +203,8 @@ ORDER BY perf.ide_perf asc]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{FECHA_REG_USUA}]]></textFieldExpression>
 			</textField>
-			<textField pattern="yyyy/MM/dd" isBlankWhenNull="true">
-				<reportElement uuid="45484ada-d264-4f06-90cc-8ffc348e46f4" x="440" y="0" width="115" height="15"/>
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="45484ada-d264-4f06-90cc-8ffc348e46f4" stretchType="RelativeToBandHeight" x="440" y="0" width="115" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
