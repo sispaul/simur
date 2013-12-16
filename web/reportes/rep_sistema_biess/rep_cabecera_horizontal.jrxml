@@ -18,7 +18,7 @@ where SUCURSAL.IDE_EMPR=$P{ide_empr}
 and SUCURSAL.IDE_SUCU=$P{ide_sucu}
 and USUARIO_SUCURSAL.IDE_USUA=$P{ide_usua}]]>
 	</queryString>
-	<field name="IDE_EMPR" class="java.math.BigDecimal"/>
+	<field name="IDE_EMPR" class="java.lang.Integer"/>
 	<field name="NOM_EMPR" class="java.lang.String"/>
 	<field name="CONTACTO_EMPR" class="java.lang.String"/>
 	<field name="REPRESENTANTE_EMPR" class="java.lang.String"/>
@@ -29,24 +29,24 @@ and USUARIO_SUCURSAL.IDE_USUA=$P{ide_usua}]]>
 	<field name="DIRECCION_EMPR" class="java.lang.String"/>
 	<field name="TELEFONO_EMPR" class="java.lang.String"/>
 	<field name="LOGO_EMPR" class="java.lang.String"/>
-	<field name="IDE_SUCU" class="java.math.BigDecimal"/>
+	<field name="IDE_SUCU" class="java.lang.Long"/>
 	<field name="NOM_SUCU" class="java.lang.String"/>
 	<field name="TELEFONOS_SUCU" class="java.lang.String"/>
 	<field name="DIRECCION_SUCU" class="java.lang.String"/>
-	<field name="CONTACTO_SUCU" class="java.lang.String"/>
-	<field name="IDE_USSU" class="java.math.BigDecimal"/>
-	<field name="SIS_IDE_SUCU" class="java.math.BigDecimal"/>
-	<field name="IDE_USUA" class="java.math.BigDecimal"/>
-	<field name="IDE_PERF" class="java.math.BigDecimal"/>
+	<field name="CONTACTO_SUC" class="java.lang.String"/>
+	<field name="IDE_USSU" class="java.lang.Long"/>
+	<field name="SIS_IDE_SUCU" class="java.lang.Long"/>
+	<field name="IDE_USUA" class="java.lang.Long"/>
+	<field name="IDE_PERF" class="java.lang.Long"/>
 	<field name="NOM_USUA" class="java.lang.String"/>
 	<field name="NICK_USUA" class="java.lang.String"/>
 	<field name="MAIL_USUA" class="java.lang.String"/>
 	<field name="FECHA_REG_USUA" class="java.sql.Timestamp"/>
-	<field name="FECHA_CADUC_USUA" class="java.sql.Timestamp"/>
-	<field name="ACTIVO_USUA" class="java.math.BigDecimal"/>
+	<field name="FECHA_CADUC_USUA" class="java.lang.String"/>
+	<field name="ACTIVO_USUA" class="java.lang.Boolean"/>
 	<field name="TEMA_USUA" class="java.lang.String"/>
-	<field name="BLOQUEADO_USUA" class="java.math.BigDecimal"/>
-	<field name="CAMBIA_CLAVE_USUA" class="java.math.BigDecimal"/>
+	<field name="BLOQUEADO_USUA" class="java.lang.Boolean"/>
+	<field name="CAMBIA_CLAVE_USUA" class="java.lang.Boolean"/>
 	<title>
 		<band height="80" splitType="Stretch">
 			<image>
