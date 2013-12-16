@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="0" bottomMargin="0" uuid="1db0eac9-51a2-4883-86a3-aa5c1e4fb0da">
 	<property name="ireport.zoom" value="3.0"/>
-	<property name="ireport.x" value="1016"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<parameter name="ide_sucu" class="java.lang.Integer"/>
@@ -18,7 +18,7 @@ where SUCURSAL.IDE_EMPR=$P{ide_empr}
 and SUCURSAL.IDE_SUCU=$P{ide_sucu}
 and USUARIO_SUCURSAL.IDE_USUA=$P{ide_usua}]]>
 	</queryString>
-	<field name="IDE_EMPR" class="java.math.BigDecimal"/>
+	<field name="IDE_EMPR" class="java.lang.Integer"/>
 	<field name="NOM_EMPR" class="java.lang.String"/>
 	<field name="CONTACTO_EMPR" class="java.lang.String"/>
 	<field name="REPRESENTANTE_EMPR" class="java.lang.String"/>
@@ -29,24 +29,24 @@ and USUARIO_SUCURSAL.IDE_USUA=$P{ide_usua}]]>
 	<field name="DIRECCION_EMPR" class="java.lang.String"/>
 	<field name="TELEFONO_EMPR" class="java.lang.String"/>
 	<field name="LOGO_EMPR" class="java.lang.String"/>
-	<field name="IDE_SUCU" class="java.math.BigDecimal"/>
+	<field name="IDE_SUCU" class="java.lang.Long"/>
 	<field name="NOM_SUCU" class="java.lang.String"/>
 	<field name="TELEFONOS_SUCU" class="java.lang.String"/>
 	<field name="DIRECCION_SUCU" class="java.lang.String"/>
-	<field name="CONTACTO_SUCU" class="java.lang.String"/>
-	<field name="IDE_USSU" class="java.math.BigDecimal"/>
-	<field name="SIS_IDE_SUCU" class="java.math.BigDecimal"/>
-	<field name="IDE_USUA" class="java.math.BigDecimal"/>
-	<field name="IDE_PERF" class="java.math.BigDecimal"/>
+	<field name="CONTACTO_SUC" class="java.lang.String"/>
+	<field name="IDE_USSU" class="java.lang.Long"/>
+	<field name="SIS_IDE_SUCU" class="java.lang.Long"/>
+	<field name="IDE_USUA" class="java.lang.Long"/>
+	<field name="IDE_PERF" class="java.lang.Long"/>
 	<field name="NOM_USUA" class="java.lang.String"/>
 	<field name="NICK_USUA" class="java.lang.String"/>
 	<field name="MAIL_USUA" class="java.lang.String"/>
 	<field name="FECHA_REG_USUA" class="java.sql.Timestamp"/>
-	<field name="FECHA_CADUC_USUA" class="java.sql.Timestamp"/>
-	<field name="ACTIVO_USUA" class="java.math.BigDecimal"/>
+	<field name="FECHA_CADUC_USUA" class="java.lang.String"/>
+	<field name="ACTIVO_USUA" class="java.lang.Boolean"/>
 	<field name="TEMA_USUA" class="java.lang.String"/>
-	<field name="BLOQUEADO_USUA" class="java.math.BigDecimal"/>
-	<field name="CAMBIA_CLAVE_USUA" class="java.math.BigDecimal"/>
+	<field name="BLOQUEADO_USUA" class="java.lang.Boolean"/>
+	<field name="CAMBIA_CLAVE_USUA" class="java.lang.Boolean"/>
 	<title>
 		<band height="80" splitType="Stretch">
 			<image>
