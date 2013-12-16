@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="0" bottomMargin="0" uuid="657d7e5a-b9e6-4f43-ab64-d0061135e46a">
-	<property name="ireport.zoom" value="3.0"/>
-	<property name="ireport.x" value="1757"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<parameter name="ide_sucu" class="java.lang.Integer"/>
@@ -50,25 +50,25 @@ and USUARIO_SUCURSAL.IDE_USUA=$P{ide_usua}]]>
 	<title>
 		<band height="80" splitType="Stretch">
 			<image>
-				<reportElement uuid="d1cbe5c6-30e6-481e-aa20-19f7e434c340" x="4" y="11" width="82" height="44"/>
+				<reportElement uuid="d1cbe5c6-30e6-481e-aa20-19f7e434c340" x="4" y="11" width="136" height="44"/>
 				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+$F{LOGO_EMPR}]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement uuid="d68b8ab5-589f-4cd7-8924-569307f79b66" x="0" y="53" width="86" height="10"/>
+				<reportElement uuid="d68b8ab5-589f-4cd7-8924-569307f79b66" x="0" y="53" width="140" height="10"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DIRECCION_EMPR}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="7e838733-f84a-4d5f-8f26-056acdacc906" x="0" y="63" width="86" height="10"/>
+				<reportElement uuid="7e838733-f84a-4d5f-8f26-056acdacc906" x="0" y="63" width="140" height="10"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Teléfono: "+$F{TELEFONO_EMPR}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="65239882-21c6-4dfd-b01e-2e862b9bc656" x="85" y="11" width="607" height="62"/>
+				<reportElement uuid="65239882-21c6-4dfd-b01e-2e862b9bc656" x="140" y="11" width="552" height="62"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
 				</textElement>
