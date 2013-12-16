@@ -36,45 +36,39 @@ left join SIS_OPCION opcion on opcion.ide_opci=auditoria.ide_opci
 where USUARIO.IDE_USUA in ($P!{ide_usua})
 and opcion.ide_opci in ($P!{ide_opci})
 and upper(AUDITORIA.ACCION_AUDI) IN ($P!{tipo_accion})
-and AUDITORIA.FECHA_AUDI BETWEEN  TO_DATE($P{fecha_ini}, 'yy-mm-dd')
-and TO_DATE($P{fecha_fin}, 'yy-mm-dd')
-AND AUDITORIA.HORA_AUDI BETWEEN TO_TIMESTAMP($P{hora_ini}, 'HH24:MI:SS')
-and TO_TIMESTAMP($P{hora_fin}, 'HH24:MI:SS')
+and AUDITORIA.FECHA_AUDI BETWEEN  convert(varchar,$P{fecha_ini}, 111)
+and convert(varchar,$P{fecha_fin}, 111)
+AND AUDITORIA.HORA_AUDI BETWEEN convert(varchar,$P{hora_ini}, 108)
+and convert(varchar,$P{hora_fin}, 108)
 order by USUARIO.IDE_USUA,opcion.ide_opci,AUDITORIA.ACCION_AUDI
 ,AUDITORIA.TABLA_AUDI,AUDITORIA.FECHA_AUDI ASC]]>
 	</queryString>
-	<field name="IDE_AUDI" class="java.math.BigDecimal"/>
-	<field name="IDE_EMPR" class="java.math.BigDecimal"/>
-	<field name="IDE_OPCI" class="java.math.BigDecimal"/>
-	<field name="IDE_SUCU" class="java.math.BigDecimal"/>
-	<field name="IDE_USUA" class="java.math.BigDecimal"/>
+	<field name="IDE_AUDI" class="java.lang.Long"/>
+	<field name="IDE_EMPR" class="java.lang.Integer"/>
+	<field name="IDE_OPCI" class="java.lang.Long"/>
+	<field name="IDE_SUCU" class="java.lang.Long"/>
+	<field name="IDE_USUA" class="java.lang.Long"/>
 	<field name="FECHA_AUDI" class="java.sql.Timestamp"/>
 	<field name="HORA_AUDI" class="java.sql.Timestamp"/>
+	<field name="SQL_AUDI" class="java.lang.String"/>
 	<field name="TABLA_AUDI" class="java.lang.String"/>
 	<field name="IP_AUDI" class="java.lang.String"/>
 	<field name="ACCION_AUDI" class="java.lang.String"/>
-	<field name="SQL_AUDI" class="java.lang.String"/>
-	<field name="IDE_PERF" class="java.math.BigDecimal"/>
+	<field name="IDE_PERF" class="java.lang.Long"/>
 	<field name="NOM_USUA" class="java.lang.String"/>
 	<field name="NICK_USUA" class="java.lang.String"/>
 	<field name="MAIL_USUA" class="java.lang.String"/>
 	<field name="FECHA_REG_USUA" class="java.sql.Timestamp"/>
 	<field name="FECHA_CADUC_USUA" class="java.sql.Timestamp"/>
-	<field name="ACTIVO_USUA" class="java.math.BigDecimal"/>
+	<field name="ACTIVO_USUA" class="java.lang.Boolean"/>
 	<field name="TEMA_USUA" class="java.lang.String"/>
-	<field name="BLOQUEADO_USUA" class="java.math.BigDecimal"/>
-	<field name="CAMBIA_CLAVE_USUA" class="java.math.BigDecimal"/>
-	<field name="USUARIO_INGRE" class="java.lang.String"/>
-	<field name="FECHA_INGRE" class="java.sql.Timestamp"/>
-	<field name="HORA_INGRE" class="java.sql.Timestamp"/>
-	<field name="USUARIO_ACTUA" class="java.lang.String"/>
-	<field name="FECHA_ACTUA" class="java.sql.Timestamp"/>
-	<field name="HORA_ACTUA" class="java.sql.Timestamp"/>
-	<field name="SIS_IDE_OPCI" class="java.math.BigDecimal"/>
+	<field name="BLOQUEADO_USUA" class="java.lang.Boolean"/>
+	<field name="CAMBIA_CLAVE_USUA" class="java.lang.Boolean"/>
+	<field name="SIS_IDE_OPCI" class="java.lang.Long"/>
 	<field name="NOM_OPCI" class="java.lang.String"/>
 	<field name="TIPO_OPCI" class="java.lang.String"/>
 	<field name="PAQUETE_OPCI" class="java.lang.String"/>
-	<field name="AUDITORIA_OPCI" class="java.math.BigDecimal"/>
+	<field name="AUDITORIA_OPCI" class="java.lang.Boolean"/>
 	<field name="MANUAL_OPCI" class="java.lang.String"/>
 	<group name="ide_usua">
 		<groupExpression><![CDATA[$F{IDE_USUA}]]></groupExpression>
@@ -265,22 +259,7 @@ order by USUARIO.IDE_USUA,opcion.ide_opci,AUDITORIA.ACCION_AUDI
 		</band>
 	</title>
 	<columnHeader>
-		<band height="14">
-			<textField evaluationTime="Report">
-				<reportElement uuid="0fbbf1c8-42d1-4e92-a9b7-2c28da71444d" x="760" y="0" width="42" height="13"/>
-				<textElement>
-					<font size="8" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="3ac93da5-5244-4ffa-85e5-b4941ce95f55" x="714" y="0" width="51" height="13"/>
-				<textElement>
-					<font size="8" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
-			</textField>
-		</band>
+		<band/>
 	</columnHeader>
 	<detail>
 		<band height="20" splitType="Stretch">
@@ -385,12 +364,27 @@ order by USUARIO.IDE_USUA,opcion.ide_opci,AUDITORIA.ACCION_AUDI
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="45" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="54" splitType="Stretch"/>
+		<band height="13" splitType="Stretch">
+			<textField evaluationTime="Report">
+				<reportElement uuid="0fbbf1c8-42d1-4e92-a9b7-2c28da71444d" x="756" y="0" width="42" height="13"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3ac93da5-5244-4ffa-85e5-b4941ce95f55" x="710" y="0" width="51" height="13"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+		</band>
 	</pageFooter>
 	<summary>
-		<band height="42" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</summary>
 </jasperReport>

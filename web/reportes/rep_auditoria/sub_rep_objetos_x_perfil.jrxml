@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ca9ad522-e448-4349-b982-cde6356a6a0b">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -19,39 +19,35 @@ left join sis_opcion opcion on opcion.ide_opci=objeto_opcion.ide_opci
 where perfil.ide_perf=$P{ide_perf}
 order by opcion.nom_opci ASC]]>
 	</queryString>
-	<field name="IDE_OBOP" class="java.math.BigDecimal"/>
-	<field name="NOM_OPCI" class="java.lang.String"/>
-	<field name="NOM_OBOP" class="java.lang.String"/>
-	<field name="DESCRIPCION_OBOP" class="java.lang.String"/>
-	<field name="LECTURA_PEOB" class="java.math.BigDecimal"/>
-	<field name="VISIBLE_PEOB" class="java.math.BigDecimal"/>
+	<field name="ide_obop" class="java.lang.Long"/>
+	<field name="nom_opci" class="java.lang.String"/>
+	<field name="nom_obop" class="java.lang.String"/>
+	<field name="descripcion_obop" class="java.lang.String"/>
+	<field name="LECTURA_PEOB" class="java.lang.Boolean"/>
+	<field name="VISIBLE_PEOB" class="java.lang.Boolean"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
 		<band height="35" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="0" y="0" width="176" height="15"/>
+				<reportElement uuid="5f4fc482-89c7-4e71-8203-e692be1b44d9" x="0" y="0" width="176" height="15"/>
 				<textElement>
 					<font size="10" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{NOM_OPCI}==null?null
-:$F{NOM_OBOP}==null?null:
-$F{NOM_OPCI}+" / "+$F{DESCRIPCION_OBOP}
-
-]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nom_opci}==null?null
+:$F{nom_obop}==null?null:
+$F{nom_opci}+" / "+$F{descripcion_obop}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="0" y="15" width="176" height="15"/>
+				<reportElement uuid="0e63be21-14b2-4c80-b46c-593e64c1b7c9" x="0" y="15" width="176" height="15"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{LECTURA_PEOB}.toString().equals("0")?
 $F{VISIBLE_PEOB}.toString().equals("0")?"Lectura true / Visible true"
 :"Lectura true / Visible false"
 
 :$F{VISIBLE_PEOB}.toString().equals("0")?"Lectura false / Visible true"
-:"Lectura false / Visible false"
-
-    ]]></textFieldExpression>
+:"Lectura false / Visible false"]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
