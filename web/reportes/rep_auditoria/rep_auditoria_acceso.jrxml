@@ -39,10 +39,10 @@
 left join SIS_ACCION_AUDITORIA accion_auditoria on ACCION_AUDITORIA.IDE_ACAU=AUDITORIA_ACCESO.IDE_ACAU
 LEFT JOIN SIS_USUARIO USUARIO ON USUARIO.IDE_USUA=auditoria_acceso.SIS_IDE_USUA
 where ACCION_AUDITORIA.IDE_ACAU in ($P!{ide_acau})
-and AUDITORIA_ACCESO.FECHA_AUAC BETWEEN convert(varchar,$P{fecha_ini},111)
-and convert(varchar,$P{fecha_fin}, 111)
-and AUDITORIA_ACCESO.HORA_AUAC BETWEEN convert(varchar,$P{hora_ini},108)
-and convert(varchar,$P{hora_fin},108)
+and AUDITORIA_ACCESO.FECHA_AUAC BETWEEN convert(datetime,$P{fecha_ini},111)
+and convert(datetime,$P{fecha_fin}, 111)
+and AUDITORIA_ACCESO.HORA_AUAC BETWEEN convert(datetime,$P{hora_ini},108)
+and convert(datetime,$P{hora_fin},108)
 and AUDITORIA_ACCESO.SIS_IDE_USUA in ($P!{ide_usua})
 order by AUDITORIA_ACCESO.FECHA_AUAC ASC,AUDITORIA_ACCESO.HORA_AUAC asc]]>
 	</queryString>

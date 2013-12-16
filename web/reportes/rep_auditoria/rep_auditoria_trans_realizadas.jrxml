@@ -36,10 +36,10 @@ left join SIS_OPCION opcion on opcion.ide_opci=auditoria.ide_opci
 where USUARIO.IDE_USUA in ($P!{ide_usua})
 and opcion.ide_opci in ($P!{ide_opci})
 and upper(AUDITORIA.ACCION_AUDI) IN ($P!{tipo_accion})
-and AUDITORIA.FECHA_AUDI BETWEEN  convert(varchar,$P{fecha_ini}, 111)
-and convert(varchar,$P{fecha_fin}, 111)
-AND AUDITORIA.HORA_AUDI BETWEEN convert(varchar,$P{hora_ini}, 108)
-and convert(varchar,$P{hora_fin}, 108)
+and AUDITORIA.FECHA_AUDI BETWEEN  convert(datetime,$P{fecha_ini}, 111)
+and convert(datetime,$P{fecha_fin}, 111)
+AND AUDITORIA.HORA_AUDI BETWEEN convert(datetime,$P{hora_ini}, 108)
+and convert(datetime,$P{hora_fin}, 108)
 order by USUARIO.IDE_USUA,opcion.ide_opci,AUDITORIA.ACCION_AUDI
 ,AUDITORIA.TABLA_AUDI,AUDITORIA.FECHA_AUDI ASC]]>
 	</queryString>
