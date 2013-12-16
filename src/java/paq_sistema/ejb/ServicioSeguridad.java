@@ -26,7 +26,7 @@ public class ServicioSeguridad {
     /**
      * Sirve para cuando se pone en estado activo a un usuario
      */
-    public final static String P_SIS_ACTIVA_USUARIO = "5";
+    public final static String P_SIS_ACTIVA_USUARIO = "4";
     /**
      * Sirve para cuando se pone en estado inactivo a un usuario
      */
