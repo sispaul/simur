@@ -272,7 +272,7 @@ public class pre_empresa extends Pantalla {
             pat_panel4.setPanelTabla(tab_seguro);
 
             tab_revision.setId("tab_revision");
-            tab_revision.setIdCompleto("tab_tabulador:tab_revisión");
+            tab_revision.setIdCompleto("tab_tabulador:tab_revision");
             tab_revision.setTabla("trans_revision_vehicular", "ide_revision", 9);
             tab_revision.getColumna("fecha_responsable").setCalendarioFechaHora();
             tab_revision.getColumna("fecha_responsable").setVisible(false);
