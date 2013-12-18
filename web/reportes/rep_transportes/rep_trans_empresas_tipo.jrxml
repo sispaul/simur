@@ -17,12 +17,16 @@
 	<parameter name="fecha_final" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["2009-09-01"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="usuario" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["luis"]]></defaultValueExpression>
-	</parameter>
 	<parameter name="tipo_vehiculo" class="java.lang.Integer" isForPrompting="false">
 		<defaultValueExpression><![CDATA[13]]></defaultValueExpression>
 	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="usuario" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[select a.ide_empresa,a.nombre,a.ruc,b.nombre as tipovehculo,a.codigo,fecha_catastro,
 num_unidades,codigototal,codigogrupo,round ((cast(codigogrupo as numeric) *100/cast(codigototal as numeric)),2) as resultadopor,
@@ -34,7 +38,7 @@ select a.ide_empresa,a.nombre,a.ruc,b.nombre as tipovehculo,a.codigo,fecha_catas
 num_unidades
 from trans_empresa a, trans_tipo b
 where a.codigo=b.codigo
-order by b.nombre
+
 ) a
  ) c,
  (
@@ -45,7 +49,7 @@ select a.ide_empresa,a.nombre,a.ruc,b.nombre as tipovehculo,a.codigo,fecha_catas
 num_unidades
 from trans_empresa a, trans_tipo b
 where a.codigo=b.codigo
-order by b.nombre
+
 ) a
 
 group by codigo
@@ -57,16 +61,14 @@ and a.codigo=$P{tipo_vehiculo}
 order by b.nombre]]>
 	</queryString>
 	<field name="ide_empresa" class="java.lang.Integer"/>
-	<field name="nombre" class="java.lang.String">
-		<fieldDescription><![CDATA[nombre]]></fieldDescription>
-	</field>
+	<field name="nombre" class="java.lang.String"/>
 	<field name="ruc" class="java.lang.String"/>
 	<field name="tipovehculo" class="java.lang.String"/>
 	<field name="codigo" class="java.lang.Integer"/>
-	<field name="fecha_catastro" class="java.sql.Date"/>
+	<field name="fecha_catastro" class="java.lang.String"/>
 	<field name="num_unidades" class="java.lang.Integer"/>
-	<field name="codigototal" class="java.lang.Long"/>
-	<field name="codigogrupo" class="java.lang.Long"/>
+	<field name="codigototal" class="java.lang.Integer"/>
+	<field name="codigogrupo" class="java.lang.Integer"/>
 	<field name="resultadopor" class="java.math.BigDecimal"/>
 	<field name="direccion" class="java.lang.String"/>
 	<field name="telefono" class="java.lang.String"/>
@@ -222,20 +224,27 @@ order by b.nombre]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="33" splitType="Stretch">
-			<staticText>
-				<reportElement uuid="1f9fd23c-352c-4ec1-806c-375efc812fe7" key="staticText" x="61" y="4" width="412" height="28"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center">
-					<font size="18" isBold="true" pdfFontName="Helvetica-Bold"/>
-				</textElement>
-				<text><![CDATA[EMPRESAS CATASTRADAS]]></text>
-			</staticText>
+		<band height="20" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="78725628-1730-4691-a1a1-d59532e56435" x="0" y="0" width="782" height="20"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema_biess/rep_cabecera_horizontal.jasper"]]></subreportExpression>
+			</subreport>
 		</band>
 	</title>
 	<pageHeader>
@@ -408,19 +417,6 @@ order by b.nombre]]>
 					<font fontName="SansSerif" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement uuid="8aa80c8b-cc61-4341-bc37-4126dd16099b" key="textField-2" x="201" y="5" width="153" height="15"/>
-				<box leftPadding="2" rightPadding="2">
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement>
-					<font fontName="SansSerif" size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{usuario}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
