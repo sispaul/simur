@@ -8,7 +8,7 @@ import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import paq_sistema.aplicacion.Pantalla;
 import framework.componentes.Division;
-import framework.componentes.Grid;
+import framework.componentes.Grupo;
 import framework.componentes.ItemMenu;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
@@ -31,6 +31,8 @@ public class pre_empresa extends Pantalla {
     private Tabla tab_permiso_x_ruta;
     private Tabla tab_permiso_provicional;
     private Tabla tab_recorrido;
+    private Tabla tab_seguro;
+    private Tabla tab_revision;
     private AutoCompletar aut_empresas = new AutoCompletar();
     private Panel pan_opcion = new Panel();
     private String str_opcion = "";// sirve para identificar la opcion que se encuentra dibujada en pantalla
@@ -135,7 +137,7 @@ public class pre_empresa extends Pantalla {
             tab_permiso_x_ruta.getColumna("NOM_RESPONSABLE").setValorDefecto(utilitario.getVariable("NICK"));
             tab_permiso_x_ruta.getColumna("NOM_RESPONSABLE").setVisible(false);
             tab_permiso_x_ruta.setTipoFormulario(true);
-            tab_permiso_x_ruta.getGrid().setColumns(4);
+            tab_permiso_x_ruta.getGrid().setColumns(6);
             tab_permiso_x_ruta.agregarRelacion(tab_recorrido);
             tab_permiso_x_ruta.dibujar();
 
@@ -144,7 +146,7 @@ public class pre_empresa extends Pantalla {
 
             tab_recorrido.setId("tab_recorrido");
             tab_recorrido.setIdCompleto("tab_tabulador:tab_recorrido");
-            tab_recorrido.setTabla("tab_recorrido", "ide_recorrido", 7);
+            tab_recorrido.setTabla("trans_recorrido", "ide_recorrido", 7);
             tab_recorrido.getColumna("fecha_responsable").setCalendarioFechaHora();
             tab_recorrido.getColumna("fecha_responsable").setVisible(false);
             tab_recorrido.getColumna("ip_responsable").setValorDefecto(utilitario.getIp());
@@ -157,9 +159,9 @@ public class pre_empresa extends Pantalla {
             PanelTabla pat_panel4 = new PanelTabla();
             pat_panel4.setPanelTabla(tab_recorrido);
 
-            Grid gri_per_ruta = new Grid();
-            gri_per_ruta.getChildren().add(tab_permiso_x_ruta);
-            gri_per_ruta.getChildren().add(tab_recorrido);
+            Grupo gri_per_ruta = new Grupo();
+            gri_per_ruta.getChildren().add(pat_panel2);
+            gri_per_ruta.getChildren().add(pat_panel4);
 
 
             Tabulador tab_tabulador = new Tabulador();
@@ -230,6 +232,8 @@ public class pre_empresa extends Pantalla {
             pat_panel2.setPanelTabla(tab_socios);
             pan_opcion.setTitle("SOCIOS QUE PERTENECEN A LA EMPRESA");
 
+            tab_seguro = new Tabla();
+            tab_revision = new Tabla();
             tab_vehiculos.setId("tab_vehiculos");
             tab_vehiculos.setTabla("trans_vehiculos", "ide_vehiculo", 4);
             tab_vehiculos.setHeader("VEHÍCULOS DEL SOCIO");
@@ -241,12 +245,57 @@ public class pre_empresa extends Pantalla {
             tab_vehiculos.getColumna("ip_responsable").setVisible(false);
             tab_vehiculos.getColumna(" NOM_RESPONSABLE").setValorDefecto(utilitario.getVariable("NICK"));
             tab_vehiculos.getColumna(" NOM_RESPONSABLE").setVisible(false);
+            tab_vehiculos.setTipoFormulario(true);
+            tab_vehiculos.agregarRelacion(tab_seguro);
+            tab_vehiculos.agregarRelacion(tab_revision);
+            tab_vehiculos.getGrid().setColumns(6);
+
             tab_vehiculos.dibujar();
             PanelTabla pat_panel3 = new PanelTabla();
             pat_panel3.setPanelTabla(tab_vehiculos);
 
+            tab_seguro.setId("tab_seguro");
+            tab_seguro.setIdCompleto("tab_tabulador:tab_seguro");
+            tab_seguro.setTabla("trans_seguro", "ide_seguro", 8);
+            tab_seguro.getColumna("fecha_responsable").setCalendarioFechaHora();
+            tab_seguro.getColumna("fecha_responsable").setVisible(false);
+            tab_seguro.getColumna("ip_responsable").setValorDefecto(utilitario.getIp());
+            tab_seguro.getColumna("ip_responsable").setVisible(false);
+            tab_seguro.getColumna("NOM_RESPONSABLE").setValorDefecto(utilitario.getVariable("NICK"));
+            tab_seguro.getColumna("NOM_RESPONSABLE").setVisible(false);
+            tab_seguro.setHeader("SEGURO DEL VEHÍCULO");
+            tab_seguro.setTipoFormulario(true);
+            tab_seguro.getGrid().setColumns(4);
+            tab_seguro.dibujar();
+
+            PanelTabla pat_panel4 = new PanelTabla();
+            pat_panel4.setPanelTabla(tab_seguro);
+
+            tab_revision.setId("tab_revision");
+            tab_revision.setIdCompleto("tab_tabulador:tab_revisión");
+            tab_revision.setTabla("trans_revision_vehicular", "ide_revision", 9);
+            tab_revision.getColumna("fecha_responsable").setCalendarioFechaHora();
+            tab_revision.getColumna("fecha_responsable").setVisible(false);
+            tab_revision.getColumna("ip_responsable").setValorDefecto(utilitario.getIp());
+            tab_revision.getColumna("ip_responsable").setVisible(false);
+            tab_revision.getColumna("NOM_RESPONSABLE").setValorDefecto(utilitario.getVariable("NICK"));
+            tab_revision.getColumna("NOM_RESPONSABLE").setVisible(false);
+            tab_revision.setTipoFormulario(true);
+            tab_revision.setHeader("REVISIÓN VEHICULAR");
+            tab_revision.getGrid().setColumns(6);
+            tab_revision.dibujar();
+
+            PanelTabla pat_panel5 = new PanelTabla();
+            pat_panel5.setPanelTabla(tab_revision);
+
+
+            Grupo gru = new Grupo();
+            gru.getChildren().add(pat_panel3);
+            gru.getChildren().add(pat_panel4);
+            gru.getChildren().add(pat_panel5);
+
             Division div_div = new Division();
-            div_div.dividir2(pat_panel2, pat_panel3, "H", "50%");
+            div_div.dividir2(pat_panel2, gru, "H", "50%");
             try {
                 int dou_alto = Integer.parseInt(utilitario.getVariable("ALTO_PANTALLA")) - 53;
                 div_div.setStyle("padding: 0;margin: 0;height:" + dou_alto + "px;border:none");
@@ -351,6 +400,10 @@ public class pre_empresa extends Pantalla {
                 }
             } else if (tab_vehiculos.isFocus()) {
                 tab_vehiculos.insertar();
+            } else if (tab_revision.isFocus()) {
+                tab_revision.insertar();
+            } else if (tab_seguro.isFocus()) {
+                tab_seguro.insertar();
             }
         }
 
@@ -379,6 +432,8 @@ public class pre_empresa extends Pantalla {
             }
             tab_socios.guardar();
             tab_vehiculos.guardar();
+            tab_seguro.guardar();
+            tab_revision.guardar();
         }
         guardarPantalla();
         aut_empresas.actualizar();
@@ -413,6 +468,10 @@ public class pre_empresa extends Pantalla {
                 tab_socios.eliminar();
             } else if (tab_vehiculos.isFocus()) {
                 tab_vehiculos.eliminar();
+            } else if (tab_seguro.isFocus()) {
+                tab_seguro.eliminar();
+            } else if (tab_revision.isFocus()) {
+                tab_revision.eliminar();
             }
         }
     }
@@ -479,5 +538,21 @@ public class pre_empresa extends Pantalla {
 
     public void setTab_recorrido(Tabla tab_recorrido) {
         this.tab_recorrido = tab_recorrido;
+    }
+
+    public Tabla getTab_seguro() {
+        return tab_seguro;
+    }
+
+    public void setTab_seguro(Tabla tab_seguro) {
+        this.tab_seguro = tab_seguro;
+    }
+
+    public Tabla getTab_revision() {
+        return tab_revision;
+    }
+
+    public void setTab_revision(Tabla tab_revision) {
+        this.tab_revision = tab_revision;
     }
 }
