@@ -145,6 +145,7 @@ public class pre_empresa extends Pantalla {
             tab_permisos.getColumna("NOM_RESPONSABLE").setVisible(false);
             tab_permisos.agregarRelacion(tab_permiso_x_ruta);
             tab_permisos.agregarRelacion(tab_permiso_provicional);
+            tab_permisos.setHeader("PERMISO DE OPERACIÓN");
             tab_permisos.dibujar();
             PanelTabla pat_panel1 = new PanelTabla();
             pat_panel1.setPanelTabla(tab_permisos);
