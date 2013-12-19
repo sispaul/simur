@@ -30,7 +30,7 @@ import org.primefaces.event.SelectEvent;
  * @author Diego
  */
 public class pre_empresa extends Pantalla {
-    
+
     private Tabla tab_tabla;
     private Tabla tab_permisos;
     private Tabla tab_socios;
@@ -48,42 +48,60 @@ public class pre_empresa extends Pantalla {
     private SeleccionFormatoReporte sef_reporte = new SeleccionFormatoReporte();
     private Map p_parametros = new HashMap();
     private SeleccionTabla sel_tab_tipo_vehiculo = new SeleccionTabla();
-    
+    private SeleccionTabla sel_tab_empresa = new SeleccionTabla();
+    private SeleccionTabla sel_tab_estado_socio = new SeleccionTabla();
+
     public pre_empresa() {
-        
+
         rep_reporte.setId("rep_reporte");
         rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
         agregarComponente(rep_reporte);
-        
+
         sef_reporte.setId("sef_reporte");
         agregarComponente(sef_reporte);
-        
+
         sel_tab_tipo_vehiculo.setId("sel_tab_tipo_vehiculo");
-        sel_tab_tipo_vehiculo.setTitle("SELECCION DE AREAS");
+        sel_tab_tipo_vehiculo.setTitle("SELECCION DE TIPO DE VEHICULOS");
         sel_tab_tipo_vehiculo.setSeleccionTabla("SELECT codigo,nombre from trans_tipo where codigo=-1", "codigo");
         sel_tab_tipo_vehiculo.getTab_seleccion().getColumna("nombre").setFiltro(true);
         sel_tab_tipo_vehiculo.getBot_aceptar().setMetodo("aceptarReporte");
         sel_tab_tipo_vehiculo.setRadio();
         agregarComponente(sel_tab_tipo_vehiculo);
-        
+
+        sel_tab_empresa.setId("sel_tab_empresa");
+        sel_tab_empresa.setTitle("SELECCION DE EMPRESAS");
+        sel_tab_empresa.setSeleccionTabla("select ide_empresa,nombre,ruc from trans_empresa WHERE ide_empresa=-1 order by nombre", "ide_empresa");
+        sel_tab_empresa.getTab_seleccion().getColumna("nombre").setFiltro(true);
+        sel_tab_empresa.getTab_seleccion().getColumna("ruc").setFiltro(true);
+        sel_tab_empresa.getBot_aceptar().setMetodo("aceptarReporte");
+        sel_tab_empresa.setRadio();
+        agregarComponente(sel_tab_empresa);
+
+
+        sel_tab_estado_socio.setId("sel_tab_estado_socio");
+        sel_tab_estado_socio.setTitle("SELECCION DE ESTADO DE SOCIOS");
+        sel_tab_estado_socio.setSeleccionTabla("SELECT ide_estado_socio,des_estado_socio FROM trans_estado_socio WHERE ide_estado_socio=-1", "ide_estado_socio");
+        sel_tab_estado_socio.getBot_aceptar().setMetodo("aceptarReporte");
+        agregarComponente(sel_tab_estado_socio);
+
         aut_empresas.setId("aut_empresas");
         aut_empresas.setAutoCompletar("select ide_empresa,nombre,ruc from trans_empresa");
         aut_empresas.setMetodoChange("filtrarEmpresa");
         aut_empresas.setSize(70);
         bar_botones.agregarComponente(aut_empresas);
-        
+
         Boton bot_limpiar = new Boton();
         bot_limpiar.setIcon("ui-icon-cancel");
         bot_limpiar.setMetodo("limpiar");
         bar_botones.agregarBoton(bot_limpiar);
         bar_botones.agregarReporte();
-        
-        
+
+
         pan_opcion.setId("pan_opcion");
         pan_opcion.setTransient(true);
-        
+
         contruirMenu();
-        
+
         Division div_division = new Division();
         div_division.setId("div_division");
         div_division.dividir2(pam_menu, pan_opcion, "20%", "V");
@@ -92,7 +110,7 @@ public class pre_empresa extends Pantalla {
         agregarComponente(div_division);
         dibujarEmpresa();
     }
-    
+
     private void contruirMenu() {
         // SUB MENU 1
         Submenu sum_empleado = new Submenu();
@@ -122,11 +140,11 @@ public class pre_empresa extends Pantalla {
         itm_socios.setMetodo("dibujarSocios");
         itm_socios.setUpdate("pan_opcion");
         sum_empleado.getChildren().add(itm_socios);
-        
-        
-        
+
+
+
     }
-    
+
     public void dibujarPermisos() {
         if (aut_empresas.getValue() != null) {
             str_opcion = "1";
@@ -154,9 +172,9 @@ public class pre_empresa extends Pantalla {
             pat_panel1.setPanelTabla(tab_permisos);
             tab_permisos.setStyle(null);
             pat_panel1.setStyle("width:100%;overflow: auto;");
-            
-            
-            
+
+
+
             tab_permiso_x_ruta.setId("tab_permiso_x_ruta");
             tab_recorrido = new Tabla();
             tab_permiso_x_ruta.setIdCompleto("tab_tabulador:tab_permiso_x_ruta");
@@ -176,7 +194,7 @@ public class pre_empresa extends Pantalla {
             tab_permiso_x_ruta.getGrid().setColumns(6);
             tab_permiso_x_ruta.agregarRelacion(tab_recorrido);
             tab_permiso_x_ruta.dibujar();
-            
+
             PanelTabla pat_panel2 = new PanelTabla();
             pat_panel2.setPanelTabla(tab_permiso_x_ruta);
             //  tab_permiso_x_ruta.setStyle(null);
@@ -193,20 +211,20 @@ public class pre_empresa extends Pantalla {
             tab_recorrido.getColumna("NOM_RESPONSABLE").setVisible(false);
             tab_recorrido.setHeader("RECORRIDOS");
             tab_recorrido.dibujar();
-            
+
             PanelTabla pat_panel4 = new PanelTabla();
             pat_panel4.setPanelTabla(tab_recorrido);
-            
-            
+
+
             Grupo gri_per_ruta = new Grupo();
             gri_per_ruta.getChildren().add(pat_panel2);
             gri_per_ruta.getChildren().add(pat_panel4);
-            
-            
+
+
             Tabulador tab_tabulador = new Tabulador();
             tab_tabulador.setId("tab_tabulador");
             tab_tabulador.agregarTab("PERMISO POR RUTA", gri_per_ruta);
-            
+
             tab_permiso_provicional.setId("tab_permiso_provicional");
             tab_permiso_provicional.setIdCompleto("tab_tabulador:tab_permiso_provicional");
             tab_permiso_provicional.setTabla("trans_permiso_provicional", "ide_permiso_provicional", 6);
@@ -220,28 +238,28 @@ public class pre_empresa extends Pantalla {
             tab_permiso_provicional.getGrid().setColumns(4);
             tab_permiso_provicional.setHeader("PERMISO PROVICIONAL");
             tab_permiso_provicional.getColumna("ubi_codigo").setCombo("select ubi_codigo,ubi_descri from oceubica order by ubi_descri");
-            
+
             tab_permiso_provicional.dibujar();
-            
+
             PanelTabla pat_panel3 = new PanelTabla();
             pat_panel3.setPanelTabla(tab_permiso_provicional);
             tab_tabulador.agregarTab("PERMISO PROVICIONAL", pat_panel3);
             tab_permiso_provicional.setStyle(null);
             pat_panel3.setStyle("width:100%;overflow: auto;");
-            
+
             Grupo gru = new Grupo();
-            gru.getChildren().add(pat_panel1);            
-            gru.getChildren().add(tab_tabulador);  
-            
-            pan_opcion.getChildren().add(gru);            
+            gru.getChildren().add(pat_panel1);
+            gru.getChildren().add(tab_tabulador);
+
+            pan_opcion.getChildren().add(gru);
             pan_opcion.setTitle("INFORMACION DEL PERMISO DE OPERACION DE LA EMPRESA");
-            
+
         } else {
             utilitario.agregarMensajeInfo("No se puede abrir la opción", "Seleccione una Empresa en el autocompletar");
             limpiar();
         }
     }
-    
+
     public void dibujarSocios() {
         if (aut_empresas.getValue() != null) {
             str_opcion = "2";
@@ -266,22 +284,22 @@ public class pre_empresa extends Pantalla {
             tab_socios.setHeader("SOCIOS");
             tab_socios.getColumna("instruccion").setCombo("trans_nivel_instruccion", "ide_nivel_inst", "des_nivel_inst", "");
             tab_socios.getColumna("cursos_municipales").setCombo("trans_cursos_municipales", "ide_curso_municipal", "des_curso", "");
-           
+
             List<String[]> lis_control = new ArrayList();
             lis_control.add(new String[]{"NO", "NO"});
             lis_control.add(new String[]{"SI", "SI"});
-            
+
             tab_socios.getColumna("seguros_salud").setCombo(lis_control);
             tab_socios.getColumna("control_salud").setCombo(lis_control);
-            
-            
+
+
             tab_socios.dibujar();
             PanelTabla pat_panel2 = new PanelTabla();
             pat_panel2.setPanelTabla(tab_socios);
             tab_socios.setStyle(null);
             pat_panel2.setStyle("width:100%;overflow: auto;");
             pan_opcion.setTitle("SOCIOS QUE PERTENECEN A LA EMPRESA");
-            
+
             tab_seguro = new Tabla();
             tab_revision = new Tabla();
             tab_vehiculos.setId("tab_vehiculos");
@@ -302,7 +320,7 @@ public class pre_empresa extends Pantalla {
             tab_vehiculos.getColumna("estado").setCombo("trans_estado_vehiculo", "ide_estado_vehiculo", "des_estado_vehiculo", "");
             tab_vehiculos.getColumna("estado_vehiculo").setCombo("trans_situacion_vehiculo", "ide_situacion", "des_situacion", "");
             tab_vehiculos.getColumna("combustible").setCombo("trans_combustible", "ide_combustible", "des_combustible", "");
-            
+
             tab_vehiculos.getGrid().setColumns(6);
             tab_vehiculos.agregarRelacion(tab_seguro);
             tab_vehiculos.agregarRelacion(tab_revision);
@@ -311,7 +329,7 @@ public class pre_empresa extends Pantalla {
             pat_panel3.setPanelTabla(tab_vehiculos);
             tab_vehiculos.setStyle(null);
             pat_panel3.setStyle("width:100%;overflow: auto;");
-            
+
             tab_seguro.setId("tab_seguro");
             tab_seguro.setTabla("trans_seguro", "ide_seguro", 8);
             tab_seguro.getColumna("fecha_responsable").setCalendarioFechaHora();
@@ -321,23 +339,23 @@ public class pre_empresa extends Pantalla {
             tab_seguro.getColumna("NOM_RESPONSABLE").setValorDefecto(utilitario.getVariable("NICK"));
             tab_seguro.getColumna("NOM_RESPONSABLE").setVisible(false);
             tab_seguro.getColumna("IDE_ASEGURADORA").setCombo("trans_aseguradora", "IDE_ASEGURADORA", "nombre", "");
-            tab_seguro.setHeader("SEGURO DEL VEHÍCULO");            
+            tab_seguro.setHeader("SEGURO DEL VEHÍCULO");
             tab_socios.getColumna("control_salud").setCombo(lis_control);
-            
+
             tab_seguro.setTipoFormulario(true);
             tab_seguro.getGrid().setColumns(6);
             tab_seguro.getColumna("FEC_EMISION").setControl("Calendario");
             tab_seguro.getColumna("FEC_CADUCIDAD").setControl("Calendario");
             tab_seguro.dibujar();
-            
+
             PanelTabla pat_panel4 = new PanelTabla();
             pat_panel4.setPanelTabla(tab_seguro);
             tab_seguro.setStyle(null);
             pat_panel4.setStyle("width:100%;overflow: auto;");
-            
-            
+
+
             tab_revision.setId("tab_revision");
-            
+
             tab_revision.setTabla("trans_revision_vehicular", "ide_revision", 9);
             tab_revision.getColumna("fecha_responsable").setCalendarioFechaHora();
             tab_revision.getColumna("fecha_responsable").setVisible(false);
@@ -352,13 +370,13 @@ public class pre_empresa extends Pantalla {
             tab_revision.getGrid().setColumns(6);
             tab_revision.getColumna("FEC_REVISION").setControl("Calendario");
             tab_revision.dibujar();
-            
+
             PanelTabla pat_panel5 = new PanelTabla();
             pat_panel5.setPanelTabla(tab_revision);
             tab_revision.setStyle(null);
             pat_panel5.setStyle("width:100%;overflow: auto;");
-            
-            
+
+
             Grupo gru = new Grupo();
             gru.getChildren().add(pat_panel2);
             gru.getChildren().add(pat_panel3);
@@ -370,11 +388,11 @@ public class pre_empresa extends Pantalla {
             limpiar();
         }
     }
-    
+
     public void dibujarEmpresa() {
         str_opcion = "0";
         limpiarPanel();
-        
+
         tab_tabla = new Tabla();
         tab_tabla.setId("tab_tabla");
         tab_tabla.setTabla("trans_empresa", "ide_empresa", 1);
@@ -402,24 +420,24 @@ public class pre_empresa extends Pantalla {
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);
         tab_tabla.setStyle(null);
         pat_panel.setStyle("width:100%;overflow: auto;");
-        
+
         pan_opcion.setTitle("CATASTRO DE EMPRESAS DE TRANSPORTE PÚBLICO");
         pan_opcion.getChildren().add(pat_panel);
     }
-    
+
     private void limpiarPanel() {
         //borra el contenido de la división central central
         pan_opcion.getChildren().clear();
         // pan_opcion.getChildren().add(efecto);
     }
-    
+
     public void limpiar() {
         aut_empresas.limpiar();
         utilitario.addUpdate("aut_empresas");
         limpiarPanel();
         utilitario.addUpdate("pan_opcion");
     }
-    
+
     public void filtrarEmpresa(SelectEvent evt) {
         //Filtra el cliente seleccionado en el autocompletar
         aut_empresas.onSelect(evt);
@@ -432,7 +450,7 @@ public class pre_empresa extends Pantalla {
         }
         utilitario.addUpdate("pan_opcion");
     }
-    
+
     @Override
     public void insertar() {
         if (str_opcion.equals("0")) {
@@ -446,7 +464,7 @@ public class pre_empresa extends Pantalla {
                 }
             }
         } else if (str_opcion.equals("1")) {
-            
+
             if (tab_permisos.isFocus()) {
                 tab_permisos.insertar();
                 if (tab_permisos.isFilaInsertada()) {
@@ -471,9 +489,9 @@ public class pre_empresa extends Pantalla {
                 tab_seguro.insertar();
             }
         }
-        
+
     }
-    
+
     @Override
     public void guardar() {
         if (str_opcion.equals("0")) {
@@ -507,9 +525,9 @@ public class pre_empresa extends Pantalla {
             aut_empresas.setValor(tab_tabla.getValorSeleccionado());
         }
         utilitario.addUpdate("aut_empresas");
-        
+
     }
-    
+
     @Override
     public void eliminar() {
         if (str_opcion.equals("0")) {
@@ -540,116 +558,133 @@ public class pre_empresa extends Pantalla {
             }
         }
     }
-    
+
     public Tabla getTab_tabla() {
         return tab_tabla;
     }
-    
+
     public void setTab_tabla(Tabla tab_tabla) {
         this.tab_tabla = tab_tabla;
     }
-    
+
     public Tabla getTab_permisos() {
         return tab_permisos;
     }
-    
+
     public void setTab_permisos(Tabla tab_permisos) {
         this.tab_permisos = tab_permisos;
     }
-    
+
     public Tabla getTab_socios() {
         return tab_socios;
     }
-    
+
     public void setTab_socios(Tabla tab_socios) {
         this.tab_socios = tab_socios;
     }
-    
+
     public Tabla getTab_vehiculos() {
         return tab_vehiculos;
     }
-    
+
     public void setTab_vehiculos(Tabla tab_vehiculos) {
         this.tab_vehiculos = tab_vehiculos;
     }
-    
+
     public AutoCompletar getAut_empresas() {
         return aut_empresas;
     }
-    
+
     public void setAut_empresas(AutoCompletar aut_empresas) {
         this.aut_empresas = aut_empresas;
     }
-    
+
     public Tabla getTab_permiso_x_ruta() {
         return tab_permiso_x_ruta;
     }
-    
+
     public void setTab_permiso_x_ruta(Tabla tab_permiso_x_ruta) {
         this.tab_permiso_x_ruta = tab_permiso_x_ruta;
     }
-    
+
     public Tabla getTab_permiso_provicional() {
         return tab_permiso_provicional;
     }
-    
+
     public void setTab_permiso_provicional(Tabla tab_permiso_provicional) {
         this.tab_permiso_provicional = tab_permiso_provicional;
     }
-    
+
     public Tabla getTab_recorrido() {
         return tab_recorrido;
     }
-    
+
     public void setTab_recorrido(Tabla tab_recorrido) {
         this.tab_recorrido = tab_recorrido;
     }
-    
+
     public Tabla getTab_seguro() {
         return tab_seguro;
     }
-    
+
     public void setTab_seguro(Tabla tab_seguro) {
         this.tab_seguro = tab_seguro;
     }
-    
+
     public Tabla getTab_revision() {
         return tab_revision;
     }
-    
+
     public void setTab_revision(Tabla tab_revision) {
         this.tab_revision = tab_revision;
     }
-    
+
     public Reporte getRep_reporte() {
         return rep_reporte;
     }
-    
+
     public void setRep_reporte(Reporte rep_reporte) {
         this.rep_reporte = rep_reporte;
     }
-    
+
     public SeleccionFormatoReporte getSef_reporte() {
         return sef_reporte;
     }
-    
+
     public void setSef_reporte(SeleccionFormatoReporte sef_reporte) {
         this.sef_reporte = sef_reporte;
     }
-    
+
     public SeleccionTabla getSel_tab_tipo_vehiculo() {
         return sel_tab_tipo_vehiculo;
     }
-    
+
     public void setSel_tab_tipo_vehiculo(SeleccionTabla sel_tab_tipo_vehiculo) {
         this.sel_tab_tipo_vehiculo = sel_tab_tipo_vehiculo;
     }
+
+    public SeleccionTabla getSel_tab_empresa() {
+        return sel_tab_empresa;
+    }
+
+    public void setSel_tab_empresa(SeleccionTabla sel_tab_empresa) {
+        this.sel_tab_empresa = sel_tab_empresa;
+    }
+
+    public SeleccionTabla getSel_tab_estado_socio() {
+        return sel_tab_estado_socio;
+    }
+
+    public void setSel_tab_estado_socio(SeleccionTabla sel_tab_estado_socio) {
+        this.sel_tab_estado_socio = sel_tab_estado_socio;
+    }
     
+
     @Override
     public void abrirListaReportes() {
         rep_reporte.dibujar();
     }
-    
+
     @Override
     public void aceptarReporte() {
         if (rep_reporte.getReporteSelecionado().equals("Empresas Catastradas 1")) {
@@ -667,15 +702,48 @@ public class pre_empresa extends Pantalla {
                 sel_tab_tipo_vehiculo.getTab_seleccion().ejecutarSql();
                 rep_reporte.cerrar();
                 sel_tab_tipo_vehiculo.dibujar();
-            } else if (sel_tab_tipo_vehiculo.getValorSeleccionado() != null && !sel_tab_tipo_vehiculo.getValorSeleccionado().isEmpty()) {
-                p_parametros.put("tipo_vehiculo", Integer.parseInt(sel_tab_tipo_vehiculo.getValorSeleccionado()));
-                p_parametros.put("titulo", "EMPRESAS CATASTRADAS");
-                sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                sel_tab_tipo_vehiculo.cerrar();
-                sef_reporte.dibujar();
-            } else {
-                utilitario.agregarMensajeInfo("No se puede continuar", "Debe seleccionar al menos una Tipo de Transporte");
+            } else if (sel_tab_tipo_vehiculo.isVisible()) {
+                if (sel_tab_tipo_vehiculo.getValorSeleccionado() != null && !sel_tab_tipo_vehiculo.getValorSeleccionado().isEmpty()) {
+                    p_parametros.put("tipo_vehiculo", Integer.parseInt(sel_tab_tipo_vehiculo.getValorSeleccionado()));
+                    p_parametros.put("titulo", "EMPRESAS CATASTRADAS");
+                    sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sel_tab_tipo_vehiculo.cerrar();
+                    sef_reporte.dibujar();
+                } else {
+                    utilitario.agregarMensajeInfo("No se puede continuar", "Debe seleccionar una Tipo de Transporte");
+                }
             }
+        } else if (rep_reporte.getReporteSelecionado().equals("Permiso Operacion")) {
+            if (rep_reporte.isVisible()) {
+                p_parametros = new HashMap();
+                sel_tab_empresa.getTab_seleccion().setSql("select ide_empresa,nombre,ruc from trans_empresa order by nombre");
+                sel_tab_empresa.getTab_seleccion().ejecutarSql();
+                rep_reporte.cerrar();
+                sel_tab_empresa.dibujar();
+            }else if (sel_tab_empresa.isVisible()) {
+                if (sel_tab_empresa.getValorSeleccionado() != null && !sel_tab_empresa.getValorSeleccionado().isEmpty()) {
+                    p_parametros.put("empresa", Integer.parseInt(sel_tab_empresa.getValorSeleccionado()));
+                    sel_tab_empresa.cerrar();
+                    sel_tab_estado_socio.getTab_seleccion().setSql("SELECT ide_estado_socio,des_estado_socio FROM trans_estado_socio");
+                    sel_tab_estado_socio.getTab_seleccion().ejecutarSql();
+                    sel_tab_estado_socio.dibujar();                    
+                    sel_tab_empresa.cerrar();
+                    sel_tab_estado_socio.dibujar();
+                } else {
+                    utilitario.agregarMensajeInfo("No se puede continuar", "Debe seleccionar una Empresa");
+                }
+            }else if(sel_tab_estado_socio.isVisible()){
+                   if (sel_tab_estado_socio.getSeleccionados() != null && !sel_tab_estado_socio.getSeleccionados().isEmpty()) {
+                    p_parametros.put("estado_socio", sel_tab_estado_socio.getSeleccionados());                                      
+                    p_parametros.put("titulo", "PERMISO DE OPERACIÓN");                    
+                    sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sel_tab_estado_socio.cerrar();  
+                    sef_reporte.dibujar();
+                } else {
+                    utilitario.agregarMensajeInfo("No se puede continuar", "Debe seleccionar al Menos un Estado de Socios");
+                }
+            }
+
         }
     }
 }
