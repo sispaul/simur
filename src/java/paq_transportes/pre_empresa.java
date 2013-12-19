@@ -541,6 +541,8 @@ public class pre_empresa extends Pantalla {
         } else if (str_opcion.equals("1")) {
             if (tab_permisos.isFocus()) {
                 tab_permisos.eliminar();
+                tab_permiso_x_ruta.ejecutarSql();
+                tab_permiso_provicional.ejecutarSql();
             } else if (tab_permiso_x_ruta.isFocus()) {
                 tab_permiso_x_ruta.eliminar();
             } else if (tab_permiso_provicional.isFocus()) {
@@ -549,14 +551,104 @@ public class pre_empresa extends Pantalla {
         } else if (str_opcion.equals("2")) {
             if (tab_socios.isFocus()) {
                 tab_socios.eliminar();
+                tab_vehiculos.ejecutarSql();
             } else if (tab_vehiculos.isFocus()) {
                 tab_vehiculos.eliminar();
+                tab_seguro.ejecutarSql();
+                tab_revision.ejecutarSql();
             } else if (tab_seguro.isFocus()) {
                 tab_seguro.eliminar();
             } else if (tab_revision.isFocus()) {
                 tab_revision.eliminar();
             }
         }
+    }
+
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+    }
+
+    @Override
+    public void aceptarReporte() {
+        if (rep_reporte.getReporteSelecionado().equals("Empresas Catastradas 1")) {
+            if (rep_reporte.isVisible()) {
+                p_parametros = new HashMap();
+                rep_reporte.cerrar();
+                p_parametros.put("titulo", "EMPRESAS CATASTRADAS 1");
+                sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                sef_reporte.dibujar();
+            }
+        } else if (rep_reporte.getReporteSelecionado().equals("Empresas Catastradas 2")) {
+            if (rep_reporte.isVisible()) {
+                p_parametros = new HashMap();
+                sel_tab_tipo_vehiculo.getTab_seleccion().setSql("SELECT codigo,nombre from trans_tipo");
+                sel_tab_tipo_vehiculo.getTab_seleccion().ejecutarSql();
+                rep_reporte.cerrar();
+                sel_tab_tipo_vehiculo.dibujar();
+            } else if (sel_tab_tipo_vehiculo.isVisible()) {
+                if (sel_tab_tipo_vehiculo.getValorSeleccionado() != null && !sel_tab_tipo_vehiculo.getValorSeleccionado().isEmpty()) {
+                    p_parametros.put("tipo_vehiculo", Integer.parseInt(sel_tab_tipo_vehiculo.getValorSeleccionado()));
+                    p_parametros.put("titulo", "EMPRESAS CATASTRADAS");
+                    sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sel_tab_tipo_vehiculo.cerrar();
+                    sef_reporte.dibujar();
+                } else {
+                    utilitario.agregarMensajeInfo("No se puede continuar", "Debe seleccionar una Tipo de Transporte");
+                }
+            }
+        } else if (rep_reporte.getReporteSelecionado().equals("Permiso Operacion")) {
+            if (rep_reporte.isVisible()) {
+                p_parametros = new HashMap();
+                sel_tab_empresa.getTab_seleccion().setSql("select ide_empresa,nombre,ruc from trans_empresa order by nombre");
+                sel_tab_empresa.getTab_seleccion().ejecutarSql();
+                rep_reporte.cerrar();
+                sel_tab_empresa.dibujar();
+            } else if (sel_tab_empresa.isVisible()) {
+                if (sel_tab_empresa.getValorSeleccionado() != null && !sel_tab_empresa.getValorSeleccionado().isEmpty()) {
+                    p_parametros.put("empresa", Integer.parseInt(sel_tab_empresa.getValorSeleccionado()));
+                    sel_tab_empresa.cerrar();
+                    sel_tab_estado_socio.getTab_seleccion().setSql("SELECT ide_estado_socio,des_estado_socio FROM trans_estado_socio");
+                    sel_tab_estado_socio.getTab_seleccion().ejecutarSql();
+                    sel_tab_estado_socio.dibujar();
+                    sel_tab_empresa.cerrar();
+                    sel_tab_estado_socio.dibujar();
+                } else {
+                    utilitario.agregarMensajeInfo("No se puede continuar", "Debe seleccionar una Empresa");
+                }
+            } else if (sel_tab_estado_socio.isVisible()) {
+                if (sel_tab_estado_socio.getSeleccionados() != null && !sel_tab_estado_socio.getSeleccionados().isEmpty()) {
+                    p_parametros.put("estado_socio", sel_tab_estado_socio.getSeleccionados());
+                    p_parametros.put("titulo", "PERMISO DE OPERACIÓN");
+                    sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sel_tab_estado_socio.cerrar();
+                    sef_reporte.dibujar();
+                } else {
+                    utilitario.agregarMensajeInfo("No se puede continuar", "Debe seleccionar al Menos un Estado de Socios");
+                }
+            }
+
+        }
+    }
+
+    @Override
+    public void inicio() {
+        super.inicio(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void fin() {
+        super.fin(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void siguiente() {
+        super.siguiente(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void atras() {
+        super.atras(); //To change body of generated methods, choose Tools | Templates.
     }
 
     public Tabla getTab_tabla() {
@@ -677,73 +769,5 @@ public class pre_empresa extends Pantalla {
 
     public void setSel_tab_estado_socio(SeleccionTabla sel_tab_estado_socio) {
         this.sel_tab_estado_socio = sel_tab_estado_socio;
-    }
-    
-
-    @Override
-    public void abrirListaReportes() {
-        rep_reporte.dibujar();
-    }
-
-    @Override
-    public void aceptarReporte() {
-        if (rep_reporte.getReporteSelecionado().equals("Empresas Catastradas 1")) {
-            if (rep_reporte.isVisible()) {
-                p_parametros = new HashMap();
-                rep_reporte.cerrar();
-                p_parametros.put("titulo", "EMPRESAS CATASTRADAS 1");
-                sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                sef_reporte.dibujar();
-            }
-        } else if (rep_reporte.getReporteSelecionado().equals("Empresas Catastradas 2")) {
-            if (rep_reporte.isVisible()) {
-                p_parametros = new HashMap();
-                sel_tab_tipo_vehiculo.getTab_seleccion().setSql("SELECT codigo,nombre from trans_tipo");
-                sel_tab_tipo_vehiculo.getTab_seleccion().ejecutarSql();
-                rep_reporte.cerrar();
-                sel_tab_tipo_vehiculo.dibujar();
-            } else if (sel_tab_tipo_vehiculo.isVisible()) {
-                if (sel_tab_tipo_vehiculo.getValorSeleccionado() != null && !sel_tab_tipo_vehiculo.getValorSeleccionado().isEmpty()) {
-                    p_parametros.put("tipo_vehiculo", Integer.parseInt(sel_tab_tipo_vehiculo.getValorSeleccionado()));
-                    p_parametros.put("titulo", "EMPRESAS CATASTRADAS");
-                    sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                    sel_tab_tipo_vehiculo.cerrar();
-                    sef_reporte.dibujar();
-                } else {
-                    utilitario.agregarMensajeInfo("No se puede continuar", "Debe seleccionar una Tipo de Transporte");
-                }
-            }
-        } else if (rep_reporte.getReporteSelecionado().equals("Permiso Operacion")) {
-            if (rep_reporte.isVisible()) {
-                p_parametros = new HashMap();
-                sel_tab_empresa.getTab_seleccion().setSql("select ide_empresa,nombre,ruc from trans_empresa order by nombre");
-                sel_tab_empresa.getTab_seleccion().ejecutarSql();
-                rep_reporte.cerrar();
-                sel_tab_empresa.dibujar();
-            }else if (sel_tab_empresa.isVisible()) {
-                if (sel_tab_empresa.getValorSeleccionado() != null && !sel_tab_empresa.getValorSeleccionado().isEmpty()) {
-                    p_parametros.put("empresa", Integer.parseInt(sel_tab_empresa.getValorSeleccionado()));
-                    sel_tab_empresa.cerrar();
-                    sel_tab_estado_socio.getTab_seleccion().setSql("SELECT ide_estado_socio,des_estado_socio FROM trans_estado_socio");
-                    sel_tab_estado_socio.getTab_seleccion().ejecutarSql();
-                    sel_tab_estado_socio.dibujar();                    
-                    sel_tab_empresa.cerrar();
-                    sel_tab_estado_socio.dibujar();
-                } else {
-                    utilitario.agregarMensajeInfo("No se puede continuar", "Debe seleccionar una Empresa");
-                }
-            }else if(sel_tab_estado_socio.isVisible()){
-                   if (sel_tab_estado_socio.getSeleccionados() != null && !sel_tab_estado_socio.getSeleccionados().isEmpty()) {
-                    p_parametros.put("estado_socio", sel_tab_estado_socio.getSeleccionados());                                      
-                    p_parametros.put("titulo", "PERMISO DE OPERACIÓN");                    
-                    sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                    sel_tab_estado_socio.cerrar();  
-                    sef_reporte.dibujar();
-                } else {
-                    utilitario.agregarMensajeInfo("No se puede continuar", "Debe seleccionar al Menos un Estado de Socios");
-                }
-            }
-
-        }
     }
 }
