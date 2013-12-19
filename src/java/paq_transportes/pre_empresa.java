@@ -243,16 +243,19 @@ public class pre_empresa extends Pantalla {
             tab_vehiculos.getColumna("fecha_responsable").setVisible(false);
             tab_vehiculos.getColumna("ip_responsable").setValorDefecto(utilitario.getIp());
             tab_vehiculos.getColumna("ip_responsable").setVisible(false);
-            tab_vehiculos.getColumna(" NOM_RESPONSABLE").setValorDefecto(utilitario.getVariable("NICK"));
-            tab_vehiculos.getColumna(" NOM_RESPONSABLE").setVisible(false);
+            tab_vehiculos.getColumna("NOM_RESPONSABLE").setValorDefecto(utilitario.getVariable("NICK"));
+            tab_vehiculos.getColumna("NOM_RESPONSABLE").setVisible(false);
             tab_vehiculos.setTipoFormulario(true);
+            tab_vehiculos.getColumna("FEC_ALTA").setControl("Calendario");
+            tab_vehiculos.getColumna("FEC_BAJA").setControl("Calendario");
+            tab_vehiculos.getGrid().setColumns(6);
             tab_vehiculos.agregarRelacion(tab_seguro);
             tab_vehiculos.agregarRelacion(tab_revision);
-            tab_vehiculos.getGrid().setColumns(6);
-
             tab_vehiculos.dibujar();
             PanelTabla pat_panel3 = new PanelTabla();
             pat_panel3.setPanelTabla(tab_vehiculos);
+            tab_vehiculos.setStyle(null);
+            pat_panel3.setStyle(null);
 
             tab_seguro.setId("tab_seguro");
             tab_seguro.setIdCompleto("tab_tabulador:tab_seguro");
@@ -266,10 +269,15 @@ public class pre_empresa extends Pantalla {
             tab_seguro.setHeader("SEGURO DEL VEHÍCULO");
             tab_seguro.setTipoFormulario(true);
             tab_seguro.getGrid().setColumns(4);
+            tab_seguro.getColumna("FEC_EMISION").setControl("Calendario");
+            tab_seguro.getColumna("FEC_CADUCIDAD").setControl("Calendario");
             tab_seguro.dibujar();
 
             PanelTabla pat_panel4 = new PanelTabla();
             pat_panel4.setPanelTabla(tab_seguro);
+            tab_seguro.setStyle(null);
+            pat_panel4.setStyle(null);
+
 
             tab_revision.setId("tab_revision");
             tab_revision.setIdCompleto("tab_tabulador:tab_revision");
@@ -283,10 +291,13 @@ public class pre_empresa extends Pantalla {
             tab_revision.setTipoFormulario(true);
             tab_revision.setHeader("REVISIÓN VEHICULAR");
             tab_revision.getGrid().setColumns(6);
+            tab_revision.getColumna("FEC_REVISION").setControl("Calendario");
             tab_revision.dibujar();
 
             PanelTabla pat_panel5 = new PanelTabla();
             pat_panel5.setPanelTabla(tab_revision);
+            tab_revision.setStyle(null);
+            pat_panel5.setStyle(null);
 
 
             Grupo gru = new Grupo();
