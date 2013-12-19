@@ -12,8 +12,13 @@ import framework.componentes.Grupo;
 import framework.componentes.ItemMenu;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
+import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
+import java.util.HashMap;
+import java.util.Map;
 import org.primefaces.component.panelmenu.PanelMenu;
 import org.primefaces.component.submenu.Submenu;
 import org.primefaces.event.SelectEvent;
@@ -37,8 +42,28 @@ public class pre_empresa extends Pantalla {
     private Panel pan_opcion = new Panel();
     private String str_opcion = "";// sirve para identificar la opcion que se encuentra dibujada en pantalla
     private PanelMenu pam_menu = new PanelMenu();
+    private Reporte rep_reporte = new Reporte();
+    private SeleccionFormatoReporte sef_reporte = new SeleccionFormatoReporte();
+    private Map p_parametros = new HashMap();
+    private SeleccionTabla sel_tab_tipo_vehiculo = new SeleccionTabla();
 
     public pre_empresa() {
+
+        rep_reporte.setId("rep_reporte");
+        rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
+        agregarComponente(rep_reporte);
+
+        sef_reporte.setId("sef_reporte");
+        agregarComponente(sef_reporte);
+
+        sel_tab_tipo_vehiculo.setId("sel_tab_tipo_vehiculo");
+        sel_tab_tipo_vehiculo.setTitle("SELECCION DE AREAS");
+        sel_tab_tipo_vehiculo.setSeleccionTabla("SELECT codigo,nombre from trans_tipo where codigo=-1", "codigo");
+        sel_tab_tipo_vehiculo.getTab_seleccion().getColumna("nombre").setFiltro(true);
+        sel_tab_tipo_vehiculo.getBot_aceptar().setMetodo("aceptarReporte");
+        sel_tab_tipo_vehiculo.setRadio();
+        agregarComponente(sel_tab_tipo_vehiculo);
+
         aut_empresas.setId("aut_empresas");
         aut_empresas.setAutoCompletar("select ide_empresa,nombre,ruc from trans_empresa");
         aut_empresas.setMetodoChange("filtrarEmpresa");
@@ -49,6 +74,7 @@ public class pre_empresa extends Pantalla {
         bot_limpiar.setIcon("ui-icon-cancel");
         bot_limpiar.setMetodo("limpiar");
         bar_botones.agregarBoton(bot_limpiar);
+        bar_botones.agregarReporte();
 
 
         pan_opcion.setId("pan_opcion");
@@ -565,5 +591,63 @@ public class pre_empresa extends Pantalla {
 
     public void setTab_revision(Tabla tab_revision) {
         this.tab_revision = tab_revision;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSef_reporte() {
+        return sef_reporte;
+    }
+
+    public void setSef_reporte(SeleccionFormatoReporte sef_reporte) {
+        this.sef_reporte = sef_reporte;
+    }
+
+    public SeleccionTabla getSel_tab_tipo_vehiculo() {
+        return sel_tab_tipo_vehiculo;
+    }
+
+    public void setSel_tab_tipo_vehiculo(SeleccionTabla sel_tab_tipo_vehiculo) {
+        this.sel_tab_tipo_vehiculo = sel_tab_tipo_vehiculo;
+    }
+
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+    }
+
+    @Override
+    public void aceptarReporte() {
+        if (rep_reporte.getReporteSelecionado().equals("Empresas Catastradas 1")) {
+            if (rep_reporte.isVisible()) {
+                p_parametros = new HashMap();
+                rep_reporte.cerrar();
+                p_parametros.put("titulo", "EMPRESAS CATASTRADAS 1");
+                sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                sef_reporte.dibujar();
+            }
+        } else if (rep_reporte.getReporteSelecionado().equals("Empresas Catastradas 2")) {
+            if (rep_reporte.isVisible()) {
+                p_parametros = new HashMap();
+                sel_tab_tipo_vehiculo.getTab_seleccion().setSql("SELECT codigo,nombre from trans_tipo");
+                sel_tab_tipo_vehiculo.getTab_seleccion().ejecutarSql();
+                rep_reporte.cerrar();
+                sel_tab_tipo_vehiculo.dibujar();                                       
+            } else if (sel_tab_tipo_vehiculo.getValorSeleccionado() != null && !sel_tab_tipo_vehiculo.getValorSeleccionado().isEmpty()) {
+                p_parametros.put("tipo_vehiculo",Integer.parseInt(sel_tab_tipo_vehiculo.getValorSeleccionado()));           
+                p_parametros.put("titulo", "EMPRESAS CATASTRADAS");
+                sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                sel_tab_tipo_vehiculo.cerrar();
+                sef_reporte.dibujar();                
+            } else {
+                utilitario.agregarMensajeInfo("No se puede continuar", "Debe seleccionar al menos una Tipo de Transporte");
+            }
+        }
     }
 }
