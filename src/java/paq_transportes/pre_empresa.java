@@ -226,7 +226,7 @@ public class pre_empresa extends Pantalla {
             tab_socios.getColumna(" NOM_RESPONSABLE").setValorDefecto(utilitario.getVariable("NICK"));
             tab_socios.getColumna(" NOM_RESPONSABLE").setVisible(false);
             tab_socios.agregarRelacion(tab_vehiculos);
-
+            tab_socios.setHeader("SOCIOS");
             tab_socios.dibujar();
             PanelTabla pat_panel2 = new PanelTabla();
             pat_panel2.setPanelTabla(tab_socios);
