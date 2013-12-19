@@ -252,6 +252,7 @@ public class pre_empresa extends Pantalla {
             tab_socios.getColumna("ip_responsable").setVisible(false);
             tab_socios.getColumna(" NOM_RESPONSABLE").setValorDefecto(utilitario.getVariable("NICK"));
             tab_socios.getColumna(" NOM_RESPONSABLE").setVisible(false);
+            tab_socios.getColumna("estado_socio").setCombo("trans_estado_socio", "ide_estado_socio", "des_estado_socio", "");
             tab_socios.agregarRelacion(tab_vehiculos);
             tab_socios.setHeader("SOCIOS");
             tab_socios.dibujar();
@@ -275,6 +276,7 @@ public class pre_empresa extends Pantalla {
             tab_vehiculos.setTipoFormulario(true);
             tab_vehiculos.getColumna("FEC_ALTA").setControl("Calendario");
             tab_vehiculos.getColumna("FEC_BAJA").setControl("Calendario");
+            tab_vehiculos.getColumna("ide_tipo_vehiculo").setCombo("trans_tipo_vehiculo", "ide_tipo_vehiculo", "des_tipo_vehiculo", "");
             tab_vehiculos.getGrid().setColumns(6);
             tab_vehiculos.agregarRelacion(tab_seguro);
             tab_vehiculos.agregarRelacion(tab_revision);
