@@ -541,25 +541,41 @@ public class pre_empresa extends Pantalla {
         } else if (str_opcion.equals("1")) {
             if (tab_permisos.isFocus()) {
                 tab_permisos.eliminar();
-                tab_permiso_x_ruta.ejecutarSql();
-                tab_permiso_provicional.ejecutarSql();
             } else if (tab_permiso_x_ruta.isFocus()) {
                 tab_permiso_x_ruta.eliminar();
             } else if (tab_permiso_provicional.isFocus()) {
                 tab_permiso_provicional.eliminar();
             }
+            actualizarPanel();
         } else if (str_opcion.equals("2")) {
             if (tab_socios.isFocus()) {
                 tab_socios.eliminar();
-                tab_vehiculos.ejecutarSql();
             } else if (tab_vehiculos.isFocus()) {
                 tab_vehiculos.eliminar();
-                tab_seguro.ejecutarSql();
-                tab_revision.ejecutarSql();
             } else if (tab_seguro.isFocus()) {
                 tab_seguro.eliminar();
             } else if (tab_revision.isFocus()) {
                 tab_revision.eliminar();
+            }
+            actualizarPanel();
+        }
+    }
+
+    private void actualizarPanel() {
+        if (str_opcion.equals("1")) {
+            if (tab_permisos.isFocus()) {
+                tab_permiso_x_ruta.ejecutarSql();
+                tab_permiso_provicional.ejecutarSql();
+                tab_recorrido.ejecutarSql();
+            } else if (tab_permiso_x_ruta.isFocus()) {
+                tab_recorrido.ejecutarSql();
+            }
+        } else if (str_opcion.equals("2")) {
+            if (tab_socios.isFocus()) {
+                tab_vehiculos.ejecutarSql();
+            } else if (tab_vehiculos.isFocus()) {
+                tab_seguro.ejecutarSql();
+                tab_revision.ejecutarSql();
             }
         }
     }
@@ -634,21 +650,25 @@ public class pre_empresa extends Pantalla {
     @Override
     public void inicio() {
         super.inicio(); //To change body of generated methods, choose Tools | Templates.
+        actualizarPanel();
     }
 
     @Override
     public void fin() {
         super.fin(); //To change body of generated methods, choose Tools | Templates.
+        actualizarPanel();
     }
 
     @Override
     public void siguiente() {
         super.siguiente(); //To change body of generated methods, choose Tools | Templates.
+        actualizarPanel();
     }
 
     @Override
     public void atras() {
         super.atras(); //To change body of generated methods, choose Tools | Templates.
+        actualizarPanel();
     }
 
     public Tabla getTab_tabla() {
