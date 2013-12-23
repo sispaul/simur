@@ -4,6 +4,7 @@
  */
 package paq_transportes;
 
+import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import paq_sistema.aplicacion.Pantalla;
@@ -21,9 +22,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ejb.EJB;
 import org.primefaces.component.panelmenu.PanelMenu;
 import org.primefaces.component.submenu.Submenu;
 import org.primefaces.event.SelectEvent;
+import paq_registros.ejb.ServicioRegistros;
 
 /**
  *
@@ -50,6 +53,8 @@ public class pre_empresa extends Pantalla {
     private SeleccionTabla sel_tab_tipo_vehiculo = new SeleccionTabla();
     private SeleccionTabla sel_tab_empresa = new SeleccionTabla();
     private SeleccionTabla sel_tab_estado_socio = new SeleccionTabla();
+    @EJB
+    private ServicioRegistros ser_registros = (ServicioRegistros) utilitario.instanciarEJB(ServicioRegistros.class);
 
     public pre_empresa() {
 
@@ -280,6 +285,7 @@ public class pre_empresa extends Pantalla {
             tab_socios.getColumna(" NOM_RESPONSABLE").setValorDefecto(utilitario.getVariable("NICK"));
             tab_socios.getColumna(" NOM_RESPONSABLE").setVisible(false);
             tab_socios.getColumna("estado_socio").setCombo("trans_estado_socio", "ide_estado_socio", "des_estado_socio", "");
+            tab_socios.getColumna("cedula").setMetodoChange("cargarSocio");
             tab_socios.agregarRelacion(tab_vehiculos);
             tab_socios.setHeader("SOCIOS");
             tab_socios.getColumna("instruccion").setCombo("trans_nivel_instruccion", "ide_nivel_inst", "des_nivel_inst", "");
@@ -408,6 +414,7 @@ public class pre_empresa extends Pantalla {
         tab_tabla.getColumna("ip_responsable").setValorDefecto(utilitario.getIp());
         tab_tabla.getColumna("ip_responsable").setVisible(false);
         tab_tabla.getGrid().setColumns(4);
+        tab_tabla.getColumna("ruc").setMetodoChange("cargarEmpresa");
         tab_tabla.setMostrarNumeroRegistros(false);
         tab_tabla.getColumna("FEC_PATENTE").setControl("Calendario");
         tab_tabla.getColumna("FEC_PAGO_OCUPACION_VIA").setControl("Calendario");
@@ -474,6 +481,8 @@ public class pre_empresa extends Pantalla {
                 tab_permiso_x_ruta.insertar();
             } else if (tab_permiso_provicional.isFocus()) {
                 tab_permiso_provicional.insertar();
+            } else if (tab_recorrido.isFocus()) {
+                tab_recorrido.insertar();
             }
         } else if (str_opcion.equals("2")) {
             if (tab_socios.isFocus()) {
@@ -492,6 +501,41 @@ public class pre_empresa extends Pantalla {
 
     }
 
+    public void cargarSocio() {
+        if (utilitario.validarCedula(tab_socios.getValor("cedula"))) {
+            TablaGenerica tab_dato = ser_registros.getPersona(tab_socios.getValor("cedula"));
+            if (!tab_dato.isEmpty()) {
+                //Cargo la información de la base de datos maestra   
+                tab_socios.setValor("nombre", tab_dato.getValor("nombre"));
+                utilitario.addUpdate("tab_socios");
+            } else {
+                utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ciudadania del municipio", "");
+            }
+        } else {
+            utilitario.agregarMensajeError("El Número de Cédula no es válido", "");
+        }
+
+    }
+
+    public void cargarEmpresa() {
+        if (utilitario.validarRUC(tab_tabla.getValor("ruc"))) {
+            TablaGenerica tab_dato = ser_registros.getEmpresa(tab_tabla.getValor("ruc"));
+            if (!tab_dato.isEmpty()) {
+                //Cargo la información de la base de datos maestra   
+                tab_tabla.setValor("nombre", tab_dato.getValor("RAZON_SOCIAL"));
+                tab_tabla.setValor("direccion", tab_dato.getValor("DIRECCION"));
+                tab_tabla.setValor("telefono", tab_dato.getValor("telefono"));
+                tab_tabla.setValor("e_mail", tab_dato.getValor("mail"));
+                utilitario.addUpdate("tab_tabla");
+            } else {
+                utilitario.agregarMensajeInfo("El Número de RUC ingresado no existe en la base de datos ciudadania del municipio", "");
+            }
+        } else {
+            utilitario.agregarMensajeError("El Número de RUC no es válido", "");
+        }
+
+    }
+
     @Override
     public void guardar() {
         if (str_opcion.equals("0")) {
@@ -499,7 +543,12 @@ public class pre_empresa extends Pantalla {
                 //Actualiza nuevamente la fecha
                 tab_tabla.setValor("fecha_responsable", utilitario.getFechaHoraActual());
             }
-            tab_tabla.guardar();
+            if (utilitario.validarRUC(tab_tabla.getValor("ruc"))) {
+                tab_tabla.guardar();
+            } else {
+                utilitario.agregarMensajeError("El Número de RUC no es válido", "");
+                return;
+            }
         } else if (str_opcion.equals("1")) {
             if (tab_permisos.isFilaInsertada()) {
                 //Actualiza nuevamente la fecha
@@ -509,14 +558,20 @@ public class pre_empresa extends Pantalla {
             tab_permiso_x_ruta.guardar();
             tab_permiso_provicional.guardar();
         } else if (str_opcion.equals("2")) {
-            if (tab_permisos.isFilaInsertada()) {
-                //Actualiza nuevamente la fecha
-                tab_socios.setValor("fecha_responsable", utilitario.getFechaHoraActual());
+            if (utilitario.validarCedula(tab_socios.getValor("cedula"))) {
+                if (tab_permisos.isFilaInsertada()) {
+                    //Actualiza nuevamente la fecha
+                    tab_socios.setValor("fecha_responsable", utilitario.getFechaHoraActual());
+                }
+                tab_socios.guardar();
+                tab_vehiculos.guardar();
+                tab_seguro.guardar();
+                tab_revision.guardar();
+            } else {
+                utilitario.agregarMensajeError("El Número de Cédula no es válido", "");
+                return;
             }
-            tab_socios.guardar();
-            tab_vehiculos.guardar();
-            tab_seguro.guardar();
-            tab_revision.guardar();
+
         }
         guardarPantalla();
         aut_empresas.actualizar();
