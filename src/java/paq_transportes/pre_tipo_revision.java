@@ -19,7 +19,7 @@ public class pre_tipo_revision extends Pantalla {
 
     public pre_tipo_revision() {
         tab_tabla.setId("tab_tabla");
-        tab_tabla.setTabla("trans_tipo_revision", "ide_revision",1);
+        tab_tabla.setTabla("trans_tipo_revision", "ide_tipo_revision",1);
         tab_tabla.setHeader("TIPOS");
         tab_tabla.dibujar();
         PanelTabla pat_panel = new PanelTabla();
