@@ -189,7 +189,7 @@ where a.ide_cmare=b.ide_cmare and a.ide_cmare=$P{ide_cmare}]]>
 			<staticText>
 				<reportElement uuid="f20a239d-8fe7-48dc-8e01-09d73f3b0414" x="107" y="243" width="100" height="15"/>
 				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[fila_cmare]]></text>
+				<text><![CDATA[FILA]]></text>
 			</staticText>
 			<textField>
 				<reportElement uuid="b67b99ae-e60f-4c84-b3d6-2b7a008a0cf2" x="207" y="243" width="100" height="15"/>
@@ -199,12 +199,12 @@ where a.ide_cmare=b.ide_cmare and a.ide_cmare=$P{ide_cmare}]]>
 			<staticText>
 				<reportElement uuid="8f37a642-134c-4190-8925-b280a032cb86" x="107" y="183" width="100" height="15"/>
 				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[serie]]></text>
+				<text><![CDATA[SERIE]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="aef21ba0-2da2-4c51-838d-2276a5b8f6e8" x="106" y="263" width="100" height="15"/>
 				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[numero]]></text>
+				<text><![CDATA[NÚMERO]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="55c724b6-814c-4047-ac58-e65e7c2bdbdb" x="0" y="303" width="555" height="30"/>
