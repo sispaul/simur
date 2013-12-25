@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_permiso_operacion" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fe76bfec-5f7f-4fdb-9a37-fde97deb55ee">
 	<property name="ireport.zoom" value="4.0"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="1778"/>
 	<property name="ireport.y" value="209"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String">
 		<defaultValueExpression><![CDATA["http://localhost:8080/inspectoria"]]></defaultValueExpression>
@@ -17,7 +17,7 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT a.ide_vehiculo,a.DISCO,b.ide_socios,b.nombre,b.cedula,d.des_tipo_licencia,c.marcas_modelos,a.placa,a.anio,a.num_motor,a.num_chasis,a.vida_util,CONVERT(datetime,a.fec_baja,111) as fec_baja FROM trans_vehiculos a
+		<![CDATA[SELECT a.ide_vehiculo,a.cilindraje,a.DISCO,b.ide_socios,b.nombre,b.cedula,d.des_tipo_licencia,c.marcas_modelos,a.placa,a.anio,a.num_motor,a.num_chasis,a.vida_util,CONVERT(datetime,a.fec_baja,111) as fec_baja FROM trans_vehiculos a
 INNER JOIN (
 SELECT ide_socios,ide_empresa,nombre,cedula,ide_tipo_licencia,ide_empresa as empresa,estado_socio FROM trans_socios
 )b on b.ide_socios=a.ide_socios
@@ -28,11 +28,12 @@ LEFT JOIN ( SELECT ide_marca,marca FROM trans_marcas)b on b.ide_marca=a.ide_marc
 LEFT JOIN (
 SELECT ide_tipo_licencia,des_tipo_licencia FROM trans_tipo_licencia
 )d on d.ide_tipo_licencia=b.ide_tipo_licencia
-where b.empresa =13
+where b.empresa =$P{empresa}
 and b.estado_socio in ($P!{estado_socio})
 ORDER BY b.nombre]]>
 	</queryString>
 	<field name="ide_vehiculo" class="java.lang.Integer"/>
+	<field name="cilindraje" class="java.math.BigDecimal"/>
 	<field name="DISCO" class="java.lang.String"/>
 	<field name="ide_socios" class="java.lang.Integer"/>
 	<field name="nombre" class="java.lang.String"/>
@@ -402,6 +403,20 @@ ORDER BY b.nombre]]>
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{fec_baja}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="39c99bbe-5456-490d-b07b-d9ce1f862cc5" stretchType="RelativeToBandHeight" x="490" y="0" width="68" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cilindraje}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
