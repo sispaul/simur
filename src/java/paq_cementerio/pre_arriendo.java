@@ -11,6 +11,7 @@ import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
+import framework.componentes.SeleccionCalendario;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
@@ -34,10 +35,14 @@ public class pre_arriendo extends Pantalla {
     private Reporte rep_reporte = new Reporte();
     private SeleccionFormatoReporte sef_reporte = new SeleccionFormatoReporte();
     private AutoCompletar aut_busca = new AutoCompletar();
+    private SeleccionCalendario sec_rango = new SeleccionCalendario();
 
     public pre_arriendo() {
 
-
+        sec_rango.setId("sec_rango");
+        sec_rango.getBot_aceptar().setMetodo("aceptarReporte");
+        sec_rango.setFechaActual();
+        agregarComponente(sec_rango);
 
         aut_busca.setId("aut_busca");
         aut_busca.setAutoCompletar("SELECT a.IDE_CMARE,a.NRO_DOCUMENTO_CMARE,a.NOMBRE_INHUMADO_CMARE,a.NICHO_SITIO_CMARE,\n"
@@ -178,10 +183,21 @@ public class pre_arriendo extends Pantalla {
                 utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
             }
         } else if (rep_reporte.getReporteSelecionado().equals("Control de Cementerio")) {
-            p_parametros.put("titulo", "HOJA DE CONTROL DE INHUMACIONES, EXHUMACIONES,RENOVACIONES Y OTROS CONTROLES DEL CEMENTERIO MUNICIPAL DE SANGOLQUI CANTON RUMIÑAHUI");
-            rep_reporte.cerrar();
-            sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-            sef_reporte.dibujar();
+            if (rep_reporte.isVisible()) {
+                rep_reporte.cerrar();
+                sec_rango.dibujar();
+            } else if (sec_rango.isVisible()) {
+                if (sec_rango.isFechasValidas()) {
+                    p_parametros.put("fecha_inicio", sec_rango.getFecha1String());
+                    p_parametros.put("fecha_fin", sec_rango.getFecha2String());
+                    sec_rango.cerrar();
+                    p_parametros.put("titulo", "HOJA DE CONTROL DE INHUMACIONES, EXHUMACIONES,RENOVACIONES Y OTROS CONTROLES DEL CEMENTERIO MUNICIPAL DE SANGOLQUI CANTON RUMIÑAHUI");                    
+                    sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_reporte.dibujar();
+                } else {
+                    utilitario.agregarNotificacionInfo("Rango de fechas no válidas", "");
+                }
+            }
         }
     }
 
@@ -312,5 +328,13 @@ public class pre_arriendo extends Pantalla {
 
     public void setAut_busca(AutoCompletar aut_busca) {
         this.aut_busca = aut_busca;
+    }
+
+    public SeleccionCalendario getSec_rango() {
+        return sec_rango;
+    }
+
+    public void setSec_rango(SeleccionCalendario sec_rango) {
+        this.sec_rango = sec_rango;
     }
 }
