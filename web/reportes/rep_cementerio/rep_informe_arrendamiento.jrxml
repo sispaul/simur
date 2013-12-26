@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_informe_arrendamiento" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0c2f9b4a-f79e-4430-844b-cfab6168fbed">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="232"/>
+	<property name="ireport.y" value="614"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String">
 		<defaultValueExpression><![CDATA["C:\\Users\\PROGRAMADOR7\\Desktop\\rep_abeja\\"]]></defaultValueExpression>
 	</parameter>
@@ -16,15 +16,29 @@
 	<parameter name="par_para" class="java.lang.String"/>
 	<parameter name="par_de" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select fecha_documento_cmare,nro_documento_cmare,nicho_sitio_cmare,numero_cmare,bloque_cmare,fila_cmare,
+		<![CDATA[SELECT a.ide_cmare,fecha_documento_cmare,nro_documento_cmare,nicho_sitio_cmare,serie_cmare,numero_cmare,bloque_cmare,fila_cmare,
 nombre_inhumado_cmare,fecha_inhumacion_cmare,observacion_cmare,nombres_apellidos_cmrep,DOCUMENTO_IDENTIDAD_CMREP,
-DIRECCION_CMREP,EMAIL_CMREP
+DIRECCION_CMREP,EMAIL_CMREP,TELEFONOS_CMREP,CELULAR_CMREP,DETALLE_CMACC,FECHA_PAGO_CMPAG,NRO_LIQUIDACION_CMPAG,NRO_TITULO_CMPAG FROM(
+select a.ide_cmare,fecha_documento_cmare,nro_documento_cmare,nicho_sitio_cmare,serie_cmare,numero_cmare,bloque_cmare,fila_cmare,
+nombre_inhumado_cmare,fecha_inhumacion_cmare,observacion_cmare,nombres_apellidos_cmrep,DOCUMENTO_IDENTIDAD_CMREP,
+DIRECCION_CMREP,EMAIL_CMREP,TELEFONOS_CMREP,CELULAR_CMREP
 from CMT_ARRENDAMIENTO a, CMT_REPRESENTANTE b
-where a.ide_cmare=b.ide_cmare and a.ide_cmare=$P{ide_cmare}]]>
+where a.ide_cmare=b.ide_cmare and a.ide_cmare=$P{ide_cmare}) a
+LEFT JOIN (
+SELECT IDE_CMPAG,IDE_CMACC,IDE_CMARE FROM CMT_PAGO
+)b on b.IDE_CMARE=a.IDE_CMARE
+LEFT JOIN (
+SELECT IDE_CMACC,DETALLE_CMACC FROM CMT_ACCION
+)c on c.IDE_CMACC=b.IDE_CMACC
+LEFT JOIN (
+SELECT TOP 1 IDE_CMPAG,IDE_CMACC,IDE_CMARE,FECHA_PAGO_CMPAG,NRO_LIQUIDACION_CMPAG,NRO_TITULO_CMPAG FROM CMT_PAGO ORDER BY FECHA_PAGO_CMPAG DESC
+)d on d.IDE_CMARE=a.IDE_CMARE]]>
 	</queryString>
+	<field name="ide_cmare" class="java.lang.Long"/>
 	<field name="fecha_documento_cmare" class="java.sql.Timestamp"/>
 	<field name="nro_documento_cmare" class="java.lang.Integer"/>
 	<field name="nicho_sitio_cmare" class="java.lang.Integer"/>
+	<field name="serie_cmare" class="java.lang.String"/>
 	<field name="numero_cmare" class="java.lang.Integer"/>
 	<field name="bloque_cmare" class="java.lang.Integer"/>
 	<field name="fila_cmare" class="java.lang.Integer"/>
@@ -35,13 +49,327 @@ where a.ide_cmare=b.ide_cmare and a.ide_cmare=$P{ide_cmare}]]>
 	<field name="DOCUMENTO_IDENTIDAD_CMREP" class="java.lang.String"/>
 	<field name="DIRECCION_CMREP" class="java.lang.String"/>
 	<field name="EMAIL_CMREP" class="java.lang.String"/>
+	<field name="TELEFONOS_CMREP" class="java.lang.String"/>
+	<field name="CELULAR_CMREP" class="java.lang.String"/>
+	<field name="DETALLE_CMACC" class="java.lang.String"/>
+	<field name="FECHA_PAGO_CMPAG" class="java.sql.Timestamp"/>
+	<field name="NRO_LIQUIDACION_CMPAG" class="java.lang.Integer"/>
+	<field name="NRO_TITULO_CMPAG" class="java.lang.Integer"/>
+	<variable name="var_nicho" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{nicho_sitio_cmare}!=null?($F{nicho_sitio_cmare}==1?" Ademas informo que en el mencionado SITIO: ...  NICHO: X se encuentran inhumado los restos mortales que ha continuacion detalla:" :" Ademas informo que en el mencionado SITIO: X  NICHO:   se encuentran inhumado los restos mortales que ha continuacion detalla:"):"")]]></variableExpression>
+	</variable>
+	<variable name="var_sitio" class="java.lang.String">
+		<variableExpression><![CDATA[new String($F{nicho_sitio_cmare}!=null?($F{nicho_sitio_cmare}==1?" Ademas informo que en el mencionado SITIO: X  - NICHO: ... se encuentran inhumado los restos mortales que ha continuacion detalla:" :" Ademas informo que en el mencionado SITIO: X  NICHO:   se encuentran inhumado los restos mortales que ha continuacion detalla:"):"")]]></variableExpression>
+	</variable>
+	<variable name="var_total" class="java.lang.String">
+		<variableExpression><![CDATA[$F{nicho_sitio_cmare}==1?$V{var_nicho}:$V{var_sitio}]]></variableExpression>
+	</variable>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="20" splitType="Stretch">
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="707" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="98819ff8-2d70-4cf6-be76-1d22ddfc2eb2" x="0" y="528" width="401" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRE DE LOS INHUMADOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d0453f16-3a80-4cb2-93ac-6e6602e7b094" x="401" y="528" width="154" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA DE INHUMACION]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="232ebdcf-c305-446e-8ca9-0345e0b384fc" x="0" y="548" width="401" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nombre_inhumado_cmare}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="EEEEE dd MMMMM yyyy" isBlankWhenNull="true">
+				<reportElement uuid="a02cdea8-b7b5-4ab9-a9ad-0fdf500306dd" x="401" y="548" width="154" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{fecha_inhumacion_cmare}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="c29fcc67-7721-4968-8599-6965dcafc3d4" x="0" y="587" width="169" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cancelado hasta el al año ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="60cda10e-8d21-49c2-82bd-6fed6609365d" x="1" y="632" width="168" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[N-. de telefono del representante:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="312158fa-a63a-4c66-9c32-dd999f80dbf9" x="325" y="632" width="48" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Celular:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b4c5d4d9-d294-47e5-80e3-7e7dbc65556b" x="1" y="663" width="554" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{par_de}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="17b03a40-f7cc-4049-a10d-ea6f5ee12390" x="-1" y="685" width="556" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[ADMINISTRADOR]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="02c44827-eb3c-4d09-8fec-77f58e75acd0" x="168" y="632" width="158" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{TELEFONOS_CMREP}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="83071ce6-c121-4cf6-a6fa-b09dd91ebea3" x="372" y="632" width="183" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{CELULAR_CMREP}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="EEEEE dd MMMMM yyyy" isBlankWhenNull="true">
+				<reportElement uuid="d71ba44b-c865-4bea-95de-e27dfffde7fb" x="168" y="587" width="348" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{FECHA_PAGO_CMPAG}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="997833de-272b-4b1c-b33b-48bfe375e018" x="2" y="359" width="107" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[NICHO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f3a1aa7d-521d-4c83-9598-33c126070171" x="109" y="379" width="100" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[NUMERO:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="5299c91d-aac7-4bc3-930a-1a5de431ccba" x="209" y="379" width="100" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{numero_cmare}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="273bd9e4-267a-4aea-8576-4eca17177c5e" x="109" y="399" width="100" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[BLOQUE:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="c5945e50-c677-4cc4-ae85-6320ff634842" x="209" y="399" width="100" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{bloque_cmare}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f20a239d-8fe7-48dc-8e01-09d73f3b0414" x="109" y="419" width="100" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[FILA:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b67b99ae-e60f-4c84-b3d6-2b7a008a0cf2" x="209" y="419" width="100" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{fila_cmare}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="8f37a642-134c-4190-8925-b280a032cb86" x="108" y="359" width="101" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SERIE:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="aef21ba0-2da2-4c51-838d-2276a5b8f6e8" x="109" y="439" width="100" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[NÚMERO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="88e305d5-6e6b-4e45-bb3f-af23375124aa" x="3" y="399" width="107" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SITIO: (SUELO)]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="eba47966-953b-448f-bc20-2b04ee844888" x="209" y="359" width="100" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{serie_cmare}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e6d3d215-6456-4f79-9f4d-a8072626478e" x="208" y="439" width="101" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{numero_cmare}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="709e8066-2ebb-422f-83a5-a14e2b86bb17" x="309" y="291" width="249" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{DETALLE_CMACC}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="cf57940c-75c9-4600-a2bf-e61e1a2d9aa8" x="1" y="84" width="556" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ILUSTRE MUNICIPIO DE RUMIÑAHUI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ce0bfb52-d284-4dbe-a8b1-43fe0e3336c6" x="2" y="106" width="555" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DIRECCION DE SALUD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b04476e0-f646-47ad-8099-5d7f1d63475d" x="2" y="125" width="555" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INFORME PARA ARRENDAMIENTO EN EL CEMENTERIO MUNICIPAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3f95d2f1-1ce0-44c1-bf4e-c7f111d77c96" x="328" y="157" width="88" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[FORMULARIO N-.]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="9edd6e9a-a027-4e3f-824a-dd16149db7ac" x="415" y="157" width="59" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nro_documento_cmare}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="5cff36ef-e7ca-45c4-8c07-84c87d3e6cdf" x="473" y="157" width="84" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[ACM - GADMUR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="84c4de1d-bdda-4c81-8049-12dc029195a0" x="1" y="185" width="72" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sangolqui a]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="EEEEE dd MMMMM yyyy" isBlankWhenNull="true">
+				<reportElement uuid="ae1b223f-f947-4765-8e6b-a1d6e2491fce" x="72" y="185" width="282" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{fecha_documento_cmare}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="30b0b503-7c96-4f14-8d7e-d6f75a66b4d3" x="1" y="209" width="72" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[PARA:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="d0d2f2fb-25f0-47d0-b877-032af64d5075" x="72" y="209" width="485" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{par_para}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="4b22a75c-0b1d-44eb-9a59-fbdb1a43eb1c" x="1" y="232" width="72" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DE:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="d281de83-efb6-4670-9dc7-d418f0fe414e" x="72" y="232" width="485" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{par_de}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="a2dccc0f-488a-4639-8447-5bc1dae0798a" x="1" y="260" width="72" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[ASUNTO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f4798a2e-3ddd-4b7a-bb4c-81f84d036dfa" x="72" y="260" width="485" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[RENOVACIÓN / INHUMACIÓN / EXHUMACIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="50361b3b-ea2f-43be-babe-4e997b0f702b" x="1" y="291" width="309" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Para los fines consiguientes informo a usted que se procedera a la ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="84789fd7-c616-4b0a-b014-c7bab2efcf08" x="1" y="318" width="72" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Del Sr. ( a )]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="0cc5df7d-695c-4195-b80f-f570b063619c" x="72" y="318" width="485" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nombre_inhumado_cmare}]]></textFieldExpression>
+			</textField>
 			<subreport>
-				<reportElement uuid="0f6448c8-1773-4ec1-91b4-2ca3df649cc4" x="0" y="0" width="555" height="20"/>
+				<reportElement uuid="0f6448c8-1773-4ec1-91b4-2ca3df649cc4" x="-1" y="0" width="555" height="20"/>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -60,215 +388,36 @@ where a.ide_cmare=b.ide_cmare and a.ide_cmare=$P{ide_cmare}]]>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema_biess/rep_cabecera.jasper"]]></subreportExpression>
 			</subreport>
-		</band>
-	</title>
-	<pageHeader>
-		<band height="710" splitType="Stretch">
-			<staticText>
-				<reportElement uuid="cf57940c-75c9-4600-a2bf-e61e1a2d9aa8" x="0" y="0" width="555" height="20"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[ILUSTRE MUNICIPIO DE RUMIÑAHUI]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="ce0bfb52-d284-4dbe-a8b1-43fe0e3336c6" x="0" y="19" width="555" height="20"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[DIRECCION DE SALUD]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="b04476e0-f646-47ad-8099-5d7f1d63475d" x="0" y="38" width="555" height="20"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[INFORME PARA ARRENDAMIENTO EN EL CEMENTERIO MUNICIPAL]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="3f95d2f1-1ce0-44c1-bf4e-c7f111d77c96" x="326" y="58" width="88" height="15"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[FORMULARIO N-.]]></text>
-			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="9edd6e9a-a027-4e3f-824a-dd16149db7ac" x="413" y="58" width="59" height="15"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true" isUnderline="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{nro_documento_cmare}]]></textFieldExpression>
+				<reportElement uuid="ccdc2267-c234-48e5-9c06-7a78bacda388" x="0" y="470" width="555" height="34"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{var_total}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="5cff36ef-e7ca-45c4-8c07-84c87d3e6cdf" x="471" y="58" width="84" height="15"/>
+				<reportElement uuid="ae602c73-9cb2-46bb-ae80-c18abe1b1804" x="2" y="336" width="107" height="20"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[ACM - GADMUR]]></text>
+				<text><![CDATA[NRO LIQUIDACIÓN:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="84c4de1d-bdda-4c81-8049-12dc029195a0" x="0" y="73" width="69" height="15"/>
-				<textElement/>
-				<text><![CDATA[Sangolqui a]]></text>
-			</staticText>
-			<textField isStretchWithOverflow="true" pattern="EEEEE dd MMMMM yyyy" isBlankWhenNull="true">
-				<reportElement uuid="ae1b223f-f947-4765-8e6b-a1d6e2491fce" x="69" y="73" width="281" height="15"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{fecha_documento_cmare}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement uuid="30b0b503-7c96-4f14-8d7e-d6f75a66b4d3" x="0" y="91" width="69" height="15"/>
-				<textElement/>
-				<text><![CDATA[PARA; ]]></text>
+				<reportElement uuid="7f356669-1937-4e90-b17c-4ac5168bde09" x="255" y="336" width="73" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[NRO TÍTULO:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="d0d2f2fb-25f0-47d0-b877-032af64d5075" x="69" y="91" width="486" height="15"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$P{par_para}]]></textFieldExpression>
+				<reportElement uuid="8b343e8a-32d7-4aae-ada7-8ee716f3f56c" x="108" y="336" width="147" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{NRO_LIQUIDACION_CMPAG}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement uuid="4b22a75c-0b1d-44eb-9a59-fbdb1a43eb1c" x="0" y="105" width="69" height="15"/>
-				<textElement/>
-				<text><![CDATA[DE;]]></text>
-			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="d281de83-efb6-4670-9dc7-d418f0fe414e" x="69" y="105" width="486" height="15"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$P{par_de}]]></textFieldExpression>
+				<reportElement uuid="a542a4f0-89f6-4d2a-b839-268fd4557e51" x="327" y="336" width="146" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{NRO_TITULO_CMPAG}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement uuid="a2dccc0f-488a-4639-8447-5bc1dae0798a" x="0" y="119" width="69" height="15"/>
-				<textElement/>
-				<text><![CDATA[ASUNTO; ]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="f4798a2e-3ddd-4b7a-bb4c-81f84d036dfa" x="69" y="120" width="486" height="15"/>
-				<textElement/>
-				<text><![CDATA[RENOVACIÓN / INHUMACIÓN / EXHUMACIÓN]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="50361b3b-ea2f-43be-babe-4e997b0f702b" x="0" y="134" width="337" height="15"/>
-				<textElement/>
-				<text><![CDATA[Para los fines consiguientes informo a usted que se procedera a la ]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="84789fd7-c616-4b0a-b014-c7bab2efcf08" x="0" y="149" width="69" height="15"/>
-				<textElement/>
-				<text><![CDATA[Del Sr. ( a )]]></text>
-			</staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="0cc5df7d-695c-4195-b80f-f570b063619c" x="68" y="149" width="487" height="15"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{nombre_inhumado_cmare}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement uuid="997833de-272b-4b1c-b33b-48bfe375e018" x="0" y="183" width="107" height="15"/>
-				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[NICHO:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="f3a1aa7d-521d-4c83-9598-33c126070171" x="107" y="203" width="100" height="15"/>
-				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[NUMERO]]></text>
-			</staticText>
-			<textField>
-				<reportElement uuid="5299c91d-aac7-4bc3-930a-1a5de431ccba" x="207" y="203" width="100" height="15"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{numero_cmare}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement uuid="273bd9e4-267a-4aea-8576-4eca17177c5e" x="107" y="223" width="100" height="15"/>
-				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[BLOQUE]]></text>
-			</staticText>
-			<textField>
-				<reportElement uuid="c5945e50-c677-4cc4-ae85-6320ff634842" x="207" y="223" width="100" height="15"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{bloque_cmare}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement uuid="f20a239d-8fe7-48dc-8e01-09d73f3b0414" x="107" y="243" width="100" height="15"/>
-				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[FILA]]></text>
-			</staticText>
-			<textField>
-				<reportElement uuid="b67b99ae-e60f-4c84-b3d6-2b7a008a0cf2" x="207" y="243" width="100" height="15"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{fila_cmare}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement uuid="8f37a642-134c-4190-8925-b280a032cb86" x="107" y="183" width="100" height="15"/>
-				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[SERIE]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="aef21ba0-2da2-4c51-838d-2276a5b8f6e8" x="106" y="263" width="100" height="15"/>
-				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[NÚMERO]]></text>
-			</staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="55c724b6-814c-4047-ac58-e65e7c2bdbdb" x="0" y="303" width="555" height="30"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA["Ademas informo que en el mencionado SITIO "+"      NICHO "+$F{nicho_sitio_cmare} +" se encuentran inhumado los restos mortales que ha continuacion detalla:"]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement uuid="98819ff8-2d70-4cf6-be76-1d22ddfc2eb2" x="0" y="333" width="427" height="15"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<text><![CDATA[NOMBRE DE LOS INHUMADOS]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="d0453f16-3a80-4cb2-93ac-6e6602e7b094" x="427" y="332" width="128" height="15"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<text><![CDATA[FECHA DE INHUMACION]]></text>
-			</staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="232ebdcf-c305-446e-8ca9-0345e0b384fc" x="1" y="347" width="426" height="15"/>
-				<box leftPadding="3"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{nombre_inhumado_cmare}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" pattern="EEEEE dd MMMMM yyyy" isBlankWhenNull="true">
-				<reportElement uuid="a02cdea8-b7b5-4ab9-a9ad-0fdf500306dd" x="427" y="347" width="128" height="15"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{fecha_inhumacion_cmare}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement uuid="c29fcc67-7721-4968-8599-6965dcafc3d4" x="1" y="368" width="167" height="15"/>
-				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Cancelado hasta el al año ]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="60cda10e-8d21-49c2-82bd-6fed6609365d" x="0" y="396" width="292" height="20"/>
-				<textElement/>
-				<text><![CDATA[N-. de telefono del representante]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="312158fa-a63a-4c66-9c32-dd999f80dbf9" x="361" y="396" width="111" height="20"/>
-				<textElement/>
-				<text><![CDATA[celular]]></text>
-			</staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="b4c5d4d9-d294-47e5-80e3-7e7dbc65556b" x="1" y="435" width="554" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$P{par_de}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement uuid="17b03a40-f7cc-4049-a10d-ea6f5ee12390" x="1" y="466" width="292" height="20"/>
-				<textElement/>
-				<text><![CDATA[ADMINISTRADOR]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="88e305d5-6e6b-4e45-bb3f-af23375124aa" x="1" y="223" width="107" height="15"/>
-				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[SITIO: (SUELO)]]></text>
-			</staticText>
 		</band>
-	</pageHeader>
-	<columnHeader>
-		<band splitType="Stretch"/>
-	</columnHeader>
-	<detail>
-		<band splitType="Stretch"/>
 	</detail>
 	<columnFooter>
 		<band splitType="Stretch"/>
