@@ -126,7 +126,7 @@ public class pre_empresa extends Pantalla {
         aut_empresas.setAutoCompletar("select ide_empresa,nombre,ruc from trans_empresa");
         aut_empresas.setMetodoChange("filtrarEmpresa");
         aut_empresas.setSize(70);
-        bar_botones.agregarComponente(new Etiqueta("Buscador Personas:"));
+        bar_botones.agregarComponente(new Etiqueta("Buscar Empresa:"));
         bar_botones.agregarComponente(aut_empresas);
 
         Boton bot_limpiar = new Boton();
@@ -751,9 +751,10 @@ public class pre_empresa extends Pantalla {
                 rep_reporte.cerrar();
                 sel_tab_empresa.dibujar();
             } else if (sel_tab_empresa.isVisible()) {
-                if (sel_tab_empresa.getValorSeleccionado() != null && !sel_tab_empresa.getValorSeleccionado().isEmpty()) {
-                    p_parametros.put("empresa", Integer.parseInt(sel_tab_empresa.getValorSeleccionado()));
-                    p_parametros.put("titulo", "PERMISO DE OPERACIÓN " + sel_tab_empresa.getTab_seleccion().getFilaSeleccionada().getCampos()[1]);
+                String str_seleccionados = sel_tab_empresa.getSeleccionados();
+                if (sel_tab_empresa.getSeleccionados() != null) {
+                    p_parametros.put("empresa", str_seleccionados);
+                    p_parametros.put("titulo", "PERMISO DE OPERACIÓN ");
                     sel_tab_empresa.cerrar();
                     sel_tab_estado_socio.getTab_seleccion().setSql("SELECT ide_estado_socio,des_estado_socio FROM trans_estado_socio");
                     sel_tab_estado_socio.getTab_seleccion().ejecutarSql();
