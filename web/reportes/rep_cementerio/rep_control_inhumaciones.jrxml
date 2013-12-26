@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_control_inhumaciones" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5ca98b25-1a75-44d5-9d11-9d216f1085e4">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_control_inhumaciones" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5ca98b25-1a75-44d5-9d11-9d216f1085e4">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -10,17 +10,25 @@
 	<parameter name="ide_empr" class="java.lang.Integer"/>
 	<parameter name="ide_sucu" class="java.lang.Integer"/>
 	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="fecha_inicio" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_fin" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[select fecha_documento_cmare,nro_documento_cmare,nicho_sitio_cmare,numero_cmare,bloque_cmare,fila_cmare,
 nombre_inhumado_cmare,fecha_inhumacion_cmare,observacion_cmare,nombres_apellidos_cmrep,DOCUMENTO_IDENTIDAD_CMREP,
-DIRECCION_CMREP,EMAIL_CMREP,fecha_hora_accion_cmdea,visitante_cmdea,observacion_cmdea,detalle_cmacc
+TELEFONOS_CMREP,DIRECCION_CMREP,EMAIL_CMREP,fecha_hora_accion_cmdea,visitante_cmdea,observacion_cmdea,detalle_cmacc
 from CMT_ARRENDAMIENTO a, CMT_REPRESENTANTE b, (
 select ide_cmare,fecha_hora_accion_cmdea,visitante_cmdea,observacion_cmdea,detalle_cmacc
 from CMT_DETALLE_ARRENDAMIENTO a, CMT_ACCION b
 where a.ide_cmacc = b.ide_cmacc
 ) c
 where a.ide_cmare=b.ide_cmare
-and a.IDE_CMARE=c.ide_cmare]]>
+and a.IDE_CMARE=c.ide_cmare
+and c.fecha_hora_accion_cmdea BETWEEN convert(datetime,$P{fecha_inicio},111) and convert(datetime,$P{fecha_fin},111)
+]]>
 	</queryString>
 	<field name="fecha_documento_cmare" class="java.sql.Timestamp"/>
 	<field name="nro_documento_cmare" class="java.lang.Integer"/>
@@ -33,6 +41,7 @@ and a.IDE_CMARE=c.ide_cmare]]>
 	<field name="observacion_cmare" class="java.lang.String"/>
 	<field name="nombres_apellidos_cmrep" class="java.lang.String"/>
 	<field name="DOCUMENTO_IDENTIDAD_CMREP" class="java.lang.String"/>
+	<field name="TELEFONOS_CMREP" class="java.lang.String"/>
 	<field name="DIRECCION_CMREP" class="java.lang.String"/>
 	<field name="EMAIL_CMREP" class="java.lang.String"/>
 	<field name="fecha_hora_accion_cmdea" class="java.sql.Timestamp"/>
@@ -100,7 +109,7 @@ and a.IDE_CMARE=c.ide_cmare]]>
 				<text><![CDATA[NOMBRE DEL FALLECIDO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="f9ac7e9c-ae21-450d-b3dd-0ba14e730e35" x="293" y="0" width="100" height="15"/>
+				<reportElement uuid="f9ac7e9c-ae21-450d-b3dd-0ba14e730e35" x="293" y="0" width="87" height="15"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -114,7 +123,7 @@ and a.IDE_CMARE=c.ide_cmare]]>
 				<text><![CDATA[ACCION]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="503306f5-dec5-43a5-adb3-528ad4c83b2d" x="393" y="0" width="79" height="15"/>
+				<reportElement uuid="503306f5-dec5-43a5-adb3-528ad4c83b2d" x="380" y="0" width="61" height="15"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -128,7 +137,7 @@ and a.IDE_CMARE=c.ide_cmare]]>
 				<text><![CDATA[N-. CEDULA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="317d1982-8e50-4f29-928a-4344a01d3412" x="520" y="0" width="127" height="15"/>
+				<reportElement uuid="317d1982-8e50-4f29-928a-4344a01d3412" x="507" y="0" width="128" height="15"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -142,7 +151,7 @@ and a.IDE_CMARE=c.ide_cmare]]>
 				<text><![CDATA[DIRECCION]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="f2264e92-15bd-446b-b83d-4b38d9ba49e1" x="647" y="0" width="53" height="15"/>
+				<reportElement uuid="f2264e92-15bd-446b-b83d-4b38d9ba49e1" x="635" y="0" width="65" height="15"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -168,6 +177,20 @@ and a.IDE_CMARE=c.ide_cmare]]>
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[OBSERVACIONES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c10f83c2-5cfc-472e-ab7e-2ffec2f5d808" x="441" y="0" width="66" height="15"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[TELEFONOS]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -202,7 +225,7 @@ and a.IDE_CMARE=c.ide_cmare]]>
 				<textFieldExpression><![CDATA[$F{nombre_inhumado_cmare}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="ba1ac11d-33d5-46ad-a5a0-58f2d9cec169" stretchType="RelativeToBandHeight" x="293" y="0" width="100" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="ba1ac11d-33d5-46ad-a5a0-58f2d9cec169" stretchType="RelativeToBandHeight" x="293" y="0" width="87" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -216,7 +239,7 @@ and a.IDE_CMARE=c.ide_cmare]]>
 				<textFieldExpression><![CDATA[$F{detalle_cmacc}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="6d015ca3-4750-4628-8901-b2f1ec159d93" stretchType="RelativeToBandHeight" x="393" y="0" width="79" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="6d015ca3-4750-4628-8901-b2f1ec159d93" stretchType="RelativeToBandHeight" x="380" y="0" width="61" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -230,7 +253,7 @@ and a.IDE_CMARE=c.ide_cmare]]>
 				<textFieldExpression><![CDATA[$F{DOCUMENTO_IDENTIDAD_CMREP}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="e03d1a74-11d2-4840-9c11-22817c6d0667" stretchType="RelativeToBandHeight" x="520" y="0" width="127" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="e03d1a74-11d2-4840-9c11-22817c6d0667" stretchType="RelativeToBandHeight" x="507" y="0" width="128" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -244,7 +267,7 @@ and a.IDE_CMARE=c.ide_cmare]]>
 				<textFieldExpression><![CDATA[$F{DIRECCION_CMREP}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy h:mm a" isBlankWhenNull="true">
-				<reportElement uuid="c2d5d0e7-1f2f-47dd-93a3-27ab1e008ef3" stretchType="RelativeToBandHeight" x="647" y="0" width="53" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="c2d5d0e7-1f2f-47dd-93a3-27ab1e008ef3" stretchType="RelativeToBandHeight" x="635" y="0" width="65" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -270,6 +293,20 @@ and a.IDE_CMARE=c.ide_cmare]]>
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{observacion_cmdea}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="f2a44c75-3b7e-4819-9d00-5392d0c9e242" stretchType="RelativeToBandHeight" x="441" y="0" width="66" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TELEFONOS_CMREP}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
