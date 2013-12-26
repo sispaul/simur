@@ -4,15 +4,21 @@
  */
 package paq_cementerio;
 
+import framework.componentes.AutoCompletar;
+import framework.componentes.Boton;
 import paq_sistema.aplicacion.Pantalla;
 import framework.componentes.Division;
+import framework.componentes.Etiqueta;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import org.primefaces.event.SelectEvent;
 
 /**
  *
@@ -27,12 +33,30 @@ public class pre_arriendo extends Pantalla {
     private Tabla tab_tabla5 = new Tabla();
     private Reporte rep_reporte = new Reporte();
     private SeleccionFormatoReporte sef_reporte = new SeleccionFormatoReporte();
+    private AutoCompletar aut_busca = new AutoCompletar();
 
     public pre_arriendo() {
+        
+        Boton bot_limpiar = new Boton();
+        bot_limpiar.setIcon("ui-icon-cancel");
+        bot_limpiar.setMetodo("limpiar");
+        bar_botones.agregarBoton(bot_limpiar);
+
+        aut_busca.setId("aut_busca");
+        aut_busca.setAutoCompletar("SELECT a.IDE_CMARE,a.NRO_DOCUMENTO_CMARE,a.NOMBRE_INHUMADO_CMARE,a.NICHO_SITIO_CMARE,\n"
+                + "b.NOMBRES_APELLIDOS_CMREP REPRESENTANTE,\n"
+                + "b.DOCUMENTO_IDENTIDAD_CMREP\n"
+                + "FROM CMT_ARRENDAMIENTO a\n"
+                + "LEFT JOIN (\n"
+                + "SELECT IDE_CMREP,IDE_CMARE,NOMBRES_APELLIDOS_CMREP,DOCUMENTO_IDENTIDAD_CMREP FROM CMT_REPRESENTANTE\n"
+                + ")b on b.IDE_CMARE=a.IDE_CMARE");
+        aut_busca.setMetodoChange("buscarPersona");
 
         rep_reporte.setId("rep_reporte");
         rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
         agregarComponente(rep_reporte);
+        bar_botones.agregarComponente(new Etiqueta("Buscador Personas:"));
+        bar_botones.agregarComponente(aut_busca);
 
 
         sef_reporte.setId("sef_reporte");
@@ -44,12 +68,23 @@ public class pre_arriendo extends Pantalla {
         tab_tabla1.setTabla("CMT_ARRENDAMIENTO", "IDE_CMARE", 1);
         tab_tabla1.getColumna("IDE_CMGEN").setCombo("select IDE_CMGEN,DETALLE_CMGEN from CMT_GENERO");
         tab_tabla1.getColumna("FECHA_DOCUMENTO_CMARE").setValorDefecto(utilitario.getFechaActual());
+        List lista = new ArrayList();
+        Object fila1[] = {
+            "1", "NICHO"
+        };
+        Object fila2[] = {
+            "2", "SITIO (SUELO)"
+        };
+        lista.add(fila1);;
+        lista.add(fila2);;
+        tab_tabla1.getColumna("NICHO_SITIO_CMARE").setRadio(lista, "1");
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(4);
         tab_tabla1.agregarRelacion(tab_tabla2);
         tab_tabla1.agregarRelacion(tab_tabla3);
         tab_tabla1.agregarRelacion(tab_tabla4);
         tab_tabla1.agregarRelacion(tab_tabla5);
+        
         tab_tabla1.dibujar();
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setPanelTabla(tab_tabla1);
@@ -89,7 +124,8 @@ public class pre_arriendo extends Pantalla {
         tab_tabla4.getColumna("IDE_CMACC").setCombo("SELECT IDE_CMACC,DETALLE_CMACC FROM CMT_ACCION");
         tab_tabla4.getColumna("IDE_CMACC").setMetodoChange("cambioEstado");
         tab_tabla4.getColumna("FECHA_HORA_ACCION_CMDEA").setCalendarioFechaHora();
-        tab_tabla4.getColumna("FECHA_HORA_ACCION_CMDEA").setLectura(true);
+        tab_tabla4.getColumna("FECHA_HORA_ACCION_CMDEA").setValorDefecto(utilitario.getFechaHoraActual());
+        tab_tabla4.setLectura(true);
         tab_tabla4.dibujar();
         PanelTabla pat_panel4 = new PanelTabla();
         pat_panel4.setPanelTabla(tab_tabla4);
@@ -146,6 +182,24 @@ public class pre_arriendo extends Pantalla {
             sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
             sef_reporte.dibujar();
         }
+    }
+
+    public void buscarPersona(SelectEvent evt) {
+        aut_busca.onSelect(evt);
+        if (aut_busca.getValor() != null) {           
+            
+            tab_tabla1.setFilaActual(aut_busca.getValor());
+            utilitario.addUpdate("tab_tabla1");
+            //tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
+            //tab_tabla3.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
+            //tab_tabla4.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
+            //tab_tabla5.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());            
+        }
+    }
+    
+      public void limpiar() {
+        aut_busca.limpiar();
+        utilitario.addUpdate("aut_busca");     
     }
 
     @Override
@@ -237,5 +291,13 @@ public class pre_arriendo extends Pantalla {
 
     public void setSef_reporte(SeleccionFormatoReporte sef_reporte) {
         this.sef_reporte = sef_reporte;
+    }
+
+    public AutoCompletar getAut_busca() {
+        return aut_busca;
+    }
+
+    public void setAut_busca(AutoCompletar aut_busca) {
+        this.aut_busca = aut_busca;
     }
 }
