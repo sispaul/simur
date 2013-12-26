@@ -36,11 +36,8 @@ public class pre_arriendo extends Pantalla {
     private AutoCompletar aut_busca = new AutoCompletar();
 
     public pre_arriendo() {
-        
-        Boton bot_limpiar = new Boton();
-        bot_limpiar.setIcon("ui-icon-cancel");
-        bot_limpiar.setMetodo("limpiar");
-        bar_botones.agregarBoton(bot_limpiar);
+
+
 
         aut_busca.setId("aut_busca");
         aut_busca.setAutoCompletar("SELECT a.IDE_CMARE,a.NRO_DOCUMENTO_CMARE,a.NOMBRE_INHUMADO_CMARE,a.NICHO_SITIO_CMARE,\n"
@@ -51,12 +48,16 @@ public class pre_arriendo extends Pantalla {
                 + "SELECT IDE_CMREP,IDE_CMARE,NOMBRES_APELLIDOS_CMREP,DOCUMENTO_IDENTIDAD_CMREP FROM CMT_REPRESENTANTE\n"
                 + ")b on b.IDE_CMARE=a.IDE_CMARE");
         aut_busca.setMetodoChange("buscarPersona");
-
+        aut_busca.setSize(70);
         rep_reporte.setId("rep_reporte");
         rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
         agregarComponente(rep_reporte);
         bar_botones.agregarComponente(new Etiqueta("Buscador Personas:"));
         bar_botones.agregarComponente(aut_busca);
+        Boton bot_limpiar = new Boton();
+        bot_limpiar.setIcon("ui-icon-cancel");
+        bot_limpiar.setMetodo("limpiar");
+        bar_botones.agregarBoton(bot_limpiar);
 
 
         sef_reporte.setId("sef_reporte");
@@ -84,7 +85,7 @@ public class pre_arriendo extends Pantalla {
         tab_tabla1.agregarRelacion(tab_tabla3);
         tab_tabla1.agregarRelacion(tab_tabla4);
         tab_tabla1.agregarRelacion(tab_tabla5);
-        
+
         tab_tabla1.dibujar();
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setPanelTabla(tab_tabla1);
@@ -186,8 +187,8 @@ public class pre_arriendo extends Pantalla {
 
     public void buscarPersona(SelectEvent evt) {
         aut_busca.onSelect(evt);
-        if (aut_busca.getValor() != null) {           
-            
+        if (aut_busca.getValor() != null) {
+
             tab_tabla1.setFilaActual(aut_busca.getValor());
             utilitario.addUpdate("tab_tabla1");
             //tab_tabla2.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());
@@ -196,10 +197,10 @@ public class pre_arriendo extends Pantalla {
             //tab_tabla5.ejecutarValorForanea(tab_tabla1.getValorSeleccionado());            
         }
     }
-    
-      public void limpiar() {
+
+    public void limpiar() {
         aut_busca.limpiar();
-        utilitario.addUpdate("aut_busca");     
+        utilitario.addUpdate("aut_busca");
     }
 
     @Override
@@ -220,12 +221,24 @@ public class pre_arriendo extends Pantalla {
                     }
                     if (tab_tabla4.guardar()) {
                         if (tab_tabla5.guardar()) {
-                            guardarPantalla();
+                            if (guardarPantalla().isEmpty()) {
+                                aut_busca.actualizar();
+                                aut_busca.setSize(70);
+                                utilitario.addUpdate("aut_busca");
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    @Override
+    public void actualizar() {
+        super.actualizar(); //To change body of generated methods, choose Tools | Templates.
+        aut_busca.actualizar();
+        aut_busca.setSize(70);
+        utilitario.addUpdate("aut_busca");
     }
 
     public void cambioEstado() {
