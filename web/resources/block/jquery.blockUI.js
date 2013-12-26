@@ -155,7 +155,7 @@
             // styles for the overlay
             overlayCSS:  {
                 backgroundColor:	'#000',
-                opacity:			0.6,
+                opacity:			0.3,
                 cursor:				'wait'
             },
 
