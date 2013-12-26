@@ -80,7 +80,7 @@ public class pre_empresa extends Pantalla {
         gri_busca.getChildren().add(bot_buscar);
         
         set_empresa.setId("set_empresa");
-        set_empresa.setSeleccionTabla("select ide_empresa,nombre,ruc from trans_empresa where ide_empresa=-1", "ide_empresa");
+        set_empresa.setSeleccionTabla("select ide_empresa,nombre,ruc from trans_empresa where ide_empresa=-1", "ide_empresa");        
         set_empresa.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
         set_empresa.getTab_seleccion().setRows(10);
         set_empresa.setRadio();
@@ -99,7 +99,7 @@ public class pre_empresa extends Pantalla {
         sel_tab_tipo_vehiculo.setId("sel_tab_tipo_vehiculo");
         sel_tab_tipo_vehiculo.setTitle("SELECCION DE TIPO DE VEHICULOS");
         sel_tab_tipo_vehiculo.setSeleccionTabla("SELECT codigo,nombre from trans_tipo where codigo=-1", "codigo");
-        sel_tab_tipo_vehiculo.getTab_seleccion().getColumna("nombre").setFiltro(true);
+        
         sel_tab_tipo_vehiculo.getBot_aceptar().setMetodo("aceptarReporte");
         sel_tab_tipo_vehiculo.setRadio();
         agregarComponente(sel_tab_tipo_vehiculo);
@@ -107,7 +107,7 @@ public class pre_empresa extends Pantalla {
         sel_tab_empresa.setId("sel_tab_empresa");
         sel_tab_empresa.setTitle("SELECCION DE EMPRESAS");
         sel_tab_empresa.setSeleccionTabla("select ide_empresa,nombre,ruc from trans_empresa WHERE ide_empresa=-1 order by nombre", "ide_empresa");
-        sel_tab_empresa.getTab_seleccion().getColumna("nombre").setFiltro(true);
+        sel_tab_empresa.getTab_seleccion().getColumna("nombre").setFiltroContenido();
         sel_tab_empresa.getTab_seleccion().getColumna("ruc").setFiltro(true);
         sel_tab_empresa.getBot_aceptar().setMetodo("aceptarReporte");
         sel_tab_empresa.setRadio();
@@ -252,7 +252,8 @@ public class pre_empresa extends Pantalla {
             List<String[]> lis_tipo = new ArrayList();
             lis_tipo.add(new String[]{"POPULAR", "POPULAR"});
             lis_tipo.add(new String[]{"ESPECIAL", "ESPECIAL"});
-            tab_permiso_x_ruta.getColumna("TIPO_SERVICIO").setCombo(lis_tipo);
+            tab_permiso_x_ruta.getColumna("TIPO_SERVICIO").setRadio(lis_tipo,"ESPECIAL");
+            tab_permiso_x_ruta.getColumna("TIPO_SERVICIO").setRadioVertical(true);
             tab_permiso_x_ruta.setTipoFormulario(true);
             tab_permiso_x_ruta.getGrid().setColumns(6);
             tab_permiso_x_ruta.agregarRelacion(tab_recorrido);
@@ -353,8 +354,8 @@ public class pre_empresa extends Pantalla {
             lis_control.add(new String[]{"NO", "NO"});
             lis_control.add(new String[]{"SI", "SI"});
             
-            tab_socios.getColumna("seguros_salud").setCombo(lis_control);
-            tab_socios.getColumna("control_salud").setCombo(lis_control);
+            tab_socios.getColumna("seguros_salud").setRadio(lis_control,"NO");
+            tab_socios.getColumna("control_salud").setRadio(lis_control,"NO");
             
             
             tab_socios.dibujar();
@@ -404,7 +405,7 @@ public class pre_empresa extends Pantalla {
             tab_seguro.getColumna("NOM_RESPONSABLE").setVisible(false);
             tab_seguro.getColumna("IDE_ASEGURADORA").setCombo("trans_aseguradora", "IDE_ASEGURADORA", "nombre", "");
             tab_seguro.setHeader("SEGURO DEL VEHÍCULO");
-            tab_socios.getColumna("control_salud").setCombo(lis_control);
+            tab_socios.getColumna("control_salud").setRadio(lis_control,"NO");
             
             tab_seguro.setTipoFormulario(true);
             tab_seguro.getGrid().setColumns(6);
@@ -428,12 +429,12 @@ public class pre_empresa extends Pantalla {
             tab_revision.getColumna("NOM_RESPONSABLE").setValorDefecto(utilitario.getVariable("NICK"));
             tab_revision.getColumna("NOM_RESPONSABLE").setVisible(false);
             tab_revision.getColumna("tipo").setCombo("trans_tipo_revision", "ide_tipo_revision", "des_tipo_revision", "");
-            tab_revision.getColumna("renovado").setCombo(lis_control);
+            tab_revision.getColumna("renovado").setRadio(lis_control,"NO");
             tab_revision.setTipoFormulario(true);
             tab_revision.setHeader("REVISIÓN VEHICULAR");
             tab_revision.getGrid().setColumns(6);
             tab_revision.getColumna("FEC_REVISION").setControl("Calendario");
-            tab_revision.getColumna("FOTO").setUpload("cementerio");
+            tab_revision.getColumna("FOTO").setUpload("vehiculos");
             tab_revision.getColumna("FOTO").setImagen("94", "94");
             tab_revision.dibujar();
             

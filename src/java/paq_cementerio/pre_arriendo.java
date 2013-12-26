@@ -11,9 +11,7 @@ import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,16 +44,6 @@ public class pre_arriendo extends Pantalla {
         tab_tabla1.setTabla("CMT_ARRENDAMIENTO", "IDE_CMARE", 1);
         tab_tabla1.getColumna("IDE_CMGEN").setCombo("select IDE_CMGEN,DETALLE_CMGEN from CMT_GENERO");
         tab_tabla1.getColumna("FECHA_DOCUMENTO_CMARE").setValorDefecto(utilitario.getFechaActual());
-        List lista = new ArrayList();
-        Object fila1[] = {
-            "1", "NICHO"
-        };
-        Object fila2[] = {
-            "2", "SITIO (SUELO)"
-        };
-        lista.add(fila1);
-        lista.add(fila2);
-        tab_tabla1.getColumna("NICHO_SITIO_CMARE").setRadio(lista, "1");
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(4);
         tab_tabla1.agregarRelacion(tab_tabla2);
