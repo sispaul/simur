@@ -230,9 +230,15 @@ public class pre_empresa extends Pantalla {
             tab_permisos.getColumna("ip_responsable").setVisible(false);
             tab_permisos.getColumna("NOM_RESPONSABLE").setValorDefecto(utilitario.getVariable("NICK"));
             tab_permisos.getColumna("NOM_RESPONSABLE").setVisible(false);
+            tab_permisos.getColumna("HORARIO_INICIO").setControl("Texto");
+            tab_permisos.getColumna("HORARIO_INICIO").setTipoJava("java.lang.String");
+            tab_permisos.getColumna("HORARIO_INICIO").setTipo("Text");                        	
+             tab_permisos.getColumna("HORARIO_FINAL").setControl("Texto");
+            tab_permisos.getColumna("HORARIO_FINAL").setTipoJava("java.lang.String");
+            tab_permisos.getColumna("HORARIO_FINAL").setTipo("Text");  
             tab_permisos.agregarRelacion(tab_permiso_x_ruta);
             tab_permisos.agregarRelacion(tab_permiso_provicional);
-            tab_permisos.setHeader("PERMISO DE OPERACIÓN");
+            tab_permisos.setHeader("PERMISO DE OPERACIÓN");            
             tab_permisos.dibujar();
             PanelTabla pat_panel1 = new PanelTabla();
             pat_panel1.setPanelTabla(tab_permisos);
