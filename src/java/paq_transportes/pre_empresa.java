@@ -111,8 +111,7 @@ public class pre_empresa extends Pantalla {
         sel_tab_empresa.setSeleccionTabla("select ide_empresa,nombre,ruc from trans_empresa WHERE ide_empresa=-1 order by nombre", "ide_empresa");
         sel_tab_empresa.getTab_seleccion().getColumna("nombre").setFiltroContenido();
         sel_tab_empresa.getTab_seleccion().getColumna("ruc").setFiltro(true);
-        sel_tab_empresa.getBot_aceptar().setMetodo("aceptarReporte");
-        sel_tab_empresa.setRadio();
+        sel_tab_empresa.getBot_aceptar().setMetodo("aceptarReporte");        
         agregarComponente(sel_tab_empresa);
 
 
@@ -232,13 +231,13 @@ public class pre_empresa extends Pantalla {
             tab_permisos.getColumna("NOM_RESPONSABLE").setVisible(false);
             tab_permisos.getColumna("HORARIO_INICIO").setControl("Texto");
             tab_permisos.getColumna("HORARIO_INICIO").setTipoJava("java.lang.String");
-            tab_permisos.getColumna("HORARIO_INICIO").setTipo("Text");                        	
-             tab_permisos.getColumna("HORARIO_FINAL").setControl("Texto");
+            tab_permisos.getColumna("HORARIO_INICIO").setTipo("Text");
+            tab_permisos.getColumna("HORARIO_FINAL").setControl("Texto");
             tab_permisos.getColumna("HORARIO_FINAL").setTipoJava("java.lang.String");
-            tab_permisos.getColumna("HORARIO_FINAL").setTipo("Text");  
+            tab_permisos.getColumna("HORARIO_FINAL").setTipo("Text");
             tab_permisos.agregarRelacion(tab_permiso_x_ruta);
             tab_permisos.agregarRelacion(tab_permiso_provicional);
-            tab_permisos.setHeader("PERMISO DE OPERACIÓN");            
+            tab_permisos.setHeader("PERMISO DE OPERACIÓN");
             tab_permisos.dibujar();
             PanelTabla pat_panel1 = new PanelTabla();
             pat_panel1.setPanelTabla(tab_permisos);
