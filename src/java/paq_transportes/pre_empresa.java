@@ -64,6 +64,7 @@ public class pre_empresa extends Pantalla {
         
         Boton bot_busca = new Boton();
         bot_busca.setValue("Busqueda Avanzada");
+        bot_busca.setExcluirLectura(true);
         bot_busca.setIcon("ui-icon-search");
         bot_busca.setMetodo("abrirBusqueda");
         bar_botones.agregarBoton(bot_busca);
