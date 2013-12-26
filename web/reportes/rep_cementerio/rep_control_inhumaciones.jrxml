@@ -27,8 +27,7 @@ where a.ide_cmacc = b.ide_cmacc
 ) c
 where a.ide_cmare=b.ide_cmare
 and a.IDE_CMARE=c.ide_cmare
-and c.fecha_hora_accion_cmdea BETWEEN convert(datetime,$P{fecha_inicio},111) and convert(datetime,$P{fecha_fin},111)
-]]>
+and c.fecha_hora_accion_cmdea BETWEEN convert(datetime,$P{fecha_inicio},111) and convert(datetime,$P{fecha_fin},111)]]>
 	</queryString>
 	<field name="fecha_documento_cmare" class="java.sql.Timestamp"/>
 	<field name="nro_documento_cmare" class="java.lang.Integer"/>
@@ -76,7 +75,50 @@ and c.fecha_hora_accion_cmdea BETWEEN convert(datetime,$P{fecha_inicio},111) and
 		</band>
 	</title>
 	<pageHeader>
-		<band splitType="Stretch"/>
+		<band height="22" splitType="Stretch">
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="eb79325d-97ab-4a6d-8da1-d0d375311328" x="244" y="0" width="100" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fecha_inicio}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="e0ef2f26-e5e7-43b0-9b67-e8ac1eaf1572" x="431" y="0" width="100" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fecha_fin}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="c0caeceb-d001-4c1d-bb00-892d0611c22c" x="163" y="0" width="81" height="15"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA INICO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="45ba1f02-2f40-422a-8ae8-03f0d60ae931" x="344" y="0" width="87" height="15"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA FIN]]></text>
+			</staticText>
+		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="15" splitType="Stretch">
@@ -90,7 +132,7 @@ and c.fecha_hora_accion_cmdea BETWEEN convert(datetime,$P{fecha_inicio},111) and
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7"/>
+					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[NOMBRE DEL REPRESENTANTE]]></text>
 			</staticText>
@@ -104,7 +146,7 @@ and c.fecha_hora_accion_cmdea BETWEEN convert(datetime,$P{fecha_inicio},111) and
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7"/>
+					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[NOMBRE DEL FALLECIDO]]></text>
 			</staticText>
@@ -118,7 +160,7 @@ and c.fecha_hora_accion_cmdea BETWEEN convert(datetime,$P{fecha_inicio},111) and
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7"/>
+					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[ACCION]]></text>
 			</staticText>
@@ -132,7 +174,7 @@ and c.fecha_hora_accion_cmdea BETWEEN convert(datetime,$P{fecha_inicio},111) and
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7"/>
+					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[N-. CEDULA]]></text>
 			</staticText>
@@ -146,7 +188,7 @@ and c.fecha_hora_accion_cmdea BETWEEN convert(datetime,$P{fecha_inicio},111) and
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7"/>
+					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[DIRECCION]]></text>
 			</staticText>
@@ -160,7 +202,7 @@ and c.fecha_hora_accion_cmdea BETWEEN convert(datetime,$P{fecha_inicio},111) and
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7"/>
+					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[FECHA Y HORA]]></text>
 			</staticText>
@@ -174,7 +216,7 @@ and c.fecha_hora_accion_cmdea BETWEEN convert(datetime,$P{fecha_inicio},111) and
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7"/>
+					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[OBSERVACIONES]]></text>
 			</staticText>
@@ -188,7 +230,7 @@ and c.fecha_hora_accion_cmdea BETWEEN convert(datetime,$P{fecha_inicio},111) and
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7"/>
+					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TELEFONOS]]></text>
 			</staticText>
@@ -314,7 +356,22 @@ and c.fecha_hora_accion_cmdea BETWEEN convert(datetime,$P{fecha_inicio},111) and
 		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band splitType="Stretch"/>
+		<band height="12" splitType="Stretch">
+			<textField>
+				<reportElement uuid="aa60bb02-5fbb-4ec4-a38f-542662e4f6f2" x="681" y="0" width="80" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="996187bf-3e0d-43c3-93e4-46dd47562912" x="761" y="0" width="40" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
 	</pageFooter>
 	<summary>
 		<band splitType="Stretch"/>
