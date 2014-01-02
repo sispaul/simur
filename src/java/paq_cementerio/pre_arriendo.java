@@ -171,13 +171,17 @@ public class pre_arriendo extends Pantalla {
         Map p_parametros = new HashMap();
         if (rep_reporte.getReporteSelecionado().equals("Arrendamiento Cementerio")) {
             if (tab_tabla1.getValorSeleccionado() != null) {
-                p_parametros.put("titulo", "INFORME PARA ARRENDAMIENTO EN EL CEMENTERIO MUNICIPAL");
-                p_parametros.put("par_para", "JEFE DE RENTAS");
-                p_parametros.put("par_de", "Lic. Nelson Loachamin");
-                p_parametros.put("ide_cmare", Integer.parseInt(tab_tabla1.getValorSeleccionado()));
-                rep_reporte.cerrar();
-                sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                sef_reporte.dibujar();
+                if (tab_tabla2.getTotalFilas()>0) {
+                    p_parametros.put("titulo", "INFORME PARA ARRENDAMIENTO EN EL CEMENTERIO MUNICIPAL");
+                    p_parametros.put("par_para", "JEFE DE RENTAS");
+                    p_parametros.put("par_de", "Lic. Nelson Loachamin");
+                    p_parametros.put("ide_cmare", Integer.parseInt(tab_tabla1.getValorSeleccionado()));
+                    rep_reporte.cerrar();
+                    sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_reporte.dibujar();
+                } else {
+                    utilitario.agregarMensaje("No se a puede generar el reporte", "Falta llenar los datos del representante");
+                }
 
             } else {
                 utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
@@ -191,7 +195,7 @@ public class pre_arriendo extends Pantalla {
                     p_parametros.put("fecha_inicio", sec_rango.getFecha1String());
                     p_parametros.put("fecha_fin", sec_rango.getFecha2String());
                     sec_rango.cerrar();
-                    p_parametros.put("titulo", "HOJA DE CONTROL DE INHUMACIONES, EXHUMACIONES,RENOVACIONES Y OTROS CONTROLES DEL CEMENTERIO MUNICIPAL DE SANGOLQUI CANTON RUMIÑAHUI");                    
+                    p_parametros.put("titulo", "HOJA DE CONTROL DE INHUMACIONES, EXHUMACIONES,RENOVACIONES Y OTROS CONTROLES DEL CEMENTERIO MUNICIPAL DE SANGOLQUI CANTON RUMIÑAHUI");
                     sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                     sef_reporte.dibujar();
                 } else {
