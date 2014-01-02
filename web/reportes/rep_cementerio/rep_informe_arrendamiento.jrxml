@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_informe_arrendamiento" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0c2f9b4a-f79e-4430-844b-cfab6168fbed">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="614"/>
+	<property name="ireport.y" value="445"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String">
 		<defaultValueExpression><![CDATA["C:\\Users\\PROGRAMADOR7\\Desktop\\rep_abeja\\"]]></defaultValueExpression>
 	</parameter>
@@ -247,12 +247,12 @@ SELECT TOP 1 IDE_CMPAG,IDE_CMACC,IDE_CMARE,FECHA_PAGO_CMPAG,NRO_LIQUIDACION_CMPA
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="eba47966-953b-448f-bc20-2b04ee844888" x="209" y="359" width="100" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{serie_cmare}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nicho_sitio_cmare}==1?$F{serie_cmare}:""]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="e6d3d215-6456-4f79-9f4d-a8072626478e" x="208" y="439" width="101" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{numero_cmare}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nicho_sitio_cmare}==2?$F{numero_cmare}:""]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="709e8066-2ebb-422f-83a5-a14e2b86bb17" x="309" y="291" width="249" height="15"/>
