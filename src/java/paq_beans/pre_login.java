@@ -13,6 +13,8 @@ import framework.componentes.Foco;
 import framework.componentes.Grid;
 import framework.componentes.Imagen;
 import framework.componentes.Texto;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -47,7 +49,7 @@ public class pre_login {
     private Dialogo dia_cambia = new Dialogo();
     @EJB
     private ServicioSeguridad ser_seguridad;
-
+    
     /**
      * Creates a new instance of pre_login
      */
@@ -143,11 +145,8 @@ public class pre_login {
                 try {
                     utilitario.crearVariable("NICK", tex_usuario.getValue() + "");
                     FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("pre_index");
-                    utilitario.ejecutarJavaScript("location.href='about:blank'");
-                    String str_url = utilitario.getURL() + "/index.jsf'";                   
-                    utilitario.ejecutarJavaScript("window.open('" + str_url + ",'nuevo','directories=no,location=no,menubar=no,scrollbars=yes,statusbar=no,tittlebar=no,width=" + ancho.getValue() + ",height=" + alto.getValue() + ",maximized=yes,resizable=yes')");
-
-
+                    String str_url = utilitario.getURL() + "/index.jsf";
+                    utilitario.ejecutarJavaScript("abrirPopUp('" + str_url + "')");
                 } catch (Exception e) {
                 }
             }
@@ -191,10 +190,8 @@ public class pre_login {
                         utilitario.getConexion().ejecutarSql(ser_seguridad.crearSQLAuditoriaAcceso(utilitario.getVariable("IDE_USUA"), ser_seguridad.P_SIS_INGRESO_USUARIO, "El sistema le solicitó a cambiar de clave"));
                         utilitario.crearVariable("NICK", tex_usuario.getValue() + ""); //Usuario                                     
                         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("pre_index");
-                        utilitario.ejecutarJavaScript("location.href='about:blank'");
-                        String str_url = utilitario.getURL() + "/index.jsf'";                       
-                        utilitario.ejecutarJavaScript("window.open('" + str_url + ",'nuevo','directories=no,location=no,menubar=no,scrollbars=yes,statusbar=no,tittlebar=no,width=" + ancho.getValue() + ",height=" + alto.getValue() + ",maximized=yes,resizable=yes')");
-
+                        String str_url = utilitario.getURL() + "/index.jsf";
+                        utilitario.ejecutarJavaScript("abrirPopUp('" + str_url + "')");
                     } catch (Exception e) {
                     }
 
@@ -269,4 +266,5 @@ public class pre_login {
     public void setFormulario(HtmlForm formulario) {
         this.formulario = formulario;
     }
+
 }
