@@ -105,13 +105,11 @@ PrimeFaces.locales['es'] = {
     allDayText: 'Todo el día'
 };
 
-function abrirPopUp(dir) {
-    var popup = '';
-    var width = 800;
-    var height = 400;
-    var xx, yy;
-    xx = (screen.width - width) / 1.5;
-    yy = (screen.height - height) / 1.5;
-    window.open(dir, '', 'resizable=yes,scrollbars=yes,directories=0, location=0, menubar=0, status=0, toolbar=0, width=' + width + ', height=' + height + ', top=' + yy + ', left=' + xx);
-    return false;
+function abrirPopUp(dir) {    
+    var w = window.open(dir, "sistemadj", "width="+screen.availWidth+", height="+screen.availHeight+", screenX=0,screenY=0, top=0, left=0, status=0 , resizable=yes, scrollbars=yes" );
+    w.focus();
+}
+function abrirNuevoPopUp(dir) {    
+    var w = window.open(dir, "", "width="+screen.availWidth+", height="+screen.availHeight+", screenX=0,screenY=0, top=0, left=0, status=0 , resizable=yes, scrollbars=yes" );
+    w.focus();
 }

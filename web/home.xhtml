@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <h:head>
+        <title>RÚA</title>        
+    </h:head>    
+    <h:outputScript library="sistema" name="sistema.js"/>
+    <h:body  onload="abrirPopUp('login.jsf');" style="overflow: hidden">
+        <div align="center"  style="display: block;height: 100%;vertical-align: middle;font-size: 16px;">
+            <p>Se ha abierto una nueva ventana para que ingrese al </p>
+            <p style="font-size: 18px;font-weight: bold">Sistema de Gestión Administrativa</p>
+            <p> si no puede verla, por favor presione <a href="#" onclick="abrirPopUp('login.jsf');
+            return false;">aquí</a>.</p>
+            <h:graphicImage value="imagenes/logo.png"/>
+        </div>
+    </h:body>
+</html>
+
