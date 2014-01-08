@@ -19,7 +19,7 @@
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>login.jsf</welcome-file>
+        <welcome-file>home.jsf</welcome-file>
     </welcome-file-list>
     
     <context-param>
@@ -49,5 +49,14 @@
     <listener>  
         <listener-class>com.sun.faces.config.ConfigureListener</listener-class>  
     </listener> 
+    
+     <filter>
+        <filter-name>loginFilter</filter-name>
+        <filter-class>paq_sistema.aplicacion.LoginFilter</filter-class>
+        <init-param>
+      <param-name>loginPage</param-name>
+      <param-value>/login.jsf</param-value>
+    </init-param>
+    </filter>  
   
 </web-app>
