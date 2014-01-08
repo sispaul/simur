@@ -130,8 +130,7 @@ public class pre_arriendo extends Pantalla {
         tab_tabla4.getColumna("IDE_CMACC").setCombo("SELECT IDE_CMACC,DETALLE_CMACC FROM CMT_ACCION");
         tab_tabla4.getColumna("IDE_CMACC").setMetodoChange("cambioEstado");
         tab_tabla4.getColumna("FECHA_HORA_ACCION_CMDEA").setCalendarioFechaHora();
-        tab_tabla4.getColumna("FECHA_HORA_ACCION_CMDEA").setValorDefecto(utilitario.getFechaHoraActual());
-        tab_tabla4.setLectura(true);
+        tab_tabla4.getColumna("FECHA_HORA_ACCION_CMDEA").setValorDefecto(utilitario.getFechaHoraActual());        
         tab_tabla4.dibujar();
         PanelTabla pat_panel4 = new PanelTabla();
         pat_panel4.setPanelTabla(tab_tabla4);
@@ -180,7 +179,7 @@ public class pre_arriendo extends Pantalla {
                     sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                     sef_reporte.dibujar();
                 } else {
-                    utilitario.agregarMensaje("No se a puede generar el reporte", "Falta llenar los datos del representante");
+                    utilitario.agregarMensaje("No se a puede generar el reporte", "Falta ingresar los datos del representante");
                 }
 
             } else {

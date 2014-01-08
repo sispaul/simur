@@ -111,7 +111,7 @@ public class pre_empresa extends Pantalla {
         sel_tab_empresa.setSeleccionTabla("select ide_empresa,nombre,ruc from trans_empresa WHERE ide_empresa=-1 order by nombre", "ide_empresa");
         sel_tab_empresa.getTab_seleccion().getColumna("nombre").setFiltroContenido();
         sel_tab_empresa.getTab_seleccion().getColumna("ruc").setFiltro(true);
-        sel_tab_empresa.getBot_aceptar().setMetodo("aceptarReporte");        
+        sel_tab_empresa.getBot_aceptar().setMetodo("aceptarReporte");
         agregarComponente(sel_tab_empresa);
 
 
@@ -578,7 +578,7 @@ public class pre_empresa extends Pantalla {
         if (utilitario.validarCedula(tab_socios.getValor("cedula"))) {
             TablaGenerica tab_dato = ser_registros.getPersona(tab_socios.getValor("cedula"));
             if (!tab_dato.isEmpty()) {
-                //Cargo la información de la base de datos maestra   
+                // Cargo la información de la base de datos maestra   
                 tab_socios.setValor("nombre", tab_dato.getValor("nombre"));
                 utilitario.addUpdate("tab_socios");
             } else {
@@ -627,15 +627,17 @@ public class pre_empresa extends Pantalla {
                 //Actualiza nuevamente la fecha
                 tab_permisos.setValor("fecha_responsable", utilitario.getFechaHoraActual());
             }
+            tab_permisos.setValor("IDE_EMPRESA", aut_empresas.getValor());
             tab_permisos.guardar();
             tab_permiso_x_ruta.guardar();
             tab_permiso_provicional.guardar();
         } else if (str_opcion.equals("2")) {
             if (utilitario.validarCedula(tab_socios.getValor("cedula"))) {
-                if (tab_permisos.isFilaInsertada()) {
+                if (tab_socios.isFilaInsertada()) {
                     //Actualiza nuevamente la fecha
                     tab_socios.setValor("fecha_responsable", utilitario.getFechaHoraActual());
                 }
+                tab_socios.setValor("IDE_EMPRESA", aut_empresas.getValor());
                 tab_socios.guardar();
                 tab_vehiculos.guardar();
                 tab_seguro.guardar();
