@@ -4,6 +4,7 @@
  */
 package paq_pruebas;
 
+import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Combo;
 import framework.componentes.Etiqueta;
@@ -16,6 +17,8 @@ import paq_sistema.aplicacion.Pantalla;
  * @author Diego
  */
 public class pre_holamundo extends Pantalla{
+    
+    private AutoCompletar aut_marcas=new AutoCompletar();
 
     public pre_holamundo() {
         Etiqueta eti_etiqueta=new Etiqueta();
@@ -48,6 +51,12 @@ public class pre_holamundo extends Pantalla{
         grid.getChildren().add(new Etiqueta("MARCAS"));
         grid.getChildren().add(com_combo);
         
+        //CREAR AUTOCOMPLETAR 
+        aut_marcas.setId("aut_marcas"); //ID del autocompletar
+        aut_marcas.setAutoCompletar("select ide_marca,marca from trans_marcas");
+        
+        grid.getChildren().add(new Etiqueta("MARCAS AUTOCOMPLETAR"));
+        grid.getChildren().add(aut_marcas);
         
         agregarComponente(grid);
         
@@ -76,5 +85,15 @@ public class pre_holamundo extends Pantalla{
     public void eliminar() {
        
     }
+
+    public AutoCompletar getAut_marcas() {
+        return aut_marcas;
+    }
+
+    public void setAut_marcas(AutoCompletar aut_marcas) {
+        this.aut_marcas = aut_marcas;
+    }
+    
+    
     
 }
