@@ -6,6 +6,8 @@ package paq_pruebas;
 
 import framework.componentes.Boton;
 import framework.componentes.Etiqueta;
+import framework.componentes.Grid;
+import framework.componentes.Texto;
 import paq_sistema.aplicacion.Pantalla;
 
 /**
@@ -27,6 +29,18 @@ public class pre_holamundo extends Pantalla{
         //agregarComponente(bot_mensaje);
         
         bar_botones.agregarBoton(bot_mensaje);
+        
+        
+        Grid grid=new Grid();/// me forma una matriz
+        grid.setColumns(2);
+        //Creo una etiqueta
+        grid.getChildren().add(new Etiqueta("NOMBRE ")); //agrega a la grid la etiqueta
+        //Crear cuadro de texto
+        Texto tex_nombre=new Texto();        
+        grid.getChildren().add(tex_nombre);// agrega el etxto a la grid
+        
+        
+        agregarComponente(grid);
         
     }
     
