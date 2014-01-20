@@ -18,7 +18,8 @@ public class pre_holamundo extends Pantalla{
 
     public pre_holamundo() {
         Etiqueta eti_etiqueta=new Etiqueta();
-        eti_etiqueta.setValue("HOLA MUNDO");        
+        eti_etiqueta.setValue("HOLA MUNDO");  
+        eti_etiqueta.setStyle("font-size:18px;color:red"); //pone un estilo css
         agregarComponente(eti_etiqueta);
         
         Boton bot_mensaje=new Boton();
