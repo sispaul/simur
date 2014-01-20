@@ -5,6 +5,7 @@
 package paq_pruebas;
 
 import framework.componentes.Boton;
+import framework.componentes.Combo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Texto;
@@ -40,8 +41,18 @@ public class pre_holamundo extends Pantalla{
         Texto tex_nombre=new Texto();        
         grid.getChildren().add(tex_nombre);// agrega el etxto a la grid
         
+        //CREAR COMBO
+        Combo com_combo=new Combo();
+        com_combo.setCombo("select ide_marca,marca from trans_marcas");
+        
+        grid.getChildren().add(new Etiqueta("MARCAS"));
+        grid.getChildren().add(com_combo);
+        
         
         agregarComponente(grid);
+        
+        
+        
         
     }
     
