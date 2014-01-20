@@ -4,6 +4,7 @@
  */
 package paq_pruebas;
 
+import framework.componentes.Boton;
 import framework.componentes.Etiqueta;
 import paq_sistema.aplicacion.Pantalla;
 
@@ -17,6 +18,12 @@ public class pre_holamundo extends Pantalla{
         Etiqueta eti_etiqueta=new Etiqueta();
         eti_etiqueta.setValue("HOLA MUNDO");        
         agregarComponente(eti_etiqueta);
+        
+        Boton bot_mensaje=new Boton();
+        bot_mensaje.setValue("Ver mensaje");
+        bot_mensaje.setOnclick("alert('HOLA');");
+        
+        agregarComponente(bot_mensaje);
         
     }
     
