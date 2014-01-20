@@ -388,7 +388,9 @@ public class pre_empresa extends Pantalla {
             tab_vehiculos.getColumna("NOM_RESPONSABLE").setVisible(false);
             tab_vehiculos.setTipoFormulario(true);
             tab_vehiculos.getColumna("FEC_ALTA").setControl("Calendario");
+            tab_vehiculos.getColumna("FEC_ALTA").setTipoJava("java.sql.Date");
             tab_vehiculos.getColumna("FEC_BAJA").setControl("Calendario");
+            tab_vehiculos.getColumna("FEC_BAJA").setTipoJava("java.sql.Date");
             tab_vehiculos.getColumna("ide_tipo_vehiculo").setCombo("trans_tipo_vehiculo", "ide_tipo_vehiculo", "des_tipo_vehiculo", "");
             tab_vehiculos.getColumna("estado").setCombo("trans_estado_vehiculo", "ide_estado_vehiculo", "des_estado_vehiculo", "");
             tab_vehiculos.getColumna("estado_vehiculo").setCombo("trans_situacion_vehiculo", "ide_situacion", "des_situacion", "");
@@ -418,7 +420,9 @@ public class pre_empresa extends Pantalla {
             tab_seguro.setTipoFormulario(true);
             tab_seguro.getGrid().setColumns(6);
             tab_seguro.getColumna("FEC_EMISION").setControl("Calendario");
+            tab_seguro.getColumna("FEC_EMISION").setTipoJava("java.sql.Date");
             tab_seguro.getColumna("FEC_CADUCIDAD").setControl("Calendario");
+            tab_seguro.getColumna("FEC_CADUCIDAD").setTipoJava("java.sql.Date");
             tab_seguro.dibujar();
 
             PanelTabla pat_panel4 = new PanelTabla();
@@ -442,6 +446,7 @@ public class pre_empresa extends Pantalla {
             tab_revision.setHeader("REVISIÓN VEHICULAR");
             tab_revision.getGrid().setColumns(6);
             tab_revision.getColumna("FEC_REVISION").setControl("Calendario");
+            tab_revision.getColumna("FEC_REVISION").setTipoJava("java.sql.Date");
             tab_revision.getColumna("FOTO").setUpload("vehiculos");
             tab_revision.getColumna("FOTO").setImagen("94", "94");
             tab_revision.dibujar();
@@ -486,7 +491,9 @@ public class pre_empresa extends Pantalla {
         tab_tabla.getColumna("ruc").setMetodoChange("cargarEmpresa");
         tab_tabla.setMostrarNumeroRegistros(false);
         tab_tabla.getColumna("FEC_PATENTE").setControl("Calendario");
+        tab_tabla.getColumna("FEC_PATENTE").setTipoJava("java.sql.Date");
         tab_tabla.getColumna("FEC_PAGO_OCUPACION_VIA").setControl("Calendario");
+        tab_tabla.getColumna("FEC_PAGO_OCUPACION_VIA").setTipoJava("java.sql.Date");
         tab_tabla.getColumna(" NOM_RESPONSABLE").setValorDefecto(utilitario.getVariable("NICK"));
         tab_tabla.getColumna(" NOM_RESPONSABLE").setVisible(false);
         tab_tabla.setHeader("DATOS DE LA EMPRESA");

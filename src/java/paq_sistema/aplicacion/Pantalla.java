@@ -5,13 +5,16 @@
 package paq_sistema.aplicacion;
 
 import framework.componentes.Barra;
+import framework.componentes.Boton;
 import framework.componentes.BuscarTabla;
 import framework.componentes.FormatoTabla;
 import framework.componentes.Grupo;
 import framework.componentes.ImportarTabla;
+import framework.componentes.SeleccionArchivo;
 import framework.componentes.Tabla;
 import framework.componentes.TerminalTabla;
 import javax.faces.component.UIComponent;
+import javax.faces.event.ActionEvent;
 import persistencia.Conexion;
 
 /**
@@ -215,6 +218,29 @@ public abstract class Pantalla {
         BuscarTabla bus_buscar = utilitario.getBuscaTabla();
         if (bus_buscar != null) {
             bus_buscar.aceptarBuscar();
+        }
+    }
+
+    /**
+     * Cuando se necesitan subir archivos
+     */
+    public void abrirSeleccionarArchivo(ActionEvent evt) {
+        SeleccionArchivo sar_upload = utilitario.getSeleccionArchivo();
+        if (sar_upload != null) {
+            Boton bot_subir = (Boton) evt.getComponent();
+            if (bot_subir.getDir() != null) {
+                sar_upload.getUpload().setSoloImagenes();
+               
+            } else {
+                sar_upload.limpiar();
+            }
+            sar_upload.getUpload().setFileUploadListener(bot_subir.getUploadMetodo());
+            sar_upload.getUpload().setUpdate(utilitario.getTablaisFocus().getIdCompleto());
+            try {               
+                ((Tabla) bot_subir.getParent().getParent().getParent()).setFocus();
+            } catch (Exception e) {
+            }
+            sar_upload.dibujar();
         }
     }
 }
