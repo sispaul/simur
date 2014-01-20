@@ -21,13 +21,18 @@ public class pre_holamundo extends Pantalla{
         
         Boton bot_mensaje=new Boton();
         bot_mensaje.setValue("Ver mensaje");
-        bot_mensaje.setOnclick("alert('HOLA');");
+        //bot_mensaje.setOnclick("alert('HOLA');");//Ejecuta javascript
+        bot_mensaje.setMetodo("verMensaje"); // EJECUTA UN METODO 
         
         agregarComponente(bot_mensaje);
         
     }
     
        
+    public void verMensaje(){
+        System.out.println("ENTRO AL METODO");
+    }
+    
 
     @Override
     public void insertar() {
