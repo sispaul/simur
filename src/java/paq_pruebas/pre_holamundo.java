@@ -21,6 +21,8 @@ import paq_sistema.aplicacion.Pantalla;
 public class pre_holamundo extends Pantalla {
 
     private AutoCompletar aut_marcas = new AutoCompletar();
+    private Texto tex_nombre = new Texto();
+    private Combo com_combo = new Combo();
 
     public pre_holamundo() {
         Etiqueta eti_etiqueta = new Etiqueta();
@@ -43,11 +45,12 @@ public class pre_holamundo extends Pantalla {
         //Creo una etiqueta
         grid.getChildren().add(new Etiqueta("NOMBRE ")); //agrega a la grid la etiqueta
         //Crear cuadro de texto
-        Texto tex_nombre = new Texto();
+        tex_nombre.setId("tex_nombre");
         grid.getChildren().add(tex_nombre);// agrega el etxto a la grid
 
         //CREAR COMBO
-        Combo com_combo = new Combo();
+        
+        com_combo.setMetodo("seleccionoCombo");
         com_combo.setCombo("select ide_marca,marca from trans_marcas");
 
         grid.getChildren().add(new Etiqueta("MARCAS"));
@@ -80,6 +83,14 @@ public class pre_holamundo extends Pantalla {
 
 
 
+    }
+    
+    /**
+     * Se ejecuta cada ves q seleccione un elemento del combo
+     */
+    public void seleccionoCombo(){
+        tex_nombre.setValue(com_combo.getValue());
+        utilitario.addUpdate("tex_nombre"); //UTILIZA AJAX SOLO PARA ACTUALIZAR EL CAMPO DE TEXTO tex_nombre
     }
 
     public void verMensaje() {
