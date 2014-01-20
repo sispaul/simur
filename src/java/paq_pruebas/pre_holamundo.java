@@ -74,14 +74,8 @@ public class pre_holamundo extends Pantalla {
         grid.getChildren().add(new Etiqueta("HORA"));
         grid.getChildren().add(hor_hora);
         
-        
-        
-        
-
+ 
         agregarComponente(grid);
-
-
-
 
     }
     
