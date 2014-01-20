@@ -24,7 +24,9 @@ public class pre_holamundo extends Pantalla{
         //bot_mensaje.setOnclick("alert('HOLA');");//Ejecuta javascript
         bot_mensaje.setMetodo("verMensaje"); // EJECUTA UN METODO 
         
-        agregarComponente(bot_mensaje);
+        //agregarComponente(bot_mensaje);
+        
+        bar_botones.agregarBoton(bot_mensaje);
         
     }
     
