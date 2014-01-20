@@ -21,6 +21,7 @@ import framework.componentes.Menu;
 import framework.componentes.MetodoRemoto;
 import framework.componentes.Notificacion;
 import framework.componentes.Radio;
+import framework.componentes.SeleccionArchivo;
 import framework.componentes.TerminalTabla;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +60,8 @@ public class pre_index {
     private ImportarTabla imt_importar;
     private Dialogo dia_sucu_usuario;
     private Radio rad_sucursales;
+    
+    private SeleccionArchivo sar_upload;
 
     public pre_index() {
         if (utilitario.getConexion() != null && utilitario.getVariable("NICK") != null) {
@@ -91,6 +94,9 @@ public class pre_index {
             
             fot_formato = new FormatoTabla();
             mensajes.getChildren().add(fot_formato);
+            
+            sar_upload=new SeleccionArchivo();
+            mensajes.getChildren().add(sar_upload);
 
             imt_importar = new ImportarTabla();
             mensajes.getChildren().add(imt_importar);
@@ -155,6 +161,8 @@ public class pre_index {
             lin_salir.setTitle("Cerrar Sesión");
             lin_salir.setStyle("position:fixed;right:2px;top:1px;");
             formulario.getChildren().add(lin_salir);
+            
+            
         }
     }
 
@@ -208,6 +216,7 @@ public class pre_index {
         mensajes.getChildren().add(term_tabla);
         mensajes.getChildren().add(fot_formato);
         mensajes.getChildren().add(imt_importar);
+        mensajes.getChildren().add(sar_upload);
         dibuja.getChildren().clear();
         utilitario.getConexion().setSqlPantalla(new ArrayList<String>());
         clase = utilitario.cargarPantalla(str_paquete, str_tipo);
@@ -353,4 +362,13 @@ public class pre_index {
     public void setTerm_tabla(TerminalTabla term_tabla) {
         this.term_tabla = term_tabla;
     }     
+
+    public SeleccionArchivo getSar_upload() {
+        return sar_upload;
+    }
+
+    public void setSar_upload(SeleccionArchivo sar_upload) {
+        this.sar_upload = sar_upload;
+    }
+    
 }

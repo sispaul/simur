@@ -11,7 +11,6 @@ import framework.componentes.FormatoTabla;
 import framework.componentes.Grupo;
 import framework.componentes.ImportarTabla;
 import framework.componentes.Notificacion;
-import framework.componentes.Tabla;
 import framework.componentes.TerminalTabla;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,7 +26,6 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.naming.Context;
@@ -42,8 +40,6 @@ import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
-import org.primefaces.push.PushContext;
-import org.primefaces.push.PushContextFactory;
 import org.primefaces.util.Constants;
 
 /**
@@ -52,6 +48,13 @@ import org.primefaces.util.Constants;
  */
 public class Utilitario extends Framework {
 
+    /**
+     * Agrega un mensaje de notificación que bloquea el menu y es necesario que
+     * el usuario la cierre
+     *
+     * @param titulo
+     * @param mensaje
+     */
     public void agregarNotificacionInfo(String titulo, String mensaje) {
         Notificacion not_notificacion = (Notificacion) FacesContext.getCurrentInstance().getViewRoot().findComponent("formulario:not_notificacion");
         if (not_notificacion != null) {
@@ -62,6 +65,14 @@ public class Utilitario extends Framework {
         }
     }
 
+    /**
+     * Agrega un mensaje de notificación que bloquea el menu y es necesario que
+     * el usuario la cierre
+     *
+     * @param titulo
+     * @param mensaje
+     * @param pathImagen ruta de imagen
+     */
     public void agregarNotificacion(String titulo, String mensaje, String pathImagen) {
         Notificacion not_notificacion = (Notificacion) FacesContext.getCurrentInstance().getViewRoot().findComponent("formulario:not_notificacion");
         if (not_notificacion != null) {
@@ -71,15 +82,23 @@ public class Utilitario extends Framework {
         }
     }
 
-    public Tabla getTablaisFocus() {
-        Tabla tabla = (Tabla) FacesContext.getCurrentInstance().getViewRoot().findComponent("formulario:" + getVariable("TABLA_FOCO"));
-        return tabla;
-    }
+   
 
+    /**
+     * Retorna el Panel asignado para mensajes
+     *
+     * @return
+     */
     public Grupo getMensajes() {
         return (Grupo) FacesContext.getCurrentInstance().getViewRoot().findComponent("formulario:mensajes");
     }
 
+    /**
+     * Retorna una lista con 2 registros uno PADRE y otro HIJO, es para tablas
+     * recursivas que necesitan un nivel
+     *
+     * @return
+     */
     public List getListaNiveles() {
         //pARA USAR EN TODAS LAS TABLAS QUE SEAN RECURSIVAS
         List lista = new ArrayList();
@@ -94,29 +113,13 @@ public class Utilitario extends Framework {
         return lista;
     }
 
-    public void addUpdateTabla(Tabla tabla, String columnas, String componentes) {
-        if (columnas != null && !columnas.isEmpty()) {
-            String[] campos = columnas.split(",");
-
-            for (int i = 0; i < campos.length; i++) {
-                String str_update = tabla.getColumna(campos[i]).getId();
-
-                if (tabla.isTipoFormulario() == false) {
-                    str_update = str_update.replace("**", tabla.getFilaActual() + "");
-                }
-                addUpdate(str_update);
-            }
-        }
-        if (componentes != null && !componentes.isEmpty()) {
-            String[] compo = componentes.split(",");
-
-            for (int i = 0; i < compo.length; i++) {
-                String str_update = compo[i];
-                addUpdate(str_update);
-            }
-        }
-    }
-
+ 
+    /**
+     * Verifica que un número de ruc sea válido
+     *
+     * @param str_ruc
+     * @return
+     */
     public boolean validarRUC(String str_ruc) {
         boolean boo_correcto = false;
         try {
@@ -186,6 +189,12 @@ public class Utilitario extends Framework {
         return boo_correcto;
     }
 
+    /**
+     * Verifica que un número de cédula sea válido
+     *
+     * @param str_cedula
+     * @return
+     */
     public boolean validarCedula(String str_cedula) {
         boolean boo_correcto = false;
         try {
@@ -230,6 +239,13 @@ public class Utilitario extends Framework {
         return boo_correcto;
     }
 
+    /**
+     * Calcula la diferencia en número de días entre dos fechas
+     *
+     * @param fechaInicial
+     * @param fechaFinal
+     * @return
+     */
     public int getDiferenciasDeFechas(Date fechaInicial, Date fechaFinal) {
         SimpleDateFormat formatoFecha = new SimpleDateFormat(FORMATO_FECHA);
         String fechaInicioString = formatoFecha.format(fechaInicial);
@@ -250,6 +266,27 @@ public class Utilitario extends Framework {
         return ((int) dias);
     }
 
+    /**
+     * Calcula el número de día de la semana de una fecha, considera que el día
+     * lunes es el día 1
+     *
+     * @param fecha
+     * @return
+     */
+    public int getNumeroDiasSemana(Date fecha) {
+        Calendar cal = new GregorianCalendar();
+        cal.setTimeInMillis(fecha.getTime());
+        //Considera que lunes es el dia 1
+        return cal.get(Calendar.DAY_OF_WEEK) - 1;
+    }
+
+    /**
+     * Suma dias a una fecha y retorna la nueva fecha
+     *
+     * @param fch
+     * @param dias
+     * @return
+     */
     public Date sumarDiasFecha(Date fch, int dias) {
         Calendar cal = new GregorianCalendar();
         cal.setTimeInMillis(fch.getTime());
@@ -257,6 +294,12 @@ public class Utilitario extends Framework {
         return new Date(cal.getTimeInMillis());
     }
 
+    /**
+     * Válida que un correo electrónico sea válido
+     *
+     * @param email
+     * @return
+     */
     public boolean isEmailValido(String email) {
         Pattern pat = Pattern.compile("^([0-9a-zA-Z]([_.w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-w]*[0-9a-zA-Z].)+([a-zA-Z]{2,9}.)+[a-zA-Z]{2,3})$");
         Matcher mat = pat.matcher(email);
@@ -267,6 +310,13 @@ public class Utilitario extends Framework {
         }
     }
 
+    /**
+     * Asigna un formato con una cantidad de decimales a una cantidad numérica
+     *
+     * @param numero
+     * @param numero_decimales
+     * @return
+     */
     public String getFormatoNumero(Object numero, int numero_decimales) {
         String lstr_formato = "#";
         for (int i = 0; i < numero_decimales; i++) {
@@ -287,31 +337,59 @@ public class Utilitario extends Framework {
         }
     }
 
+    /**
+     * Retorna un objeto de tipo Date con la fecha actual
+     *
+     * @return
+     */
     public Date getDate() {
         return new Date();
     }
 
-    public void mandarMensaje() {
-        PushContext pushContext = PushContextFactory.getDefault().getPushContext();
-        pushContext.push("/notifications", new FacesMessage("aaaa", "eee"));
-    }
-
+    /**
+     * Retorna el componente Buscar del menú contextual (click derecho)
+     *
+     * @return
+     */
     public BuscarTabla getBuscaTabla() {
         return (BuscarTabla) FacesContext.getCurrentInstance().getViewRoot().findComponent("formulario:bus_buscar");
     }
 
+    /**
+     * Retorna el componente ImportarTabla del menú contextual (click derecho)
+     *
+     * @return
+     */
     public ImportarTabla getImportarTabla() {
         return (ImportarTabla) FacesContext.getCurrentInstance().getViewRoot().findComponent("formulario:imt_importar");
     }
 
+    /**
+     * Retorna el componente FormatoTabla del menú contextual (click derecho)
+     *
+     * @return
+     */
     public FormatoTabla getFormatoTabla() {
         return (FormatoTabla) FacesContext.getCurrentInstance().getViewRoot().findComponent("formulario:fot_formato");
     }
 
+    /**
+     * Retorna el componente Terminal del menú contextual (click derecho)
+     *
+     * @return
+     */
     public TerminalTabla getTerminal() {
         return (TerminalTabla) FacesContext.getCurrentInstance().getViewRoot().findComponent("formulario:term_tabla");
     }
 
+ 
+    /**
+     * Evalua una expresión aritmética, y retorna el resultado, ejemplo
+     * 2*2/(4-2) retorna 2
+     *
+     * @param expresion
+     * @return
+     */
     public double evaluarExpresion(String expresion) {
         //Resuleve el valor de una expresion Ejemplo: 5+3-3
         double resultado = 0;
@@ -329,10 +407,19 @@ public class Utilitario extends Framework {
         return resultado;
     }
 
+    /**
+     * Limpia todos los componentes a su estado original
+     */
     public void resetarPantalla() {
         RequestContext.getCurrentInstance().reset("formulario:dibuja");
     }
 
+    /**
+     * Retorna en letras una cantidad numérica
+     *
+     * @param numero
+     * @return
+     */
     public String getLetrasNumero(Object numero) {
         String letras = getFormatoNumero(numero);
         if (letras != null) {
@@ -346,6 +433,12 @@ public class Utilitario extends Framework {
         return letras;
     }
 
+    /**
+     * Retorna en letras con dolares y centavos una cantidad numérica
+     *
+     * @param numero
+     * @return
+     */
     public String getLetrasDolarNumero(Object numero) {
         String letras = getFormatoNumero(numero);
         if (letras != null) {
@@ -363,6 +456,12 @@ public class Utilitario extends Framework {
         return letras;
     }
 
+    /**
+     * Metodo recursivo que calcula en letras una cantidad numerica
+     *
+     * @param numero
+     * @return
+     */
     private String recursivoNumeroLetras(int numero) {
         String cadena = new String();
         // Aqui identifico si lleva millones
@@ -551,6 +650,12 @@ public class Utilitario extends Framework {
         return cadena;
     }
 
+    /**
+     * Crea un archivo para que pueda ser descargado en el navegador, debe
+     * previamente existir el path de archivo
+     *
+     * @param path
+     */
     public void crearArchivo(String path) {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         StreamedContent content;
@@ -594,6 +699,13 @@ public class Utilitario extends Framework {
         }
     }
 
+    /**
+     * Convierte una expresion separada por comas en una expresion aumentada
+     * comilla simple, ejemplo 1,2,3 retorna '1','2','3'
+     *
+     * @param cadena
+     * @return
+     */
     public String generarComillaSimple(String cadena) {
         String str_cadena = "";
         String[] vec = cadena.split(",");
@@ -606,6 +718,12 @@ public class Utilitario extends Framework {
         return str_cadena;
     }
 
+    /**
+     * Busca un campo de la base de datos de la tabla sis_empresa
+     *
+     * @param campo
+     * @return
+     */
     public String getCampoEmpresa(String campo) {
         String valor = null;
         TablaGenerica tab_empresa = consultar("SELECT IDE_EMPR," + campo + " FROM SIS_EMPRESA WHERE IDE_EMPR=" + getVariable("IDE_EMPR"));
@@ -615,6 +733,12 @@ public class Utilitario extends Framework {
         return valor;
     }
 
+    /**
+     * Permite instanciar a un EJB desde una clase
+     *
+     * @param ejb
+     * @return
+     */
     public Object instanciarEJB(Class<?> ejb) {
         //Para cuando se necesite instanciar el EJB
         try {
@@ -626,6 +750,11 @@ public class Utilitario extends Framework {
         return null;
     }
 
+    /**
+     * Retorna el nombre del proyecto de la aplicación web
+     *
+     * @return
+     */
     public String getNombreProyecto() {
         ExternalContext iecx = FacesContext.getCurrentInstance().getExternalContext();
         HttpServletRequest request = (HttpServletRequest) iecx.getRequest();
@@ -635,6 +764,11 @@ public class Utilitario extends Framework {
         return contexto;
     }
 
+    /**
+     * Retorna el id de sessión asignado al usuario logeado
+     *
+     * @return
+     */
     public String getIdSession() {
         String str_id = null;
         try {
@@ -647,6 +781,12 @@ public class Utilitario extends Framework {
         return str_id;
     }
 
+    /**
+     * Retorna la edad a partir de una fecha
+     *
+     * @param fecha
+     * @return
+     */
     public int getEdad(String fecha) {
         Calendar fechaNacimiento = Calendar.getInstance();
         Calendar fechaActual = Calendar.getInstance();
@@ -660,6 +800,12 @@ public class Utilitario extends Framework {
         return anios;
     }
 
+    /**
+     * Retorna el nombre de un mes a partir del número de mes
+     *
+     * @param numero
+     * @return
+     */
     public String getNombreMes(int numero) {
         String meses[] = {"", "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"};
         return meses[numero];
@@ -714,4 +860,92 @@ public class Utilitario extends Framework {
         }
     }
 
+    /**
+     * Retorna la diferencia en horas entre dos horas
+     *
+     * @param fechaInicio
+     * @param fechaFin
+     * @return
+     */
+    public double getDiferenciaHoras(Date fechaInicio, Date fechaFin) {
+        double tiempoInicial = fechaInicio.getTime();
+        double tiempoFinal = fechaFin.getTime();
+        double dou_resta = tiempoFinal - tiempoInicial;
+        //el metodo getTime te devuelve en mili segundos para saberlo en mins debes hacer
+        dou_resta = dou_resta / (1000 * 3600);
+        return dou_resta;
+    }
+
+    /**
+     * Retorna la diferencia en minutos entre dos horas
+     *
+     * @param fechaInicio
+     * @param fechaFin
+     * @return
+     */
+    public double getDiferenciaMinutos(Date fechaInicio, Date fechaFin) {
+        double tiempoInicial = fechaInicio.getTime();
+        double tiempoFinal = fechaFin.getTime();
+        double dou_resta = tiempoFinal - tiempoInicial;
+        dou_resta = dou_resta / (1000 * 60);
+        return dou_resta;
+    }
+
+    /**
+     * Válida que un rango de fecha sea correcto
+     *
+     * @param fechaInicial
+     * @param fechaFinal
+     * @return
+     */
+    public boolean isFechasValidas(String fechaInicial, String fechaFinal) {
+
+        if ((fechaInicial != null && isFechaValida(fechaInicial)) && (fechaFinal != null && isFechaValida(fechaFinal))) {
+            //comparo que fecha2 es mayor a fecha1
+            if (isFechaMayor(getFecha(fechaFinal), getFecha(fechaInicial)) || getFecha(fechaInicial).equals(getFecha(fechaFinal))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Retorna una fecha en formato largo
+     *
+     * @param fecha
+     * @return
+     */
+    public String getFechaLarga(String fecha) {
+        SimpleDateFormat formateador = new SimpleDateFormat(
+                "EEEE d 'de' MMMM 'del' yyyy");
+        String str_fecha = formateador.format(getFecha(fecha));
+        return str_fecha;
+    }
+
+    /**
+     * Convierte a Date una hora usando los métodos de la clase Calendar
+     *
+     * @param hora
+     * @return
+     */
+    public Date getHoraCalendario(String hora) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        Date date;
+        try {
+            date = formatter.parse(hora);
+            cal.setTime(date);
+        } catch (Exception e) {
+            try {
+                cal.setTime(getHora(hora));
+            } catch (Exception e1) {
+            }
+        }
+        cal.set(Calendar.AM_PM, Calendar.PM);
+        cal.set(Calendar.HOUR_OF_DAY, cal.get(Calendar.HOUR_OF_DAY));
+        cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE));
+        cal.set(Calendar.SECOND, cal.get(Calendar.SECOND));
+        return cal.getTime();
+    }
 }
