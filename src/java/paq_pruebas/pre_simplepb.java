@@ -26,7 +26,9 @@ public class pre_simplepb extends Pantalla{
         tab_tabla.getColumna("nombre").setEstilo("font-size:16px;color:blue;");
         
         tab_tabla.setTipoFormulario(true);//COnvierte en formulario
-                
+        
+        tab_tabla.getColumna("codigo").setCombo("select codigo, nombre from trans_tipo");
+        
         
         tab_tabla.dibujar(); //Ultima Metodo de la tabla.
         
