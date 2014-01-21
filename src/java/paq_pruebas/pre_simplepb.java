@@ -22,7 +22,7 @@ public class pre_simplepb extends Pantalla{
         tab_tabla.setTabla("trans_empresa", "ide_empresa", 1);//nombre de la tabla, pk de tabla, numero tabla
         tab_tabla.setHeader("EMPRESAS - PB");
         
-        //tab_tabla.getColumna("nombre").setLectura(true);//SoloLectura
+        tab_tabla.getColumna("fecha_catastro").setLectura(true);//SoloLectura
         tab_tabla.getColumna("nombre").setEstilo("font-size:16px;color:blue;");
         
         tab_tabla.setTipoFormulario(true);//COnvierte en formulario
