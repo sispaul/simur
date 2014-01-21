@@ -20,8 +20,9 @@ public class pre_simplepb extends Pantalla{
         //id a la tabla
         tab_tabla.setId("tab_tabla");
         tab_tabla.setTabla("CMT_GENERO", "IDE_CMGEN", 1);//nombre de la tabla, pk de tabla, numero tabla
+        tab_tabla.setHeader("Genero");
         
-        tab_tabla.dibujar();
+        tab_tabla.dibujar(); //Ultima Metodo de la tabla.
         
         PanelTabla pat_panel=new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
