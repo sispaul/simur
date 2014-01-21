@@ -20,8 +20,16 @@ public class pre_simplediego extends Pantalla {
         
         //1 Id a la tabla
         tab_tabla.setId("tab_tabla");        
-        tab_tabla.setTabla("CMT_ACCION", "IDE_CMACC", 1);
+        tab_tabla.setTabla("CMT_REPRESENTANTE", "IDE_CMREP", 1);
+        tab_tabla.setHeader("REPRESENTANTES"); //Poner titulo a la tabla 
         
+        tab_tabla.getColumna("DOCUMENTO_IDENTIDAD_CMREP").setLectura(true); //La columna  se hace de lectura
+        tab_tabla.getColumna("DOCUMENTO_IDENTIDAD_CMREP").setEstilo("font-size:18px;color:blue;"); //estilo css
+        tab_tabla.setTipoFormulario(true); //convierte en formulario
+        
+        //HACER COMBO
+        tab_tabla.getColumna("IDE_CMTID").setCombo("select IDE_CMTID,DETALLE_CMTID from CMT_TIPO_DOCUMENTO");        
+        //Ultimo metodo de la tabla
         tab_tabla.dibujar();
         
         PanelTabla pat_panel=new PanelTabla();  //Para el menu contextual
