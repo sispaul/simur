@@ -19,12 +19,13 @@ public class pre_simplepb extends Pantalla{
     public pre_simplepb() {
         //id a la tabla
         tab_tabla.setId("tab_tabla");
-        tab_tabla.setTabla("CMT_GENERO", "IDE_CMGEN", 1);//nombre de la tabla, pk de tabla, numero tabla
-        tab_tabla.setHeader("Genero");
+        tab_tabla.setTabla("trans_empresa", "ide_empresa", 1);//nombre de la tabla, pk de tabla, numero tabla
+        tab_tabla.setHeader("EMPRESAS - PB");
         
-        tab_tabla.getColumna("DETALLE_CMGEN").setLectura(true);
-        tab_tabla.getColumna("DETALLE_CMGEN").setEstilo("font-size:16px;color:blue;");
+        //tab_tabla.getColumna("nombre").setLectura(true);//SoloLectura
+        tab_tabla.getColumna("nombre").setEstilo("font-size:16px;color:blue;");
         
+        tab_tabla.setTipoFormulario(true);//COnvierte en formulario
                 
         
         tab_tabla.dibujar(); //Ultima Metodo de la tabla.
