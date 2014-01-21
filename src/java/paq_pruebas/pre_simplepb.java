@@ -22,8 +22,8 @@ public class pre_simplepb extends Pantalla{
         tab_tabla.setTabla("CMT_GENERO", "IDE_CMGEN", 1);//nombre de la tabla, pk de tabla, numero tabla
         tab_tabla.setHeader("Genero");
         
-        tab_tabla.getColumna("FECHA_INGRE").setLectura(true);
-        tab_tabla.getColumna("FECHA_INGRE").setEstilo("font-size:20px;color:red;");
+        tab_tabla.getColumna("DETALLE_CMGEN").setLectura(true);
+        tab_tabla.getColumna("DETALLE_CMGEN").setEstilo("font-size:16px;color:blue;");
         
                 
         
