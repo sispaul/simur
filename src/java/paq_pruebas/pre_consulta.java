@@ -4,6 +4,7 @@
  */
 package paq_pruebas;
 
+import framework.componentes.Boton;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import paq_sistema.aplicacion.Pantalla;
@@ -29,9 +30,24 @@ public class pre_consulta extends Pantalla {
         pat_panel.setPanelTabla(tab_consulta);
 
         agregarComponente(pat_panel);
+        
+        Boton bt=new Boton();
+        bt.setValue("Direccion Seleccionada");
+        bt.setMetodo("imprimirDireccionSeleccionada");
+        bar_botones.agregarBoton(bt);
 
     }
 
+    public void imprimirDireccionSeleccionada(){
+        utilitario.agregarMensaje("DIRECCION", tab_consulta.getValor("DIRECCION_CMREP"));
+        
+        //RECORRER TABLA
+        for (int i = 0; i < tab_consulta.getTotalFilas(); i++) {
+            utilitario.agregarMensajeInfo("", tab_consulta.getValor(i,"DOCUMENTO_IDENTIDAD_CMREP"));
+        }
+    }
+    
+    
     @Override
     public void insertar() {
     }
