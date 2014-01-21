@@ -50,16 +50,28 @@ public class pre_suma extends Pantalla {
 
 
         Boton bot2 = new Boton();
-        bot2.setValue("MENSAJE ");
+        bot2.setValue("MENSAJE INFO");
         bot2.setMetodo("agregarMensajeInf");
         bar_botones.agregarBoton(bot2);
 
         Boton bot3 = new Boton();
-        bot3.setValue("MENSAJE ");
+        bot3.setValue("MENSAJE ERROR");
         bot3.setMetodo("agregarMensajeError");
         bar_botones.agregarBoton(bot3);
 
 
+        //NOTIFICACIONES
+
+        Boton bot4 = new Boton();
+        bot4.setValue("MOTIFICACIÓN");
+        bot4.setMetodo("agregarNotificacion");
+        bar_botones.agregarBoton(bot4);
+
+
+    }
+
+    public void agregarNotificacion() {
+        utilitario.agregarNotificacionInfo("TITULO DE LA NOTIFICACIÓN", "Detalle");
     }
 
     public void agregarMensaje() {
