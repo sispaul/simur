@@ -29,9 +29,12 @@ public class pre_suma extends Pantalla {
         bot_suma.setMetodo("sumarNumeros");
         
         Grid grid = new Grid();
-        
+        grid.setColumns(4);
         grid.getChildren().add(tex_numero1);
         grid.getChildren().add(tex_numero2);
+        
+        tex_resultado.setId("tex_resultado");
+        
         grid.getChildren().add(tex_resultado);
         grid.getChildren().add(bot_suma);
         
@@ -55,7 +58,7 @@ public class pre_suma extends Pantalla {
         }
         
         tex_resultado.setValue(dou_resultado + "");
-        utilitario.addUpdate("@form"); //Actualiza la pantalla
+        utilitario.addUpdate("tex_resultado"); //Actualiza la pantalla
         
     }
     
