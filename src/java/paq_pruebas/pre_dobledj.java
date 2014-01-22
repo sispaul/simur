@@ -23,6 +23,7 @@ public class pre_dobledj extends Pantalla {
         tab_cabecera.setId("tab_cabecera");
         tab_cabecera.setTabla("trans_marcas", "ide_marca", 1);
         tab_cabecera.setHeader("LISTADO DE MARCAS");
+        tab_cabecera.setTipoFormulario(true);
         tab_cabecera.agregarRelacion(tab_detalle); ///relación        
         tab_cabecera.dibujar();
 
