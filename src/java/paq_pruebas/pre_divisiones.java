@@ -50,7 +50,10 @@ public class pre_divisiones  extends Pantalla{
         agregarComponente(div1);
         
     }
-   
+   /**
+    * Pone el valor de marca en el campo modelo
+    * @param evt  evento del cliente
+    */
     public void cambioMarca(AjaxBehaviorEvent evt){
         //1) 
         tab_tabla.modificar(evt);
