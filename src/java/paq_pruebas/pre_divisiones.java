@@ -64,22 +64,15 @@ public class pre_divisiones extends Pantalla {
         tab_tabla.setValor("modelo", tab_tabla.getValor("marca"));
         //actualizar campo
 
-        utilitario.addUpdateTabla(tab_tabla, "modelo", "");
+
 
         //Ejecutar sentecias directamente
 
         String str_sql = "UPDATE bodt_bodega SET modelo='" + tab_tabla.getValor("modelo") + "' where ide_bodega=" + tab_tabla.getValor("ide_bodega");
-        
-        String str_mensaje = con_postgres.ejecutarSql(str_sql);
-        if (str_mensaje.isEmpty()) {
-            //Se ejecuto correctamente la sentencia
-            utilitario.agregarMensaje("Se actualizo correctamente", "");
-        } else {
-            //no se ejucto
-            utilitario.agregarMensajeError("NO SE PUDO ACTUALIZAR", str_mensaje);
-        }
-
-
+        System.out.println(str_sql);
+        con_postgres.agregarSql(str_sql);
+        con_postgres.guardarPantalla();
+        utilitario.addUpdateTabla(tab_tabla, "modelo", "");
 
     }
 
