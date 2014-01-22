@@ -7,6 +7,7 @@ package paq_pruebas;
 import framework.componentes.Division;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
+import javax.faces.event.AjaxBehaviorEvent;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
@@ -28,6 +29,9 @@ public class pre_divisiones  extends Pantalla{
         tab_tabla.setConexion(con_postgres);
         tab_tabla.setTabla("bodt_bodega", "ide_bodega", 1);
         tab_tabla.setTipoFormulario(true);
+        //Ejecutar metodo en la columna marca
+        tab_tabla.getColumna("marca").setMetodoChange("cambioMarca");
+        
         tab_tabla.getGrid().setColumns(6);
         tab_tabla.dibujar();
         
@@ -47,6 +51,17 @@ public class pre_divisiones  extends Pantalla{
         
     }
    
+    public void cambioMarca(AjaxBehaviorEvent evt){
+        //1) 
+        tab_tabla.modificar(evt);
+        
+        ////PRGRAMAR LA FUNCION
+        tab_tabla.setValor("modelo", tab_tabla.getValor("marca"));
+        //actualizar campo
+        
+        utilitario.addUpdateTabla(tab_tabla, "modelo", "");
+    }
+    
     
     @Override
     public void insertar() {
