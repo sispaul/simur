@@ -7,8 +7,10 @@ package paq_pruebas;
 import framework.componentes.Boton;
 import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
+import framework.componentes.Grid;
 import framework.componentes.SeleccionCalendario;
 import framework.componentes.SeleccionTabla;
+import framework.componentes.Texto;
 import paq_sistema.aplicacion.Pantalla;
 
 /**
@@ -21,6 +23,8 @@ public class pre_componentes extends Pantalla {
     private SeleccionTabla set_tabla = new SeleccionTabla();
     private SeleccionTabla set_modelos = new SeleccionTabla();
     private SeleccionCalendario sec_rango = new SeleccionCalendario();
+    //Buscar 
+    private Texto tex_busca = new Texto();
 
     public pre_componentes() {
         bar_botones.limpiar(); /// deja en blanco la barra de botones
@@ -55,6 +59,19 @@ public class pre_componentes extends Pantalla {
         ///configurar el seleccion tabla 
 
         set_tabla.setId("set_tabla");
+
+        Grid gri_busca = new Grid();
+        gri_busca.setColumns(2);
+        gri_busca.getChildren().add(tex_busca);
+
+        Boton bot_busca = new Boton();
+        bot_busca.setValue("Buscar");
+        bot_busca.setMetodo("buscarMarca");
+
+        gri_busca.getChildren().add(bot_busca);
+
+        set_tabla.getChildren().add(gri_busca);
+
         set_tabla.setTitle("SELECCIONE MARCAS");
         set_tabla.setSeleccionTabla("SELECT ide_marca,marca from trans_marcas", "ide_marca");
         set_tabla.getBot_aceptar().setMetodo("aceptoSeleccionTabla");
@@ -95,6 +112,16 @@ public class pre_componentes extends Pantalla {
         bot3.setValue("ABRIR SELECCION CALENDARIO");
         bot3.setMetodo("abrirSeleccionCalendario");
         bar_botones.agregarBoton(bot3);
+
+    }
+
+    public void buscarMarca() {
+        if (tex_busca.getValue() != null && tex_busca.getValue().toString().isEmpty() == false) {
+            set_tabla.getTab_seleccion().setSql("SELECT ide_marca,marca from trans_marcas where marca like '" + tex_busca.getValue() + "'");
+            set_tabla.getTab_seleccion().ejecutarSql();
+        } else {
+            utilitario.agregarMensaje("Debe ingresar un valor en el texto", "");
+        }
 
     }
 
