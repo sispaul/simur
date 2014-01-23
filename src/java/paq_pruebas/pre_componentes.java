@@ -120,7 +120,7 @@ public class pre_componentes extends Pantalla {
 
     public void buscarMarca() {
         if (tex_busca.getValue() != null && tex_busca.getValue().toString().isEmpty() == false) {
-            set_tabla.getTab_seleccion().setSql("SELECT ide_marca,marca from trans_marcas where marca like '" + tex_busca.getValue() + "'");
+            set_tabla.getTab_seleccion().setSql("SELECT ide_marca,marca from trans_marcas where marca like '%" + tex_busca.getValue() + "%'");
             set_tabla.getTab_seleccion().ejecutarSql();
         } else {
             utilitario.agregarMensaje("Debe ingresar un valor en el texto", "");
