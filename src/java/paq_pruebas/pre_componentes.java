@@ -21,6 +21,8 @@ public class pre_componentes extends Pantalla {
     private SeleccionTabla set_modelos = new SeleccionTabla();
 
     public pre_componentes() {
+        bar_botones.limpiar(); /// deja en blanco la barra de botones
+        
         //Configurando el dialogo
         dia_dialogo.setId("dia_dialogo");
         dia_dialogo.setTitle("DIALOGO DE PRUEBA"); //titulo
@@ -79,7 +81,9 @@ public class pre_componentes extends Pantalla {
 
         
     }
-    
+    /**
+     * se ejecuta cuando da click en el boton aceptar del componente selecciontabla set_modelos
+     */
     public void aceptoSeleccionTablaUnica(){
         //getValorSeleccionado() YA que es de tipo radio y solo se selecciona un registro
         if(set_modelos.getValorSeleccionado()!=null && set_modelos.getValorSeleccionado().isEmpty()==false){
@@ -91,7 +95,9 @@ public class pre_componentes extends Pantalla {
         }
     }
     
-
+    /**
+     * Dibuja el componente selecciontabla set_modelos
+     */
     public void abrirSeleccionTablaUnica() {
         set_modelos.dibujar();
     }
