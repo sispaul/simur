@@ -67,6 +67,7 @@ public class pre_componentes extends Pantalla {
         set_modelos.setTitle("SELECCIONE UN MODELO");
         set_modelos.setSeleccionTabla("SELECT ide_modelo,des_modelo,marca from trans_modelos modelo INNER JOIN trans_marcas marca on modelo.ide_marca=marca.ide_marca\n"
                 + "order by marca,des_modelo", "ide_modelo");
+        set_modelos.setRadio(); /// para que permita seleccionar un solo registro
         agregarComponente(set_modelos);
 
         Boton bot2 = new Boton();
