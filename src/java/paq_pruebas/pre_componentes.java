@@ -86,7 +86,7 @@ public class pre_componentes extends Pantalla {
         /////configurar el seleccion calendario
         sec_rango.setId("sec_rango");
         sec_rango.setTitle("RNAGO DE FECHAS");
-
+        sec_rango.setMultiple(false); //mostrar una fecha
         sec_rango.getBot_aceptar().setMetodo("aceptoSeleccionCalendario");
         agregarComponente(sec_rango);
 
