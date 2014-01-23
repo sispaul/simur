@@ -70,7 +70,8 @@ public class pre_componentes extends Pantalla {
 
         gri_busca.getChildren().add(bot_busca);
 
-        set_tabla.getChildren().add(gri_busca);
+                
+        set_tabla.getGri_cuerpo().getChildren().add(gri_busca); //
 
         set_tabla.setTitle("SELECCIONE MARCAS");
         set_tabla.setSeleccionTabla("SELECT ide_marca,marca from trans_marcas", "ide_marca");
