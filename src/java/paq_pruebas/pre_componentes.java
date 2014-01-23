@@ -18,6 +18,7 @@ public class pre_componentes extends Pantalla {
 
     private Dialogo dia_dialogo = new Dialogo();
     private SeleccionTabla set_tabla = new SeleccionTabla();
+    private SeleccionTabla set_modelos = new SeleccionTabla();
 
     public pre_componentes() {
         //Configurando el dialogo
@@ -59,24 +60,35 @@ public class pre_componentes extends Pantalla {
         Boton bot1 = new Boton();
         bot1.setValue("ABRIR SELECCION TABLA");
         bot1.setMetodo("abrirSeleccionTabla");
-
         bar_botones.agregarBoton(bot1);
 
+////configurar seleccion unica
+        set_modelos.setId("set_modelos");
+        set_modelos.setTitle("SELECCIONE UN MODELO");
+        set_modelos.setSeleccionTabla("SELECT ide_modelo,des_modelo,marca from trans_modelos modelo INNER JOIN trans_marcas marca on modelo.ide_marca=marca.ide_marca\n"
+                + "order by marca,des_modelo", "ide_modelo");
+        agregarComponente(set_modelos);
 
+        Boton bot2 = new Boton();
+        bot.setValue("ABRIR SELECCION TABLA UNICA");
+        bot2.setMetodo("abrirSeleccionTablaUnica");
+        bar_botones.agregarBoton(bot2);
 
     }
 
-    public void aceptoSeleccionTabla(){
-        if(set_tabla.getSeleccionados()!=null && set_tabla.getSeleccionados().isEmpty()==false){
+    public void abrirSeleccionTablaUnica() {
+        set_modelos.dibujar();
+    }
+
+    public void aceptoSeleccionTabla() {
+        if (set_tabla.getSeleccionados() != null && set_tabla.getSeleccionados().isEmpty() == false) {
             utilitario.agregarMensaje("SELECCIONADOS", set_tabla.getSeleccionados());
             set_tabla.cerrar();
-        }
-        else{
+        } else {
             utilitario.agregarMensajeInfo("Debe seleccionar almenos un registro", "");
         }
     }
-    
-    
+
     public void abrirSeleccionTabla() {
         set_tabla.dibujar();
     }
@@ -117,5 +129,13 @@ public class pre_componentes extends Pantalla {
 
     public void setSet_tabla(SeleccionTabla set_tabla) {
         this.set_tabla = set_tabla;
+    }
+
+    public SeleccionTabla getSet_modelos() {
+        return set_modelos;
+    }
+
+    public void setSet_modelos(SeleccionTabla set_modelos) {
+        this.set_modelos = set_modelos;
     }
 }
