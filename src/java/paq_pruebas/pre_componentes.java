@@ -61,6 +61,7 @@ public class pre_componentes extends Pantalla {
 
         Boton bot1 = new Boton();
         bot1.setValue("ABRIR SELECCION TABLA");
+        bot1.setIcon("ui-icon-document"); //pone icono de jquery temeroller
         bot1.setMetodo("abrirSeleccionTabla");
         bar_botones.agregarBoton(bot1);
 
@@ -77,6 +78,7 @@ public class pre_componentes extends Pantalla {
         Boton bot2 = new Boton();
         bot2.setValue("ABRIR SELECCION TABLA UNICA");
         bot2.setMetodo("abrirSeleccionTablaUnica");
+        bot2.setIcon("ui-guardar"); //pone el icono de guardar que esta creado en estilo.css
         bar_botones.agregarBoton(bot2);
 
         
