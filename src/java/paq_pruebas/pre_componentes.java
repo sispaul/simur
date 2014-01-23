@@ -72,7 +72,7 @@ public class pre_componentes extends Pantalla {
         Boton bot_ver = new Boton();
         bot_ver.setValue("Ver Todos");
         bot_ver.setMetodo("verTodos");
-        bot_ver.getChildren().add(bot_ver);
+        gri_busca.getChildren().add(bot_ver);
 
 
         set_tabla.getGri_cuerpo().setHeader(gri_busca);
