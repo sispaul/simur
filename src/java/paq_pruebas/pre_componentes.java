@@ -68,6 +68,8 @@ public class pre_componentes extends Pantalla {
         set_modelos.setSeleccionTabla("SELECT ide_modelo,des_modelo,marca from trans_modelos modelo INNER JOIN trans_marcas marca on modelo.ide_marca=marca.ide_marca\n"
                 + "order by marca,des_modelo", "ide_modelo");
         set_modelos.setRadio(); /// para que permita seleccionar un solo registro
+        set_modelos.getBot_aceptar().setMetodo("aceptoSeleccionTablaUnica");
+        
         agregarComponente(set_modelos);
 
         Boton bot2 = new Boton();
@@ -75,7 +77,19 @@ public class pre_componentes extends Pantalla {
         bot2.setMetodo("abrirSeleccionTablaUnica");
         bar_botones.agregarBoton(bot2);
 
+        
     }
+    
+    public void aceptoSeleccionTablaUnica(){
+        if(set_modelos.getValorSeleccionado()!=null && set_modelos.getValorSeleccionado().isEmpty()==false){
+            utilitario.agregarMensaje("seleccionado", set_modelos.getValorSeleccionado());
+            set_modelos.cerrar();
+        }
+        else{
+            utilitario.agregarMensajeInfo("Debe seleccionar un registro", ""); 
+        }
+    }
+    
 
     public void abrirSeleccionTablaUnica() {
         set_modelos.dibujar();
