@@ -81,6 +81,7 @@ public class pre_componentes extends Pantalla {
     }
     
     public void aceptoSeleccionTablaUnica(){
+        //getValorSeleccionado() YA que es de tipo radio y solo se selecciona un registro
         if(set_modelos.getValorSeleccionado()!=null && set_modelos.getValorSeleccionado().isEmpty()==false){
             utilitario.agregarMensaje("seleccionado", set_modelos.getValorSeleccionado());
             set_modelos.cerrar();
