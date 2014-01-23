@@ -87,6 +87,7 @@ public class pre_componentes extends Pantalla {
         sec_rango.setId("sec_rango");
         sec_rango.setTitle("RNAGO DE FECHAS");
 
+        sec_rango.getBot_aceptar().setMetodo("aceptoSeleccionCalendario");
         agregarComponente(sec_rango);
 
 
@@ -95,6 +96,17 @@ public class pre_componentes extends Pantalla {
         bot3.setMetodo("abrirSeleccionCalendario");
         bar_botones.agregarBoton(bot3);
 
+    }
+
+    public void aceptoSeleccionCalendario() {
+        if (sec_rango.isFechasValidas()) {
+            utilitario.agregarMensaje("FECHA 1 EN STRING", sec_rango.getFecha1String());
+            utilitario.agregarMensaje("FECHA 1 EN DATE", sec_rango.getFecha1() + "");
+            sec_rango.cerrar();
+
+        } else {
+            utilitario.agregarMensajeInfo("El rango de fachas no es válido", "");
+        }
     }
 
     public void abrirSeleccionCalendario() {
