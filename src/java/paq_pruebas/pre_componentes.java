@@ -67,7 +67,7 @@ public class pre_componentes extends Pantalla {
     }
 
     public void aceptoSeleccionTabla(){
-        if(set_tabla.getSeleccionados()!=null){
+        if(set_tabla.getSeleccionados()!=null && set_tabla.getSeleccionados().isEmpty()==false){
             utilitario.agregarMensaje("SELECCIONADOS", set_tabla.getSeleccionados());
             set_tabla.cerrar();
         }
