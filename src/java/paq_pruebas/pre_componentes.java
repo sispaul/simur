@@ -6,6 +6,7 @@ package paq_pruebas;
 
 import framework.componentes.Boton;
 import framework.componentes.Dialogo;
+import framework.componentes.Etiqueta;
 import paq_sistema.aplicacion.Pantalla;
 
 /**
@@ -23,7 +24,20 @@ public class pre_componentes extends Pantalla {
         dia_dialogo.setWidth("50%"); //siempre en porcentajes  ancho
         dia_dialogo.setHeight("40%");//siempre porcentaje   alto
         
+        dia_dialogo.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogo.setModal(false); //para que no bloque la pantalla
+        
         agregarComponente(dia_dialogo);
+        
+        Etiqueta eti=new Etiqueta();
+        eti.setValue("MENSAJE DE PRUEBA");
+        eti.setStyle("font-size:30px;color:blue");
+        //Agrega la etiqueta al dialogo
+        dia_dialogo.setDialogo(eti);
+        
+        //boton aceptar
+        dia_dialogo.getBot_aceptar().setMetodo("aceptoDialogo");
+        
         
         Boton bot = new Boton();
         bot.setValue("ABRIR DIALOGO");
@@ -31,6 +45,12 @@ public class pre_componentes extends Pantalla {
         
         bar_botones.agregarBoton(bot);
         
+    }
+    
+    public void aceptoDialogo(){
+        utilitario.agregarMensaje("ACEPTO EL DIALOGO", "");
+        //cierra el dialog
+        dia_dialogo.cerrar();
     }
     
     public void abrirDialogo(){
