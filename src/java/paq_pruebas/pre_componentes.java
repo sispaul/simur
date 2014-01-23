@@ -52,6 +52,7 @@ public class pre_componentes extends Pantalla {
         set_tabla.setId("set_tabla");
         set_tabla.setTitle("SELECCIONE MARCAS");
         set_tabla.setSeleccionTabla("SELECT ide_marca,marca from trans_marcas", "ide_marca");
+        set_tabla.getBot_aceptar().setMetodo("aceptoSeleccionTabla");
 
         agregarComponente(set_tabla);
 
@@ -65,6 +66,17 @@ public class pre_componentes extends Pantalla {
 
     }
 
+    public void aceptoSeleccionTabla(){
+        if(set_tabla.getSeleccionados()!=null){
+            utilitario.agregarMensaje("SELECCIONADOS", set_tabla.getSeleccionados());
+            set_tabla.cerrar();
+        }
+        else{
+            utilitario.agregarMensajeInfo("Debe seleccionar almenos un registro", "");
+        }
+    }
+    
+    
     public void abrirSeleccionTabla() {
         set_tabla.dibujar();
     }
