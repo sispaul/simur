@@ -70,7 +70,7 @@ public class pre_componentes extends Pantalla {
         agregarComponente(set_modelos);
 
         Boton bot2 = new Boton();
-        bot.setValue("ABRIR SELECCION TABLA UNICA");
+        bot2.setValue("ABRIR SELECCION TABLA UNICA");
         bot2.setMetodo("abrirSeleccionTablaUnica");
         bar_botones.agregarBoton(bot2);
 
