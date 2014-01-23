@@ -61,24 +61,28 @@ public class pre_componentes extends Pantalla {
         set_tabla.setId("set_tabla");
 
         Grid gri_busca = new Grid();
-        gri_busca.setColumns(2);
+        gri_busca.setColumns(3);
         gri_busca.getChildren().add(tex_busca);
 
         Boton bot_busca = new Boton();
         bot_busca.setValue("Buscar");
         bot_busca.setMetodo("buscarMarca");
-
         gri_busca.getChildren().add(bot_busca);
 
-                
-       set_tabla.getGri_cuerpo().setHeader(gri_busca);
+        Boton bot_ver = new Boton();
+        bot_ver.setValue("Ver Todos");
+        bot_ver.setMetodo("verTodos");
+        bot_ver.getChildren().add(bot_ver);
+
+
+        set_tabla.getGri_cuerpo().setHeader(gri_busca);
 
         set_tabla.setTitle("SELECCIONE MARCAS");
         set_tabla.setSeleccionTabla("SELECT ide_marca,marca from trans_marcas", "ide_marca");
         set_tabla.getBot_aceptar().setMetodo("aceptoSeleccionTabla");
 
-        
-        
+
+
         agregarComponente(set_tabla);
 
         Boton bot1 = new Boton();
@@ -116,6 +120,11 @@ public class pre_componentes extends Pantalla {
         bot3.setMetodo("abrirSeleccionCalendario");
         bar_botones.agregarBoton(bot3);
 
+    }
+
+    public void verTodos() {
+        set_tabla.getTab_seleccion().setSql("SELECT ide_marca,marca from trans_marcas");
+        set_tabla.getTab_seleccion().ejecutarSql();
     }
 
     public void buscarMarca() {
