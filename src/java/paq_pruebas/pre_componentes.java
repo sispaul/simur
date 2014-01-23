@@ -7,6 +7,7 @@ package paq_pruebas;
 import framework.componentes.Boton;
 import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
+import framework.componentes.SeleccionCalendario;
 import framework.componentes.SeleccionTabla;
 import paq_sistema.aplicacion.Pantalla;
 
@@ -19,10 +20,11 @@ public class pre_componentes extends Pantalla {
     private Dialogo dia_dialogo = new Dialogo();
     private SeleccionTabla set_tabla = new SeleccionTabla();
     private SeleccionTabla set_modelos = new SeleccionTabla();
+    private SeleccionCalendario sec_rango = new SeleccionCalendario();
 
     public pre_componentes() {
         bar_botones.limpiar(); /// deja en blanco la barra de botones
-        
+
         //Configurando el dialogo
         dia_dialogo.setId("dia_dialogo");
         dia_dialogo.setTitle("DIALOGO DE PRUEBA"); //titulo
@@ -72,7 +74,7 @@ public class pre_componentes extends Pantalla {
                 + "order by marca,des_modelo", "ide_modelo");
         set_modelos.setRadio(); /// para que permita seleccionar un solo registro
         set_modelos.getBot_aceptar().setMetodo("aceptoSeleccionTablaUnica");
-        
+
         agregarComponente(set_modelos);
 
         Boton bot2 = new Boton();
@@ -81,22 +83,38 @@ public class pre_componentes extends Pantalla {
         bot2.setIcon("ui-guardar"); //pone el icono de guardar que esta creado en estilo.css
         bar_botones.agregarBoton(bot2);
 
-        
+        /////configurar el seleccion calendario
+        sec_rango.setId("sec_rango");
+        sec_rango.setTitle("RNAGO DE FECHAS");
+
+        agregarComponente(sec_rango);
+
+
+        Boton bot3 = new Boton();
+        bot3.setValue("ABRIR SELECCION CALENDARIO");
+        bot3.setMetodo("abrirSeleccionCalendario");
+        bar_botones.agregarBoton(bot3);
+
     }
+
+    public void abrirSeleccionCalendario() {
+        sec_rango.dibujar();
+    }
+
     /**
-     * se ejecuta cuando da click en el boton aceptar del componente selecciontabla set_modelos
+     * se ejecuta cuando da click en el boton aceptar del componente
+     * selecciontabla set_modelos
      */
-    public void aceptoSeleccionTablaUnica(){
+    public void aceptoSeleccionTablaUnica() {
         //getValorSeleccionado() YA que es de tipo radio y solo se selecciona un registro
-        if(set_modelos.getValorSeleccionado()!=null && set_modelos.getValorSeleccionado().isEmpty()==false){
+        if (set_modelos.getValorSeleccionado() != null && set_modelos.getValorSeleccionado().isEmpty() == false) {
             utilitario.agregarMensaje("seleccionado", set_modelos.getValorSeleccionado());
             set_modelos.cerrar();
-        }
-        else{
-            utilitario.agregarMensajeInfo("Debe seleccionar un registro", ""); 
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar un registro", "");
         }
     }
-    
+
     /**
      * Dibuja el componente selecciontabla set_modelos
      */
@@ -161,5 +179,13 @@ public class pre_componentes extends Pantalla {
 
     public void setSet_modelos(SeleccionTabla set_modelos) {
         this.set_modelos = set_modelos;
+    }
+
+    public SeleccionCalendario getSec_rango() {
+        return sec_rango;
+    }
+
+    public void setSec_rango(SeleccionCalendario sec_rango) {
+        this.sec_rango = sec_rango;
     }
 }
