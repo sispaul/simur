@@ -4,8 +4,10 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="p_titulo" class="java.lang.String"/>
+	<parameter name="p_marcas" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT ide_modelo,des_modelo,marca from trans_modelos modelo INNER JOIN trans_marcas marca on modelo.ide_marca=marca.ide_marca                order by marca,des_modelo]]>
+		<![CDATA[SELECT ide_modelo,des_modelo,marca from trans_modelos modelo INNER JOIN trans_marcas marca on modelo.ide_marca=marca.ide_marca
+ where marca.ide_marca  in ($P!{p_marcas})             order by marca,des_modelo]]>
 	</queryString>
 	<field name="ide_modelo" class="java.lang.Integer"/>
 	<field name="des_modelo" class="java.lang.String"/>
@@ -16,7 +18,7 @@
 	<title>
 		<band height="48" splitType="Stretch">
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="46785313-e364-4094-a918-c9605f5046d0" x="58" y="0" width="401" height="40"/>
+				<reportElement uuid="46785313-e364-4094-a918-c9605f5046d0" x="58" y="0" width="401" height="40" isPrintWhenDetailOverflows="true"/>
 				<textElement>
 					<font size="24" isBold="true" isItalic="true" isUnderline="false"/>
 				</textElement>
