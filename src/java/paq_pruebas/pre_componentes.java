@@ -30,12 +30,10 @@ public class pre_componentes extends Pantalla {
     private SeleccionCalendario sec_rango = new SeleccionCalendario();
     //Buscar 
     private Texto tex_busca = new Texto();
-    
     ///REPORTES
-    private Reporte rep_reporte= new Reporte(); //siempre se debe llamar rep_reporte
-    
-    private SeleccionFormatoReporte sef_formato=new SeleccionFormatoReporte();
-    
+    private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
+    private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
+    private Map p_parametros = new HashMap();
 
     public pre_componentes() {
         bar_botones.limpiar(); /// deja en blanco la barra de botones
@@ -90,7 +88,8 @@ public class pre_componentes extends Pantalla {
 
         set_tabla.setTitle("SELECCIONE MARCAS");
         set_tabla.setSeleccionTabla("SELECT ide_marca,marca from trans_marcas", "ide_marca");
-        set_tabla.getBot_aceptar().setMetodo("aceptoSeleccionTabla");
+
+        set_tabla.getBot_aceptar().setMetodo("aceptarReporte");
 
 
 
@@ -130,44 +129,46 @@ public class pre_componentes extends Pantalla {
         bot3.setValue("ABRIR SELECCION CALENDARIO");
         bot3.setMetodo("abrirSeleccionCalendario");
         bar_botones.agregarBoton(bot3);
-        
-        
+
+
         /**
          * CONFIGURACIÓN DE ONJETO REPORTE
          */
         bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
-        
+
         agregarComponente(rep_reporte); //2 agregar el listado de reportes
-        
+
         sef_formato.setId("sef_formato");
         agregarComponente(sef_formato);
-        
+
 
     }
 
     @Override
     public void abrirListaReportes() {
         rep_reporte.dibujar();
-        
+
     }
 
-    
-    
     @Override
     public void aceptarReporte() {
-       if(rep_reporte.getNombre().equals("Reporte Prueba")){
-           //los parametros de este reporte
-           Map p_parametros=new HashMap();
-           p_parametros.put("p_titulo", "PARAMTRO TITULO DEL REPORTE");
-           rep_reporte.cerrar();           
-           sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());           
-           sef_formato.dibujar();
-       }
+        if (rep_reporte.getNombre().equals("Reporte Prueba")) {
+
+            if (rep_reporte.isVisible()) {
+                rep_reporte.cerrar();
+                set_tabla.dibujar();
+            } else if (set_tabla.isVisible()) {
+                //los parametros de este reporte
+                p_parametros = new HashMap();
+                p_parametros.put("p_titulo", "PARAMTRO TITULO DEL REPORTE");
+                p_parametros.put("p_marcas", set_tabla.getSeleccionados());
+                set_tabla.cerrar();
+                sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                sef_formato.dibujar();
+            }
+        }
+
     }
-    
-    
-    
-    
 
     public void verTodos() {
         set_tabla.getTab_seleccion().setSql("SELECT ide_marca,marca from trans_marcas");
@@ -302,7 +303,4 @@ public class pre_componentes extends Pantalla {
     public void setSef_formato(SeleccionFormatoReporte sef_formato) {
         this.sef_formato = sef_formato;
     }
-    
-    
-    
 }
