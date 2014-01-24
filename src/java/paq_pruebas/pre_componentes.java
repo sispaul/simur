@@ -88,7 +88,7 @@ public class pre_componentes extends Pantalla {
 
         set_tabla.setTitle("SELECCIONE MARCAS");
         set_tabla.setSeleccionTabla("SELECT ide_marca,marca from trans_marcas", "ide_marca");
-
+         set_tabla.getTab_seleccion().getColumna("marca").setFiltro(true);
         set_tabla.getBot_aceptar().setMetodo("aceptarReporte");
 
 
