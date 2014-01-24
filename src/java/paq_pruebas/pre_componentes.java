@@ -8,6 +8,7 @@ import framework.componentes.Boton;
 import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
+import framework.componentes.Reporte;
 import framework.componentes.SeleccionCalendario;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Texto;
@@ -25,6 +26,10 @@ public class pre_componentes extends Pantalla {
     private SeleccionCalendario sec_rango = new SeleccionCalendario();
     //Buscar 
     private Texto tex_busca = new Texto();
+    
+    ///REPORTES
+    private Reporte rep_reporte= new Reporte(); //siempre se debe llamar rep_reporte
+    
 
     public pre_componentes() {
         bar_botones.limpiar(); /// deja en blanco la barra de botones
@@ -119,8 +124,33 @@ public class pre_componentes extends Pantalla {
         bot3.setValue("ABRIR SELECCION CALENDARIO");
         bot3.setMetodo("abrirSeleccionCalendario");
         bar_botones.agregarBoton(bot3);
+        
+        
+        /**
+         * CONFIGURACIÓN DE ONJETO REPORTE
+         */
+        bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
+        
+        agregarComponente(rep_reporte); //2 agregar el listado de reportes
 
     }
+
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+        
+    }
+
+    
+    
+    @Override
+    public void aceptarReporte() {
+        super.aceptarReporte(); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
+    
+    
 
     public void verTodos() {
         set_tabla.getTab_seleccion().setSql("SELECT ide_marca,marca from trans_marcas");
@@ -239,4 +269,14 @@ public class pre_componentes extends Pantalla {
     public void setSec_rango(SeleccionCalendario sec_rango) {
         this.sec_rango = sec_rango;
     }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+    
+    
 }
