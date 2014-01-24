@@ -13,19 +13,19 @@ import persistencia.Conexion;
  *
  * @author Administrador
  */
-public class pre_destino extends Pantalla {
+public class pre_egreso extends Pantalla {
     private Conexion con_postgres= new Conexion();
     private Tabla tab_tabla = new Tabla();
 
-    public pre_destino() {
+    public pre_egreso() {
         //Persistencia a la postgres.
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         con_postgres.NOMBRE_MARCA_BASE="postgres";
         
         tab_tabla.setId("tab_tabla");
         tab_tabla.setConexion(con_postgres);
-        tab_tabla.setTabla("bodc_destinos", "id_destino", 1);
-        tab_tabla.setHeader("DESTINO - BODEGA");
+        tab_tabla.setTabla("bodt_egreso", "ide_bod_egreso", 1);
+        tab_tabla.setHeader("EGRESO - BODEGA");
         tab_tabla.dibujar();
         
         PanelTabla pat_panel=new PanelTabla();

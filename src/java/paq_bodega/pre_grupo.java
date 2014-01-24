@@ -25,6 +25,7 @@ public class pre_grupo extends Pantalla {
         tab_tabla.setId("tab_tabla");
         tab_tabla.setConexion(con_postgres);
         tab_tabla.setTabla("bodc_grupo", "id_grupo", 1);
+        tab_tabla.setHeader("GRUPO - BODEGA");
         tab_tabla.dibujar();
         
         PanelTabla pat_panel=new PanelTabla();
