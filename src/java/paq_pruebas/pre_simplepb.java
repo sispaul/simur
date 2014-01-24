@@ -4,7 +4,6 @@
  */
 package paq_pruebas;
 
-import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import paq_sistema.aplicacion.Pantalla;
