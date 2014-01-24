@@ -25,7 +25,7 @@ public class pre_bodega extends Pantalla {
         tab_tabla.setId("tab_tabla");
         tab_tabla.setConexion(con_postgres);
         tab_tabla.setTabla("bodt_bodega", "ide_bodega", 1);
-        tab_tabla.setHeader("BODEGA");
+        tab_tabla.setHeader("BODEGA - BODEGA");
         tab_tabla.dibujar();
         
         PanelTabla pat_panel=new PanelTabla();
