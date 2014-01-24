@@ -19,7 +19,7 @@ public class pre_articulo extends Pantalla {
 
     public pre_articulo() {
         //Persistencia a la postgres.
-        con_postgres.setUnidad_persistencia("pruebaspostgres");
+        con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         con_postgres.NOMBRE_MARCA_BASE="postgres";
         
         tab_tabla.setId("tab_tabla");
