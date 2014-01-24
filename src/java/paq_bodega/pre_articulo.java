@@ -25,6 +25,7 @@ public class pre_articulo extends Pantalla {
         tab_tabla.setId("tab_tabla");
         tab_tabla.setConexion(con_postgres);
         tab_tabla.setTabla("bodt_articulos", "ide_bodt_articulo", 1);
+        tab_tabla.setHeader("ARTICULOS - BODEGA");
         tab_tabla.setRows(20);
         tab_tabla.getColumna("ide_mat_bodega").setCombo("select ide_mat_bodega,des_material from bodc_material");
         tab_tabla.dibujar();

@@ -25,6 +25,7 @@ public class pre_material extends Pantalla {
         tab_tabla.setId("tab_tabla");
         tab_tabla.setConexion(con_postgres);
         tab_tabla.setTabla("bodc_material", "ide_mat_bodega", 1);
+        tab_tabla.setHeader("MATERIAL - BODEGA");
         tab_tabla.getColumna("id_grupo").setCombo("select id_grupo, descripcion from bodc_grupo");
         tab_tabla.getColumna("ide_medida").setCombo("select ide_medida, des_medida from bodc_medida");
         
