@@ -66,7 +66,7 @@ public class pre_funcionamiento2 extends Pantalla {
         PanelTabla tabp = new PanelTabla();
         tabp.setPanelTabla(tab_cabecera);
         
-        tab_cabecera.setId("tab_cuerpo");
+       tab_cabecera.setId("tab_cuerpo");
         tab_cabecera.setTabla("TUR_ESTABLECIMIENTO", "ID_TESTABL", 3);
         tab_cabecera.setHeader("DATOS DE ESTABLECIMIENTO");
         tab_cabecera.setTipoFormulario(true);
@@ -94,8 +94,8 @@ public class pre_funcionamiento2 extends Pantalla {
         bar_botones.agregarBoton(bot1);
         
         Division div = new Division();
-         div.dividir2(tabp1, tabp2, "40%", "h");
-        //div.dividir3(tabp, tabp1, tabp2, "20%", "20%", "H");
+         //div.dividir2(tabp1, tabp2, "40%", "h");
+        div.dividir3(tabp, tabp1, tabp2, "20%", "20%", "H");
         agregarComponente(div);
 
     }
