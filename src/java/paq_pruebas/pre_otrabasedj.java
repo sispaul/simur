@@ -20,7 +20,7 @@ public class pre_otrabasedj extends Pantalla {
 
     public pre_otrabasedj() {
         //1) asignar persistencia con la que va a trabajar
-        con_postgres.setUnidad_persistencia("otraBase");
+        con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         //2) le dcimos con que marca de base va a trabar, soporta oracle,postgres,sqlserver,mysql
         con_postgres.NOMBRE_MARCA_BASE="postgres";
         
