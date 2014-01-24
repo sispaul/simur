@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_Marcas" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="dbaf7ea3-687b-4738-bd10-b8072ff41895">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="p_titulo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT ide_modelo,des_modelo,marca from trans_modelos modelo INNER JOIN trans_marcas marca on modelo.ide_marca=marca.ide_marca                order by marca,des_modelo]]>
+	</queryString>
+	<field name="ide_modelo" class="java.lang.Integer"/>
+	<field name="des_modelo" class="java.lang.String"/>
+	<field name="marca" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="48" splitType="Stretch">
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="46785313-e364-4094-a918-c9605f5046d0" x="58" y="0" width="401" height="40"/>
+				<textElement>
+					<font size="24" isBold="true" isItalic="true" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_titulo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="15" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="23" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="ec8cbf26-6ef6-4823-81e0-f17bf19750d2" x="10" y="0" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Codigo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8f5ef98f-44cf-43c8-85fd-2346970f8891" x="129" y="0" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Descripcion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="419fa81a-dbb0-4d57-8a31-3c938c05caef" x="408" y="2" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Marca]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="36" splitType="Stretch">
+			<textField>
+				<reportElement uuid="dcf1ff27-e9eb-421b-85d2-1e2c523bc54a" x="10" y="15" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ide_modelo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8d3a0142-f1c0-4986-baa4-e92e8296248b" x="129" y="15" width="263" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{des_modelo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8199eae2-8aa4-4e6a-adaf-1ad848341339" x="408" y="15" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{marca}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
