@@ -4,14 +4,18 @@
  */
 package paq_pruebas;
 
+import com.google.common.collect.HashBiMap;
 import framework.componentes.Boton;
 import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionCalendario;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Texto;
+import java.util.HashMap;
+import java.util.Map;
 import paq_sistema.aplicacion.Pantalla;
 
 /**
@@ -29,6 +33,8 @@ public class pre_componentes extends Pantalla {
     
     ///REPORTES
     private Reporte rep_reporte= new Reporte(); //siempre se debe llamar rep_reporte
+    
+    private SeleccionFormatoReporte sef_formato=new SeleccionFormatoReporte();
     
 
     public pre_componentes() {
@@ -132,6 +138,10 @@ public class pre_componentes extends Pantalla {
         bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
         
         agregarComponente(rep_reporte); //2 agregar el listado de reportes
+        
+        sef_formato.setId("sef_formato");
+        agregarComponente(sef_formato);
+        
 
     }
 
@@ -145,7 +155,14 @@ public class pre_componentes extends Pantalla {
     
     @Override
     public void aceptarReporte() {
-        super.aceptarReporte(); //To change body of generated methods, choose Tools | Templates.
+       if(rep_reporte.getNombre().equals("Reporte Prueba")){
+           //los parametros de este reporte
+           Map p_parametros=new HashMap();
+           p_parametros.put("p_titulo", "PARAMTRO TITULO DEL REPORTE");
+           rep_reporte.cerrar();           
+           sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());           
+           sef_formato.dibujar();
+       }
     }
     
     
@@ -277,6 +294,15 @@ public class pre_componentes extends Pantalla {
     public void setRep_reporte(Reporte rep_reporte) {
         this.rep_reporte = rep_reporte;
     }
+
+    public SeleccionFormatoReporte getSef_formato() {
+        return sef_formato;
+    }
+
+    public void setSef_formato(SeleccionFormatoReporte sef_formato) {
+        this.sef_formato = sef_formato;
+    }
+    
     
     
 }
