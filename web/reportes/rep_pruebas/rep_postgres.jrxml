@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_postgres" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="144e8b68-a14b-47a6-8259-89b32d96cd9a">
+	<queryString language="SQL">
+		<![CDATA[SELECT
+     bodt_articulos."ingreso_material" AS bodt_articulos_ingreso_material,
+     bodt_articulos."egreso_material" AS bodt_articulos_egreso_material,
+     bodt_articulos."ano_curso" AS bodt_articulos_ano_curso,
+     bodt_articulos."existencia_inicial" AS bodt_articulos_existencia_inicial,
+     bodt_articulos."costo_anterior" AS bodt_articulos_costo_anterior,
+     bodt_articulos."costo_actual" AS bodt_articulos_costo_actual,
+     bodt_articulos."fecha_ingresoart" AS bodt_articulos_fecha_ingresoart,
+     bodt_articulos."costo_inicial" AS bodt_articulos_costo_inicial,
+     bodt_articulos."ano_anterior" AS bodt_articulos_ano_anterior
+FROM
+     "public"."bodt_articulos" bodt_articulos]]>
+	</queryString>
+	<field name="bodt_articulos_ingreso_material" class="java.math.BigDecimal"/>
+	<field name="bodt_articulos_egreso_material" class="java.math.BigDecimal"/>
+	<field name="bodt_articulos_ano_curso" class="java.lang.Integer"/>
+	<field name="bodt_articulos_existencia_inicial" class="java.math.BigDecimal"/>
+	<field name="bodt_articulos_costo_anterior" class="java.math.BigDecimal"/>
+	<field name="bodt_articulos_costo_actual" class="java.math.BigDecimal"/>
+	<field name="bodt_articulos_fecha_ingresoart" class="java.sql.Date"/>
+	<field name="bodt_articulos_costo_inicial" class="java.math.BigDecimal"/>
+	<field name="bodt_articulos_ano_anterior" class="java.lang.String"/>
+	<group name="bodt_articulos_ano_curso">
+		<groupExpression><![CDATA[$F{bodt_articulos_ano_curso}]]></groupExpression>
+		<groupHeader>
+			<band height="33">
+				<staticText>
+					<reportElement uuid="59bd2e96-47c3-446a-b0f2-235e518fa3ad" mode="Opaque" x="0" y="0" width="100" height="32" forecolor="#666666" backcolor="#E6E6E6"/>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+					<text><![CDATA[bodt_articulos_ano_curso]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="4b232c2f-7af1-46c6-be9e-42f4e8aabade" mode="Opaque" x="100" y="0" width="455" height="32" forecolor="#006699" backcolor="#E6E6E6"/>
+					<textElement>
+						<font size="24" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{bodt_articulos_ano_curso}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement uuid="2dcecbcc-ffc1-4d06-a7b5-8e35bb89de72" x="-20" y="32" width="595" height="1" forecolor="#666666"/>
+				</line>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="72">
+			<frame>
+				<reportElement uuid="f227cc0c-85b9-4221-98c4-7b7a4b52254d" mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#006699"/>
+				<staticText>
+					<reportElement uuid="6a4ecf5e-1957-48fd-b395-f6953c3dca95" x="20" y="20" width="234" height="43" forecolor="#FFFFFF"/>
+					<textElement>
+						<font size="34" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TITLE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="90b1a3fa-bf88-4a41-b541-cec9b7825434" x="395" y="43" width="180" height="20" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right">
+						<font size="14" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Add a description here]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="13"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="21">
+			<line>
+				<reportElement uuid="df59d261-02e4-41a5-82e9-90d81f974c45" x="-20" y="20" width="595" height="1" forecolor="#666666"/>
+			</line>
+			<staticText>
+				<reportElement uuid="cb75d1f3-2d81-4597-a3c0-c156abb2c5be" mode="Opaque" x="0" y="0" width="69" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[bodt_articulos_ingreso_material]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d29efb58-3b44-498e-b410-2d88a89e147b" mode="Opaque" x="69" y="0" width="69" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[bodt_articulos_egreso_material]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3eda734b-8ad0-49ba-8d7b-70bd9ab3db40" mode="Opaque" x="138" y="0" width="69" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[bodt_articulos_existencia_inicial]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5142c880-2eda-4bf6-aec1-e8c5219bc47a" mode="Opaque" x="207" y="0" width="69" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[bodt_articulos_costo_anterior]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c3fafdf2-614b-46c2-a81e-d271c3e2ab68" mode="Opaque" x="276" y="0" width="69" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[bodt_articulos_costo_actual]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="544675e4-3365-4938-921c-7a8991693df5" mode="Opaque" x="345" y="0" width="69" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[bodt_articulos_fecha_ingresoart]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e5123996-c398-4c5b-96b9-b39207df807e" mode="Opaque" x="414" y="0" width="69" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[bodt_articulos_costo_inicial]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a1465c9b-3666-4fcf-8173-97ee275ffe03" mode="Opaque" x="483" y="0" width="69" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[bodt_articulos_ano_anterior]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<line>
+				<reportElement uuid="d6b974e2-1cd5-4352-95a9-3e1149a5d886" positionType="FixRelativeToBottom" x="0" y="19" width="555" height="1"/>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="a3a0a2bc-ed96-4641-94e5-6df5d46ebc22" x="0" y="0" width="69" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{bodt_articulos_ingreso_material}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="db5828f2-c46f-4eae-bf84-9bcf66dd3d28" x="69" y="0" width="69" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{bodt_articulos_egreso_material}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="c2c106a8-a904-49f2-a72f-3f7e89deb66e" x="138" y="0" width="69" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{bodt_articulos_existencia_inicial}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="3b598031-c972-4b4f-ae5c-07d0d31bb2a2" x="207" y="0" width="69" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{bodt_articulos_costo_anterior}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="577fc3e4-3d4d-491f-ac30-ae22461307ad" x="276" y="0" width="69" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{bodt_articulos_costo_actual}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="6ae5cb19-0d56-4bfd-9722-47f7322f09df" x="345" y="0" width="69" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{bodt_articulos_fecha_ingresoart}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="a7e72944-8f72-40b6-84f6-1f15b7ae16d3" x="414" y="0" width="69" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{bodt_articulos_costo_inicial}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="4e7d757d-365e-4cdc-9dd9-de0187e74196" x="483" y="0" width="69" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{bodt_articulos_ano_anterior}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17">
+			<textField>
+				<reportElement uuid="4e82eb95-7821-4a91-a82c-ecabd6fef207" mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="273d716d-58aa-4bb8-bfb5-860bd7152d3e" mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement uuid="08735472-23bb-4c43-9b2b-dfc186c72462" x="0" y="4" width="100" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>
