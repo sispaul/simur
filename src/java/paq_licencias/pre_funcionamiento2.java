@@ -57,9 +57,9 @@ public class pre_funcionamiento2 extends Pantalla {
         agregarComponente(set_tabla);
         
         tab_cabecera.setId("tab_cabecera");
-        tab_cabecera.setTabla("TUR_ESTABLECIMIENTO", "ID_TESTABL", 2);
+        tab_cabecera.setTabla("TUR_ESTABLECIMIENTO", "ID_TESTABL", 1);
         tab_cabecera.setHeader("DATOS DE ESTABLECIMIENTO");
-        tab_cabecera.getColumna("CODIGO_TESTABL").setCombo("SELECT ubi_codigo,ubi_descri from oceubica");
+       // tab_cabecera.getColumna("CODIGO_TESTABL").setCombo("SELECT ubi_codigo,ubi_descri from oceubica");
         tab_cabecera.setTipoFormulario(true);
         tab_cabecera.agregarRelacion(tab_detalle);
         tab_cabecera.dibujar();
@@ -71,9 +71,9 @@ public class pre_funcionamiento2 extends Pantalla {
         tab_detalle.setId("tab_detalle");
         tab_detalle.setTabla("TUR_LICENCIA", "ID_TLICEN", 2);
         tab_detalle.setHeader("LICENCIA ANUAL DE FUNCIONAMIENTO");
-        tab_detalle.getColumna("CATEG_TLICEN").setCombo("select ID_TCATEG,DESC_TCATEG from tur_categoria");
+       /*tab_detalle.getColumna("CATEG_TLICEN").setCombo("select ID_TCATEG,DESC_TCATEG from tur_categoria");
         tab_detalle.getColumna("ESTABL_TLICEN").setCombo("select ID_TESTABL,NOMB_TESTABL from tur_establecimiento");
-        tab_detalle.getColumna("FECHAI_TLICEN").setTipoJava("java.sql.Date");
+        tab_detalle.getColumna("FECHAI_TLICEN").setTipoJava("java.sql.Date");*/
         tab_detalle.setTipoFormulario(true);
         tab_detalle.agregarRelacion(tab_detalle);
         tab_detalle.dibujar();
