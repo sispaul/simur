@@ -25,6 +25,7 @@ import paq_sistema.aplicacion.Pantalla;
 public class pre_funcionamiento2 extends Pantalla {
 
     private Tabla tab_cabecera = new Tabla();
+    private SeleccionTabla tab_estable = new SeleccionTabla();
     private Tabla tab_detalle = new Tabla();
     private Tabla tab_cuerpo = new Tabla();
     private SeleccionTabla set_tabla = new SeleccionTabla();
@@ -55,31 +56,24 @@ public class pre_funcionamiento2 extends Pantalla {
         set_tabla.getBot_aceptar().setMetodo("aceptarReporte");
         agregarComponente(set_tabla);
         
-        
         tab_cabecera.setId("tab_cabecera");
-        tab_cabecera.setTabla("CMT_REPRESENTANTE", "IDE_CMREP", 3);
-        tab_cabecera.setHeader("DATOS DE REPRESENTANTE");
-        tab_cabecera.setTipoFormulario(true);
-        tab_cabecera.agregarRelacion(tab_cuerpo);
-        tab_cabecera.dibujar();
-
-        PanelTabla tabp = new PanelTabla();
-        tabp.setPanelTabla(tab_cabecera);
-        
-       tab_cabecera.setId("tab_cuerpo");
-        tab_cabecera.setTabla("TUR_ESTABLECIMIENTO", "ID_TESTABL", 3);
+        tab_cabecera.setTabla("TUR_ESTABLECIMIENTO", "ID_TESTABL", 2);
         tab_cabecera.setHeader("DATOS DE ESTABLECIMIENTO");
+        tab_cabecera.getColumna("CODIGO_TESTABL").setCombo("SELECT ubi_codigo,ubi_descri from oceubica");
         tab_cabecera.setTipoFormulario(true);
         tab_cabecera.agregarRelacion(tab_detalle);
         tab_cabecera.dibujar();
 
         PanelTabla tabp1 = new PanelTabla();
-        tabp1.setPanelTabla(tab_cuerpo);
+        tabp1.setPanelTabla(tab_cabecera);
 
         
         tab_detalle.setId("tab_detalle");
-        tab_detalle.setTabla("TUR_LICENCIA", "ID_TLICEN", 3);
+        tab_detalle.setTabla("TUR_LICENCIA", "ID_TLICEN", 2);
         tab_detalle.setHeader("LICENCIA ANUAL DE FUNCIONAMIENTO");
+        tab_detalle.getColumna("CATEG_TLICEN").setCombo("select ID_TCATEG,DESC_TCATEG from tur_categoria");
+        tab_detalle.getColumna("ESTABL_TLICEN").setCombo("select ID_TESTABL,NOMB_TESTABL from tur_establecimiento");
+        tab_detalle.getColumna("FECHAI_TLICEN").setTipoJava("java.sql.Date");
         tab_detalle.setTipoFormulario(true);
         tab_detalle.agregarRelacion(tab_detalle);
         tab_detalle.dibujar();
@@ -89,13 +83,12 @@ public class pre_funcionamiento2 extends Pantalla {
 
         Boton bot1 = new Boton();
         bot1.setValue("SELECCION REPRESENTANTE");
-        bot1.setIcon("ui-icon-document"); //pone icono de jquery temeroller
+        bot1.setIcon("ui-icon-document"); 
         bot1.setMetodo("abrirSeleccionTabla");
         bar_botones.agregarBoton(bot1);
         
         Division div = new Division();
-         //div.dividir2(tabp1, tabp2, "40%", "h");
-        div.dividir3(tabp, tabp1, tabp2, "20%", "20%", "H");
+        div.dividir2(tabp1, tabp2, "40%", "H");
         agregarComponente(div);
 
     }
