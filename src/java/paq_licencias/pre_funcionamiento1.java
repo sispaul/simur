@@ -22,12 +22,12 @@ import paq_sistema.aplicacion.Pantalla;
  *
  * @author p-sistemas
  */
-public class pre_funcionamiento extends Pantalla{
+public class pre_funcionamiento1 extends Pantalla{
 private Tabla tab_tabla1 = new Tabla();
 private Tabla tab_tabla2 = new Tabla();
 
    
-    public pre_funcionamiento() {
+    public pre_funcionamiento1() {
         
                 
         tab_tabla1.setId("tab_tabla1");
@@ -47,7 +47,6 @@ private Tabla tab_tabla2 = new Tabla();
 	tab_tabla2.setTabla("tur_licencia", "ID_TLICEN", 2);
 	tab_tabla2.getColumna("ID_TCATEG").setCombo("select ID_TCATEG,DESC_TCATEG from tur_categoria");
         tab_tabla2.getColumna("NUM_TLICEN").setNombreVisual("No. LICENCIA:");
-        tab_tabla2.getGrid().setColumns(2);
         tab_tabla2.getColumna("FECHAI_TLICEN").setLectura(true);
         tab_tabla2.getColumna("REG_TLICEN").setNombreVisual("No. REGISTRO:");
 	tab_tabla2.getColumna("FECHAF_TLICEN").setNombreVisual("FECHA CADUCA:");
@@ -55,7 +54,7 @@ private Tabla tab_tabla2 = new Tabla();
 	tab_tabla2.dibujar();
 	PanelTabla pat_panel3 = new PanelTabla();
 	pat_panel3.setPanelTabla(tab_tabla2);
-        pat_panel3.setMensajeWarn("LICENCIA DE FUNCIONAMIENTO ANUAL");
+        pat_panel3.setMensajeWarn("LICENICA DE FUNCIONAMIENTO ANUAL");
 	pat_panel3.getMenuTabla().getItem_eliminar().setRendered(false);
 
 		Division div_horizontal = new Division();
