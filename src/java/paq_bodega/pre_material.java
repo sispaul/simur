@@ -6,6 +6,8 @@ package paq_bodega;
 
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
+import java.util.ArrayList;
+import java.util.List;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
@@ -16,7 +18,7 @@ import persistencia.Conexion;
 public class pre_material extends Pantalla {
     private Conexion con_postgres= new Conexion();
     private Tabla tab_tabla = new Tabla();
-
+    
     public pre_material() {
         //Persistencia a la postgres.
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
@@ -28,6 +30,19 @@ public class pre_material extends Pantalla {
         tab_tabla.setHeader("MATERIAL - BODEGA");
         tab_tabla.getColumna("id_grupo").setCombo("select id_grupo, descripcion from bodc_grupo");
         tab_tabla.getColumna("ide_medida").setCombo("select ide_medida, des_medida from bodc_medida");
+        List lista = new ArrayList();
+        Object fila1[] = {
+            "C", "COMPRA"
+        };
+        Object fila2[] = {
+            "B", "BODEGA"
+        };
+        lista.add(fila1);;
+        lista.add(fila2);;
+        //lst_lista.addValueChangeListener("Compras");
+        
+        tab_tabla.getColumna("tipobodega").setCombo(lista);
+
         
         tab_tabla.dibujar();
         
@@ -37,6 +52,7 @@ public class pre_material extends Pantalla {
         agregarComponente(pat_panel);
         
     }
+
 
     public Conexion getCon_postgres() {
         return con_postgres;
