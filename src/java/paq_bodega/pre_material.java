@@ -42,7 +42,6 @@ public class pre_material extends Pantalla {
         //lst_lista.addValueChangeListener("Compras");
         
         tab_tabla.getColumna("tipobodega").setCombo(lista);
-
         
         tab_tabla.dibujar();
         
