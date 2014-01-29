@@ -18,7 +18,7 @@ import persistencia.Conexion;
 
 /**
  *
- * @author Administrador
+ * @author Paolo
  */
     public class pre_report extends Pantalla{
     private Combo cmb_combo = new Combo();

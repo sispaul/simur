@@ -11,7 +11,7 @@ import persistencia.Conexion;
 
 /**
  *
- * @author Administrador
+ * @author Paolo
  */
 public class pre_articulo extends Pantalla {
     private Conexion con_postgres= new Conexion();
