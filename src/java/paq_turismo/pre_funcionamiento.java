@@ -91,25 +91,26 @@ public class pre_funcionamiento extends Pantalla {
         Division div_division = new Division();
         div_division.setId("div_division");
         div_division.dividir1(pat_panel1);
-        agregarComponente(div_division);;
+        agregarComponente(div_division);
 
     }
     
 @Override
     public void aceptarReporte() {
               //los parametros de este reporte
-             
-             if (rep_reporte.getNombre().equals("LICENCIA ANUAL")) {
-                System.err.println("NO INGRESA");
-                p_parametros = new HashMap();
-                System.err.println("NO INGRESA1");
-                p_parametros.put("clave", "010300610000");
-                System.err.println("NO INGRESA2");
-                sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                System.err.println(rep_reporte.getPath());
-                sef_formato.dibujar();
-                System.err.println("NO INGRESA4");
-             }               
+             Map p_parametros = new HashMap();
+        if (rep_reporte.getReporteSelecionado().equals("LICENCIA ANUAL")) {
+            if (tab_tabla1.getValorSeleccionado() != null) {
+                    p_parametros.put("clave", tab_tabla1.getValor("CLAVE_CATASTRAL"));
+                    //System.err.println(tab_tabla1.getValor("CLAVE_CATASTRAL")+"");
+                    rep_reporte.cerrar();
+                    sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_reporte.dibujar();
+                } else {
+                utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
+            }
+        }
+        
     }
     
     @Override
