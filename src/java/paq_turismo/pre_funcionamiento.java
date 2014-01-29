@@ -79,7 +79,7 @@ public class pre_funcionamiento extends Pantalla {
         tab_tabla1.getColumna("NOMBRE_ESTABLECIMIENTO").setNombreVisual("ESTABLECIMIENTO");
         tab_tabla1.getColumna("CLAVE_CATASTRAL").setNombreVisual("CLAVE CATASTRAL");
         tab_tabla1.getColumna("REGISTRO_NUMERO").setNombreVisual("No. REGISTRO");
-        tab_tabla1.getColumna("CEDULA_REPRESENTANTE").setNombreVisual("ID. REPRESENTANTE");
+        tab_tabla1.getColumna("CEDULA_REPRESENTANTE").setVisible(false);
         tab_tabla1.getColumna("FECHA_EXPIRACION").setNombreVisual("FECHA CADUCIDAD");
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(4);
