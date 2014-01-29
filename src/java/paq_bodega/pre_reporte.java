@@ -42,7 +42,7 @@ public class pre_reporte extends Pantalla {
         
         ///configurar el seleccion tabla Grupos
         set_tabla.setId("set_tabla");
-        
+
         Grid gri_busca = new Grid();
         gri_busca.setColumns(3);
         gri_busca.getChildren().add(tex_busca);
