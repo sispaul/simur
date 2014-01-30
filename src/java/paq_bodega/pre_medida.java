@@ -24,7 +24,7 @@ public class pre_medida extends Pantalla {
         
         tab_tabla.setId("tab_tabla");
         tab_tabla.setConexion(con_postgres);
-        tab_tabla.setTabla("bodc_medida", "ide_medida", 1);
+        tab_tabla.setTabla("valc_medida", "ide_medida", 1);
         tab_tabla.setHeader("MEDIDA");
         tab_tabla.dibujar();
         
