@@ -30,7 +30,7 @@ public class pre_material extends Pantalla {
         tab_tabla.setHeader("MATERIAL - BODEGA");
         tab_tabla.setTipoFormulario(true);
         tab_tabla.getColumna("id_grupo").setCombo("select id_grupo, descripcion from bodc_grupo");
-        tab_tabla.getColumna("ide_medida").setCombo("select ide_medida, des_medida from bodc_medida");
+        tab_tabla.getColumna("ide_medida").setCombo("select ide_medida, des_medida from valc_medida");
         List lista = new ArrayList();
         Object fila1[] = {
             "C", "COMPRA"
