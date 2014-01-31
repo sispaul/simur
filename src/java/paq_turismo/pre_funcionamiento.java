@@ -57,8 +57,8 @@ public class pre_funcionamiento extends Pantalla {
         
         rep_reporte.setId("rep_reporte");
         rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
-        
         agregarComponente(rep_reporte);
+        
         bar_botones.agregarComponente(new Etiqueta("Buscador Personas:"));
         bar_botones.agregarComponente(aut_busca);
         Boton bot_limpiar = new Boton();
