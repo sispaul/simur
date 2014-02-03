@@ -2,23 +2,26 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bod_grupo" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="135d824e-6aea-4ac2-b5cf-2433cf2cc8a0">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
-	<parameter name="pide_grupo" class="java.lang.Integer" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new java.lang.Integer(27)]]></defaultValueExpression>
+	<parameter name="pide_grupo" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
-	<parameter name="nom_resp" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["luisT."]]></defaultValueExpression>
+	<parameter name="nom_resp" class="java.lang.String">
+		<defaultValueExpression><![CDATA["S/R"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select b.descripcion as descripcion, a.cod_material as codigo, a.des_material as nombre, 
-((c.existencia_inicial+c.ingreso_material)-c.egreso_material) as cantidad, 
+		<![CDATA[select b.descripcion as descripcion, a.cod_material as codigo, a.des_material as nombre,
+((c.existencia_inicial+c.ingreso_material)-c.egreso_material) as cantidad,
 c.costo_actual as costo,
- (((c.existencia_inicial+c.ingreso_material)-c.egreso_material)*c.costo_actual) as valor 
-from bodc_material a, bodc_grupo b, bodt_articulos c 
+ (((c.existencia_inicial+c.ingreso_material)-c.egreso_material)*c.costo_actual) as valor
+from bodc_material a, bodc_grupo b, bodt_articulos c
 where a.id_grupo=b.id_grupo and a.ide_mat_bodega=c.ide_mat_bodega AND ((c.existencia_inicial+c.ingreso_material)-c.egreso_material)>0
-and b.id_grupo=$P{pide_grupo} order by a.des_material asc]]>
+and b.id_grupo in ($P{pide_grupo}) order by b.id_grupo, a.des_material asc]]>
 	</queryString>
 	<field name="descripcion" class="java.lang.String"/>
 	<field name="codigo" class="java.lang.String"/>
@@ -314,7 +317,7 @@ and b.id_grupo=$P{pide_grupo} order by a.des_material asc]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement>
-					<font fontName="" size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+					<font fontName="Times New Roman" size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[Impreso por:]]></text>
 			</staticText>
@@ -327,7 +330,7 @@ and b.id_grupo=$P{pide_grupo} order by a.des_material asc]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement verticalAlignment="Top">
-					<font fontName="Times-Roman" size="7" isBold="false" pdfFontName="Helvetica"/>
+					<font fontName="Times New Roman" size="7" isBold="false" pdfFontName="Helvetica"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{nom_resp}]]></textFieldExpression>
 			</textField>
