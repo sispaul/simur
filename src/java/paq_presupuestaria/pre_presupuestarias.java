@@ -46,6 +46,7 @@ private Etiqueta eti_etiqueta5= new Etiqueta();
 private Calendario cal_inicio = new Calendario();
 private Calendario cal_final = new Calendario();
 
+    
     public pre_presupuestarias() {
         
         
@@ -71,16 +72,72 @@ private Calendario cal_final = new Calendario();
         eti_etiqueta2.setValue("Nivel Inicial:");
         gri_busca.getChildren().add(eti_etiqueta2); 
         cmb_niveli.setId("cmb_niveli");
-        cmb_niveli.setConexion(con_postgres);
-        cmb_niveli.setCombo("select ide_cedula_presupuestaria, nivel from conc_cedula_presupuestaria_fechas");
+        List lista = new ArrayList();
+        Object filaa[] = {
+            "1", "1"
+        };
+        Object filab[] = {
+            "2", "2"
+        };
+        Object filac[] = {
+            "3", "3"
+        };
+        Object filad[] = {
+            "4", "4"
+        };
+        Object filae[] = {
+            "5", "5"
+        };
+        Object filaf[] = {
+            "6", "6"
+        };
+        Object filag[] = {
+            "7", "7"
+        };
+        lista.add(filaa);;
+        lista.add(filab);;
+        lista.add(filac);;
+        lista.add(filad);;
+        lista.add(filae);;
+        lista.add(filaf);;
+        lista.add(filag);;
+        cmb_niveli.setCombo(lista);
         gri_busca.getChildren().add(cmb_niveli);       
         
         
         eti_etiqueta1.setValue("Nivel Final:");
         gri_busca.getChildren().add(eti_etiqueta1); 
         cmb_nivelf.setId("cmb_nivelf");
-        cmb_nivelf.setConexion(con_postgres);
-        cmb_nivelf.setCombo("select ide_cedula_presupuestaria, nivel from conc_cedula_presupuestaria_fechas");
+        List lista1 = new ArrayList();
+        Object fila1[] = {
+            "1", "1"
+        };
+        Object fila2[] = {
+            "2", "2"
+        };
+        Object fila3[] = {
+            "3", "3"
+        };
+        Object fila4[] = {
+            "4", "4"
+        };
+        Object fila5[] = {
+            "5", "5"
+        };
+        Object fila6[] = {
+            "6", "6"
+        };
+        Object fila7[] = {
+            "7", "7"
+        };
+        lista1.add(fila1);;
+        lista1.add(fila2);;
+        lista1.add(fila3);;
+        lista1.add(fila4);;
+        lista1.add(fila5);;
+        lista1.add(fila6);;
+        lista1.add(fila7);;
+        cmb_nivelf.setCombo(lista1);
         gri_busca.getChildren().add(cmb_nivelf);
         
         eti_etiqueta3.setValue("Fecha Inicial:");
@@ -97,9 +154,18 @@ private Calendario cal_final = new Calendario();
         eti_etiqueta5.setValue("Tipo Cedula:");
         gri_busca.getChildren().add(eti_etiqueta5);
        
+        
         cmb_licenti.setId("cmb_licenti");
-        cmb_licenti.setConexion(con_postgres);
-        cmb_licenti.setCombo("select ide_cedula_presupuestaria, tipo from conc_cedula_presupuestaria_fechas");
+        List lista2 = new ArrayList();
+        Object filat[] = {
+            "1", "Gastos Programados"
+        };
+        Object filau[] = {
+            "2", "Ingresos Consolidados"
+        };
+        lista2.add(filat);;
+        lista2.add(filau);;
+        cmb_licenti.setCombo(lista2);
         gri_busca.getChildren().add(cmb_licenti);
         agregarComponente(gri_busca);
         
@@ -121,30 +187,18 @@ private Calendario cal_final = new Calendario();
     
 @Override
     public void aceptarReporte() {
-    System.err.println("Ingresando");
         if (rep_reporte.getReporteSelecionado().equals("CEDULAS PRESUPUESTARIAS")) {
-                    //p_parametros.put("tipo", cmb_licenti.getValue()+"");
-                    p_parametros.put("tipo",Integer.parseInt(cmb_licenti.getValue()+""));
-                       System.out.println(cmb_ano.getValue());
-                    //p_parametros.put("ano", cmb_ano.getValue()+"");
-                    p_parametros.put("ano",Integer.parseInt(cmb_ano.getValue()+""));
-                       System.out.println(cmb_licenti.getValue());
-                    //p_parametros.put("niveli", cmb_niveli.getValue()+"");
-                    p_parametros.put("niveli",Integer.parseInt(cmb_niveli.getValue()+""));   
-                       System.out.println(cmb_nivelf.getValue());
-                    //p_parametros.put("nivelF", cmb_nivelf.getValue()+"");
-                    p_parametros.put("nivelf",Integer.parseInt(cmb_nivelf.getValue()+""));
-                       System.out.println(cmb_niveli.getValue());
-                    p_parametros.put("fechai", cal_inicio.getFecha());
-                       System.out.println(cal_inicio.getValue());
-                    p_parametros.put("fechaf", cal_final.getFecha());
-                       System.out.println(cal_final.getValue());
+//                    p_parametros.put("tipo",Integer.parseInt(cmb_licenti.getValue()+""));
+                      p_parametros.put("ano",Integer.parseInt(cmb_ano.getValue()+""));
+//                    p_parametros.put("niveli",Integer.parseInt(cmb_niveli.getValue()+"")); 
+//                    p_parametros.put("nivelf",Integer.parseInt(cmb_nivelf.getValue()+""));
+//                    p_parametros.put("fechai", cal_inicio.getFecha());
+//                    p_parametros.put("fechaf", cal_final.getFecha());
                     rep_reporte.cerrar();
                     sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                     sef_reporte.dibujar();
                 } else {
                 utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
-                System.err.println("Saliendo");
             }
      
     }
