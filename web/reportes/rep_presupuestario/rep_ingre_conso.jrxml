@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_ingre_conso" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f8f95e8b-3388-434e-8b27-b533913c5e51">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ano" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT pre_codigo,pre_descripcion,ano_curso,val_inicial,reforma1,
+(val_inicial + reforma1) as codificado,devengado1,((val_inicial + reforma1)-devengado1) as saldo,cobradoc1,(devengado1 -cobradoc1)
+from conc_cedula_presupuestaria_fechas
+where ano_curso = $P{ano}
+order by pre_codigo]]>
+	</queryString>
+	<field name="pre_codigo" class="java.lang.String"/>
+	<field name="pre_descripcion" class="java.lang.String"/>
+	<field name="ano_curso" class="java.lang.Integer"/>
+	<field name="val_inicial" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[asignacion inicial]]></fieldDescription>
+	</field>
+	<field name="reforma1" class="java.math.BigDecimal"/>
+	<field name="codificado" class="java.math.BigDecimal"/>
+	<field name="devengado1" class="java.math.BigDecimal"/>
+	<field name="saldo" class="java.math.BigDecimal"/>
+	<field name="cobradoc1" class="java.math.BigDecimal"/>
+	<field name="?column?" class="java.math.BigDecimal"/>
+	<group name="pre_codigo">
+		<groupExpression><![CDATA[$F{pre_codigo}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="116" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="64b36e70-84fd-4f26-811d-918402f8b215" x="325" y="0" width="231" height="32"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INGRESOS CONSOLIDADOS NEGATIVOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="87352556-97bb-4569-9515-e9a4006e7a1a" x="188" y="32" width="559" height="38"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GOBIERNO AUTONOMO DESCENTRALIZADO MUNICIPAL DE RUMIÑAHUI]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="43456f5e-cb82-42b4-961b-82ff33126311" x="0" y="0" width="177" height="70"/>
+				<imageExpression><![CDATA["C:\\Proyectos\\simur\\web\\imagenes\\logo.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement uuid="25a97447-336c-4731-b0ad-24ae44a24a4f" x="702" y="94" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{ano}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="71" splitType="Stretch">
+			<textField>
+				<reportElement uuid="14d9b95c-82e8-4c8d-8df4-0a1f42eeacac" x="0" y="51" width="40" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{pre_codigo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f6a07395-626a-4728-9e4d-3530791703cc" x="40" y="51" width="158" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{pre_descripcion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="90a6b505-e5be-48de-b581-d44c945cedd2" x="198" y="51" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{val_inicial}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e849eae0-b0e8-4e63-9824-c6fa9922a7c8" x="398" y="51" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{codificado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5c6c21f6-c15e-4cb5-86d8-914bc7c3b1aa" x="498" y="51" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{devengado1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="79e6cbfe-900c-4e60-9596-1559befda99a" x="298" y="51" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{reforma1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f413852f-1785-4f53-b781-773f689202dc" x="598" y="51" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{saldo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6ae3a75f-bc20-432c-9cc6-5b3dde0cd94c" x="702" y="51" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cobradoc1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="e077b0ac-d934-418f-9728-d2f4ffba934c" x="0" y="31" width="40" height="20"/>
+				<textElement textAlignment="Center">
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4cfe1011-369b-477a-b070-d08ceda569de" x="40" y="31" width="158" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Descripcion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7ac5bcc5-8a73-4af1-b6e8-4c189852f092" x="198" y="31" width="100" height="20"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Valor Inicial]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ca0d5501-b308-482c-9e1f-b25b49edd14a" x="298" y="31" width="100" height="20"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Reforma]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5fee0a72-bb91-462e-bb0f-fd82b17cc775" x="398" y="31" width="100" height="20"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Codificado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9b081c86-185f-45df-93fc-eca36772af51" x="498" y="31" width="100" height="20"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Devengado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cec053dc-f369-47f0-851f-f880acc55b3c" x="598" y="31" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Saldo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6c52e14c-f990-47ba-a78e-908d352a9e04" x="698" y="31" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Cobradoc]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="813a46c6-872a-4f42-9fed-146c8f3646e4" x="0" y="3" width="798" height="1"/>
+			</line>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="31" splitType="Stretch">
+			<line>
+				<reportElement uuid="970fcdc2-97e7-4fc8-b9c9-e4f9c6691ba4" x="0" y="4" width="798" height="1"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="23" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="19" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="21" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="15" splitType="Stretch"/>
+	</summary>
+</jasperReport>
