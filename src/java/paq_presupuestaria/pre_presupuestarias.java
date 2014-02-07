@@ -30,17 +30,14 @@ private Combo cmb_ano = new Combo();
 private Combo cmb_niveli = new Combo();
 private Combo cmb_nivelf = new Combo();
 private Combo cmb_licenti = new Combo();
-
 //declaracion de conexion
 private Conexion con_postgres= new Conexion();
-
 //Objetos reportes y calendarios
 private SeleccionCalendario sec_rango = new SeleccionCalendario();
 private SeleccionFormatoReporte sef_reporte = new SeleccionFormatoReporte();
 private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
 private Reporte rep_reporte = new Reporte();
 private Map p_parametros = new HashMap();
-
 //obejtos eqyiquetas array y componentes
 private Etiqueta eti_etiqueta= new Etiqueta();
 private Etiqueta eti_etiqueta2= new Etiqueta();
@@ -52,13 +49,10 @@ private Etiqueta eti_encab= new Etiqueta();
 //Creacion Calendarios
 private Calendario cal_fechain = new Calendario();
 private Calendario cal_fechafin = new Calendario();
-
 //obejto tabla usuario
 private Tabla tab_consulta = new Tabla();
 
-
     public pre_presupuestarias() {
-
 
         sec_rango.setId("sec_rango");
         sec_rango.getBot_aceptar().setMetodo("aceptarReporte");
@@ -196,8 +190,6 @@ private Tabla tab_consulta = new Tabla();
         gri_busca.getChildren().add(cmb_licenti);
         agregarComponente(gri_busca);
 
-
-        
   //llamar y ejecutar reporte              
         rep_reporte.setId("rep_reporte");
         rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
@@ -206,7 +198,6 @@ private Tabla tab_consulta = new Tabla();
         sef_reporte.setId("sef_reporte");
         sef_reporte.setConexion(con_postgres);
         agregarComponente(sef_reporte);
-        
         
 //agregar usuario actual
         bar_botones.agregarReporte();      
@@ -347,7 +338,7 @@ private Tabla tab_consulta = new Tabla();
     public void actualizarTablaGatos() { 
             // Forma el sql para actualizar
         String str_sql2 ="update conc_cedula_presupuestaria_fechas \n" +
-                            "set reforma1= 0, devengado1=0, pagado1=0, cobrado1=0, compromiso1=0, cobradoc1=0,val_inicial=0 where tipo= '"+Integer.parseInt(cmb_licenti.getValue()+"")+"'";
+                                         "set reforma1= 0, devengado1=0, pagado1=0, cobrado1=0, compromiso1=0, cobradoc1=0,val_inicial=0 where tipo= '"+Integer.parseInt(cmb_licenti.getValue()+"")+"'";
         con_postgres.ejecutarSql(str_sql2);
         actualizarTablaGatos1();
     }
@@ -528,7 +519,4 @@ private Tabla tab_consulta = new Tabla();
     public void setCal_fechafin(Calendario cal_fechafin) {
         this.cal_fechafin = cal_fechafin;
     }
-
-
-    
 }
