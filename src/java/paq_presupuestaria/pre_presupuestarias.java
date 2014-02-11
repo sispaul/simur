@@ -65,21 +65,17 @@ private Tabla tab_consulta = new Tabla();
         
         String str_sqlt ="delete from conc_cedula_presupuestaria_fechas";
         con_postgres.ejecutarSql(str_sqlt);
-        String str_sqlr ="insert into conc_cedula_presupuestaria_fechas (ide_clasificador,pre_codigo,con_ide_clasificador,pre_descripcion,tipo,ano_curso,nivel,\n" +
-                                    "ide_funcion,des_funcion,cod_funcion,fechaced)\n" +
-                                    "select ide_clasificador,pre_codigo,con_ide_clasificador,pre_descripcion,tipo,2013,nivel,ide_funcion,des_funcion,cod_funcion,'2013-12-31'\n" +
-                                    "from conc_clasificador,pre_funcion_programa\n" +
-                                    "where tipo = 2\n" +
-                                    "order by ide_funcion,pre_codigo";
+        String str_sqlr ="insert into conc_cedula_presupuestaria_fechas (ide_clasificador,pre_codigo,con_ide_clasificador,pre_descripcion,tipo,nivel,ide_funcion,des_funcion,cod_funcion)\n" +
+                            "select ide_clasificador,pre_codigo,con_ide_clasificador,pre_descripcion,tipo,nivel,ide_funcion,des_funcion,cod_funcion\n" +
+                            "from conc_clasificador,pre_funcion_programa\n" +
+                            "order by ide_funcion,pre_codigo";
         con_postgres.ejecutarSql(str_sqlr);
-        
-        
         
         Grid grid_pant = new Grid();
         grid_pant.setColumns(2);
-        grid_pant.setStyle("text-align:center;position:absolute;top:70px;left:80px;");
+        grid_pant.setStyle("text-align:center;position:absolute;top:70px;left:55px;");
         eti_encab.setStyle("font-size:22px;color:olive;text-align:center;");
-        eti_encab.setValue("CEDULAS PRESUPUESTARIAS DE INGRESOS Y GASTOS");
+        eti_encab.setValue("CEDULAS PRESUPUESTARIAS DE INGRESOS Y GASTOS NEGATIVOS");
         grid_pant.getChildren().add(eti_encab);
         
         Imagen quinde = new Imagen();
@@ -219,7 +215,6 @@ private Tabla tab_consulta = new Tabla();
         sef_reporte.setId("sef_reporte");
         sef_reporte.setConexion(con_postgres);
         agregarComponente(sef_reporte);
-
         
 //agregar usuario actual
         bar_botones.agregarReporte();      
@@ -271,6 +266,8 @@ private Tabla tab_consulta = new Tabla();
                 utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
             }
     }
+
+
 //ACTUALIZACIONES PARA OPCION DE INGRESOS CONSOLIDADOS
         public void deleteTablaIngresos() { 
             // Forma el sql para eliminar
