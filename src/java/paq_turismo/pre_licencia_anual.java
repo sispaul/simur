@@ -8,6 +8,7 @@ import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
+import framework.componentes.Imagen;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionCalendario;
@@ -68,7 +69,7 @@ private SeleccionFormatoReporte sef_reporte = new SeleccionFormatoReporte();
         tab_establecimiento.getColumna("CODIGO_TIPO").setNombreVisual("TIPO ESTABLECIMIENTO");
         tab_establecimiento.getColumna("NOMBRE_ESTAB").setNombreVisual("NOMBRE ESTABLECIMIENTO");
         tab_establecimiento.getColumna("IDENTIFICACION_ESTAB").setNombreVisual("ID/RUC");
-        tab_establecimiento.getColumna("REGISTRO_ESTAB").setMascara("99.99.99.9999");
+        tab_establecimiento.getColumna("REGISTRO_ESTAB").setMascara("17.05.50.9999");
         tab_establecimiento.getColumna("CIUDAD_ESTAB").setNombreVisual("CIUDAD");
         tab_establecimiento.getColumna("CATEGORIA_ESTAB").setNombreVisual("CATEGORIA");
         tab_establecimiento.getColumna("REPRESENTATE_ESTAB").setNombreVisual("REPRESENTANTE LEGAL");
@@ -106,6 +107,11 @@ private SeleccionFormatoReporte sef_reporte = new SeleccionFormatoReporte();
         tab_licencia.setStyle(null);
         tabp1.setStyle("width:70%;overflow:auto;");
 
+        Imagen quinde = new Imagen();
+        quinde.setStyle("text-align:center;position:absolute;top:190px;left:40px;");
+        quinde.setValue("imagenes/logo.png");
+        tabp1.setWidth("100%");
+        tabp1.getChildren().add(quinde);
         
         Division div = new Division();
         div.dividir2(tabp, tabp1, "40%", "h");
