@@ -84,6 +84,8 @@ private SeleccionFormatoReporte sef_reporte = new SeleccionFormatoReporte();
         PanelTabla tabp = new PanelTabla();
         tabp.setMensajeWarn("DIRECCIÓN DE TURISMO");
         tabp.setPanelTabla(tab_establecimiento);
+        tab_establecimiento.setStyle(null);
+        tabp.setStyle("width:100%;overflow: auto;");
         
         tab_licencia.setId("tab_licencia");
         tab_licencia.setHeader("LICENCIA ANUAL DE FUNCIONAMIENTO");
@@ -101,7 +103,10 @@ private SeleccionFormatoReporte sef_reporte = new SeleccionFormatoReporte();
         tab_licencia.dibujar();
         PanelTabla tabp1 = new PanelTabla();
         tabp1.setPanelTabla(tab_licencia);
+        tab_licencia.setStyle(null);
+        tabp1.setStyle("width:70%;overflow:center;");
 
+        
         Division div = new Division();
         div.dividir2(tabp, tabp1, "40%", "h");
         agregarComponente(div);
