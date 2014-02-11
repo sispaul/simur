@@ -26,13 +26,12 @@ private Tabla tab_tabla=new Tabla();
         tab_tabla.setId("tab_tabla");        
         tab_tabla.setTabla("CMT_REPRESENTANTE", "IDE_CMREP", 1);
         tab_tabla.setHeader("REPRESENTANTES"); //Poner titulo a la tabla 
-        
         tab_tabla.getColumna("DOCUMENTO_IDENTIDAD_CMREP").setLectura(true); //La columna  se hace de lectura
         tab_tabla.getColumna("DOCUMENTO_IDENTIDAD_CMREP").setEstilo("font-size:18px;color:blue;"); //estilo css
-        tab_tabla.setTipoFormulario(true); //convierte en formulario
         //HACER COMBO
         tab_tabla.getColumna("IDE_CMTID").setCombo("select IDE_CMTID,DETALLE_CMTID from CMT_TIPO_DOCUMENTO");        
         //Ultimo metodo de la tabla
+        tab_tabla.setTipoFormulario(true); //convierte en formulario
         tab_tabla.dibujar();
         
         PanelTabla pat_panel=new PanelTabla();  //Para el menu contextual
@@ -46,7 +45,7 @@ private Tabla tab_tabla=new Tabla();
         set_tabla.getGri_cuerpo().setHeader(gri_busca);
         set_tabla.setTitle("SELECCIONE MARCAS");
         set_tabla.setSeleccionTabla("SELECT ide_marca,marca from trans_marcas", "ide_marca");
-//      set_tabla.getTab_seleccion().getColumna("marca").setFiltro(true);
+        set_tabla.getTab_seleccion().getColumna("ide_marca").setFiltro(true);
         agregarComponente(set_tabla);
 
         Boton bot1 = new Boton();
@@ -63,6 +62,7 @@ private Tabla tab_tabla=new Tabla();
     
     @Override
     public void insertar() {
+      
       }
 
     @Override
