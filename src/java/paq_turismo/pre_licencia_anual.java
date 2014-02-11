@@ -104,7 +104,7 @@ private SeleccionFormatoReporte sef_reporte = new SeleccionFormatoReporte();
         PanelTabla tabp1 = new PanelTabla();
         tabp1.setPanelTabla(tab_licencia);
         tab_licencia.setStyle(null);
-        tabp1.setStyle("width:70%;overflow:center;");
+        tabp1.setStyle("width:70%;overflow:auto;");
 
         
         Division div = new Division();
