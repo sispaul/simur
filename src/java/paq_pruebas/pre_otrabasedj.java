@@ -32,7 +32,7 @@ public class pre_otrabasedj extends Pantalla {
         //3 asignamos la conexion 
         tab_tabla.setConexion(con_postgres);
 
-        tab_tabla.setTabla("empleadoasiento", "codigo", 1);
+        tab_tabla.setTabla("srh_descuento", "ide_descuento", 1);
         tab_tabla.setRows(15);
         tab_tabla.dibujar();
 
