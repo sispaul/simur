@@ -1,0 +1,40 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package paq_pruebas.ejb;
+
+import framework.aplicacion.TablaGenerica;
+import javax.ejb.Stateless;
+import paq_sistema.aplicacion.Utilitario;
+
+/**
+ *
+ * @author Diego
+ */
+@Stateless
+public class servicioPruebas {
+
+    private Utilitario utilitario = new Utilitario();
+
+    // Add business logic below. (Right-click in editor and choose
+    // "Insert Code > Add Business Method")
+    public int getStickProducto(String ide_prod) {
+
+        ///toda la programacion
+
+        return 0;
+    }
+
+    public void ejemploTabla() {
+        TablaGenerica tab_consulta = utilitario.consultar("SELECT * FROM SIS_USUARIO");
+
+        for (int i = 0; i < tab_consulta.getTotalFilas(); i++) {
+
+            System.out.println(tab_consulta.getValor(i, "NOM_USUA"));
+
+        }
+
+
+    }
+}
