@@ -162,7 +162,7 @@ public class pre_componentes extends Pantalla {
                 p_parametros = new HashMap();
                 p_parametros.put("p_titulo", "PARAMTRO TITULO DEL REPORTE");
                 p_parametros.put("p_marcas", set_tabla.getSeleccionados());
-                set_tabla.cerrar();
+                set_tabla.cerrar();                
                 sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                 sef_formato.dibujar();
             }
