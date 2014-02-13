@@ -20,6 +20,12 @@ public class servicioPruebas {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
+    /**
+     * Este metodo retorna el stock de un producto
+     *
+     * @param ide_prod clave prim aria del producto
+     * @return int con el valor del stock
+     */
     public int getStickProducto(String ide_prod) {
 
         ///toda la programacion
@@ -32,16 +38,16 @@ public class servicioPruebas {
         for (int i = 0; i < tab_consulta.getTotalFilas(); i++) {
             System.out.println(tab_consulta.getValor(i, "NOM_USUA"));
         }
-        
+
         //Pol de conexiones
-        Conexion con_postgres=null;
-        
-        TablaGenerica tab_otra=new TablaGenerica();
+        Conexion con_postgres = null;
+
+        TablaGenerica tab_otra = new TablaGenerica();
         tab_otra.setConexion(con_postgres);
         tab_otra.setSql("SELECT .....");
         tab_otra.ejecutarSql();
-        
-        
-        
+
+
+
     }
 }
