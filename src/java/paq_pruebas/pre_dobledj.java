@@ -7,6 +7,8 @@ package paq_pruebas;
 import framework.componentes.Division;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
+import javax.ejb.EJB;
+import paq_pruebas.ejb.servicioPruebas;
 import paq_sistema.aplicacion.Pantalla;
 
 /**
@@ -17,6 +19,8 @@ public class pre_dobledj extends Pantalla {
 
     private Tabla tab_cabecera = new Tabla();
     private Tabla tab_detalle = new Tabla();
+    @EJB
+    private servicioPruebas ser_PRUEBA = (servicioPruebas) utilitario.instanciarEJB(servicioPruebas.class);
 
     public pre_dobledj() {
 
@@ -44,6 +48,10 @@ public class pre_dobledj extends Pantalla {
         agregarComponente(div);
 
 
+    }
+
+    public void calcularstck() {
+        int i = ser_PRUEBA.getStickProducto("1");
     }
 
     @Override
