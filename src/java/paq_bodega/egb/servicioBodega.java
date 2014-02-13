@@ -81,10 +81,12 @@ public class servicioBodega {
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         con_postgres.NOMBRE_MARCA_BASE = "postgres";
 
-        TablaGenerica tab_ejecuta=new TablaGenerica();
-        tab_ejecuta.setConexion(con_postgres);
-        tab_ejecuta.setSql(consulta);
-        tab_ejecuta.ejecutarSql();
+//        TablaGenerica tab_ejecuta=new TablaGenerica();
+//        tab_ejecuta.setConexion(con_postgres);
+//        tab_ejecuta.setSql(consulta);
+//        tab_ejecuta.ejecutarSql();
+        
+        con_postgres.ejecutarSql(consulta);
 
     }
 
