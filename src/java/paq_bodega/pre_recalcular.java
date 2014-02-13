@@ -10,7 +10,6 @@ import framework.componentes.Grid;
 import framework.componentes.Tabla;
 import javax.ejb.EJB;
 import paq_bodega.egb.servicioBodega;
-import paq_pruebas.ejb.servicioPruebas;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
