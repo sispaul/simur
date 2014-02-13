@@ -51,7 +51,7 @@ public class pre_dobledj extends Pantalla {
     }
 
     public void calcularstck() {
-        int i = ser_PRUEBA.getStickProducto("1");
+        int i = ser_PRUEBA.getStickProducto("9");
     }
 
     @Override
