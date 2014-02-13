@@ -9,7 +9,7 @@ import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Tabla;
 import javax.ejb.EJB;
-import paq_bodega.egb.servicioBodega;
+import paq_bodega.ejb.servicioBodega;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
