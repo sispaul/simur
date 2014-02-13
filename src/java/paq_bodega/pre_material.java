@@ -67,7 +67,7 @@ public class pre_material extends Pantalla {
         tab_tabla.getColumna("ide_medida").setNombreVisual("Medida");
         tab_tabla.getColumna("cod_material").setNombreVisual("Cuenta");
         tab_tabla.getColumna("cod_material").getMetodoChange();
-        //tab_tabla.getColumna("cod_material").setMascara("?99.999.999");
+        tab_tabla.getColumna("cod_material").setMascara("?99.999.999");
         tab_tabla.getColumna("id_grupo").setNombreVisual("Grupo");
         tab_tabla.getColumna("tipo").setNombreVisual("Tipo");
         
