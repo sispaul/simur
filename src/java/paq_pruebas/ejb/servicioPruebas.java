@@ -7,6 +7,7 @@ package paq_pruebas.ejb;
 import framework.aplicacion.TablaGenerica;
 import javax.ejb.Stateless;
 import paq_sistema.aplicacion.Utilitario;
+import persistencia.Conexion;
 
 /**
  *
@@ -28,13 +29,19 @@ public class servicioPruebas {
 
     public void ejemploTabla() {
         TablaGenerica tab_consulta = utilitario.consultar("SELECT * FROM SIS_USUARIO");
-
         for (int i = 0; i < tab_consulta.getTotalFilas(); i++) {
-
             System.out.println(tab_consulta.getValor(i, "NOM_USUA"));
-
         }
-
-
+        
+        //Pol de conexiones
+        Conexion con_postgres=null;
+        
+        TablaGenerica tab_otra=new TablaGenerica();
+        tab_otra.setConexion(con_postgres);
+        tab_otra.setSql("SELECT .....");
+        tab_otra.ejecutarSql();
+        
+        
+        
     }
 }
