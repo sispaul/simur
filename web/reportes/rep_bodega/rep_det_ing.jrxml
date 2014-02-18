@@ -26,7 +26,7 @@
 	<title>
 		<band height="52" splitType="Stretch">
 			<staticText>
-				<reportElement key="staticText" x="142" y="12" width="270" height="18" forecolor="#000000" backcolor="#FFFFFF" uuid="40dec067-d6c9-4474-b3b3-6e7042f472f1"/>
+				<reportElement key="staticText" x="248" y="12" width="270" height="18" forecolor="#000000" backcolor="#FFFFFF" uuid="40dec067-d6c9-4474-b3b3-6e7042f472f1"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -38,18 +38,8 @@
 				</textElement>
 				<text><![CDATA[BODEGA MUNICIPAL DE RUMIÑAHUI]]></text>
 			</staticText>
-			<image isUsingCache="true" evaluationTime="Report">
-				<reportElement key="image-1" x="19" y="2" width="39" height="38" uuid="0c6a6410-90c3-4a5a-9505-da34b0c674df"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<imageExpression><![CDATA["http://192.168.1.5:8080/imagenesigag/escudo.jpg"]]></imageExpression>
-			</image>
 			<staticText>
-				<reportElement key="staticText" x="142" y="28" width="270" height="16" forecolor="#000000" backcolor="#FFFFFF" uuid="266277a6-7db2-4530-ae7a-43ce54586bc7"/>
+				<reportElement key="staticText" x="248" y="28" width="270" height="16" forecolor="#000000" backcolor="#FFFFFF" uuid="266277a6-7db2-4530-ae7a-43ce54586bc7"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -64,6 +54,16 @@
 			<line>
 				<reportElement key="line" x="0" y="46" width="802" height="1" uuid="7a7da209-89d6-45e8-8dcb-321257396032"/>
 			</line>
+			<image isUsingCache="true" evaluationTime="Report">
+				<reportElement key="image-1" x="16" y="4" width="100" height="38" uuid="770d8b74-54c5-44e6-ae6a-008ab70cef69"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<imageExpression><![CDATA["../../imagenes/logo.png"]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<pageHeader>
