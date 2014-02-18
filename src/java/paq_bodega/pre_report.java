@@ -13,7 +13,9 @@ import framework.componentes.Tabla;
 import framework.componentes.Texto;
 import java.util.HashMap;
 import java.util.Map;
+import javax.ejb.EJB;
 import paq_sistema.aplicacion.Pantalla;
+import paq_sistema.ejb.ServicioSeguridad;
 import persistencia.Conexion;
 
 /**
@@ -32,6 +34,10 @@ public class pre_report extends Pantalla {
     private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
     private Map p_parametros = new HashMap();
     private Tabla tab_consulta = new Tabla();
+    
+    @EJB
+    private ServicioSeguridad ser_user = (ServicioSeguridad) utilitario.instanciarEJB(ServicioSeguridad.class);
+
     
     public pre_report() {
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
@@ -130,6 +136,8 @@ public class pre_report extends Pantalla {
         /**
          * PERSONA RESPONSABLE
          */
+        //ser_user.getUsuario(utilitario.getVariable("IDE_USUA")).getValor("NICK_USUA");
+        
         tab_consulta.setId("tab_consulta");
         tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
         tab_consulta.setCampoPrimaria("IDE_USUA");

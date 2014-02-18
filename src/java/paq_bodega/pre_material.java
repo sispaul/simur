@@ -14,21 +14,21 @@ import java.util.regex.Pattern;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
-
 /**
  *
  * @author Paolo
  */
 public class pre_material extends Pantalla {
-    private Conexion con_postgres= new Conexion();
+
+    private Conexion con_postgres = new Conexion();
     private Tabla tab_tabla = new Tabla();
     private Tabla tab_tabla2 = new Tabla();
-    
+
     public pre_material() {
         //Persistencia a la postgres.
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
-        con_postgres.NOMBRE_MARCA_BASE="postgres";
-        
+        con_postgres.NOMBRE_MARCA_BASE = "postgres";
+
         List lista = new ArrayList();
         Object fila1[] = {
             "C", "COMPRA"
@@ -38,7 +38,7 @@ public class pre_material extends Pantalla {
         };
         lista.add(fila1);;
         lista.add(fila2);;
-        
+
         List lst_tipo = new ArrayList();
         Object lsttipo1[] = {
             "A", "ACTIVO"
@@ -48,7 +48,7 @@ public class pre_material extends Pantalla {
         };
         lst_tipo.add(lsttipo1);;
         lst_tipo.add(lsttipo2);;
-        
+
         tab_tabla.setId("tab_tabla");
         tab_tabla.setConexion(con_postgres);
         tab_tabla.setTabla("bodc_material", "ide_mat_bodega", 1);
@@ -66,11 +66,10 @@ public class pre_material extends Pantalla {
         tab_tabla.getColumna("des_material").setNombreVisual("Nombre");
         tab_tabla.getColumna("ide_medida").setNombreVisual("Medida");
         tab_tabla.getColumna("cod_material").setNombreVisual("Cuenta");
-        tab_tabla.getColumna("cod_material").getMetodoChange();
-        tab_tabla.getColumna("cod_material").setMascara("?99.999.999");
+        //tab_tabla.getColumna("cod_material").setMascara("?9?9.999.999");
         tab_tabla.getColumna("id_grupo").setNombreVisual("Grupo");
         tab_tabla.getColumna("tipo").setNombreVisual("Tipo");
-        
+
         tab_tabla.setTipoFormulario(true);
         tab_tabla.dibujar();
 
@@ -95,14 +94,14 @@ public class pre_material extends Pantalla {
         tab_tabla2.getColumna("id_grupo").setLongitud(400);
         tab_tabla2.getColumna("tipo").setNombreVisual("Tipo");
         tab_tabla2.getColumna("tipo").setLongitud(100);
-        
+
         tab_tabla2.setLectura(true);
         tab_tabla2.setRows(15);
-   
+
         tab_tabla2.agregarRelacion(tab_tabla);
         tab_tabla2.dibujar();
         tab_tabla2.setFilaActual(0);
-        
+
         PanelTabla tabp = new PanelTabla();
         tabp.setPanelTabla(tab_tabla);
 
@@ -115,9 +114,9 @@ public class pre_material extends Pantalla {
         div.dividir2(tabp, tabp1, "40%", "h");
 
         agregarComponente(div);
-        
+
         //agregarComponente(pat_panel);
-        
+
     }
 
     public Tabla getTab_tabla2() {
@@ -127,7 +126,6 @@ public class pre_material extends Pantalla {
     public void setTab_tabla2(Tabla tab_tabla2) {
         this.tab_tabla2 = tab_tabla2;
     }
-
 
     public Conexion getCon_postgres() {
         return con_postgres;
@@ -144,21 +142,21 @@ public class pre_material extends Pantalla {
 
     @Override
     public void guardar() {
-        if(ValidaCodigo()){
-        String reg = new String();
-        tab_tabla.guardar();
-        con_postgres.guardarPantalla();
-        reg=tab_tabla.getValorSeleccionado();
-        tab_tabla2.actualizar();
-        tab_tabla2.setFilaActual(reg);
-        tab_tabla2.calcularPaginaActual();
+        if (ValidaCodigo()) {
+            String reg = new String();
+            tab_tabla.guardar();
+            con_postgres.guardarPantalla();
+            reg = tab_tabla.getValorSeleccionado();
+            tab_tabla2.actualizar();
+            tab_tabla2.setFilaActual(reg);
+            tab_tabla2.calcularPaginaActual();
         }
-        }
+    }
 
     private boolean ValidaCodigo() {
-       Pattern pat = Pattern.compile("[0-9.]+");
-        Matcher mat = pat.matcher(tab_tabla.getValor("cod_material")+"");
-        
+        Pattern pat = Pattern.compile("[0-9.]+");
+        Matcher mat = pat.matcher(tab_tabla.getValor("cod_material") + "");
+
         if (mat.matches()) {
             return true;
         } else {
@@ -166,13 +164,12 @@ public class pre_material extends Pantalla {
             return false;
         }
     }
-            
+
     @Override
     public void eliminar() {
         utilitario.getTablaisFocus().eliminar();
     }
-    
-    
+
     public Tabla getTab_tabla() {
         return tab_tabla;
     }
