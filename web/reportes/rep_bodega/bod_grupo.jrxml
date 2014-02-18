@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bod_grupo" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="135d824e-6aea-4ac2-b5cf-2433cf2cc8a0">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bod_grupo" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="135d824e-6aea-4ac2-b5cf-2433cf2cc8a0">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="140"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
@@ -21,14 +21,20 @@ c.costo_actual as costo,
  (((c.existencia_inicial+c.ingreso_material)-c.egreso_material)*c.costo_actual) as valor
 from bodc_material a, bodc_grupo b, bodt_articulos c
 where a.id_grupo=b.id_grupo and a.ide_mat_bodega=c.ide_mat_bodega AND ((c.existencia_inicial+c.ingreso_material)-c.egreso_material)>0
-and b.id_grupo in ($P{pide_grupo}) order by b.id_grupo, a.des_material asc]]>
+and b.id_grupo in ($P!{pide_grupo}) order by b.id_grupo, a.des_material asc]]>
 	</queryString>
 	<field name="descripcion" class="java.lang.String"/>
 	<field name="codigo" class="java.lang.String"/>
-	<field name="nombre" class="java.lang.String"/>
+	<field name="nombre" class="java.lang.String">
+		<fieldDescription><![CDATA[nombre]]></fieldDescription>
+	</field>
 	<field name="cantidad" class="java.math.BigDecimal"/>
-	<field name="costo" class="java.math.BigDecimal"/>
-	<field name="valor" class="java.math.BigDecimal"/>
+	<field name="costo" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[COSTO]]></fieldDescription>
+	</field>
+	<field name="valor" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[VALOR]]></fieldDescription>
+	</field>
 	<variable name="SUM_cantidad_1" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{cantidad}]]></variableExpression>
 	</variable>
@@ -44,7 +50,7 @@ and b.id_grupo in ($P{pide_grupo}) order by b.id_grupo, a.des_material asc]]>
 	<title>
 		<band height="63" splitType="Stretch">
 			<staticText>
-				<reportElement key="staticText-1" mode="Transparent" x="135" y="7" width="300" height="17" uuid="0246c852-1ac5-4144-b68d-1f42f6ee6704"/>
+				<reportElement key="staticText-1" mode="Transparent" x="143" y="7" width="300" height="17" uuid="0246c852-1ac5-4144-b68d-1f42f6ee6704"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -58,7 +64,7 @@ and b.id_grupo in ($P{pide_grupo}) order by b.id_grupo, a.des_material asc]]>
 			</staticText>
 			<elementGroup>
 				<staticText>
-					<reportElement key="staticText-2" mode="Transparent" x="88" y="26" width="400" height="18" forecolor="#000033" backcolor="#FFFFFF" uuid="bc0ab78f-cf28-44d8-808b-f0acefbdf741"/>
+					<reportElement key="staticText-2" mode="Transparent" x="96" y="26" width="400" height="18" forecolor="#000033" backcolor="#FFFFFF" uuid="bc0ab78f-cf28-44d8-808b-f0acefbdf741"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -84,6 +90,16 @@ and b.id_grupo in ($P{pide_grupo}) order by b.id_grupo, a.des_material asc]]>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
+			<image isUsingCache="true" evaluationTime="Report">
+				<reportElement key="image-1" x="2" y="3" width="100" height="38" uuid="b7fef103-a046-4bad-989b-a0e8393ac53d"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<imageExpression><![CDATA["../../imagenes/logo.png"]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<pageHeader>
