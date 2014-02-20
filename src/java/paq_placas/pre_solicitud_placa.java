@@ -43,8 +43,8 @@ private Tabla tab_consulta = new Tabla();
         tab_cabecera.getColumna("usu_solicitud").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         tab_cabecera.getColumna("usu_solicitud").setVisible(false);
         tab_cabecera.setTipoFormulario(true);
-        tab_cabecera.dibujar();
         tab_cabecera.agregarRelacion(tab_detalle);
+        tab_cabecera.dibujar();
         PanelTabla pat_cabecera = new PanelTabla();
         pat_cabecera.setPanelTabla(tab_cabecera);
         
@@ -55,8 +55,8 @@ private Tabla tab_consulta = new Tabla();
         tab_detalle.setTabla("TRANS_DETALLE_SOLICITUD_PLACA", "ide_detalle_solicitud", 2);
         tab_detalle.setHeader("Detalle de Solicitud");
         tab_detalle.setTipoFormulario(true);
-        tab_detalle.dibujar();
         tab_detalle.agregarRelacion(tab_requisito);
+        tab_detalle.dibujar();
         PanelTabla pat_detalle = new PanelTabla();
         pat_detalle.setPanelTabla(tab_detalle);
         
