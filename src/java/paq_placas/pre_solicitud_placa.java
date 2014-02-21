@@ -27,13 +27,13 @@ private Tabla tab_consulta = new Tabla();
 private AutoCompletar aut_busca = new AutoCompletar();
 
     public pre_solicitud_placa() {
-        
+ 
         tab_consulta.setId("tab_consulta");
         tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
         tab_consulta.setCampoPrimaria("IDE_USUA");
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
-        
+
         aut_busca.setId("aut_busca");
         aut_busca.setAutoCompletar("SELECT g.IDE_GESTOR,g.CEDULA_GESTOR,g.NOMBRE_GESTOR,t.NOMBRE_EMPRESA\n" +
                                     "FROM TRANS_COMERCIAL_AUTOMOTORES t,TRANS_GESTOR g\n" +
@@ -108,12 +108,12 @@ private AutoCompletar aut_busca = new AutoCompletar();
         tab_requisito.setId("tab_requisito");
         tab_requisito.setTabla("trans_detalle_requisitos_solicitud", "ide_detalle_requisitos_solicitud", 3);
         tab_requisito.setHeader("Requisitos");
-//        tab_requisito.getColumna("ide_det_requisito").setCombo("SELECT r.IDE_TIPO_REQUISITO,r.DECRIPCION_REQUISITO\n" 
-//                                                                +"FROM TRANS_TIPO_SERVICIO s ,TRANS_TIPO_REQUISITO r,trans_tipo_vehiculo t,TRANS_DETALLE_REQUISITO d\n" 
-//                                                                +"WHERE d.IDE_TIPO_VEHICULO = t.ide_tipo_vehiculo AND d.IDE_TIPO_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO \n" 
-//                                                                +"AND d.IDE_TIPO_REQUISITO = r.IDE_TIPO_REQUISITO \n" 
-//                                                                +"AND t.ide_tipo_vehiculo = '"+Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")+"")+"'\n" 
-//                                                                +"AND s.ide_tipo_SERVICIO = '"+Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")+"")+"'");
+        tab_requisito.getColumna("ide_det_requisito").setCombo("SELECT r.IDE_TIPO_REQUISITO,r.DECRIPCION_REQUISITO\n" 
+                                                                +"FROM TRANS_TIPO_SERVICIO s ,TRANS_TIPO_REQUISITO r,trans_tipo_vehiculo t,TRANS_DETALLE_REQUISITO d\n" 
+                                                                +"WHERE d.IDE_TIPO_VEHICULO = t.ide_tipo_vehiculo AND d.IDE_TIPO_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO \n" 
+                                                                +"AND d.IDE_TIPO_REQUISITO = r.IDE_TIPO_REQUISITO \n" 
+                                                                +"AND t.ide_tipo_vehiculo = '"+Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")+"")+"'\n" 
+                                                                +"AND s.ide_tipo_SERVICIO = '"+Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")+"")+"'");
         tab_requisito.dibujar();
         PanelTabla pat_requisito = new PanelTabla();
         pat_requisito.setPanelTabla(tab_requisito);
