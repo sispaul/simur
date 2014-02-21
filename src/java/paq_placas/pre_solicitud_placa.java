@@ -9,7 +9,6 @@ import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
 import paq_sistema.aplicacion.Pantalla;
-
 /**
  *
  * @author p-sistemas
@@ -27,9 +26,7 @@ private Tabla tab_consulta = new Tabla();
         tab_consulta.setCampoPrimaria("IDE_USUA");
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
-        
-        
-        
+               
         tab_cabecera.setId("tab_cabecera");
         tab_cabecera.setTabla("trans_solicitud_placa", "IDE_SOLICITUD_PLACA", 1);
         tab_cabecera.setHeader("Solicitud Pedido Placa");
@@ -42,41 +39,48 @@ private Tabla tab_consulta = new Tabla();
         tab_cabecera.getColumna("FECHA_SOLICITUD").setLectura(true);
         tab_cabecera.getColumna("usu_solicitud").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         tab_cabecera.getColumna("usu_solicitud").setVisible(false);
+        tab_cabecera.getGrid().setColumns(4);
         tab_cabecera.setTipoFormulario(true);
         tab_cabecera.agregarRelacion(tab_detalle);
         tab_cabecera.dibujar();
         PanelTabla pat_cabecera = new PanelTabla();
         pat_cabecera.setPanelTabla(tab_cabecera);
         
-        Tabulador tab_tabular = new Tabulador();
-        tab_tabular.setId("tab_tabular");
-        
         tab_detalle.setId("tab_detalle");
         tab_detalle.setTabla("TRANS_DETALLE_SOLICITUD_PLACA", "ide_detalle_solicitud", 2);
         tab_detalle.setHeader("Detalle de Solicitud");
+        tab_detalle.getColumna("IDE_DETALLE_SOLICITUD").setNombreVisual("ID");
+        tab_detalle.getColumna("IDE_PLACA").setNombreVisual("Placa");
+        tab_detalle.getColumna("IDE_PLACA").setLectura(true);
+        tab_detalle.getColumna("IDE_TIPO_SERVICIO").setNombreVisual("Tipo Servicio");
+        tab_detalle.getColumna("IDE_TIPO_VEHICULO").setNombreVisual("Tipo Vehiculo");
+        tab_detalle.getColumna("CEDULA_RUC_PROPIETARIO").setNombreVisual("CI/RUC");
+        tab_detalle.getColumna("NOMBRE_PROPIETARIO").setNombreVisual("Nombre Propietario");
+        tab_detalle.getColumna("NUMERO_FACTURA ").setNombreVisual("Nro. Vehiculo");     
+        tab_detalle.getColumna("IDE_ENTREGA_PLACA").setVisible(false);
+        tab_detalle.getColumna("IDE_APROBACION_PLACA").setVisible(false);
+        tab_detalle.getColumna("FECHA_ENTREGA_PLACA").setVisible(false);
+        tab_detalle.getColumna("APROBADO_SOLICITUD").setVisible(false);
+        tab_detalle.getColumna("ENTREGADA_PLACA").setVisible(false);
+        tab_detalle.getGrid().setColumns(4);
         tab_detalle.setTipoFormulario(true);
-        tab_detalle.agregarRelacion(tab_requisito);
         tab_detalle.dibujar();
         PanelTabla pat_detalle = new PanelTabla();
         pat_detalle.setPanelTabla(tab_detalle);
         
+        
         tab_requisito.setId("tab_requisito");
         tab_requisito.setTabla("trans_detalle_requisitos_solicitud", "ide_detalle_requisitos_solicitud", 3);
-        tab_requisito.setHeader("Requisitos Pedido de Placa");
+        tab_requisito.setHeader("Requisitos");
         tab_requisito.setTipoFormulario(true);
         tab_requisito.dibujar();
         PanelTabla pat_requisito = new PanelTabla();
         pat_requisito.setPanelTabla(tab_requisito);
         
-        
-        tab_tabular.agregarTab("Detalle", pat_detalle);
-        tab_tabular.agregarTab("Requisitos", pat_requisito);
-        
-        Division div_division = new Division();
-        div_division.setId("div_division");
-        div_division.dividir2(pat_cabecera, tab_tabular, "40%", "H");
-        agregarComponente(div_division);
-        
+        Division div = new Division();
+        div.dividir3(pat_cabecera, pat_detalle, pat_requisito, "22%", "47%", "h");
+        agregarComponente(div);
+
     }
 
     @Override
