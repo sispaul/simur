@@ -38,6 +38,7 @@ private Tabla tab_consulta = new Tabla();
         tab_ingreso.getColumna("FECHA_REGISTRO_ACTA").setNombreVisual("Fecha de Registro");
         tab_ingreso.getColumna("ANO").setNombreVisual("Año");
         tab_ingreso.getColumna("NUMERO_ACTA").setNombreVisual("Nro. Acta");
+        tab_ingreso.getColumna("NUMERO_ACTA").setMascara("999-9999-99-999");
         tab_ingreso.getColumna("ENTREGADO_ACTA").setNombreVisual("Quien Entrega");
         tab_ingreso.getColumna("RECIBIDO_ACTA").setNombreVisual("Quien Recibe");
         tab_ingreso.getColumna("fecha_envio_acta").setValorDefecto(utilitario.getFechaActual());
