@@ -4,10 +4,13 @@
  */
 package paq_placas;
 
+import framework.componentes.Boton;
 import framework.componentes.Division;
 import framework.componentes.PanelTabla;
+import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
-import framework.componentes.Tabulador;
+import java.util.ArrayList;
+import java.util.List;
 import paq_sistema.aplicacion.Pantalla;
 /**
  *
@@ -19,6 +22,9 @@ private Tabla tab_cabecera = new Tabla();
 private Tabla tab_detalle = new Tabla();
 private Tabla tab_requisito = new Tabla();
 private Tabla tab_consulta = new Tabla();
+private Tabla tab_tipo = new Tabla();
+private SeleccionTabla set_tabla = new SeleccionTabla();
+
 
     public pre_solicitud_placa() {
         tab_consulta.setId("tab_consulta");
@@ -26,6 +32,8 @@ private Tabla tab_consulta = new Tabla();
         tab_consulta.setCampoPrimaria("IDE_USUA");
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
+        
+        
                
         tab_cabecera.setId("tab_cabecera");
         tab_cabecera.setTabla("trans_solicitud_placa", "IDE_SOLICITUD_PLACA", 1);
@@ -53,7 +61,18 @@ private Tabla tab_consulta = new Tabla();
         tab_detalle.getColumna("IDE_PLACA").setNombreVisual("Placa");
         tab_detalle.getColumna("IDE_PLACA").setLectura(true);
         tab_detalle.getColumna("IDE_TIPO_SERVICIO").setNombreVisual("Tipo Servicio");
+        tab_detalle.getColumna("IDE_TIPO_SERVICIO").setCombo("select IDE_TIPO_SERVICIO,DESCRIPCION_SERVICIO from TRANS_TIPO_SERVICIO");
         tab_detalle.getColumna("IDE_TIPO_VEHICULO").setNombreVisual("Tipo Vehiculo");
+         List listar = new ArrayList();
+        Object fila11[] = {
+            "4", "MOTO"
+        };
+        Object fila22[] = {
+            "5", "VEHICULO"
+        };
+        listar.add(fila11);;
+        listar.add(fila22);;
+        tab_detalle.getColumna("IDE_TIPO_VEHICULO").setRadio(listar, "4");
         tab_detalle.getColumna("CEDULA_RUC_PROPIETARIO").setNombreVisual("CI/RUC");
         tab_detalle.getColumna("NOMBRE_PROPIETARIO").setNombreVisual("Nombre Propietario");
         tab_detalle.getColumna("NUMERO_FACTURA ").setNombreVisual("Nro. Vehiculo");     
@@ -64,6 +83,7 @@ private Tabla tab_consulta = new Tabla();
         tab_detalle.getColumna("ENTREGADA_PLACA").setVisible(false);
         tab_detalle.getGrid().setColumns(4);
         tab_detalle.setTipoFormulario(true);
+        tab_detalle.agregarRelacion(tab_requisito);
         tab_detalle.dibujar();
         PanelTabla pat_detalle = new PanelTabla();
         pat_detalle.setPanelTabla(tab_detalle);
@@ -72,7 +92,13 @@ private Tabla tab_consulta = new Tabla();
         tab_requisito.setId("tab_requisito");
         tab_requisito.setTabla("trans_detalle_requisitos_solicitud", "ide_detalle_requisitos_solicitud", 3);
         tab_requisito.setHeader("Requisitos");
-        tab_requisito.setTipoFormulario(true);
+//        tab_requisito.getColumna("ide_det_requisito").setCombo("SELECT r.IDE_TIPO_REQUISITO,r.DECRIPCION_REQUISITO\n" 
+//                                                                +"FROM TRANS_TIPO_SERVICIO s ,TRANS_TIPO_REQUISITO r,trans_tipo_vehiculo t,TRANS_DETALLE_REQUISITO d\n" 
+//                                                                +"WHERE d.IDE_TIPO_VEHICULO = t.ide_tipo_vehiculo AND d.IDE_TIPO_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO \n" 
+//                                                                +"AND d.IDE_TIPO_REQUISITO = r.IDE_TIPO_REQUISITO \n" 
+//                                                                +"AND t.ide_tipo_vehiculo = '"+Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")+"")+"'\n" 
+//                                                                +"AND s.ide_tipo_SERVICIO = '"+Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")+"")+"'");
+//        
         tab_requisito.dibujar();
         PanelTabla pat_requisito = new PanelTabla();
         pat_requisito.setPanelTabla(tab_requisito);
