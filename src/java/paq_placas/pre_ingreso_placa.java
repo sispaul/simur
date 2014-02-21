@@ -20,11 +20,9 @@ public class pre_ingreso_placa extends Pantalla{
 private Tabla tab_placa = new Tabla();
 private Tabla tab_ingreso = new Tabla();
 private Tabla tab_consulta = new Tabla();
-private Calendario cal_fechain = new Calendario();
 
     public pre_ingreso_placa() {
-        cal_fechain.setId("cal_fechain");
-        cal_fechain.setFechaActual();
+        int i;
                 
         tab_consulta.setId("tab_consulta");
         tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
@@ -72,7 +70,7 @@ private Calendario cal_fechain = new Calendario();
         tab_placa.getColumna("ide_tipo_vehiculo").setCombo("select ide_tipo_vehiculo,des_tipo_vehiculo from trans_tipo_vehiculo WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
         tab_placa.getColumna("ide_tipo_servicio").setCombo("select ide_tipo_servicio,DESCRIPCION_SERVICIO from trans_tipo_servicio");
         tab_placa.getColumna("ide_tipo_placa").setCombo("select ide_tipo_placa,DESCRIPCION_TIPO from trans_tipo_placa");
-        tab_placa.getColumna("ide_tipo_estado").setCombo("select ide_tipo_estado,DESCRIPCION_ESTADO from trans_tipo_estado");       
+        tab_placa.getColumna("ide_tipo_estado").setCombo("select ide_tipo_estado,DESCRIPCION_ESTADO from trans_tipo_estado"); 
         tab_placa.dibujar();
         PanelTabla pat_panel1=new PanelTabla(); 
         pat_panel1.setPanelTabla(tab_placa);
