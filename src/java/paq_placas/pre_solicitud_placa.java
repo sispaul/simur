@@ -4,13 +4,15 @@
  */
 package paq_placas;
 
+import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Division;
+import framework.componentes.Etiqueta;
 import framework.componentes.PanelTabla;
-import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import java.util.ArrayList;
 import java.util.List;
+import org.primefaces.event.SelectEvent;
 import paq_sistema.aplicacion.Pantalla;
 /**
  *
@@ -22,19 +24,31 @@ private Tabla tab_cabecera = new Tabla();
 private Tabla tab_detalle = new Tabla();
 private Tabla tab_requisito = new Tabla();
 private Tabla tab_consulta = new Tabla();
-private Tabla tab_tipo = new Tabla();
-private SeleccionTabla set_tabla = new SeleccionTabla();
-
+private AutoCompletar aut_busca = new AutoCompletar();
 
     public pre_solicitud_placa() {
+        
         tab_consulta.setId("tab_consulta");
         tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
         tab_consulta.setCampoPrimaria("IDE_USUA");
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
         
+        aut_busca.setId("aut_busca");
+        aut_busca.setAutoCompletar("SELECT g.IDE_GESTOR,g.CEDULA_GESTOR,g.NOMBRE_GESTOR,t.NOMBRE_EMPRESA\n" +
+                                    "FROM TRANS_COMERCIAL_AUTOMOTORES t,TRANS_GESTOR g\n" +
+                                    "WHERE g.IDE_COMERCIAL_AUTOMOTORES = t.IDE_COMERCIAL_AUTOMOTORES");
+        aut_busca.setMetodoChange("buscarPersona");
+        aut_busca.setSize(100);
         
-               
+        bar_botones.agregarComponente(new Etiqueta("Buscador Personas:"));
+        bar_botones.agregarComponente(aut_busca);
+        
+        Boton bot_limpiar = new Boton();
+        bot_limpiar.setIcon("ui-icon-cancel");
+        bot_limpiar.setMetodo("limpiar");
+        bar_botones.agregarBoton(bot_limpiar);
+        
         tab_cabecera.setId("tab_cabecera");
         tab_cabecera.setTabla("trans_solicitud_placa", "IDE_SOLICITUD_PLACA", 1);
         tab_cabecera.setHeader("Solicitud Pedido Placa");
@@ -53,6 +67,9 @@ private SeleccionTabla set_tabla = new SeleccionTabla();
         tab_cabecera.dibujar();
         PanelTabla pat_cabecera = new PanelTabla();
         pat_cabecera.setPanelTabla(tab_cabecera);
+        tab_cabecera.setStyle(null);
+        pat_cabecera.setStyle("width:100%;overflow: auto;");
+//        agregarComponente(pat_cabecera);
         
         tab_detalle.setId("tab_detalle");
         tab_detalle.setTabla("TRANS_DETALLE_SOLICITUD_PLACA", "ide_detalle_solicitud", 2);
@@ -88,7 +105,6 @@ private SeleccionTabla set_tabla = new SeleccionTabla();
         PanelTabla pat_detalle = new PanelTabla();
         pat_detalle.setPanelTabla(tab_detalle);
         
-        
         tab_requisito.setId("tab_requisito");
         tab_requisito.setTabla("trans_detalle_requisitos_solicitud", "ide_detalle_requisitos_solicitud", 3);
         tab_requisito.setHeader("Requisitos");
@@ -98,7 +114,6 @@ private SeleccionTabla set_tabla = new SeleccionTabla();
 //                                                                +"AND d.IDE_TIPO_REQUISITO = r.IDE_TIPO_REQUISITO \n" 
 //                                                                +"AND t.ide_tipo_vehiculo = '"+Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")+"")+"'\n" 
 //                                                                +"AND s.ide_tipo_SERVICIO = '"+Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")+"")+"'");
-//        
         tab_requisito.dibujar();
         PanelTabla pat_requisito = new PanelTabla();
         pat_requisito.setPanelTabla(tab_requisito);
@@ -108,7 +123,19 @@ private SeleccionTabla set_tabla = new SeleccionTabla();
         agregarComponente(div);
 
     }
-
+    
+    public void buscarPersona(SelectEvent evt) {
+        aut_busca.onSelect(evt);
+        if (aut_busca.getValor() != null) {
+            tab_cabecera.setFilaActual(aut_busca.getValor());
+            utilitario.addUpdate("tab_cabecera");
+        }
+    }
+        public void limpiar() {
+        aut_busca.limpiar();
+        utilitario.addUpdate("aut_busca");
+    }
+    
     @Override
     public void insertar() {
     utilitario.getTablaisFocus().insertar();
@@ -152,6 +179,14 @@ private SeleccionTabla set_tabla = new SeleccionTabla();
 
     public void setTab_requisito(Tabla tab_requisito) {
         this.tab_requisito = tab_requisito;
+    }
+
+    public AutoCompletar getAut_busca() {
+        return aut_busca;
+    }
+
+    public void setAut_busca(AutoCompletar aut_busca) {
+        this.aut_busca = aut_busca;
     }
     
 }
