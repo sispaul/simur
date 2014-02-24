@@ -90,7 +90,7 @@ private Tabla tab_consulta = new Tabla();
                                                                 +"WHERE d.IDE_TIPO_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO AND\n" 
                                                                 +"d.IDE_TIPO_REQUISITO = r.IDE_TIPO_REQUISITO AND\n" 
                                                                 +"d.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND\n" 
-                                                                +"v.ide_tipo_vehiculo = "+Integer.parseInt(tab_detalle.getColumna("IDE_TIPO_VEHICULO").getValorDefecto()+"")+" AND s.IDE_TIPO_SERVICIO = "+Integer.parseInt(tab_detalle.getColumna("IDE_TIPO_SERVICIO").getValorDefecto()+"")+"");
+                                                                +"v.ide_tipo_vehiculo = 5 AND s.IDE_TIPO_SERVICIO = 1");
         tab_requisito.getGrid().setColumns(2);
         tab_requisito.setTipoFormulario(true);
         tab_requisito.dibujar();
