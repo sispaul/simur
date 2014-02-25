@@ -27,7 +27,6 @@ private Tabla tab_detalle = new Tabla();
 private Tabla tab_requisito = new Tabla();
 private Tabla tab_consulta = new Tabla();
 //autocompletar datos
-private SeleccionCalendario sec_rango = new SeleccionCalendario();
 private AutoCompletar aut_busca = new AutoCompletar();
 
     public pre_solicitud_placa() {
