@@ -22,8 +22,8 @@ public class pre_divisiones extends Pantalla {
 
     public pre_divisiones() {
 
-        con_postgres.setUnidad_persistencia("otraBase");
-        con_postgres.NOMBRE_MARCA_BASE = "postgres";
+        con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
+        con_postgres.NOMBRE_MARCA_BASE = "postgres";  
 
         tab_tabla.setId("tab_tabla");
         tab_tabla.setConexion(con_postgres);
