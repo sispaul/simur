@@ -4,14 +4,13 @@
  */
 package paq_bodega.ejb;
 
-import framework.aplicacion.TablaGenerica;
 import javax.ejb.Stateless;
 import paq_sistema.aplicacion.Utilitario;
 import persistencia.Conexion;
 
 /**
  *
- * @author Administrador
+ * @author Paolo Benavides
  */
 @Stateless
 public class servicioBodega {
