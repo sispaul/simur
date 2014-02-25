@@ -4,10 +4,16 @@
  */
 package paq_placas;
 
+import framework.componentes.AutoCompletar;
+import framework.componentes.Boton;
 import framework.componentes.Division;
+import framework.componentes.Etiqueta;
+import framework.componentes.ListaSeleccion;
 import framework.componentes.PanelTabla;
+import framework.componentes.SeleccionCalendario;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
+import org.primefaces.event.SelectEvent;
 import paq_sistema.aplicacion.Pantalla;
 
 /**
@@ -20,13 +26,32 @@ private Tabla tab_solicitud = new Tabla();
 private Tabla tab_detalle = new Tabla();
 private Tabla tab_requisito = new Tabla();
 private Tabla tab_consulta = new Tabla();
+//autocompletar datos
+private SeleccionCalendario sec_rango = new SeleccionCalendario();
+private AutoCompletar aut_busca = new AutoCompletar();
 
     public pre_solicitud_placa() {
+
         tab_consulta.setId("tab_consulta");
         tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
         tab_consulta.setCampoPrimaria("IDE_USUA");
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
+        
+        aut_busca.setId("aut_busca");
+        aut_busca.setAutoCompletar("SELECT g.IDE_GESTOR,g.CEDULA_GESTOR,g.NOMBRE_GESTOR,a.NOMBRE_EMPRESA\n" 
+                                    +"FROM TRANS_GESTOR g,TRANS_COMERCIAL_AUTOMOTORES a\n" 
+                                    +"WHERE g.IDE_COMERCIAL_AUTOMOTORES = a.IDE_COMERCIAL_AUTOMOTORES");
+        aut_busca.setMetodoChange("buscarGestor");
+        aut_busca.setSize(100);
+        
+        bar_botones.agregarComponente(new Etiqueta("Buscador Gestor:"));
+        bar_botones.agregarComponente(aut_busca);
+        
+        Boton bot_limpiar = new Boton();
+        bot_limpiar.setIcon("ui-icon-cancel");
+        bot_limpiar.setMetodo("limpiar");
+        bar_botones.agregarBoton(bot_limpiar);
         
         tab_gestor.setId("tab_gestor");
         tab_gestor.setTabla("trans_gestor", "ide_gestor", 1);
@@ -50,7 +75,7 @@ private Tabla tab_consulta = new Tabla();
         tab_solicitud.getColumna("NUMERO_AUTOMOTORES").setNombreVisual("Nro. Automotores");
         tab_solicitud.getColumna("FECHA_SOLICITUD").setNombreVisual("Fecha");
         tab_solicitud.getColumna("FECHA_SOLICITUD").setValorDefecto(utilitario.getFechaActual());
-//        tab_solicitud.getColumna("USU_SOLICITUD").setVisible(false);
+        tab_solicitud.getColumna("USU_SOLICITUD").setVisible(false);
         tab_solicitud.getColumna("IDE_SOLICITUD_PLACA").setVisible(false);
         tab_solicitud.getColumna("USU_SOLICITUD").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         tab_solicitud.getGrid().setColumns(2);
@@ -90,9 +115,9 @@ private Tabla tab_consulta = new Tabla();
                                                                 +"WHERE d.IDE_TIPO_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO AND\n" 
                                                                 +"d.IDE_TIPO_REQUISITO = r.IDE_TIPO_REQUISITO AND\n" 
                                                                 +"d.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND\n" 
-                                                                +"v.ide_tipo_vehiculo = 5 AND s.IDE_TIPO_SERVICIO = 1");
+                                                                +"v.ide_tipo_vehiculo = '"+Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")+"")+"' AND s.IDE_TIPO_SERVICIO = '"+Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")+"")+"'");
         tab_requisito.getGrid().setColumns(2);
-        tab_requisito.setTipoFormulario(true);
+//        tab_requisito.setTipoFormulario(true);
         tab_requisito.dibujar();
         PanelTabla tabp3 = new PanelTabla();
         tabp3.setPanelTabla(tab_requisito);
@@ -106,19 +131,47 @@ private Tabla tab_consulta = new Tabla();
         agregarComponente(div_division);
         
     }
+    
+       public void buscarGestor(SelectEvent evt) {
+        aut_busca.onSelect(evt);
+        if (aut_busca.getValor() != null) {
+            tab_gestor.setFilaActual(aut_busca.getValor());
+            utilitario.addUpdate("tab_gestor");
+        }
+    }
+        public void limpiar() {
+        aut_busca.limpiar();
+        utilitario.addUpdate("aut_busca");
+    }
 
+        
     @Override
     public void insertar() {
+        utilitario.getTablaisFocus().insertar();
     }
 
     @Override
     public void guardar() {
+      if (tab_solicitud.guardar()) {
+          if (tab_detalle.guardar()) {
+              if (tab_requisito.guardar()) {
+                guardarPantalla();
+              }
+            }
+        }
     }
 
     @Override
     public void eliminar() {
-    }
-
+     if (tab_solicitud.isFocus()) {
+            tab_solicitud.eliminar();
+        } else if (tab_detalle.isFocus()) {
+            tab_detalle.eliminar();
+        }else if(tab_requisito.isFocus()) {
+            tab_requisito.eliminar();
+        }
+    } 
+       
     public Tabla getTab_gestor() {
         return tab_gestor;
     }
@@ -149,6 +202,14 @@ private Tabla tab_consulta = new Tabla();
 
     public void setTab_requisito(Tabla tab_requisito) {
         this.tab_requisito = tab_requisito;
+    }
+
+    public AutoCompletar getAut_busca() {
+        return aut_busca;
+    }
+
+    public void setAut_busca(AutoCompletar aut_busca) {
+        this.aut_busca = aut_busca;
     }
     
 }
