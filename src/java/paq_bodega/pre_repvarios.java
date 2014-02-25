@@ -147,7 +147,7 @@ public class pre_repvarios extends Pantalla {
         tab_consulta.dibujar();
         
         /**
-         * PERSONA RESPONSABLE
+         * PERSONA AÑO ACTUAL
          */
         tab_consulta_ano.setId("tab_consulta_ano");
         tab_consulta_ano.setSql("select ano_curso,ano_curso from conc_ano where actual='A'");
