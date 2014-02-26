@@ -141,11 +141,9 @@ private Grid grid_de = new Grid();
     }
     
     public void aceptoValores() {
-        System.out.println("entrada1");
         if (set_vehiculo.getValorSeleccionado()!= null) {
-            System.out.println(set_vehiculo.getValorSeleccionado());
             tab_placa.setValor("ide_tipo_vehiculo", set_vehiculo.getValorSeleccionado());
-            System.out.println(set_vehiculo.getValorSeleccionado());
+            utilitario.addUpdate("tab_placa");
             dia_dialogo.cerrar();
 
         } else {
