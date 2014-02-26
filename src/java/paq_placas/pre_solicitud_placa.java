@@ -6,11 +6,11 @@ package paq_placas;
 
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
+import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
-import framework.componentes.ListaSeleccion;
+import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
-import framework.componentes.SeleccionCalendario;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
 import org.primefaces.event.SelectEvent;
@@ -26,11 +26,29 @@ private Tabla tab_solicitud = new Tabla();
 private Tabla tab_detalle = new Tabla();
 private Tabla tab_requisito = new Tabla();
 private Tabla tab_consulta = new Tabla();
+private Dialogo dia_dialogo = new Dialogo();
+private Grid grid = new Grid();
+private Grid grid_de = new Grid();
 //autocompletar datos
 private AutoCompletar aut_busca = new AutoCompletar();
 
     public pre_solicitud_placa() {
 
+        dia_dialogo.setId("dia_dialogo");
+        dia_dialogo.setTitle("PLACAS - ASIGNACION DE TIPOS"); //titulo
+        dia_dialogo.setWidth("50%"); //siempre en porcentajes  ancho
+        dia_dialogo.setHeight("30%");//siempre porcentaje   alto
+        dia_dialogo.setResizable(false); //para que no se pueda cambiar el tamaño
+//        dia_dialogo.getBot_aceptar().setMetodo("aceptoValores");
+        grid_de.setColumns(4);
+        grid_de.getChildren().add(new Etiqueta("SELECCIONE VEHICULO"));
+        agregarComponente(dia_dialogo);
+        
+        Boton bot = new Boton();
+        bot.setValue("ASIGNAR ESTADOS");
+        bot.setMetodo("aceptoDialogo");
+        bar_botones.agregarBoton(bot);
+              
         tab_consulta.setId("tab_consulta");
         tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
         tab_consulta.setCampoPrimaria("IDE_USUA");
@@ -107,26 +125,34 @@ private AutoCompletar aut_busca = new AutoCompletar();
         tabp2.setPanelTabla(tab_detalle);
         
         tab_requisito.setId("tab_requisito");
-        tab_requisito.setIdCompleto("tab_tabulador:tab_requisito");
-        tab_requisito.setTabla("TRANS_DETALLE_REQUISITOS_SOLICITUD", "IDE_DETALLE_REQUISITOS_SOLICITUD", 4);
-        tab_requisito.getColumna("IDE_DET_REQUISITO").setCombo("SELECT d.IDE_DET_REQUISITO,r.DECRIPCION_REQUISITO\n" 
-                                                                +"FROM TRANS_DETALLE_REQUISITO d,TRANS_TIPO_SERVICIO s,TRANS_TIPO_REQUISITO r,trans_tipo_vehiculo v\n" 
-                                                                +"WHERE d.IDE_TIPO_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO AND\n" 
-                                                                +"d.IDE_TIPO_REQUISITO = r.IDE_TIPO_REQUISITO AND\n" 
-                                                                +"d.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND\n" 
-                                                                +"v.ide_tipo_vehiculo = '"+Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")+"")+"' AND s.IDE_TIPO_SERVICIO = '"+Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")+"")+"'");
-        tab_requisito.getGrid().setColumns(2);
-//        tab_requisito.setTipoFormulario(true);
+        tab_requisito.setSql("SELECT d.IDE_DET_REQUISITO,r.DECRIPCION_REQUISITO,t.CONFIRMAR_REQUISITO\n" 
+                            +"FROM TRANS_DETALLE_REQUISITOS_SOLICITUD t,TRANS_DETALLE_REQUISITO d,TRANS_TIPO_SERVICIO s,TRANS_TIPO_REQUISITO r,trans_tipo_vehiculo v \n" 
+                            +"WHERE d.IDE_TIPO_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO AND d.IDE_TIPO_REQUISITO = r.IDE_TIPO_REQUISITO \n" 
+                            +"AND d.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND v.ide_tipo_vehiculo= '"+Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")+"")+"' AND s.IDE_TIPO_SERVICIO = '"+Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")+"")+"'");
+        tab_requisito.setRows(5);
+        tab_requisito.setTipoSeleccion(false);
         tab_requisito.dibujar();
-        PanelTabla tabp3 = new PanelTabla();
-        tabp3.setPanelTabla(tab_requisito);
+        
+//        tab_requisito.setId("tab_requisito");
+//        tab_requisito.setIdCompleto("tab_tabulador:tab_requisito");
+//        tab_requisito.setTabla("TRANS_DETALLE_REQUISITOS_SOLICITUD", "IDE_DETALLE_REQUISITOS_SOLICITUD", 4);
+//        tab_requisito.getColumna("IDE_DET_REQUISITO").setCombo("SELECT d.IDE_DET_REQUISITO,r.DECRIPCION_REQUISITO\n" 
+//                                                                +"FROM TRANS_DETALLE_REQUISITO d,TRANS_TIPO_SERVICIO s,TRANS_TIPO_REQUISITO r,trans_tipo_vehiculo v\n" 
+//                                                                +"WHERE d.IDE_TIPO_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO AND\n" 
+//                                                                +"d.IDE_TIPO_REQUISITO = r.IDE_TIPO_REQUISITO AND\n" 
+//                                                                +"d.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND\n" 
+//                                                                +"v.ide_tipo_vehiculo = '"+Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")+"")+"' AND s.IDE_TIPO_SERVICIO = '"+Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")+"")+"'");
+//        tab_requisito.getGrid().setColumns(2);
+////        tab_requisito.setTipoFormulario(true);
+//        tab_requisito.dibujar();
+//        PanelTabla tabp3 = new PanelTabla();
+//        tabp3.setPanelTabla(tab_requisito);
         
 
         tab_tabulador.agregarTab("DETALLE", tabp2);
-        tab_tabulador.agregarTab("REQUISITOS", tabp3);
         Division div_division = new Division();
         div_division.setId("div_division");
-        div_division.dividir3(tabp, tabp1, tab_tabulador, "20%", "53%", "H");
+        div_division.dividir2(tabp, tabp2, "53%", "H");
         agregarComponente(div_division);
         
     }
@@ -142,7 +168,13 @@ private AutoCompletar aut_busca = new AutoCompletar();
         aut_busca.limpiar();
         utilitario.addUpdate("aut_busca");
     }
-
+        
+ public void aceptoDialogo() {
+        dia_dialogo.Limpiar();
+        dia_dialogo.setDialogo(grid);
+        grid_de.getChildren().add(tab_requisito);
+        dia_dialogo.dibujar();
+    }
         
     @Override
     public void insertar() {
