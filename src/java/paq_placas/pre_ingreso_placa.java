@@ -4,13 +4,13 @@
  */
 package paq_placas;
 
-import framework.componentes.Calendario;
+import framework.componentes.Boton;
+import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
+import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
-import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
-import framework.componentes.Tabulador;
 import paq_sistema.aplicacion.Pantalla;
 
 /**
@@ -18,18 +18,66 @@ import paq_sistema.aplicacion.Pantalla;
  * @author p-sistemas
  */
 public class pre_ingreso_placa extends Pantalla{
-
-private Tabla tab_placa = new Tabla();
 private Tabla tab_ingreso = new Tabla();
+private Tabla tab_placa = new Tabla();
 private Tabla tab_consulta = new Tabla();
-private Tabla tab_vehiculo = new Tabla();
-private Tabla tab_estado = new Tabla();
-private Tabla tab_servicio = new Tabla();
-private Tabla tab_tipo = new Tabla();
-
+private Tabla set_tipo = new Tabla();
+private Tabla set_estado = new Tabla();
+private Tabla set_vehiculo = new Tabla();
+private Tabla set_servicio = new Tabla();
+private Dialogo dia_dialogo = new Dialogo();
+private Grid grid = new Grid();
+private Grid grid_de = new Grid();
 
     public pre_ingreso_placa() {
-                
+                //Configurando el dialogo
+        dia_dialogo.setId("dia_dialogo");
+        dia_dialogo.setTitle("PLACAS - ASIGNACION DE TIPOS"); //titulo
+        dia_dialogo.setWidth("50%"); //siempre en porcentajes  ancho
+        dia_dialogo.setHeight("30%");//siempre porcentaje   alto
+        dia_dialogo.setResizable(false); //para que no se pueda cambiar el tamaño
+        System.out.println("entrada");
+        dia_dialogo.getBot_aceptar().setMetodo("aceptoValores");
+        grid_de.setColumns(4);
+        grid_de.getChildren().add(new Etiqueta("SELECCIONE VEHICULO"));
+        grid_de.getChildren().add(new Etiqueta("SELECCIONE SERVICIO"));
+        grid_de.getChildren().add(new Etiqueta("TIPO DE PLACA"));
+        grid_de.getChildren().add(new Etiqueta("ESTADO DE PLACA"));
+        agregarComponente(dia_dialogo);
+
+        Boton bot = new Boton();
+        bot.setValue("ASIGNAR ESTADOS");
+        bot.setMetodo("aceptoDialogo");
+        bar_botones.agregarBoton(bot);
+                  
+        set_estado.setId("set_estado");
+        set_estado.setSql("SELECT IDE_TIPO_ESTADO,DESCRIPCION_ESTADO FROM TRANS_TIPO_ESTADO WHERE IDE_TIPO_ESTADO BETWEEN 3 AND 4");
+        set_estado.getColumna("DESCRIPCION_ESTADO").setNombreVisual("Estado");
+        set_estado.setRows(5);
+        set_estado.setTipoSeleccion(false);
+        set_estado.dibujar();
+   
+        set_tipo.setId("set_tipo");
+        set_tipo.setSql("SELECT IDE_TIPO_PLACA,DESCRIPCION_TIPO FROM TRANS_TIPO_PLACA");
+        set_tipo.getColumna("DESCRIPCION_TIPO").setNombreVisual("Tipo");
+        set_tipo.setRows(5);
+        set_tipo.setTipoSeleccion(false);
+        set_tipo.dibujar();
+
+        set_vehiculo.setId("set_vehiculo");
+        set_vehiculo.setSql("select ide_tipo_vehiculo,des_tipo_vehiculo from trans_tipo_vehiculo WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
+        set_vehiculo.getColumna("des_tipo_vehiculo").setNombreVisual("Vehiculo");
+        set_vehiculo.setRows(5);
+        set_vehiculo.setTipoSeleccion(false);
+        set_vehiculo.dibujar();
+        
+        set_servicio.setId("set_servicio");
+        set_servicio.setSql("select ide_tipo_servicio,DESCRIPCION_SERVICIO from trans_tipo_servicio");
+        set_servicio.getColumna("DESCRIPCION_SERVICIO").setNombreVisual("Servicio");
+        set_servicio.setRows(10);
+        set_servicio.setTipoSeleccion(false);
+        set_servicio.dibujar();
+        
         tab_consulta.setId("tab_consulta");
         tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
         tab_consulta.setCampoPrimaria("IDE_USUA");
@@ -57,49 +105,9 @@ private Tabla tab_tipo = new Tabla();
         tab_ingreso.agregarRelacion(tab_placa);
         PanelTabla pat_panel=new PanelTabla(); 
         pat_panel.setPanelTabla(tab_ingreso);
-        
-        Tabulador tab_tabulador = new Tabulador();
-        tab_tabulador.setId("tab_tabulador");
-               
-        tab_vehiculo.setId("tab_vehiculo");
-        tab_vehiculo.setIdCompleto("tab_tabulador:tab_vehiculo");
-        tab_vehiculo.setTabla("trans_tipo_vehiculo", "ide_tipo_vehiculo", 2);
-        tab_vehiculo.setHeader("Tipo Vehiculo");
-        tab_vehiculo.setTipoSeleccion(true);
-        tab_vehiculo.dibujar();
-        PanelTabla tabv=new PanelTabla(); 
-        tabv.setPanelTabla(tab_vehiculo);  
-//        
-        tab_servicio.setId("tab_servicio");
-        tab_servicio.setIdCompleto("tab_tabulador:tab_servicio");
-        tab_servicio.setTabla("TRANS_tipo_servicio", "IDE_tipo_servicio", 3);
-        tab_servicio.setHeader("Tipo Servicio");
-        tab_servicio.setTipoSeleccion(true);
-        tab_servicio.dibujar();
-        PanelTabla tabs=new PanelTabla(); 
-        tabs.setPanelTabla(tab_servicio);
-        
-        tab_tipo.setId("tab_tipo");
-        tab_tipo.setIdCompleto("tab_tabulador:tab_tipo");
-        tab_tipo.setTabla("TRANS_tipo_placa", "IDE_tipo_placa", 4);
-        tab_tipo.setHeader("Tipo Placa");
-        tab_tipo.setTipoSeleccion(true);
-        tab_tipo.dibujar();
-        PanelTabla tabt=new PanelTabla(); 
-        tabt.setPanelTabla(tab_tipo);
-        
-        tab_estado.setId("tab_estado");
-        tab_estado.setIdCompleto("tab_tabulador:tab_estado");
-        tab_estado.setTabla("TRANS_tipo_estado", "IDE_tipo_estado", 5);
-        tab_estado.setHeader("Tipo Estado");
-        tab_estado.setTipoSeleccion(true);
-        tab_estado.dibujar();
-        PanelTabla tabe=new PanelTabla(); 
-        tabe.setPanelTabla(tab_estado);
-      
+                    
         tab_placa.setId("tab_placa");
-        tab_placa.setIdCompleto("tab_tabulador:tab_placa");
-        tab_placa.setTabla("TRANS_PLACA", "IDE_PLACA", 6);
+        tab_placa.setTabla("TRANS_PLACA", "IDE_PLACA", 2);
         tab_placa.setHeader("Placas");
         tab_placa.getColumna("cedula_ruc_propietario").setVisible(false);
         tab_placa.getColumna("nombre_propietario").setVisible(false);
@@ -109,41 +117,65 @@ private Tabla tab_tipo = new Tabla();
         tab_placa.getColumna("FECHA_REGISTRO_placa").setNombreVisual("Fecha de Registro");
         tab_placa.getColumna("fecha_registro_placa").setValorDefecto(utilitario.getFechaActual());
         tab_placa.getColumna("fecha_registro_placa").setLectura(true);
-//        tab_placa.getColumna("ide_tipo_vehiculo").setValorDefecto(tab_vehiculo.getValorSeleccionado());
-//        tab_placa.getColumna("ide_tipo_placa").setValorDefecto(utilitario.getVariable("tab_tipo:ide_tipo_placa"));
-//        tab_placa.getColumna("ide_tipo_estado").setValorDefecto(tab_estado.getValor("ide_tipo_estado"));
-//                tab_placa.getColumna("ide_tipo_vehiculo").setVisible(false);
-//        tab_placa.getColumna("ide_tipo_servicio").setVisible(false);
-//        tab_placa.getColumna("ide_tipo_placa").setVisible(false);
-//        tab_placa.getColumna("ide_tipo_estado").setVisible(false);
-//        tab_placa.getColumna("ide_tipo_vehiculo").setCombo("select ide_tipo_vehiculo,des_tipo_vehiculo from trans_tipo_vehiculo WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
-//        tab_placa.getColumna("ide_tipo_servicio").setCombo("select ide_tipo_servicio,DESCRIPCION_SERVICIO from trans_tipo_servicio");
-//        tab_placa.getColumna("ide_tipo_placa").setCombo("select ide_tipo_placa,DESCRIPCION_TIPO from trans_tipo_placa");
-//        tab_placa.getColumna("ide_tipo_estado").setCombo("select ide_tipo_estado,DESCRIPCION_ESTADO from trans_tipo_estado"); 
+        tab_placa.getColumna("ide_tipo_vehiculo").setLectura(true);
+        tab_placa.getColumna("ide_tipo_servicio").setLectura(true);
+        tab_placa.getColumna("ide_tipo_placa").setLectura(true);
+        tab_placa.getColumna("ide_tipo_estado").setLectura(true);
+        tab_placa.getColumna("ide_tipo_vehiculo").setCombo("select ide_tipo_vehiculo,des_tipo_vehiculo from trans_tipo_vehiculo WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
+        tab_placa.getColumna("ide_tipo_servicio").setCombo("select ide_tipo_servicio,DESCRIPCION_SERVICIO from trans_tipo_servicio");
+        tab_placa.getColumna("ide_tipo_placa").setCombo("SELECT IDE_TIPO_PLACA,DESCRIPCION_TIPO FROM TRANS_TIPO_PLACA");
+        tab_placa.getColumna("ide_tipo_estado").setCombo("SELECT IDE_TIPO_ESTADO,DESCRIPCION_ESTADO FROM TRANS_TIPO_ESTADO WHERE IDE_TIPO_ESTADO BETWEEN 3 AND 4");
         tab_placa.dibujar();
         PanelTabla pat_panel1=new PanelTabla(); 
         pat_panel1.setPanelTabla(tab_placa);
         
-        tab_tabulador.agregarTab("TIPO de VEHICULO", tabv);
-        tab_tabulador.agregarTab("TIPO DE ESTADO", tabs);
-        tab_tabulador.agregarTab("TIPO DE SERVICIO", tabt);
-        tab_tabulador.agregarTab("TIPO DE PLACA", tabe);
-        tab_tabulador.agregarTab("ASIGNACIÓN DE PLACAS", pat_panel1);
         Division div_division = new Division();
         div_division.setId("div_division");
-        div_division.dividir2(pat_panel, tab_tabulador, "25%", "H");
+        div_division.dividir2(pat_panel, pat_panel1, "30%", "H");
         agregarComponente(div_division);
-
     }
-
+    
+    public void aceptoDialogo() {
+        dia_dialogo.Limpiar();
+        dia_dialogo.setDialogo(grid);
+        grid_de.getChildren().add(set_vehiculo);
+        grid_de.getChildren().add(set_servicio);
+        grid_de.getChildren().add(set_tipo);
+        grid_de.getChildren().add(set_estado);
+        dia_dialogo.setDialogo(grid_de);
+        set_estado.dibujar();
+        set_tipo.dibujar();
+        dia_dialogo.dibujar();
+    }
+    
+    public void aceptoValores() {
+        if (set_vehiculo.getValorSeleccionado()!= null) {
+            if (set_servicio.getValorSeleccionado()!= null) {
+                if (set_tipo.getValorSeleccionado()!= null) {
+                    if (set_estado.getValorSeleccionado()!= null) {
+                        tab_placa.getColumna("ide_tipo_vehiculo").setValorDefecto(set_vehiculo.getValorSeleccionado());
+                        tab_placa.getColumna("ide_tipo_servicio").setValorDefecto(set_servicio.getValorSeleccionado());
+                        tab_placa.getColumna("ide_tipo_placa").setValorDefecto(set_tipo.getValorSeleccionado());
+                        tab_placa.getColumna("ide_tipo_estado").setValorDefecto(set_estado.getValorSeleccionado());
+                        utilitario.addUpdate("tab_placa");
+                        dia_dialogo.cerrar();
+                        }
+                 }
+           }
+       }else {
+       utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
+       }        
+    }
+    
     @Override
     public void insertar() {
-    utilitario.getTablaisFocus().insertar();
+        utilitario.getTablaisFocus().insertar();  
     }
+    
 
     @Override
     public void guardar() {
-        if (tab_ingreso.guardar()) {
+    if (tab_ingreso.guardar()) {
             if (tab_placa.guardar()) {
                 guardarPantalla();
             }
@@ -152,7 +184,7 @@ private Tabla tab_tipo = new Tabla();
 
     @Override
     public void eliminar() {
-    utilitario.getTablaisFocus().eliminar();
+        utilitario.getTablaisFocus().eliminar();
     }
 
     public Tabla getTab_ingreso() {
@@ -179,36 +211,37 @@ private Tabla tab_tipo = new Tabla();
         this.tab_consulta = tab_consulta;
     }
 
-    public Tabla getTab_vehiculo() {
-        return tab_vehiculo;
+    public Tabla getSet_tipo() {
+        return set_tipo;
     }
 
-    public void setTab_vehiculo(Tabla tab_vehiculo) {
-        this.tab_vehiculo = tab_vehiculo;
+    public void setSet_tipo(Tabla set_tipo) {
+        this.set_tipo = set_tipo;
     }
 
-    public Tabla getTab_estado() {
-        return tab_estado;
+    public Tabla getSet_estado() {
+        return set_estado;
     }
 
-    public void setTab_estado(Tabla tab_estado) {
-        this.tab_estado = tab_estado;
+    public void setSet_estado(Tabla set_estado) {
+        this.set_estado = set_estado;
     }
 
-    public Tabla getTab_servicio() {
-        return tab_servicio;
+    public Tabla getSet_vehiculo() {
+        return set_vehiculo;
     }
 
-    public void setTab_servicio(Tabla tab_servicio) {
-        this.tab_servicio = tab_servicio;
+    public void setSet_vehiculo(Tabla set_vehiculo) {
+        this.set_vehiculo = set_vehiculo;
     }
 
-    public Tabla getTab_tipo() {
-        return tab_tipo;
+    public Tabla getSet_servicio() {
+        return set_servicio;
     }
 
-    public void setTab_tipo(Tabla tab_tipo) {
-        this.tab_tipo = tab_tipo;
+    public void setSet_servicio(Tabla set_servicio) {
+        this.set_servicio = set_servicio;
     }
 
+    
 }
