@@ -46,7 +46,7 @@ private Grid grid_de = new Grid();
         agregarComponente(dia_dialogo);
 
         Boton bot = new Boton();
-        bot.setValue("ABRIR DIALOGO");
+        bot.setValue("ASIGNAR ESTADOS");
         bot.setMetodo("aceptoDialogo");
         bar_botones.agregarBoton(bot);
                   
@@ -54,14 +54,14 @@ private Grid grid_de = new Grid();
         set_estado.setSql("SELECT IDE_TIPO_ESTADO,DESCRIPCION_ESTADO FROM TRANS_TIPO_ESTADO");
         set_estado.getColumna("DESCRIPCION_ESTADO").setNombreVisual("Estado");
         set_estado.setRows(5);
-        set_estado.setTipoSeleccion(true);
+        set_estado.setTipoSeleccion(false);
         set_estado.dibujar();
    
         set_tipo.setId("set_tipo");
         set_tipo.setSql("SELECT IDE_TIPO_PLACA,DESCRIPCION_TIPO FROM TRANS_TIPO_PLACA");
         set_tipo.getColumna("DESCRIPCION_TIPO").setNombreVisual("Tipo");
         set_tipo.setRows(5);
-        set_tipo.setTipoSeleccion(true);
+        set_tipo.setTipoSeleccion(false);
         set_tipo.dibujar();
 
         set_vehiculo.setId("set_vehiculo");
@@ -75,7 +75,7 @@ private Grid grid_de = new Grid();
         set_servicio.setSql("select ide_tipo_servicio,DESCRIPCION_SERVICIO from trans_tipo_servicio");
         set_servicio.getColumna("DESCRIPCION_SERVICIO").setNombreVisual("Servicio");
         set_servicio.setRows(10);
-        set_servicio.setTipoSeleccion(true);
+        set_servicio.setTipoSeleccion(false);
         set_servicio.dibujar();
         
         tab_consulta.setId("tab_consulta");
@@ -117,6 +117,10 @@ private Grid grid_de = new Grid();
         tab_placa.getColumna("FECHA_REGISTRO_placa").setNombreVisual("Fecha de Registro");
         tab_placa.getColumna("fecha_registro_placa").setValorDefecto(utilitario.getFechaActual());
         tab_placa.getColumna("fecha_registro_placa").setLectura(true);
+//        tab_placa.getColumna("ide_tipo_vehiculo").setLectura(true);
+//        tab_placa.getColumna("ide_tipo_servicio").setLectura(true);
+//        tab_placa.getColumna("ide_tipo_placa").setLectura(true);
+//        tab_placa.getColumna("ide_tipo_estado").setLectura(true);
         tab_placa.dibujar();
         PanelTabla pat_panel1=new PanelTabla(); 
         pat_panel1.setPanelTabla(tab_placa);
@@ -142,13 +146,21 @@ private Grid grid_de = new Grid();
     
     public void aceptoValores() {
         if (set_vehiculo.getValorSeleccionado()!= null) {
-            tab_placa.setValor("ide_tipo_vehiculo", set_vehiculo.getValorSeleccionado());
-            utilitario.addUpdate("tab_placa");
-            dia_dialogo.cerrar();
-
-        } else {
-            utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
-        }        
+            if (set_servicio.getValorSeleccionado()!= null) {
+                if (set_tipo.getValorSeleccionado()!= null) {
+                    if (set_estado.getValorSeleccionado()!= null) {
+                        tab_placa.setValor("ide_tipo_vehiculo", set_vehiculo.getValorSeleccionado());
+                        tab_placa.setValor("ide_tipo_servicio", set_servicio.getValorSeleccionado());
+                        tab_placa.setValor("ide_tipo_placa", set_tipo.getValorSeleccionado());
+                        tab_placa.setValor("ide_tipo_estado", set_estado.getValorSeleccionado());
+                        utilitario.addUpdate("tab_placa");
+                        dia_dialogo.cerrar();
+                        }
+                 }
+           }
+       }else {
+       utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
+       }        
     }
     
     @Override
