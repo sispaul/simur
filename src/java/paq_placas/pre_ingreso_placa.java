@@ -36,7 +36,6 @@ private Grid grid_de = new Grid();
         dia_dialogo.setWidth("50%"); //siempre en porcentajes  ancho
         dia_dialogo.setHeight("30%");//siempre porcentaje   alto
         dia_dialogo.setResizable(false); //para que no se pueda cambiar el tamaño
-        System.out.println("entrada");
         dia_dialogo.getBot_aceptar().setMetodo("aceptoValores");
         grid_de.setColumns(4);
         grid_de.getChildren().add(new Etiqueta("SELECCIONE VEHICULO"));
