@@ -17,24 +17,18 @@ import persistencia.Conexion;
 public class bodt_egreso {
     
     private Utilitario utilitario = new Utilitario();
-    private Conexion con_postgres = new Conexion();
+    private Conexion con_postgres;
     
      public String egresoMax() {
-         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
-         con_postgres.NOMBRE_MARCA_BASE = "postgres";
+         conectar();
+
          String ValorMax;
          TablaGenerica tab_consulta = new TablaGenerica();
+         conectar();
          tab_consulta.setConexion(con_postgres);
-//         TablaGenerica tab_ejecuta=new TablaGenerica();
-//        tab_ejecuta.setConexion(con_postgres);
-//        tab_ejecuta.setSql(consulta);
-//        tab_ejecuta.ejecutarSql();
-         tab_consulta.setSql("select \"max\"(numero_egreso) from bodt_concepto_egreso");
-         System.out.println("Agrego Script");
+         tab_consulta.setSql("select 0 as id, (case when max(ide_egreso) is null then 1 else max(ide_egreso)+1 end) as maximo from bodt_concepto_egreso");
          tab_consulta.ejecutarSql();
-         System.out.println("Ejecuta Script");
-         ValorMax = tab_consulta.getValor("uso")+"";
-         System.out.println(ValorMax);
+         ValorMax = tab_consulta.getValor("maximo");
          return ValorMax;
      }
      
