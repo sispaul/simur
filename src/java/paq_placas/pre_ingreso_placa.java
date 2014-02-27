@@ -43,12 +43,7 @@ private Grid grid_de = new Grid();
         grid_de.getChildren().add(new Etiqueta("TIPO DE PLACA"));
         grid_de.getChildren().add(new Etiqueta("ESTADO DE PLACA"));
         agregarComponente(dia_dialogo);
-
-        Boton bot = new Boton();
-        bot.setValue("ASIGNAR ESTADOS");
-        bot.setMetodo("aceptoDialogo");
-        bar_botones.agregarBoton(bot);
-                  
+             
         set_estado.setId("set_estado");
         set_estado.setSql("SELECT IDE_TIPO_ESTADO,DESCRIPCION_ESTADO FROM TRANS_TIPO_ESTADO WHERE IDE_TIPO_ESTADO BETWEEN 3 AND 4");
         set_estado.getColumna("DESCRIPCION_ESTADO").setNombreVisual("Estado");
@@ -104,7 +99,15 @@ private Grid grid_de = new Grid();
         tab_ingreso.agregarRelacion(tab_placa);
         PanelTabla pat_panel=new PanelTabla(); 
         pat_panel.setPanelTabla(tab_ingreso);
-                    
+        tab_ingreso.setStyle(null);
+        pat_panel.setStyle("width:100%;overflow: auto;");
+        
+        Boton bot = new Boton();
+        bot.setValue("ASIGNAR ESTADOS");
+        bot.setMetodo("aceptoDialogo");
+        bot.setIcon("ui-icon-document");
+        pat_panel.getChildren().add(bot);
+        
         tab_placa.setId("tab_placa");
         tab_placa.setTabla("TRANS_PLACA", "IDE_PLACA", 2);
         tab_placa.setHeader("Placas");
