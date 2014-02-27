@@ -149,10 +149,10 @@ private Grid grid_de = new Grid();
             if (set_servicio.getValorSeleccionado()!= null) {
                 if (set_tipo.getValorSeleccionado()!= null) {
                     if (set_estado.getValorSeleccionado()!= null) {
-                        tab_placa.setValor("ide_tipo_vehiculo", set_vehiculo.getValorSeleccionado());
-                        tab_placa.setValor("ide_tipo_servicio", set_servicio.getValorSeleccionado());
-                        tab_placa.setValor("ide_tipo_placa", set_tipo.getValorSeleccionado());
-                        tab_placa.setValor("ide_tipo_estado", set_estado.getValorSeleccionado());
+                        tab_placa.getColumna("ide_tipo_vehiculo").setValorDefecto(set_vehiculo.getValorSeleccionado());
+                        tab_placa.getColumna("ide_tipo_servicio").setValorDefecto(set_servicio.getValorSeleccionado());
+                        tab_placa.getColumna("ide_tipo_placa").setValorDefecto(set_tipo.getValorSeleccionado());
+                        tab_placa.getColumna("ide_tipo_estado").setValorDefecto(set_estado.getValorSeleccionado());
                         utilitario.addUpdate("tab_placa");
                         dia_dialogo.cerrar();
                         }
@@ -165,16 +165,22 @@ private Grid grid_de = new Grid();
     
     @Override
     public void insertar() {
-    utilitario.getTablaisFocus().insertar();    
+        utilitario.getTablaisFocus().insertar();  
     }
+    
 
     @Override
     public void guardar() {
-        tab_placa.guardar();
+    if (tab_ingreso.guardar()) {
+            if (tab_placa.guardar()) {
+                guardarPantalla();
+            }
+        }
     }
 
     @Override
     public void eliminar() {
+        utilitario.getTablaisFocus().eliminar();
     }
 
     public Tabla getTab_ingreso() {
