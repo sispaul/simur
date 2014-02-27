@@ -50,7 +50,8 @@ public final class pre_bodt_entrega1 extends Pantalla{
         tab_cab_cons.setId("tab_cab_cons");
         tab_cab_cons.setConexion(con_postgres);
         //tab_cab_cons.setTabla("bodt_concepto_egreso", "ide_egreso", 1);
-        tab_cab_cons.setSql("select bodt_concepto_egreso.ide_egreso, solicita, fec_egreso,  visto_bueno, doc_egreso, recibe, numero_egreso, ide_destino, uso  from bodt_concepto_egreso, bodt_egreso where bodt_concepto_egreso.ide_egreso=bodt_egreso.ide_egreso and bodt_concepto_egreso.ide_egreso=-1");
+        //tab_cab_cons.setSql("select bodt_concepto_egreso.ide_egreso, solicita, fec_egreso,  visto_bueno, doc_egreso, recibe, numero_egreso, ide_destino, uso  from bodt_concepto_egreso, bodt_egreso where bodt_concepto_egreso.ide_egreso=bodt_egreso.ide_egreso and bodt_concepto_egreso.ide_egreso=-1");
+        tab_cab_cons.setSql("select bodt_concepto_egreso.ide_egreso, solicita, fec_egreso,  visto_bueno, doc_egreso, recibe, numero_egreso, ide_destino, uso  from bodt_concepto_egreso, bodt_egreso where bodt_concepto_egreso.ide_egreso=bodt_egreso.ide_egreso");
         tab_cab_cons.setCampoPrimaria("ide_egreso");
         tab_cab_cons.setHeader("Requisicion de Materiales CONSUMO INTERNO");
         tab_cab_cons.setTipoFormulario(true);
@@ -72,7 +73,7 @@ public final class pre_bodt_entrega1 extends Pantalla{
         tab_cab_cons.getColumna("doc_egreso").setNombreVisual("NUMERO DOCUMENTO");
         tab_cab_cons.getColumna("numero_egreso").setNombreVisual("NUMERO EGRESO");
         tab_cab_cons.getColumna("uso").setNombreVisual("USO");
-        //tab_cab_cons.agregarRelacion(tab_det_egre); ///relación        
+        tab_cab_cons.agregarRelacion(tab_det_egre); ///relación        
         tab_cab_cons.getGrid().setColumns(4);
         tab_cab_cons.dibujar();
         
@@ -112,7 +113,9 @@ public final class pre_bodt_entrega1 extends Pantalla{
         tab_det_egre.setId("tab_det_egre");
         tab_det_egre.setConexion(con_postgres);
         //tab_det_egre.setTabla("bodt_egreso", "ide_bod_egreso", 2);
-        tab_det_egre.setSql("select ide_bodt_articulo, bodc_material.ide_mat_bodega, bodc_material.ide_mat_bodega as material, ((existencia_inicial + ingreso_material) - egreso_material) as existencia, costo_actual, existencia_inicial from bodc_material INNER JOIN bodt_articulos on (bodc_material.ide_mat_bodega='-1' and bodc_material.ide_mat_bodega=bodt_articulos.ide_mat_bodega)");
+        //tab_det_egre.setSql("select ide_bodt_articulo, bodc_material.ide_mat_bodega, bodc_material.ide_mat_bodega as material, ((existencia_inicial + ingreso_material) - egreso_material) as existencia, costo_actual, existencia_inicial from bodc_material INNER JOIN bodt_articulos on (bodc_material.ide_mat_bodega='-1' and bodc_material.ide_mat_bodega=bodt_articulos.ide_mat_bodega)");
+        tab_det_egre.setSql("select bodt_egreso.ide_egreso, bodt_articulos.ide_bodt_articulo, bodt_articulos.ide_mat_bodega, bodt_articulos.ide_mat_bodega as material, ((existencia_inicial + ingreso_material) - egreso_material) as existencia, costo_actual, 0 as existencia_inicial from bodt_articulos INNER JOIN bodt_egreso on (bodt_articulos.ide_bodt_articulo=bodt_egreso.ide_bodt_articulo)");
+        tab_det_egre.setCampoForanea("ide_egreso");
         tab_det_egre.getColumna("ide_bodt_articulo").setVisible(false);
         tab_det_egre.getColumna("material").setCombo("select a.ide_mat_bodega, cod_material, des_material, ((existencia_inicial + ingreso_material) - egreso_material) as existencia, costo_actual from bodt_articulos a, bodc_material b, conc_ano c where a.ide_mat_bodega = b.ide_mat_bodega and a.ano_curso = c.ano_curso and c.actual like 'A' and  ((existencia_inicial + ingreso_material) - egreso_material) > 0 order by des_material");
         tab_det_egre.getColumna("material").setAutoCompletar();
@@ -135,8 +138,8 @@ public final class pre_bodt_entrega1 extends Pantalla{
         div.dividir2(tabp, tabp1, "50%", "h");
 
         agregarComponente(div);
-        tab_cab_cons.setFocus();
-        insertar();
+//        tab_cab_cons.setFocus();
+//        insertar();
       
     }
 
