@@ -245,6 +245,4 @@ private Grid grid_de = new Grid();
     public void setSet_servicio(Tabla set_servicio) {
         this.set_servicio = set_servicio;
     }
-
-    
 }
