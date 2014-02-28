@@ -149,6 +149,8 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
                 set_entrega.actualizar();
             utilitario.addUpdate("set_solicitud");
             }
+        }else {
+            utilitario.agregarMensajeInfo("No Puede Guardar", "");
         }
     }
 
