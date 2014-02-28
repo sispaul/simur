@@ -6,7 +6,6 @@ package paq_transportes;
 
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
-import paq_transportes.*;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.PanelTabla;
@@ -14,8 +13,10 @@ import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
 import paq_sistema.aplicacion.Pantalla;
+import paq_transportes.ejb.servicioPlaca;
 
 /**
  *
@@ -27,6 +28,8 @@ private Tabla set_requisito = new Tabla();
 private Tabla set_aprobacion = new Tabla();
 private Tabla tab_consulta = new Tabla();
 private AutoCompletar aut_busca = new AutoCompletar();
+@EJB
+private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servicioPlaca.class);
 
     public pre_aprobacion_asignacion() {
         
@@ -58,8 +61,17 @@ private AutoCompletar aut_busca = new AutoCompletar();
         set_solicitud.getColumna("IDE_TIPO_SERVICIO").setCombo("select ide_tipo_servicio,descripcion_servicio from trans_tipo_servicio");
         set_solicitud.getColumna("IDE_TIPO_VEHICULO").setLectura(true);
         set_solicitud.getColumna("IDE_TIPO_SERVICIO").setLectura(true);
+         List lista = new ArrayList();
+        Object fila1[] = {
+            "0", "NO"
+        };
+        Object fila2[] = {
+            "1", "SI"
+        };
+        lista.add(fila1);;
+        lista.add(fila2);;
+        set_solicitud.getColumna("APROBADO_SOLICITUD").setRadio(lista, "0"); 
         set_solicitud.getColumna("IDE_APROBACION_PLACA").setLectura(true);
-        set_solicitud.getColumna("APROBADO_SOLICITUD").setLectura(true);
         set_solicitud.getColumna("IDE_PLACA").setLectura(true);
         set_solicitud.getColumna("IDE_ENTREGA_PLACA").setVisible(false);
         set_solicitud.getColumna("FECHA_ENTREGA_PLACA").setVisible(false);
@@ -86,8 +98,6 @@ private AutoCompletar aut_busca = new AutoCompletar();
         set_requisito.setId("set_requisito");
         set_requisito.setIdCompleto("tab_tabulador:set_requisito");
         set_requisito.setTabla("TRANS_DETALLE_REQUISITOS_SOLICITUD", "IDE_DETALLE_REQUISITOS_SOLICITUD", 2);
-//        set_requisito.setSql("SELECT r.IDE_DETALLE_REQUISITOS_SOLICITUD,t.DECRIPCION_REQUISITO,r.CONFIRMAR_REQUISITO FROM TRANS_DETALLE_SOLICITUD_PLACA d,TRANS_DETALLE_REQUISITOS_SOLICITUD r,TRANS_TIPO_REQUISITO t\n" 
-//                             +"WHERE r.IDE_DETALLE_SOLICITUD = d.IDE_DETALLE_SOLICITUD AND r.IDE_TIPO_REQUISITO = t.IDE_TIPO_REQUISITO");
         set_requisito.getColumna("IDE_TIPO_REQUISITO").setCombo("SELECT IDE_TIPO_REQUISITO,DECRIPCION_REQUISITO FROM TRANS_TIPO_REQUISITO");
         set_requisito.getColumna("IDE_TIPO_REQUISITO").setLectura(true);
         set_requisito.getGrid().setColumns(4);
@@ -105,15 +115,15 @@ private AutoCompletar aut_busca = new AutoCompletar();
         set_aprobacion.getColumna("COMENTARIO_APROBACION").setNombreVisual("Comentarios");
         set_aprobacion.getColumna("FECHA_APROBACION").setValorDefecto(utilitario.getFechaActual());
         set_aprobacion.getColumna("FECHA_APROBACION").setLectura(true);
-         List lista = new ArrayList();
-        Object fila1[] = {
+         List lista1 = new ArrayList();
+        Object filaa[] = {
             "0", "NO"
         };
-        Object fila2[] = {
+        Object filab[] = {
             "1", "SI"
         };
-        lista.add(fila1);;
-        lista.add(fila2);;
+        lista1.add(filaa);;
+        lista1.add(filab);;
         set_aprobacion.getColumna("APROBADO").setRadio(lista, "0"); 
         set_aprobacion.getColumna("USU_APROBACION").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         set_aprobacion.getColumna("USU_APROBACION").setLectura(true);
@@ -142,32 +152,27 @@ private AutoCompletar aut_busca = new AutoCompletar();
         public void limpiar() {
         aut_busca.limpiar();
         utilitario.addUpdate("aut_busca");
-    }
+        }
     
     @Override
     public void insertar() {
-    utilitario.getTablaisFocus().insertar();
+    set_aprobacion.insertar();
     }
 
     @Override
     public void guardar() {
         if (set_aprobacion.guardar()) {
             if (guardarPantalla().isEmpty()) {
-            actualizarSolicitud();
+            ser_Placa.actualizarD(Byte.parseByte(set_aprobacion.getValor("APROBADO")), Integer.parseInt(set_aprobacion.getValor("IDE_APROBACION_PLACA")),Integer.parseInt(set_solicitud.getValor("IDE_DETALLE_SOLICITUD")));
             set_solicitud.actualizar();
             utilitario.addUpdate("set_solicitud");
             }
         }
     }
 
-    public void actualizarSolicitud(){
-         String str_sql ="update TRANS_DETALLE_SOLICITUD_PLACA \n" 
-                            +"set APROBADO_SOLICITUD="+set_aprobacion.getValor("APROBADO")+", IDE_APROBACION_PLACA= "+set_aprobacion.getValor("IDE_APROBACION_PLACA")+"\n" 
-                            +"where IDE_DETALLE_SOLICITUD="+set_solicitud.getValor("IDE_DETALLE_SOLICITUD");
-         
-    }
     @Override
     public void eliminar() {
+        set_aprobacion.eliminar();
     }
 
     
