@@ -12,7 +12,9 @@ import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJB;
 import paq_sistema.aplicacion.Pantalla;
+import paq_transportes.ejb.servicioPlaca;
 
 /**
  *
@@ -28,7 +30,8 @@ private Dialogo dia_dialogo = new Dialogo();
 
 private Grid grid = new Grid();
 private Grid grid_de = new Grid();
-
+@EJB
+private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servicioPlaca.class);
     public pre_entrega_placa() {
                         
         tab_consulta.setId("tab_consulta");
@@ -125,8 +128,7 @@ private Grid grid_de = new Grid();
     
         public void aceptoValores() {
         if (set_detalle.getValorSeleccionado()!= null) {
-              set_entrega.getColumna("CEDULA_RUC_PROPIETARIO").setValorDefecto(set_detalle.getValor("CEDULA_RUC_PROPIETARIO"));
-              
+              set_entrega.getColumna("CEDULA_RUC_PROPIETARIO").setValorDefecto(set_detalle.getValor("CEDULA_RUC_PROPIETARIO"));             
               utilitario.addUpdate("set_entrega");
               dia_dialogo.cerrar();
        }else {
@@ -136,15 +138,27 @@ private Grid grid_de = new Grid();
         
     @Override
     public void insertar() {
-        utilitario.getTablaisFocus().insertar();  
+        set_entrega.insertar();  
     }
 
     @Override
     public void guardar() {
+     if (set_entrega.guardar()) {
+         System.out.println(set_entrega.getValor("fecha_entrega_placa"));
+            if (guardarPantalla().isEmpty()) {
+                System.out.println(set_entrega.getValor("fecha_entrega_placa"));
+                ser_Placa.actualizarDS(Integer.parseInt(set_entrega.getValor("ide_entrega_placa")),Byte.parseByte(set_entrega.getValor("ENTREGA_PLACA")) ,set_entrega.getValor("fecha_entrega_placa"), Integer.parseInt(set_detalle.getValor("IDE_DETALLE_SOLICITUD")));
+            System.out.println(set_entrega.getValor("fecha_entrega_placa"));
+            
+                set_entrega.actualizar();
+            utilitario.addUpdate("set_solicitud");
+            }
+        }
     }
 
     @Override
     public void eliminar() {
+        set_entrega.eliminar();
     }
 
     public Tabla getSet_detalle() {
