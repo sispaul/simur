@@ -133,7 +133,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         PanelTabla pat_panel5 = new PanelTabla();
         pat_panel5.setPanelTabla(set_aprobacion);
         
-        tab_tabulador.agregarTab("REPRESENTANTE", tbp_r);
+        tab_tabulador.agregarTab("REQUISITOS", tbp_r);
         tab_tabulador.agregarTab("APROBAR REQUISITO PLACA", pat_panel5);
 
         Division div_division = new Division();
@@ -164,7 +164,9 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         if (set_aprobacion.guardar()) {
             if (guardarPantalla().isEmpty()) {
             ser_Placa.actualizarD(Byte.parseByte(set_aprobacion.getValor("APROBADO")), Integer.parseInt(set_aprobacion.getValor("IDE_APROBACION_PLACA")),Integer.parseInt(set_solicitud.getValor("IDE_DETALLE_SOLICITUD")));
-            set_solicitud.actualizar();
+//            ser_Placa.seleccionarP(Integer.parseInt(set_solicitud.getValor("IDE_TIPO_VEHICULO")),Integer.parseInt(set_solicitud.getValor("IDE_TIPO_SERVICIO")));
+//            set_solicitud.setValor("ide_placa", ser_Placa.seleccionarP());
+//            set_solicitud.actualizar();
             utilitario.addUpdate("set_solicitud");
             }
         }
