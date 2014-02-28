@@ -126,6 +126,7 @@ private Grid grid_de = new Grid();
         public void aceptoValores() {
         if (set_detalle.getValorSeleccionado()!= null) {
               set_entrega.getColumna("CEDULA_RUC_PROPIETARIO").setValorDefecto(set_detalle.getValor("CEDULA_RUC_PROPIETARIO"));
+              
               utilitario.addUpdate("set_entrega");
               dia_dialogo.cerrar();
        }else {
