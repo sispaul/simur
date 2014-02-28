@@ -59,7 +59,7 @@ public String seleccionarP(Integer vehiculo,Integer servicio)
                             +"ORDER BY PLACA ASC");
            
          tab_consulta.ejecutarSql();
-         placa = tab_consulta.getValor("PLACA");
+         placa = tab_consulta.getValor("IDE_PLACA");
          return placa;
 
     }
