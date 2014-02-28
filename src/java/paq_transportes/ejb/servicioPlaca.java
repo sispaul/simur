@@ -19,6 +19,7 @@ private Utilitario utilitario = new Utilitario();
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
 
+//ACTUALIZACION DE APROBACION EN SOLICITUD
 public void actualizarD(Byte aprobado,Integer id_a,Integer id_s)
     {
         String actualiza = "update TRANS_DETALLE_SOLICITUD_PLACA \n" 
@@ -27,25 +28,26 @@ public void actualizarD(Byte aprobado,Integer id_a,Integer id_s)
             conectar();
             conexion.ejecutarSql(actualiza);
     }
-
+//ACTUALIZACION DE ENTREGA EN SOLICITUD
 public void actualizarDS(Integer id_en,Byte entrega,String id_enf,Integer id_s)
     {
         String actualiza1 = "update TRANS_DETALLE_SOLICITUD_PLACA \n" 
-                            +"set IDE_ENTREGA_PLACA="+id_en+",ENTREGADA_PLACA="+entrega+", FECHA_ENTREGA_PLACA= "+id_enf+"\n" 
+                            +"set IDE_ENTREGA_PLACA="+id_en+",ENTREGADA_PLACA="+entrega+", FECHA_ENTREGA_PLACA= '"+id_enf+"'\n" 
                             +"where IDE_DETALLE_SOLICITUD="+id_s; 
             conectar();
             conexion.ejecutarSql(actualiza1);
     }
-    
+ //   ACTUALIZACION DE ENTREGA EN PLACA
 public void actualizarDE(String cedula,String nombre,String id_enf,Integer id_s)
     {
+        System.err.println(id_enf);
         String actualiza1 = "update TRANS_DETALLE_SOLICITUD_PLACA \n" 
                             +"set CEDULA_RUC_PROPIETARIO="+cedula+",NOMBRE_PROPIETARIO="+nombre+", FECHA_ENTREGA_PLACA="+id_enf+"\n" 
                             +"where IDE_DETALLE_SOLICITUD="+id_s; 
             conectar();
             conexion.ejecutarSql(actualiza1);
     }
-    
+ //ASIGNACION AUTOMATICA DE PLACAS   
 public String seleccionarP(Integer vehiculo,Integer servicio)
     {
         conectar();
