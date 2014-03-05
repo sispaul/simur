@@ -6,6 +6,7 @@ package paq_transportes;
 
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
+import framework.componentes.Combo;
 import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
@@ -31,6 +32,10 @@ private Grid grid = new Grid();
 private Grid grid_de = new Grid();
 //autocompletar datos
 private AutoCompletar aut_busca = new AutoCompletar();
+private Combo cmb_vehiculo = new Combo();
+private Combo cmb_servicio = new Combo();
+private Etiqueta eti_etiqueta= new Etiqueta();
+private Etiqueta eti_etiqueta2= new Etiqueta();
 
     public pre_solicitud_placa() {
 
@@ -115,8 +120,10 @@ private AutoCompletar aut_busca = new AutoCompletar();
         tab_detalle.getColumna("APROBADO_SOLICITUD").setVisible(false);
         tab_detalle.getColumna("ENTREGADA_PLACA").setVisible(false);
         tab_detalle.getColumna("IDE_DETALLE_SOLICITUD").setNombreVisual("Nro. Tramite");
-        tab_detalle.getColumna("IDE_TIPO_SERVICIO").setCombo("select ide_tipo_servicio,descripcion_servicio from trans_tipo_servicio");
-        tab_detalle.getColumna("IDE_TIPO_VEHICULO").setCombo("SELECT ide_tipo_vehiculo,des_tipo_vehiculo FROM trans_tipo_vehiculo WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
+        tab_detalle.getColumna("IDE_TIPO_SERVICIO").setVisible(false);
+        tab_detalle.getColumna("IDE_TIPO_VEHICULO").setVisible(false);
+//        tab_detalle.getColumna("IDE_TIPO_SERVICIO").setCombo("select ide_tipo_servicio,descripcion_servicio from trans_tipo_servicio");
+//        tab_detalle.getColumna("IDE_TIPO_VEHICULO").setCombo("SELECT ide_tipo_vehiculo,des_tipo_vehiculo FROM trans_tipo_vehiculo WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
         tab_detalle.getGrid().setColumns(2);
         tab_detalle.setTipoFormulario(true);
         tab_detalle.agregarRelacion(tab_requisito);
@@ -124,11 +131,18 @@ private AutoCompletar aut_busca = new AutoCompletar();
         PanelTabla tabp2 = new PanelTabla();
         tabp2.setPanelTabla(tab_detalle);
         
+        eti_etiqueta.setStyle("font-size:19px;color:navy;text-align:center;");
+        eti_etiqueta.setValue("Vehiculo:");
+        tabp2.getChildren().add(eti_etiqueta);   
+        cmb_vehiculo.setId("cmb_vehiculo");
+        cmb_vehiculo.setCombo("SELECT ide_tipo_vehiculo,des_tipo_vehiculo FROM trans_tipo_vehiculo WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
+        tabp2.getChildren().add(cmb_vehiculo);
+        
         tab_requisito.setId("tab_requisito");
-        tab_requisito.setSql("SELECT d.IDE_DET_REQUISITO,r.DECRIPCION_REQUISITO,t.CONFIRMAR_REQUISITO\n" 
-                            +"FROM TRANS_DETALLE_REQUISITOS_SOLICITUD t,TRANS_DETALLE_REQUISITO d,TRANS_TIPO_SERVICIO s,TRANS_TIPO_REQUISITO r,trans_tipo_vehiculo v \n" 
-                            +"WHERE d.IDE_TIPO_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO AND d.IDE_TIPO_REQUISITO = r.IDE_TIPO_REQUISITO \n" 
-                            +"AND d.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND v.ide_tipo_vehiculo= '"+Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")+"")+"' AND s.IDE_TIPO_SERVICIO = '"+Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")+"")+"'");
+//        tab_requisito.setSql("SELECT d.IDE_DET_REQUISITO,r.DECRIPCION_REQUISITO,t.CONFIRMAR_REQUISITO\n" 
+//                            +"FROM TRANS_DETALLE_REQUISITOS_SOLICITUD t,TRANS_DETALLE_REQUISITO d,TRANS_TIPO_SERVICIO s,TRANS_TIPO_REQUISITO r,trans_tipo_vehiculo v \n" 
+//                            +"WHERE d.IDE_TIPO_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO AND d.IDE_TIPO_REQUISITO = r.IDE_TIPO_REQUISITO \n" 
+//                            +"AND d.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND v.ide_tipo_vehiculo= '"+Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")+"")+"' AND s.IDE_TIPO_SERVICIO = '"+Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")+"")+"'");
         tab_requisito.setRows(5);
         tab_requisito.setTipoSeleccion(false);
         tab_requisito.dibujar();
