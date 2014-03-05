@@ -948,4 +948,10 @@ public class Utilitario extends Framework {
         cal.set(Calendar.SECOND, cal.get(Calendar.SECOND));
         return cal.getTime();
     }
+    
+    public Byte StringToByte(String s) {
+        Integer i;
+        i= Boolean.parseBoolean(s) ? 1 : 0;
+        return Byte.parseByte(i+"");
+    }
 }
