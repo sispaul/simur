@@ -80,36 +80,6 @@ public final class pre_bodt_entrega1 extends Pantalla{
         PanelTabla tabp = new PanelTabla();
         tabp.setPanelTabla(tab_cab_cons);
         
-        //Configurando el dialogo
-//        dia_dialogo.setId("dia_dialogo");
-//        dia_dialogo.setTitle("BODEGA - GRUPOS"); //titulo
-//        dia_dialogo.setWidth("50%"); //siempre en porcentajes  ancho
-//        dia_dialogo.setHeight("60%");//siempre porcentaje   alto
-//        dia_dialogo.setResizable(false); //para que no se pueda cambiar el tamaño
-//        dia_dialogo.getBot_aceptar().setMetodo("aceptoDialogo");
-//
-//        tab_material.setId("tab_material");
-//        tab_det_egre.setConexion(con_postgres);
-//        //tab_det_egre.setTabla("bodt_egreso", "ide_bod_egreso", 2);
-//        tab_material.setSql("select ide_bodt_articulo, bodc_material.ide_mat_bodega, (cod_material||' '||des_material) as material, ((existencia_inicial + ingreso_material) - egreso_material) as existencia, costo_actual, 0 as cantidad from bodc_material INNER JOIN bodt_articulos on (bodc_material.ide_mat_bodega=bodt_articulos.ide_mat_bodega)");
-//        tab_material.getColumna("ide_bodt_articulo").setVisible(false);
-//        tab_material.getColumna("material").setLectura(true);
-//        tab_material.getColumna("material").setMetodoChange("buscaMaterial");
-//        tab_material.getColumna("material").setNombreVisual("Materia");
-//        tab_material.getColumna("material").setFiltro(true);
-//        tab_material.getColumna("ide_mat_bodega").setLectura(true);
-//        tab_material.getColumna("ide_mat_bodega").setNombreVisual("Codigo");
-//        tab_material.getColumna("existencia").setLectura(true);
-//        tab_material.getColumna("existencia").setNombreVisual("Existencia");
-//        tab_material.getColumna("costo_actual").setLectura(true);
-//        tab_material.getColumna("costo_actual").setNombreVisual("Valor U");
-//        tab_material.getColumna("cantidad").setNombreVisual("Cantidad");
-//               
-//        dia_dialogo.setDialogo(tab_material);
-//        tab_material.dibujar();
-//        //dia_dialogo.dibujar();
-//        agregarComponente(dia_dialogo);
-        
         tab_det_egre.setId("tab_det_egre");
         tab_det_egre.setConexion(con_postgres);
         //tab_det_egre.setTabla("bodt_egreso", "ide_bod_egreso", 2);
