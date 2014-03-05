@@ -35,7 +35,6 @@ public void seleccionarP(Integer id_s,Integer vehiculo,Integer servicio,Byte apr
 
 public void actualizarDS(Integer id_en,Integer id_s2,Byte aprob_en)
     {
-        System.err.println(aprob_en);
         String actualiza1 = "update TRANS_DETALLE_SOLICITUD_PLACA \n" 
                             +"set IDE_ENTREGA_PLACA="+id_en+",ENTREGADA_PLACA="+aprob_en+", FECHA_ENTREGA_PLACA= '"+utilitario.getFechaActual()+"'\n" 
                             +"where IDE_DETALLE_SOLICITUD="+id_s2; 
@@ -43,11 +42,13 @@ public void actualizarDS(Integer id_en,Integer id_s2,Byte aprob_en)
             conexion.ejecutarSql(actualiza1);
     }
  //   ACTUALIZACION DE ENTREGA EN PLACA
-public void actualizarDE(String cedula,String nombre,String fecha, Integer id_s)
+public void actualizarDE(Integer iden,String ruc,Integer placa)
     {
         String actualiza2 = "update TRANS_PLACA \n" 
-                                +"set CEDULA_RUC_PROPIETARIO="+cedula+",NOMBRE_PROPIETARIO="+nombre+",fecha_entrega ="+fecha+",ide_tipo_estado = 2\n" 
-                                +"where ide_placa ="+id_s; 
+                            +"set NOMBRE_PROPIETARIO=nombre,ide_tipo_estado = 2,FECHA_ENTREGA_PLACA='"+utilitario.getFechaActual()+"',CEDULA_RUC_PROPIETARIO=identi\n" 
+                            +"from( select CEDULA_RUC_PROPIETARIO as identi,NOMBRE_PROPIETARIO as nombre from TRANS_DETALLE_SOLICITUD_PLACA\n" 
+                            +"where IDE_DETALLE_SOLICITUD = "+iden+" and CEDULA_RUC_PROPIETARIO ="+ruc+")a\n" 
+                            +"where ide_placa ="+placa; 
             conectar();
             conexion.ejecutarSql(actualiza2);
     }
