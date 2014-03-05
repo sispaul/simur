@@ -117,11 +117,12 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
 
     @Override
     public void guardar() {
-        System.out.println(Byte.parseByte(set_entrega.getValor("ENTREGA_PLACA")));
+        System.out.println(utilitario.StringToByte(set_entrega.getValor("ENTREGA_PLACA")));
      if (set_entrega.guardar()) {
             if (guardarPantalla().isEmpty()) {
-                ser_Placa.actualizarDS(Integer.parseInt(set_entrega.getValor("ide_entrega_placa")),consulta,Byte.parseByte(set_entrega.getValor("ENTREGA_PLACA")));
-//                set_entrega.actualizar();
+                ser_Placa.actualizarDS(Integer.parseInt(set_entrega.getValor("ide_entrega_placa")),consulta,utilitario.StringToByte(set_entrega.getValor("ENTREGA_PLACA")));
+                ser_Placa.actualizarDE(consulta, set_detalle.getValor("CEDULA_RUC_PROPIETARIO"), Integer.parseInt(set_detalle.getValor("ide_placa")));
+                set_entrega.actualizar();
             utilitario.addUpdate("set_solicitud");
             }
         }else {
