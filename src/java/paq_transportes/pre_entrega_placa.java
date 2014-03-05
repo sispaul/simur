@@ -9,7 +9,6 @@ import framework.componentes.Dialogo;
 import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
-import framework.componentes.Texto;
 import javax.ejb.EJB;
 import paq_sistema.aplicacion.Pantalla;
 import paq_transportes.ejb.servicioPlaca;
@@ -24,7 +23,6 @@ private Tabla set_detalle = new Tabla();
 private Tabla tab_consulta = new Tabla();
 private Tabla set_entrega = new Tabla();
 private Dialogo dia_dialogo = new Dialogo();
-private Texto tex_ide = new Texto();
 private Grid grid = new Grid();
 private Grid grid_de = new Grid();
 @EJB
@@ -78,7 +76,6 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         bot_placa.setIcon("ui-icon-document");
         bot_placa.setMetodo("aceptoDialogo()");
         pat_panel.getChildren().add(bot_placa);
-        pat_panel.getChildren().add(tex_ide);
 
         set_detalle.setId("set_detalle");
         set_detalle.setTabla("TRANS_DETALLE_SOLICITUD_PLACA", "IDE_DETALLE_SOLICITUD", 2);
@@ -106,9 +103,6 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         if (set_detalle.getValorSeleccionado()!= null) {
               set_entrega.getColumna("CEDULA_RUC_PROPIETARIO").setValorDefecto(set_detalle.getValor("CEDULA_RUC_PROPIETARIO"));
               consulta = Integer.parseInt(set_detalle.getValor("IDE_DETALLE_SOLICITUD"));
-//              tex_ide.setValue(set_detalle.getValor("IDE_DETALLE_SOLICITUD")+"");
-              System.err.println(consulta);
-//              utilitario.addUpdate("tex_ide");
               utilitario.addUpdate("set_entrega");
               dia_dialogo.cerrar();
        }else {
@@ -123,11 +117,11 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
 
     @Override
     public void guardar() {
+        System.out.println(Byte.parseByte(set_entrega.getValor("ENTREGA_PLACA")));
      if (set_entrega.guardar()) {
             if (guardarPantalla().isEmpty()) {
-//                ser_Placa.actualizarDS(Integer.parseInt(set_entrega.getValor("ide_entrega_placa")),Byte.parseByte(set_entrega.getValor("ENTREGA_PLACA")),consulta);
-                ser_Placa.actualizarDS(Integer.parseInt(set_entrega.getValor("ide_entrega_placa")),consulta);
-                set_entrega.actualizar();
+                ser_Placa.actualizarDS(Integer.parseInt(set_entrega.getValor("ide_entrega_placa")),consulta,Byte.parseByte(set_entrega.getValor("ENTREGA_PLACA")));
+//                set_entrega.actualizar();
             utilitario.addUpdate("set_solicitud");
             }
         }else {
