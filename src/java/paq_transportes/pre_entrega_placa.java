@@ -125,7 +125,8 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
     public void guardar() {
      if (set_entrega.guardar()) {
             if (guardarPantalla().isEmpty()) {
-                ser_Placa.actualizarDS(Integer.parseInt(set_entrega.getValor("ide_entrega_placa")),Byte.parseByte(set_entrega.getValor("ENTREGA_PLACA")),consulta);
+//                ser_Placa.actualizarDS(Integer.parseInt(set_entrega.getValor("ide_entrega_placa")),Byte.parseByte(set_entrega.getValor("ENTREGA_PLACA")),consulta);
+                ser_Placa.actualizarDS(Integer.parseInt(set_entrega.getValor("ide_entrega_placa")),consulta);
                 set_entrega.actualizar();
             utilitario.addUpdate("set_solicitud");
             }
