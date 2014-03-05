@@ -7,6 +7,7 @@ package paq_pruebas;
 
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
+import framework.componentes.Combo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.PanelTabla;
@@ -26,6 +27,10 @@ private Tabla tab_gestor = new Tabla();
 private Tabla tab_solicitud = new Tabla();
 private Tabla tab_consulta = new Tabla();
 private Tabla tab_detalle = new Tabla();
+private Combo cmb_vehiculo = new Combo();
+private Combo cmb_servicio = new Combo();
+private Etiqueta eti_etiqueta= new Etiqueta();
+private Etiqueta eti_etiqueta1= new Etiqueta();
 private AutoCompletar aut_busca = new AutoCompletar();
 
     public pre_solicitud_placa() {
@@ -100,7 +105,7 @@ private AutoCompletar aut_busca = new AutoCompletar();
         tab_detalle.dibujar();
         PanelTabla tabp2 = new PanelTabla();
         tabp2.setPanelTabla(tab_detalle);     
-     
+        
         set_requisito.setId("set_requisito");
         set_requisito.setIdCompleto("tab_tabulador:set_requisito");
         set_requisito.setTabla("TRANS_DETALLE_REQUISITOS_SOLICITUD", "IDE_DETALLE_REQUISITOS_SOLICITUD", 4);
@@ -143,12 +148,13 @@ private AutoCompletar aut_busca = new AutoCompletar();
     public void guardar() {
        if (tab_solicitud.guardar()) {
             if (tab_detalle.guardar()) {
-                if (set_requisito.guardar()) {
-                guardarPantalla();
+                if (guardarPantalla().isEmpty()) {
+                    utilitario.addUpdate("set_requisito");
+                    set_requisito.guardar();
+                    }
                 }
             }
         }
-    }
 
     @Override
     public void eliminar() {
