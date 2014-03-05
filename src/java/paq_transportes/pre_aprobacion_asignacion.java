@@ -61,16 +61,6 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         set_solicitud.getColumna("IDE_TIPO_SERVICIO").setCombo("select ide_tipo_servicio,descripcion_servicio from trans_tipo_servicio");
         set_solicitud.getColumna("IDE_TIPO_VEHICULO").setLectura(true);
         set_solicitud.getColumna("IDE_TIPO_SERVICIO").setLectura(true);
-//         List lista = new ArrayList();
-//        Object fila1[] = {
-//            "0", "NO"
-//        };
-//        Object fila2[] = {
-//            "1", "SI"
-//        };
-//        lista.add(fila1);;
-//        lista.add(fila2);;
-//        set_solicitud.getColumna("APROBADO_SOLICITUD").setRadio(lista, "0"); 
         set_solicitud.getColumna("APROBADO_SOLICITUD").setLectura(true);
         set_solicitud.getColumna("APROBADO_SOLICITUD").setNombreVisual("Aprobado");
         set_solicitud.getColumna("IDE_APROBACION_PLACA").setLectura(true);
@@ -118,16 +108,6 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         set_aprobacion.getColumna("COMENTARIO_APROBACION").setNombreVisual("Comentarios");
         set_aprobacion.getColumna("FECHA_APROBACION").setValorDefecto(utilitario.getFechaActual());
         set_aprobacion.getColumna("FECHA_APROBACION").setLectura(true);
-//         List lista1 = new ArrayList();
-//        Object filaa[] = {
-//            "0", "NO"
-//        };
-//        Object filab[] = {
-//            "1", "SI"
-//        };
-//        lista1.add(filaa);;
-//        lista1.add(filab);;
-//        set_aprobacion.getColumna("APROBADO").setRadio(lista, "0"); 
         set_aprobacion.getColumna("USU_APROBACION").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         set_aprobacion.getColumna("USU_APROBACION").setLectura(true);
         set_aprobacion.getGrid().setColumns(2);
