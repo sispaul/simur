@@ -32,25 +32,16 @@ public void seleccionarP(Integer id_s,Integer vehiculo,Integer servicio,Byte apr
     }
 
 //ACTUALIZACION DE ENTREGA EN SOLICITUD
-public void actualizarDS(Integer id_en,Integer id_s2)
+
+public void actualizarDS(Integer id_en,Integer id_s2,Byte aprob_en)
     {
-        
+        System.err.println(aprob_en);
         String actualiza1 = "update TRANS_DETALLE_SOLICITUD_PLACA \n" 
-                            +"set IDE_ENTREGA_PLACA="+id_en+",FECHA_ENTREGA_PLACA= '"+utilitario.getFechaActual()+"'\n" 
+                            +"set IDE_ENTREGA_PLACA="+id_en+",ENTREGADA_PLACA="+aprob_en+", FECHA_ENTREGA_PLACA= '"+utilitario.getFechaActual()+"'\n" 
                             +"where IDE_DETALLE_SOLICITUD="+id_s2; 
             conectar();
             conexion.ejecutarSql(actualiza1);
     }
-
-//public void actualizarDS(Integer id_en,Byte entrega,Integer id_s2)
-//    {
-//        
-//        String actualiza1 = "update TRANS_DETALLE_SOLICITUD_PLACA \n" 
-//                            +"set IDE_ENTREGA_PLACA="+id_en+",ENTREGADA_PLACA="+entrega+", FECHA_ENTREGA_PLACA= '"+utilitario.getFechaActual()+"'\n" 
-//                            +"where IDE_DETALLE_SOLICITUD="+id_s2; 
-//            conectar();
-//            conexion.ejecutarSql(actualiza1);
-//    }
  //   ACTUALIZACION DE ENTREGA EN PLACA
 public void actualizarDE(String cedula,String nombre,String fecha, Integer id_s)
     {
