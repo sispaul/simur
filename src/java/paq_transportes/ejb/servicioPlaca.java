@@ -7,8 +7,6 @@ package paq_transportes.ejb;
 import javax.ejb.Stateless;
 import paq_sistema.aplicacion.Utilitario;
 import persistencia.Conexion;
-import framework.aplicacion.TablaGenerica;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 /**
  *
  * @author p-sistemas
