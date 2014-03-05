@@ -61,16 +61,18 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         set_solicitud.getColumna("IDE_TIPO_SERVICIO").setCombo("select ide_tipo_servicio,descripcion_servicio from trans_tipo_servicio");
         set_solicitud.getColumna("IDE_TIPO_VEHICULO").setLectura(true);
         set_solicitud.getColumna("IDE_TIPO_SERVICIO").setLectura(true);
-         List lista = new ArrayList();
-        Object fila1[] = {
-            "0", "NO"
-        };
-        Object fila2[] = {
-            "1", "SI"
-        };
-        lista.add(fila1);;
-        lista.add(fila2);;
-        set_solicitud.getColumna("APROBADO_SOLICITUD").setRadio(lista, "0"); 
+//         List lista = new ArrayList();
+//        Object fila1[] = {
+//            "0", "NO"
+//        };
+//        Object fila2[] = {
+//            "1", "SI"
+//        };
+//        lista.add(fila1);;
+//        lista.add(fila2);;
+//        set_solicitud.getColumna("APROBADO_SOLICITUD").setRadio(lista, "0"); 
+        set_solicitud.getColumna("APROBADO_SOLICITUD").setLectura(true);
+        set_solicitud.getColumna("APROBADO_SOLICITUD").setNombreVisual("Aprobado");
         set_solicitud.getColumna("IDE_APROBACION_PLACA").setLectura(true);
         set_solicitud.getColumna("IDE_PLACA").setLectura(true);
         set_solicitud.getColumna("IDE_ENTREGA_PLACA").setVisible(false);
@@ -78,6 +80,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         set_solicitud.getColumna("ENTREGADA_PLACA").setVisible(false);
         set_solicitud.getColumna("IDE_SOLICITUD_PLACA").setVisible(false);
         set_solicitud.getColumna("IDE_PLACA").setNombreVisual("PLACA");
+        set_solicitud.getColumna("IDE_PLACA").setCombo("SELECT IDE_PLACA,PLACA FROM TRANS_PLACA");       
         set_solicitud.getColumna("IDE_TIPO_SERVICIO").setNombreVisual("SERVICIO");
         set_solicitud.getColumna("IDE_TIPO_VEHICULO").setNombreVisual("VEHICULO");
         set_solicitud.getColumna("NOMBRE_PROPIETARIO").setNombreVisual("PROPIETARIO");
@@ -115,16 +118,16 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         set_aprobacion.getColumna("COMENTARIO_APROBACION").setNombreVisual("Comentarios");
         set_aprobacion.getColumna("FECHA_APROBACION").setValorDefecto(utilitario.getFechaActual());
         set_aprobacion.getColumna("FECHA_APROBACION").setLectura(true);
-         List lista1 = new ArrayList();
-        Object filaa[] = {
-            "0", "NO"
-        };
-        Object filab[] = {
-            "1", "SI"
-        };
-        lista1.add(filaa);;
-        lista1.add(filab);;
-        set_aprobacion.getColumna("APROBADO").setRadio(lista, "0"); 
+//         List lista1 = new ArrayList();
+//        Object filaa[] = {
+//            "0", "NO"
+//        };
+//        Object filab[] = {
+//            "1", "SI"
+//        };
+//        lista1.add(filaa);;
+//        lista1.add(filab);;
+//        set_aprobacion.getColumna("APROBADO").setRadio(lista, "0"); 
         set_aprobacion.getColumna("USU_APROBACION").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         set_aprobacion.getColumna("USU_APROBACION").setLectura(true);
         set_aprobacion.getGrid().setColumns(2);
@@ -147,6 +150,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         if (aut_busca.getValor() != null) {
             set_solicitud.setFilaActual(aut_busca.getValor());
             utilitario.addUpdate("set_solicitud");
+            utilitario.addUpdate("set_requisito");
         }
     }
         public void limpiar() {
@@ -163,7 +167,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
     public void guardar() {
         if (set_aprobacion.guardar()) {
             if (guardarPantalla().isEmpty()) {
-            ser_Placa.actualizarD(Byte.parseByte(set_aprobacion.getValor("APROBADO")), Integer.parseInt(set_aprobacion.getValor("IDE_APROBACION_PLACA")),Integer.parseInt(set_solicitud.getValor("IDE_DETALLE_SOLICITUD")));
+            ser_Placa.seleccionarP(Integer.parseInt(set_solicitud.getValor("IDE_DETALLE_SOLICITUD")), Integer.parseInt(set_solicitud.getValor("IDE_tipo_vehiculo")), Integer.parseInt(set_solicitud.getValor("IDE_tipo_servicio")), Byte.parseByte(set_aprobacion.getValor("APROBADO")), Integer.parseInt(set_aprobacion.getValor("IDE_APROBACION_PLACA")));
             set_solicitud.actualizar();
             utilitario.addUpdate("set_solicitud");
             }
