@@ -91,8 +91,9 @@ private Grid grid_de1 = new Grid();
         
         set_gestor.setId("set_gestor");
         set_gestor.setConexion(con_ciudadania);
-        set_gestor.setSql("SELECT RUC,RAZON_SOCIAL,DIRECCION,telefono FROM MAESTRO_RUC");
-        set_gestor.getColumna("RAZON_SOCIAL").setFiltro(true);
+        set_gestor.setSql("SELECT cedula,cedula+digito_verificador as cedula_gestor,nombre FROM MAESTRO");
+        set_gestor.getColumna("cedula_gestor").setFiltro(true);
+        set_gestor.getColumna("nombre").setFiltro(true);
         set_gestor.setRows(18);
         set_gestor.setTipoSeleccion(false);
         set_gestor.dibujar();
