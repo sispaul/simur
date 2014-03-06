@@ -28,10 +28,13 @@ private Tabla tab_gestor = new Tabla();
         tab_comercial.getColumna("direccion_empresa").setNombreVisual("Dirección");
         tab_comercial.getColumna("telefono_empresa").setNombreVisual("Teléfono");
         tab_comercial.getGrid().setColumns(2);
+        tab_comercial.setTipoFormulario(true);
         tab_comercial.agregarRelacion(tab_gestor);
         tab_comercial.dibujar();
         PanelTabla pat_comercial = new PanelTabla();
         pat_comercial.setPanelTabla(tab_comercial);
+        tab_comercial.setStyle(null);
+        pat_comercial.setStyle("width:100%;overflow: auto;");
                 
         tab_gestor.setId("tab_gestor");
         tab_gestor.setTabla("trans_gestor", "ide_gestor", 2);
@@ -44,7 +47,7 @@ private Tabla tab_gestor = new Tabla();
         pat_gestor.setPanelTabla(tab_gestor);
 
         Division div_division = new Division();
-        div_division.dividir2(pat_comercial, pat_gestor, "50%", "H");
+        div_division.dividir2(pat_comercial, pat_gestor, "40%", "H");
         agregarComponente(div_division);
  
     }
