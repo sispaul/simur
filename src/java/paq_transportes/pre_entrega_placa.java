@@ -21,6 +21,7 @@ public class pre_entrega_placa extends Pantalla{
 Integer consulta;
 private Tabla set_detalle = new Tabla();
 private Tabla tab_consulta = new Tabla();
+private Tabla tab_placa = new Tabla();
 private Tabla set_entrega = new Tabla();
 private Dialogo dia_dialogo = new Dialogo();
 private Grid grid = new Grid();
@@ -88,6 +89,12 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         set_detalle.setTipoSeleccion(false);
         set_detalle.dibujar();
         
+        tab_placa.setId("tab_placa");
+        tab_placa.setSql("SELECT IDE_PLACA,PLACA,IDE_TIPO_ESTADO FROM TRANS_PLACA");
+        tab_placa.setCampoPrimaria("IDE_PLACA");
+        tab_placa.setLectura(true);
+        tab_placa.dibujar(); 
+        
     }
     
     public void aceptoDialogo() {
@@ -117,7 +124,6 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
 
     @Override
     public void guardar() {
-        System.out.println(utilitario.StringToByte(set_entrega.getValor("ENTREGA_PLACA")));
      if (set_entrega.guardar()) {
             if (guardarPantalla().isEmpty()) {
                 ser_Placa.actualizarDS(Integer.parseInt(set_entrega.getValor("ide_entrega_placa")),consulta,utilitario.StringToByte(set_entrega.getValor("ENTREGA_PLACA")));
