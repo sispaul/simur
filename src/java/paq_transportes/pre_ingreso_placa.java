@@ -33,8 +33,8 @@ private Grid grid_de = new Grid();
                 //Configurando el dialogo
         dia_dialogo.setId("dia_dialogo");
         dia_dialogo.setTitle("PLACAS - ASIGNACION DE TIPOS"); //titulo
-        dia_dialogo.setWidth("50%"); //siempre en porcentajes  ancho
-        dia_dialogo.setHeight("30%");//siempre porcentaje   alto
+        dia_dialogo.setWidth("65%"); //siempre en porcentajes  ancho
+        dia_dialogo.setHeight("40%");//siempre porcentaje   alto
         dia_dialogo.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_dialogo.getBot_aceptar().setMetodo("aceptoValores");
         grid_de.setColumns(4);
