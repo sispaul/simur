@@ -12,7 +12,9 @@ import framework.componentes.Etiqueta;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
+import javax.ejb.EJB;
 import paq_sistema.aplicacion.Pantalla;
+import paq_transportes.ejb.servicioPlaca;
 
 /**
  *
@@ -24,7 +26,10 @@ private Tabla tab_gestor = new Tabla();
 private Tabla tab_solicitud = new Tabla();
 private Tabla tab_consulta = new Tabla();
 private Tabla tab_detalle = new Tabla();
+private Tabla tab_requisitos = new Tabla();
 private AutoCompletar aut_busca = new AutoCompletar();
+@EJB
+private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servicioPlaca.class);
 
     public pre_solicitud_placa() {
         tab_consulta.setId("tab_consulta");
@@ -93,7 +98,8 @@ private AutoCompletar aut_busca = new AutoCompletar();
         tab_detalle.getColumna("IDE_DETALLE_SOLICITUD").setNombreVisual("Nro. Tramite");
         tab_detalle.getColumna("IDE_TIPO_VEHICULO").setCombo("SELECT ide_tipo_vehiculo,des_tipo_vehiculo FROM trans_tipo_vehiculo WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
         tab_detalle.getColumna("IDE_TIPO_SERVICIO").setCombo("select ide_tipo_servicio,descripcion_servicio from trans_tipo_servicio");
-        tab_detalle.agregarRelacion(set_requisito);
+//        tab_detalle.agregarRelacion(set_requisito);
+//        tab_detalle.agregarRelacion(tab_requisitos);
         tab_detalle.setTipoFormulario(true);
         tab_detalle.dibujar();
         PanelTabla tabp2 = new PanelTabla();
@@ -102,22 +108,10 @@ private AutoCompletar aut_busca = new AutoCompletar();
         set_requisito.setId("set_requisito");
         set_requisito.setIdCompleto("tab_tabulador:set_requisito");
         set_requisito.setTabla("TRANS_DETALLE_REQUISITOS_SOLICITUD", "IDE_DETALLE_REQUISITOS_SOLICITUD", 4);
-//        List lista = new ArrayList();
-//        Object fila1[] = {
-//            "0", "NO"
-//        };
-//        Object fila2[] = {
-//            "1", "SI"
-//        };
-//        lista.add(fila1);;
-//        lista.add(fila2);;
-//        set_requisito.getColumna("CONFIRMAR_REQUISITO").setRadio(lista, "0");   
+        set_requisito.getColumna("ide_tipo_requisito").setLectura(true);
         set_requisito.getColumna("ide_tipo_requisito").setCombo("SELECT r.IDE_TIPO_REQUISITO,r.DECRIPCION_REQUISITO FROM TRANS_TIPO_REQUISITO r\n" 
                                                                 +"INNER JOIN TRANS_TIPO_SERVICIO s ON r.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO\n" 
-                                                                +"INNER JOIN trans_tipo_vehiculo v ON s.ide_tipo_vehiculo = v.ide_tipo_vehiculo\n" 
-                                                                +"WHERE v.ide_tipo_vehiculo = "+tab_detalle.getValor("IDE_TIPO_VEHICULO")+" AND s.IDE_TIPO_SERVICIO ="+tab_detalle.getValor("IDE_TIPO_SERVICIO")+"");
-        
-        set_requisito.getColumna("ide_tipo_requisito").actualizarCombo();
+                                                                +"INNER JOIN trans_tipo_vehiculo v ON s.ide_tipo_vehiculo = v.ide_tipo_vehiculo\n");
         set_requisito.dibujar();
         PanelTabla tabp3=new PanelTabla();
         tabp3.setPanelTabla(set_requisito);
@@ -130,6 +124,12 @@ private AutoCompletar aut_busca = new AutoCompletar();
         div_division.dividir3(tabp, tabp1,tab_tabulador, "23%","55%", "H");
         div_division.getDivision2().setHeader("SOLICITUD DE INGRESO DE PLACA");
         agregarComponente(div_division);
+        
+        tab_requisitos.setId("tab_requisitos");
+        tab_requisitos.setIdCompleto("tab_tabulador:set_requisito");
+        tab_requisitos.setTabla("TRANS_DETALLE_REQUISITOS_SOLICITUD", "IDE_DETALLE_REQUISITOS_SOLICITUD", 5);
+        tab_requisitos.getColumna("ide_tipo_requisito").setLectura(true);
+        tab_requisitos.dibujar();
     }
 
     @Override
@@ -141,9 +141,13 @@ private AutoCompletar aut_busca = new AutoCompletar();
     public void guardar() {
        if (tab_solicitud.guardar()) {
             if (tab_detalle.guardar()) {
-                if (guardarPantalla().isEmpty()) {
-                    utilitario.addUpdate("set_requisito");
-                    set_requisito.guardar();
+//                tab_requisitos.guardar();
+                ser_Placa.insertarRequisito(Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")), Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")));
+                utilitario.addUpdate("set_requisito");
+                 if (guardarPantalla().isEmpty()) {
+                     tab_solicitud.actualizar();
+                     utilitario.addUpdate("set_requisito");
+//                    set_requisito.guardar();
                     }
                 }
             }
