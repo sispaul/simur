@@ -33,7 +33,7 @@ private Grid grid_de = new Grid();
                 //Configurando el dialogo
         dia_dialogo.setId("dia_dialogo");
         dia_dialogo.setTitle("PLACAS - ASIGNACION DE TIPOS"); //titulo
-        dia_dialogo.setWidth("65%"); //siempre en porcentajes  ancho
+        dia_dialogo.setWidth("75%"); //siempre en porcentajes  ancho
         dia_dialogo.setHeight("40%");//siempre porcentaje   alto
         dia_dialogo.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_dialogo.getBot_aceptar().setMetodo("aceptoValores");
@@ -85,6 +85,8 @@ private Grid grid_de = new Grid();
         tab_ingreso.getColumna("FECHA_ENVIO_ACTA").setNombreVisual("Fecha de Envio");
         tab_ingreso.getColumna("FECHA_REGISTRO_ACTA").setNombreVisual("Fecha de Registro");
         tab_ingreso.getColumna("ANO").setNombreVisual("Año");
+        tab_ingreso.getColumna("ANO").setValorDefecto(utilitario.getAnio(utilitario.getFechaActual())+"");
+        tab_ingreso.getColumna("ANO").setLectura(true);
         tab_ingreso.getColumna("NUMERO_ACTA").setNombreVisual("Nro. Acta");
         tab_ingreso.getColumna("ENTREGADO_ACTA").setNombreVisual("Quien Entrega");
         tab_ingreso.getColumna("RECIBIDO_ACTA").setNombreVisual("Quien Recibe");
@@ -136,6 +138,8 @@ private Grid grid_de = new Grid();
         tab_placa.dibujar();
         PanelTabla pat_panel1=new PanelTabla(); 
         pat_panel1.setPanelTabla(tab_placa);
+        tab_placa.setStyle(null);
+        pat_panel1.setStyle("width:100%;overflow: auto;");
         
         Division div_division = new Division();
         div_division.setId("div_division");
