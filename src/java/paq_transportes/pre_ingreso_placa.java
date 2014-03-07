@@ -117,6 +117,7 @@ private Grid grid_de = new Grid();
         tab_placa.getColumna("ide_placa").setNombreVisual("ID");
         tab_placa.getColumna("placa").setNombreVisual("Nro. Placa");
         tab_placa.getColumna("placa").setMayusculas(true);
+        tab_placa.getColumna("placa").setUnico(true);
         tab_placa.getColumna("FECHA_REGISTRO_placa").setNombreVisual("Fecha de Registro");
         tab_placa.getColumna("fecha_registro_placa").setValorDefecto(utilitario.getFechaActual());
         tab_placa.getColumna("fecha_registro_placa").setLectura(true);
