@@ -50,7 +50,16 @@ public void actualizarDE(Integer iden,String ruc,Integer placa)
             conectar();
             conexion.ejecutarSql(actualiza2);
     }
-          
+
+public void insertarRequisito(Integer tipo,Integer servicio){
+    String insertar="INSERT INTO TRANS_DETALLE_REQUISITOS_SOLICITUD(IDE_TIPO_REQUISITO)SELECT r.IDE_TIPO_REQUISITO\n" 
+                        +"FROM TRANS_TIPO_REQUISITO r\n" 
+                        +"INNER JOIN TRANS_TIPO_SERVICIO s ON r.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO\n" 
+                        +"INNER JOIN trans_tipo_vehiculo v ON s.ide_tipo_vehiculo = v.ide_tipo_vehiculo\n" 
+                        +"WHERE v.ide_tipo_vehiculo ="+tipo+" AND s.IDE_TIPO_SERVICIO ="+servicio;
+                                    conectar();
+            conexion.ejecutarSql(insertar);
+}
  private void conectar() {
         if (conexion == null) {
             conexion = new Conexion();
