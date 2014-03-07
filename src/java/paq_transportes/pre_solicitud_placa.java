@@ -13,6 +13,7 @@ import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
 import javax.ejb.EJB;
+import org.primefaces.event.SelectEvent;
 import paq_sistema.aplicacion.Pantalla;
 import paq_transportes.ejb.servicioPlaca;
 
@@ -132,6 +133,18 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         tab_requisitos.dibujar();
     }
 
+     public void buscarGestor(SelectEvent evt) {
+        aut_busca.onSelect(evt);
+        if (aut_busca.getValor() != null) {
+            tab_gestor.setFilaActual(aut_busca.getValor());
+            utilitario.addUpdate("tab_gestor");
+        }
+    }
+        public void limpiar() {
+        aut_busca.limpiar();
+        utilitario.addUpdate("aut_busca");
+        }    
+    
     @Override
     public void insertar() {
          utilitario.getTablaisFocus().insertar();
@@ -141,13 +154,11 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
     public void guardar() {
        if (tab_solicitud.guardar()) {
             if (tab_detalle.guardar()) {
-//                tab_requisitos.guardar();
                 ser_Placa.insertarRequisito(Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")), Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")));
                 utilitario.addUpdate("set_requisito");
                  if (guardarPantalla().isEmpty()) {
                      tab_solicitud.actualizar();
                      utilitario.addUpdate("set_requisito");
-//                    set_requisito.guardar();
                     }
                 }
             }
