@@ -1,128 +1,134 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1" language="groovy" printOrder="Horizontal" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="66c1346c-a8f1-4d83-9417-49c9a552dded">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report4" language="groovy" printOrder="Horizontal" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ae2a5aeb-8b84-4208-85c0-e2dd494d8752">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="clave" class="java.lang.String"/>
-	<queryString language="SQL">
-		<![CDATA[SELECT
-     TUR_FUNCIONAMIENTO_ANUAL."NUMERO_LICENCIA" AS TUR_FUNCIONAMIENTO_ANUAL_NUMERO_LICENCIA,
-     TUR_FUNCIONAMIENTO_ANUAL."FECHA_EXPEDICION" AS TUR_FUNCIONAMIENTO_ANUAL_FECHA_EXPEDICION,
-     TUR_FUNCIONAMIENTO_ANUAL."NOMBRE_ESTABLECIMIENTO" AS TUR_FUNCIONAMIENTO_ANUAL_NOMBRE_ESTABLECIMIENTO,
-     TUR_FUNCIONAMIENTO_ANUAL."REPRESENTANTE" AS TUR_FUNCIONAMIENTO_ANUAL_REPRESENTANTE,
-     TUR_FUNCIONAMIENTO_ANUAL."CATEGORIA" AS TUR_FUNCIONAMIENTO_ANUAL_CATEGORIA,
-     TUR_FUNCIONAMIENTO_ANUAL."DIRECCION" AS TUR_FUNCIONAMIENTO_ANUAL_DIRECCION,
-     TUR_FUNCIONAMIENTO_ANUAL."CLAVE_CATASTRAL" AS TUR_FUNCIONAMIENTO_ANUAL_CLAVE_CATASTRAL,
-     TUR_FUNCIONAMIENTO_ANUAL."CIUDAD" AS TUR_FUNCIONAMIENTO_ANUAL_CIUDAD,
-     TUR_FUNCIONAMIENTO_ANUAL."PROVINCIA" AS TUR_FUNCIONAMIENTO_ANUAL_PROVINCIA,
-     TUR_FUNCIONAMIENTO_ANUAL."CANTON" AS TUR_FUNCIONAMIENTO_ANUAL_CANTON,
-     TUR_FUNCIONAMIENTO_ANUAL."REGISTRO_NUMERO" AS TUR_FUNCIONAMIENTO_ANUAL_REGISTRO_NUMERO,
-     TUR_FUNCIONAMIENTO_ANUAL."FECHA_EXPIRACION" AS TUR_FUNCIONAMIENTO_ANUAL_FECHA_EXPIRACION
-FROM
-     "dbo"."TUR_FUNCIONAMIENTO_ANUAL" TUR_FUNCIONAMIENTO_ANUAL]]>
+	<parameter name="id" class="java.lang.String"/>
+	<parameter name="p_nomresp" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT l.NUMERO_LICENCIA,l.FECHA_EXPEDICION,e.NOMBRE_ESTAB,e.REPRESENTATE_ESTAB,
+e.CATEGORIA_ESTAB,e.DIRECCION_ESTAB,e.CLAVE_CATASTRAL,e.CIUDAD_ESTAB,e.PROVINCIA_ESTAB,
+e.CANTON_ESTAB,e.REGISTRO_ESTAB,l.FECHA_CADUCIDAD,e.IDENTIFICACION_ESTAB
+FROM TUR_ESTABLECIMIENTOS e,TUR_LICENCIA l
+WHERE l.CODIGO_ESTAB = e.CODIGO_ESTAB and e.CLAVE_CATASTRAL = $P{clave} and e.IDENTIFICACION_ESTAB =  $P{id}]]>
 	</queryString>
-	<field name="TUR_FUNCIONAMIENTO_ANUAL_NUMERO_LICENCIA" class="java.lang.String"/>
-	<field name="TUR_FUNCIONAMIENTO_ANUAL_FECHA_EXPEDICION" class="java.lang.String"/>
-	<field name="TUR_FUNCIONAMIENTO_ANUAL_NOMBRE_ESTABLECIMIENTO" class="java.lang.String"/>
-	<field name="TUR_FUNCIONAMIENTO_ANUAL_REPRESENTANTE" class="java.lang.String"/>
-	<field name="TUR_FUNCIONAMIENTO_ANUAL_CATEGORIA" class="java.lang.String"/>
-	<field name="TUR_FUNCIONAMIENTO_ANUAL_DIRECCION" class="java.lang.String"/>
-	<field name="TUR_FUNCIONAMIENTO_ANUAL_CLAVE_CATASTRAL" class="java.lang.String"/>
-	<field name="TUR_FUNCIONAMIENTO_ANUAL_CIUDAD" class="java.lang.String"/>
-	<field name="TUR_FUNCIONAMIENTO_ANUAL_PROVINCIA" class="java.lang.String"/>
-	<field name="TUR_FUNCIONAMIENTO_ANUAL_CANTON" class="java.lang.String"/>
-	<field name="TUR_FUNCIONAMIENTO_ANUAL_REGISTRO_NUMERO" class="java.lang.String"/>
-	<field name="TUR_FUNCIONAMIENTO_ANUAL_FECHA_EXPIRACION" class="java.lang.String"/>
-	<group name="TUR_FUNCIONAMIENTO_ANUAL_FECHA_EXPEDICION">
-		<groupExpression><![CDATA[$F{TUR_FUNCIONAMIENTO_ANUAL_FECHA_EXPEDICION}]]></groupExpression>
-	</group>
+	<field name="NUMERO_LICENCIA" class="java.lang.String"/>
+	<field name="FECHA_EXPEDICION" class="java.util.Date"/>
+	<field name="NOMBRE_ESTAB" class="java.lang.String"/>
+	<field name="REPRESENTATE_ESTAB" class="java.lang.String"/>
+	<field name="CATEGORIA_ESTAB" class="java.lang.String"/>
+	<field name="DIRECCION_ESTAB" class="java.lang.String"/>
+	<field name="CLAVE_CATASTRAL" class="java.lang.String"/>
+	<field name="CIUDAD_ESTAB" class="java.lang.String"/>
+	<field name="PROVINCIA_ESTAB" class="java.lang.String"/>
+	<field name="CANTON_ESTAB" class="java.lang.String"/>
+	<field name="REGISTRO_ESTAB" class="java.lang.String"/>
+	<field name="FECHA_CADUCIDAD" class="java.util.Date"/>
+	<field name="IDENTIFICACION_ESTAB" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="79" splitType="Stretch">
+		<band height="30" splitType="Stretch">
 			<textField>
-				<reportElement uuid="f1ece969-7fb2-4e0a-9370-3e71fbbcb8e7" x="702" y="0" width="100" height="20"/>
+				<reportElement uuid="1f216ccf-a7b7-4a08-9f4d-2afcf1e7ac50" x="455" y="0" width="100" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[$F{TUR_FUNCIONAMIENTO_ANUAL_NUMERO_LICENCIA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{NUMERO_LICENCIA}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="8ed8ff08-c07f-4724-a64e-8f22a0183e10" x="506" y="33" width="100" height="20"/>
+				<reportElement uuid="ac70004e-fb8e-4e14-b188-20fabe7b0a6f" x="40" y="0" width="100" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[$F{TUR_FUNCIONAMIENTO_ANUAL_FECHA_EXPEDICION}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{p_nomresp}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement uuid="9d19532d-4dba-4e0a-bda4-57a9b3de978a" x="0" y="0" width="40" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Usuario:]]></text>
+			</staticText>
 		</band>
 	</title>
-	<pageHeader>
-		<band height="35" splitType="Stretch">
-			<textField>
-				<reportElement uuid="3beea879-243d-4874-b533-0b201a5d552a" x="193" y="15" width="328" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{TUR_FUNCIONAMIENTO_ANUAL_NOMBRE_ESTABLECIMIENTO}]]></textFieldExpression>
-			</textField>
-		</band>
-	</pageHeader>
-	<columnHeader>
-		<band height="61" splitType="Stretch">
-			<textField>
-				<reportElement uuid="8eb0efcb-714c-4533-bded-72d6a87a178f" x="126" y="34" width="100" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{TUR_FUNCIONAMIENTO_ANUAL_REPRESENTANTE}]]></textFieldExpression>
-			</textField>
-		</band>
-	</columnHeader>
 	<detail>
-		<band height="168" splitType="Stretch">
+		<band height="418" splitType="Stretch">
 			<textField>
-				<reportElement uuid="7b6a44d8-3411-426a-8cb6-d4b09e0346ae" x="126" y="1" width="100" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{TUR_FUNCIONAMIENTO_ANUAL_CATEGORIA}]]></textFieldExpression>
+				<reportElement uuid="5368b6a2-f793-45e8-a591-3febf4af2181" x="355" y="67" width="100" height="20"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FECHA_EXPEDICION}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="422b25c8-fb31-4648-9f6d-c2887d75a970" x="126" y="28" width="100" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{TUR_FUNCIONAMIENTO_ANUAL_DIRECCION}]]></textFieldExpression>
+				<reportElement uuid="3fcb0b24-6986-48c8-97ac-ee8b9f16efd3" x="63" y="194" width="452" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOMBRE_ESTAB}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="e8e98bc0-cc7d-4272-ad5d-54591c28e66b" x="126" y="54" width="100" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{TUR_FUNCIONAMIENTO_ANUAL_CIUDAD}]]></textFieldExpression>
+				<reportElement uuid="009bc7ee-bfb3-40da-b284-85341d520705" x="129" y="233" width="202" height="20"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{REPRESENTATE_ESTAB}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="1f012f3f-404c-4f88-b25f-3986e77b5378" x="126" y="81" width="100" height="20"/>
-				<textElement/>
+				<reportElement uuid="846be17b-5363-41d2-9a72-356df17532bd" x="35" y="254" width="202" height="20"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CATEGORIA_ESTAB}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9912b95c-deca-4641-ad98-94967a078d95" x="35" y="275" width="202" height="20"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DIRECCION_ESTAB}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6bbc7ac5-07e4-4755-a87a-f09a02fe51cf" x="28" y="316" width="202" height="20"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CIUDAD_ESTAB}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a3d5b534-92c1-4b82-b1db-48d3cfdf1f01" x="22" y="339" width="132" height="20"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PROVINCIA_ESTAB}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ed44c107-5692-47e0-8a18-4a907b080e9e" x="170" y="339" width="109" height="20"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CANTON_ESTAB}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b382e03c-120a-4918-8cf4-bb288181aa1f" x="30" y="360" width="202" height="20"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{REGISTRO_ESTAB}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8d8f63c2-b70e-4d71-ae5d-ce9d23c9f656" x="483" y="396" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FECHA_CADUCIDAD}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ec151571-ee91-4357-b9ee-ca0ac4be6d96" x="45" y="296" width="202" height="20"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{clave}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="76e39d0e-a7fe-42fa-b920-fa022ebc6a0d" x="126" y="111" width="100" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{TUR_FUNCIONAMIENTO_ANUAL_PROVINCIA}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="e1cb6d5c-868f-44fe-a0b5-b61b08e421cb" x="290" y="111" width="100" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{TUR_FUNCIONAMIENTO_ANUAL_CANTON}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="42b84a70-20f7-4c26-bcbf-8d56692e9c90" x="126" y="139" width="100" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{TUR_FUNCIONAMIENTO_ANUAL_REGISTRO_NUMERO}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
-	<columnFooter>
-		<band height="30" splitType="Stretch"/>
-	</columnFooter>
-	<pageFooter>
-		<band height="40" splitType="Stretch">
-			<textField>
-				<reportElement uuid="56038378-cb39-4b8a-bac0-ca830aa263eb" x="624" y="5" width="100" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{TUR_FUNCIONAMIENTO_ANUAL_FECHA_EXPIRACION}]]></textFieldExpression>
-			</textField>
-		</band>
-	</pageFooter>
-	<summary>
-		<band height="42" splitType="Stretch"/>
-	</summary>
 </jasperReport>
