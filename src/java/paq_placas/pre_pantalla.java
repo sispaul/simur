@@ -18,6 +18,7 @@ import paq_sistema.aplicacion.Pantalla;
 public class pre_pantalla extends Pantalla{
     private Panel pan_opcion = new Panel();
     private PanelMenu pam_menu = new PanelMenu();
+    private String str_opcion = "";// sirve para identificar la opcion que se encuentra dibujada en pantalla
     
     public pre_pantalla() {
         
@@ -40,28 +41,50 @@ public class pre_pantalla extends Pantalla{
 
         // ITEM 1 : OPCION 0
         ItemMenu itm_datos_empl = new ItemMenu();
-        itm_datos_empl.setValue("SOLICITUD DE MATRICULA");
-        itm_datos_empl.setIcon("ui-icon-key");
+        itm_datos_empl.setValue("DATOS GESTORES");
+        itm_datos_empl.setIcon("ui-icon-person");
 //        itm_datos_empl.setMetodo("dibujarEmpresa");
         itm_datos_empl.setUpdate("pan_opcion");
         sum_empleado.getChildren().add(itm_datos_empl);
 
         // ITEM 2 : OPCION 1
         ItemMenu itm_permisos = new ItemMenu();
-        itm_permisos.setValue("ENTREGA DE MATRICULA");
-        itm_permisos.setIcon("ui-icon-contact");
+        itm_permisos.setValue("SOLICITUD DE MATRICULA");
+        itm_permisos.setIcon("ui-icon-key");
 //        itm_permisos.setMetodo("dibujarPermisos");
         itm_permisos.setUpdate("pan_opcion");
         sum_empleado.getChildren().add(itm_permisos);
 
         // ITEM 2: OPCION 1
         ItemMenu itm_socios = new ItemMenu();
-        itm_socios.setValue("DATOS GESTORES");
-        itm_socios.setIcon("ui-icon-person");
+        itm_socios.setValue("ENTREGA DE MATRICULA");
+        itm_socios.setIcon("ui-icon-contact");
 //        itm_socios.setMetodo("dibujarSocios");
         itm_socios.setUpdate("pan_opcion");
         sum_empleado.getChildren().add(itm_socios);
 
+    }
+    public void dibujarGestor ()
+    {
+             str_opcion = "1";
+            limpiarPanel();
+    }
+    
+    public void dibujarSolicitud ()
+    {
+            str_opcion = "2";
+            limpiarPanel();
+    }
+    public void dibujarEntrega ()
+    {
+            str_opcion = "2";
+            limpiarPanel();
+    }
+    
+    private void limpiarPanel() {
+    //borra el contenido de la división central central
+    pan_opcion.getChildren().clear();
+    // pan_opcion.getChildren().add(efecto);
     }
     
     @Override
