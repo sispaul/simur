@@ -12,6 +12,7 @@ import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
+import framework.componentes.Texto;
 import org.primefaces.event.SelectEvent;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
@@ -30,12 +31,16 @@ private Conexion con_ciudadania= new Conexion();
 private Dialogo dia_dialogo = new Dialogo();
 private Grid grid = new Grid();
 private Grid grid_de = new Grid();
-
+private Texto cedula = new Texto();
 private Dialogo dia_dialogo1 = new Dialogo();
 private Grid grid1 = new Grid();
 private Grid grid_de1 = new Grid();
-
+private Etiqueta eti_etiqueta= new Etiqueta();
+        String dou_num1;
+        String  dou_num2;
+        
     public pre_gestores() {
+        
         con_ciudadania.setUnidad_persistencia(utilitario.getPropiedad("ciudadaniajdbc"));
         con_ciudadania.NOMBRE_MARCA_BASE="sqlserver";
         
@@ -50,8 +55,8 @@ private Grid grid_de1 = new Grid();
         
         dia_dialogo1.setId("dia_dialogo1");
         dia_dialogo1.setTitle("GESTOR - EMPRESA A LA QUE PERTENECE"); //titulo
-        dia_dialogo1.setWidth("75%"); //siempre en porcentajes  ancho
-        dia_dialogo1.setHeight("70%");//siempre porcentaje   alto
+        dia_dialogo1.setWidth("50%"); //siempre en porcentajes  ancho
+        dia_dialogo1.setHeight("30%");//siempre porcentaje   alto
         dia_dialogo1.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_dialogo1.getBot_aceptar().setMetodo("aceptoValores1");
         grid_de1.setColumns(4);
@@ -65,6 +70,19 @@ private Grid grid_de1 = new Grid();
         set_empresa.setTipoSeleccion(false);
         set_empresa.dibujar();
 
+        aut_busca.setId("aut_busca");
+        aut_busca.setAutoCompletar("SELECT IDE_COMERCIAL_AUTOMOTORES,NOMBRE_EMPRESA,RUC_EMPRESA,DIRECCION_EMPRESA,TELEFONO_EMPRESA\n" 
+                                    +"FROM TRANS_COMERCIAL_AUTOMOTORES");
+        aut_busca.setMetodoChange("buscarPersona");
+        aut_busca.setSize(100);
+               
+        bar_botones.agregarComponente(new Etiqueta("Buscador Empresa en Sistema:"));
+        bar_botones.agregarComponente(aut_busca);
+        
+        Boton bot_limpiar = new Boton();
+        bot_limpiar.setIcon("ui-icon-cancel");
+        bot_limpiar.setMetodo("limpiar");
+        bar_botones.agregarBoton(bot_limpiar);       
         
         tab_comercial.setId("tab_comercial");
         tab_comercial.setTabla("trans_comercial_automotores", "ide_comercial_automotores", 1);
@@ -85,41 +103,50 @@ private Grid grid_de1 = new Grid();
         Boton bot = new Boton();
         bot.setValue("BUSCAR EMPRESA");
         bot.setMetodo("aceptoDialogo");
-        bot.setIcon("ui-icon-document");
+        bot.setIcon("ui-icon-search");
         pat_comercial.getChildren().add(bot);
-        
-        
-        set_gestor.setId("set_gestor");
-        set_gestor.setConexion(con_ciudadania);
-        set_gestor.setSql("SELECT cedula,cedula+digito_verificador as cedula_gestor,nombre FROM MAESTRO");
-        set_gestor.getColumna("cedula_gestor").setFiltro(true);
-        set_gestor.getColumna("nombre").setFiltro(true);
-        set_gestor.setRows(18);
-        set_gestor.setTipoSeleccion(false);
-        set_gestor.dibujar();
         
         tab_gestor.setId("tab_gestor");
         tab_gestor.setTabla("trans_gestor", "ide_gestor", 2);
         tab_gestor.setHeader("Datos de Gestores");
         tab_gestor.getColumna("ide_gestor").setNombreVisual("ID");
         tab_gestor.getColumna("cedula_gestor").setNombreVisual("Cedula");
+        tab_gestor.getColumna("cedula_gestor").setUnico(true);
         tab_gestor.getColumna("nombre_gestor").setNombreVisual("Nombre");
+        tab_gestor.getColumna("nombre_gestor").setUnico(true);
         tab_gestor.dibujar();
         PanelTabla pat_gestor = new PanelTabla();
-        pat_gestor.setPanelTabla(tab_gestor);
-
         Boton bot1 = new Boton();
         bot1.setValue("BUSCAR GESTOR");
         bot1.setMetodo("aceptoDialogo1");
-        bot1.setIcon("ui-icon-document");
-        pat_comercial.getChildren().add(bot1);
+        bot1.setIcon("ui-icon-search");
+        eti_etiqueta.setStyle("font-size:12px;color:black;text-align:center;");
+        eti_etiqueta.setValue("Buscar Gestor Por Cedula:");
+        pat_gestor.getChildren().add(eti_etiqueta);
+        pat_gestor.getChildren().add(cedula);
+        pat_gestor.getChildren().add(bot1);
+        pat_gestor.setPanelTabla(tab_gestor);
+
         
         Division div_division = new Division();
         div_division.dividir2(pat_comercial, pat_gestor, "30%", "H");
         agregarComponente(div_division);
  
     }
+    
+     public void buscarPersona(SelectEvent evt) {
+        aut_busca.onSelect(evt);
+        if (aut_busca.getValor() != null) {
+            tab_comercial.setFilaActual(aut_busca.getValor());
+            utilitario.addUpdate("tab_comercial");
+        }
+    }
+        public void limpiar() {
+        aut_busca.limpiar();
+        utilitario.addUpdate("aut_busca");
+        }    
 
+        
      public void aceptoDialogo() {
         dia_dialogo.Limpiar();
         dia_dialogo.setDialogo(grid);
@@ -142,9 +169,26 @@ private Grid grid_de1 = new Grid();
                             }        
     }
     
-         public void aceptoDialogo1() {
+//      public void sumarNumeros() {
+//
+//        try {
+//            dou_num1 = cedula.getValue() + "";
+//        } catch (Exception e) {
+//        }
+//
+////        tex_resultado.setValue(dou_resultado + "");
+////        utilitario.addUpdate("tex_resultado"); //Actualiza la pantalla
+//
+//    }
+      
+  public void aceptoDialogo1() {
         dia_dialogo1.Limpiar();
         dia_dialogo1.setDialogo(grid1);
+        set_gestor.setId("set_gestor");
+        set_gestor.setConexion(con_ciudadania);
+        set_gestor.setSql("SELECT cedula, cedula+digito_verificador as cedula_persona, nombre FROM MAESTRO WHERE (cedula+digito_verificador) LIKE '"+cedula.getValue()+"'");        
+        set_gestor.setRows(18);
+        set_gestor.setTipoSeleccion(false);
         grid_de1.getChildren().add(set_gestor);
         dia_dialogo1.setDialogo(grid_de1);
         set_gestor.dibujar();
@@ -153,16 +197,16 @@ private Grid grid_de1 = new Grid();
     
     public void aceptoValores1() {
         if (set_gestor.getValorSeleccionado()!= null) {
-                         tab_gestor.getColumna("ruc_empresa").setValorDefecto(set_gestor.getValor("ruc"));
-                         tab_gestor.getColumna("nombre_empresa").setValorDefecto(set_gestor.getValor("RAZON_SOCIAL"));
-                         tab_gestor.getColumna("direccion_empresa").setValorDefecto(set_gestor.getValor("DIRECCION"));
-                         tab_gestor.getColumna("telefono_empresa").setValorDefecto(set_gestor.getValor("telefono"));
+                         tab_gestor.getColumna("cedula_gestor").setValorDefecto(set_gestor.getValor("cedula_persona"));
+                         tab_gestor.getColumna("nombre_gestor").setValorDefecto(set_gestor.getValor("nombre"));
                         utilitario.addUpdate("tab_gestor");
                         dia_dialogo1.cerrar();
                         }else {
                             utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
                             }        
     }
+    
+    
     @Override
     public void insertar() {
         utilitario.getTablaisFocus().insertar();
@@ -212,6 +256,14 @@ private Grid grid_de1 = new Grid();
 
     public void setSet_gestor(Tabla set_gestor) {
         this.set_gestor = set_gestor;
+    }
+
+    public Tabla getSet_empresa() {
+        return set_empresa;
+    }
+
+    public void setSet_empresa(Tabla set_empresa) {
+        this.set_empresa = set_empresa;
     }
 
     
