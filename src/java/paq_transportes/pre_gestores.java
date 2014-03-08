@@ -76,7 +76,7 @@ private Etiqueta eti_etiqueta= new Etiqueta();
         aut_busca.setMetodoChange("buscarPersona");
         aut_busca.setSize(100);
                
-        bar_botones.agregarComponente(new Etiqueta("Buscador Empresa en Sistema:"));
+        bar_botones.agregarComponente(new Etiqueta("Buscar Empresa en Sistema:"));
         bar_botones.agregarComponente(aut_busca);
         
         Boton bot_limpiar = new Boton();
@@ -84,12 +84,19 @@ private Etiqueta eti_etiqueta= new Etiqueta();
         bot_limpiar.setMetodo("limpiar");
         bar_botones.agregarBoton(bot_limpiar);       
         
+        Boton bot = new Boton();
+        bot.setValue("BUSCAR EMPRESA");
+        bot.setMetodo("aceptoDialogo");
+        bot.setIcon("ui-icon-search");
+        bar_botones.agregarBoton(bot);
+        
         tab_comercial.setId("tab_comercial");
         tab_comercial.setTabla("trans_comercial_automotores", "ide_comercial_automotores", 1);
         tab_comercial.setHeader("Datos de Empresas");
         tab_comercial.getColumna("ide_comercial_automotores").setNombreVisual("ID");
         tab_comercial.getColumna("nombre_empresa").setNombreVisual("Nombre de Establecimiento");
         tab_comercial.getColumna("ruc_empresa").setNombreVisual("RUC");
+        tab_comercial.getColumna("ruc_empresa").setUnico(true);
         tab_comercial.getColumna("direccion_empresa").setNombreVisual("Dirección");
         tab_comercial.getColumna("telefono_empresa").setNombreVisual("Teléfono");
         tab_comercial.getGrid().setColumns(2);
@@ -100,20 +107,13 @@ private Etiqueta eti_etiqueta= new Etiqueta();
         pat_comercial.setPanelTabla(tab_comercial);
         tab_comercial.setStyle(null);
         pat_comercial.setStyle("width:100%;overflow: auto;");
-        Boton bot = new Boton();
-        bot.setValue("BUSCAR EMPRESA");
-        bot.setMetodo("aceptoDialogo");
-        bot.setIcon("ui-icon-search");
-        pat_comercial.getChildren().add(bot);
         
         tab_gestor.setId("tab_gestor");
         tab_gestor.setTabla("trans_gestor", "ide_gestor", 2);
         tab_gestor.setHeader("Datos de Gestores");
         tab_gestor.getColumna("ide_gestor").setNombreVisual("ID");
         tab_gestor.getColumna("cedula_gestor").setNombreVisual("Cedula");
-        tab_gestor.getColumna("cedula_gestor").setUnico(true);
         tab_gestor.getColumna("nombre_gestor").setNombreVisual("Nombre");
-        tab_gestor.getColumna("nombre_gestor").setUnico(true);
         tab_gestor.dibujar();
         PanelTabla pat_gestor = new PanelTabla();
         Boton bot1 = new Boton();
@@ -148,6 +148,8 @@ private Etiqueta eti_etiqueta= new Etiqueta();
 
         
      public void aceptoDialogo() {
+         limpiar();
+         tab_comercial.eliminar();
         dia_dialogo.Limpiar();
         dia_dialogo.setDialogo(grid);
         grid_de.getChildren().add(set_empresa);
@@ -164,22 +166,12 @@ private Etiqueta eti_etiqueta= new Etiqueta();
                          tab_comercial.getColumna("telefono_empresa").setValorDefecto(set_empresa.getValor("telefono"));
                         utilitario.addUpdate(" tab_comercial");
                         dia_dialogo.cerrar();
+                        tab_comercial.insertar();
                         }else {
                             utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
                             }        
     }
     
-//      public void sumarNumeros() {
-//
-//        try {
-//            dou_num1 = cedula.getValue() + "";
-//        } catch (Exception e) {
-//        }
-//
-////        tex_resultado.setValue(dou_resultado + "");
-////        utilitario.addUpdate("tex_resultado"); //Actualiza la pantalla
-//
-//    }
       
   public void aceptoDialogo1() {
         dia_dialogo1.Limpiar();
@@ -201,6 +193,7 @@ private Etiqueta eti_etiqueta= new Etiqueta();
                          tab_gestor.getColumna("nombre_gestor").setValorDefecto(set_gestor.getValor("nombre"));
                         utilitario.addUpdate("tab_gestor");
                         dia_dialogo1.cerrar();
+                        tab_gestor.insertar();
                         }else {
                             utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
                             }        
