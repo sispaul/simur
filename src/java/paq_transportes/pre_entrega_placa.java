@@ -6,9 +6,11 @@ package paq_transportes;
 
 import framework.componentes.Boton;
 import framework.componentes.Dialogo;
+import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
+import framework.componentes.Texto;
 import javax.ejb.EJB;
 import paq_sistema.aplicacion.Pantalla;
 import paq_transportes.ejb.servicioPlaca;
@@ -26,6 +28,8 @@ private Tabla set_entrega = new Tabla();
 private Dialogo dia_dialogo = new Dialogo();
 private Grid grid = new Grid();
 private Grid grid_de = new Grid();
+private Texto cedula = new Texto();
+private Etiqueta eti_etiqueta= new Etiqueta();
 @EJB
 private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servicioPlaca.class);
     public pre_entrega_placa() {
@@ -39,8 +43,8 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         //Configurando el dialogo
         dia_dialogo.setId("dia_dialogo");
         dia_dialogo.setTitle("PLACAS - ENTREGAS"); //titulo
-        dia_dialogo.setWidth("100%"); //siempre en porcentajes  ancho
-        dia_dialogo.setHeight("40%");//siempre porcentaje   alto
+        dia_dialogo.setWidth("55%"); //siempre en porcentajes  ancho
+        dia_dialogo.setHeight("30%");//siempre porcentaje   alto
         dia_dialogo.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_dialogo.getBot_aceptar().setMetodo("aceptoValores");
         grid_de.setColumns(2);
@@ -73,22 +77,16 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
 
         
         Boton bot_placa = new Boton();
-        bot_placa.setValue("MOSTRAR PROPIETARIO Y PLACA");
+        bot_placa.setValue("BUSCAR PROPIETARIO Y PLACA");
         bot_placa.setIcon("ui-icon-document");
         bot_placa.setMetodo("aceptoDialogo()");
+        eti_etiqueta.setStyle("font-size:12px;color:black;text-align:center;");
+        eti_etiqueta.setValue("Buscar Gestor Por Cedula:");
+        pat_panel.getChildren().add(eti_etiqueta);
+        pat_panel.getChildren().add(cedula);
         pat_panel.getChildren().add(bot_placa);
 
-        set_detalle.setId("set_detalle");
-        set_detalle.setTabla("TRANS_DETALLE_SOLICITUD_PLACA", "IDE_DETALLE_SOLICITUD", 2);
-//        set_detalle.setSql("SELECT IDE_DETALLE_SOLICITUD,IDE_PLACA,IDE_APROBACION_PLACA,IDE_TIPO_VEHICULO,IDE_SOLICITUD_PLACA,CEDULA_RUC_PROPIETARIO,NOMBRE_PROPIETARIO,APROBADO_SOLICITUD FROM TRANS_DETALLE_SOLICITUD_PLACA");
-        set_detalle.getColumna("CEDULA_RUC_PROPIETARIO").setFiltro(true);
-        set_detalle.getColumna("NOMBRE_PROPIETARIO").setFiltro(true);
-        set_detalle.getColumna("ide_entrega_placa").setVisible(false);
-        set_detalle.getColumna("IDE_PLACA").setCombo("SELECT IDE_PLACA,PLACA FROM TRANS_PLACA");
-        set_detalle.getColumna("IDE_TIPO_VEHICULO").setCombo("SELECT ide_tipo_vehiculo,des_tipo_vehiculo FROM trans_tipo_vehiculo WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
-        set_detalle.setTipoSeleccion(false);
-        set_detalle.dibujar();
-        
+       
         tab_placa.setId("tab_placa");
         tab_placa.setSql("SELECT IDE_PLACA,PLACA,IDE_TIPO_ESTADO FROM TRANS_PLACA");
         tab_placa.setCampoPrimaria("IDE_PLACA");
@@ -101,6 +99,12 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         dia_dialogo.Limpiar();
         dia_dialogo.setDialogo(grid);
         grid_de.getChildren().add(set_detalle);
+        set_detalle.setId("set_detalle");
+        set_detalle.setSql("SELECT d.IDE_DETALLE_SOLICITUD,d.IDE_PLACA,d.IDE_APROBACION_PLACA,d.IDE_TIPO_VEHICULO,d.IDE_SOLICITUD_PLACA,d.CEDULA_RUC_PROPIETARIO,d.NOMBRE_PROPIETARIO,APROBADO_SOLICITUD,p.IDE_TIPO_ESTADO\n" 
+                            +"FROM TRANS_DETALLE_SOLICITUD_PLACA d ,TRANS_PLACA p\n" 
+                            +"WHERE d.IDE_PLACA = p.IDE_PLACA AND d.CEDULA_RUC_PROPIETARIO LIKE '"+cedula.getValue()+"'");
+        set_detalle.getColumna("d.IDE_TIPO_VEHICULO").setCombo("SELECT ide_tipo_vehiculo,des_tipo_vehiculo FROM trans_tipo_vehiculo WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
+        set_detalle.setTipoSeleccion(false);      
         dia_dialogo.setDialogo(grid_de);
         set_detalle.dibujar();
         dia_dialogo.dibujar();
@@ -111,6 +115,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
               set_entrega.getColumna("CEDULA_RUC_PROPIETARIO").setValorDefecto(set_detalle.getValor("CEDULA_RUC_PROPIETARIO"));
               consulta = Integer.parseInt(set_detalle.getValor("IDE_DETALLE_SOLICITUD"));
               utilitario.addUpdate("set_entrega");
+              set_entrega.insertar();
               dia_dialogo.cerrar();
        }else {
        utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
@@ -132,7 +137,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
                 ser_Placa.actualizarDE(consulta, set_detalle.getValor("CEDULA_RUC_PROPIETARIO"), Integer.parseInt(set_detalle.getValor("ide_placa")));
             }
         }else {
-            utilitario.agregarMensajeInfo("No Puede Guardar", "");
+            utilitario.agregarMensajeInfo("No Puede Guardar Placa Entregada", "");
         }
     }
 
