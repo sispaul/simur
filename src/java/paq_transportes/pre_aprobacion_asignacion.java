@@ -121,7 +121,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
 
         Division div_division = new Division();
         div_division.setId("div_division");
-        div_division.dividir2(tbp_s, tab_tabulador, "30%", "H");
+        div_division.dividir2(tbp_s, tab_tabulador, "40%", "H");
         agregarComponente(div_division);
         
 }
