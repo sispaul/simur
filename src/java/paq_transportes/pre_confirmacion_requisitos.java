@@ -48,6 +48,9 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         tab_detalle.getColumna("APROBADO_SOLICITUD").setVisible(false);
         tab_detalle.getColumna("ENTREGADA_PLACA").setVisible(false);
         tab_detalle.getColumna("IDE_DETALLE_SOLICITUD").setNombreVisual("Nro. Tramite");
+        tab_detalle.getColumna("IDE_TIPO_VEHICULO").setCombo("select ide_tipo_vehiculo,des_tipo_vehiculo from trans_tipo_vehiculo WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
+        tab_detalle.getColumna("IDE_SOLICITUD_PLACA").setCombo("SELECT IDE_SOLICITUD_PLACA,DESCRIPCION_SOLICITUD FROM TRANS_SOLICITUD_PLACA");
+        tab_detalle.getColumna("IDE_TIPO_SERVICIO").setCombo("SELECT IDE_TIPO_SERVICIO,DESCRIPCION_SERVICIO FROM TRANS_TIPO_SERVICIO");
         tab_detalle.agregarRelacion(set_requisito);
         tab_detalle.setTipoFormulario(true);
         tab_detalle.dibujar();
@@ -88,11 +91,11 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
 
     @Override
     public void guardar() {
-         set_requisito.guardar();
-         System.err.println(Integer.parseInt(set_requisito.getValor("IDE_DETALLE_SOLICITUD")));
+        if(set_requisito.guardar()){
+//             guardarPantalla();
          ser_Placa.actualizarEstado(Integer.parseInt(set_requisito.getValor("IDE_DETALLE_SOLICITUD")), utilitario.StringToByte(set_requisito.getValor("CONFIRMAR_REQUISITO")));
-         System.err.println(utilitario.StringToByte(set_requisito.getValor("CONFIRMAR_REQUISITO")));
-    }
+        }
+            }
 
     @Override
     public void eliminar() {
