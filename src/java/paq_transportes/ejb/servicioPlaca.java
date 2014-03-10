@@ -46,19 +46,25 @@ public void actualizarDE(Integer iden,String ruc,Integer placa)
                             +"set NOMBRE_PROPIETARIO=nombre,ide_tipo_estado = 2,FECHA_ENTREGA_PLACA='"+utilitario.getFechaActual()+"',CEDULA_RUC_PROPIETARIO=identi\n" 
                             +"from( select CEDULA_RUC_PROPIETARIO as identi,NOMBRE_PROPIETARIO as nombre from TRANS_DETALLE_SOLICITUD_PLACA\n" 
                             +"where IDE_DETALLE_SOLICITUD = "+iden+" and CEDULA_RUC_PROPIETARIO ="+ruc+")a\n" 
-                            +"where ide_placa ="+placa; 
+                            +"where placa ide_tipo_estado <> 2 and ide_placa ="+placa; 
             conectar();
             conexion.ejecutarSql(actualiza2);
     }
 
-public void insertarRequisito(Integer tipo,Integer servicio){
-    String insertar="INSERT INTO TRANS_DETALLE_REQUISITOS_SOLICITUD(IDE_TIPO_REQUISITO)SELECT r.IDE_TIPO_REQUISITO\n" 
-                        +"FROM TRANS_TIPO_REQUISITO r\n" 
-                        +"INNER JOIN TRANS_TIPO_SERVICIO s ON r.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO\n" 
-                        +"INNER JOIN trans_tipo_vehiculo v ON s.ide_tipo_vehiculo = v.ide_tipo_vehiculo\n" 
-                        +"WHERE v.ide_tipo_vehiculo ="+tipo+" AND s.IDE_TIPO_SERVICIO ="+servicio;
-                                    conectar();
+public void insertarRequisito(Integer detalle,Integer tipo,Integer servicio){
+    String insertar="INSERT INTO TRANS_DETALLE_REQUISITOS_SOLICITUD (IDE_TIPO_REQUISITO,IDE_DETALLE_SOLICITUD)\n" 
+                    +"SELECT r.IDE_TIPO_REQUISITO AS IDE_TIPO_REQUISITO,"+detalle+" FROM TRANS_TIPO_REQUISITO r\n" 
+                    +"INNER JOIN TRANS_TIPO_SERVICIO s ON r.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO\n" 
+                    +"INNER JOIN trans_tipo_vehiculo v ON s.ide_tipo_vehiculo = v.ide_tipo_vehiculo\n" 
+                    +"WHERE v.ide_tipo_vehiculo ="+tipo+" AND s.IDE_TIPO_SERVICIO ="+servicio;
+            conectar();
             conexion.ejecutarSql(insertar);
+}
+
+public void actualizarEstado(Integer codigo,Byte confirma){
+    String actual="UPDATE TRANS_DETALLE_REQUISITOS_SOLICITUD set CONFIRMAR_REQUISITO = "+confirma+" WHERE IDE_DETALLE_SOLICITUD ="+codigo;
+    conectar();
+    conexion.ejecutarSql(actual);
 }
  private void conectar() {
         if (conexion == null) {
