@@ -79,7 +79,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         Boton bot_placa = new Boton();
         bot_placa.setValue("BUSCAR PROPIETARIO Y PLACA");
         bot_placa.setIcon("ui-icon-document");
-        bot_placa.setMetodo("aceptoDialogo()");
+        bot_placa.setMetodo("aceptoDialogo");
         eti_etiqueta.setStyle("font-size:12px;color:black;text-align:center;");
         eti_etiqueta.setValue("Buscar Gestor Por Cedula:");
         pat_panel.getChildren().add(eti_etiqueta);
@@ -160,6 +160,14 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
 
     public void setSet_entrega(Tabla set_entrega) {
         this.set_entrega = set_entrega;
+    }
+
+    public Dialogo getDia_dialogo() {
+        return dia_dialogo;
+    }
+
+    public void setDia_dialogo(Dialogo dia_dialogo) {
+        this.dia_dialogo = dia_dialogo;
     }
     
 }
