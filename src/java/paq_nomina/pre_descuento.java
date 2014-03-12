@@ -10,9 +10,8 @@ import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import javax.ejb.EJB;
 import javax.faces.component.UIComponent;
-import paq_bodega.ejb.servicioBodega;
 import paq_nomina.ejb.mergeDescuento;
-import paq_pruebas.ejb.servicioPruebas;
+
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
@@ -28,8 +27,10 @@ public class pre_descuento extends Pantalla{
     
     
 private Tabla tab_tabla = new Tabla();
+private Tabla tab_consulta = new Tabla();
 //1.-
  @EJB
+ 
 private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(mergeDescuento.class);
  
    
@@ -48,35 +49,79 @@ private Conexion con_postgres= new Conexion();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
        
-     
-        
-     
-
         Division div_division = new Division();
         div_division.setId("div_division");
         div_division.dividir1(pat_panel);
+        
         agregarComponente(div_division);
         
         Boton bot1 = new Boton();
-        bot1.setValue("SOBRESCIRBIR DESCUENTO");
+        bot1.setValue("DEPURAR DESCUENTO");
         bot1.setIcon("ui-icon-document"); //pone icono de jquery temeroller
-        bot1.setMetodo("metodo");
-        bar_botones.agregarBoton(bot1); 
+        bot1.setMetodo("completar");
+       bar_botones.agregarBoton(bot1); 
      
     
-         
+        Boton bot2 = new Boton();
+        bot2.setValue("MIGRAR DESCUENTO");
+        bot2.setIcon("ui-icon-document"); //pone icono de jquery temeroller
+        bot2.setMetodo("migrar");
+       bar_botones.agregarBoton(bot2); 
+       
+        Boton bot3 = new Boton();
+        bot3.setValue("BORRAR DESCUENTO");
+        bot3.setIcon("ui-icon-document"); //pone icono de jquery temeroller
+        bot3.setMetodo("borrar");
+       bar_botones.agregarBoton(bot3);  
     }
     
     
     
-  public void metodo() {
-     //    
+      public void completar() {
+  
+         Integer ano;
+         Integer ide_periodo;
+         Integer id_distributivo_roles;
+         Integer ide_columna;
+                 
+         
+         tab_consulta.setConexion(con_postgres);
+         tab_consulta.setSql("select ano,ide_periodo,id_distributivo_roles,ide_columna from srh_descuento");
+         tab_consulta.ejecutarSql();
+         ano = Integer.parseInt(tab_consulta.getValor("ano"));
+         ide_periodo=Integer.parseInt(tab_consulta.getValor("ide_columna"));
+         id_distributivo_roles=Integer.parseInt(tab_consulta.getValor("id_distributivo_roles"));
+         ide_columna=Integer.parseInt(tab_consulta.getValor("ide_columna")) ;
+         
+        mDescuento.actualizarDescuento(ano, ide_periodo, id_distributivo_roles, ide_columna);
+        mDescuento.actualizarDescuento1(ano, ide_periodo, id_distributivo_roles, ide_columna);
+        tab_tabla.actualizar();
+        
+        }
       
-      mDescuento.actualizarDescuentoIdeEmpleado();
+       public void migrar(){                     
+         Integer ano;
+         Integer ide_periodo;
+         Integer id_distributivo_roles;
+         Integer ide_columna;
+                 
          
-     tab_tabla.actualizar();
-    }
-            
+         tab_consulta.setConexion(con_postgres);
+         tab_consulta.setSql("select ano,ide_periodo,id_distributivo_roles,ide_columna from srh_descuento");
+         tab_consulta.ejecutarSql();
+         ano = Integer.parseInt(tab_consulta.getValor("ano"));
+         ide_periodo=Integer.parseInt(tab_consulta.getValor("ide_columna"));
+         id_distributivo_roles=Integer.parseInt(tab_consulta.getValor("id_distributivo_roles"));
+         ide_columna=Integer.parseInt(tab_consulta.getValor("ide_columna")) ;  
+         mDescuento.migrarDescuento(ano,ide_periodo,id_distributivo_roles,ide_columna);
+         }
+                    
+         public void borrar()
+         {
+         mDescuento.borrarDescuento();
+         tab_tabla.actualizar();
+         }
+                                  
 
 
  
@@ -89,9 +134,9 @@ private Conexion con_postgres= new Conexion();
 
     @Override
     public void guardar() {
-        if (tab_tabla.guardar()) {  
+        tab_tabla.guardar();
             guardarPantalla();
-       }
+
     }
 
     @Override
@@ -105,12 +150,6 @@ private Conexion con_postgres= new Conexion();
 
     public void setTab_tabla(Tabla tab_tabla) {
         this.tab_tabla = tab_tabla;
-    }
-
-    private static class ser_PRUEBA {
-
-        public ser_PRUEBA() {
-        }
     }
 
    
