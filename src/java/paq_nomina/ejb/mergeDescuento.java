@@ -4,65 +4,88 @@
  */
 package paq_nomina.ejb;
 
-import framework.aplicacion.TablaGenerica;
-import framework.componentes.Tabla;
 import javax.ejb.Stateless;
+import framework.componentes.Tabla;
 import paq_sistema.aplicacion.Utilitario;
 import persistencia.Conexion;
 
 
+
+/**
+ *
+ * @author m-paucar
+ */
 @Stateless
 public class mergeDescuento {
-    
-    private Utilitario utilitario = new Utilitario();
 
+    // Add business logic below. (Right-click in editor and choose
+    // "Insert Code > Add Business Method")
+    private Utilitario utilitario = new Utilitario();
     private Conexion con_postgres= new Conexion();
-    private Tabla tab_descuentos = new Tabla();
- 
+   
+  
     
-    /**
-     * 
-     * @param ANO
-     * @param IDE_PERIODO
-     * @param ID_DISTRIBUTIVO_ROLES
-     * @param IDE_COLUMNA 
-     */
+          
     
-       public void actualizarDescuentoIdeEmpleado() {
+    
+         public void actualizarDescuento(Integer ano,Integer ide_periodo,Integer id_distributivo_roles,Integer ide_columna) 
+         {
         // Forma el sql para el ingreso
            
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         con_postgres.NOMBRE_MARCA_BASE = "postgres";
-        Integer  men_ano= null ;
-        Integer men_periodo = null;
-        Integer men_descuentos= null;
-        Integer men_columna=null;
-        
-        tab_descuentos.setId("tab_descuentos");
-        tab_descuentos.setConexion(con_postgres);
-        tab_descuentos.setSql("select ano,ide_periodo,ide_distributivo_roles,ide_columna from srh_descuento");
-        tab_descuentos.setCampoPrimaria("ide_descuentos");
-//        tab_descuentos.dibujar();
-              for (int i = 0; i < tab_descuentos.getTotalFilas(); i++) {
-                  men_ano= parseInt(tab_descuentos.getValor(i, "ano"));
-                          
-
-            men_periodo=parseInt(tab_descuentos.getValor(i, "ide_periodo"));
-            men_descuentos=parseInt(tab_descuentos.getValor(i, "id_distributivo_roles"));
-            men_columna=parseInt(tab_descuentos.getValor(i, "ide_columna"));
-        }
-        
-        String str_sql1 = "update srh_descuento  set ide_empleado=srh_empleado.cod_empleado "
-                + "from  srh_empleado e  where e.cedula_pass=cedula AND  srh_descuento.ANO=2014 AND srh_descuento.IDE_PERIODO=2 AND srh_descuento.ID_DISTRIBUTIVO_ROLES=2 "
-                + "AND srh_descuento.IDE_COLUMNA=46";
-
+    
+        String str_sql1;
+        str_sql1 = "update srh_descuento set ide_empleado=srh_empleado.cod_empleado "
+                  +"from  srh_empleado where srh_descuento.ANO=2014 and srh_descuento.IDE_PERIODO=3 and "
+                  +"srh_descuento.ID_DISTRIBUTIVO_ROLES="+id_distributivo_roles+" and "
+                  +"srh_descuento.IDE_COLUMNA="+ide_columna+" and srh_empleado.cedula_pass=srh_descuento.cedula";
         con_postgres.ejecutarSql(str_sql1);
         con_postgres.desconectar();
-       
-    }   
+       }   
+         
+          public void actualizarDescuento1(Integer ano,Integer ide_periodo,Integer id_distributivo_roles,Integer ide_columna) 
+         {
+        // Forma el sql para el ingreso
+           
+        con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
+        con_postgres.NOMBRE_MARCA_BASE = "postgres";
+    
+        String str_sql1;
+        str_sql1 ="update srh_descuento set ide_empleado_rol=srh_roles.ide_empleado "
+                  +"from sRH_ROLES WHERE sRH_ROLES.ANO=2014 AND sRH_ROLES.IDE_PERIODO=3 AND "
+                  +"sRH_ROLES.ID_DISTRIBUTIVO_ROLES="+id_distributivo_roles+" AND sRH_ROLES.IDE_COLUMNAS="+ide_columna+" and "
+                  +"srh_roles.ide_empleado=srh_descuento.ide_empleado";              
+        con_postgres.ejecutarSql(str_sql1);
+        con_postgres.desconectar();
+       }   
+         
+         public void borrarDescuento() 
+                {
+        // Forma el sql para el ingreso
+           
+        con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
+        con_postgres.NOMBRE_MARCA_BASE = "postgres";
+    
+              String str_sql3 = "DELETE FROM srh_descuento";
+              con_postgres.ejecutarSql(str_sql3);
+              con_postgres.desconectar();
+     }   
+       public void migrarDescuento(Integer ano,Integer ide_periodo,Integer id_distributivo_roles,Integer ide_columna) 
+                {
+        // Forma el sql para el ingreso
+           
+        con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
+        con_postgres.NOMBRE_MARCA_BASE = "postgres";
+    
+              String str_sql4 = "update sRH_ROLES set valor_egreso=srh_descuento.descuento"
+                                +", valor=srh_descuento.descuento  from srh_descuento"
+                                +" WHERE sRH_ROLES.ANO=2014 AND sRH_ROLES.IDE_PERIODO=3 AND"
+                                +" sRH_ROLES.ID_DISTRIBUTIVO_ROLES="+id_distributivo_roles+" AND sRH_ROLES.IDE_COLUMNAS="+ide_columna+" and "
+                                +"srh_roles.ide_empleado=srh_descuento.ide_empleado";
 
-    private Integer parseInt(String valor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-}
-  
+              con_postgres.ejecutarSql(str_sql4);
+              con_postgres.desconectar();
+     }   
+}      
+
