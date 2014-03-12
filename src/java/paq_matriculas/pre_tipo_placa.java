@@ -36,17 +36,18 @@ public class pre_tipo_placa extends Pantalla{
 
     @Override
     public void insertar() {
-        tab_tabla.insertar();
+        utilitario.getTablaisFocus().insertar();
     }
 
     @Override
     public void guardar() {
         tab_tabla.guardar();
+        guardarPantalla();
     }
 
     @Override
     public void eliminar() {
-        tab_tabla.eliminar();
+        utilitario.getTablaisFocus().eliminar();
     }
 
     public Tabla getTab_tabla() {
