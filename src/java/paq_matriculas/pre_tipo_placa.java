@@ -21,6 +21,9 @@ public class pre_tipo_placa extends Pantalla{
         tab_tabla.setId("tab_tabla");
         tab_tabla.setTabla("trans_tipo_placa", "ide_tipo_placa",1);
         tab_tabla.setHeader("TIPOS DE PLACA");
+        tab_tabla.getColumna("ide_tipo_placa").setNombreVisual("CODIGO");
+        tab_tabla.getColumna("descripcion_placa").setNombreVisual("TIPO PLACA");
+        tab_tabla.getColumna("descripcion_placa").setMayusculas(true);
         tab_tabla.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
