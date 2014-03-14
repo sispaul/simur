@@ -14,8 +14,6 @@ import framework.componentes.Grupo;
 import framework.componentes.ItemMenu;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
-import framework.componentes.Reporte;
-import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import org.primefaces.component.panelmenu.PanelMenu;
 import org.primefaces.component.submenu.Submenu;
@@ -36,7 +34,7 @@ public class pre_ingreso_solicitud extends Pantalla{
     private Tabla tab_detalle = new Tabla();
     private Tabla tab_requisito = new Tabla();
     private Tabla tab_consulta = new Tabla();
-    
+    private Tabla tab_persona = new Tabla();
 //Dialogos para seleccion de atributos
     private Dialogo dia_dialogoG = new Dialogo();
     private Dialogo dia_dialogoGP = new Dialogo();
@@ -69,7 +67,7 @@ public class pre_ingreso_solicitud extends Pantalla{
         
         aut_gestor.setId("aut_empresas");
         aut_gestor.setAutoCompletar("SELECT IDE_GESTOR,CEDULA_GESTOR,NOMBRE_GESTOR,ESTADO FROM TRANS_GESTOR");
-        aut_gestor.setMetodoChange("filtrarEmpresa");
+        aut_gestor.setMetodoChange("filtrarGestor");
         aut_gestor.setSize(70);
         bar_botones.agregarComponente(new Etiqueta("Buscar Gestor:"));
         bar_botones.agregarComponente(aut_gestor);
@@ -289,8 +287,8 @@ public class pre_ingreso_solicitud extends Pantalla{
     }
 
     public void limpiar() {
-        aut_gestor.limpiar();
-        utilitario.addUpdate("aut_gestor");
+//        aut_gestor.limpiar();
+//        utilitario.addUpdate("aut_gestor");
         limpiarPanel();
         utilitario.addUpdate("pan_opcion");
     }
@@ -299,8 +297,17 @@ public class pre_ingreso_solicitud extends Pantalla{
         str_opcion = "0";
         limpiarPanel();
         
+//        tab_persona.setId("tab_persona");
+//        tab_persona.setTabla("trans_gestor", "ide_gestor", 1);
+//        tab_persona.agregarRelacion(tab_solicitud);
+//        tab_persona.setTipoFormulario(true);
+//        tab_persona.dibujar();
+//        PanelTabla tabp = new PanelTabla();
+//        tabp.setPanelTabla(tab_persona);
+//        pan_opcion.setTitle("SOLICITUD DE PLACAS");
+//        pan_opcion.getChildren().add(tab_persona);
+        
         tab_solicitud.setId("tab_solicitud");
-        tab_solicitud.setIdCompleto("tab_tabulador:tab_solicitud");
         tab_solicitud.setTabla("TRANS_SOLICITUD_PLACA", "IDE_SOLICITUD_PLACA", 1);
         tab_solicitud.getColumna("DESCRIPCION_SOLICITUD").setNombreVisual("DESCRIPCIÓN DE SOLICITUD");
         tab_solicitud.getColumna("DESCRIPCION_SOLICITUD").setMayusculas(true);
@@ -315,11 +322,8 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_solicitud.dibujar();
         PanelTabla tabp1 = new PanelTabla();
         tabp1.setPanelTabla(tab_solicitud);
-        pan_opcion.setTitle("--- SOLICITUD DE PLACAS ---");
-        pan_opcion.getChildren().add(tab_solicitud);
         
         tab_detalle.setId("tab_detalle");
-        tab_detalle.setIdCompleto("tab_tabulador:tab_detalle");
         tab_detalle.setTabla("TRANS_DETALLE_SOLICITUD_PLACA", "IDE_DETALLE_SOLICITUD", 2);
         tab_detalle.getColumna("NOMBRE_PROPIETARIO").setMayusculas(true);
         tab_detalle.getColumna("IDE_PLACA").setVisible(false);
@@ -334,9 +338,22 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_detalle.dibujar();
         PanelTabla tabp2 = new PanelTabla();
         tabp2.setPanelTabla(tab_detalle); 
+        
+        tab_requisito.setId("tab_requisito");
+        tab_requisito.setTabla("TRANS_DETALLE_REQUISITOS_SOLICITUD", "IDE_DETALLE_REQUISITOS_SOLICITUD", 3);
+//        tab_requisito.getColumna("ide_tipo_requisito").setCombo("SELECT r.IDE_TIPO_REQUISITO,r.DECRIPCION_REQUISITO FROM TRANS_TIPO_REQUISITO r\n" 
+//                                                                +"INNER JOIN TRANS_TIPO_SERVICIO s ON r.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO\n" 
+//                                                                +"INNER JOIN trans_tipo_vehiculo v ON s.ide_tipo_vehiculo = v.ide_tipo_vehiculo\n");
+        tab_requisito.setHeader("REQUISITOS DE PEDIDO DE PLACA");
+        tab_requisito.dibujar();
+        PanelTabla tabp3=new PanelTabla();
+        tabp3.setPanelTabla(tab_requisito);
+        
         Grupo gru = new Grupo();
+//        gru.getChildren().add(tabp);
         gru.getChildren().add(tabp1);
         gru.getChildren().add(tabp2);
+        gru.getChildren().add(tabp3);
         pan_opcion.getChildren().add(gru);
     }
     
@@ -352,25 +369,27 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_requisito.dibujar();
         PanelTabla tabp3=new PanelTabla();
         tabp3.setPanelTabla(tab_requisito);
-        Grupo gru1 = new Grupo();
-        gru1.getChildren().add(tabp3);
-        pan_opcion.getChildren().add(gru1);
+        pan_opcion.getChildren().add(tabp3);
+//        Grupo gru1 = new Grupo();
+//        gru1.getChildren().add(tabp3);
+//        pan_opcion.getChildren().add(gru1);
+         System.out.println("Dibuja");
     }
     
-     public void filtrarEmpresa(SelectEvent evt) {
-        //Filtra el cliente seleccionado en el autocompletar
-        aut_gestor.onSelect(evt);
-        dibujarPanel();
-    }
-
-    private void dibujarPanel() {
-        if (str_opcion.equals("0") || str_opcion.isEmpty()) {
-            dibujarSolicitud();
-        } else if (str_opcion.equals("1")) {
-            dibujarRequisitos();
-        } 
-        utilitario.addUpdate("pan_opcion");
-    }
+//     public void filtrarGestor(SelectEvent evt) {
+//        //Filtra el cliente seleccionado en el autocompletar
+//        aut_gestor.onSelect(evt);
+//        dibujarPanel();
+//    }
+//
+//    private void dibujarPanel() {
+//        if (str_opcion.equals("0") || str_opcion.isEmpty()) {
+//            dibujarSolicitud();
+//        } else if (str_opcion.equals("1")) {
+//            dibujarRequisitos();
+//        } 
+//        utilitario.addUpdate("pan_opcion");
+//    }
     
     @Override
     public void insertar() {
