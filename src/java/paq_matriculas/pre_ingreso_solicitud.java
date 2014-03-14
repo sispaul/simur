@@ -21,6 +21,7 @@ import org.primefaces.component.panelmenu.PanelMenu;
 import org.primefaces.component.submenu.Submenu;
 import org.primefaces.event.SelectEvent;
 import paq_sistema.aplicacion.Pantalla;
+import persistencia.Conexion;
 
 /**
  *
@@ -31,6 +32,7 @@ public class pre_ingreso_solicitud extends Pantalla{
     private Combo cmb_tipos = new Combo();
     //Tablas para Seleccion de atributos
     private Tabla set_tipo = new Tabla();
+    private int int_opcion = 1;
     private Tabla set_gestor = new Tabla();
     private Tabla set_gestores = new Tabla();
     private Tabla set_empresa = new Tabla();
@@ -38,32 +40,23 @@ public class pre_ingreso_solicitud extends Pantalla{
     private Tabla tab_detalle = new Tabla();
     private Tabla tab_requisito = new Tabla();
     private Tabla tab_consulta = new Tabla();
-    private Tabla tab_persona = new Tabla();
-//Dialogos para seleccion de atributos
-    private Dialogo dia_dialogoG = new Dialogo();
-    private Dialogo dia_dialogoGP = new Dialogo();
-    private Dialogo dia_dialogoGE = new Dialogo();
-    private Dialogo dia_dialogoGG = new Dialogo();
-    private Grid gridG = new Grid();
-    private Grid gridG1 = new Grid();
-    private Grid gridGP = new Grid();
-    private Grid gridGP1 = new Grid();
-    private Grid gridGE = new Grid();
-    private Grid gridGE1 = new Grid();
-    private Grid gridGG = new Grid();
-    private Grid gridGG1 = new Grid();
+    private Conexion con_ciudadania= new Conexion();
 //Autocompletar datos en pantalla    
     private AutoCompletar aut_gestor = new AutoCompletar();
 //Textos para auto busqueda
     private Texto txt_cedula = new Texto();
     private Texto txt_nombre = new Texto();
-    private Texto txt_codigo = new Texto();
+    private Texto txt_empresa = new Texto();
     
 //Dibujar Paneles y Menú
     private Panel pan_opcion = new Panel();
     private String str_opcion = "";// sirve para identificar la opcion que se encuentra dibujada en pantalla
     private PanelMenu pam_menu = new PanelMenu();
     public pre_ingreso_solicitud() {
+        
+        con_ciudadania.setUnidad_persistencia(utilitario.getPropiedad("ciudadaniajdbc"));
+        con_ciudadania.NOMBRE_MARCA_BASE="sqlserver";
+        
         //BOTON DE SELECCION DE OPCIONES
         Boton bot_ingreso = new Boton();
         bot_ingreso.setValue("SELECCIONAR GESTOR");
@@ -80,13 +73,6 @@ public class pre_ingreso_solicitud extends Pantalla{
         bar_botones.agregarComponente(new Etiqueta("Buscar Gestor:"));
         bar_botones.agregarComponente(aut_gestor);
         
-//        //BOTON DE LIMPIEZA
-//        Boton bot_limpiar = new Boton();
-//        bot_limpiar.setIcon("ui-icon-cancel");
-//        bot_limpiar.setMetodo("limpiar");
-//        bar_botones.agregarBoton(bot_limpiar);
-//        bar_botones.agregarReporte();
-        
         ////Configurar Seleccion Tipo de Gestor
         set_tipo.setId("set_tipo");
         set_tipo.setSql("SELECT IDE_TIPO_GESTOR,DESCRIPCION_GESTOR FROM TRANS_TIPO_GESTOR ORDER BY DESCRIPCION_GESTOR");
@@ -102,52 +88,6 @@ public class pre_ingreso_solicitud extends Pantalla{
         set_empresa.setTipoSeleccion(false);
         set_empresa.dibujar();
         
-        //Creacion de Objetos Empresa
-        dia_dialogoG.setId("dia_dialogoG");
-        dia_dialogoG.setTitle("SOLICITUD - SELECCIONE TIPO"); //titulo
-        dia_dialogoG.setWidth("20%"); //siempre en porcentajes  ancho
-        dia_dialogoG.setHeight("25%");//siempre porcentaje   alto
-        dia_dialogoG.setResizable(false); //para que no se pueda cambiar el tamaño
-        dia_dialogoG.getBot_aceptar().setMetodo("seleccionDialogo");
-        
-         gridG.setColumns(2);
-         gridG.getChildren().add(new Etiqueta("SELECCIONE TIPO DE SOLICITUD"));
-         agregarComponente(dia_dialogoG);
-        
-        dia_dialogoGE.setId("dia_dialogoGE");
-        dia_dialogoGE.setTitle("EMPRESA - SELECCIONE SU EMPRESA"); //titulo
-        dia_dialogoGE.setWidth("50%"); //siempre en porcentajes  ancho
-        dia_dialogoGE.setHeight("50%");//siempre porcentaje   alto
-        dia_dialogoGE.setResizable(false); //para que no se pueda cambiar el tamaño
-        dia_dialogoGE.getBot_aceptar().setMetodo("aceptoGestors");
-        
-         gridGE.setColumns(2);
-         gridGE.getChildren().add(new Etiqueta("SELECCIONE EMPRESA"));
-         agregarComponente(dia_dialogoGE);         
-
-        dia_dialogoGG.setId("dia_dialogoGG");
-        dia_dialogoGG.setTitle("GESTORES - SELECCIONE GESTOR"); //titulo
-        dia_dialogoGG.setWidth("50%"); //siempre en porcentajes  ancho
-        dia_dialogoGG.setHeight("50%");//siempre porcentaje   alto
-        dia_dialogoGG.setResizable(false); //para que no se pueda cambiar el tamaño
-        dia_dialogoGG.getBot_aceptar().setMetodo("aceptoGestor");
-        
-        gridGG.setColumns(2);
-        gridGG.getChildren().add(new Etiqueta("GESTOR EMPRESA"));
-        agregarComponente(dia_dialogoGG);
-
-        //Creacion de Objetos Particulares
-         dia_dialogoGP.setId("dia_dialogoGP");
-        dia_dialogoGP.setTitle("PLACAS - ASIGNACION DE TIPOS"); //titulo
-        dia_dialogoGP.setWidth("50%"); //siempre en porcentajes  ancho
-        dia_dialogoGP.setHeight("50%");//siempre porcentaje   alto
-        dia_dialogoGP.setResizable(false); //para que no se pueda cambiar el tamaño
-        dia_dialogoGP.getBot_aceptar().setMetodo("aceptoPersona1");
-        
-        gridGP.setColumns(2);
-        gridGP.getChildren().add(new Etiqueta("TIPO DE PLACA"));
-        agregarComponente(dia_dialogoGP);
-
         pan_opcion.setId("pan_opcion");
         pan_opcion.setTransient(true);
 
@@ -181,111 +121,8 @@ public class pre_ingreso_solicitud extends Pantalla{
         itm_datos_empl.setUpdate("pan_opcion");
         sum_empleado.getChildren().add(itm_datos_empl);
 
-        // ITEM 2 : OPCION 1
-        ItemMenu itm_permisos = new ItemMenu();
-        itm_permisos.setValue("REQUISITOS DE PEDIDO");
-        itm_permisos.setIcon("ui-icon-bookmark");
-        itm_permisos.setMetodo("dibujarRequisitos");
-        itm_permisos.setUpdate("pan_opcion");
-        sum_empleado.getChildren().add(itm_permisos);
-        
     }
     
-     public void aceptoDialogo() {
-        dia_dialogoG.Limpiar();
-        dia_dialogoG.setDialogo(gridG);
-        gridG1.getChildren().add(set_tipo);
-        dia_dialogoG.setDialogo(gridG1);
-        set_tipo.dibujar();
-        dia_dialogoG.dibujar();
-    }
-    public void seleccionDialogo() {
-        if(set_tipo.getValorSeleccionado().equals("5")) {
-             if (set_tipo.getValorSeleccionado()!= null) {            
-                    aceptoEmpresa();
-                    dia_dialogoG.cerrar();
-                }else {
-                    utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
-                    }  
-        } else if(set_tipo.getValorSeleccionado().equals("6")){
-            aceptoPersona();
-            dia_dialogoG.cerrar();
-        }else if(set_tipo.getValorSeleccionado().equals("7")){
-            aceptoPersona();
-            dia_dialogoG.cerrar();
-        }else if(set_tipo.getValorSeleccionado().equals("8")){
-            aceptoPersona();
-            dia_dialogoG.cerrar();
-        }
-    }
-    
-    /******SELECCION DE GESTORES POR EMPRESA******/
-   public void  aceptoEmpresa(){
-        dia_dialogoGE.Limpiar();
-        dia_dialogoGE.setDialogo(gridGE);
-        gridGE1.getChildren().add(set_empresa);
-        dia_dialogoGE.setDialogo(gridGE1);
-        set_empresa.dibujar();
-        dia_dialogoGE.dibujar();
-   }
-   
-      public void  aceptoGestores(){
-        dia_dialogoGG.Limpiar();
-        dia_dialogoGG.setDialogo(gridGG);
-        gridGG1.getChildren().add(set_gestores);
-        set_gestores.setId("set_gestores");
-        set_gestores.setSql("SELECT IDE_GESTOR,CEDULA_GESTOR,NOMBRE_GESTOR,ESTADO\n" 
-                            +"FROM TRANS_GESTOR WHERE IDE_TIPO_GESTOR = "+set_tipo.getValorSeleccionado()+" and IDE_COMERCIAL_AUTOMOTORES ="+set_empresa.getValorSeleccionado());
-        set_gestores.getColumna("CEDULA_GESTOR").setFiltro(true);
-        set_gestores.setRows(5);
-        set_gestores.setTipoSeleccion(false);
-        dia_dialogoGG.setDialogo(gridGG1);
-        set_gestores.dibujar();
-        dia_dialogoGG.dibujar();
-   }
-    
-       public void aceptoGestors() {
-            if (set_empresa.getValorSeleccionado()!= null) {
-                        aceptoGestores();
-                        dia_dialogoGE.cerrar();
-       }else {
-       utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
-       }        
-    }
-    
-       public void aceptoGestor() {
-            if (set_gestores.getValorSeleccionado()!= null) {
-                        dia_dialogoGG.cerrar();
-       }else {
-       utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
-       }        
-    }
-
-    /******SELECCION DE GESTORES POR EMPRESA******/
-       public void aceptoPersona(){
-        dia_dialogoGP.Limpiar();
-        dia_dialogoGP.setDialogo(gridGP);
-        gridGP1.getChildren().add(set_gestor);
-        set_gestor.setId("set_gestor");
-        set_gestor.setSql("SELECT IDE_GESTOR,CEDULA_GESTOR,NOMBRE_GESTOR,ESTADO\n" 
-                                    +"FROM TRANS_GESTOR WHERE IDE_TIPO_GESTOR ="+set_tipo.getValorSeleccionado());
-        set_gestor.getColumna("CEDULA_GESTOR").setFiltro(true);
-        set_gestor.setRows(5);
-        set_gestor.setTipoSeleccion(false);
-
-        dia_dialogoGP.setDialogo(gridGP1);
-        set_gestor.dibujar();
-        dia_dialogoGP.dibujar();
-       }
-       
-       public void aceptoPersona1() {
-            if (set_gestores.getValorSeleccionado()!= null) {
-                System.out.println("HOLA");
-                        dia_dialogoGP.cerrar();
-       }else {
-       utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
-       }        
-    }
     /******DIBUJAR SOLICITUDA Y REQUERIMIENTOS******/
        
      private void limpiarPanel() {
@@ -307,11 +144,13 @@ public class pre_ingreso_solicitud extends Pantalla{
         
         Panel pan_panel = new Panel();
         pan_panel.setId("pan_panel");
-        pan_panel.setStyle("width: 450px;");
+        pan_panel.setStyle("width: 700px;top: 200px;");
+//        pan_panel.setStyle("text-align:center;position:absolute;top:70px;left:100px;");
         pan_panel.setHeader("Buscar Daros de Solicitante");
        
         cmb_tipos.setId("cmb_tipos");
         cmb_tipos.setStyle("width: 99%;");
+//        cmb_tipos.setStyle("text-align:center;position:absolute;top:60px;left:170px;");
         cmb_tipos.setCombo("select ide_tipo_gestor,descripcion_gestor from trans_tipo_gestor");
         pan_panel.getChildren().add(new Etiqueta("TIPO SOLICITANTE : "));
         pan_panel.getChildren().add(cmb_tipos);
@@ -320,19 +159,23 @@ public class pre_ingreso_solicitud extends Pantalla{
         txt_cedula.setStyle("width: 99%;");
         pan_panel.getChildren().add(new Etiqueta("C.I/RUC. : "));
         pan_panel.getChildren().add(txt_cedula);
+//        
+        txt_empresa.setId("txt_empresa");
+        txt_empresa.setStyle("width: 99%;");
+        pan_panel.getChildren().add(new Etiqueta("EMPRESA :"));
+        pan_panel.getChildren().add(txt_empresa);
         
         txt_nombre.setId("txt_nombre");
         txt_nombre.setStyle("width: 99%;");
-        pan_panel.getChildren().add(new Etiqueta("NOMBRE :"));
+        pan_panel.getChildren().add(new Etiqueta("NOMBRE GESTOR :"));
         pan_panel.getChildren().add(txt_nombre);
-        
         
         Boton bot_bus = new Boton();
         bot_bus.setId("bot_bus");
         bot_bus.setValue("Buscar");
         bot_bus.setIcon("ui-icon-locked");
-//        bot_bus.setMetodoRuta("pre_login.ingresar");
-//        bot_bus.setOnclick("dimiensionesNavegador()");
+        bot_bus.setMetodo("BuscarSolicitante");
+
         pan_panel.setFooter(bot_bus);
         pan_panel.getChildren().add(bot_bus);
         Boton bot_new = new Boton();
@@ -365,7 +208,10 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_solicitud.dibujar();
         PanelTabla tabp1 = new PanelTabla();
         tabp1.setPanelTabla(tab_solicitud);
-//        
+        tab_solicitud.setStyle(null);
+        pan_opcion.setTitle("CATASTRO DE EMPRESAS DE TRANSPORTE PÚBLICO");
+        pan_opcion.getChildren().add(tabp1);
+        
         tab_detalle.setId("tab_detalle");
         tab_detalle.setTabla("TRANS_DETALLE_SOLICITUD_PLACA", "IDE_DETALLE_SOLICITUD", 2);
         tab_detalle.getColumna("NOMBRE_PROPIETARIO").setMayusculas(true);
@@ -405,39 +251,29 @@ public class pre_ingreso_solicitud extends Pantalla{
         utilitario.addUpdate("txt_nombre");
         
     }
-    public void dibujarRequisitos(){
-        str_opcion = "1";
-        limpiarPanel(); 
-        tab_requisito.setId("tab_requisito");
-        tab_requisito.setTabla("TRANS_DETALLE_REQUISITOS_SOLICITUD", "IDE_DETALLE_REQUISITOS_SOLICITUD", 3);
-//        tab_requisito.getColumna("ide_tipo_requisito").setCombo("SELECT r.IDE_TIPO_REQUISITO,r.DECRIPCION_REQUISITO FROM TRANS_TIPO_REQUISITO r\n" 
-//                                                                +"INNER JOIN TRANS_TIPO_SERVICIO s ON r.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO\n" 
-//                                                                +"INNER JOIN trans_tipo_vehiculo v ON s.ide_tipo_vehiculo = v.ide_tipo_vehiculo\n");
-        tab_requisito.setHeader("REQUISITOS DE PEDIDO DE PLACA");
-        tab_requisito.dibujar();
-        PanelTabla tabp3=new PanelTabla();
-        tabp3.setPanelTabla(tab_requisito);
-        pan_opcion.getChildren().add(tabp3);
-//        Grupo gru1 = new Grupo();
-//        gru1.getChildren().add(tabp3);
-//        pan_opcion.getChildren().add(gru1);
-         System.out.println("Dibuja");
-    }
-    
-//     public void filtrarGestor(SelectEvent evt) {
-//        //Filtra el cliente seleccionado en el autocompletar
-//        aut_gestor.onSelect(evt);
-//        dibujarPanel();
-//    }
-//
-//    private void dibujarPanel() {
-//        if (str_opcion.equals("0") || str_opcion.isEmpty()) {
-//            dibujarSolicitud();
-//        } else if (str_opcion.equals("1")) {
-//            dibujarRequisitos();
-//        } 
-//        utilitario.addUpdate("pan_opcion");
-//    }
+     
+    public void BuscarSolicitante(){
+
+        if (utilitario.validarRUC(txt_cedula.getValue()+"")){
+            
+        tab_solicitud.insertar();
+        tab_detalle.insertar();
+        }else if(utilitario.validarCedula(txt_cedula.getValue()+""))
+        {
+            
+        tab_solicitud.insertar();
+        tab_detalle.insertar();
+        }else {
+                utilitario.agregarMensajeError("El Número de Identificacion no es válido", "");
+                return;
+            }
+        
+        txt_cedula.limpiar();
+        utilitario.addUpdate("txt_cedula");
+        txt_nombre.limpiar();
+        utilitario.addUpdate("txt_nombre");
+        
+    }    
     
     @Override
     public void insertar() {
@@ -447,10 +283,6 @@ public class pre_ingreso_solicitud extends Pantalla{
             } else if (tab_detalle.isFocus()) {
                 tab_detalle.insertar();
             }  
-        }else if (str_opcion.equals("1")) {
-            if (tab_requisito.isFocus()) {
-                tab_requisito.insertar();
-            }
         }
     }
 
