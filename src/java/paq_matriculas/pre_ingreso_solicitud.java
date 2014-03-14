@@ -6,6 +6,7 @@ package paq_matriculas;
 
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
+import framework.componentes.Combo;
 import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
@@ -15,6 +16,7 @@ import framework.componentes.ItemMenu;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
+import framework.componentes.Texto;
 import org.primefaces.component.panelmenu.PanelMenu;
 import org.primefaces.component.submenu.Submenu;
 import org.primefaces.event.SelectEvent;
@@ -25,7 +27,9 @@ import paq_sistema.aplicacion.Pantalla;
  * @author p-sistemas
  */
 public class pre_ingreso_solicitud extends Pantalla{
-//Tablas para Seleccion de atributos
+
+    private Combo cmb_tipos = new Combo();
+    //Tablas para Seleccion de atributos
     private Tabla set_tipo = new Tabla();
     private Tabla set_gestor = new Tabla();
     private Tabla set_gestores = new Tabla();
@@ -50,6 +54,10 @@ public class pre_ingreso_solicitud extends Pantalla{
     private Grid gridGG1 = new Grid();
 //Autocompletar datos en pantalla    
     private AutoCompletar aut_gestor = new AutoCompletar();
+//Textos para auto busqueda
+    private Texto txt_cedula = new Texto();
+    private Texto txt_nombre = new Texto();
+    private Texto txt_codigo = new Texto();
     
 //Dibujar Paneles y Menú
     private Panel pan_opcion = new Panel();
@@ -297,16 +305,49 @@ public class pre_ingreso_solicitud extends Pantalla{
         str_opcion = "0";
         limpiarPanel();
         
-//        tab_persona.setId("tab_persona");
-//        tab_persona.setTabla("trans_gestor", "ide_gestor", 1);
-//        tab_persona.agregarRelacion(tab_solicitud);
-//        tab_persona.setTipoFormulario(true);
-//        tab_persona.dibujar();
-//        PanelTabla tabp = new PanelTabla();
-//        tabp.setPanelTabla(tab_persona);
-//        pan_opcion.setTitle("SOLICITUD DE PLACAS");
-//        pan_opcion.getChildren().add(tab_persona);
+        Panel pan_panel = new Panel();
+        pan_panel.setId("pan_panel");
+        pan_panel.setStyle("width: 450px;");
+        pan_panel.setHeader("Buscar Daros de Solicitante");
+       
+        cmb_tipos.setId("cmb_tipos");
+        cmb_tipos.setStyle("width: 99%;");
+        cmb_tipos.setCombo("select ide_tipo_gestor,descripcion_gestor from trans_tipo_gestor");
+        pan_panel.getChildren().add(new Etiqueta("TIPO SOLICITANTE : "));
+        pan_panel.getChildren().add(cmb_tipos);
         
+        txt_cedula.setId("txt_cedula");
+        txt_cedula.setStyle("width: 99%;");
+        pan_panel.getChildren().add(new Etiqueta("C.I/RUC. : "));
+        pan_panel.getChildren().add(txt_cedula);
+        
+        txt_nombre.setId("txt_nombre");
+        txt_nombre.setStyle("width: 99%;");
+        pan_panel.getChildren().add(new Etiqueta("NOMBRE :"));
+        pan_panel.getChildren().add(txt_nombre);
+        
+        
+        Boton bot_bus = new Boton();
+        bot_bus.setId("bot_bus");
+        bot_bus.setValue("Buscar");
+        bot_bus.setIcon("ui-icon-locked");
+//        bot_bus.setMetodoRuta("pre_login.ingresar");
+//        bot_bus.setOnclick("dimiensionesNavegador()");
+        pan_panel.setFooter(bot_bus);
+        pan_panel.getChildren().add(bot_bus);
+        Boton bot_new = new Boton();
+        bot_new.setId("bot_new");
+        bot_new.setValue("Limpiar");
+        bot_new.setIcon("ui-icon-locked");
+        bot_new.setMetodo("LimpiarBoton");
+//        bot_new.setMetodoRuta("pre_login.ingresar");
+//        bot_new.setOnclick("dimiensionesNavegador()");
+        pan_panel.setFooter(bot_new);
+        pan_panel.getChildren().add(bot_new);
+        
+        Grupo gru = new Grupo();
+        gru.getChildren().add(pan_panel);
+
         tab_solicitud.setId("tab_solicitud");
         tab_solicitud.setTabla("TRANS_SOLICITUD_PLACA", "IDE_SOLICITUD_PLACA", 1);
         tab_solicitud.getColumna("DESCRIPCION_SOLICITUD").setNombreVisual("DESCRIPCIÓN DE SOLICITUD");
@@ -316,13 +357,15 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_solicitud.getColumna("FECHA_SOLICITUD").setValorDefecto(utilitario.getFechaActual());
         tab_solicitud.getColumna("USU_SOLICITUD").setVisible(false);
         tab_solicitud.getColumna("IDE_SOLICITUD_PLACA").setVisible(false);
+        tab_solicitud.getColumna("IDE_TIPO_GESTOR").setVisible(false);
+        tab_solicitud.getColumna("IDE_GESTOR").setVisible(false);
         tab_solicitud.getColumna("USU_SOLICITUD").setValorDefecto(tab_consulta.getValor("NICK_USUA")); 
         tab_solicitud.agregarRelacion(tab_detalle);
         tab_solicitud.setTipoFormulario(true);
         tab_solicitud.dibujar();
         PanelTabla tabp1 = new PanelTabla();
         tabp1.setPanelTabla(tab_solicitud);
-        
+//        
         tab_detalle.setId("tab_detalle");
         tab_detalle.setTabla("TRANS_DETALLE_SOLICITUD_PLACA", "IDE_DETALLE_SOLICITUD", 2);
         tab_detalle.getColumna("NOMBRE_PROPIETARIO").setMayusculas(true);
@@ -347,16 +390,21 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_requisito.setHeader("REQUISITOS DE PEDIDO DE PLACA");
         tab_requisito.dibujar();
         PanelTabla tabp3=new PanelTabla();
-        tabp3.setPanelTabla(tab_requisito);
-        
-        Grupo gru = new Grupo();
-//        gru.getChildren().add(tabp);
+        tabp3.setPanelTabla(tab_requisito);   
+
         gru.getChildren().add(tabp1);
         gru.getChildren().add(tabp2);
         gru.getChildren().add(tabp3);
         pan_opcion.getChildren().add(gru);
     }
     
+    public void LimpiarBoton(){
+        txt_cedula.limpiar();
+        utilitario.addUpdate("txt_cedula");
+        txt_nombre.limpiar();
+        utilitario.addUpdate("txt_nombre");
+        
+    }
     public void dibujarRequisitos(){
         str_opcion = "1";
         limpiarPanel(); 
