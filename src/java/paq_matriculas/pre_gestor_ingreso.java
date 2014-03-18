@@ -105,8 +105,6 @@ public class pre_gestor_ingreso extends Pantalla{
         tab_gestor.setId("tab_gestor");
         tab_gestor.setTabla("trans_gestor", "ide_gestor", 2);
         tab_gestor.getColumna("ide_gestor").setNombreVisual("ID");
-        tab_gestor.getColumna("ide_tipo_gestor").setNombreVisual("TIPO GESTOR");
-        tab_gestor.getColumna("ide_tipo_gestor").setCombo("SELECT IDE_TIPO_GESTOR,DESCRIPCION_GESTOR FROM TRANS_TIPO_GESTOR WHERE DESCRIPCION_GESTOR LIKE 'EMPRESA'");
         tab_gestor.getColumna("cedula_gestor").setNombreVisual("CEDULA");
         tab_gestor.getColumna("nombre_gestor").setNombreVisual("NOMBRE");
         tab_gestor.getColumna("direccion_gestor").setNombreVisual("DIRECCIÓN");
@@ -134,8 +132,6 @@ public class pre_gestor_ingreso extends Pantalla{
         tab_gestor1.setId("tab_gestor1");
         tab_gestor1.setTabla("trans_gestor", "ide_gestor", 3);
         tab_gestor1.getColumna("ide_gestor").setNombreVisual("ID");
-//        tab_gestor1.getColumna("ide_tipo_gestor").setNombreVisual("TIPO GESTOR");
-        tab_gestor.getColumna("ide_tipo_gestor").setCombo("SELECT IDE_TIPO_GESTOR,DESCRIPCION_GESTOR FROM TRANS_TIPO_GESTOR");
         tab_gestor1.getColumna("cedula_gestor").setNombreVisual("CEDULA");
         tab_gestor1.getColumna("nombre_gestor").setNombreVisual("NOMBRE");
         tab_gestor1.getColumna("direccion_gestor").setNombreVisual("DIRECCIÓN");
