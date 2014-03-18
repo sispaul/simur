@@ -82,6 +82,7 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_detalle.getColumna("IDE_DETALLE_SOLICITUD").setNombreVisual("Nro. TRAMITE");
         tab_detalle.getGrid().setColumns(4);
         tab_detalle.setTipoFormulario(true);
+        tab_detalle.agregarRelacion(tab_requisito);
         tab_detalle.dibujar();
         PanelTabla tabp2 = new PanelTabla();
         tabp2.setPanelTabla(tab_detalle); 
@@ -92,29 +93,28 @@ public class pre_ingreso_solicitud extends Pantalla{
                                                                 +"INNER JOIN TRANS_TIPO_SERVICIO s ON r.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO\n" 
                                                                 +"INNER JOIN trans_tipo_vehiculo v ON s.ide_tipo_vehiculo = v.ide_tipo_vehiculo\n");
         tab_requisito.setHeader("REQUISITOS DE PEDIDO DE PLACA");
-        tab_requisito.getColumna("ide_tipo_requisito").setLectura(true);
+//        tab_requisito.getColumna("ide_tipo_requisito").setLectura(true);
+        tab_requisito.getColumna("CONFIRMAR_REQUISITO").setNombreVisual("CONFIRMAR");
         tab_requisito.dibujar();
         PanelTabla tabp3=new PanelTabla();
         tabp3.setPanelTabla(tab_requisito);
         
         Division div_division = new Division();
         div_division.setId("div_division");
-        div_division.dividir3(tabp1, tabp2, tabp3, "30%", "40%", "H");
+        div_division.dividir3(tabp1, tabp2, tabp3, "30%", "50%", "H");
         agregarComponente(div_division);
         
         //Configurando el dialogo
         dia_dialogoEN.setId("dia_dialogoEN");
-        dia_dialogoEN.setTitle("PLACAS - PLACAS ENTREGADAS"); //titulo
+        dia_dialogoEN.setTitle("GESTORES - SELECCIONE GESTOR DE EMPRESA"); //titulo
         dia_dialogoEN.setWidth("60%"); //siempre en porcentajes  ancho
         dia_dialogoEN.setHeight("40%");//siempre porcentaje   alto
         dia_dialogoEN.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_dialogoEN.getBot_aceptar().setMetodo("aceptoValores");
         
          grid_en.setColumns(2);
-         grid_en.getChildren().add(new Etiqueta("SELECCIONE Vehiculo"));
-        agregarComponente(dia_dialogoEN);
-        
-        
+         grid_en.getChildren().add(new Etiqueta("SELECCIONE GESTOR"));
+        agregarComponente(dia_dialogoEN);   
     }
     
     public void buscaPersona(){
@@ -124,6 +124,7 @@ public class pre_ingreso_solicitud extends Pantalla{
                 // Cargo la información de la base de datos maestra   
                 tab_detalle.setValor("NOMBRE_PROPIETARIO", tab_dato.getValor("nombre"));
                 utilitario.addUpdate("tab_detalle");
+                
             } else {
                 utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ciudadania del municipio", "");
             }
@@ -168,10 +169,13 @@ public class pre_ingreso_solicitud extends Pantalla{
     }
 
    public void ingresoRequisitos() {
-       ser_Placa.insertarRequisito(Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")), Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")));
-       System.out.println(tab_detalle.getValor("IDE_TIPO_VEHICULO"));
-       System.err.println(tab_detalle.getValor("IDE_TIPO_SERVICIO"));
+       tab_solicitud.guardar();
        utilitario.addUpdate("tab_solicitud");
+       tab_detalle.guardar();
+       utilitario.addUpdate("tab_detalle");
+       ser_Placa.insertarRequisito(Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")),Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")), Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")));
+       utilitario.addUpdate("tab_requisito");
+       
     }
         
          public void aceptoDialogoe() {
@@ -217,11 +221,12 @@ public class pre_ingreso_solicitud extends Pantalla{
     public void guardar() {
     if (tab_solicitud.guardar()) {
             utilitario.addUpdate("tab_solicitud");
-        }else if (tab_detalle.guardar()) {
-            utilitario.addUpdate("tab_detalle");
-            } else if (tab_requisito.guardar()) {
-                utilitario.addUpdate("tab_requisito");
-                }
+            }else if (tab_detalle.guardar()) {
+                utilitario.addUpdate("tab_detalle");
+                } else if (tab_requisito.guardar()) {
+                    guardarPantalla();
+                     utilitario.addUpdate("tab_requisito");
+                    }
     }
 
     @Override
