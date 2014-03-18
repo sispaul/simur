@@ -54,19 +54,19 @@ public void actualizarDE(Integer iden,String ruc,Integer placa)
             conexion.ejecutarSql(actualiza2);
     }
 
-public void insertarRequisito(Integer tipo,Integer servicio){
-//    String insertar="INSERT INTO TRANS_DETALLE_REQUISITOS_SOLICITUD (IDE_TIPO_REQUISITO,IDE_DETALLE_SOLICITUD)\n" 
-//                    +"SELECT r.IDE_TIPO_REQUISITO AS IDE_TIPO_REQUISITO,"+detalle+" FROM TRANS_TIPO_REQUISITO r\n" 
-//                    +"INNER JOIN TRANS_TIPO_SERVICIO s ON r.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO\n" 
-//                    +"INNER JOIN trans_tipo_vehiculo v ON s.ide_tipo_vehiculo = v.ide_tipo_vehiculo\n" 
-//                    +"WHERE v.ide_tipo_vehiculo ="+tipo+" AND s.IDE_TIPO_SERVICIO ="+servicio;
-   String insertar="INSERT INTO TRANS_DETALLE_REQUISITOS_SOLICITUD (IDE_TIPO_REQUISITO)\n" 
-                    +"SELECT r.IDE_TIPO_REQUISITO AS IDE_TIPO_REQUISITO FROM TRANS_TIPO_REQUISITO r\n" 
+public void insertarRequisito(Integer detalle,Integer tipo,Integer servicio){
+    System.err.println("ingreso");
+    String insertar="INSERT INTO TRANS_DETALLE_REQUISITOS_SOLICITUD (IDE_TIPO_REQUISITO,IDE_DETALLE_SOLICITUD)\n" 
+                    +"SELECT r.IDE_TIPO_REQUISITO AS IDE_TIPO_REQUISITO,"+detalle+" FROM TRANS_TIPO_REQUISITO r\n" 
                     +"INNER JOIN TRANS_TIPO_SERVICIO s ON r.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO\n" 
                     +"INNER JOIN trans_tipo_vehiculo v ON s.ide_tipo_vehiculo = v.ide_tipo_vehiculo\n" 
                     +"WHERE v.ide_tipo_vehiculo ="+tipo+" AND s.IDE_TIPO_SERVICIO ="+servicio;
+//   String insertar="INSERT INTO TRANS_DETALLE_REQUISITOS_SOLICITUD (IDE_TIPO_REQUISITO)\n" 
+//                    +"SELECT r.IDE_TIPO_REQUISITO AS IDE_TIPO_REQUISITO FROM TRANS_TIPO_REQUISITO r\n" 
+//                    +"INNER JOIN TRANS_TIPO_SERVICIO s ON r.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO\n" 
+//                    +"INNER JOIN trans_tipo_vehiculo v ON s.ide_tipo_vehiculo = v.ide_tipo_vehiculo\n" 
+//                    +"WHERE v.ide_tipo_vehiculo ="+tipo+" AND s.IDE_TIPO_SERVICIO ="+servicio;
             conectar();
-            System.err.println("EXITO");
             conexion.ejecutarSql(insertar);
 }
 
@@ -83,6 +83,7 @@ public void actualizarEstado(Integer codigo,Byte confirma){
         tab_persona.setConexion(conexion1);
         tab_persona.setSql("SELECT * FROM MAESTRO WHERE cedula='" + cedula.substring(0,cedula.length() - 1) + "' and digito_verificador='" + cedula.substring(cedula.length()-1)+"'");
         tab_persona.ejecutarSql();
+        conexion1.desconectar();
         return tab_persona;
     }
 
@@ -93,6 +94,7 @@ public void actualizarEstado(Integer codigo,Byte confirma){
         tab_persona.setConexion(conexion1);
         tab_persona.setSql("SELECT * FROM MAESTRO_RUC WHERE RUC='" + ruc + "'");
         tab_persona.ejecutarSql();
+        conexion1.desconectar();
         return tab_persona;
     }
 
@@ -103,6 +105,7 @@ public void actualizarEstado(Integer codigo,Byte confirma){
         tab_persona.setConexion(conexion);
         tab_persona.setSql("SELECT * FROM TRANS_COMERCIAL_AUTOMOTORES WHERE TRANS_COMERCIAL_AUTOMOTORES.RUC_EMPRESA ='" + iden+ "'");
         tab_persona.ejecutarSql();
+        conexion.desconectar();
         return tab_persona;
     }
     
@@ -113,8 +116,10 @@ public void actualizarEstado(Integer codigo,Byte confirma){
         tab_persona.setConexion(conexion);
         tab_persona.setSql("SELECT CEDULA_GESTOR,NOMBRE_GESTOR,IDE_GESTOR FROM TRANS_GESTOR WHERE CEDULA_GESTOR='" + iden+ "'");
         tab_persona.ejecutarSql();
+        conexion.desconectar();
         return tab_persona;
-    }
+    } 
+      
  private void conectar() {
         if (conexion == null) {
             conexion = new Conexion();
@@ -123,7 +128,7 @@ public void actualizarEstado(Integer codigo,Byte confirma){
         }
     }
  
-     private void conectar1() {
+ private void conectar1() {
         if (conexion1 == null) {
             conexion1 = new Conexion();
             conexion1.setUnidad_persistencia(utilitario.getPropiedad("ciudadania"));
