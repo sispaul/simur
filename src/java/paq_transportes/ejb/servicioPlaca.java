@@ -15,6 +15,8 @@ import persistencia.Conexion;
 @Stateless
 public class servicioPlaca {
 private Conexion conexion;
+private Conexion conexion1;
+//private Conexion ciudadania;
 private Utilitario utilitario = new Utilitario();
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
@@ -52,13 +54,19 @@ public void actualizarDE(Integer iden,String ruc,Integer placa)
             conexion.ejecutarSql(actualiza2);
     }
 
-public void insertarRequisito(Integer detalle,Integer tipo,Integer servicio){
-    String insertar="INSERT INTO TRANS_DETALLE_REQUISITOS_SOLICITUD (IDE_TIPO_REQUISITO,IDE_DETALLE_SOLICITUD)\n" 
-                    +"SELECT r.IDE_TIPO_REQUISITO AS IDE_TIPO_REQUISITO,"+detalle+" FROM TRANS_TIPO_REQUISITO r\n" 
+public void insertarRequisito(Integer tipo,Integer servicio){
+//    String insertar="INSERT INTO TRANS_DETALLE_REQUISITOS_SOLICITUD (IDE_TIPO_REQUISITO,IDE_DETALLE_SOLICITUD)\n" 
+//                    +"SELECT r.IDE_TIPO_REQUISITO AS IDE_TIPO_REQUISITO,"+detalle+" FROM TRANS_TIPO_REQUISITO r\n" 
+//                    +"INNER JOIN TRANS_TIPO_SERVICIO s ON r.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO\n" 
+//                    +"INNER JOIN trans_tipo_vehiculo v ON s.ide_tipo_vehiculo = v.ide_tipo_vehiculo\n" 
+//                    +"WHERE v.ide_tipo_vehiculo ="+tipo+" AND s.IDE_TIPO_SERVICIO ="+servicio;
+   String insertar="INSERT INTO TRANS_DETALLE_REQUISITOS_SOLICITUD (IDE_TIPO_REQUISITO)\n" 
+                    +"SELECT r.IDE_TIPO_REQUISITO AS IDE_TIPO_REQUISITO FROM TRANS_TIPO_REQUISITO r\n" 
                     +"INNER JOIN TRANS_TIPO_SERVICIO s ON r.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO\n" 
                     +"INNER JOIN trans_tipo_vehiculo v ON s.ide_tipo_vehiculo = v.ide_tipo_vehiculo\n" 
                     +"WHERE v.ide_tipo_vehiculo ="+tipo+" AND s.IDE_TIPO_SERVICIO ="+servicio;
             conectar();
+            System.err.println("EXITO");
             conexion.ejecutarSql(insertar);
 }
 
@@ -68,31 +76,58 @@ public void actualizarEstado(Integer codigo,Byte confirma){
     conexion.ejecutarSql(actual);
 }
 
-    public TablaGenerica getEmpresa(String ruc) {
-        //Busca a una empresa en la tabla maestra_ruc por ruc
-        conectar();
-        TablaGenerica tab_persona = new TablaGenerica();
-        tab_persona.setConexion(conexion);
-        tab_persona.setSql("SELECT * FROM TRANS_COMERCIAL_AUTOMOTORES WHERE RUC_EMPRESA='" + ruc + "'");
-        tab_persona.ejecutarSql();
-        return tab_persona;
-    }
-    
-        public TablaGenerica getPersona(String cedula) {
+    public TablaGenerica getPersona(String cedula) {
         //Busca a una persona en la tabla maestra por número de cédula
-        conectar();
+        conectar1();
         TablaGenerica tab_persona = new TablaGenerica();
-        tab_persona.setConexion(conexion);
+        tab_persona.setConexion(conexion1);
         tab_persona.setSql("SELECT * FROM MAESTRO WHERE cedula='" + cedula.substring(0,cedula.length() - 1) + "' and digito_verificador='" + cedula.substring(cedula.length()-1)+"'");
         tab_persona.ejecutarSql();
         return tab_persona;
     }
 
+    public TablaGenerica getEmpresa(String ruc) {
+        //Busca a una empresa en la tabla maestra_ruc por ruc
+        conectar1();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion1);
+        tab_persona.setSql("SELECT * FROM MAESTRO_RUC WHERE RUC='" + ruc + "'");
+        tab_persona.ejecutarSql();
+        return tab_persona;
+    }
 
+   public TablaGenerica getGestor(String iden) {
+        //Busca a una empresa en la tabla maestra_ruc por ruc
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT * FROM TRANS_COMERCIAL_AUTOMOTORES WHERE TRANS_COMERCIAL_AUTOMOTORES.RUC_EMPRESA ='" + iden+ "'");
+        tab_persona.ejecutarSql();
+        return tab_persona;
+    }
+    
+      public TablaGenerica getGestor1(String iden) {
+        //Busca a una empresa en la tabla maestra_ruc por ruc
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT CEDULA_GESTOR,NOMBRE_GESTOR,IDE_GESTOR FROM TRANS_GESTOR WHERE CEDULA_GESTOR='" + iden+ "'");
+        tab_persona.ejecutarSql();
+        return tab_persona;
+    }
  private void conectar() {
         if (conexion == null) {
             conexion = new Conexion();
             conexion.setUnidad_persistencia(utilitario.getPropiedad("recursojdbc"));
+            conexion.NOMBRE_MARCA_BASE="sqlserver";
+        }
+    }
+ 
+     private void conectar1() {
+        if (conexion1 == null) {
+            conexion1 = new Conexion();
+            conexion1.setUnidad_persistencia(utilitario.getPropiedad("ciudadania"));
+            conexion1.NOMBRE_MARCA_BASE="sqlserver";
         }
     }
 }
