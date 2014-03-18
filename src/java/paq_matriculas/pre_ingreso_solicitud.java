@@ -47,7 +47,7 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_solicitud.getColumna("NOMBRE_EMPRESA").setNombreVisual("NOMBRE EMPRESA");
         tab_solicitud.getColumna("RUC_EMPRESA").setVisible(false);
         tab_solicitud.getColumna("USU_SOLICITUD").setVisible(false);
-        tab_solicitud.getColumna("IDE_SOLICITUD_PLACA").setNombre("Nro. SOLICITUD");
+        tab_solicitud.getColumna("IDE_SOLICITUD_PLACA").setNombreVisual("Nro. SOLICITUD");
         tab_solicitud.getColumna("IDE_TIPO_GESTOR").setNombreVisual("TIPO DE SOLICITUD");
         tab_solicitud.getColumna("IDE_TIPO_GESTOR").setCombo("SELECT IDE_TIPO_GESTOR,DESCRIPCION_GESTOR FROM TRANS_TIPO_GESTOR");
         tab_solicitud.getColumna("IDE_GESTOR").setVisible(false);
@@ -168,7 +168,7 @@ public class pre_ingreso_solicitud extends Pantalla{
     }
 
    public void ingresoRequisitos() {
-   ser_Placa.insertarRequisito(Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")), Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")));
+       ser_Placa.insertarRequisito(Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")), Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")));
        System.out.println(tab_detalle.getValor("IDE_TIPO_VEHICULO"));
        System.err.println(tab_detalle.getValor("IDE_TIPO_SERVICIO"));
        utilitario.addUpdate("tab_solicitud");
@@ -215,7 +215,13 @@ public class pre_ingreso_solicitud extends Pantalla{
 
     @Override
     public void guardar() {
-        
+    if (tab_solicitud.guardar()) {
+            utilitario.addUpdate("tab_solicitud");
+        }else if (tab_detalle.guardar()) {
+            utilitario.addUpdate("tab_detalle");
+            } else if (tab_requisito.guardar()) {
+                utilitario.addUpdate("tab_requisito");
+                }
     }
 
     @Override
