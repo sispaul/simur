@@ -18,6 +18,7 @@ public class ServicioRegistros {
 
     private Utilitario utilitario = new Utilitario();
     private Conexion conexion; //Conexion a la base de ciudadania
+    private Conexion sigag; //Conexion a la base de sigag
 
     public TablaGenerica getPersona(String cedula) {
         //Busca a una persona en la tabla maestra por número de cédula
@@ -52,7 +53,9 @@ public class ServicioRegistros {
     private void conectar() {
         if (conexion == null) {
             conexion = new Conexion();
-            conexion.setUnidad_persistencia("ciudadania");
+            conexion.setUnidad_persistencia(utilitario.getPropiedad("ciudadania"));
+            conexion.NOMBRE_MARCA_BASE="sqlserver";
         }
     }
+    
 }
