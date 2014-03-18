@@ -41,6 +41,7 @@ public class ServicioRegistros {
     }
 
     public TablaGenerica getEmpresa(String ruc) {
+        System.err.println("DATOS");
         //Busca a una empresa en la tabla maestra_ruc por ruc
         conectar();
         TablaGenerica tab_persona = new TablaGenerica();
@@ -53,8 +54,7 @@ public class ServicioRegistros {
     private void conectar() {
         if (conexion == null) {
             conexion = new Conexion();
-            conexion.setUnidad_persistencia(utilitario.getPropiedad("ciudadania"));
-            conexion.NOMBRE_MARCA_BASE="sqlserver";
+            conexion.setUnidad_persistencia("ciudadaniajdbc");
         }
     }
     
