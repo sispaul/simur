@@ -68,7 +68,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
        
 
         Division div_division = new Division();
-        div_division.dividir2(tabp2, tabp3,"55%", "H");
+        div_division.dividir2(tabp2, tabp3,"40%", "H");
         div_division.getDivision2().setHeader("CONFIRMACIÓN DE REQUISITOS");
         agregarComponente(div_division);
     }
