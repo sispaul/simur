@@ -83,8 +83,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         PanelTabla tbp_s=new PanelTabla(); 
         tbp_s.setPanelTabla(set_solicitud);
         set_solicitud.setStyle(null);
-        tbp_s.setStyle("width:100%;overflow: auto;");
-
+        
         Tabulador tab_tabulador = new Tabulador();
         tab_tabulador.setId("tab_tabulador");
         
@@ -121,7 +120,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
 
         Division div_division = new Division();
         div_division.setId("div_division");
-        div_division.dividir2(tbp_s, tab_tabulador, "40%", "H");
+        div_division.dividir2(tbp_s, tab_tabulador, "30%", "H");
         agregarComponente(div_division);
         
 }
@@ -146,6 +145,8 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
     @Override
     public void guardar() {
         if (set_aprobacion.guardar()) {
+            set_aprobacion.actualizar();
+            utilitario.addUpdate("set_aprobacion");
             if (guardarPantalla().isEmpty()) {
             ser_Placa.seleccionarP(Integer.parseInt(set_solicitud.getValor("IDE_DETALLE_SOLICITUD")), Integer.parseInt(set_solicitud.getValor("IDE_tipo_vehiculo")), Integer.parseInt(set_solicitud.getValor("IDE_tipo_servicio")), Byte.parseByte(set_aprobacion.getValor("APROBADO")), Integer.parseInt(set_aprobacion.getValor("IDE_APROBACION_PLACA")));
             set_solicitud.actualizar();
