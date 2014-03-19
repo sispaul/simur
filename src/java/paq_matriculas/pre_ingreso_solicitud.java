@@ -72,7 +72,7 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_detalle.getColumna("IDE_TIPO_VEHICULO").setNombreVisual("TIPO DE VEHICULO");
         tab_detalle.getColumna("IDE_TIPO_VEHICULO").setCombo("SELECT ide_tipo_vehiculo,des_tipo_vehiculo FROM trans_tipo_vehiculo\n" 
                                                                 +"WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
-        
+  
         tab_detalle.getColumna("IDE_TIPO_SERVICIO").setNombreVisual("TIPO DE SERVICIO");
         tab_detalle.getColumna("IDE_TIPO_SERVICIO").setCombo("SELECT IDE_TIPO_SERVICIO,DESCRIPCION_SERVICIO FROM TRANS_TIPO_SERVICIO");
         tab_detalle.getColumna("IDE_TIPO_SERVICIO").setMetodoChange("ingresoRequisitos");
@@ -175,17 +175,18 @@ public class pre_ingreso_solicitud extends Pantalla{
     }
 
    public void ingresoRequisitos() {
-       
        tab_solicitud.guardar();
-       utilitario.addUpdate("tab_solicitud");
        tab_detalle.guardar();
+       utilitario.addUpdate("tab_solicitud");
        utilitario.addUpdate("tab_detalle");
+       System.err.println("Ingreso");
        ser_Placa.insertarRequisito(Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")),Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")), Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")));
        utilitario.addUpdate("tab_requisito");
-       
+       System.out.println("Actualizar");
+       tab_requisito.actualizar();
     }
         
-         public void aceptoDialogoe() {
+   public void aceptoDialogoe() {
         dia_dialogoEN.Limpiar();
         dia_dialogoEN.setDialogo(gride);
         grid_de.getChildren().add(set_gestor);
@@ -231,15 +232,19 @@ public class pre_ingreso_solicitud extends Pantalla{
             if (tab_detalle.guardar()) {
                 utilitario.addUpdate("tab_detalle");
                  guardarPantalla();
-                } 
-                }else if(tab_tabulador.equals("REQUISITOS")){
-                        if (tab_requisito.guardar()) {
-                            guardarPantalla();
-                            utilitario.addUpdate("tab_requisito");
+                 if (tab_requisito.guardar()) {
+                          for (int i = 0; i < tab_requisito.getTotalFilas(); i++) {
+                          tab_requisito.getValor(i, "CONFIRMAR_REQUISITO");
+                          tab_requisito.getValor(i, "IDE_TIPO_REQUISITO");
+                          tab_requisito.getValor(i, "IDE_DETALLE_REQUISITOS_SOLICITUD");
+                          ser_Placa.actulizarRequisito(utilitario.StringToByte(tab_requisito.getValor(i,"CONFIRMAR_REQUISITO")),Integer.parseInt(tab_requisito.getValor(i, "IDE_DETALLE_REQUISITOS_SOLICITUD"))
+                        ,Integer.parseInt(tab_requisito.getValor("IDE_DETALLE_SOLICITUD")),Integer.parseInt(tab_requisito.getValor(i, "IDE_TIPO_REQUISITO")));
+                         utilitario.addUpdate("tab_requisito");
                             }
+                         }
+                        }
+                    } 
                 }
-    }
-
     @Override
     public void eliminar() {
      if (tab_solicitud.isFocus()) {
