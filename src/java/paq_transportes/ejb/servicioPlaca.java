@@ -83,18 +83,19 @@ public void actualizarEstado(Integer codigo,Byte confirma){
         tab_persona.setConexion(conexion1);
         tab_persona.setSql("SELECT * FROM MAESTRO WHERE cedula='" + cedula.substring(0,cedula.length() - 1) + "' and digito_verificador='" + cedula.substring(cedula.length()-1)+"'");
         tab_persona.ejecutarSql();
-        conexion1.desconectar();
+//        conexion1.desconectar();
         return tab_persona;
     }
 
     public TablaGenerica getEmpresa(String ruc) {
         //Busca a una empresa en la tabla maestra_ruc por ruc
+        System.err.println("HOLAS");
         conectar1();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(conexion1);
         tab_persona.setSql("SELECT * FROM MAESTRO_RUC WHERE RUC='" + ruc + "'");
         tab_persona.ejecutarSql();
-        conexion1.desconectar();
+//        conexion1.desconectar();
         return tab_persona;
     }
 
@@ -105,7 +106,7 @@ public void actualizarEstado(Integer codigo,Byte confirma){
         tab_persona.setConexion(conexion);
         tab_persona.setSql("SELECT * FROM TRANS_COMERCIAL_AUTOMOTORES WHERE TRANS_COMERCIAL_AUTOMOTORES.RUC_EMPRESA ='" + iden+ "'");
         tab_persona.ejecutarSql();
-        conexion.desconectar();
+//        conexion.desconectar();
         return tab_persona;
     }
     
@@ -116,7 +117,7 @@ public void actualizarEstado(Integer codigo,Byte confirma){
         tab_persona.setConexion(conexion);
         tab_persona.setSql("SELECT CEDULA_GESTOR,NOMBRE_GESTOR,IDE_GESTOR FROM TRANS_GESTOR WHERE CEDULA_GESTOR='" + iden+ "'");
         tab_persona.ejecutarSql();
-        conexion.desconectar();
+//        conexion.desconectar();
         return tab_persona;
     } 
       
