@@ -21,9 +21,9 @@ public class pre_tipo_gestor extends Pantalla{
         //id a la tabla
         tab_tabla.setId("tab_tabla");
         tab_tabla.setTabla("trans_tipo_gestor", "ide_tipo_gestor",1);
-        tab_tabla.setHeader("TIPOS DE GESTOR");
+        tab_tabla.setHeader("TIPOS DE SOLICTUD");
         tab_tabla.getColumna("ide_tipo_gestor").setNombreVisual("CODIGO");
-        tab_tabla.getColumna("descripcion_gestor").setNombreVisual("TIPO GESTOR");
+        tab_tabla.getColumna("descripcion_gestor").setNombreVisual("TIPO SOLICITUD");
         tab_tabla.getColumna("descripcion_gestor").setMayusculas(true);
         tab_tabla.dibujar();
         PanelTabla pat_panel = new PanelTabla();
