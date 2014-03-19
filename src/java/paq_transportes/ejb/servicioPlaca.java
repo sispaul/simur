@@ -15,8 +15,6 @@ import persistencia.Conexion;
 @Stateless
 public class servicioPlaca {
 private Conexion conexion;
-private Conexion conexion1;
-//private Conexion ciudadania;
 private Utilitario utilitario = new Utilitario();
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
@@ -30,6 +28,7 @@ public void seleccionarP(Integer id_s,Integer vehiculo,Integer servicio,Byte apr
                             +"ORDER BY PLACA ASC) where IDE_DETALLE_SOLICITUD="+id_s;
             conectar();
             conexion.ejecutarSql(actualiza);
+            conexion.desconectar();
     }
 
 //ACTUALIZACION DE ENTREGA EN SOLICITUD
@@ -41,6 +40,7 @@ public void actualizarDS(Integer id_en,Integer id_s2,Byte aprob_en)
                             +"where IDE_DETALLE_SOLICITUD="+id_s2; 
             conectar();
             conexion.ejecutarSql(actualiza1);
+            conexion.desconectar();
     }
  //   ACTUALIZACION DE ENTREGA EN PLACA
 public void actualizarDE(Integer iden,String ruc,Integer placa)
@@ -52,12 +52,10 @@ public void actualizarDE(Integer iden,String ruc,Integer placa)
                             +"where placa ide_tipo_estado <> 2 and ide_placa ="+placa; 
             conectar();
             conexion.ejecutarSql(actualiza2);
+            conexion.desconectar();
     }
 
 public void insertarRequisito(Integer detalle,Integer tipo,Integer servicio){
-    System.out.println(detalle);
-    System.out.println(tipo);
-    System.out.println(servicio);
     String insertar="INSERT INTO TRANS_DETALLE_REQUISITOS_SOLICITUD (IDE_TIPO_REQUISITO,IDE_DETALLE_SOLICITUD)\n" 
                     +"SELECT r.IDE_TIPO_REQUISITO AS IDE_TIPO_REQUISITO,"+detalle+" FROM TRANS_TIPO_REQUISITO r\n" 
                     +"INNER JOIN TRANS_TIPO_SERVICIO s ON r.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO\n" 
@@ -70,6 +68,7 @@ public void insertarRequisito(Integer detalle,Integer tipo,Integer servicio){
 //                    +"WHERE v.ide_tipo_vehiculo ="+tipo+" AND s.IDE_TIPO_SERVICIO ="+servicio;
             conectar();
             conexion.ejecutarSql(insertar);
+            conexion.desconectar();
 }
 
 public void actulizarRequisito(Byte requisito,Integer detalle,Integer solicitud,Integer tipo){
@@ -83,36 +82,15 @@ public void actulizarRequisito(Byte requisito,Integer detalle,Integer solicitud,
                     +"WHERE IDE_DETALLE_REQUISITOS_SOLICITUD="+detalle+" AND IDE_TIPO_REQUISITO= "+tipo+" AND IDE_DETALLE_SOLICITUD= "+solicitud;
     conectar();
     conexion.ejecutarSql(actua);
+    conexion.desconectar();
 }
 
 public void actualizarEstado(Integer codigo,Byte confirma){
     String actual="UPDATE TRANS_DETALLE_REQUISITOS_SOLICITUD set CONFIRMAR_REQUISITO = "+confirma+" WHERE IDE_DETALLE_SOLICITUD ="+codigo;
     conectar();
     conexion.ejecutarSql(actual);
+    conexion.desconectar();
 }
-
-    public TablaGenerica getPersona(String cedula) {
-        //Busca a una persona en la tabla maestra por número de cédula
-        conectar1();
-        TablaGenerica tab_persona = new TablaGenerica();
-        tab_persona.setConexion(conexion1);
-        tab_persona.setSql("SELECT * FROM MAESTRO WHERE cedula='" + cedula.substring(0,cedula.length() - 1) + "' and digito_verificador='" + cedula.substring(cedula.length()-1)+"'");
-        tab_persona.ejecutarSql();
-//        conexion1.desconectar();
-        return tab_persona;
-    }
-
-    public TablaGenerica getEmpresa(String ruc) {
-        //Busca a una empresa en la tabla maestra_ruc por ruc
-        System.err.println("HOLAS");
-        conectar1();
-        TablaGenerica tab_persona = new TablaGenerica();
-        tab_persona.setConexion(conexion1);
-        tab_persona.setSql("SELECT * FROM MAESTRO_RUC WHERE RUC='" + ruc + "'");
-        tab_persona.ejecutarSql();
-//        conexion1.desconectar();
-        return tab_persona;
-    }
 
    public TablaGenerica getGestor(String iden) {
         //Busca a una empresa en la tabla maestra_ruc por ruc
@@ -132,6 +110,7 @@ public void actualizarEstado(Integer codigo,Byte confirma){
         tab_persona.setConexion(conexion);
         tab_persona.setSql("SELECT CEDULA_GESTOR,NOMBRE_GESTOR,IDE_GESTOR FROM TRANS_GESTOR WHERE CEDULA_GESTOR='" + iden+ "'");
         tab_persona.ejecutarSql();
+        
 //        conexion.desconectar();
         return tab_persona;
     } 
@@ -141,14 +120,6 @@ public void actualizarEstado(Integer codigo,Byte confirma){
             conexion = new Conexion();
             conexion.setUnidad_persistencia(utilitario.getPropiedad("recursojdbc"));
             conexion.NOMBRE_MARCA_BASE="sqlserver";
-        }
-    }
- 
- private void conectar1() {
-        if (conexion1 == null) {
-            conexion1 = new Conexion();
-            conexion1.setUnidad_persistencia(utilitario.getPropiedad("ciudadania"));
-            conexion1.NOMBRE_MARCA_BASE="sqlserver";
         }
     }
 }
