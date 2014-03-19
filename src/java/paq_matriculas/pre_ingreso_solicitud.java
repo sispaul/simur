@@ -7,8 +7,10 @@ package paq_matriculas;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Dialogo;
 import framework.componentes.Division;
+import framework.componentes.Efecto;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
+import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
@@ -31,13 +33,15 @@ public class pre_ingreso_solicitud extends Pantalla{
     private Grid grid_en = new Grid();
     private Grid grid_de = new Grid();
     private Grid gride = new Grid();
-    Tabulador tab_tabulador = new Tabulador();
+    private Panel pan_opcion = new Panel();
+    private Efecto efecto = new Efecto();
+    private Panel pan_opcion1 = new Panel();
+    private Efecto efecto1 = new Efecto();
     @EJB
     private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servicioPlaca.class);
     private Serviciobusqueda serviciobusqueda =(Serviciobusqueda) utilitario.instanciarEJB(Serviciobusqueda.class);
     
     public pre_ingreso_solicitud() {
-        tab_tabulador.setId("tab_tabulador");
         
         tab_solicitud.setId("tab_solicitud");
         tab_solicitud.setTabla("TRANS_SOLICITUD_PLACA", "IDE_SOLICITUD_PLACA", 1);
@@ -63,6 +67,15 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_solicitud.setTipoFormulario(true);
         tab_solicitud.dibujar();
         PanelTabla tabp1 = new PanelTabla();
+        pan_opcion1.setId("pan_opcion1");
+	pan_opcion1.setTransient(true);
+        pan_opcion1.setHeader("INGRESO DE SOLICITUD PARA PEDIDO - PLACA");
+	efecto1.setType("drop");
+	efecto1.setSpeed(150);
+	efecto1.setPropiedad("mode", "'show'");
+	efecto1.setEvent("load");
+        pan_opcion1.getChildren().add(efecto1);
+        tabp1.getChildren().add(pan_opcion1);
         tabp1.setPanelTabla(tab_solicitud);
   
         tab_detalle.setId("tab_detalle");
@@ -75,7 +88,6 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_detalle.getColumna("IDE_TIPO_VEHICULO").setNombreVisual("TIPO DE VEHICULO");
         tab_detalle.getColumna("IDE_TIPO_VEHICULO").setCombo("SELECT ide_tipo_vehiculo,des_tipo_vehiculo FROM trans_tipo_vehiculo\n" 
                                                                 +"WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
-  
         tab_detalle.getColumna("IDE_TIPO_SERVICIO").setNombreVisual("TIPO DE SERVICIO");
         tab_detalle.getColumna("IDE_TIPO_SERVICIO").setCombo("SELECT IDE_TIPO_SERVICIO,DESCRIPCION_SERVICIO FROM TRANS_TIPO_SERVICIO");
         tab_detalle.getColumna("IDE_TIPO_SERVICIO").setMetodoChange("ingresoRequisitos");
@@ -94,23 +106,29 @@ public class pre_ingreso_solicitud extends Pantalla{
         tabp2.setPanelTabla(tab_detalle); 
         
         tab_requisito.setId("tab_requisito");
-        tab_requisito.setIdCompleto("tab_tabulador:tab_requisito");
         tab_requisito.setTabla("TRANS_DETALLE_REQUISITOS_SOLICITUD", "IDE_DETALLE_REQUISITOS_SOLICITUD", 3);
         tab_requisito.getColumna("ide_tipo_requisito").setCombo("SELECT r.IDE_TIPO_REQUISITO,r.DECRIPCION_REQUISITO FROM TRANS_TIPO_REQUISITO r\n" 
                                                                 +"INNER JOIN TRANS_TIPO_SERVICIO s ON r.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO\n" 
                                                                 +"INNER JOIN trans_tipo_vehiculo v ON s.ide_tipo_vehiculo = v.ide_tipo_vehiculo\n");
-        tab_requisito.setHeader("REQUISITOS DE PEDIDO DE PLACA");
+//        tab_requisito.setHeader("REQUISITOS DE PEDIDO DE PLACA");
 //        tab_requisito.getColumna("ide_tipo_requisito").setLectura(true);
         tab_requisito.getColumna("CONFIRMAR_REQUISITO").setNombreVisual("CONFIRMAR");
         tab_requisito.dibujar();
         PanelTabla tabp3=new PanelTabla();
+        pan_opcion.setId("pan_opcion");
+	pan_opcion.setTransient(true);
+        pan_opcion.setHeader("REQUISITOS PARA SOLICITUD DE PLACA");
+	efecto.setType("drop");
+	efecto.setSpeed(150);
+	efecto.setPropiedad("mode", "'show'");
+	efecto.setEvent("load");
+        pan_opcion.getChildren().add(efecto);
+        tabp3.getChildren().add(pan_opcion);
         tabp3.setPanelTabla(tab_requisito);
-        
-        tab_tabulador.agregarTab("REQUISITOS", tabp3);
         
         Division div_division = new Division();
         div_division.setId("div_division");
-        div_division.dividir3(tabp1, tabp2, tab_tabulador, "30%", "50%", "H");
+        div_division.dividir3(tabp1, tabp2, tabp3, "35%", "47%", "H");
         agregarComponente(div_division);
         
         //Configurando el dialogo
@@ -123,7 +141,13 @@ public class pre_ingreso_solicitud extends Pantalla{
         
          grid_en.setColumns(2);
          grid_en.getChildren().add(new Etiqueta("SELECCIONE GESTOR"));
-        agregarComponente(dia_dialogoEN);   
+        agregarComponente(dia_dialogoEN);
+        
+        tab_consulta.setId("tab_consulta");
+        tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
+        tab_consulta.setCampoPrimaria("IDE_USUA");
+        tab_consulta.setLectura(true);
+        tab_consulta.dibujar();
     }
     
     public void buscaPersona(){
@@ -144,11 +168,11 @@ public class pre_ingreso_solicitud extends Pantalla{
                 tab_detalle.setValor("NOMBRE_PROPIETARIO", tab_dato.getValor("RAZON_SOCIAL"));
                 utilitario.addUpdate("tab_detalle");
             } else {
-                utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ciudadania del municipio", "");
+                utilitario.agregarMensajeInfo("El Número de RUC ingresado no existe en la base de datos ciudadania del municipio", "");
             }
-        } else  {
-            utilitario.agregarMensajeError("El Número de RUC no es válido", "");
-        }
+        } //else  {
+//            utilitario.agregarMensajeError("El Número de IDENTIFICACION es válido", "");
+//        }
     }
 
         public void cargarEmpresa() {
@@ -169,11 +193,11 @@ public class pre_ingreso_solicitud extends Pantalla{
                 utilitario.addUpdate("tab_solicitud");
                 aceptoDialogoe();
             } else {
-                utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ciudadania del municipio", "");
+                utilitario.agregarMensajeInfo("El Número de RUC ingresado no existe en la base de datos ciudadania del municipio", "");
             }
-        } else  {
-            utilitario.agregarMensajeError("El Número de RUC no es válido", "");
-        }
+        } //else  {
+          //  utilitario.agregarMensajeError("El Número de RUC no es válido", "");
+       // }
 
     }
 
