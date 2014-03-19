@@ -131,8 +131,10 @@ public pre_ingreso_solicitud_gestor() {
         tab_gestor.setTabla("trans_gestor", "ide_gestor", 2);
         tab_gestor.setHeader("Datos de Gestores");
         tab_gestor.getColumna("ide_gestor").setNombreVisual("ID");
+        tab_gestor.getColumna("ide_gestor").setCheck();
         tab_gestor.getColumna("cedula_gestor").setNombreVisual("Cedula");
         tab_gestor.getColumna("nombre_gestor").setNombreVisual("Nombre");
+        tab_gestor.getColumna("nombre_gestor").setMayusculas(true);
         tab_gestor.agregarRelacion(tab_solicitud);
         tab_gestor.dibujar();
         PanelTabla pat_gestor = new PanelTabla();
@@ -152,6 +154,7 @@ public pre_ingreso_solicitud_gestor() {
         tab_solicitud.setIdCompleto("tab_tabulador:tab_solicitud");
         tab_solicitud.setTabla("TRANS_SOLICITUD_PLACA", "IDE_SOLICITUD_PLACA", 3);
         tab_solicitud.getColumna("DESCRIPCION_SOLICITUD").setNombreVisual("Descripción de Solicitud");
+        tab_solicitud.getColumna("DESCRIPCION_SOLICITUD").setMayusculas(true);
         tab_solicitud.getColumna("NUMERO_AUTOMOTORES").setNombreVisual("Nro. Automotores");
         tab_solicitud.getColumna("FECHA_SOLICITUD").setNombreVisual("Fecha");
         tab_solicitud.getColumna("FECHA_SOLICITUD").setValorDefecto(utilitario.getFechaActual());
@@ -167,6 +170,7 @@ public pre_ingreso_solicitud_gestor() {
         tab_detalle.setId("tab_detalle");
         tab_detalle.setIdCompleto("tab_tabulador:tab_detalle");
         tab_detalle.setTabla("TRANS_DETALLE_SOLICITUD_PLACA", "IDE_DETALLE_SOLICITUD", 3);
+        tab_detalle.getColumna("NOMBRE_PROPIETARIO").setMayusculas(true);
         tab_detalle.getColumna("IDE_PLACA").setVisible(false);
         tab_detalle.getColumna("IDE_ENTREGA_PLACA").setVisible(false);
         tab_detalle.getColumna("IDE_APROBACION_PLACA").setVisible(false);
@@ -189,7 +193,7 @@ public pre_ingreso_solicitud_gestor() {
        tab_tabulador.agregarTab("DETALLE DE SOLICTUD DE MATRICULA", tabp2);
         
         Division div_division = new Division();
-        div_division.dividir2(pat_comercial, tab_tabulador, "40%", "H");
+        div_division.dividir2(pat_comercial, tab_tabulador, "30%", "H");
         agregarComponente(div_division);
         
         tab_consulta.setId("tab_consulta");
@@ -341,21 +345,26 @@ public pre_ingreso_solicitud_gestor() {
     public void insertar() {
         utilitario.getTablaisFocus().insertar();
     }
-
+//CEDULA_RUC_PROPIETARIO
     @Override
     public void guardar() {
+if (utilitario.validarCedula(tab_detalle.getValor("CEDULA_RUC_PROPIETARIO"))) {         
       if (tab_comercial.guardar()) {
            if (tab_gestor.guardar()) {
                  if (tab_solicitud.guardar()) {
                       if (tab_detalle.guardar()) {
-                          ser_Placa.insertarRequisito(Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")),Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")), Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")));
+//                          ser_Placa.insertarRequisito(Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")),Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")), Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")));
                            utilitario.addUpdate("tab_detalle");
                            guardarPantalla();
                             }
                         }
                     }
                 }
-            }
+      }else {
+            utilitario.agregarMensajeError("El Número de CEDULA no es válido", "");
+            return;
+           }      
+ }
 
     @Override
     public void eliminar() {
