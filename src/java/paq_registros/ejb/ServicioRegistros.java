@@ -18,7 +18,6 @@ public class ServicioRegistros {
 
     private Utilitario utilitario = new Utilitario();
     private Conexion conexion; //Conexion a la base de ciudadania
-    private Conexion sigag; //Conexion a la base de sigag
 
     public TablaGenerica getPersona(String cedula) {
         //Busca a una persona en la tabla maestra por número de cédula
@@ -41,7 +40,6 @@ public class ServicioRegistros {
     }
 
     public TablaGenerica getEmpresa(String ruc) {
-        System.err.println("DATOS");
         //Busca a una empresa en la tabla maestra_ruc por ruc
         conectar();
         TablaGenerica tab_persona = new TablaGenerica();
@@ -54,7 +52,7 @@ public class ServicioRegistros {
     private void conectar() {
         if (conexion == null) {
             conexion = new Conexion();
-            conexion.setUnidad_persistencia("ciudadaniajdbc");
+            conexion.setUnidad_persistencia("ciudadania");
         }
     }
     
