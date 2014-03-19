@@ -4,14 +4,19 @@
  */
 package paq_transportes;
 
-import paq_transportes.*;
+
 import framework.componentes.Boton;
+import framework.componentes.Calendario;
 import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
+import java.util.HashMap;
+import java.util.Map;
 import paq_sistema.aplicacion.Pantalla;
 
 /**
@@ -26,26 +31,77 @@ private Tabla set_estado = new Tabla();
 private Tabla tab_ingreso = new Tabla();
 private Tabla tab_placa = new Tabla();
 private Tabla tab_consulta = new Tabla();
-private Dialogo dia_dialogo = new Dialogo();
+private Dialogo dia_dialogoe = new Dialogo();
 private Dialogo dia_dialogo1 = new Dialogo();
-private Grid grid = new Grid();
+private Grid gride = new Grid();
 private Grid grid_de = new Grid();
 private Grid grid1 = new Grid();
 private Grid grid_de1 = new Grid();
-
+        ///REPORTES
+    private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
+    private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
+    private Map p_parametros = new HashMap();
+    private Dialogo dia_dialogoEN = new Dialogo();
+    private Grid grid_en = new Grid();
+    private Calendario cal_fechaini = new Calendario();
+    private Calendario cal_fechafin = new Calendario();
+    private Etiqueta etifec = new Etiqueta();
+    private Dialogo dia_dialogoDP = new Dialogo();
+    private Dialogo dia_dialogod = new Dialogo();
+    private Grid gridd = new Grid();
+    private Grid grid_dp = new Grid();
+    private Tabla set_vehiculo1 = new Tabla();
+    private Tabla set_servicio1 = new Tabla ();
+    
+    
     public pre_ingreso_placas() {
-       
-        dia_dialogo.setId("dia_dialogo");
-        dia_dialogo.setTitle("PLACAS - ASIGNACION DE TIPOS"); //titulo
-        dia_dialogo.setWidth("50%"); //siempre en porcentajes  ancho
-        dia_dialogo.setHeight("30%");//siempre porcentaje   alto
-        dia_dialogo.setResizable(false); //para que no se pueda cambiar el tamaño
-        dia_dialogo.getBot_aceptar().setMetodo("aceptoValores()");
+        /*** CONFIGURACIÓN DE OBJETO REPORTE ***/
+        bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
+        agregarComponente(rep_reporte); //2 agregar el listado de reportes
+        
+        sef_formato.setId("sef_formato");
+        agregarComponente(sef_formato);
+        
+                
+        set_vehiculo1.setId("set_vehiculo1");
+        set_vehiculo1.setSql("select ide_tipo_vehiculo,des_tipo_vehiculo from trans_tipo_vehiculo WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
+        set_vehiculo1.getColumna("des_tipo_vehiculo").setNombreVisual("Vehiculo");
+        set_vehiculo1.setRows(5);
+        set_vehiculo1.setTipoSeleccion(false);
+        set_vehiculo1.dibujar();
+        
+        set_servicio1.setId("set_servicio1");
+        set_servicio1.setSql("SELECT IDE_TIPO_SERVICIO,DESCRIPCION_SERVICIO FROM TRANS_TIPO_SERVICIO");
+        set_servicio1.getColumna("DESCRIPCION_SERVICIO").setNombreVisual("Servicio");
+        set_servicio1.setRows(10);
+        set_servicio1.setTipoSeleccion(false);
+        set_servicio1.dibujar();
+        
+         ///configurar la tabla Seleccion MOVIMIENTOS POR GRUPO Y ENCARGADO
+        dia_dialogoEN.setId("dia_dialogoEN");
+        dia_dialogoEN.setTitle("PLACAS - PLACAS ENTREGADAS"); //titulo
+        dia_dialogoEN.setWidth("60%"); //siempre en porcentajes  ancho
+        dia_dialogoEN.setHeight("40%");//siempre porcentaje   alto
+        dia_dialogoEN.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogoEN.getBot_aceptar().setMetodo("aceptoDialogo");
+        
+         grid_en.setColumns(2);
+         grid_en.getChildren().add(new Etiqueta("SELECCIONE Vehiculo"));
+         grid_en.getChildren().add(new Etiqueta("SELECCIONE Servicio"));
+        agregarComponente(dia_dialogoEN);
+        
+        /***CREACION DE OBJETOS TABLA***/
+        dia_dialogoe.setId("dia_dialogoe");
+        dia_dialogoe.setTitle("PLACAS - ASIGNACION DE TIPOS"); //titulo
+        dia_dialogoe.setWidth("50%"); //siempre en porcentajes  ancho
+        dia_dialogoe.setHeight("30%");//siempre porcentaje   alto
+        dia_dialogoe.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogoe.getBot_aceptar().setMetodo("aceptoValores()");
         grid_de.setColumns(4);
         grid_de.getChildren().add(new Etiqueta("TIPO DE PLACA"));
         grid_de.getChildren().add(new Etiqueta("TIPO DE ESTADO"));
         grid_de.getChildren().add(new Etiqueta("SELECCIONE VEHICULO"));
-        agregarComponente(dia_dialogo);
+        agregarComponente(dia_dialogoe);
         
         set_vehiculo.setId("set_vehiculo");
         set_vehiculo.setSql("select ide_tipo_vehiculo,des_tipo_vehiculo from trans_tipo_vehiculo WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
@@ -69,7 +125,7 @@ private Grid grid_de1 = new Grid();
         set_tipo.setTipoSeleccion(false);
         set_tipo.dibujar();
        
-         tab_ingreso.setId("tab_ingreso");
+        tab_ingreso.setId("tab_ingreso");
         tab_ingreso.setTabla("TRANS_INGRESOS_PLACAS", "IDE_INGRESO_PLACAS", 1);
         tab_ingreso.setHeader("Acta Ingresos de Placas");
         tab_ingreso.getColumna("IDE_INGRESO_PLACAS").setNombreVisual("ID");
@@ -98,7 +154,7 @@ private Grid grid_de1 = new Grid();
         Boton bot_placa = new Boton();
         bot_placa.setValue("ASIGNAR ESTADOS");
         bot_placa.setIcon("ui-icon-document");
-        bot_placa.setMetodo("aceptoDialogo()");
+        bot_placa.setMetodo("aceptoDialogoe");
         pat_panel.getChildren().add(bot_placa);
         
         tab_placa.setId("tab_placa");
@@ -130,7 +186,6 @@ private Grid grid_de1 = new Grid();
         div.dividir2(pat_panel, pat_panel1, "30%", "h");
         agregarComponente(div);
         
-
         dia_dialogo1.setId("dia_dialogo1");
         dia_dialogo1.setTitle("PLACAS - ASIGNACION DE TIPOS"); //titulo
         dia_dialogo1.setWidth("30%"); //siempre en porcentajes  ancho
@@ -147,19 +202,20 @@ private Grid grid_de1 = new Grid();
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
         
-    } 
+        
+    }     
     
-     public void aceptoDialogo() {
-        dia_dialogo.Limpiar();
-        dia_dialogo.setDialogo(grid);
+     public void aceptoDialogoe() {
+        dia_dialogoe.Limpiar();
+        dia_dialogoe.setDialogo(gride);
         grid_de.getChildren().add(set_vehiculo);
         grid_de.getChildren().add(set_tipo);
         grid_de.getChildren().add(set_estado);
-        dia_dialogo.setDialogo(grid_de);
+        dia_dialogoe.setDialogo(grid_de);
         set_estado.dibujar();
         set_tipo.dibujar();
         set_vehiculo.dibujar();
-        dia_dialogo.dibujar();
+        dia_dialogoe.dibujar();
     }
     
     public void aceptoValores() {
@@ -170,7 +226,7 @@ private Grid grid_de1 = new Grid();
                         tab_placa.getColumna("ide_tipo_placa").setValorDefecto(set_tipo.getValorSeleccionado());
                         tab_placa.getColumna("ide_tipo_estado").setValorDefecto(set_estado.getValorSeleccionado());
                         aceptoDialogo1();
-                        dia_dialogo.cerrar();
+                        dia_dialogoe.cerrar();
                         }
                  }
        }else {
@@ -196,12 +252,94 @@ private Grid grid_de1 = new Grid();
     public void aceptoValores1() {
             if (set_servicio.getValorSeleccionado()!= null) {
                         tab_placa.getColumna("ide_tipo_servicio").setValorDefecto(set_servicio.getValorSeleccionado());
-//                        utilitario.addUpdate("tab_placa");
                         tab_placa.insertar();
                         dia_dialogo1.cerrar();
        }else {
        utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
        }        
+    }
+
+@Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+
+    }
+    
+        @Override
+    public void aceptarReporte() {
+        rep_reporte.cerrar();            
+        cal_fechaini.setFechaActual();
+        cal_fechafin.setFechaActual();
+        switch (rep_reporte.getNombre()) {
+            case "PLACAS ENTREGADAS":
+                dia_dialogoEN.Limpiar();
+                //Agrega Fechas
+                dia_dialogoEN.setDialogo(etifec);
+                dia_dialogoEN.setDialogo(gridd);
+                //Configura grid
+                grid_en.getChildren().add(set_vehiculo1);
+                grid_en.getChildren().add(set_servicio1);
+                dia_dialogoEN.setDialogo(grid_en);
+                set_vehiculo1.dibujar();
+                set_servicio1.dibujar();
+                dia_dialogoEN.dibujar();
+               break;
+           case "PLACAS DISPONIBLES":
+                dia_dialogoDP.Limpiar();
+                //Configura grid
+                grid_dp.getChildren().add(set_vehiculo1);
+                grid_dp.getChildren().add(set_servicio1);
+                dia_dialogoDP.setDialogo(grid_dp);
+                set_vehiculo1.dibujar();
+                set_servicio1.dibujar();
+                dia_dialogoDP.dibujar();
+               break;      
+                
+        }
+    }
+     
+    public void aceptoDialogo() {
+        if (utilitario.isFechasValidas(cal_fechaini.getFecha(), cal_fechafin.getFecha())){
+        switch (rep_reporte.getNombre()) {
+               case "PLACAS ENTREGADAS":
+                    if ((set_vehiculo1.getValorSeleccionado() != null) && (set_servicio1.getValorSeleccionado() != null)) {  
+                    //los parametros de este reporte
+                    p_parametros = new HashMap();
+                    p_parametros.put("pide_veh", Integer.parseInt(set_vehiculo1.getValorSeleccionado()));
+                    p_parametros.put("pide_serv", Integer.parseInt(set_servicio1.getValorSeleccionado()));
+                    p_parametros.put("pide_fechai", cal_fechaini.getFecha());
+                    p_parametros.put("pide_fechaf", cal_fechafin.getFecha());
+                    p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA"));
+                    dia_dialogoEN.cerrar();
+                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                     System.out.println(p_parametros);
+                        System.err.println(rep_reporte.getPath());
+                    sef_formato.dibujar();
+                    } else {
+                        utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
+                    }
+               break;
+               case "PLACAS DISPONIBLES":
+                    if ((set_vehiculo1.getValorSeleccionado() != null) && (set_servicio1.getValorSeleccionado() != null)) {  
+                    //los parametros de este reporte
+                    p_parametros = new HashMap();
+                    p_parametros.put("vehiculo", Integer.parseInt(set_vehiculo1.getValorSeleccionado()));
+                    p_parametros.put("servicio", Integer.parseInt(set_servicio1.getValorSeleccionado()));
+                    p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA"));
+                    dia_dialogoDP.cerrar();
+                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_formato.dibujar();
+                    } else {
+                        utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
+                    }
+               break;                   
+        }
+        }else{
+            utilitario.agregarMensaje("Fechas", "Rango de Fechas no valido");
+        }
+    }
+    public void abrirDialogo() {
+        dia_dialogod.dibujar();
     }
     
     @Override
@@ -240,11 +378,11 @@ private Grid grid_de1 = new Grid();
     }
 
     public Dialogo getDia_dialogo() {
-        return dia_dialogo;
+        return dia_dialogoe;
     }
 
     public void setDia_dialogo(Dialogo dia_dialogo) {
-        this.dia_dialogo = dia_dialogo;
+        this.dia_dialogoe = dia_dialogo;
     }
 
     public Dialogo getDia_dialogo1() {
@@ -286,5 +424,69 @@ private Grid grid_de1 = new Grid();
     public void setTab_placa(Tabla tab_placa) {
         this.tab_placa = tab_placa;
     }
-    
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSef_formato() {
+        return sef_formato;
+    }
+
+    public void setSef_formato(SeleccionFormatoReporte sef_formato) {
+        this.sef_formato = sef_formato;
+    }
+
+    public Map getP_parametros() {
+        return p_parametros;
+    }
+
+    public void setP_parametros(Map p_parametros) {
+        this.p_parametros = p_parametros;
+    }
+
+    public Calendario getCal_fechaini() {
+        return cal_fechaini;
+    }
+
+    public void setCal_fechaini(Calendario cal_fechaini) {
+        this.cal_fechaini = cal_fechaini;
+    }
+
+    public Calendario getCal_fechafin() {
+        return cal_fechafin;
+    }
+
+    public void setCal_fechafin(Calendario cal_fechafin) {
+        this.cal_fechafin = cal_fechafin;
+    }
+
+    public Tabla getSet_vehiculo1() {
+        return set_vehiculo1;
+    }
+
+    public void setSet_vehiculo1(Tabla set_vehiculo1) {
+        this.set_vehiculo1 = set_vehiculo1;
+    }
+
+    public Tabla getSet_servicio1() {
+        return set_servicio1;
+    }
+
+    public void setSet_servicio1(Tabla set_servicio1) {
+        this.set_servicio1 = set_servicio1;
+    }
+
+    public Tabla getTab_consulta() {
+        return tab_consulta;
+    }
+
+    public void setTab_consulta(Tabla tab_consulta) {
+        this.tab_consulta = tab_consulta;
+    }
+
 }
