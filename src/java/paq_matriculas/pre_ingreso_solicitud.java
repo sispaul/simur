@@ -14,6 +14,7 @@ import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
 import javax.ejb.EJB;
 import paq_transportes.ejb.servicioPlaca;
+import paq_transportes.ejb.Serviciobusqueda;
 import paq_sistema.aplicacion.Pantalla;
 
 /**
@@ -33,6 +34,8 @@ public class pre_ingreso_solicitud extends Pantalla{
     Tabulador tab_tabulador = new Tabulador();
     @EJB
     private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servicioPlaca.class);
+    private Serviciobusqueda serviciobusqueda =(Serviciobusqueda) utilitario.instanciarEJB(Serviciobusqueda.class);
+    
     public pre_ingreso_solicitud() {
         tab_tabulador.setId("tab_tabulador");
         
@@ -125,7 +128,7 @@ public class pre_ingreso_solicitud extends Pantalla{
     
     public void buscaPersona(){
          if (utilitario.validarCedula(tab_detalle.getValor("CEDULA_RUC_PROPIETARIO"))) {
-            TablaGenerica tab_dato = ser_Placa.getPersona(tab_detalle.getValor("CEDULA_RUC_PROPIETARIO"));
+            TablaGenerica tab_dato = serviciobusqueda.getPersona(tab_detalle.getValor("CEDULA_RUC_PROPIETARIO"));
             if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra   
                 tab_detalle.setValor("NOMBRE_PROPIETARIO", tab_dato.getValor("nombre"));
@@ -135,7 +138,7 @@ public class pre_ingreso_solicitud extends Pantalla{
                 utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ciudadania del municipio", "");
             }
         } else if (utilitario.validarRUC(tab_detalle.getValor("CEDULA_RUC_PROPIETARIO"))) {
-            TablaGenerica tab_dato = ser_Placa.getEmpresa(tab_detalle.getValor("CEDULA_RUC_PROPIETARIO"));
+            TablaGenerica tab_dato = serviciobusqueda.getEmpresa(tab_detalle.getValor("CEDULA_RUC_PROPIETARIO"));
             if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra   
                 tab_detalle.setValor("NOMBRE_PROPIETARIO", tab_dato.getValor("RAZON_SOCIAL"));
@@ -179,10 +182,8 @@ public class pre_ingreso_solicitud extends Pantalla{
        tab_detalle.guardar();
        utilitario.addUpdate("tab_solicitud");
        utilitario.addUpdate("tab_detalle");
-       System.err.println("Ingreso");
        ser_Placa.insertarRequisito(Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")),Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")), Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")));
        utilitario.addUpdate("tab_requisito");
-       System.out.println("Actualizar");
        tab_requisito.actualizar();
     }
         
