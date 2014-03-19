@@ -55,7 +55,9 @@ public void actualizarDE(Integer iden,String ruc,Integer placa)
     }
 
 public void insertarRequisito(Integer detalle,Integer tipo,Integer servicio){
-    System.err.println("ingreso");
+    System.out.println(detalle);
+    System.out.println(tipo);
+    System.out.println(servicio);
     String insertar="INSERT INTO TRANS_DETALLE_REQUISITOS_SOLICITUD (IDE_TIPO_REQUISITO,IDE_DETALLE_SOLICITUD)\n" 
                     +"SELECT r.IDE_TIPO_REQUISITO AS IDE_TIPO_REQUISITO,"+detalle+" FROM TRANS_TIPO_REQUISITO r\n" 
                     +"INNER JOIN TRANS_TIPO_SERVICIO s ON r.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO\n" 
@@ -68,6 +70,19 @@ public void insertarRequisito(Integer detalle,Integer tipo,Integer servicio){
 //                    +"WHERE v.ide_tipo_vehiculo ="+tipo+" AND s.IDE_TIPO_SERVICIO ="+servicio;
             conectar();
             conexion.ejecutarSql(insertar);
+}
+
+public void actulizarRequisito(Byte requisito,Integer detalle,Integer solicitud,Integer tipo){
+//    String actua ="UPDATE TRANS_DETALLE_REQUISITOS_SOLICITUD \n" 
+//                    +"SET CONFIRMAR_REQUISITO = "+requisito+" \n" 
+//                    +"FROM (SELECT IDE_DETALLE_REQUISITOS_SOLICITUD as id, IDE_TIPO_REQUISITO as requisito, IDE_DETALLE_SOLICITUD as detalle\n" 
+//                    +"FROM TRANS_DETALLE_REQUISITOS_SOLICITUD\n" 
+//                    +"WHERE IDE_DETALLE_SOLICITUD = "+detalle+" and  IDE_DETALLE_REQUISITOS_SOLICITUD = "+solicitud+") a \n" 
+//                    +"WHERE IDE_DETALLE_REQUISITOS_SOLICITUD=a.id AND IDE_TIPO_REQUISITO=a.requisito AND IDE_DETALLE_SOLICITUD="+detalle;
+    String actua ="UPDATE TRANS_DETALLE_REQUISITOS_SOLICITUD SET CONFIRMAR_REQUISITO = "+requisito+" \n" 
+                    +"WHERE IDE_DETALLE_REQUISITOS_SOLICITUD="+detalle+" AND IDE_TIPO_REQUISITO= "+tipo+" AND IDE_DETALLE_SOLICITUD= "+solicitud;
+    conectar();
+    conexion.ejecutarSql(actua);
 }
 
 public void actualizarEstado(Integer codigo,Byte confirma){
