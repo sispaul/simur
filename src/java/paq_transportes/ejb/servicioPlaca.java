@@ -118,8 +118,9 @@ public void actualizarEstado(Integer codigo,Byte confirma){
  private void conectar() {
         if (conexion == null) {
             conexion = new Conexion();
-            conexion.setUnidad_persistencia(utilitario.getPropiedad("recursojdbc"));
             conexion.NOMBRE_MARCA_BASE="sqlserver";
+            conexion.setUnidad_persistencia(utilitario.getPropiedad("recursojdbc"));
+            
         }
     }
 }

@@ -44,8 +44,9 @@ public TablaGenerica getPersona(String cedula) {
      private void conectar() {
         if (conexion == null) {
             conexion = new Conexion();
-            conexion.setUnidad_persistencia(utilitario.getPropiedad("ciudadania"));
             conexion.NOMBRE_MARCA_BASE="sqlserver";
+            conexion.setUnidad_persistencia(utilitario.getPropiedad("ciudadania"));
+            
         }
     }
      
