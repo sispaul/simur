@@ -11,6 +11,7 @@ import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
+import framework.componentes.Tabulador;
 import javax.ejb.EJB;
 import paq_transportes.ejb.servicioPlaca;
 import paq_sistema.aplicacion.Pantalla;
@@ -29,10 +30,12 @@ public class pre_ingreso_solicitud extends Pantalla{
     private Grid grid_en = new Grid();
     private Grid grid_de = new Grid();
     private Grid gride = new Grid();
+    Tabulador tab_tabulador = new Tabulador();
     @EJB
     private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servicioPlaca.class);
     public pre_ingreso_solicitud() {
-            
+        tab_tabulador.setId("tab_tabulador");
+        
         tab_solicitud.setId("tab_solicitud");
         tab_solicitud.setTabla("TRANS_SOLICITUD_PLACA", "IDE_SOLICITUD_PLACA", 1);
         tab_solicitud.getColumna("CEDULA_RUC_PROPIETARIO").setMetodoChange("cargarEmpresa");
@@ -86,8 +89,9 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_detalle.dibujar();
         PanelTabla tabp2 = new PanelTabla();
         tabp2.setPanelTabla(tab_detalle); 
-                
+        
         tab_requisito.setId("tab_requisito");
+        tab_requisito.setIdCompleto("tab_tabulador:tab_requisito");
         tab_requisito.setTabla("TRANS_DETALLE_REQUISITOS_SOLICITUD", "IDE_DETALLE_REQUISITOS_SOLICITUD", 3);
         tab_requisito.getColumna("ide_tipo_requisito").setCombo("SELECT r.IDE_TIPO_REQUISITO,r.DECRIPCION_REQUISITO FROM TRANS_TIPO_REQUISITO r\n" 
                                                                 +"INNER JOIN TRANS_TIPO_SERVICIO s ON r.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO\n" 
@@ -99,9 +103,11 @@ public class pre_ingreso_solicitud extends Pantalla{
         PanelTabla tabp3=new PanelTabla();
         tabp3.setPanelTabla(tab_requisito);
         
+        tab_tabulador.agregarTab("REQUISITOS", tabp3);
+        
         Division div_division = new Division();
         div_division.setId("div_division");
-        div_division.dividir3(tabp1, tabp2, tabp3, "30%", "50%", "H");
+        div_division.dividir3(tabp1, tabp2, tab_tabulador, "30%", "50%", "H");
         agregarComponente(div_division);
         
         //Configurando el dialogo
@@ -169,6 +175,7 @@ public class pre_ingreso_solicitud extends Pantalla{
     }
 
    public void ingresoRequisitos() {
+       
        tab_solicitud.guardar();
        utilitario.addUpdate("tab_solicitud");
        tab_detalle.guardar();
@@ -220,13 +227,17 @@ public class pre_ingreso_solicitud extends Pantalla{
     @Override
     public void guardar() {
     if (tab_solicitud.guardar()) {
-            utilitario.addUpdate("tab_solicitud");
-            }else if (tab_detalle.guardar()) {
+               utilitario.addUpdate("tab_solicitud");
+            if (tab_detalle.guardar()) {
                 utilitario.addUpdate("tab_detalle");
-                } else if (tab_requisito.guardar()) {
-                    guardarPantalla();
-                     utilitario.addUpdate("tab_requisito");
-                    }
+                 guardarPantalla();
+                } 
+                }else if(tab_tabulador.equals("REQUISITOS")){
+                        if (tab_requisito.guardar()) {
+                            guardarPantalla();
+                            utilitario.addUpdate("tab_requisito");
+                            }
+                }
     }
 
     @Override
