@@ -18,6 +18,7 @@ import org.primefaces.component.submenu.Submenu;
 import org.primefaces.event.SelectEvent;
 import paq_sistema.aplicacion.Pantalla;
 import paq_transportes.ejb.servicioPlaca;
+import paq_transportes.ejb.Serviciobusqueda;
 
 /**
  *
@@ -33,6 +34,7 @@ public class pre_gestor_ingreso extends Pantalla{
 
     @EJB
     private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servicioPlaca.class);
+    private Serviciobusqueda serviciobusqueda =(Serviciobusqueda) utilitario.instanciarEJB(Serviciobusqueda.class);
     public pre_gestor_ingreso() {
         
         pan_opcion.setId("pan_opcion");
@@ -159,7 +161,7 @@ public class pre_gestor_ingreso extends Pantalla{
     
      public void buscaPersona(){
          if (utilitario.validarCedula(tab_gestor1.getValor("cedula_gestor"))) {
-            TablaGenerica tab_dato = ser_Placa.getPersona(tab_gestor1.getValor("cedula_gestor"));
+            TablaGenerica tab_dato = serviciobusqueda.getPersona(tab_gestor1.getValor("cedula_gestor"));
             if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra   
                 tab_gestor1.setValor("nombre_gestor", tab_dato.getValor("nombre"));
@@ -171,7 +173,7 @@ public class pre_gestor_ingreso extends Pantalla{
                 utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ciudadania del municipio", "");
             }
         } else if (utilitario.validarRUC(tab_gestor1.getValor("cedula_gestor"))) {
-            TablaGenerica tab_dato = ser_Placa.getEmpresa(tab_gestor1.getValor("cedula_gestor"));
+            TablaGenerica tab_dato = serviciobusqueda.getEmpresa(tab_gestor1.getValor("cedula_gestor"));
             if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra   
                 tab_gestor1.setValor("nombre_gestor", tab_dato.getValor("razon_social"));
@@ -189,7 +191,7 @@ public class pre_gestor_ingreso extends Pantalla{
         public void cargarEmpresa() {
          if (utilitario.validarRUC(tab_comercial.getValor("ruc_empresa"))) {
              System.out.println(tab_comercial.getValor("ruc_empresa"));
-            TablaGenerica tab_dato = ser_Placa.getEmpresa(tab_comercial.getValor("ruc_empresa"));
+            TablaGenerica tab_dato = serviciobusqueda.getEmpresa(tab_comercial.getValor("ruc_empresa"));
             System.out.println(tab_comercial.getValor("ruc_empresa"));
             if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra   
@@ -208,7 +210,7 @@ public class pre_gestor_ingreso extends Pantalla{
 
     public void buscaPersona1(){
          if (utilitario.validarCedula(tab_gestor.getValor("cedula_gestor"))) {
-            TablaGenerica tab_dato = ser_Placa.getPersona(tab_gestor.getValor("cedula_gestor"));
+            TablaGenerica tab_dato = serviciobusqueda.getPersona(tab_gestor.getValor("cedula_gestor"));
             if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra   
                 tab_gestor.setValor("nombre_gestor", tab_dato.getValor("nombre"));
