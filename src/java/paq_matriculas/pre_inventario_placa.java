@@ -146,7 +146,7 @@ private Tabla set_tipo = new Tabla();
         
         dia_dialogoe.setId("dia_dialogoe");
         dia_dialogoe.setTitle("PLACAS - ASIGNACION DE TIPOS"); //titulo
-        dia_dialogoe.setWidth("30%"); //siempre en porcentajes  ancho
+        dia_dialogoe.setWidth("35%"); //siempre en porcentajes  ancho
         dia_dialogoe.setHeight("20%");//siempre porcentaje   alto
         dia_dialogoe.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_dialogoe.getBot_aceptar().setMetodo("aceptoValores");
@@ -163,7 +163,7 @@ private Tabla set_tipo = new Tabla();
         grid_de1.getChildren().add(new Etiqueta("SELECCIONE SERVICIO"));
         agregarComponente(dia_dialogo1);
         
-        /****DECLARACION DE OBJTOS TIPO SELECCION*****/
+        /****DECLARACION DE OBJETOS TIPO SELECCION*****/
         
         set_tipo.setId("set_tipo");
         set_tipo.setHeader("TIPO DE PLACA");
@@ -182,12 +182,12 @@ private Tabla set_tipo = new Tabla();
         set_vehiculo.dibujar();
     }
 
-    public void LimpiarBoton(){
-        txt_rango1.limpiar();
-        utilitario.addUpdate("txt_rango1");
-        txt_rango2.limpiar();
-        utilitario.addUpdate("txt_rango2");
-    }
+//    public void LimpiarBoton(){
+//        txt_rango1.limpiar();
+//        utilitario.addUpdate("txt_rango1");
+//        txt_rango2.limpiar();
+//        utilitario.addUpdate("txt_rango2");
+//    }
     
     public void buscarServicio(){
         dia_dialogoe.Limpiar();
