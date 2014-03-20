@@ -128,7 +128,7 @@ public class pre_ingreso_solicitud extends Pantalla{
         
         Division div_division = new Division();
         div_division.setId("div_division");
-        div_division.dividir3(tabp1, tabp2, tabp3, "35%", "47%", "H");
+        div_division.dividir3(tabp1, tabp2, tabp3, "36%", "46%", "H");
         agregarComponente(div_division);
         
         //Configurando el dialogo
@@ -170,9 +170,7 @@ public class pre_ingreso_solicitud extends Pantalla{
             } else {
                 utilitario.agregarMensajeInfo("El Número de RUC ingresado no existe en la base de datos ciudadania del municipio", "");
             }
-        } //else  {
-//            utilitario.agregarMensajeError("El Número de IDENTIFICACION es válido", "");
-//        }
+        } 
     }
 
         public void cargarEmpresa() {
@@ -195,16 +193,12 @@ public class pre_ingreso_solicitud extends Pantalla{
             } else {
                 utilitario.agregarMensajeInfo("El Número de RUC ingresado no existe en la base de datos ciudadania del municipio", "");
             }
-        } //else  {
-          //  utilitario.agregarMensajeError("El Número de RUC no es válido", "");
-       // }
-
+        }
     }
 
    public void ingresoRequisitos() {
-       tab_solicitud.guardar();
        tab_detalle.guardar();
-       utilitario.addUpdate("tab_solicitud");
+       guardarPantalla();
        utilitario.addUpdate("tab_detalle");
        ser_Placa.insertarRequisito(Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")),Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")), Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")));
        utilitario.addUpdate("tab_requisito");
@@ -228,12 +222,10 @@ public class pre_ingreso_solicitud extends Pantalla{
     
         public void aceptoValores() {
         if (set_gestor.getValorSeleccionado()!= null) {
-                        tab_solicitud.getColumna("ide_gestor").setValorDefecto(set_gestor.getValorSeleccionado());
-                        tab_solicitud.getColumna("NOMBRE_PROPIETARIO").setVisible(true);
-                        tab_solicitud.getColumna("NOMBRE_PROPIETARIO").setCombo("SELECT TRANS_GESTOR.IDE_GESTOR, TRANS_GESTOR.NOMBRE_GESTOR\n" +
-                        "FROM TRANS_GESTOR WHERE TRANS_GESTOR.IDE_COMERCIAL_AUTOMOTORES ="+set_gestor.getValorSeleccionado()+"");
+                        tab_solicitud.setValor("ide_gestor", set_gestor.getValorSeleccionado());
                         dia_dialogoEN.cerrar();
-                        utilitario.addUpdate("tab_requisito");
+                        System.out.println(set_gestor.getValorSeleccionado());
+                        utilitario.addUpdate("tab_solicitud");
        }else {
        utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
        }        
@@ -245,6 +237,8 @@ public class pre_ingreso_solicitud extends Pantalla{
          tab_solicitud.insertar();
             } else if (tab_detalle.isFocus()) {
                         tab_detalle.insertar();
+                        tab_solicitud.guardar();
+                         guardarPantalla();
                      } else if (tab_requisito.isFocus()) {
                                   tab_requisito.insertar();
                             }  
@@ -257,19 +251,13 @@ public class pre_ingreso_solicitud extends Pantalla{
             if (tab_detalle.guardar()) {
                 utilitario.addUpdate("tab_detalle");
                  guardarPantalla();
-                 if (tab_requisito.guardar()) {
-                          for (int i = 0; i < tab_requisito.getTotalFilas(); i++) {
-                          tab_requisito.getValor(i, "CONFIRMAR_REQUISITO");
-                          tab_requisito.getValor(i, "IDE_TIPO_REQUISITO");
-                          tab_requisito.getValor(i, "IDE_DETALLE_REQUISITOS_SOLICITUD");
-                          ser_Placa.actulizarRequisito(utilitario.StringToByte(tab_requisito.getValor(i,"CONFIRMAR_REQUISITO")),Integer.parseInt(tab_requisito.getValor(i, "IDE_DETALLE_REQUISITOS_SOLICITUD"))
-                        ,Integer.parseInt(tab_requisito.getValor("IDE_DETALLE_SOLICITUD")),Integer.parseInt(tab_requisito.getValor(i, "IDE_TIPO_REQUISITO")));
-                         utilitario.addUpdate("tab_requisito");
-                            }
-                         }
-                        }
-                    } 
-                }
+                if (tab_requisito.guardar()) {
+                    requisito();
+//                    guardarPantalla();
+                    }
+              }
+      } 
+   }
     @Override
     public void eliminar() {
      if (tab_solicitud.isFocus()) {
@@ -281,6 +269,16 @@ public class pre_ingreso_solicitud extends Pantalla{
                             } 
     }
 
+    public void requisito(){
+                          for (int i = 0; i < tab_requisito.getTotalFilas(); i++) {
+                          tab_requisito.getValor(i, "CONFIRMAR_REQUISITO");
+                          tab_requisito.getValor(i, "IDE_TIPO_REQUISITO");
+                          tab_requisito.getValor(i, "IDE_DETALLE_REQUISITOS_SOLICITUD");
+                          ser_Placa.actulizarRequisito(utilitario.StringToByte(tab_requisito.getValor(i,"CONFIRMAR_REQUISITO")),Integer.parseInt(tab_requisito.getValor(i, "IDE_DETALLE_REQUISITOS_SOLICITUD"))
+                        ,Integer.parseInt(tab_requisito.getValor("IDE_DETALLE_SOLICITUD")),Integer.parseInt(tab_requisito.getValor(i, "IDE_TIPO_REQUISITO")));
+                          utilitario.addUpdate("tab_requisito");
+                        }
+    }
     public Tabla getTab_solicitud() {
         return tab_solicitud;
     }
