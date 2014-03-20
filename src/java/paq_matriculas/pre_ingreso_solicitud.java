@@ -37,13 +37,18 @@ public class pre_ingreso_solicitud extends Pantalla{
     private Efecto efecto = new Efecto();
     private Panel pan_opcion1 = new Panel();
     private Efecto efecto1 = new Efecto();
+    /*
+     DECLARACION DE CADENAS DE CONEXION, DE LLAMADA DE METODOS
+     */
     @EJB
     private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servicioPlaca.class);
     private Serviciobusqueda serviciobusqueda =(Serviciobusqueda) utilitario.instanciarEJB(Serviciobusqueda.class);
     
     public pre_ingreso_solicitud() {
-        
-        tab_solicitud.setId("tab_solicitud");
+        /**
+         PANTALLA CABECERA DE SOLICITUS
+         */
+        tab_solicitud.setId("tab_solicitud"); // NOMBRE PANTALLA
         tab_solicitud.setTabla("TRANS_SOLICITUD_PLACA", "IDE_SOLICITUD_PLACA", 1);
         tab_solicitud.getColumna("CEDULA_RUC_PROPIETARIO").setMetodoChange("cargarEmpresa");
         tab_solicitud.getColumna("DESCRIPCION_SOLICITUD").setNombreVisual("DESCRIPCIÓN DE SOLICITUD");
@@ -66,6 +71,7 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_solicitud.getGrid().setColumns(4);
         tab_solicitud.setTipoFormulario(true);
         tab_solicitud.dibujar();
+        
         PanelTabla tabp1 = new PanelTabla();
         pan_opcion1.setId("pan_opcion1");
 	pan_opcion1.setTransient(true);
@@ -77,8 +83,10 @@ public class pre_ingreso_solicitud extends Pantalla{
         pan_opcion1.getChildren().add(efecto1);
         tabp1.getChildren().add(pan_opcion1);
         tabp1.setPanelTabla(tab_solicitud);
-  
-        tab_detalle.setId("tab_detalle");
+        /**
+         DETALLE SOLICITUD
+         */
+        tab_detalle.setId("tab_detalle"); // NOMBRE PANTALLA
         tab_detalle.setTabla("TRANS_DETALLE_SOLICITUD_PLACA", "IDE_DETALLE_SOLICITUD", 2);
         tab_detalle.getColumna("NOMBRE_PROPIETARIO").setMayusculas(true);
         tab_detalle.getColumna("NOMBRE_PROPIETARIO").setNombreVisual("NOMBRE PROPIETARIO");
@@ -104,17 +112,20 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_detalle.dibujar();
         PanelTabla tabp2 = new PanelTabla();
         tabp2.setPanelTabla(tab_detalle); 
-        
+        /**
+         * REQUISITOS
+         */
         tab_requisito.setId("tab_requisito");
         tab_requisito.setTabla("TRANS_DETALLE_REQUISITOS_SOLICITUD", "IDE_DETALLE_REQUISITOS_SOLICITUD", 3);
         tab_requisito.getColumna("ide_tipo_requisito").setCombo("SELECT r.IDE_TIPO_REQUISITO,r.DECRIPCION_REQUISITO FROM TRANS_TIPO_REQUISITO r\n" 
                                                                 +"INNER JOIN TRANS_TIPO_SERVICIO s ON r.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO\n" 
                                                                 +"INNER JOIN trans_tipo_vehiculo v ON s.ide_tipo_vehiculo = v.ide_tipo_vehiculo\n");
 //        tab_requisito.setHeader("REQUISITOS DE PEDIDO DE PLACA");
-//        tab_requisito.getColumna("ide_tipo_requisito").setLectura(true);
+//        tab_requisito.getColumna("IDE_DETALLE_REQUISITOS_SOLICITUD").set
         tab_requisito.getColumna("CONFIRMAR_REQUISITO").setNombreVisual("CONFIRMAR");
         tab_requisito.dibujar();
         PanelTabla tabp3=new PanelTabla();
+        
         pan_opcion.setId("pan_opcion");
 	pan_opcion.setTransient(true);
         pan_opcion.setHeader("REQUISITOS PARA SOLICITUD DE PLACA");
@@ -131,7 +142,7 @@ public class pre_ingreso_solicitud extends Pantalla{
         div_division.dividir3(tabp1, tabp2, tabp3, "36%", "46%", "H");
         agregarComponente(div_division);
         
-        //Configurando el dialogo
+        //CONFIGURACION DE DIALOGO SELECCION DE GESTOR
         dia_dialogoEN.setId("dia_dialogoEN");
         dia_dialogoEN.setTitle("GESTORES - SELECCIONE GESTOR DE EMPRESA"); //titulo
         dia_dialogoEN.setWidth("60%"); //siempre en porcentajes  ancho
@@ -149,7 +160,9 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
     }
-    
+    /*
+     * CREACION DE METODOS DE BUSQUEDA CON RELACION A VALIDACIONES DE CEDULA O RUC
+     */
     public void buscaPersona(){
          if (utilitario.validarCedula(tab_detalle.getValor("CEDULA_RUC_PROPIETARIO"))) {
             TablaGenerica tab_dato = serviciobusqueda.getPersona(tab_detalle.getValor("CEDULA_RUC_PROPIETARIO"));
@@ -196,6 +209,9 @@ public class pre_ingreso_solicitud extends Pantalla{
         }
     }
 
+        /*
+         * LLAMADO PARA LA CREACION DE REQUISITOS AUTOMATICOS DEPENDIENTO TIPO Y SOLICITUD
+         */
    public void ingresoRequisitos() {
        tab_detalle.guardar();
        guardarPantalla();
@@ -204,7 +220,9 @@ public class pre_ingreso_solicitud extends Pantalla{
        utilitario.addUpdate("tab_requisito");
        tab_requisito.actualizar();
     }
-        
+        /*
+         * DIBUJO DE DIALOGO PARA LA SELECCION DE GESTORES
+         */
    public void aceptoDialogoe() {
         dia_dialogoEN.Limpiar();
         dia_dialogoEN.setDialogo(gride);
@@ -251,10 +269,10 @@ public class pre_ingreso_solicitud extends Pantalla{
             if (tab_detalle.guardar()) {
                 utilitario.addUpdate("tab_detalle");
                  guardarPantalla();
-                if (tab_requisito.guardar()) {
-                    requisito();
-//                    guardarPantalla();
-                    }
+//                if (tab_requisito.guardar()) {
+//                    
+////                    guardarPantalla();
+//                    }
               }
       } 
    }
@@ -269,6 +287,14 @@ public class pre_ingreso_solicitud extends Pantalla{
                             } 
     }
 
+    @Override
+    public void actualizar() {
+        requisito();
+        utilitario.addUpdate("tab_requisito");
+    }
+    /*
+     * FUNCION QUE PERMITE RECORRER LA TABLA RECUPERANDO EVENTOS ACTUALES
+     */
     public void requisito(){
                           for (int i = 0; i < tab_requisito.getTotalFilas(); i++) {
                           tab_requisito.getValor(i, "CONFIRMAR_REQUISITO");
