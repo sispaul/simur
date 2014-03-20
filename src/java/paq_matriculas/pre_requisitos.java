@@ -22,10 +22,10 @@ private Tabla tab_requisitos = new Tabla();
 
     public pre_requisitos() {
         tab_vehiculo.setId("tab_vehiculo");
-        tab_vehiculo.setHeader("REQUISITOS PARA AUTOMOTORES");
+        tab_vehiculo.setHeader("INGRESO DE REQUISITOS PARA AUTOMOTORES");
         tab_vehiculo.setTabla("trans_tipo_vehiculo", "ide_tipo_vehiculo", 1);
         tab_vehiculo.getColumna("ide_tipo_vehiculo").setNombreVisual("ID");
-        tab_vehiculo.getColumna("des_tipo_vehiculo").setNombreVisual("Tipo de Vehiculo");
+        tab_vehiculo.getColumna("des_tipo_vehiculo").setNombreVisual("TIPO DE VEHICULO");
         tab_vehiculo.agregarRelacion(tab_servicio);
         tab_vehiculo.dibujar();
         PanelTabla tabp = new PanelTabla();
@@ -34,9 +34,10 @@ private Tabla tab_requisitos = new Tabla();
         tabp.setStyle("width:100%;overflow: auto;");
       
         tab_servicio.setId("tab_servicio");
+        tab_servicio.setHeader("TIPO DE AUTOMOTOR");
         tab_servicio.setTabla("trans_tipo_servicio", "ide_tipo_servicio", 2);
         tab_servicio.getColumna("ide_tipo_servicio").setNombreVisual("ID");
-        tab_servicio.getColumna("descripcion_servicio").setNombreVisual("Tipo de Servicio");
+        tab_servicio.getColumna("descripcion_servicio").setNombreVisual("TIPO DE SERVICIO");
         tab_servicio.getColumna("descripcion_servicio").setMayusculas(true);
         tab_servicio.agregarRelacion(tab_requisitos);
         tab_servicio.dibujar();
@@ -50,15 +51,15 @@ private Tabla tab_requisitos = new Tabla();
         tab_requisitos.setIdCompleto("tab_tabulador:tab_requisitos");
         tab_requisitos.setTabla("trans_tipo_requisito", "ide_tipo_requisito", 3);
         tab_requisitos.getColumna("ide_tipo_requisito").setNombreVisual("ID");
-        tab_requisitos.getColumna("decripcion_requisito").setNombreVisual("Tipo de Requisito");
+        tab_requisitos.getColumna("decripcion_requisito").setNombreVisual("TIPO DE REQUISITO");
         tab_requisitos.getColumna("decripcion_requisito").setMayusculas(true);
         tab_requisitos.dibujar();
         PanelTabla tabp2 = new PanelTabla();
         tabp2.setPanelTabla(tab_requisitos);
-        tab_tabulador.agregarTab("REQUISITOS", tabp2);
+        tab_tabulador.agregarTab("REQUISITOS PARA AUTOMOTORES", tabp2);
 
         Division div = new Division();
-        div.dividir3(tabp, tabp1, tab_tabulador, "30%", "40%", "H");
+        div.dividir3(tabp, tabp1, tab_tabulador, "26%", "50%", "H");
         agregarComponente(div);
         
     }
