@@ -55,7 +55,7 @@ public class pre_ingreso_solicitud extends Pantalla{
          */
         tab_solicitud.setId("tab_solicitud"); // NOMBRE PANTALLA
         tab_solicitud.setTabla("TRANS_SOLICITUD_PLACA", "IDE_SOLICITUD_PLACA", 1);
-        tab_solicitud.getColumna("CEDULA_RUC_PROPIETARIO").setMetodoChange("cargarEmpresa");
+        tab_solicitud.getColumna("CEDULA_RUC_EMPRESA").setMetodoChange("cargarEmpresa");
         tab_solicitud.getColumna("DESCRIPCION_SOLICITUD").setNombreVisual("DESCRIPCIÓN DE SOLICITUD");
         tab_solicitud.getColumna("DESCRIPCION_SOLICITUD").setMayusculas(true);
         tab_solicitud.getColumna("NUMERO_AUTOMOTORES").setNombreVisual("Nro. AUTOMOTORES");
