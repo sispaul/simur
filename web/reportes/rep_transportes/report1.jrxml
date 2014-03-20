@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="51414925-4596-4406-8633-d743fc3f4b84">
+	<queryString language="SQL">
+		<![CDATA[SELECT p.CEDULA_RUC_PROPIETARIO,p.NOMBRE_PROPIETARIO,p.PLACA,p.FECHA_ENTREGA_PLACA
+FROM TRANS_TIPO_SERVICIO s,trans_tipo_vehiculo v,TRANS_TIPO_ESTADO e,TRANS_PLACA p 
+WHERE s.ide_tipo_vehiculo = v.ide_tipo_vehiculo 
+AND p.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo 
+AND p.IDE_TIPO_ESTADO = e.IDE_TIPO_ESTADO 
+AND p.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO]]>
+	</queryString>
+	<field name="CEDULA_RUC_PROPIETARIO" class="java.lang.String"/>
+	<field name="NOMBRE_PROPIETARIO" class="java.lang.String"/>
+	<field name="PLACA" class="java.lang.String"/>
+	<field name="FECHA_ENTREGA_PLACA" class="java.sql.Timestamp"/>
+	<group name="CEDULA_RUC_PROPIETARIO">
+		<groupExpression><![CDATA[$F{CEDULA_RUC_PROPIETARIO}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
