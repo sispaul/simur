@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_solicitud_placa" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5b21499e-901d-48c1-b47b-41d194e0ce44">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT s.IDE_SOLICITUD_PLACA,s.FECHA_SOLICITUD,
+s.CEDULA_RUC_EMPRESA,s.NOMBRE_EMPRESA,
+o.CEDULA_GESTOR,o.NOMBRE_GESTOR,
+s.DESCRIPCION_SOLICITUD,s.NUMERO_AUTOMOTORES,
+d.CEDULA_RUC_PROPIETARIO,d.NOMBRE_PROPIETARIO,
+d.NUMERO_FACTURA,v.des_tipo_vehiculo,
+t.DESCRIPCION_SERVICIO,g.DESCRIPCION_GESTOR,
+a.DECRIPCION_REQUISITO,r.CONFIRMAR_REQUISITO,
+d.IDE_DETALLE_SOLICITUD,r.IDE_DETALLE_REQUISITOS_SOLICITUD
+
+FROM TRANS_DETALLE_SOLICITUD_PLACA AS d ,
+TRANS_DETALLE_REQUISITOS_SOLICITUD AS r ,
+TRANS_SOLICITUD_PLACA AS s ,
+TRANS_TIPO_GESTOR AS g ,
+trans_tipo_vehiculo AS v ,
+TRANS_TIPO_SERVICIO AS t ,
+TRANS_TIPO_REQUISITO AS a,
+TRANS_GESTOR o
+
+WHERE d.IDE_SOLICITUD_PLACA = s.IDE_SOLICITUD_PLACA AND
+d.IDE_DETALLE_SOLICITUD = r.IDE_DETALLE_SOLICITUD AND
+s.IDE_TIPO_GESTOR = g.IDE_TIPO_GESTOR AND
+d.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND
+t.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND
+d.IDE_TIPO_SERVICIO = t.IDE_TIPO_SERVICIO AND
+a.IDE_TIPO_SERVICIO = t.IDE_TIPO_SERVICIO AND
+s.IDE_GESTOR = o.IDE_GESTOR
+ORDER BY d.NOMBRE_PROPIETARIO]]>
+	</queryString>
+	<field name="IDE_SOLICITUD_PLACA" class="java.lang.Long"/>
+	<field name="FECHA_SOLICITUD" class="java.lang.String"/>
+	<field name="CEDULA_RUC_EMPRESA" class="java.lang.String"/>
+	<field name="NOMBRE_EMPRESA" class="java.lang.String"/>
+	<field name="CEDULA_GESTOR" class="java.lang.String"/>
+	<field name="NOMBRE_GESTOR" class="java.lang.String"/>
+	<field name="DESCRIPCION_SOLICITUD" class="java.lang.String"/>
+	<field name="NUMERO_AUTOMOTORES" class="java.lang.Integer"/>
+	<field name="CEDULA_RUC_PROPIETARIO" class="java.lang.String"/>
+	<field name="NOMBRE_PROPIETARIO" class="java.lang.String"/>
+	<field name="NUMERO_FACTURA" class="java.lang.Integer"/>
+	<field name="des_tipo_vehiculo" class="java.lang.String"/>
+	<field name="DESCRIPCION_SERVICIO" class="java.lang.String"/>
+	<field name="DESCRIPCION_GESTOR" class="java.lang.String"/>
+	<field name="DECRIPCION_REQUISITO" class="java.lang.String"/>
+	<field name="CONFIRMAR_REQUISITO" class="java.lang.Boolean"/>
+	<field name="IDE_DETALLE_SOLICITUD" class="java.lang.Long"/>
+	<field name="IDE_DETALLE_REQUISITOS_SOLICITUD" class="java.lang.Long"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="f80e00ac-6daa-4d13-8324-e57f0538d227" x="0" y="20" width="555" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DIRECCION DE TRANSPORTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1929134e-f19c-4834-99f8-c908d859c625" x="0" y="0" width="556" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GOBIERNO AUTONOMO DESCENTRALIZADO DE RUMIÑAHUI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7e1523bb-ca06-44cf-9fd8-02abaad80a55" x="0" y="40" width="555" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INFORME DIARIO DE MATRICULACIÓN]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="50" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="02a341ab-cc23-4b03-ad92-4d2fa27e4f62" x="18" y="0" width="523" height="49"/>
+			</rectangle>
+			<textField>
+				<reportElement uuid="d7124a21-a5b8-46b9-917c-26aa70745daf" x="84" y="2" width="47" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{IDE_SOLICITUD_PLACA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="95564479-9a30-4dd6-ad8a-2e2457626d6c" x="452" y="26" width="89" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FECHA_SOLICITUD}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="081dca58-2c64-41c4-ab19-30b1cf83d5b4" x="382" y="14" width="100" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CEDULA_RUC_EMPRESA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="80078e46-1dff-4065-81e0-b63632e2735a" x="131" y="14" width="205" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOMBRE_EMPRESA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7837cec9-ae8f-4785-a4dc-f41479ab9ab5" x="50" y="38" width="78" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CEDULA_GESTOR}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b152a67e-7c3f-4d78-90ad-32a5b220500e" x="123" y="26" width="100" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOMBRE_GESTOR}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="ca4b9d5d-c99a-4db0-ae78-52620da0621d" x="20" y="2" width="56" height="12"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nro. Solicitud:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="926ecad3-5073-4e4b-a58d-32a6d3c1a781" x="20" y="14" width="138" height="12"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[EMPRESA QUE TRAMITA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="eb8d37c3-8655-42ce-bd82-968f8400e1d5" x="352" y="14" width="52" height="12"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RUC:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e8f9fc6c-4107-4772-befb-b3c78534f3e4" x="20" y="26" width="100" height="12"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GESTOR DE TRAMITE:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2b493b3c-1da7-4b4d-b56b-81c3743092e8" x="20" y="38" width="27" height="12"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[C.I.:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="97e72012-ca98-4293-8615-1dfbdf7e1141" x="352" y="26" width="90" height="12"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA DE SOLICITUD:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="8fef87e0-1bfa-42fd-a0f1-19dc436d2545" x="442" y="38" width="52" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NUMERO_AUTOMOTORES}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f443bd97-b9a0-43c2-86cc-2957459d0d90" x="352" y="38" width="100" height="12"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nro. Automotores:]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="56" splitType="Stretch">
+			<rectangle radius="0">
+				<reportElement uuid="bdcfac80-3a3e-4fb8-80ec-194e07d3a323" key="element-22" mode="Opaque" x="1" y="11" width="555" height="22" forecolor="#000000" backcolor="#999999"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement uuid="2a14d9ba-45d4-4766-aa3e-eda3aa35e9db" x="76" y="22" width="213" height="11" forecolor="#FFFFFF"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOMBRE_PROPIETARIO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c0c12116-d0ec-4fcd-8bd5-5989d9260347" x="479" y="22" width="76" height="11" forecolor="#FFFFFF"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NUMERO_FACTURA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a605a6ff-d3a5-42f6-a3e3-a8d8fe391969" x="388" y="11" width="74" height="11" forecolor="#FFFFFF"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{des_tipo_vehiculo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e91d19d1-b50e-439e-be28-5686d9f35424" x="388" y="22" width="74" height="11" forecolor="#FFFFFF"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DESCRIPCION_SERVICIO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0646465d-f667-4926-9f1c-95f6d0c44648" x="76" y="11" width="100" height="11" forecolor="#FFFFFF"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CEDULA_RUC_PROPIETARIO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="599b1542-8f74-4ec8-8839-c99887c5542e" x="1" y="11" width="75" height="11" forecolor="#FFFFFF"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[C.I. o RUC :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c25a8b07-dd2c-4e91-b0b2-5288c64b1f48" x="1" y="22" width="75" height="11" forecolor="#FFFFFF"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PROPIETARIO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="24390bb8-1642-4501-86de-4cf1795b5122" x="288" y="11" width="100" height="11" forecolor="#FFFFFF"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TIPO DE AUTOMOTOR:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9c75cfed-b3a7-4211-955a-5357171a4723" x="288" y="22" width="100" height="11" forecolor="#FFFFFF"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TIPO DE SERVICIO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6d1c2d24-9873-4f89-8a72-4a50dcd1f137" x="479" y="11" width="76" height="11" forecolor="#FFFFFF"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nro. FACTURA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ff26acb0-53db-467c-b0d1-3e33a834f411" x="20" y="42" width="140" height="12"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DECRIPCION_REQUISITO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2fe23841-f312-4e7c-bae3-e5e00ccf9b6f" x="451" y="42" width="105" height="12"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONFIRMAR_REQUISITO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="13" splitType="Stretch">
+			<textField>
+				<reportElement uuid="e5bc778d-9aa1-4188-8669-87da1cb78d54" x="1" y="0" width="406" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DECRIPCION_REQUISITO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6dfac20f-c8b7-4719-a416-6697a63ffe9e" x="440" y="0" width="115" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CONFIRMAR_REQUISITO}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="d7b43378-c39b-4ca8-a16c-a16c36d04b63" key="line" positionType="FixRelativeToBottom" x="0" y="12" width="555" height="1" forecolor="#808080"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="24" splitType="Stretch">
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
+				<reportElement uuid="eee940eb-516a-47a2-bddc-d023d678ace6" key="textField" x="513" y="2" width="36" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="CP1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="e7a63930-2f66-49fb-8ac5-53434857a0e7" key="textField" x="1" y="2" width="135" height="19"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="ba535517-fc31-4edb-8661-ef61e37d8bc7" key="textField" x="339" y="2" width="170" height="19"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
