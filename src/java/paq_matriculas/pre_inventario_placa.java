@@ -143,7 +143,7 @@ private Tabla set_tipo = new Tabla();
         
         dia_dialogoe.setId("dia_dialogoe");
         dia_dialogoe.setTitle("PLACAS - ASIGNACION DE TIPOS"); //titulo
-        dia_dialogoe.setWidth("40%"); //siempre en porcentajes  ancho
+        dia_dialogoe.setWidth("30%"); //siempre en porcentajes  ancho
         dia_dialogoe.setHeight("20%");//siempre porcentaje   alto
         dia_dialogoe.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_dialogoe.getBot_aceptar().setMetodo("aceptoValores");
