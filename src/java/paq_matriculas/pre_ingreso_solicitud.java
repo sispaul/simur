@@ -24,12 +24,17 @@ import paq_sistema.aplicacion.Pantalla;
  * @author p-sistemas
  */
 public class pre_ingreso_solicitud extends Pantalla{
+    //DECLARACION OBJETOS TABLA
     private Tabla tab_solicitud = new Tabla();
     private Tabla tab_detalle = new Tabla();
     private Tabla tab_requisito = new Tabla();
     private Tabla tab_consulta = new Tabla();
     private Tabla set_gestor = new Tabla();
+    
+    //DECLARACION OBJETO DIALOGO
     private Dialogo dia_dialogoEN = new Dialogo();
+    
+    // DELCARACION OBJETOS PANEL Y GRID
     private Grid grid_en = new Grid();
     private Grid grid_de = new Grid();
     private Grid gride = new Grid();
@@ -120,8 +125,6 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_requisito.getColumna("ide_tipo_requisito").setCombo("SELECT r.IDE_TIPO_REQUISITO,r.DECRIPCION_REQUISITO FROM TRANS_TIPO_REQUISITO r\n" 
                                                                 +"INNER JOIN TRANS_TIPO_SERVICIO s ON r.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO\n" 
                                                                 +"INNER JOIN trans_tipo_vehiculo v ON s.ide_tipo_vehiculo = v.ide_tipo_vehiculo\n");
-//        tab_requisito.setHeader("REQUISITOS DE PEDIDO DE PLACA");
-//        tab_requisito.getColumna("IDE_DETALLE_REQUISITOS_SOLICITUD").set
         tab_requisito.getColumna("CONFIRMAR_REQUISITO").setNombreVisual("CONFIRMAR");
         tab_requisito.dibujar();
         PanelTabla tabp3=new PanelTabla();
@@ -237,7 +240,9 @@ public class pre_ingreso_solicitud extends Pantalla{
         set_gestor.dibujar();
         dia_dialogoEN.dibujar();
     }  
-    
+    /*
+     * ACEPTACIÓN DE VALORES SELECCIONADOS DENTRO DEL DIALOGO
+     */
         public void aceptoValores() {
         if (set_gestor.getValorSeleccionado()!= null) {
                         tab_solicitud.setValor("ide_gestor", set_gestor.getValorSeleccionado());
