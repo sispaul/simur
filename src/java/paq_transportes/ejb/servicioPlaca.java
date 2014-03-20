@@ -28,7 +28,7 @@ public void seleccionarP(Integer id_s,Integer vehiculo,Integer servicio,Byte apr
                             +"ORDER BY PLACA ASC) where IDE_DETALLE_SOLICITUD="+id_s;
             conectar();
             conexion.ejecutarSql(actualiza);
-            conexion.desconectar();
+//            conexion.desconectar();
     }
 
 //ACTUALIZACION DE ENTREGA EN SOLICITUD
@@ -40,7 +40,7 @@ public void actualizarDS(Integer id_en,Integer id_s2,Byte aprob_en)
                             +"where IDE_DETALLE_SOLICITUD="+id_s2; 
             conectar();
             conexion.ejecutarSql(actualiza1);
-            conexion.desconectar();
+//            conexion.desconectar();
     }
  //   ACTUALIZACION DE ENTREGA EN PLACA
 public void actualizarDE(Integer iden,String ruc,Integer placa)
@@ -52,7 +52,7 @@ public void actualizarDE(Integer iden,String ruc,Integer placa)
                             +"where placa ide_tipo_estado <> 2 and ide_placa ="+placa; 
             conectar();
             conexion.ejecutarSql(actualiza2);
-            conexion.desconectar();
+//            conexion.desconectar();
     }
 
 public void insertarRequisito(Integer detalle,Integer tipo,Integer servicio){
@@ -68,7 +68,7 @@ public void insertarRequisito(Integer detalle,Integer tipo,Integer servicio){
 //                    +"WHERE v.ide_tipo_vehiculo ="+tipo+" AND s.IDE_TIPO_SERVICIO ="+servicio;
             conectar();
             conexion.ejecutarSql(insertar);
-            conexion.desconectar();
+//            conexion.desconectar();
 }
 
 public void actulizarRequisito(Byte requisito,Integer detalle,Integer solicitud,Integer tipo){
@@ -82,14 +82,14 @@ public void actulizarRequisito(Byte requisito,Integer detalle,Integer solicitud,
                     +"WHERE IDE_DETALLE_REQUISITOS_SOLICITUD="+detalle+" AND IDE_TIPO_REQUISITO= "+tipo+" AND IDE_DETALLE_SOLICITUD= "+solicitud;
     conectar();
     conexion.ejecutarSql(actua);
-    conexion.desconectar();
+//    conexion.desconectar();
 }
 
 public void actualizarEstado(Integer codigo,Byte confirma){
     String actual="UPDATE TRANS_DETALLE_REQUISITOS_SOLICITUD set CONFIRMAR_REQUISITO = "+confirma+" WHERE IDE_DETALLE_SOLICITUD ="+codigo;
     conectar();
     conexion.ejecutarSql(actual);
-    conexion.desconectar();
+//    conexion.desconectar();
 }
 
    public TablaGenerica getGestor(String iden) {
