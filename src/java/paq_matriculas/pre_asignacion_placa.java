@@ -6,15 +6,20 @@ package paq_matriculas;
 
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
+import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Efecto;
 import framework.componentes.Etiqueta;
+import framework.componentes.Grid;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
+import javax.ejb.EJB;
+import javax.swing.JOptionPane;
 import org.primefaces.event.SelectEvent;
 import paq_sistema.aplicacion.Pantalla;
+import paq_transportes.ejb.servicioPlaca;
 
 /**
  *
@@ -27,7 +32,16 @@ private Tabla tab_aprobacion = new Tabla();
 private Tabla tab_consulta = new Tabla();
 private Panel pan_opcion = new Panel();
 private Efecto efecto = new Efecto();
+private Dialogo dia_dialogoe = new Dialogo();
+private Dialogo dia_dialogo1 = new Dialogo();
+private Grid grid_de = new Grid();
+private Grid gride = new Grid();
+private Grid grid1 = new Grid();
+private Grid grid_de1 = new Grid();
+
 private AutoCompletar aut_busca = new AutoCompletar();
+@EJB
+private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servicioPlaca.class);
 
     public pre_asignacion_placa() {
         
@@ -45,7 +59,6 @@ private AutoCompletar aut_busca = new AutoCompletar();
         bot_limpiar.setIcon("ui-icon-cancel");
         bot_limpiar.setMetodo("limpiar");
         bar_botones.agregarBoton(bot_limpiar);
-
         
         /*
          * CREACION DE OBJETOS TABLA
@@ -58,7 +71,7 @@ private AutoCompletar aut_busca = new AutoCompletar();
         tab_solicitud.getColumna("IDE_TIPO_VEHICULO").setLectura(true);
         tab_solicitud.getColumna("IDE_TIPO_SERVICIO").setLectura(true);
         tab_solicitud.getColumna("APROBADO_SOLICITUD").setLectura(true);
-        tab_solicitud.getColumna("APROBADO_SOLICITUD").setNombreVisual("Aprobado");
+        tab_solicitud.getColumna("APROBADO_SOLICITUD").setNombreVisual("APROBADO");
         tab_solicitud.getColumna("IDE_APROBACION_PLACA").setLectura(true);
         tab_solicitud.getColumna("IDE_PLACA").setLectura(true);
         tab_solicitud.getColumna("IDE_ENTREGA_PLACA").setVisible(false);
@@ -70,7 +83,10 @@ private AutoCompletar aut_busca = new AutoCompletar();
         tab_solicitud.getColumna("IDE_TIPO_SERVICIO").setNombreVisual("SERVICIO");
         tab_solicitud.getColumna("IDE_TIPO_VEHICULO").setNombreVisual("VEHICULO");
         tab_solicitud.getColumna("NOMBRE_PROPIETARIO").setNombreVisual("PROPIETARIO");
+        tab_solicitud.getColumna("NOMBRE_PROPIETARIO").setLectura(true);
         tab_solicitud.getColumna("CEDULA_RUC_PROPIETARIO").setNombreVisual("IDENTIFICACIÓN");
+        tab_solicitud.getColumna("CEDULA_RUC_PROPIETARIO").setLectura(true);
+        tab_solicitud.getColumna("IDE_APROBACION_PLACA").setNombreVisual("DOCT. DE APROBACIÓN");
         tab_solicitud.getColumna("IDE_DETALLE_SOLICITUD").setNombreVisual("ID");
         tab_solicitud.agregarRelacion(tab_requisito);
         tab_solicitud.setTipoFormulario(true);
@@ -101,52 +117,104 @@ private AutoCompletar aut_busca = new AutoCompletar();
         bot_bus.setId("bot_bus");
         bot_bus.setValue("ASIGNAR PLACA");
         bot_bus.setIcon("ui-icon-comment");
-        bot_bus.setMetodo("buscarServicio");
+        bot_bus.setMetodo("aceptarPlaca");
         pan_opcion.getChildren().add(bot_bus);
 
-        
 	pan_opcion.getChildren().add(efecto);
         tbp_r.getChildren().add(pan_opcion);
         tbp_r.setPanelTabla(tab_requisito);
    
-        
        tab_aprobacion.setId("tab_aprobacion");
        tab_aprobacion.setTabla("trans_aprobacion_placa", "ide_aprobacion_placa", 3);
-       tab_aprobacion.getColumna("IDE_APROBACION_PLACA").setNombreVisual("ID");
-       tab_aprobacion.getColumna("FECHA_APROBACION").setNombreVisual("Fecha de Aprobacion");
-       tab_aprobacion.getColumna("USU_APROBACION").setNombreVisual("Quien Aprueba");
-       tab_aprobacion.getColumna("COMENTARIO_APROBACION").setNombreVisual("Comentarios");
        tab_aprobacion.getColumna("FECHA_APROBACION").setValorDefecto(utilitario.getFechaActual());
        tab_aprobacion.getColumna("FECHA_APROBACION").setLectura(true);
-       tab_aprobacion.getColumna("USU_APROBACION").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
-       tab_aprobacion.getColumna("USU_APROBACION").setLectura(true);
+//       tab_aprobacion.getColumna("USU_APROBACION").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
+//       tab_aprobacion.getColumna("USU_APROBACION").setLectura(true);
        tab_aprobacion.getGrid().setColumns(2);
        tab_aprobacion.setTipoFormulario(true);
        tab_aprobacion.dibujar();
-        PanelTabla pat_panel5 = new PanelTabla();
-        pat_panel5.setPanelTabla(tab_aprobacion);
-//
+        PanelTabla tbp_a=new PanelTabla(); 
+        tbp_a.setPanelTabla(tab_aprobacion);
+//        tbp_a.setInView(false);
         
         Division div_division = new Division();
         div_division.setId("div_division");
-        div_division.dividir2(tbp_s, tbp_r,"30%", "H");
+//        div_division.dividir2(tbp_s, tbp_r,"30%", "H");
+        div_division.dividir3(tbp_s,tbp_r,tbp_a,"30%","5%", "H");
         agregarComponente(div_division);
-//        
+        
+        dia_dialogoe.setId("dia_dialogoe");
+        dia_dialogoe.setTitle("CONFIRMAR ASIGNACIÓN"); //titulo
+        dia_dialogoe.setWidth("16%"); //siempre en porcentajes  ancho
+        dia_dialogoe.setHeight("8%");//siempre porcentaje   alto
+        dia_dialogoe.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogoe.getBot_aceptar().setMetodo("aceptoValores");
+        dia_dialogoe.getBot_cancelar().setMetodo("cancelarValores");
+        grid_de.setColumns(4);
+        agregarComponente(dia_dialogoe);
+        
+        tab_consulta.setId("tab_consulta");
+        tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
+        tab_consulta.setCampoPrimaria("IDE_USUA");
+        tab_consulta.setLectura(true);
+        tab_consulta.dibujar(); 
+        
     }
     
      public void buscarPersona(SelectEvent evt) {
         aut_busca.onSelect(evt);
         if (aut_busca.getValor() != null) {
             tab_solicitud.setFilaActual(aut_busca.getValor());
-            utilitario.addUpdate("set_solicitud");
-            utilitario.addUpdate("set_requisito");
+            utilitario.addUpdate("tab_solicitud");
+            utilitario.addUpdate("tab_requisito");
         }
     }
         public void limpiar() {
         aut_busca.limpiar();
         utilitario.addUpdate("aut_busca");
         }
-        
+   
+     public void aceptarPlaca(){
+        dia_dialogoe.Limpiar();
+        dia_dialogoe.setDialogo(gride);
+        dia_dialogoe.setDialogo(grid_de);
+        dia_dialogoe.dibujar();
+     }
+     
+      public void cancelarValores(){
+        utilitario.agregarMensajeInfo("ASIGNACIÓN NO REALIZADA", "");
+        dia_dialogoe.cerrar();
+     }
+      
+     public void aceptoValores(){
+         tab_aprobacion.insertar();
+        ser_Placa.asigancionPlaca(tab_consulta.getValor("NICK_USUA"));
+        utilitario.addUpdate("tab_aprobacion");
+         System.out.println(tab_solicitud.getValor("IDE_DETALLE_SOLICITUD"));
+         System.err.println(tab_solicitud.getValor("IDE_tipo_vehiculo"));
+         System.out.println(tab_solicitud.getValor("IDE_tipo_servicio"));
+         System.err.println(tab_aprobacion.getValor("IDE_APROBACION_PLACA"));
+        System.out.println("Asignacion realizada");
+        llamada();
+     }
+     
+     public void llamada(){
+         System.out.println(tab_solicitud.getValor("IDE_DETALLE_SOLICITUD"));
+         System.err.println(tab_solicitud.getValor("IDE_tipo_vehiculo"));
+         System.out.println(tab_solicitud.getValor("IDE_tipo_servicio"));
+         System.err.println(tab_aprobacion.getValor("IDE_APROBACION_PLACA"));
+        ser_Placa.seleccionarP(Integer.parseInt(tab_solicitud.getValor("IDE_DETALLE_SOLICITUD")), Integer.parseInt(tab_solicitud.getValor("IDE_tipo_vehiculo")), 
+        Integer.parseInt(tab_solicitud.getValor("IDE_tipo_servicio")), Integer.parseInt(tab_aprobacion.getValor("IDE_APROBACION_PLACA")));
+        utilitario.addUpdate("tab_solicitud");
+        System.out.println("Actualizacion realizada");
+        asignacion();
+     }
+     
+     public void asignacion(){
+         ser_Placa.estadoPlaca(Integer.parseInt(tab_solicitud.getValor("IDE_PLACA")));
+        utilitario.agregarMensaje("ASIGNACIÓN REALIZADA", "");
+        dia_dialogoe.cerrar();
+     }
     @Override
     public void insertar() {
     }
@@ -157,6 +225,10 @@ private AutoCompletar aut_busca = new AutoCompletar();
 
     @Override
     public void eliminar() {
+    }
+    
+   @Override
+    public void actualizar() {
     }
 
     public Tabla getTab_requisito() {
@@ -181,6 +253,14 @@ private AutoCompletar aut_busca = new AutoCompletar();
 
     public void setTab_solicitud(Tabla tab_solicitud) {
         this.tab_solicitud = tab_solicitud;
+    }
+
+    public AutoCompletar getAut_busca() {
+        return aut_busca;
+    }
+
+    public void setAut_busca(AutoCompletar aut_busca) {
+        this.aut_busca = aut_busca;
     }
     
 }
