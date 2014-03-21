@@ -100,10 +100,18 @@ public void actualizarEstado(Integer codigo,Byte confirma){
 
 public void asigancionPlaca(String usuario){
     String actual="INSERT INTO TRANS_APROBACION_PLACA (FECHA_APROBACION,APROBADO,USU_APROBACION)\n" +
-                    "VALUES (" + utilitario.getFormatoFechaSQL(utilitario.getFechaActual()) +",1,"+usuario+")";
+                    "VALUES (" + utilitario.getFormatoFechaSQL(utilitario.getFechaActual()) +",1,'"+usuario+"')";
     conectar();
     conexion.ejecutarSql(actual);
 //    conexion.desconectar();
+}
+
+public void estadoPlaca(Integer placa){
+        String placa1 ="UPDATE TRANS_PLACA\n" +
+                      "set IDE_TIPO_ESTADO = (SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO WHERE DESCRIPCION_ESTADO LIKE 'asignada')\n" +
+                      "WHERE IDE_PLACA ="+placa;
+    conectar();
+    conexion.ejecutarSql(placa1);
 }
 
    public TablaGenerica getGestor(String iden) {
