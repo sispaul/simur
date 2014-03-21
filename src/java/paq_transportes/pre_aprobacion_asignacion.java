@@ -122,7 +122,14 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         div_division.setId("div_division");
         div_division.dividir2(tbp_s, tab_tabulador, "30%", "H");
         agregarComponente(div_division);
-        
+//        Division div = new Division();
+//        div.dividir2(tbp_r, pat_panel5, "50%", "v");
+//
+//        Division div1 = new Division();
+//        div1.dividir2(tbp_s, div, "50%", "h");
+//
+//        agregarComponente(div1);
+//        
 }
      public void buscarPersona(SelectEvent evt) {
         aut_busca.onSelect(evt);
@@ -139,7 +146,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
     
     @Override
     public void insertar() {
-    set_aprobacion.insertar();
+     utilitario.getTablaisFocus().insertar();
     }
 
     @Override
@@ -148,7 +155,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
             set_aprobacion.actualizar();
             utilitario.addUpdate("set_aprobacion");
             if (guardarPantalla().isEmpty()) {
-            ser_Placa.seleccionarP(Integer.parseInt(set_solicitud.getValor("IDE_DETALLE_SOLICITUD")), Integer.parseInt(set_solicitud.getValor("IDE_tipo_vehiculo")), Integer.parseInt(set_solicitud.getValor("IDE_tipo_servicio")), Byte.parseByte(set_aprobacion.getValor("APROBADO")), Integer.parseInt(set_aprobacion.getValor("IDE_APROBACION_PLACA")));
+//            ser_Placa.seleccionarP(Integer.parseInt(set_solicitud.getValor("IDE_DETALLE_SOLICITUD")), Integer.parseInt(set_solicitud.getValor("IDE_tipo_vehiculo")), Integer.parseInt(set_solicitud.getValor("IDE_tipo_servicio")), Byte.parseByte(set_aprobacion.getValor("APROBADO")), Integer.parseInt(set_aprobacion.getValor("IDE_APROBACION_PLACA")));
             set_solicitud.actualizar();
             utilitario.addUpdate("set_solicitud");
             }
