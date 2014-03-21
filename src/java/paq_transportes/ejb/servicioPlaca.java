@@ -6,6 +6,7 @@ package paq_transportes.ejb;
 
 import framework.aplicacion.TablaGenerica;
 import javax.ejb.Stateless;
+import java.util.Date;
 import paq_sistema.aplicacion.Utilitario;
 import persistencia.Conexion;
 /**
@@ -18,6 +19,7 @@ private Conexion conexion;
 private Utilitario utilitario = new Utilitario();
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
+    private String confirmar;
 
 //ASIGNACION DE ESTADO A PLACAS NUEVAS
 public void placaNew()
@@ -30,10 +32,10 @@ public void placaNew()
     }
 
 //ACTUALIZACION DE APROBACION EN SOLICITUD y ASIGNACION AUTOMATICA DE PLACA
-public void seleccionarP(Integer id_s,Integer vehiculo,Integer servicio,Byte aprobado,Integer id_a)
+public void seleccionarP(Integer id_s,Integer vehiculo,Integer servicio,Integer id_a)
 {
       String actualiza ="update TRANS_DETALLE_SOLICITUD_PLACA \n" 
-                         +"set APROBADO_SOLICITUD="+aprobado+",IDE_APROBACION_PLACA= "+id_a+",ide_placa = (SELECT TOP 1 IDE_PLACA FROM TRANS_PLACA\n" +
+                         +"set APROBADO_SOLICITUD= 1,IDE_APROBACION_PLACA= "+id_a+",ide_placa = (SELECT TOP 1 IDE_PLACA FROM TRANS_PLACA\n" +
                         "WHERE IDE_TIPO_ESTADO =(SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO WHERE DESCRIPCION_ESTADO LIKE 'disponible')\n" +
                         "AND IDE_TIPO_VEHICULO= "+vehiculo+" AND IDE_TIPO_SERVICIO = "+servicio+" ORDER BY PLACA ASC) where IDE_DETALLE_SOLICITUD="+id_s;
             conectar();
@@ -42,7 +44,6 @@ public void seleccionarP(Integer id_s,Integer vehiculo,Integer servicio,Byte apr
     }
 
 //ACTUALIZACION DE ENTREGA EN SOLICITUD
-
 public void actualizarDS(Integer id_en,Integer id_s2,Byte aprob_en)
     {
         String actualiza1 = "update TRANS_DETALLE_SOLICITUD_PLACA \n" 
@@ -92,6 +93,14 @@ public void actulizarRequisito(Byte requisito,Integer detalle,Integer solicitud,
 
 public void actualizarEstado(Integer codigo,Byte confirma){
     String actual="UPDATE TRANS_DETALLE_REQUISITOS_SOLICITUD set CONFIRMAR_REQUISITO = "+confirma+" WHERE IDE_DETALLE_SOLICITUD ="+codigo;
+    conectar();
+    conexion.ejecutarSql(actual);
+//    conexion.desconectar();
+}
+
+public void asigancionPlaca(String usuario){
+    String actual="INSERT INTO TRANS_APROBACION_PLACA (FECHA_APROBACION,APROBADO,USU_APROBACION)\n" +
+                    "VALUES (" + utilitario.getFormatoFechaSQL(utilitario.getFechaActual()) +",1,"+usuario+")";
     conectar();
     conexion.ejecutarSql(actual);
 //    conexion.desconectar();
