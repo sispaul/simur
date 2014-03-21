@@ -13,7 +13,6 @@ import framework.componentes.Grid;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
-import framework.componentes.Tabulador;
 import javax.ejb.EJB;
 import paq_transportes.ejb.servicioPlaca;
 import paq_transportes.ejb.Serviciobusqueda;
