@@ -19,13 +19,23 @@ private Utilitario utilitario = new Utilitario();
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
 
+//ASIGNACION DE ESTADO A PLACAS NUEVAS
+public void placaNew()
+{
+      String nueva ="UPDATE TRANS_PLACA\n" +
+                    "set IDE_TIPO_ESTADO = (SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO WHERE DESCRIPCION_ESTADO LIKE 'disponible')\n" +
+                    "WHERE IDE_TIPO_ESTADO is null";
+            conectar();
+            conexion.ejecutarSql(nueva);
+    }
+
 //ACTUALIZACION DE APROBACION EN SOLICITUD y ASIGNACION AUTOMATICA DE PLACA
 public void seleccionarP(Integer id_s,Integer vehiculo,Integer servicio,Byte aprobado,Integer id_a)
 {
       String actualiza ="update TRANS_DETALLE_SOLICITUD_PLACA \n" 
-                            +"set APROBADO_SOLICITUD="+aprobado+",IDE_APROBACION_PLACA= "+id_a+",ide_placa = (SELECT TOP 1 IDE_PLACA FROM TRANS_PLACA\n" 
-                            +"WHERE IDE_TIPO_ESTADO =3 AND IDE_TIPO_VEHICULO= "+vehiculo+" AND IDE_TIPO_SERVICIO = "+servicio+" AND IDE_TIPO_PLACA = 1\n" 
-                            +"ORDER BY PLACA ASC) where IDE_DETALLE_SOLICITUD="+id_s;
+                         +"set APROBADO_SOLICITUD="+aprobado+",IDE_APROBACION_PLACA= "+id_a+",ide_placa = (SELECT TOP 1 IDE_PLACA FROM TRANS_PLACA\n" +
+                        "WHERE IDE_TIPO_ESTADO =(SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO WHERE DESCRIPCION_ESTADO LIKE 'disponible')\n" +
+                        "AND IDE_TIPO_VEHICULO= "+vehiculo+" AND IDE_TIPO_SERVICIO = "+servicio+" ORDER BY PLACA ASC) where IDE_DETALLE_SOLICITUD="+id_s;
             conectar();
             conexion.ejecutarSql(actualiza);
 //            conexion.desconectar();
@@ -61,11 +71,6 @@ public void insertarRequisito(Integer detalle,Integer tipo,Integer servicio){
                     +"INNER JOIN TRANS_TIPO_SERVICIO s ON r.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO\n" 
                     +"INNER JOIN trans_tipo_vehiculo v ON s.ide_tipo_vehiculo = v.ide_tipo_vehiculo\n" 
                     +"WHERE v.ide_tipo_vehiculo ="+tipo+" AND s.IDE_TIPO_SERVICIO ="+servicio;
-//   String insertar="INSERT INTO TRANS_DETALLE_REQUISITOS_SOLICITUD (IDE_TIPO_REQUISITO)\n" 
-//                    +"SELECT r.IDE_TIPO_REQUISITO AS IDE_TIPO_REQUISITO FROM TRANS_TIPO_REQUISITO r\n" 
-//                    +"INNER JOIN TRANS_TIPO_SERVICIO s ON r.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO\n" 
-//                    +"INNER JOIN trans_tipo_vehiculo v ON s.ide_tipo_vehiculo = v.ide_tipo_vehiculo\n" 
-//                    +"WHERE v.ide_tipo_vehiculo ="+tipo+" AND s.IDE_TIPO_SERVICIO ="+servicio;
             conectar();
             conexion.ejecutarSql(insertar);
 //            conexion.desconectar();
