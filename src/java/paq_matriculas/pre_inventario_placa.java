@@ -15,7 +15,9 @@ import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
+import javax.ejb.EJB;
 import paq_sistema.aplicacion.Pantalla;
+import paq_transportes.ejb.servicioPlaca;
 
 /**
  *
@@ -42,6 +44,8 @@ private Tabla set_vehiculo = new Tabla();
 private Tabla set_servicio = new Tabla();
 private Tabla set_tipo = new Tabla();
 
+@EJB
+private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servicioPlaca.class);
     public pre_inventario_placa() {      
 
         /****CREACION DE OBJETOS TABLAS****/
@@ -246,6 +250,12 @@ private Tabla set_tipo = new Tabla();
 
     @Override
     public void guardar() {
+         if (tab_ingreso.guardar()) {
+            if (tab_placa.guardar()) {
+                guardarPantalla();
+                ser_Placa.placaNew();
+            }
+        }
     }
 
     @Override
