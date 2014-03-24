@@ -61,10 +61,10 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_solicitud.getColumna("FECHA_SOLICITUD").setNombreVisual("FECHA");
         tab_solicitud.getColumna("FECHA_SOLICITUD").setValorDefecto(utilitario.getFechaActual());
         tab_solicitud.getColumna("FECHA_SOLICITUD").setLectura(true);
-        tab_solicitud.getColumna("NOMBRE_PROPIETARIO").setNombreVisual("NOMBRE GESTOR");
-        tab_solicitud.getColumna("NOMBRE_PROPIETARIO").setVisible(false);
+//        tab_solicitud.getColumna("NOMBRE_GESTOR").setNombreVisual("NOMBRE GESTOR");
+//        tab_solicitud.getColumna("NOMBRE_GESTOR").setVisible(false);
         tab_solicitud.getColumna("NOMBRE_EMPRESA").setNombreVisual("NOMBRE EMPRESA");
-        tab_solicitud.getColumna("RUC_EMPRESA").setVisible(false);
+//        tab_solicitud.getColumna("RUC_EMPRESA").setVisible(false);
         tab_solicitud.getColumna("USU_SOLICITUD").setVisible(false);
         tab_solicitud.getColumna("IDE_SOLICITUD_PLACA").setNombreVisual("Nro. SOLICITUD");
         tab_solicitud.getColumna("IDE_TIPO_GESTOR").setNombreVisual("TIPO DE SOLICITUD");
