@@ -5,6 +5,8 @@
 package paq_matriculas;
 
 import framework.aplicacion.TablaGenerica;
+import framework.componentes.Boton;
+import framework.componentes.Calendario;
 import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Efecto;
@@ -15,6 +17,7 @@ import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
+import framework.componentes.Texto;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
@@ -46,6 +49,11 @@ public class pre_ingreso_solicitud extends Pantalla{
     private Panel pan_opcion1 = new Panel();
     private Efecto efecto1 = new Efecto();
     private Dialogo dia_dialogoe = new Dialogo();
+    private Dialogo dia_dialogoDes = new Dialogo();
+    private Calendario cal_fechaini = new Calendario();
+    private Texto txt_ced_ruc = new Texto();
+    private Grid grid = new Grid();
+    private Etiqueta etifec = new Etiqueta();
     /*
      DECLARACION DE CADENAS DE CONEXION, DE LLAMADA DE METODOS
      */
@@ -59,6 +67,16 @@ public class pre_ingreso_solicitud extends Pantalla{
     private Map p_parametros = new HashMap();
     
     public pre_ingreso_solicitud() {
+       //Configuracion grid Fechas y campo a buscar
+        etifec.setStyle("font-size:12px;color:black");
+        etifec.setValue("INGRESE PARAMETROS DE BUSQUEDA");
+        grid.setColumns(4);
+        //campos fecha       
+        grid.getChildren().add(new Etiqueta("FECHA  A BUSQUEDA"));
+        grid.getChildren().add(cal_fechaini);
+        grid.getChildren().add(new Etiqueta("RUC_CI EMPRESA/PERSONA"));
+        grid.getChildren().add(txt_ced_ruc);
+        
         /**
          PANTALLA CABECERA DE SOLICITUS
          */
@@ -67,14 +85,11 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_solicitud.getColumna("CEDULA_RUC_EMPRESA").setMetodoChange("cargarEmpresa");
         tab_solicitud.getColumna("DESCRIPCION_SOLICITUD").setNombreVisual("DESCRIPCIÓN DE SOLICITUD");
         tab_solicitud.getColumna("DESCRIPCION_SOLICITUD").setMayusculas(true);
-        tab_solicitud.getColumna("NUMERO_AUTOMOTORES").setNombreVisual("Nro. AUTOMOTORES");
+        tab_solicitud.getColumna("NUMERO_AUTOMOTORES").setVisible(false);
         tab_solicitud.getColumna("FECHA_SOLICITUD").setNombreVisual("FECHA");
         tab_solicitud.getColumna("FECHA_SOLICITUD").setValorDefecto(utilitario.getFechaActual());
         tab_solicitud.getColumna("FECHA_SOLICITUD").setLectura(true);
-//        tab_solicitud.getColumna("NOMBRE_GESTOR").setNombreVisual("NOMBRE GESTOR");
-//        tab_solicitud.getColumna("NOMBRE_GESTOR").setVisible(false);
         tab_solicitud.getColumna("NOMBRE_EMPRESA").setNombreVisual("NOMBRE EMPRESA");
-//        tab_solicitud.getColumna("RUC_EMPRESA").setVisible(false);
         tab_solicitud.getColumna("USU_SOLICITUD").setVisible(false);
         tab_solicitud.getColumna("IDE_SOLICITUD_PLACA").setNombreVisual("Nro. SOLICITUD");
         tab_solicitud.getColumna("IDE_TIPO_GESTOR").setNombreVisual("TIPO DE SOLICITUD");
@@ -112,7 +127,7 @@ public class pre_ingreso_solicitud extends Pantalla{
                                                                 +"WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
         tab_detalle.getColumna("IDE_TIPO_SERVICIO").setNombreVisual("TIPO DE SERVICIO");
         tab_detalle.getColumna("IDE_TIPO_SERVICIO").setCombo("SELECT IDE_TIPO_SERVICIO,DESCRIPCION_SERVICIO FROM TRANS_TIPO_SERVICIO");
-        tab_detalle.getColumna("IDE_TIPO_SERVICIO").setMetodoChange("ingresoRequisitos");
+//        tab_detalle.getColumna("IDE_TIPO_SERVICIO").setMetodoChange("ingresoRequisitos");
         tab_detalle.getColumna("IDE_PLACA").setVisible(false);
         tab_detalle.getColumna("IDE_ENTREGA_PLACA").setVisible(false);
         tab_detalle.getColumna("IDE_APROBACION_PLACA").setVisible(false);
@@ -125,7 +140,13 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_detalle.agregarRelacion(tab_requisito);
         tab_detalle.dibujar();
         PanelTabla tabp2 = new PanelTabla();
+        Boton bot_req = new Boton();
+        bot_req.setValue("MOSTRAR REQUISITOS");
+        bot_req.setIcon("ui-icon-note");
+        bot_req.setMetodo("ingresoRequisitos");
         tabp2.setPanelTabla(tab_detalle); 
+        tabp2.getChildren().add(bot_req);
+        
         /**
          * REQUISITOS
          */
@@ -137,21 +158,11 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_requisito.getColumna("CONFIRMAR_REQUISITO").setNombreVisual("CONFIRMAR");
         tab_requisito.dibujar();
         PanelTabla tabp3=new PanelTabla();
-        
-        pan_opcion.setId("pan_opcion");
-	pan_opcion.setTransient(true);
-        pan_opcion.setHeader("REQUISITOS PARA SOLICITUD DE PLACA");
-	efecto.setType("drop");
-	efecto.setSpeed(150);
-	efecto.setPropiedad("mode", "'show'");
-	efecto.setEvent("load");
-        pan_opcion.getChildren().add(efecto);
-        tabp3.getChildren().add(pan_opcion);
         tabp3.setPanelTabla(tab_requisito);
         
         Division div_division = new Division();
         div_division.setId("div_division");
-        div_division.dividir3(tabp1, tabp2, tabp3, "36%", "46%", "H");
+        div_division.dividir3(tabp1, tabp2, tabp3, "32%", "46%", "H");
         agregarComponente(div_division);
         
         //CONFIGURACION DE DIALOGO SELECCION DE GESTOR
@@ -179,6 +190,17 @@ public class pre_ingreso_solicitud extends Pantalla{
         agregarComponente(rep_reporte); //2 agregar el listado de reportes
         sef_formato.setId("sef_formato");
         agregarComponente(sef_formato);
+        
+               ///configurar la tabla Seleccion Destino
+        //Configurando el dialogo
+        dia_dialogoDes.setId("dia_dialogoDes");
+        dia_dialogoDes.setTitle("SOLICITUD - INGRESADA"); //titulo
+        dia_dialogoDes.setWidth("40%"); //siempre en porcentajes  ancho
+        dia_dialogoDes.setHeight("18%");//siempre porcentaje   alto
+        dia_dialogoDes.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogoDes.getBot_aceptar().setMetodo("aceptoDialogo");
+        ///configurar tabla Destino
+         agregarComponente(dia_dialogoDes);
     }
     /*
      * CREACION DE METODOS DE BUSQUEDA CON RELACION A VALIDACIONES DE CEDULA O RUC
@@ -207,8 +229,8 @@ public class pre_ingreso_solicitud extends Pantalla{
     }
 
         public void cargarEmpresa() {
-         if (utilitario.validarCedula(tab_solicitud.getValor("CEDULA_RUC_PROPIETARIO"))) {
-            TablaGenerica tab_dato = ser_Placa.getGestor1(tab_solicitud.getValor("CEDULA_RUC_PROPIETARIO"));
+         if (utilitario.validarCedula(tab_solicitud.getValor("CEDULA_RUC_EMPRESA"))) {
+            TablaGenerica tab_dato = ser_Placa.getGestor1(tab_solicitud.getValor("CEDULA_RUC_EMPRESA"));
             if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra   
                 tab_solicitud.setValor("NOMBRE_EMPRESA", tab_dato.getValor("NOMBRE_GESTOR"));
@@ -216,8 +238,8 @@ public class pre_ingreso_solicitud extends Pantalla{
             } else {
                 utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ciudadania del municipio", "");
             }
-        } else if (utilitario.validarRUC(tab_solicitud.getValor("CEDULA_RUC_PROPIETARIO"))) {
-            TablaGenerica tab_dato = ser_Placa.getGestor(tab_solicitud.getValor("CEDULA_RUC_PROPIETARIO"));
+        } else if (utilitario.validarRUC(tab_solicitud.getValor("CEDULA_RUC_EMPRESA"))) {
+            TablaGenerica tab_dato = ser_Placa.getGestor(tab_solicitud.getValor("CEDULA_RUC_EMPRESA"));
             if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra   
                 tab_solicitud.setValor("NOMBRE_EMPRESA", tab_dato.getValor("NOMBRE_EMPRESA"));
@@ -232,13 +254,10 @@ public class pre_ingreso_solicitud extends Pantalla{
         /*
          * LLAMADO PARA LA CREACION DE REQUISITOS AUTOMATICOS DEPENDIENTO TIPO Y SOLICITUD
          */
+        
    public void ingresoRequisitos() {
-       tab_detalle.guardar();
-       guardarPantalla();
-       utilitario.addUpdate("tab_detalle");
        ser_Placa.insertarRequisito(Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")),Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")), Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")));
-       utilitario.addUpdate("tab_requisito");
-       tab_requisito.actualizar();
+       tab_requisito.actualizar();       
     }
         /*
          * DIBUJO DE DIALOGO PARA LA SELECCION DE GESTORES
@@ -249,7 +268,7 @@ public class pre_ingreso_solicitud extends Pantalla{
         grid_de.getChildren().add(set_gestor);
         set_gestor.setId("set_gestor");
         set_gestor.setSql("SELECT g.IDE_GESTOR,g.CEDULA_GESTOR,g.NOMBRE_GESTOR,g.ESTADO FROM TRANS_GESTOR g,TRANS_COMERCIAL_AUTOMOTORES c\n" 
-                           +"WHERE g.IDE_COMERCIAL_AUTOMOTORES = c.IDE_COMERCIAL_AUTOMOTORES AND c.RUC_EMPRESA ="+tab_solicitud.getValor("CEDULA_RUC_PROPIETARIO"));
+                           +"WHERE g.IDE_COMERCIAL_AUTOMOTORES = c.IDE_COMERCIAL_AUTOMOTORES AND c.RUC_EMPRESA ="+tab_solicitud.getValor("CEDULA_RUC_EMPRESA"));
         set_gestor.getColumna("CEDULA_GESTOR").setFiltro(true);
         set_gestor.setRows(5);
         set_gestor.setTipoSeleccion(false);
@@ -283,10 +302,18 @@ public class pre_ingreso_solicitud extends Pantalla{
     @Override
     public void aceptarReporte() {
         rep_reporte.cerrar();
+        cal_fechaini.setFechaActual();
         switch (rep_reporte.getNombre()) {
            case "SOLICITUD MATRICULA":
                aceptoDialogo();
-               break;      
+               break;
+           case "SOLICITUD MATRICULA FECHA":
+                dia_dialogoDes.Limpiar();
+                //Agrega Fechas
+                dia_dialogoDes.setDialogo(etifec);
+                dia_dialogoDes.setDialogo(grid);
+                dia_dialogoDes.dibujar();
+               break;
                 
         }
     }     
@@ -294,19 +321,23 @@ public class pre_ingreso_solicitud extends Pantalla{
         public void aceptoDialogo(){
         switch (rep_reporte.getNombre()) {
                case "SOLICITUD MATRICULA":
-//                    if ((set_entrega.getValorSeleccionado() != null)) {  
-                    //los parametros de este reporte
                       p_parametros = new HashMap();
-                      p_parametros.put("cedula", tab_solicitud.getValor("CEDULA_RUC_EMPRESA")+"");
+                      p_parametros.put("ruc", tab_solicitud.getValor("CEDULA_RUC_EMPRESA")+"");
+                      p_parametros.put("fecha", tab_solicitud.getValor("FECHA_SOLICITUD")+"");
                       p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
-//                    dia_dialogoEN.cerrar();
                       rep_reporte.cerrar();
                       sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                       sef_formato.dibujar();
-//                    } else {
-//                        utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
-//                    }
-               break;                   
+               break;
+               case "SOLICITUD MATRICULA FECHA":
+                      p_parametros = new HashMap();
+                      p_parametros.put("ruc", txt_ced_ruc.getValue());
+                      p_parametros.put("fecha", cal_fechaini.getFecha());
+                      p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
+                      rep_reporte.cerrar();
+                      sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                      sef_formato.dibujar();
+               break;
         }
 
     }
@@ -333,15 +364,12 @@ public class pre_ingreso_solicitud extends Pantalla{
     if (tab_solicitud.guardar()) {
                utilitario.addUpdate("tab_solicitud");
             if (tab_detalle.guardar()) {
-                utilitario.addUpdate("tab_detalle");
                  guardarPantalla();
-//                if (tab_requisito.guardar()) {
-//                    
-////                    guardarPantalla();
-//                    }
+                 utilitario.addUpdate("tab_detalle");
               }
       } 
    }
+    
     @Override
     public void eliminar() {
      if (tab_solicitud.isFocus()) {
@@ -401,6 +429,46 @@ public class pre_ingreso_solicitud extends Pantalla{
 
     public void setSet_gestor(Tabla set_gestor) {
         this.set_gestor = set_gestor;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSef_formato() {
+        return sef_formato;
+    }
+
+    public void setSef_formato(SeleccionFormatoReporte sef_formato) {
+        this.sef_formato = sef_formato;
+    }
+
+    public Map getP_parametros() {
+        return p_parametros;
+    }
+
+    public void setP_parametros(Map p_parametros) {
+        this.p_parametros = p_parametros;
+    }
+
+    public Calendario getCal_fechaini() {
+        return cal_fechaini;
+    }
+
+    public void setCal_fechaini(Calendario cal_fechaini) {
+        this.cal_fechaini = cal_fechaini;
+    }
+
+    public Texto getTxt_ced_ruc() {
+        return txt_ced_ruc;
+    }
+
+    public void setTxt_ced_ruc(Texto txt_ced_ruc) {
+        this.txt_ced_ruc = txt_ced_ruc;
     }
     
 }
