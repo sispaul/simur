@@ -12,7 +12,11 @@ import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
+import java.util.HashMap;
+import java.util.Map;
 import javax.ejb.EJB;
 import paq_transportes.ejb.servicioPlaca;
 import paq_transportes.ejb.Serviciobusqueda;
@@ -41,12 +45,18 @@ public class pre_ingreso_solicitud extends Pantalla{
     private Efecto efecto = new Efecto();
     private Panel pan_opcion1 = new Panel();
     private Efecto efecto1 = new Efecto();
+    private Dialogo dia_dialogoe = new Dialogo();
     /*
      DECLARACION DE CADENAS DE CONEXION, DE LLAMADA DE METODOS
      */
     @EJB
     private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servicioPlaca.class);
     private Serviciobusqueda serviciobusqueda =(Serviciobusqueda) utilitario.instanciarEJB(Serviciobusqueda.class);
+    
+        ///REPORTES
+    private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
+    private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
+    private Map p_parametros = new HashMap();
     
     public pre_ingreso_solicitud() {
         /**
@@ -161,6 +171,14 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_consulta.setCampoPrimaria("IDE_USUA");
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
+        
+         /*
+         * CONFIGURACIÓN DE OBJETO REPORTE
+         */
+        bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
+        agregarComponente(rep_reporte); //2 agregar el listado de reportes
+        sef_formato.setId("sef_formato");
+        agregarComponente(sef_formato);
     }
     /*
      * CREACION DE METODOS DE BUSQUEDA CON RELACION A VALIDACIONES DE CEDULA O RUC
@@ -252,7 +270,51 @@ public class pre_ingreso_solicitud extends Pantalla{
        utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
        }        
     }    
+        /*
+         * LLAMADA DE REPORTE  SOLICITUD
+         */
         
+        @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+
+    }
+    
+    @Override
+    public void aceptarReporte() {
+        rep_reporte.cerrar();
+        switch (rep_reporte.getNombre()) {
+           case "SOLICITUD MATRICULA":
+               aceptoDialogo();
+               break;      
+                
+        }
+    }     
+       
+        public void aceptoDialogo(){
+        switch (rep_reporte.getNombre()) {
+               case "SOLICITUD MATRICULA":
+//                    if ((set_entrega.getValorSeleccionado() != null)) {  
+                    //los parametros de este reporte
+                      p_parametros = new HashMap();
+                      p_parametros.put("cedula", tab_solicitud.getValor("CEDULA_RUC_EMPRESA")+"");
+                      p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
+//                    dia_dialogoEN.cerrar();
+                      rep_reporte.cerrar();
+                      sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                      sef_formato.dibujar();
+//                    } else {
+//                        utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
+//                    }
+               break;                   
+        }
+
+    }
+
+    public void abrirDialogo() {
+        dia_dialogoe.dibujar();
+    }
+    
     @Override
     public void insertar() {
       if (tab_solicitud.isFocus()) {
