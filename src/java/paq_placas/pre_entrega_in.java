@@ -293,12 +293,14 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
                       p_parametros = new HashMap();
                       p_parametros.put("pide_fechai", cal_fechaini.getFecha());
                       p_parametros.put("pide_fechaf", cal_fechafin.getFecha());
-                      p_parametros.put("vehiculo", set_vehiculo.getValorSeleccionado()+"");
-                      p_parametros.put("servicio", set_servicio.getValorSeleccionado()+"");
+                      p_parametros.put("vehiculo", Integer.parseInt(set_vehiculo.getValorSeleccionado()+""));
+                      p_parametros.put("servicio", Integer.parseInt(set_servicio.getValorSeleccionado()+""));
                       p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
                        dia_dialogo1.cerrar();
                       rep_reporte.cerrar();
                       sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                      System.out.println(Integer.parseInt(set_vehiculo.getValorSeleccionado()+""));
+                      System.out.println(Integer.parseInt(set_servicio.getValorSeleccionado()+""));
                       System.out.println(p_parametros);
                       System.out.println(rep_reporte.getPath());
                       sef_formato.dibujar();
