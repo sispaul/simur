@@ -5,7 +5,6 @@
 package paq_placas;
 
 import framework.aplicacion.TablaGenerica;
-import framework.componentes.Boton;
 import framework.componentes.Calendario;
 import framework.componentes.Dialogo;
 import framework.componentes.Efecto;
