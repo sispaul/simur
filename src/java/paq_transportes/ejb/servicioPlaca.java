@@ -144,9 +144,12 @@ public void estadoPlaca(Integer placa){
         conectar();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(conexion);
-        tab_persona.setSql("SELECT DISTINCT d.IDE_DETALLE_SOLICITUD,d.CEDULA_RUC_PROPIETARIO,d.NOMBRE_PROPIETARIO,\n" +
-                            "p.PLACA,v.des_tipo_vehiculo,\n" +
-                            "d.IDE_PLACA \n" +
+        tab_persona.setSql("SELECT DISTINCT d.IDE_DETALLE_SOLICITUD,\n" +
+                            "d.CEDULA_RUC_PROPIETARIO,d.NOMBRE_PROPIETARIO,\n" +
+                            "p.PLACA,v.des_tipo_vehiculo,d.IDE_PLACA,\n" +
+                            "p.IDE_TIPO_VEHICULO,p.IDE_TIPO_SERVICIO,\n" +
+                            "d.NUMERO_FACTURA\n" +
+                            "\n" +
                             "FROM dbo.TRANS_DETALLE_SOLICITUD_PLACA AS d ,dbo.TRANS_PLACA AS p ,dbo.trans_tipo_vehiculo v\n" +
                             "WHERE d.IDE_PLACA = p.IDE_PLACA AND\n" +
                             "d.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND d.IDE_DETALLE_SOLICITUD ="+propie);
