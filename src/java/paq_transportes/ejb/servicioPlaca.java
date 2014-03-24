@@ -19,7 +19,6 @@ private Conexion conexion;
 private Utilitario utilitario = new Utilitario();
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
-    private String confirmar;
 
 //ASIGNACION DE ESTADO A PLACAS NUEVAS
 public void placaNew()
@@ -37,17 +36,17 @@ public void seleccionarP(Integer id_s,Integer vehiculo,Integer servicio,Integer 
       String actualiza ="update TRANS_DETALLE_SOLICITUD_PLACA \n" 
                          +"set APROBADO_SOLICITUD= 1,IDE_APROBACION_PLACA= "+id_a+",ide_placa = (SELECT TOP 1 IDE_PLACA FROM TRANS_PLACA\n" +
                         "WHERE IDE_TIPO_ESTADO =(SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO WHERE DESCRIPCION_ESTADO LIKE 'disponible')\n" +
-                        "AND IDE_TIPO_VEHICULO= "+vehiculo+" AND IDE_TIPO_SERVICIO = "+servicio+" ORDER BY PLACA ASC) where IDE_DETALLE_SOLICITUD="+id_s;
+                        "AND IDE_TIPO_VEHICULO= "+vehiculo+" AND IDE_TIPO_SERVICIO = "+servicio+" ORDER BY IDE_PLACA ASC) where IDE_DETALLE_SOLICITUD="+id_s;
             conectar();
             conexion.ejecutarSql(actualiza);
 //            conexion.desconectar();
     }
 
 //ACTUALIZACION DE ENTREGA EN SOLICITUD
-public void actualizarDS(Integer id_en,Integer id_s2,Byte aprob_en)
+public void actualizarDS(Integer id_en,Integer id_s2)
     {
         String actualiza1 = "update TRANS_DETALLE_SOLICITUD_PLACA \n" 
-                            +"set IDE_ENTREGA_PLACA="+id_en+",ENTREGADA_PLACA="+aprob_en+", FECHA_ENTREGA_PLACA= '"+utilitario.getFechaActual()+"'\n" 
+                            +"set IDE_ENTREGA_PLACA="+id_en+",ENTREGADA_PLACA=1, FECHA_ENTREGA_PLACA= '"+utilitario.getFechaActual()+"'\n" 
                             +"where IDE_DETALLE_SOLICITUD="+id_s2; 
             conectar();
             conexion.ejecutarSql(actualiza1);
@@ -57,10 +56,11 @@ public void actualizarDS(Integer id_en,Integer id_s2,Byte aprob_en)
 public void actualizarDE(Integer iden,String ruc,Integer placa)
     {
         String actualiza2 = "update TRANS_PLACA \n" 
-                            +"set NOMBRE_PROPIETARIO=nombre,ide_tipo_estado = 2,FECHA_ENTREGA_PLACA='"+utilitario.getFechaActual()+"',CEDULA_RUC_PROPIETARIO=identi\n" 
+                            +"set NOMBRE_PROPIETARIO=nombre,ide_tipo_estado = (SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO WHERE DESCRIPCION_ESTADO LIKE 'entregada'),FECHA_ENTREGA_PLACA='"+utilitario.getFechaActual()+"',CEDULA_RUC_PROPIETARIO=identi\n" 
                             +"from( select CEDULA_RUC_PROPIETARIO as identi,NOMBRE_PROPIETARIO as nombre from TRANS_DETALLE_SOLICITUD_PLACA\n" 
                             +"where IDE_DETALLE_SOLICITUD = "+iden+" and CEDULA_RUC_PROPIETARIO ="+ruc+")a\n" 
-                            +"where placa ide_tipo_estado <> 2 and ide_placa ="+placa; 
+                            +"where ide_tipo_estado <> (SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO \n" +
+                            "WHERE DESCRIPCION_ESTADO LIKE 'entregada') and ide_placa ="+placa; 
             conectar();
             conexion.ejecutarSql(actualiza2);
 //            conexion.desconectar();
@@ -107,10 +107,12 @@ public void asigancionPlaca(String usuario){
 }
 
 public void estadoPlaca(Integer placa){
+    System.out.println("Actualizacion OK");
         String placa1 ="UPDATE TRANS_PLACA\n" +
                       "set IDE_TIPO_ESTADO = (SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO WHERE DESCRIPCION_ESTADO LIKE 'asignada')\n" +
                       "WHERE IDE_PLACA ="+placa;
     conectar();
+    System.out.println("Actualizacion OK2");
     conexion.ejecutarSql(placa1);
 }
 
@@ -136,6 +138,24 @@ public void estadoPlaca(Integer placa){
 //        conexion.desconectar();
         return tab_persona;
     } 
+
+      public TablaGenerica getEntrega(Integer propie) {
+        //Busca a una empresa en la tabla maestra_ruc por ruc
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT DISTINCT d.IDE_DETALLE_SOLICITUD,d.CEDULA_RUC_PROPIETARIO,d.NOMBRE_PROPIETARIO,\n" +
+                            "p.PLACA,v.des_tipo_vehiculo,\n" +
+                            "d.IDE_PLACA \n" +
+                            "FROM dbo.TRANS_DETALLE_SOLICITUD_PLACA AS d ,dbo.TRANS_PLACA AS p ,dbo.trans_tipo_vehiculo v\n" +
+                            "WHERE d.IDE_PLACA = p.IDE_PLACA AND\n" +
+                            "d.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND d.IDE_DETALLE_SOLICITUD ="+propie);
+        tab_persona.ejecutarSql();
+        
+//        conexion.desconectar();
+        return tab_persona;
+    }
+      
       
  private void conectar() {
         if (conexion == null) {
