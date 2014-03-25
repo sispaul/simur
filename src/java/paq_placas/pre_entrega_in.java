@@ -298,10 +298,6 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
                        dia_dialogo1.cerrar();
                       rep_reporte.cerrar();
                       sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                      System.out.println(Integer.parseInt(set_vehiculo.getValorSeleccionado()+""));
-                      System.out.println(Integer.parseInt(set_servicio.getValorSeleccionado()+""));
-                      System.out.println(p_parametros);
-                      System.out.println(rep_reporte.getPath());
                       sef_formato.dibujar();
                       System.out.println(sef_formato);
                break;                   
