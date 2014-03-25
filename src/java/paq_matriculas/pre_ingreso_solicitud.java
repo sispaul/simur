@@ -21,6 +21,7 @@ import framework.componentes.Texto;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
+import org.primefaces.event.SelectEvent;
 import paq_transportes.ejb.servicioPlaca;
 import paq_transportes.ejb.Serviciobusqueda;
 import paq_sistema.aplicacion.Pantalla;
@@ -83,6 +84,7 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_solicitud.setId("tab_solicitud"); // NOMBRE PANTALLA
         tab_solicitud.setTabla("TRANS_SOLICITUD_PLACA", "IDE_SOLICITUD_PLACA", 1);
         tab_solicitud.getColumna("CEDULA_RUC_EMPRESA").setMetodoChange("cargarEmpresa");
+        tab_solicitud.getColumna("CEDULA_RUC_EMPRESA").setRequerida(true);
         tab_solicitud.getColumna("DESCRIPCION_SOLICITUD").setNombreVisual("DESCRIPCIÓN DE SOLICITUD");
         tab_solicitud.getColumna("DESCRIPCION_SOLICITUD").setMayusculas(true);
         tab_solicitud.getColumna("NUMERO_AUTOMOTORES").setVisible(false);
@@ -120,8 +122,10 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_detalle.getColumna("NOMBRE_PROPIETARIO").setMayusculas(true);
         tab_detalle.getColumna("NOMBRE_PROPIETARIO").setNombreVisual("NOMBRE PROPIETARIO");
         tab_detalle.getColumna("CEDULA_RUC_PROPIETARIO").setNombreVisual("C.I./RUC");
+         tab_detalle.getColumna("CEDULA_RUC_PROPIETARIO").setRequerida(true);
         tab_detalle.getColumna("CEDULA_RUC_PROPIETARIO").setMetodoChange("buscaPersona");
         tab_detalle.getColumna("NUMERO_FACTURA").setNombreVisual("Nro.FACTURA");
+        tab_detalle.getColumna("NUMERO_FACTURA").setRequerida(true);
         tab_detalle.getColumna("IDE_TIPO_VEHICULO").setNombreVisual("TIPO DE VEHICULO");
         tab_detalle.getColumna("IDE_TIPO_VEHICULO").setCombo("SELECT ide_tipo_vehiculo,des_tipo_vehiculo FROM trans_tipo_vehiculo\n" 
                                                                 +"WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
@@ -162,7 +166,7 @@ public class pre_ingreso_solicitud extends Pantalla{
         
         Division div_division = new Division();
         div_division.setId("div_division");
-        div_division.dividir3(tabp1, tabp2, tabp3, "32%", "46%", "H");
+        div_division.dividir3(tabp1, tabp2, tabp3, "35%", "43%", "H");
         agregarComponente(div_division);
         
         //CONFIGURACION DE DIALOGO SELECCION DE GESTOR
@@ -270,7 +274,6 @@ public class pre_ingreso_solicitud extends Pantalla{
         set_gestor.setSql("SELECT g.IDE_GESTOR,g.CEDULA_GESTOR,g.NOMBRE_GESTOR,g.ESTADO FROM TRANS_GESTOR g,TRANS_COMERCIAL_AUTOMOTORES c\n" 
                            +"WHERE g.IDE_COMERCIAL_AUTOMOTORES = c.IDE_COMERCIAL_AUTOMOTORES AND c.RUC_EMPRESA ="+tab_solicitud.getValor("CEDULA_RUC_EMPRESA"));
         set_gestor.getColumna("CEDULA_GESTOR").setFiltro(true);
-        set_gestor.setRows(5);
         set_gestor.setTipoSeleccion(false);
         dia_dialogoEN.setDialogo(grid_de);
         set_gestor.dibujar();
@@ -283,7 +286,16 @@ public class pre_ingreso_solicitud extends Pantalla{
         if (set_gestor.getValorSeleccionado()!= null) {
                         tab_solicitud.setValor("ide_gestor", set_gestor.getValorSeleccionado());
                         dia_dialogoEN.cerrar();
-                        System.out.println(set_gestor.getValorSeleccionado());
+                        utilitario.addUpdate("tab_solicitud");
+       }else {
+       utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
+       }        
+    }
+        
+   public void devolverGestor() {
+        if (set_gestor.getValorSeleccionado()!= null) {
+                        tab_solicitud.setValor("ide_gestor", set_gestor.getValorSeleccionado());
+                        dia_dialogoEN.cerrar();
                         utilitario.addUpdate("tab_solicitud");
        }else {
        utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
@@ -354,9 +366,7 @@ public class pre_ingreso_solicitud extends Pantalla{
                         tab_detalle.insertar();
                         tab_solicitud.guardar();
                          guardarPantalla();
-                     } else if (tab_requisito.isFocus()) {
-                                  tab_requisito.insertar();
-                            }  
+                     }   
     }
 
     @Override
@@ -376,9 +386,7 @@ public class pre_ingreso_solicitud extends Pantalla{
          tab_solicitud.eliminar();
             } else if (tab_detalle.isFocus()) {
                         tab_detalle.eliminar();
-                     } else if (tab_requisito.isFocus()) {
-                                  tab_requisito.eliminar();
-                            } 
+                     }  
     }
 
     @Override
@@ -389,6 +397,9 @@ public class pre_ingreso_solicitud extends Pantalla{
     /*
      * FUNCION QUE PERMITE RECORRER LA TABLA RECUPERANDO EVENTOS ACTUALES
      */
+     public void seleccionar_tabla1(SelectEvent evt) {
+        tab_solicitud.seleccionarFila(evt);
+    }
     public void requisito(){
                           for (int i = 0; i < tab_requisito.getTotalFilas(); i++) {
                           tab_requisito.getValor(i, "CONFIRMAR_REQUISITO");
