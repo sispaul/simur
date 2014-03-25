@@ -5,16 +5,20 @@
 package paq_matriculas;
 
 import framework.componentes.Boton;
+import framework.componentes.Calendario;
 import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Efecto;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
-import framework.componentes.Grupo;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
+import java.util.HashMap;
+import java.util.Map;
 import javax.ejb.EJB;
 import paq_sistema.aplicacion.Pantalla;
 import paq_transportes.ejb.servicioPlaca;
@@ -24,6 +28,7 @@ import paq_transportes.ejb.servicioPlaca;
  * @author p-sistemas
  */
 public class pre_inventario_placa extends  Pantalla{
+Integer codigo;
 private Tabla tab_ingreso = new Tabla();
 private Tabla tab_placa = new Tabla();
 private Tabla tab_consulta = new Tabla();
@@ -34,27 +39,43 @@ private Texto txt_rango1 = new Texto();
 private Texto txt_rango2 = new Texto();
 
 private Dialogo dia_dialogoe = new Dialogo();
+private Dialogo dia_dialogop = new Dialogo();
+private Dialogo dia_dialogot = new Dialogo();
 private Dialogo dia_dialogo1 = new Dialogo();
 private Grid grid_de = new Grid();
 private Grid gride = new Grid();
+private Grid grid_dp = new Grid();
+private Grid grid_dt = new Grid();
 private Grid grid1 = new Grid();
 private Grid grid_de1 = new Grid();
 
 private Tabla set_vehiculo = new Tabla();
 private Tabla set_servicio = new Tabla();
 private Tabla set_tipo = new Tabla();
+private Tabla set_estado = new Tabla();
+
+    private Dialogo dia_dialogoDes = new Dialogo();
+    private Calendario cal_fechaini = new Calendario();
+    private Texto txt_acta= new Texto();
+    private Grid grid = new Grid();
+    private Etiqueta etifec = new Etiqueta();
 
 @EJB
 private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servicioPlaca.class);
+        ///REPORTES
+    private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
+    private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
+    private Map p_parametros = new HashMap();
+    
     public pre_inventario_placa() {      
 
         /****CREACION DE OBJETOS TABLAS****/
 
-        tab_ingreso.setId("tab_ingreso");
+        tab_ingreso.setId("tab_ingreso");//tabla acta de solicitud
         tab_ingreso.setTabla("trans_ingresos_placas", "ide_ingreso_placas", 1);
         tab_ingreso.setHeader("ACTA DE INGRESO");
         tab_ingreso.getColumna("IDE_INGRESO_PLACAS").setNombreVisual("ID");
-        tab_ingreso.getColumna("FECHA_ENVIO_ACTA").setNombreVisual("FECHA DE ENVIO");
+        tab_ingreso.getColumna("FECHA_ENVIO_ACTA").setNombreVisual("FECHA DE ENVIO(ACTA)");
         tab_ingreso.getColumna("FECHA_REGISTRO_ACTA").setNombreVisual("FECHA DE REGISTRO");
         tab_ingreso.getColumna("ANO").setNombreVisual("AÑO");
         tab_ingreso.getColumna("ANO").setValorDefecto(utilitario.getAnio(utilitario.getFechaActual())+"");
@@ -77,7 +98,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         PanelTabla tabi = new PanelTabla();
         tabi.setPanelTabla(tab_ingreso);
 
-        tab_placa.setId("tab_placa");
+        tab_placa.setId("tab_placa");//tabla ingreso de inventario placas
         tab_placa.setTabla("trans_placa", "ide_placa", 2);
         tab_placa.getColumna("cedula_ruc_propietario").setVisible(false);
         tab_placa.getColumna("nombre_propietario").setVisible(false);
@@ -157,6 +178,33 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         grid_de.setColumns(4);
         agregarComponente(dia_dialogoe);
         
+        etifec.setStyle("font-size:16px;color:blue");
+        etifec.setValue("SELECCION PARAMETROS");
+        grid.setColumns(4);
+        //campos fecha       
+        grid.getChildren().add(new Etiqueta("FECHA BUSQUEDA"));
+        grid.getChildren().add(cal_fechaini);
+        grid.getChildren().add(new Etiqueta("NRO ACTA"));
+        grid.getChildren().add(txt_acta);
+
+        dia_dialogop.setId("dia_dialogop");
+        dia_dialogop.setTitle("PLACAS - BUSQUEDA"); //titulo
+        dia_dialogop.setWidth("35%"); //siempre en porcentajes  ancho
+        dia_dialogop.setHeight("20%");//siempre porcentaje   alto
+        dia_dialogop.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogop.getBot_aceptar().setMetodo("aceptoInventario");
+        grid_dp.setColumns(4);
+        agregarComponente(dia_dialogop);
+        
+        dia_dialogot.setId("dia_dialogot");
+        dia_dialogot.setTitle("PLACAS - ESTADO"); //titulo
+        dia_dialogot.setWidth("20%"); //siempre en porcentajes  ancho
+        dia_dialogot.setHeight("20%");//siempre porcentaje   alto
+        dia_dialogot.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogot.getBot_aceptar().setMetodo("aceptoInventario");
+        grid_dt.setColumns(4);
+        agregarComponente(dia_dialogot);
+
         dia_dialogo1.setId("dia_dialogo1");
         dia_dialogo1.setTitle("PLACAS - ASIGNACION DE SERVICIOS"); //titulo
         dia_dialogo1.setWidth("30%"); //siempre en porcentajes  ancho
@@ -172,7 +220,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         set_tipo.setId("set_tipo");
         set_tipo.setHeader("TIPO DE PLACA");
         set_tipo.setSql("SELECT IDE_TIPO_PLACA,DESCRIPCION_PLACA FROM TRANS_TIPO_PLACA");
-        set_tipo.getColumna("DESCRIPCION_PLACA").setNombreVisual("Tipo");
+        set_tipo.getColumna("DESCRIPCION_PLACA").setNombreVisual("TIPO");
         set_tipo.setRows(5);
         set_tipo.setTipoSeleccion(false);
         set_tipo.dibujar();
@@ -180,10 +228,26 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         set_vehiculo.setId("set_vehiculo");
         set_vehiculo.setHeader("TIPO DE VEHICULO");
         set_vehiculo.setSql("select ide_tipo_vehiculo,des_tipo_vehiculo from trans_tipo_vehiculo WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
-        set_vehiculo.getColumna("des_tipo_vehiculo").setNombreVisual("Vehiculo");
+        set_vehiculo.getColumna("des_tipo_vehiculo").setNombreVisual("VEHICULO");
         set_vehiculo.setRows(5);
         set_vehiculo.setTipoSeleccion(false);
         set_vehiculo.dibujar();
+        
+        
+        set_estado.setId("set_estado");
+        set_estado.setHeader("ESTADO PLACA");
+        set_estado.setSql("SELECT IDE_TIPO_ESTADO,DESCRIPCION_ESTADO FROM TRANS_TIPO_ESTADO WHERE DESCRIPCION_ESTADO BETWEEN 'asignada' AND 'disponible'");
+        set_estado.getColumna("DESCRIPCION_ESTADO").setNombreVisual("ESTADO");
+        set_estado.setRows(5);
+        set_estado.setTipoSeleccion(false);
+        set_estado.dibujar();
+                                 /**
+         * CONFIGURACIÓN DE OBJETO REPORTE
+         */
+        bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
+        agregarComponente(rep_reporte); //2 agregar el listado de reportes
+        sef_formato.setId("sef_formato");
+        agregarComponente(sef_formato);
     }
 
 //    public void LimpiarBoton(){
@@ -235,6 +299,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
     
         public void aceptoValores1() {
             if (set_servicio.getValorSeleccionado()!= null) {
+                        codigo = 1;
                         tab_placa.getColumna("ide_tipo_servicio").setValorDefecto(set_servicio.getValorSeleccionado());
                         tab_placa.insertar();
                         dia_dialogo1.cerrar();
@@ -262,7 +327,82 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
     public void eliminar() {
         utilitario.getTablaisFocus().eliminar();
     }
+/*
+ * CREACION DE REPORTES
+ */
+    
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
 
+    }
+    
+    @Override
+    public void aceptarReporte() {
+        System.out.println("Ingreso");
+        rep_reporte.cerrar();
+        cal_fechaini.setFechaActual();
+        switch (rep_reporte.getNombre()) {
+           case "INGRESO ACTA":
+               System.out.println("Ingreso0");
+                dia_dialogop.Limpiar();
+                dia_dialogop.setDialogo(etifec);
+                dia_dialogop.setDialogo(grid);
+                
+                dia_dialogop.setDialogo(grid_dp);
+                dia_dialogop.dibujar();
+               break;
+           case "REPORTE PLACAS":
+               System.out.println("Ingreso1");
+                dia_dialogot.Limpiar();
+//                dia_dialogot.setDialogo(grid);
+                
+                grid_dt.getChildren().add(set_estado);
+                dia_dialogot.setDialogo(grid_dt);
+                set_estado.dibujar();
+                dia_dialogot.dibujar();
+               break;
+                
+        }
+    }     
+       
+  public void aceptoInventario(){
+        switch (rep_reporte.getNombre()) {
+               case "INGRESO ACTA":
+                      p_parametros = new HashMap();
+                      p_parametros.put("acta", txt_acta.getValue());
+                      p_parametros.put("fecha_envio", cal_fechaini.getFecha());
+                      p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
+                      rep_reporte.cerrar();
+                      sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                      sef_formato.dibujar();
+               break;
+               case "REPORTE PLACAS":
+                      p_parametros = new HashMap();
+                      p_parametros.put("estado", Integer.parseInt(set_estado.getValorSeleccionado()+""));
+                      p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
+                      rep_reporte.cerrar();
+                      sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                      sef_formato.dibujar();
+                      System.out.println(sef_formato);
+               break;
+               case "IMPRESION ACTA":
+                      p_parametros = new HashMap();
+                      p_parametros.put("acta", txt_acta.getValue());
+                      p_parametros.put("fecha_envio", cal_fechaini.getFecha());
+                      p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
+                      rep_reporte.cerrar();
+                      sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                      sef_formato.dibujar();
+               break;
+        }
+    }
+
+    
+    public void abrirDialogo() {
+        dia_dialogoe.dibujar();
+    }
+    
     public Tabla getTab_ingreso() {
         return tab_ingreso;
     }
@@ -301,6 +441,54 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
 
     public void setSet_tipo(Tabla set_tipo) {
         this.set_tipo = set_tipo;
+    }
+
+    public Tabla getSet_estado() {
+        return set_estado;
+    }
+
+    public void setSet_estado(Tabla set_estado) {
+        this.set_estado = set_estado;
+    }
+
+    public Calendario getCal_fechaini() {
+        return cal_fechaini;
+    }
+
+    public void setCal_fechaini(Calendario cal_fechaini) {
+        this.cal_fechaini = cal_fechaini;
+    }
+
+    public Texto getTxt_acta() {
+        return txt_acta;
+    }
+
+    public void setTxt_acta(Texto txt_acta) {
+        this.txt_acta = txt_acta;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSef_formato() {
+        return sef_formato;
+    }
+
+    public void setSef_formato(SeleccionFormatoReporte sef_formato) {
+        this.sef_formato = sef_formato;
+    }
+
+    public Map getP_parametros() {
+        return p_parametros;
+    }
+
+    public void setP_parametros(Map p_parametros) {
+        this.p_parametros = p_parametros;
     }
     
 }
