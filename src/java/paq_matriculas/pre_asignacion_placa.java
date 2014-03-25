@@ -37,7 +37,6 @@ public class pre_asignacion_placa extends Pantalla{
     private Tabla tab_consulta = new Tabla();
     private SeleccionTabla set_solicitud = new SeleccionTabla();
     
-    private Texto tex_busqueda = new Texto();
     private Panel pan_opcion = new Panel();
     private String str_opcion = "";// sirve para identificar la opcion que se encuentra dibujada en pantalla
     private PanelMenu pam_menu = new PanelMenu();
@@ -46,17 +45,11 @@ public class pre_asignacion_placa extends Pantalla{
     private Efecto efecto1 = new Efecto();
     private Calendario cal_fechabus = new Calendario();
     private Grid grid = new Grid();
-    private Etiqueta etifec = new Etiqueta();
     private Dialogo dia_dialogoe = new Dialogo();
     private Grid grid_de = new Grid();
     
     public pre_asignacion_placa() {
-        /*
-         * FECHA PARA BUSQUEDAD
-         */
-        etifec.setStyle("font-size:12px;color:blue");
-        etifec.setValue("FECHA BUSQUEDA SOLICITUD");
-        grid.setColumns(4);
+
         //campos fecha       
         grid.getChildren().add(new Etiqueta("FECHA INICIAL"));
         grid.getChildren().add(cal_fechabus);
@@ -76,8 +69,9 @@ public class pre_asignacion_placa extends Pantalla{
         
         Grid gri_busca = new Grid();
         gri_busca.setColumns(2);
-        tex_busqueda.setSize(45);
-        gri_busca.getChildren().add(tex_busqueda);
+ //campos fecha       
+        gri_busca.getChildren().add(new Etiqueta("FECHA INICIAL"));
+        gri_busca.getChildren().add(cal_fechabus);
         Boton bot_buscar = new Boton();
         bot_buscar.setValue("Buscar");
         bot_buscar.setIcon("ui-icon-search");
@@ -91,7 +85,7 @@ public class pre_asignacion_placa extends Pantalla{
         aut_busca.setId("aut_busca");
         aut_busca.setAutoCompletar("SELECT IDE_SOLICITUD_PLACA,CEDULA_RUC_EMPRESA,NOMBRE_EMPRESA,NOMBRE_GESTOR,DESCRIPCION_SOLICITUD\n" +
                                     "FROM TRANS_SOLICITUD_PLACA");
-        aut_busca.setMetodoChange("buscarEmpresa");
+        aut_busca.setMetodoChange("buscarSolicitud");
         aut_busca.setSize(100);
         
         bar_botones.agregarComponente(new Etiqueta("Buscador Solicitud:"));
@@ -127,8 +121,23 @@ public class pre_asignacion_placa extends Pantalla{
         dia_dialogoe.getBot_cancelar().setMetodo("cancelarValores");
         grid_de.setColumns(4);
         agregarComponente(dia_dialogoe);
+        
+        set_solicitud.setId("set_solicitud");
+        set_solicitud.setSeleccionTabla("select ide_empresa,nombre,ruc from trans_empresa where ide_empresa=-1", "ide_empresa");
+        set_solicitud.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
+        set_solicitud.getTab_seleccion().setRows(10);
+        set_solicitud.setRadio();
+        set_solicitud.getGri_cuerpo().setHeader(gri_busca);
+        set_solicitud.getBot_aceptar().setMetodo("aceptarBusqueda");
+        set_solicitud.setHeader("BUSCAR SOLICITUD");
+        agregarComponente(set_solicitud);
+        
+        tab_consulta.setId("tab_consulta");
+        tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
+        tab_consulta.setCampoPrimaria("IDE_USUA");
+        tab_consulta.setLectura(true);
+        tab_consulta.dibujar();
     }
-
 
     private void contruirMenu() {
         // SUB MENU 1
@@ -143,23 +152,8 @@ public class pre_asignacion_placa extends Pantalla{
         itm_datos_empl.setMetodo("dibujarSolicitud");
         itm_datos_empl.setUpdate("pan_opcion");
         sum_empleado.getChildren().add(itm_datos_empl);
-
-//        // ITEM 2 : OPCION 1
-//        ItemMenu itm_permisos = new ItemMenu();
-//        itm_permisos.setValue("APROBACIÓN");
-//        itm_permisos.setIcon("ui-icon-key");
-//        itm_permisos.setMetodo("aceptarAprobacion");
-//        itm_permisos.setUpdate("pan_opcion");
-//        sum_empleado.getChildren().add(itm_permisos);
-
     }
     
-    public void abrirBusqueda() {      
-//        dia_dialogoe.setDialogo(etifec);
-//        set_solicitud.dibujar();
-        tex_busqueda.limpiar();
-//        set_solicitud.getTab_seleccion().limpiar();
-    }
     
     public void dibujarSolicitud(){
         /**
@@ -236,46 +230,22 @@ public class pre_asignacion_placa extends Pantalla{
         pan_opcion.getChildren().add(gru);
     }
     
-        private void limpiarPanel() {
-        //borra el contenido de la división central central
-        pan_opcion.getChildren().clear();
-//         pan_opcion.getChildren().add(efecto);
-    }
-    
-    public void buscarEmpresa() {
-        if (tex_busqueda.getValue() != null && tex_busqueda.getValue().toString().isEmpty() == false) {
-            
-        } else {
-            utilitario.agregarMensajeInfo("Debe ingresar un valor en el texto", "");
-        }
-
-    }
-
-    public void aceptarBusqueda() {
-        if (set_solicitud.getValorSeleccionado() != null) {
-            aut_busca.setValor(set_solicitud.getValorSeleccionado());
-            set_solicitud.cerrar();
-            dibujarPanel();
-            utilitario.addUpdate("aut_busca,pan_opcion");
-
-            
-        } else {
-            utilitario.agregarMensajeInfo("Debe seleccionar una propietario", "");
-        }
-
-    }
-    
-    public void buscarPersona(SelectEvent evt) {
+    public void buscarSolicitud(SelectEvent evt) {
         aut_busca.onSelect(evt);
         if (aut_busca.getValor() != null) {
             tab_solicitud.setFilaActual(aut_busca.getValor());
             utilitario.addUpdate("tab_solicitud");
-            utilitario.addUpdate("tab_requisito");
             utilitario.addUpdate("tab_detalle");
+            utilitario.addUpdate("tab_requisito");
         }
         dibujarPanel();
     }
-        public void limpiar() {
+    private void limpiarPanel() {
+        //borra el contenido de la división central central
+        pan_opcion.getChildren().clear();
+//         pan_opcion.getChildren().add(efecto);
+    }
+   public void limpiar() {
         aut_busca.limpiar();
         utilitario.addUpdate("aut_busca");
     }
