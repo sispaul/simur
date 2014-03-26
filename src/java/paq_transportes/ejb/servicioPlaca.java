@@ -6,7 +6,6 @@ package paq_transportes.ejb;
 
 import framework.aplicacion.TablaGenerica;
 import javax.ejb.Stateless;
-import java.util.Date;
 import paq_sistema.aplicacion.Utilitario;
 import persistencia.Conexion;
 /**
@@ -52,7 +51,7 @@ public void actualizarDS(Integer id_en,Integer id_s2)
             conexion.ejecutarSql(actualiza1);
 //            conexion.desconectar();
     }
- //   ACTUALIZACION DE ENTREGA EN PLACA
+ //   ACTUALIZACION DE ENTREGA EN PLACA/CAMBIO DE ESTADO DE PLACA A ENTREGADA
 public void actualizarDE(Integer iden,String ruc,Integer placa)
     {
         String actualiza2 = "update TRANS_PLACA \n" 
@@ -65,7 +64,31 @@ public void actualizarDE(Integer iden,String ruc,Integer placa)
             conexion.ejecutarSql(actualiza2);
 //            conexion.desconectar();
     }
+//ACTUALIZACION DE REQUISITOS
+public void actulizarRequisito(Byte requisito,Integer detalle,Integer solicitud,Integer tipo){
+    String actua ="UPDATE TRANS_DETALLE_REQUISITOS_SOLICITUD SET CONFIRMAR_REQUISITO = "+requisito+" \n" 
+                    +"WHERE IDE_DETALLE_REQUISITOS_SOLICITUD="+detalle+" AND IDE_TIPO_REQUISITO= "+tipo+" AND IDE_DETALLE_SOLICITUD= "+solicitud;
+    conectar();
+    conexion.ejecutarSql(actua);
+//    conexion.desconectar();
+}
+//CAMBIO DE ESTADO A VERDADERO
+public void actualizarEstado(Integer codigo,Byte confirma){
+    String actual="UPDATE TRANS_DETALLE_REQUISITOS_SOLICITUD set CONFIRMAR_REQUISITO = "+confirma+" WHERE IDE_DETALLE_SOLICITUD ="+codigo;
+    conectar();
+    conexion.ejecutarSql(actual);
+//    conexion.desconectar();
+}
+//CAMBIO DE ESTADO DE PLACA A ASIGNADA
+public void estadoPlaca(Integer placa){
+        String placa1 ="UPDATE TRANS_PLACA\n" +
+                      "set IDE_TIPO_ESTADO = (SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO WHERE DESCRIPCION_ESTADO LIKE 'asignada')\n" +
+                      "WHERE IDE_PLACA ="+placa;
+    conectar();
+    conexion.ejecutarSql(placa1);
+}
 
+//CREACION DE REQUISITOS
 public void insertarRequisito(Integer detalle,Integer tipo,Integer servicio){
     String insertar="INSERT INTO TRANS_DETALLE_REQUISITOS_SOLICITUD (IDE_TIPO_REQUISITO,IDE_DETALLE_SOLICITUD)\n" 
                     +"SELECT r.IDE_TIPO_REQUISITO AS IDE_TIPO_REQUISITO,"+detalle+" FROM TRANS_TIPO_REQUISITO r\n" 
@@ -77,27 +100,7 @@ public void insertarRequisito(Integer detalle,Integer tipo,Integer servicio){
 //            conexion.desconectar();
 }
 
-public void actulizarRequisito(Byte requisito,Integer detalle,Integer solicitud,Integer tipo){
-//    String actua ="UPDATE TRANS_DETALLE_REQUISITOS_SOLICITUD \n" 
-//                    +"SET CONFIRMAR_REQUISITO = "+requisito+" \n" 
-//                    +"FROM (SELECT IDE_DETALLE_REQUISITOS_SOLICITUD as id, IDE_TIPO_REQUISITO as requisito, IDE_DETALLE_SOLICITUD as detalle\n" 
-//                    +"FROM TRANS_DETALLE_REQUISITOS_SOLICITUD\n" 
-//                    +"WHERE IDE_DETALLE_SOLICITUD = "+detalle+" and  IDE_DETALLE_REQUISITOS_SOLICITUD = "+solicitud+") a \n" 
-//                    +"WHERE IDE_DETALLE_REQUISITOS_SOLICITUD=a.id AND IDE_TIPO_REQUISITO=a.requisito AND IDE_DETALLE_SOLICITUD="+detalle;
-    String actua ="UPDATE TRANS_DETALLE_REQUISITOS_SOLICITUD SET CONFIRMAR_REQUISITO = "+requisito+" \n" 
-                    +"WHERE IDE_DETALLE_REQUISITOS_SOLICITUD="+detalle+" AND IDE_TIPO_REQUISITO= "+tipo+" AND IDE_DETALLE_SOLICITUD= "+solicitud;
-    conectar();
-    conexion.ejecutarSql(actua);
-//    conexion.desconectar();
-}
-
-public void actualizarEstado(Integer codigo,Byte confirma){
-    String actual="UPDATE TRANS_DETALLE_REQUISITOS_SOLICITUD set CONFIRMAR_REQUISITO = "+confirma+" WHERE IDE_DETALLE_SOLICITUD ="+codigo;
-    conectar();
-    conexion.ejecutarSql(actual);
-//    conexion.desconectar();
-}
-
+//INGRESO DE APORBACION DE SOLICITUD
 public void asigancionPlaca(String usuario){
     String actual="INSERT INTO TRANS_APROBACION_PLACA (FECHA_APROBACION,APROBADO,USU_APROBACION)\n" +
                     "VALUES (" + utilitario.getFormatoFechaSQL(utilitario.getFechaActual()) +",1,'"+usuario+"')";
@@ -106,15 +109,6 @@ public void asigancionPlaca(String usuario){
 //    conexion.desconectar();
 }
 
-public void estadoPlaca(Integer placa){
-    System.out.println("Actualizacion OK");
-        String placa1 ="UPDATE TRANS_PLACA\n" +
-                      "set IDE_TIPO_ESTADO = (SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO WHERE DESCRIPCION_ESTADO LIKE 'asignada')\n" +
-                      "WHERE IDE_PLACA ="+placa;
-    conectar();
-    System.out.println("Actualizacion OK2");
-    conexion.ejecutarSql(placa1);
-}
 
    public TablaGenerica getGestor(String iden) {
         //Busca a una empresa en la tabla maestra_ruc por ruc
@@ -139,26 +133,47 @@ public void estadoPlaca(Integer placa){
         return tab_persona;
     } 
 
+  public TablaGenerica getAprobacion(String fecha,Integer iden) {
+        //Busca a una empresa en la tabla maestra_ruc por ruc
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT top 1 IDE_APROBACION_PLACA,FECHA_APROBACION,APROBADO,USU_APROBACION,IDE_DETALLE_SOLICITUD\n" +
+                            "FROM TRANS_APROBACION_PLACA\n" +
+                            "WHERE FECHA_APROBACION ="+fecha+" AND IDE_DETALLE_SOLICITUD ="+iden+"order by IDE_APROBACION_PLACA ASC");
+        tab_persona.ejecutarSql();
+        
+//        conexion.desconectar();
+        return tab_persona;
+    }       
       public TablaGenerica getEntrega(Integer propie) {
         //Busca a una empresa en la tabla maestra_ruc por ruc
         conectar();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(conexion);
-        tab_persona.setSql("SELECT DISTINCT d.IDE_DETALLE_SOLICITUD,\n" +
-                            "d.CEDULA_RUC_PROPIETARIO,d.NOMBRE_PROPIETARIO,\n" +
-                            "p.PLACA,v.des_tipo_vehiculo,d.IDE_PLACA,\n" +
-                            "p.IDE_TIPO_VEHICULO,p.IDE_TIPO_SERVICIO,\n" +
-                            "d.NUMERO_FACTURA\n" +
-                            "\n" +
+        tab_persona.setSql("SELECT DISTINCT d.IDE_DETALLE_SOLICITUD,d.CEDULA_RUC_PROPIETARIO,d.NOMBRE_PROPIETARIO,p.PLACA,v.des_tipo_vehiculo,d.IDE_PLACA,\n" +
+                            "p.IDE_TIPO_VEHICULO,p.IDE_TIPO_SERVICIO,d.NUMERO_FACTURA\n" +
                             "FROM dbo.TRANS_DETALLE_SOLICITUD_PLACA AS d ,dbo.TRANS_PLACA AS p ,dbo.trans_tipo_vehiculo v\n" +
-                            "WHERE d.IDE_PLACA = p.IDE_PLACA AND\n" +
-                            "d.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND d.IDE_DETALLE_SOLICITUD ="+propie);
+                            "WHERE d.IDE_PLACA = p.IDE_PLACA ANDd.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND d.IDE_DETALLE_SOLICITUD ="+propie);
         tab_persona.ejecutarSql();
         
 //        conexion.desconectar();
         return tab_persona;
     }
       
+     public TablaGenerica getIDPlaca(Integer aprobado, Integer solicitud) {
+        //Busca a una empresa en la tabla maestra_ruc por ruc
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT IDE_DETALLE_SOLICITUD,IDE_PLACA,IDE_TIPO_VEHICULO,IDE_TIPO_SERVICIO,IDE_APROBACION_PLACA,\n" +
+                            "IDE_SOLICITUD_PLACA,ENTREGADA_PLACA FROM TRANS_DETALLE_SOLICITUD_PLACA\n" +
+                            "WHERE IDE_SOLICITUD_PLACA ="+solicitud+" and IDE_APROBACION_PLACA ="+aprobado);
+        tab_persona.ejecutarSql();
+        
+//        conexion.desconectar();
+        return tab_persona;
+    }
       
  private void conectar() {
         if (conexion == null) {
