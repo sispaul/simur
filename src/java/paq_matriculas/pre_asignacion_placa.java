@@ -42,6 +42,7 @@ public class pre_asignacion_placa extends Pantalla{
     private PanelMenu pam_menu = new PanelMenu();
     private AutoCompletar aut_busca = new AutoCompletar();
     private Panel pan_opcion1 = new Panel();
+    private Panel pan_opcion2 = new Panel();
     private Efecto efecto1 = new Efecto();
     private Calendario cal_fechabus = new Calendario();
     private Grid grid = new Grid();
@@ -49,11 +50,6 @@ public class pre_asignacion_placa extends Pantalla{
     private Grid grid_de = new Grid();
     
     public pre_asignacion_placa() {
-
-        //campos fecha       
-        grid.getChildren().add(new Etiqueta("FECHA INICIAL"));
-        grid.getChildren().add(cal_fechabus);
-
         /*
          * Creación de Botones; Busqueda/Limpieza
          */
@@ -70,7 +66,7 @@ public class pre_asignacion_placa extends Pantalla{
         Grid gri_busca = new Grid();
         gri_busca.setColumns(2);
  //campos fecha       
-        gri_busca.getChildren().add(new Etiqueta("FECHA INICIAL"));
+        gri_busca.getChildren().add(new Etiqueta("BUSCAR FECHA"));
         gri_busca.getChildren().add(cal_fechabus);
         Boton bot_buscar = new Boton();
         bot_buscar.setValue("Buscar");
@@ -105,7 +101,7 @@ public class pre_asignacion_placa extends Pantalla{
         div_division.setId("div_division");
         div_division.dividir2(pam_menu, pan_opcion, "20%", "V");
         div_division.getDivision1().setCollapsible(true);
-        div_division.getDivision1().setHeader("MENU DE OPCIONES");
+        div_division.getDivision1().setHeader("DIRECCIÓN DE TRANSPORTE");
         agregarComponente(div_division);
         dibujarSolicitud();
         
@@ -115,7 +111,7 @@ public class pre_asignacion_placa extends Pantalla{
         dia_dialogoe.setId("dia_dialogoe");
         dia_dialogoe.setTitle("BUSQUEDA DE SOLICITUDES POR FECHA"); //titulo
         dia_dialogoe.setWidth("17%"); //siempre en porcentajes  ancho
-        dia_dialogoe.setHeight("8%");//siempre porcentaje   alto
+        dia_dialogoe.setHeight("8%");//siempre porcentaje   alto 
         dia_dialogoe.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_dialogoe.getBot_aceptar().setMetodo("aceptoValores");
         dia_dialogoe.getBot_cancelar().setMetodo("cancelarValores");
@@ -123,7 +119,7 @@ public class pre_asignacion_placa extends Pantalla{
         agregarComponente(dia_dialogoe);
         
         set_solicitud.setId("set_solicitud");
-        set_solicitud.setSeleccionTabla("select ide_empresa,nombre,ruc from trans_empresa where ide_empresa=-1", "ide_empresa");
+        set_solicitud.setSeleccionTabla("SELECT IDE_SOLICITUD_PLACA,CEDULA_RUC_EMPRESA,NOMBRE_EMPRESA,DESCRIPCION_SOLICITUD FROM TRANS_SOLICITUD_PLACA where IDE_SOLICITUD_PLACA=-1", "IDE_SOLICITUD_PLACA");
         set_solicitud.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
         set_solicitud.getTab_seleccion().setRows(10);
         set_solicitud.setRadio();
@@ -142,7 +138,7 @@ public class pre_asignacion_placa extends Pantalla{
     private void contruirMenu() {
         // SUB MENU 1
         Submenu sum_empleado = new Submenu();
-        sum_empleado.setLabel("DIRECCIÓN DE TRANSPORTE");
+        sum_empleado.setLabel("ASIGNACIÒN PLACA");
         pam_menu.getChildren().add(sum_empleado);
 
         // ITEM 1 : OPCION 0
@@ -156,17 +152,23 @@ public class pre_asignacion_placa extends Pantalla{
     
     
     public void dibujarSolicitud(){
+         if (aut_busca.getValue() != null) {
+            str_opcion = "0";
+            limpiarPanel();
         /**
          PANTALLA CABECERA DE SOLICITUS
          */
         tab_solicitud.setId("tab_solicitud"); // NOMBRE PANTALLA - DECLARACION DE CABECERA
         tab_solicitud.setTabla("TRANS_SOLICITUD_PLACA", "IDE_SOLICITUD_PLACA", 1);
-        tab_solicitud.getColumna("DESCRIPCION_SOLICITUD").setNombreVisual("DESCRIPCIÓN DE SOLICITUD");
+        if (aut_busca.getValue() == null) {
+            tab_solicitud.setCondicion("IDE_SOLICITUD_PLACA=-1");
+        } else {
+            tab_solicitud.setCondicion("IDE_SOLICITUD_PLACA=" + aut_busca.getValor());
+        }
         tab_solicitud.getColumna("DESCRIPCION_SOLICITUD").setMayusculas(true);
         tab_solicitud.getColumna("NUMERO_AUTOMOTORES").setVisible(false);
         tab_solicitud.getColumna("FECHA_SOLICITUD").setNombreVisual("FECHA");
         tab_solicitud.getColumna("FECHA_SOLICITUD").setLectura(true);
-        tab_solicitud.getColumna("NOMBRE_EMPRESA").setNombreVisual("NOMBRE EMPRESA");
         tab_solicitud.getColumna("USU_SOLICITUD").setVisible(false);
         tab_solicitud.getColumna("IDE_SOLICITUD_PLACA").setNombreVisual("Nro. SOLICITUD");
         tab_solicitud.getColumna("IDE_TIPO_GESTOR").setNombreVisual("TIPO DE SOLICITUD");
@@ -223,22 +225,68 @@ public class pre_asignacion_placa extends Pantalla{
         PanelTabla tbp_r=new PanelTabla(); 
         tbp_r.setPanelTabla(tab_requisito);
    
+        
+        Boton bot_asig = new Boton();
+        bot_asig.setIcon("ui-icon-cancel");
+        bot_asig.setValue("ASIGNAR PLACA");
+        bot_asig.setMetodo("asignar");
+        Boton bot_quita = new Boton();
+        bot_quita.setValue("QUITAR ASIGNACIÒN");
+        bot_quita.setIcon("ui-icon-cancel");
+        bot_quita.setMetodo("quitar");
+        
+        pan_opcion2.setId("pan_opcion2");
+	pan_opcion2.setTransient(true);
+        pan_opcion2.setHeader("INGRESO DE SOLICITUD PARA PEDIDO - PLACA");
+	efecto1.setType("drop");
+	efecto1.setSpeed(150);
+	efecto1.setPropiedad("mode", "'show'");
+	efecto1.setEvent("load");
+        pan_opcion2.getChildren().add(efecto1);
+        pan_opcion2.getChildren().add(bot_asig);
+        pan_opcion2.getChildren().add(bot_quita);
+        Division div = new Division();
+        div.dividir2(tbp_r, pan_opcion2, "60%", "v");
+     
         Grupo gru = new Grupo();
         gru.getChildren().add(tbp_s);
         gru.getChildren().add(tbp_d);
-        gru.getChildren().add(tbp_r);
+        gru.getChildren().add(div);
         pan_opcion.getChildren().add(gru);
+        } else {
+            utilitario.agregarMensajeInfo("No se puede abrir la opción", "Seleccione una Empresa en el autocompletar");
+            limpiar();
+        }
     }
     
-    public void buscarSolicitud(SelectEvent evt) {
-        aut_busca.onSelect(evt);
-        if (aut_busca.getValor() != null) {
-            tab_solicitud.setFilaActual(aut_busca.getValor());
-            utilitario.addUpdate("tab_solicitud");
-            utilitario.addUpdate("tab_detalle");
-            utilitario.addUpdate("tab_requisito");
+    public void buscarEmpresa() {
+        if (cal_fechabus.getValue() != null && cal_fechabus.getValue().toString().isEmpty() == false) {
+            set_solicitud.getTab_seleccion().setSql("SELECT IDE_SOLICITUD_PLACA,CEDULA_RUC_EMPRESA,NOMBRE_EMPRESA,DESCRIPCION_SOLICITUD\n" +
+                                                     "FROM TRANS_SOLICITUD_PLACA WHERE FECHA_SOLICITUD ='" + cal_fechabus.getFecha()+ "'");
+            set_solicitud.getTab_seleccion().ejecutarSql();
+        } else {
+            utilitario.agregarMensajeInfo("debe seleccionar fecha", "");
         }
-        dibujarPanel();
+
+    }
+
+    public void abrirBusqueda() {
+
+        set_solicitud.dibujar();
+        cal_fechabus.limpiar();
+        set_solicitud.getTab_seleccion().limpiar();
+    }
+
+    public void aceptarBusqueda() {
+        if (set_solicitud.getValorSeleccionado() != null) {
+            aut_busca.setValor(set_solicitud.getValorSeleccionado());
+            set_solicitud.cerrar();
+            dibujarPanel();
+            utilitario.addUpdate("aut_empresas,pan_opcion");
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar una empresa", "");
+        }
+
     }
     private void limpiarPanel() {
         //borra el contenido de la división central central
@@ -253,12 +301,19 @@ public class pre_asignacion_placa extends Pantalla{
        private void dibujarPanel() {
         if (str_opcion.equals("0") || str_opcion.isEmpty()) {
             dibujarSolicitud();
-        } //else if (str_opcion.equals("1")) {
-            //aceptarAprobacion();
-       // }
+        }
         utilitario.addUpdate("pan_opcion");
     }  
     
+       
+    public void asignar (){
+        
+    }   
+       
+    public void quitar (){
+        
+    }
+       
     @Override
     public void insertar() {
     }
