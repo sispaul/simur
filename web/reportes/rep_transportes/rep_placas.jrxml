@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_placas" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3daae21b-207a-4b3c-95f3-eb3a62ec6930">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<subDataset name="dataset1" uuid="0859364c-ca45-4d86-9ec6-6d9178251298"/>
+	<queryString>
+		<![CDATA[SELECT
+p.IDE_PLACA,
+p.PLACA,
+v.des_tipo_vehiculo,
+s.DESCRIPCION_SERVICIO,
+e.DESCRIPCION_ESTADO
+FROM trans_tipo_vehiculo v,TRANS_TIPO_SERVICIO s,TRANS_PLACA p,TRANS_TIPO_ESTADO e
+WHERE s.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND
+p.IDE_TIPO_ESTADO = e.IDE_TIPO_ESTADO AND
+p.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND
+p.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO]]>
+	</queryString>
+	<field name="IDE_PLACA" class="java.lang.Long"/>
+	<field name="PLACA" class="java.lang.String"/>
+	<field name="des_tipo_vehiculo" class="java.lang.String"/>
+	<field name="DESCRIPCION_SERVICIO" class="java.lang.String"/>
+	<field name="DESCRIPCION_ESTADO" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<columnHeader>
+		<band height="50">
+			<textField>
+				<reportElement uuid="94c43db6-fda9-440c-902a-73c01dbc14b5" x="44" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{des_tipo_vehiculo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="90744bad-53e8-4c82-a14c-963aca5e0eac" x="44" y="20" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{des_tipo_vehiculo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement uuid="36ac0580-9b0c-4142-9c2b-a105c851b893" x="310" y="0" width="147" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{DESCRIPCION_ESTADO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5bac2c27-2f58-4d1b-b0a5-c330cbee6c12" x="84" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{PLACA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="51" splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>
