@@ -4,6 +4,7 @@
  */
 package paq_matriculas;
 
+import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
@@ -19,10 +20,13 @@ import framework.componentes.PanelTabla;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
+import javax.ejb.EJB;
 import org.primefaces.component.panelmenu.PanelMenu;
 import org.primefaces.component.submenu.Submenu;
 import org.primefaces.event.SelectEvent;
 import paq_sistema.aplicacion.Pantalla;
+import paq_transportes.ejb.servicioPlaca;
+import persistencia.Conexion;
 
 /**
  *
@@ -30,13 +34,14 @@ import paq_sistema.aplicacion.Pantalla;
  */
 public class pre_asignacion_placa extends Pantalla{
 
+Integer identificacion;
     //DECLARACION OBJETOS TABLA
     private Tabla tab_solicitud = new Tabla();
     private Tabla tab_detalle = new Tabla();
     private Tabla tab_requisito = new Tabla();
     private Tabla tab_consulta = new Tabla();
     private SeleccionTabla set_solicitud = new SeleccionTabla();
-    
+    private Texto txt_comentario = new Texto();
     private Panel pan_opcion = new Panel();
     private String str_opcion = "";// sirve para identificar la opcion que se encuentra dibujada en pantalla
     private PanelMenu pam_menu = new PanelMenu();
@@ -44,13 +49,27 @@ public class pre_asignacion_placa extends Pantalla{
     private Panel pan_opcion1 = new Panel();
     private Panel pan_opcion2 = new Panel();
     private Efecto efecto1 = new Efecto();
+    private Efecto efecto2 = new Efecto();
     private Calendario cal_fechabus = new Calendario();
-    private Grid grid = new Grid();
     private Dialogo dia_dialogoe = new Dialogo();
+    private Dialogo dia_dialogoq = new Dialogo();
     private Grid grid_de = new Grid();
+    private Grid grid_dq = new Grid();
+    private Grid gride = new Grid();
+    private Grid gridq = new Grid();
+    
+    private Conexion conexion= new Conexion();
+    @EJB
+    private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servicioPlaca.class);
     
     public pre_asignacion_placa() {
-        /*
+            conexion.NOMBRE_MARCA_BASE="sqlserver";
+            conexion.setUnidad_persistencia(utilitario.getPropiedad("recursojdbc"));
+        
+                bar_botones.quitarBotonInsertar();
+		bar_botones.quitarBotonEliminar();
+                bar_botones.quitarBotonGuardar();
+         /*
          * Creación de Botones; Busqueda/Limpieza
          */
         Boton bot_busca = new Boton();
@@ -99,7 +118,7 @@ public class pre_asignacion_placa extends Pantalla{
         contruirMenu();
         Division div_division = new Division();
         div_division.setId("div_division");
-        div_division.dividir2(pam_menu, pan_opcion, "20%", "V");
+        div_division.dividir2(pam_menu, pan_opcion, "15%", "V");
         div_division.getDivision1().setCollapsible(true);
         div_division.getDivision1().setHeader("DIRECCIÓN DE TRANSPORTE");
         agregarComponente(div_division);
@@ -109,7 +128,7 @@ public class pre_asignacion_placa extends Pantalla{
          * VENTANA DE BUSQUEDA
          */
         dia_dialogoe.setId("dia_dialogoe");
-        dia_dialogoe.setTitle("BUSQUEDA DE SOLICITUDES POR FECHA"); //titulo
+        dia_dialogoe.setTitle("CONFIRMAR ASIGNACIÓN"); //titulo
         dia_dialogoe.setWidth("17%"); //siempre en porcentajes  ancho
         dia_dialogoe.setHeight("8%");//siempre porcentaje   alto 
         dia_dialogoe.setResizable(false); //para que no se pueda cambiar el tamaño
@@ -127,6 +146,17 @@ public class pre_asignacion_placa extends Pantalla{
         set_solicitud.getBot_aceptar().setMetodo("aceptarBusqueda");
         set_solicitud.setHeader("BUSCAR SOLICITUD");
         agregarComponente(set_solicitud);
+        
+        dia_dialogoq.setId("dia_dialogoq");
+        dia_dialogoq.setTitle("PORQUE DESEA CANCELAR ASIGNACIÒN"); //titulo
+        dia_dialogoq.setWidth("25%"); //siempre en porcentajes  ancho
+        dia_dialogoq.setHeight("30%");//siempre porcentaje   alto 
+        dia_dialogoq.setResizable(false); //para que no se pueda cambiar el tamaño
+        txt_comentario.setSize(50);
+        grid_dq.getChildren().add(txt_comentario);
+        dia_dialogoq.getBot_aceptar().setMetodo("quitarValores");
+        grid_dq.setColumns(4);
+        agregarComponente(dia_dialogoq);
         
         tab_consulta.setId("tab_consulta");
         tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
@@ -182,7 +212,7 @@ public class pre_asignacion_placa extends Pantalla{
         
         pan_opcion1.setId("pan_opcion1");
 	pan_opcion1.setTransient(true);
-        pan_opcion1.setHeader("INGRESO DE SOLICITUD PARA PEDIDO - PLACA");
+        pan_opcion1.setHeader("PEDIDO DE ASIGNACIÒN - PLACA");
 	efecto1.setType("drop");
 	efecto1.setSpeed(150);
 	efecto1.setPropiedad("mode", "'show'");
@@ -225,33 +255,33 @@ public class pre_asignacion_placa extends Pantalla{
         PanelTabla tbp_r=new PanelTabla(); 
         tbp_r.setPanelTabla(tab_requisito);
    
-        
         Boton bot_asig = new Boton();
-        bot_asig.setIcon("ui-icon-cancel");
+        bot_asig.setIcon("ui-icon-check");
         bot_asig.setValue("ASIGNAR PLACA");
         bot_asig.setMetodo("asignar");
         Boton bot_quita = new Boton();
         bot_quita.setValue("QUITAR ASIGNACIÒN");
-        bot_quita.setIcon("ui-icon-cancel");
+        bot_quita.setIcon("ui-icon-closethick");
         bot_quita.setMetodo("quitar");
         
         pan_opcion2.setId("pan_opcion2");
 	pan_opcion2.setTransient(true);
-        pan_opcion2.setHeader("INGRESO DE SOLICITUD PARA PEDIDO - PLACA");
-	efecto1.setType("drop");
-	efecto1.setSpeed(150);
-	efecto1.setPropiedad("mode", "'show'");
-	efecto1.setEvent("load");
-        pan_opcion2.getChildren().add(efecto1);
+        pan_opcion2.setHeader("ASIGNACIÒN DE PEDIDO - PLACA");
+	efecto2.setType("drop");
+	efecto2.setSpeed(150);
+	efecto2.setPropiedad("mode", "'show'");
+	efecto2.setEvent("load");
+        pan_opcion2.getChildren().add(efecto2);
         pan_opcion2.getChildren().add(bot_asig);
         pan_opcion2.getChildren().add(bot_quita);
         Division div = new Division();
         div.dividir2(tbp_r, pan_opcion2, "60%", "v");
-     
+        Division div1 = new Division();
+        div1.dividir2(div, null, "50%", "h");
         Grupo gru = new Grupo();
         gru.getChildren().add(tbp_s);
         gru.getChildren().add(tbp_d);
-        gru.getChildren().add(div);
+        gru.getChildren().add(div1);
         pan_opcion.getChildren().add(gru);
         } else {
             utilitario.agregarMensajeInfo("No se puede abrir la opción", "Seleccione una Empresa en el autocompletar");
@@ -271,7 +301,6 @@ public class pre_asignacion_placa extends Pantalla{
     }
 
     public void abrirBusqueda() {
-
         set_solicitud.dibujar();
         cal_fechabus.limpiar();
         set_solicitud.getTab_seleccion().limpiar();
@@ -291,6 +320,7 @@ public class pre_asignacion_placa extends Pantalla{
     private void limpiarPanel() {
         //borra el contenido de la división central central
         pan_opcion.getChildren().clear();
+        pan_opcion2.getChildren().clear();
 //         pan_opcion.getChildren().add(efecto);
     }
    public void limpiar() {
@@ -303,15 +333,58 @@ public class pre_asignacion_placa extends Pantalla{
             dibujarSolicitud();
         }
         utilitario.addUpdate("pan_opcion");
-    }  
-    
+    } 
        
+ // METODOS PARA LA ASIGNACION DE PLACA Y CAMBIO DE ESTADO A PLACA ASIGNADA      
     public void asignar (){
-        
+    String asignacion="INSERT INTO TRANS_APROBACION_PLACA (FECHA_APROBACION,APROBADO,USU_APROBACION,IDE_DETALLE_SOLICITUD) "
+            + "VALUES ("+ utilitario.getFormatoFechaSQL(utilitario.getFechaActual()) +",1,'"+tab_consulta.getValor("NICK_USUA")+"',"+tab_detalle.getValor("IDE_DETALLE_SOLICITUD")+")";
+    conexion.ejecutarSql(asignacion);
+    aprobacion();
     }   
        
+    public void aprobacion(){
+        dia_dialogoe.Limpiar();
+        dia_dialogoe.setDialogo(gride);
+        dia_dialogoe.setDialogo(grid_de);
+        dia_dialogoe.dibujar();
+    }
+   public void aceptoValores(){
+     TablaGenerica tab_dato = ser_Placa.getAprobacion(utilitario.getFormatoFechaSQL(utilitario.getFechaActual()), Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")));
+            if (!tab_dato.isEmpty()) {
+                // Cargo la información de la base de datos maestra   
+                identificacion = Integer.parseInt(tab_dato.getValor("IDE_APROBACION_PLACA"));
+                ser_Placa.seleccionarP(Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")), Integer.parseInt(tab_detalle.getValor("IDE_tipo_vehiculo")), 
+                Integer.parseInt(tab_detalle.getValor("IDE_tipo_servicio")), identificacion);
+                utilitario.addUpdate("tab_detalle");
+                aceptoValores1();
+            } else {
+                utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ciudadania del municipio", "");
+            }
+   }
+   
+   public void aceptoValores1(){
+       TablaGenerica tab_dato = ser_Placa.getIDPlaca(identificacion, Integer.parseInt(tab_solicitud.getValor("IDE_SOLICITUD_PLACA")));
+            if (!tab_dato.isEmpty()) {
+        ser_Placa.estadoPlaca(Integer.parseInt(tab_dato.getValor("IDE_PLACA")));
+        utilitario.agregarMensaje("ASIGNACIÓN REALIZADA", "");
+        utilitario.addUpdate("tab_detalle");
+        dia_dialogoe.cerrar();
+        } else {
+                utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ciudadania del municipio", "");
+            }
+   }
+   public void cancelarValores(){
+        utilitario.agregarMensajeInfo("ASIGNACIÓN NO REALIZADA", "");
+        dia_dialogoe.cerrar();
+   }
+           
+   // METODOS PARA CANCELACION DE PLACA ASIGNADAS 
     public void quitar (){
-        
+        dia_dialogoq.Limpiar();
+        dia_dialogoq.setDialogo(gridq);
+        dia_dialogoq.setDialogo(grid_dq);
+        dia_dialogoq.dibujar();
     }
        
     @Override
