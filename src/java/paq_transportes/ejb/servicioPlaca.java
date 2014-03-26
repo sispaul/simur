@@ -131,6 +131,14 @@ public void asigancionPlaca(String usuario){
 //    conexion.desconectar();
 }
 
+//GUARDAR AUDITORIA DE PLACAS DESASIGNADAS
+public void guardarhistorial(Integer ide,String ruc,Integer detalle,String cedula,String nomb,Integer servicio, Integer vehiculo,Integer factura,String coment){
+    String actual="INSERT INTO TRANS_QUITAR_ASIGNACION (IDE_SOLICITUD,RUC_CEDULA_EMPRESA,NOMBRE_EMPRESA,IDE_DETALLE,CEDULA_RUC_PROPIETARIO,NOMBRE_PROPIETARIO,\n" +
+                   "TIPO_SERVICIO,TIPO_VEHICULO,FACTURA,COMENTARIO)VALUES( "+ide+",'"+ruc+"','"+nombe"',"+detalle+",'"+cedula+"','"+nombp+"',"+servicio+","+vehiculo+","+factura+",'"+coment+"')";
+    conectar();
+    conexion.ejecutarSql(actual);
+//    conexion.desconectar();
+}
 //RECUPERACION DE INFORMACION
    public TablaGenerica getGestor(String iden) {
         //Busca a una empresa en la tabla maestra_ruc por ruc
