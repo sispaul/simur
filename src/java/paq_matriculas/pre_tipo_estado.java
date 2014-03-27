@@ -11,7 +11,7 @@ import paq_sistema.aplicacion.Pantalla;
 
 /**
  *
- * @author p-sistemas
+ * @author KEJA
  */
 public class pre_tipo_estado extends Pantalla{
 
