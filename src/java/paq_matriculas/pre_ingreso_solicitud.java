@@ -163,7 +163,6 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_requisito.dibujar();
         PanelTabla tabp3=new PanelTabla();
         tabp3.setPanelTabla(tab_requisito);
-        
         Division div_division = new Division();
         div_division.setId("div_division");
         div_division.dividir3(tabp1, tabp2, tabp3, "35%", "43%", "H");
