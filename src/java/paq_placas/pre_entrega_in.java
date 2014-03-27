@@ -7,6 +7,7 @@ package paq_placas;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Calendario;
 import framework.componentes.Dialogo;
+import framework.componentes.Division;
 import framework.componentes.Efecto;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
@@ -15,6 +16,7 @@ import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
+import framework.componentes.Texto;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
@@ -47,13 +49,27 @@ private Etiqueta eti_etiqueta1= new Etiqueta();
 private Grid grid = new Grid();
 private Etiqueta etifec = new Etiqueta();
 private Grid grid1 = new Grid();
-private Etiqueta etifec1 = new Etiqueta();
 private Dialogo dia_dialogoe = new Dialogo();
 private Grid grid_de = new Grid();
 private Grid gride = new Grid();
-private Dialogo dia_dialogoDes = new Dialogo();
 private Dialogo dia_dialogo1 = new Dialogo();
 private Grid grid_de1 = new Grid();
+
+    private Panel pan_opcion1 = new Panel();
+    private Panel pan_opcion2 = new Panel();
+    private Panel pan_opcion4 = new Panel();
+
+    private Texto tex_fecha = new Texto();
+    private Texto tex_num_sol = new Texto();
+    private Texto tex_empresa = new Texto();
+    private Texto tex_gestor = new Texto();
+    private Texto tex_usu_in = new Texto();
+    private Texto tex_tip_sol = new Texto();
+    private Texto tex_automotor = new Texto();
+    private Texto tex_servicio = new Texto();
+    private Texto tex_fech_apro = new Texto();
+    private Texto tex_placa = new Texto();
+    private Texto tex_usu_ap = new Texto();
 
     ///REPORTES
 private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
@@ -65,15 +81,112 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
 
     public pre_entrega_in() {
 
-        etifec.setStyle("font-size:16px;color:blue");
-        etifec.setValue("SELECCIONE RANGO DE FECHAS");
-        grid.setColumns(4);
-        //campos fecha       
-        grid.getChildren().add(new Etiqueta("FECHA INICIAL"));
-        grid.getChildren().add(cal_fechaini);
-        grid.getChildren().add(new Etiqueta("   FECHA FINAL"));
-        grid.getChildren().add(cal_fechafin);
+        pan_opcion2.setId("pan_opcion2");
+        pan_opcion2.setHeader("REFERENCIAS DE SOLICITUD");
+	pan_opcion2.setTransient(true);
         
+        Grid gri_fechai = new Grid();
+        gri_fechai.setColumns(2);
+        gri_fechai.getChildren().add(new Etiqueta("FECHA SOLICITUD: "));
+        tex_fecha.setId("tex_fecha");
+        gri_fechai.getChildren().add(tex_fecha);
+
+        Grid gri_usin = new Grid();
+        gri_usin.setColumns(2);
+        gri_usin.getChildren().add(new Etiqueta("USUARIO - INGRESO: "));
+        tex_num_sol.setId("tex_num_sol");
+        gri_usin.getChildren().add(tex_num_sol);
+        
+        Grid gri_fechaa = new Grid();
+        gri_fechaa.setColumns(2);
+        tex_empresa.setId("tex_empresa");
+        tex_empresa.setStyle("width: 89%;");
+        gri_fechaa.getChildren().add(new Etiqueta("NRO SOLICITUD: "));
+        gri_fechaa.getChildren().add(tex_empresa);
+
+        Grid gri_placa = new Grid();
+        gri_placa.setColumns(2);
+        tex_gestor.setId("tex_gestor");
+        tex_gestor.setStyle("width: 220%;");
+        gri_placa.getChildren().add(new Etiqueta("EMPRESA GESTIONA: "));
+        gri_placa.getChildren().add(tex_gestor);
+        
+        Grid gri_usap = new Grid();
+        gri_usap.setColumns(2);
+        tex_usu_in.setId("tex_usu_in");
+        tex_usu_in.setStyle("width: 199%;");
+        gri_usap.getChildren().add(new Etiqueta("GESTOR: "));
+        gri_usap.getChildren().add(tex_usu_in);
+        
+        pan_opcion4.setId("pan_opcion4");
+        pan_opcion4.setHeader("REQUISITO SOLICITADO");
+	pan_opcion4.setTransient(true);
+        
+        Grid gri_soli = new Grid();
+        gri_soli.setColumns(2);
+        gri_soli.getChildren().add(new Etiqueta("TIPO SOLICITUD: "));
+        tex_tip_sol.setId("tex_tip_sol");
+        gri_soli.getChildren().add(tex_tip_sol);
+         
+        Grid gri_usp = new Grid();
+        gri_usp.setColumns(2);
+        gri_usp.getChildren().add(new Etiqueta("AUTOMOTOR: "));
+        tex_automotor.setId("tex_automotor");
+        gri_usp.getChildren().add(tex_automotor);
+//        
+        Grid gri_u = new Grid();
+        gri_u .setColumns(2);
+        gri_u .getChildren().add(new Etiqueta("SERVICIO: "));
+        tex_servicio.setId("tex_servicio");
+        gri_u .getChildren().add(tex_servicio);
+        
+        pan_opcion2.getChildren().add(gri_fechai);
+        pan_opcion2.getChildren().add(gri_fechaa);
+        pan_opcion2.getChildren().add(gri_placa);
+        pan_opcion2.getChildren().add(gri_usap);
+        pan_opcion2.getChildren().add(gri_usin);
+        pan_opcion4.getChildren().add(gri_soli);
+        pan_opcion4.getChildren().add(gri_usp);
+        pan_opcion4.getChildren().add(gri_u);
+        
+        pan_opcion1.setId("pan_opcion1");
+        pan_opcion1.setHeader("APROBACIÓN");
+	pan_opcion1.setTransient(true);
+        
+        Grid gri_ti = new Grid();
+        gri_ti.setColumns(2);
+        gri_ti.getChildren().add(new Etiqueta("FECHA DE APROBACIÒN: "));
+        tex_fech_apro.setId("tex_fech_apro");
+        gri_ti.getChildren().add(tex_fech_apro);
+        
+        Grid gri_pl = new Grid();
+        gri_pl.setColumns(2);
+        gri_pl.getChildren().add(new Etiqueta("NRO. PLACA: "));
+        tex_placa.setId("tex_placa9");
+        gri_pl.getChildren().add(tex_placa);
+        
+        Grid gri_pr = new Grid();
+        gri_pr .setColumns(2);
+        gri_pr.getChildren().add(new Etiqueta("USUARIO - APROBACIÒN : "));
+        gri_pr.getChildren().add(tex_usu_ap);
+        
+        pan_opcion1.getChildren().add(gri_ti);
+        pan_opcion1.getChildren().add(gri_pl);
+        pan_opcion1.getChildren().add(gri_pr);        
+        
+//        etifec.setStyle("font-size:16px;color:blue");
+//        etifec.setValue("SELECCIONE RANGO DE FECHAS");
+//        grid.setColumns(4);
+//        //campos fecha       
+//        grid.getChildren().add(new Etiqueta("FECHA INICIAL"));
+//        grid.getChildren().add(cal_fechaini);
+//        grid.getChildren().add(new Etiqueta("   FECHA FINAL"));
+//        grid.getChildren().add(cal_fechafin);
+        
+        Division div = new Division();
+        div.dividir2( pan_opcion4,  pan_opcion1, "50%", "v");
+        Division div1 = new Division();
+        div1.dividir2(div, null, "20%", "h");
         tab_consulta.setId("tab_consulta");
         tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
         tab_consulta.setCampoPrimaria("IDE_USUA");
@@ -95,11 +208,8 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         tab_entrega.getColumna("FECHA_ENTREGA_PLACA ").setLectura(true);
         tab_entrega.getColumna("USU_ENTREGA").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         tab_entrega.getColumna("USU_ENTREGA").setLectura(true);
-        tab_entrega.getColumna("FECHA_ENTREGA_PLACA ").setNombreVisual("FECHA ENTREGA");
-        tab_entrega.getColumna("CEDULA_RUC_PROPIETARIO").setNombreVisual("C.I./RUC PROPIETARIO");
-        tab_entrega.getColumna("CEDULA_PERSONA_RETIRA").setNombreVisual("C.I QUIEN RETIRA");
         tab_entrega.getColumna("CEDULA_PERSONA_RETIRA").setMetodoChange("aceptoretiro");
-        tab_entrega.getGrid().setColumns(2);
+        tab_entrega.getGrid().setColumns(4);
         tab_entrega.setTipoFormulario(true); 
         tab_entrega.dibujar();
         
@@ -115,14 +225,17 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         tab_e.setPanelTabla(tab_entrega);
         pan_opcion.getChildren().add(efecto);
         pan_opcion.getChildren().add(tab_e);
+        pan_opcion.getChildren().add(pan_opcion2);
+        pan_opcion.getChildren().add(div1);
+//        pan_opcion.getChildren().add(pan_opcion1);
         agregarComponente(pan_opcion);
         
         dia_dialogoe.setId("dia_dialogoe");
         dia_dialogoe.setTitle("BUSCAR PROPIETARIO"); //titulo
-        dia_dialogoe.setWidth("30%"); //siempre en porcentajes  ancho
+        dia_dialogoe.setWidth("80%"); //siempre en porcentajes  ancho
         dia_dialogoe.setHeight("30%");//siempre porcentaje   alto
         dia_dialogoe.setResizable(false); //para que no se pueda cambiar el tamaño
-        dia_dialogoe.getBot_aceptar().setMetodo("aceptoDialogo1");
+        dia_dialogoe.getBot_aceptar().setMetodo("aceptoValores");
         grid_de.setColumns(4);
         agregarComponente(dia_dialogoe);
         
@@ -151,16 +264,15 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         dia_dialogoe.Limpiar();
         dia_dialogoe.setDialogo(gride);
         grid_de.getChildren().add(set_propietario);
-                set_propietario.setId("set_propietario");
+        set_propietario.setId("set_propietario");
         set_propietario.setHeader("PROPIETARIOS PARA ENTREGAS");
-        set_propietario.setSql("SELECT DISTINCT d.IDE_DETALLE_SOLICITUD,d.CEDULA_RUC_PROPIETARIO,d.NOMBRE_PROPIETARIO,p.PLACA,v.des_tipo_vehiculo,d.IDE_SOLICITUD_PLACA,\n" +
-                                "e.DESCRIPCION_ESTADO,a.USU_APROBACION\n" +
-                                "FROM dbo.TRANS_DETALLE_SOLICITUD_PLACA AS d ,dbo.TRANS_PLACA AS p ,dbo.TRANS_TIPO_ESTADO AS e ,\n" +
-                                "dbo.TRANS_APROBACION_PLACA AS a, dbo.trans_tipo_vehiculo v\n" +
-                                "WHERE d.IDE_PLACA = p.IDE_PLACA AND p.IDE_TIPO_ESTADO = e.IDE_TIPO_ESTADO AND\n" +
-                                "d.IDE_APROBACION_PLACA = a.IDE_APROBACION_PLACA AND\n" +
-                                "d.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND e.DESCRIPCION_ESTADO like'asignada'AND\n" +
-                                "d.CEDULA_RUC_PROPIETARIO LIKE '"+tab_entrega.getValor("CEDULA_RUC_PROPIETARIO")+"'");
+        set_propietario.setSql("SELECT DISTINCT d.IDE_DETALLE_SOLICITUD,d.CEDULA_RUC_PROPIETARIO,d.NOMBRE_PROPIETARIO,p.PLACA,v.des_tipo_vehiculo,s.DESCRIPCION_SERVICIO,\n" +
+                                "d.IDE_SOLICITUD_PLACA,e.DESCRIPCION_ESTADO,a.USU_APROBACION\n" +
+                                "FROM dbo.TRANS_DETALLE_SOLICITUD_PLACA AS d ,dbo.TRANS_PLACA AS p ,dbo.TRANS_TIPO_ESTADO AS e ,dbo.TRANS_APROBACION_PLACA AS a ,\n" +
+                                "dbo.trans_tipo_vehiculo AS v ,dbo.TRANS_TIPO_SERVICIO s\n" +
+                                "WHERE d.IDE_PLACA = p.IDE_PLACA AND p.IDE_TIPO_ESTADO = e.IDE_TIPO_ESTADO AND d.IDE_APROBACION_PLACA = a.IDE_APROBACION_PLACA AND\n" +
+                                "d.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND s.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND d.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO AND\n" +
+                                "e.DESCRIPCION_ESTADO LIKE 'asignada' AND d.CEDULA_RUC_PROPIETARIO LIKE '"+tab_entrega.getValor("CEDULA_RUC_PROPIETARIO")+"'");
         set_propietario.getColumna("CEDULA_RUC_PROPIETARIO").setFiltro(true);
         set_propietario.setRows(5);
         set_propietario.setTipoSeleccion(false);
@@ -175,6 +287,12 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
             if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra   
                 tab_entrega.setValor("NOMBRE_PROPIETARIO", tab_dato.getValor("NOMBRE_PROPIETARIO"));
+                tex_fecha.setValue(tab_dato.getValor("FECHA_SOLICITUD"));
+                tex_num_sol.setValue(tab_dato.getValor("IDE_SOLICITUD_PLACA"));
+//                tex_empresa.setValue(tab_dato.getValor("NOMBRE_EMPRESA"));
+//                tex_usu_in.setValue(tab_dato.getValor("NOMBRE_GESTOR"));
+//                tex_gestor.setValue(tab_dato.getValor("USU_SOLICITUD"));
+                
                 consulta = Integer.parseInt(tab_dato.getValor("IDE_DETALLE_SOLICITUD"));
                 cedula = tab_dato.getValor("CEDULA_RUC_PROPIETARIO");
                 placa = Integer.parseInt(tab_dato.getValor("IDE_PLACA"));
