@@ -31,7 +31,7 @@ import persistencia.Conexion;
 
 /**
  *
- * @author p-sistemas
+ * @author KEJA
  */
 public class pre_asignacion_placa extends Pantalla{
 
