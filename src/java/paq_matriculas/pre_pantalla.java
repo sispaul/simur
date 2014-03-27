@@ -5,7 +5,6 @@
 package paq_matriculas;
 
 import framework.aplicacion.TablaGenerica;
-import framework.componentes.Boton;
 import framework.componentes.Calendario;
 import framework.componentes.Combo;
 import framework.componentes.Dialogo;
@@ -30,7 +29,7 @@ import persistencia.Conexion;
 
 /**
  *
- * @author p-sistemas
+ * @author KEJA
  */
 public class pre_pantalla extends Pantalla{
     //Textos para auto busqueda
