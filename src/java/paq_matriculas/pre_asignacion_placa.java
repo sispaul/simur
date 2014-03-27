@@ -28,6 +28,7 @@ import paq_sistema.aplicacion.Pantalla;
 import paq_transportes.ejb.servicioPlaca;
 import persistencia.Conexion;
 
+
 /**
  *
  * @author p-sistemas
@@ -100,7 +101,7 @@ Integer identificacion;
         aut_busca.setId("aut_busca");
         aut_busca.setAutoCompletar("SELECT IDE_SOLICITUD_PLACA,CEDULA_RUC_EMPRESA,NOMBRE_EMPRESA,NOMBRE_GESTOR,DESCRIPCION_SOLICITUD\n" +
                                     "FROM TRANS_SOLICITUD_PLACA");
-        aut_busca.setMetodoChange("buscarSolicitud");
+        aut_busca.setMetodoChange("filtrarSolicitud");
         aut_busca.setSize(100);
         
         bar_botones.agregarComponente(new Etiqueta("Buscador Solicitud:"));
@@ -154,7 +155,7 @@ Integer identificacion;
         dia_dialogoq.setResizable(false); //para que no se pueda cambiar el tamaño
         txt_comentario.setSize(50);
         grid_dq.getChildren().add(txt_comentario);
-        dia_dialogoq.getBot_aceptar().setMetodo("quitarValores");
+        dia_dialogoq.getBot_aceptar().setMetodo("aceptarDeligar");
         grid_dq.setColumns(4);
         agregarComponente(dia_dialogoq);
         
@@ -163,6 +164,16 @@ Integer identificacion;
         tab_consulta.setCampoPrimaria("IDE_USUA");
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
+        
+        dia_dialogoe.setId("dia_dialogoe");
+        dia_dialogoe.setTitle("CONFIRMAR ASIGNACIÓN"); //titulo
+        dia_dialogoe.setWidth("17%"); //siempre en porcentajes  ancho
+        dia_dialogoe.setHeight("8%");//siempre porcentaje   alto
+        dia_dialogoe.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogoe.getBot_aceptar().setMetodo("aceptoValores");
+        dia_dialogoe.getBot_cancelar().setMetodo("cancelarValores");
+        grid_de.setColumns(4);
+        agregarComponente(dia_dialogoe);
     }
 
     private void contruirMenu() {
@@ -180,6 +191,34 @@ Integer identificacion;
         sum_empleado.getChildren().add(itm_datos_empl);
     }
     
+    public void buscarEmpresa() {
+        if (cal_fechabus.getValue() != null && cal_fechabus.getValue().toString().isEmpty() == false) {
+            set_solicitud.getTab_seleccion().setSql("SELECT IDE_SOLICITUD_PLACA,CEDULA_RUC_EMPRESA,NOMBRE_EMPRESA FROM TRANS_SOLICITUD_PLACA where FECHA_SOLICITUD ='" + cal_fechabus.getFecha()+"'");
+            set_solicitud.getTab_seleccion().ejecutarSql();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar una fecha", "");
+        }
+
+    }
+
+    public void abrirBusqueda() {
+
+        set_solicitud.dibujar();
+        cal_fechabus.limpiar();
+        set_solicitud.getTab_seleccion().limpiar();
+    }
+
+    public void aceptarBusqueda() {
+        if (set_solicitud.getValorSeleccionado() != null) {
+            aut_busca.setValor(set_solicitud.getValorSeleccionado());
+            set_solicitud.cerrar();
+            dibujarPanel();
+            utilitario.addUpdate("aut_empresas,pan_opcion");
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar una empresa", "");
+        }
+
+    }
     
     public void dibujarSolicitud(){
          if (aut_busca.getValue() != null) {
@@ -250,7 +289,6 @@ Integer identificacion;
         tab_requisito.setTabla("TRANS_DETALLE_REQUISITOS_SOLICITUD", "IDE_DETALLE_REQUISITOS_SOLICITUD", 3);
         tab_requisito.getColumna("IDE_TIPO_REQUISITO").setCombo("SELECT IDE_TIPO_REQUISITO,DECRIPCION_REQUISITO FROM TRANS_TIPO_REQUISITO");
         tab_requisito.getColumna("IDE_TIPO_REQUISITO").setLectura(true);
-        tab_requisito.getGrid().setColumns(4);
         tab_requisito.dibujar();
         PanelTabla tbp_r=new PanelTabla(); 
         tbp_r.setPanelTabla(tab_requisito);
@@ -289,34 +327,6 @@ Integer identificacion;
         }
     }
     
-    public void buscarEmpresa() {
-        if (cal_fechabus.getValue() != null && cal_fechabus.getValue().toString().isEmpty() == false) {
-            set_solicitud.getTab_seleccion().setSql("SELECT IDE_SOLICITUD_PLACA,CEDULA_RUC_EMPRESA,NOMBRE_EMPRESA,DESCRIPCION_SOLICITUD\n" +
-                                                     "FROM TRANS_SOLICITUD_PLACA WHERE FECHA_SOLICITUD ='" + cal_fechabus.getFecha()+ "'");
-            set_solicitud.getTab_seleccion().ejecutarSql();
-        } else {
-            utilitario.agregarMensajeInfo("debe seleccionar fecha", "");
-        }
-
-    }
-
-    public void abrirBusqueda() {
-        set_solicitud.dibujar();
-        cal_fechabus.limpiar();
-        set_solicitud.getTab_seleccion().limpiar();
-    }
-
-    public void aceptarBusqueda() {
-        if (set_solicitud.getValorSeleccionado() != null) {
-            aut_busca.setValor(set_solicitud.getValorSeleccionado());
-            set_solicitud.cerrar();
-            dibujarPanel();
-            utilitario.addUpdate("aut_empresas,pan_opcion");
-        } else {
-            utilitario.agregarMensajeInfo("Debe seleccionar una empresa", "");
-        }
-
-    }
     private void limpiarPanel() {
         //borra el contenido de la división central central
         pan_opcion.getChildren().clear();
@@ -327,7 +337,16 @@ Integer identificacion;
         aut_busca.limpiar();
         utilitario.addUpdate("aut_busca");
     }
-    
+  
+   
+    public void filtrarSolicitud(SelectEvent evt) {
+        //Filtra el cliente seleccionado en el autocompletar
+        aut_busca.onSelect(evt);
+        dibujarPanel();
+    }
+/*
+ * cracionpanel
+ */
        private void dibujarPanel() {
         if (str_opcion.equals("0") || str_opcion.isEmpty()) {
             dibujarSolicitud();
@@ -387,6 +406,28 @@ Integer identificacion;
         dia_dialogoq.dibujar();
     }
        
+    public void aceptarDeligar(){
+        ser_Placa.guardarhistorial(Integer.parseInt(tab_solicitud.getValor("IDE_SOLICITUD_PLACA")), tab_solicitud.getValor("CEDULA_RUC_EMPRESA"), 
+                Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")), tab_detalle.getValor("CEDULA_RUC_PROPIETARIO"), 
+                tab_solicitud.getValor("NOMBRE_EMPRESA"),Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")),
+                tab_detalle.getValor("NOMBRE_PROPIETARIO"), Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")), 
+                Integer.parseInt(tab_detalle.getValor("NUMERO_FACTURA")), txt_comentario.getValue()+"");
+        quitarPlaca();
+    } 
+    
+    public void quitarPlaca(){
+        ser_Placa.quitarPlaca(Integer.parseInt(tab_detalle.getValor("IDE_PLACA")));
+        quitarDetalle();
+    }
+    public void quitarDetalle(){
+        ser_Placa.quitarDetalle(Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")));
+        eliminarAprobacion();
+    }
+    public void eliminarAprobacion(){
+        ser_Placa.estadoPlaca(Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")));
+        utilitario.agregarMensajeInfo("ASIGNACIÓN ELIMINADA", "");
+        dia_dialogoq.cerrar();
+    }
     @Override
     public void insertar() {
     }
