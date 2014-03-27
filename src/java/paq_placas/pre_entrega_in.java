@@ -94,29 +94,29 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         Grid gri_usin = new Grid();
         gri_usin.setColumns(2);
         gri_usin.getChildren().add(new Etiqueta("USUARIO - INGRESO: "));
-        tex_num_sol.setId("tex_num_sol");
-        gri_usin.getChildren().add(tex_num_sol);
+        tex_usu_in.setId("tex_usu_in");
+        gri_usin.getChildren().add(tex_usu_in);
         
         Grid gri_fechaa = new Grid();
         gri_fechaa.setColumns(2);
-        tex_empresa.setId("tex_empresa");
-        tex_empresa.setStyle("width: 89%;");
+        tex_num_sol.setId("tex_num_sol");
+        tex_num_sol.setStyle("width: 89%;");
         gri_fechaa.getChildren().add(new Etiqueta("NRO SOLICITUD: "));
-        gri_fechaa.getChildren().add(tex_empresa);
+        gri_fechaa.getChildren().add(tex_num_sol);
 
         Grid gri_placa = new Grid();
         gri_placa.setColumns(2);
-        tex_gestor.setId("tex_gestor");
-        tex_gestor.setStyle("width: 220%;");
+        tex_empresa.setId("tex_empresa");
+        tex_empresa.setStyle("width: 220%;");
         gri_placa.getChildren().add(new Etiqueta("EMPRESA GESTIONA: "));
-        gri_placa.getChildren().add(tex_gestor);
+        gri_placa.getChildren().add(tex_empresa);
         
         Grid gri_usap = new Grid();
         gri_usap.setColumns(2);
-        tex_usu_in.setId("tex_usu_in");
-        tex_usu_in.setStyle("width: 199%;");
+        tex_gestor.setId("tex_gestor");
+        tex_gestor.setStyle("width: 199%;");
         gri_usap.getChildren().add(new Etiqueta("GESTOR: "));
-        gri_usap.getChildren().add(tex_usu_in);
+        gri_usap.getChildren().add(tex_gestor);
         
         pan_opcion4.setId("pan_opcion4");
         pan_opcion4.setHeader("REQUISITO SOLICITADO");
@@ -289,9 +289,9 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
                 tab_entrega.setValor("NOMBRE_PROPIETARIO", tab_dato.getValor("NOMBRE_PROPIETARIO"));
                 tex_fecha.setValue(tab_dato.getValor("FECHA_SOLICITUD"));
                 tex_num_sol.setValue(tab_dato.getValor("IDE_SOLICITUD_PLACA"));
-//                tex_empresa.setValue(tab_dato.getValor("NOMBRE_EMPRESA"));
-//                tex_usu_in.setValue(tab_dato.getValor("NOMBRE_GESTOR"));
-//                tex_gestor.setValue(tab_dato.getValor("USU_SOLICITUD"));
+                tex_empresa.setValue(tab_dato.getValor("NOMBRE_EMPRESA"));
+                tex_gestor.setValue(tab_dato.getValor("NOMBRE_GESTOR"));
+                tex_usu_in.setValue(tab_dato.getValor("USU_SOLICITUD"));
                 
                 consulta = Integer.parseInt(tab_dato.getValor("IDE_DETALLE_SOLICITUD"));
                 cedula = tab_dato.getValor("CEDULA_RUC_PROPIETARIO");
