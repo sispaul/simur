@@ -25,6 +25,7 @@ import org.primefaces.event.SelectEvent;
 import paq_transportes.ejb.servicioPlaca;
 import paq_transportes.ejb.Serviciobusqueda;
 import paq_sistema.aplicacion.Pantalla;
+import framework.componentes.ItemMenu;
 
 /**
  *
@@ -129,7 +130,8 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_detalle.getColumna("IDE_TIPO_VEHICULO").setNombreVisual("TIPO DE VEHICULO");
         tab_detalle.getColumna("IDE_TIPO_VEHICULO").setCombo("SELECT ide_tipo_vehiculo,des_tipo_vehiculo FROM trans_tipo_vehiculo\n" 
                                                                 +"WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
-        tab_detalle.getColumna("IDE_TIPO_SERVICIO").setNombreVisual("TIPO DE SERVICIO");
+        tab_detalle.getColumna("IDE_TIPO_VEHICULO").setMetodoChange("cargarServicio");
+//        tab_detalle.getColumna("IDE_TIPO_SERVICIO").setNombreVisual("TIPO DE SERVICIO");
         tab_detalle.getColumna("IDE_TIPO_SERVICIO").setCombo("SELECT IDE_TIPO_SERVICIO,DESCRIPCION_SERVICIO FROM TRANS_TIPO_SERVICIO");
 //        tab_detalle.getColumna("IDE_TIPO_SERVICIO").setMetodoChange("ingresoRequisitos");
         tab_detalle.getColumna("IDE_PLACA").setVisible(false);
@@ -160,9 +162,19 @@ public class pre_ingreso_solicitud extends Pantalla{
                                                                 +"INNER JOIN TRANS_TIPO_SERVICIO s ON r.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO\n" 
                                                                 +"INNER JOIN trans_tipo_vehiculo v ON s.ide_tipo_vehiculo = v.ide_tipo_vehiculo\n");
         tab_requisito.getColumna("CONFIRMAR_REQUISITO").setNombreVisual("CONFIRMAR");
+        
         tab_requisito.dibujar();
         PanelTabla tabp3=new PanelTabla();
+        tabp3.getMenuTabla().getItem_eliminar().setRendered(false);//nucontextual().setrendered(false);
         tabp3.setPanelTabla(tab_requisito);
+
+        ItemMenu itm_actualizar = new ItemMenu();
+        itm_actualizar.setValue("Actualizar");
+//        itm_actualizar.setIcon("");
+//        itm_actualizar.setMetodo(null);
+         
+        tabp3.getMenuTabla().getChildren().add(itm_actualizar);
+        
         Division div_division = new Division();
         div_division.setId("div_division");
         div_division.dividir3(tabp1, tabp2, tabp3, "35%", "43%", "H");
@@ -204,6 +216,11 @@ public class pre_ingreso_solicitud extends Pantalla{
         dia_dialogoDes.getBot_aceptar().setMetodo("aceptoDialogo");
         ///configurar tabla Destino
          agregarComponente(dia_dialogoDes);
+    }
+    
+    public void cargarServicio(){
+        tab_detalle.getColumna("IDE_TIPO_SERVICIO").setCombo("SELECT IDE_TIPO_SERVICIO, DESCRIPCION_SERVICIO FROM TRANS_TIPO_SERVICIO where IDE_TIPO_VEHICULO ="+tab_detalle.getValor("IDE_TIPO_VEHICULO"));
+        utilitario.addUpdateTabla(tab_detalle,"IDE_TIPO_SERVICIO","");//actualiza solo componentes
     }
     /*
      * CREACION DE METODOS DE BUSQUEDA CON RELACION A VALIDACIONES DE CEDULA O RUC
