@@ -87,7 +87,7 @@ public void estadoPlaca(Integer placa){
 
 //QUITAR ASIGNACION DE PLACA
 
-public void quitarPlaca (Integer placa){
+public void quitarPlaca(Integer placa){
     String quitar ="update TRANS_PLACA set ide_tipo_estado = (SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO WHERE DESCRIPCION_ESTADO LIKE 'disponible')\n" +
                     "WHERE ide_placa ="+placa;
     conectar();
@@ -96,7 +96,7 @@ public void quitarPlaca (Integer placa){
 
 //QUITAR PLACA DE DETALLE SOLICITUD
 
-public void quitarDetalle (Integer detal){
+public void quitarDetalle(Integer detal){
     String detalle ="UPDATE TRANS_DETALLE_SOLICITUD_PLACA set aprobado_solicitud = NULL, ide_aprobacion_placa = null,ide_placa = NULL\n" +
                     "WHERE ide_detalle_solicitud ="+detal;
     conectar();
@@ -132,9 +132,9 @@ public void asigancionPlaca(String usuario){
 }
 
 //GUARDAR AUDITORIA DE PLACAS DESASIGNADAS
-public void guardarhistorial(Integer ide,String ruc,Integer detalle,String cedula,String nomb,Integer servicio, Integer vehiculo,Integer factura,String coment){
+public void guardarhistorial(Integer ide,String ruc,Integer detalle,String cedula,String nome,Integer servicio,String nomb, Integer vehiculo,Integer factura,String coment){
     String actual="INSERT INTO TRANS_QUITAR_ASIGNACION (IDE_SOLICITUD,RUC_CEDULA_EMPRESA,NOMBRE_EMPRESA,IDE_DETALLE,CEDULA_RUC_PROPIETARIO,NOMBRE_PROPIETARIO,\n" +
-                   "TIPO_SERVICIO,TIPO_VEHICULO,FACTURA,COMENTARIO)VALUES( "+ide+",'"+ruc+"','"+nombe"',"+detalle+",'"+cedula+"','"+nombp+"',"+servicio+","+vehiculo+","+factura+",'"+coment+"')";
+                   "TIPO_SERVICIO,TIPO_VEHICULO,FACTURA,COMENTARIO)VALUES("+ide+",'"+ruc+"','"+nome+"',"+detalle+",'"+cedula+"','"+nomb+"',"+servicio+","+vehiculo+","+factura+",'"+coment+"')";
     conectar();
     conexion.ejecutarSql(actual);
 //    conexion.desconectar();
