@@ -94,14 +94,11 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         tab_entrega.getColumna("FECHA_ENTREGA_PLACA ").setValorDefecto(utilitario.getFechaActual());
         tab_entrega.getColumna("FECHA_ENTREGA_PLACA ").setLectura(true);
         tab_entrega.getColumna("USU_ENTREGA").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
-        System.out.println(tab_consulta.getValor("NICK_USUA"));
         tab_entrega.getColumna("USU_ENTREGA").setLectura(true);
-        tab_entrega.getColumna("USU_ENTREGA").setNombreVisual("USUARIO DE ENTREGA");
         tab_entrega.getColumna("FECHA_ENTREGA_PLACA ").setNombreVisual("FECHA ENTREGA");
         tab_entrega.getColumna("CEDULA_RUC_PROPIETARIO").setNombreVisual("C.I./RUC PROPIETARIO");
         tab_entrega.getColumna("CEDULA_PERSONA_RETIRA").setNombreVisual("C.I QUIEN RETIRA");
         tab_entrega.getColumna("CEDULA_PERSONA_RETIRA").setMetodoChange("aceptoretiro");
-        tab_entrega.getColumna("NOMBRE_PERSONA_RETIRA").setNombreVisual("NOMBRE QUIEN RETIRA");
         tab_entrega.getGrid().setColumns(2);
         tab_entrega.setTipoFormulario(true); 
         tab_entrega.dibujar();
@@ -156,21 +153,14 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         grid_de.getChildren().add(set_propietario);
                 set_propietario.setId("set_propietario");
         set_propietario.setHeader("PROPIETARIOS PARA ENTREGAS");
-        set_propietario.setSql("SELECT DISTINCT d.IDE_DETALLE_SOLICITUD,\n" +
-                        "d.CEDULA_RUC_PROPIETARIO,d.NOMBRE_PROPIETARIO,\n" +
-                        "p.PLACA,v.des_tipo_vehiculo,d.IDE_SOLICITUD_PLACA,\n" +
-                        "e.DESCRIPCION_ESTADO,a.USU_APROBACION\n" +
-                        "\n" +
-                        "FROM dbo.TRANS_DETALLE_SOLICITUD_PLACA AS d ,\n" +
-                        "dbo.TRANS_PLACA AS p ,dbo.TRANS_TIPO_ESTADO AS e ,\n" +
-                        "dbo.TRANS_APROBACION_PLACA AS a, dbo.trans_tipo_vehiculo v\n" +
-                        "WHERE\n" +
-                        "d.IDE_PLACA = p.IDE_PLACA AND\n" +
-                        "p.IDE_TIPO_ESTADO = e.IDE_TIPO_ESTADO AND\n" +
-                        "d.IDE_APROBACION_PLACA = a.IDE_APROBACION_PLACA AND\n" +
-                        "d.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND\n" +
-                        "e.DESCRIPCION_ESTADO like'asignada'AND\n" +
-                        "d.CEDULA_RUC_PROPIETARIO LIKE '"+tab_entrega.getValor("CEDULA_RUC_PROPIETARIO")+"'");
+        set_propietario.setSql("SELECT DISTINCT d.IDE_DETALLE_SOLICITUD,d.CEDULA_RUC_PROPIETARIO,d.NOMBRE_PROPIETARIO,p.PLACA,v.des_tipo_vehiculo,d.IDE_SOLICITUD_PLACA,\n" +
+                                "e.DESCRIPCION_ESTADO,a.USU_APROBACION\n" +
+                                "FROM dbo.TRANS_DETALLE_SOLICITUD_PLACA AS d ,dbo.TRANS_PLACA AS p ,dbo.TRANS_TIPO_ESTADO AS e ,\n" +
+                                "dbo.TRANS_APROBACION_PLACA AS a, dbo.trans_tipo_vehiculo v\n" +
+                                "WHERE d.IDE_PLACA = p.IDE_PLACA AND p.IDE_TIPO_ESTADO = e.IDE_TIPO_ESTADO AND\n" +
+                                "d.IDE_APROBACION_PLACA = a.IDE_APROBACION_PLACA AND\n" +
+                                "d.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND e.DESCRIPCION_ESTADO like'asignada'AND\n" +
+                                "d.CEDULA_RUC_PROPIETARIO LIKE '"+tab_entrega.getValor("CEDULA_RUC_PROPIETARIO")+"'");
         set_propietario.getColumna("CEDULA_RUC_PROPIETARIO").setFiltro(true);
         set_propietario.setRows(5);
         set_propietario.setTipoSeleccion(false);
