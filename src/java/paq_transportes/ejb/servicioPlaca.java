@@ -106,8 +106,10 @@ public void quitarDetalle(Integer detal){
 //ELIMINAR APROBACION
 
 public void eliminarAprobacion(Integer eliminar){
-    String aprobacion ="delete table TRANS_APROBACION_PLACA WHERE ide_detalle_solicitud ="+eliminar;
+    System.out.println(eliminar);
+    String aprobacion ="delete TRANS_APROBACION_PLACA WHERE ide_detalle_solicitud ="+eliminar;
     conectar();
+    System.out.println(aprobacion);
     conexion.ejecutarSql(aprobacion);
 }
 //CREACION DE REQUISITOS
