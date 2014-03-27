@@ -424,7 +424,7 @@ Integer identificacion;
         eliminarAprobacion();
     }
     public void eliminarAprobacion(){
-        ser_Placa.estadoPlaca(Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")));
+        ser_Placa.eliminarAprobacion(Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")));
         utilitario.agregarMensajeInfo("ASIGNACIÓN ELIMINADA", "");
         dia_dialogoq.cerrar();
     }
