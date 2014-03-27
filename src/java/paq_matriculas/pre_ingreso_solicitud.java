@@ -28,7 +28,7 @@ import paq_sistema.aplicacion.Pantalla;
 
 /**
  *
- * @author p-sistemas
+ * @author KEJA
  */
 public class pre_ingreso_solicitud extends Pantalla{
     //DECLARACION OBJETOS TABLA
