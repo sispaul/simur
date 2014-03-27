@@ -184,9 +184,13 @@ public void guardarhistorial(Integer ide,String ruc,Integer detalle,String cedul
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(conexion);
         tab_persona.setSql("SELECT DISTINCT d.IDE_DETALLE_SOLICITUD,d.CEDULA_RUC_PROPIETARIO,d.NOMBRE_PROPIETARIO,p.PLACA,v.des_tipo_vehiculo,d.IDE_PLACA,\n" +
-                            "p.IDE_TIPO_VEHICULO,p.IDE_TIPO_SERVICIO,d.NUMERO_FACTURA\n" +
-                            "FROM dbo.TRANS_DETALLE_SOLICITUD_PLACA AS d ,dbo.TRANS_PLACA AS p ,dbo.trans_tipo_vehiculo v\n" +
-                            "WHERE d.IDE_PLACA = p.IDE_PLACA ANDd.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND d.IDE_DETALLE_SOLICITUD ="+propie);
+"p.IDE_TIPO_VEHICULO,p.IDE_TIPO_SERVICIO,d.NUMERO_FACTURA,s.DESCRIPCION_SERVICIO,f.IDE_SOLICITUD_PLACA,f.FECHA_SOLICITUD,f.NOMBRE_EMPRESA,\n" +
+"f.USU_SOLICITUD,g.DESCRIPCION_GESTOR,a.FECHA_APROBACION,a.USU_APROBACION,i.NOMBRE_GESTOR\n" +
+"FROM dbo.TRANS_DETALLE_SOLICITUD_PLACA AS d ,dbo.TRANS_PLACA AS p ,dbo.trans_tipo_vehiculo AS v ,dbo.TRANS_TIPO_SERVICIO AS s ,dbo.TRANS_SOLICITUD_PLACA AS f ,\n" +
+"dbo.TRANS_TIPO_GESTOR AS g ,dbo.TRANS_APROBACION_PLACA AS a,dbo.TRANS_GESTOR i\n" +
+"WHERE d.IDE_PLACA = p.IDE_PLACA AND d.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND s.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND\n" +
+"d.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO AND d.IDE_SOLICITUD_PLACA = f.IDE_SOLICITUD_PLACA AND f.IDE_TIPO_GESTOR = g.IDE_TIPO_GESTOR AND\n" +
+"d.IDE_APROBACION_PLACA = a.IDE_APROBACION_PLACA AND f.IDE_GESTOR = i.IDE_GESTOR AND d.IDE_DETALLE_SOLICITUD ="+propie);
         tab_persona.ejecutarSql();
         
 //        conexion.desconectar();
@@ -203,7 +207,8 @@ public void guardarhistorial(Integer ide,String ruc,Integer detalle,String cedul
                             "WHERE IDE_SOLICITUD_PLACA ="+solicitud+" and IDE_APROBACION_PLACA ="+aprobado);
         tab_persona.ejecutarSql();
         
-//        conexion.desconectar();
+        conexion.desconectar();
+        conexion = null;
         return tab_persona;
     }
       
