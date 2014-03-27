@@ -5,7 +5,6 @@
 package paq_matriculas;
 
 import framework.aplicacion.TablaGenerica;
-import framework.componentes.Boton;
 import framework.componentes.Division;
 import framework.componentes.Grupo;
 import framework.componentes.ItemMenu;
@@ -22,7 +21,7 @@ import paq_transportes.ejb.Serviciobusqueda;
 
 /**
  *
- * @author p-sistemas
+ * @author KEJA
  */
 public class pre_gestor_ingreso extends Pantalla{
     private Panel pan_opcion = new Panel();
