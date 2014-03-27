@@ -4,7 +4,6 @@
  */
 package paq_matriculas;
 
-import paq_transportes.*;
 import framework.componentes.Division;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
