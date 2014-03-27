@@ -25,7 +25,7 @@ import paq_transportes.ejb.servicioPlaca;
 
 /**
  *
- * @author p-sistemas
+ * @author KEJA
  */
 public class pre_inventario_placa extends  Pantalla{
 Integer codigo;
