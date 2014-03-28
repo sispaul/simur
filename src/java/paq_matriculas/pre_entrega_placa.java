@@ -7,6 +7,7 @@ package paq_matriculas;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
+import framework.componentes.Combo;
 import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Efecto;
@@ -32,6 +33,9 @@ import paq_transportes.ejb.servicioPlaca;
 public class pre_entrega_placa extends Pantalla{
 Integer consulta,placa,vehiculo,servicio;
 String cedula,factura;
+
+private Combo cmb_servicio = new Combo();
+private Combo cmb_vehiculo = new Combo();
 
 private Calendario cal_fechaini = new Calendario();
 private Calendario cal_fechafin = new Calendario();
@@ -75,6 +79,7 @@ private Grid grid_de1 = new Grid();
     private Texto tex_fech_apro = new Texto();
     private Texto tex_placa = new Texto();
     private Texto tex_usu_ap = new Texto();
+    
 
     ///REPORTES
 private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
@@ -251,10 +256,17 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
          */
         dia_dialogoe.setId("dia_dialogoe");
         dia_dialogoe.setTitle("BUSCAR PROPIETARIO"); //titulo
-        dia_dialogoe.setWidth("80%"); //siempre en porcentajes  ancho
+        dia_dialogoe.setWidth("20%"); //siempre en porcentajes  ancho
         dia_dialogoe.setHeight("30%");//siempre porcentaje   alto
         dia_dialogoe.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_dialogoe.getBot_aceptar().setMetodo("aceptoValores");
+        Grid gri_busca = new Grid();
+        gri_busca.setColumns(2);
+        gri_busca.getChildren().add(new Etiqueta("FECHA INICIO"));
+        gri_busca.getChildren().add(cal_fechaini);
+        gri_busca.getChildren().add(new Etiqueta("FECHA FINAL"));
+        gri_busca.getChildren().add(cal_fechafin);
+        dia_dialogoe.getGri_cuerpo().setHeader(gri_busca);
         grid_de.setColumns(4);
         agregarComponente(dia_dialogoe);
 
@@ -284,8 +296,10 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         grid_de1.setColumns(4);
         grid_de1.getChildren().add(new Etiqueta("SELECCIONE SERVICIO"));
         agregarComponente(dia_dialogo1);
+        
     }
 
+    
     public void aceptarPlaca(){
 //        tab_aprobacion.actualizar();
         dia_dialogoe.Limpiar();
@@ -459,12 +473,13 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         switch (rep_reporte.getNombre()) {
            case "ENTREGA PLACA":
                aceptoDialogo();
-               break;
+               break;       
            case "REPORTE DIARIO ENTREGA PLACA":
                aceptoDialogo();
                break;
-           case "REPORTE MES ENTREGA PLACA":
+           case "REPORTE MES ENTREGA PLACA": 
                 dia_dialogoe.Limpiar();
+
                 dia_dialogoe.setDialogo(etifec);
                 dia_dialogoe.setDialogo(grid);
                 
@@ -472,6 +487,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
                 dia_dialogoe.setDialogo(grid_de);
                 set_vehiculo.dibujar();
                 dia_dialogoe.dibujar();
+
                break;
                 
         }
