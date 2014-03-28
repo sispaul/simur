@@ -26,8 +26,8 @@ public TablaGenerica getPersona(String cedula) {
         tab_persona.setConexion(conexion);
         tab_persona.setSql("SELECT * FROM MAESTRO WHERE cedula='" + cedula.substring(0,cedula.length() - 1) + "' and digito_verificador='" + cedula.substring(cedula.length()-1)+"'");
         tab_persona.ejecutarSql();
-       // conexion.desconectar();
-        //conexion = null;
+        conexion.desconectar();
+        conexion = null;
         return tab_persona;
     }
 
@@ -38,8 +38,8 @@ public TablaGenerica getPersona(String cedula) {
         tab_persona.setConexion(conexion);
         tab_persona.setSql("SELECT * FROM MAESTRO_RUC WHERE RUC='" + ruc + "'");
         tab_persona.ejecutarSql();
-        //conexion.desconectar();
-        //conexion = null;
+        conexion.desconectar();
+        conexion = null;
         return tab_persona;
     }
     
