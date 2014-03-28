@@ -224,7 +224,34 @@ public TablaGenerica getIDGestor(Integer gestor) {
         conexion = null;
         return tab_persona;
     }
-     
+
+public TablaGenerica getIDActa(Integer acta) {
+        //Busca a una empresa en la tabla maestra_ruc por ruc
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT IDE_INGRESO_PLACAS,FECHA_ENVIO_ACTA, FECHA_REGISTRO_ACTA, ANO,\n" +
+                            "NUMERO_ACTA,ENTREGADO_ACTA,RECIBIDO_ACTA,USU_INGRESO FROM TRANS_INGRESOS_PLACAS WHERE IDE_INGRESO_PLACAS ="+acta);
+        tab_persona.ejecutarSql();
+        
+        conexion.desconectar();
+        conexion = null;
+        return tab_persona;
+    }
+
+      public TablaGenerica getIDSolicitud(Integer soli) {
+        //Busca a una empresa en la tabla maestra_ruc por ruc
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT IDE_SOLICITUD_PLACA,FECHA_SOLICITUD,CEDULA_RUC_EMPRESA,NOMBRE_EMPRESA,DESCRIPCION_SOLICITUD FROM TRANS_SOLICITUD_PLACA WHERE IDE_SOLICITUD_PLACA ="+soli);
+        tab_persona.ejecutarSql();
+        
+        conexion.desconectar();
+        conexion = null;
+        return tab_persona;
+    }
+
  private void conectar() {
         if (conexion == null) {
             conexion = new Conexion();
