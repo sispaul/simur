@@ -4,6 +4,7 @@
  */
 package paq_matriculas;
 
+import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
 import framework.componentes.Dialogo;
@@ -15,6 +16,7 @@ import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
+import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
 import java.util.HashMap;
@@ -32,7 +34,7 @@ Integer codigo;
 private Tabla tab_ingreso = new Tabla();
 private Tabla tab_placa = new Tabla();
 private Tabla tab_consulta = new Tabla();
-
+private SeleccionTabla set_acta = new SeleccionTabla();
 private Panel pan_opcion = new Panel();
 private Efecto efecto = new Efecto();
 
@@ -53,10 +55,8 @@ private Tabla set_tipo = new Tabla();
 private Tabla set_estado = new Tabla();
 
     private Calendario cal_fechaini = new Calendario();
+    private Calendario cal_fechafin = new Calendario();
     private Texto txt_acta= new Texto();
-    private Grid grid = new Grid();
-    private Etiqueta etifec = new Etiqueta();
-
 @EJB
 private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servicioPlaca.class);
         ///REPORTES
@@ -116,14 +116,6 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
 	efecto.setSpeed(150);
 	efecto.setPropiedad("mode", "'show'");
 	efecto.setEvent("load");
-//        txt_rango1.setId("txt_rango1");
-//        txt_rango1.setStyle("width: 19%;");
-//        pan_opcion.getChildren().add(new Etiqueta("DESDE :"));
-//        pan_opcion.getChildren().add(txt_rango1);
-//        txt_rango2.setId("txt_rango2");
-//        txt_rango2.setStyle("width: 19%;");
-//        pan_opcion.getChildren().add(new Etiqueta("HASTA :"));
-//        pan_opcion.getChildren().add(txt_rango2);
         
         Boton bot_bus = new Boton();
         bot_bus.setId("bot_bus");
@@ -131,12 +123,6 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         bot_bus.setIcon("ui-icon-comment");
         bot_bus.setMetodo("buscarServicio");
         pan_opcion.getChildren().add(bot_bus);
-//        Boton bot_new = new Boton();
-//        bot_new.setId("bot_new");
-//        bot_new.setValue("LIMPIAR");
-//        bot_new.setIcon("ui-icon-trash");
-//        bot_new.setMetodo("LimpiarBoton");
-//        pan_opcion.getChildren().add(bot_new);
         
 	pan_opcion.getChildren().add(efecto);
         tabp.getChildren().add(pan_opcion);
@@ -163,19 +149,25 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         grid_de.setColumns(4);
         agregarComponente(dia_dialogoe);
         
-        etifec.setStyle("font-size:16px;color:blue");
-        etifec.setValue("SELECCION PARAMETROS");
-        grid.setColumns(4);
-        //campos fecha       
-        grid.getChildren().add(new Etiqueta("FECHA BUSQUEDA"));
-        grid.getChildren().add(cal_fechaini);
-        grid.getChildren().add(new Etiqueta("NRO ACTA"));
-        grid.getChildren().add(txt_acta);
+        Grid gri_busca = new Grid();
+        gri_busca.setColumns(2);
+ //campos fecha       
+        gri_busca.getChildren().add(new Etiqueta("FECHA INICIO"));
+        gri_busca.getChildren().add(cal_fechaini);
+        gri_busca.getChildren().add(new Etiqueta("FECHA FINAL"));
+        gri_busca.getChildren().add(cal_fechafin);
+        Boton bot_buscar = new Boton();
+        bot_buscar.setValue("Buscar");
+        bot_buscar.setIcon("ui-icon-search");
+        bot_buscar.setMetodo("buscarEmpresa");
+        bar_botones.agregarBoton(bot_buscar);
+        gri_busca.getChildren().add(bot_buscar);
 
+        
         dia_dialogop.setId("dia_dialogop");
-        dia_dialogop.setTitle("PLACAS - BUSQUEDA"); //titulo
-        dia_dialogop.setWidth("35%"); //siempre en porcentajes  ancho
-        dia_dialogop.setHeight("20%");//siempre porcentaje   alto
+        dia_dialogop.setTitle("SELECIONAR ACTA PARA REPORTE"); //titulo
+        dia_dialogop.setWidth("60%"); //siempre en porcentajes  ancho
+        dia_dialogop.setHeight("30%");//siempre porcentaje   alto
         dia_dialogop.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_dialogop.getBot_aceptar().setMetodo("aceptoInventario");
         grid_dp.setColumns(4);
@@ -233,14 +225,27 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         agregarComponente(rep_reporte); //2 agregar el listado de reportes
         sef_formato.setId("sef_formato");
         agregarComponente(sef_formato);
+        
+        set_acta.setId("set_acta");
+        set_acta.setSeleccionTabla("SELECT IDE_INGRESO_PLACAS,FECHA_ENVIO_ACTA,FECHA_REGISTRO_ACTA,NUMERO_ACTA,ENTREGADO_ACTA,RECIBIDO_ACTA,USU_INGRESO,ANO FROM TRANS_INGRESOS_PLACAS where IDE_INGRESO_PLACAS=-1", "IDE_INGRESO_PLACAS");
+        set_acta.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
+        set_acta.getTab_seleccion().setRows(10);
+        set_acta.setRadio();
+        set_acta.getGri_cuerpo().setHeader(gri_busca);
+        set_acta.getBot_aceptar().setMetodo("aceptoInventario");
+        set_acta.setHeader("BUSCAR ACTA DE PLACAS");
+        agregarComponente(set_acta);
     }
 
-//    public void LimpiarBoton(){
-//        txt_rango1.limpiar();
-//        utilitario.addUpdate("txt_rango1");
-//        txt_rango2.limpiar();
-//        utilitario.addUpdate("txt_rango2");
-//    }
+       public void buscarEmpresa() {
+        if (cal_fechaini.getValue() != null && cal_fechaini.getValue().toString().isEmpty() == false && cal_fechafin.getValue() != null && cal_fechafin.getValue().toString().isEmpty() == false) {
+            set_acta.getTab_seleccion().setSql("SELECT IDE_INGRESO_PLACAS,FECHA_ENVIO_ACTA,FECHA_REGISTRO_ACTA,NUMERO_ACTA,ENTREGADO_ACTA,RECIBIDO_ACTA,USU_INGRESO,ANO FROM TRANS_INGRESOS_PLACAS \n" +
+                                                "where FECHA_REGISTRO_ACTA BETWEEN '"+cal_fechaini.getFecha()+"' AND '"+cal_fechafin.getFecha()+"'");
+            set_acta.getTab_seleccion().ejecutarSql();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar una fecha", "");
+        }
+    }
     
     public void buscarServicio(){
         dia_dialogoe.Limpiar();
@@ -324,23 +329,17 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
     
     @Override
     public void aceptarReporte() {
-        System.out.println("Ingreso");
         rep_reporte.cerrar();
         cal_fechaini.setFechaActual();
         switch (rep_reporte.getNombre()) {
            case "INGRESO ACTA":
-               System.out.println("Ingreso0");
-                dia_dialogop.Limpiar();
-                dia_dialogop.setDialogo(etifec);
-                dia_dialogop.setDialogo(grid);
-                
-                dia_dialogop.setDialogo(grid_dp);
-                dia_dialogop.dibujar();
+                set_acta.dibujar();
+                cal_fechaini.limpiar();
+                cal_fechafin.limpiar();
+                set_acta.getTab_seleccion().limpiar();
                break;
            case "REPORTE PLACAS":
-               System.out.println("Ingreso1");
                 dia_dialogot.Limpiar();
-//                dia_dialogot.setDialogo(grid);
                 
                 grid_dt.getChildren().add(set_estado);
                 dia_dialogot.setDialogo(grid_dt);
@@ -354,13 +353,21 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
   public void aceptoInventario(){
         switch (rep_reporte.getNombre()) {
                case "INGRESO ACTA":
-                      p_parametros = new HashMap();
-                      p_parametros.put("acta", txt_acta.getValue());
-                      p_parametros.put("fecha_envio", cal_fechaini.getFecha());
-                      p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
-                      rep_reporte.cerrar();
-                      sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                      sef_formato.dibujar();
+                      if (set_acta.getValorSeleccionado()!= null) {
+                          TablaGenerica tab_dato = ser_Placa.getIDActa(Integer.parseInt(set_acta.getValorSeleccionado()));
+                            if (!tab_dato.isEmpty()) {
+                            p_parametros = new HashMap();
+                            p_parametros.put("acta", tab_dato.getValor("NUMERO_ACTA"));
+                            p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
+                            rep_reporte.cerrar();
+                            sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                            sef_formato.dibujar();
+                            } else {
+                                utilitario.agregarMensajeInfo("no existe en la base de datos", "");
+                            }
+                      }else {
+                        utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
+                        } 
                break;
                case "REPORTE PLACAS":
                       p_parametros = new HashMap();
@@ -370,15 +377,6 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
                       sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                       sef_formato.dibujar();
                       System.out.println(sef_formato);
-               break;
-               case "IMPRESION ACTA":
-                      p_parametros = new HashMap();
-                      p_parametros.put("acta", txt_acta.getValue());
-                      p_parametros.put("fecha_envio", cal_fechaini.getFecha());
-                      p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
-                      rep_reporte.cerrar();
-                      sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                      sef_formato.dibujar();
                break;
         }
     }
@@ -474,6 +472,14 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
 
     public void setP_parametros(Map p_parametros) {
         this.p_parametros = p_parametros;
+    }
+
+    public SeleccionTabla getSet_acta() {
+        return set_acta;
+    }
+
+    public void setSet_acta(SeleccionTabla set_acta) {
+        this.set_acta = set_acta;
     }
     
 }
