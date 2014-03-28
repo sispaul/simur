@@ -211,7 +211,20 @@ public void guardarhistorial(Integer ide,String ruc,Integer detalle,String cedul
         conexion = null;
         return tab_persona;
     }
-      
+
+public TablaGenerica getIDGestor(Integer gestor) {
+        //Busca a una empresa en la tabla maestra_ruc por ruc
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT IDE_GESTOR,CEDULA_GESTOR,NOMBRE_GESTOR,ESTADO FROM TRANS_GESTOR WHERE  IDE_GESTOR="+gestor);
+        tab_persona.ejecutarSql();
+        
+        conexion.desconectar();
+        conexion = null;
+        return tab_persona;
+    }
+     
  private void conectar() {
         if (conexion == null) {
             conexion = new Conexion();
