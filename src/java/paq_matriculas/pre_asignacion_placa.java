@@ -165,15 +165,15 @@ Integer identificacion;
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
         
-        dia_dialogoe.setId("dia_dialogoe");
-        dia_dialogoe.setTitle("CONFIRMAR ASIGNACIÓN"); //titulo
-        dia_dialogoe.setWidth("17%"); //siempre en porcentajes  ancho
-        dia_dialogoe.setHeight("8%");//siempre porcentaje   alto
-        dia_dialogoe.setResizable(false); //para que no se pueda cambiar el tamaño
-        dia_dialogoe.getBot_aceptar().setMetodo("aceptoValores");
-        dia_dialogoe.getBot_cancelar().setMetodo("cancelarValores");
-        grid_de.setColumns(4);
-        agregarComponente(dia_dialogoe);
+//        dia_dialogoe.setId("dia_dialogoe");
+//        dia_dialogoe.setTitle("CONFIRMAR ASIGNACIÓN"); //titulo
+//        dia_dialogoe.setWidth("17%"); //siempre en porcentajes  ancho
+//        dia_dialogoe.setHeight("8%");//siempre porcentaje   alto
+//        dia_dialogoe.setResizable(false); //para que no se pueda cambiar el tamaño
+//        dia_dialogoe.getBot_aceptar().setMetodo("aceptoValores");
+//        dia_dialogoe.getBot_cancelar().setMetodo("cancelarValores");
+//        grid_de.setColumns(4);
+//        agregarComponente(dia_dialogoe);
     }
 
     private void contruirMenu() {
