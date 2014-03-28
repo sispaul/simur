@@ -5,6 +5,7 @@
 package paq_matriculas;
 
 import framework.aplicacion.TablaGenerica;
+import framework.componentes.Boton;
 import framework.componentes.Calendario;
 import framework.componentes.Dialogo;
 import framework.componentes.Division;
@@ -37,6 +38,7 @@ private Calendario cal_fechafin = new Calendario();
 
 private Tabla tab_entrega = new Tabla ();
 private Tabla set_propietario = new Tabla();
+private Tabla set_propietario1 = new Tabla();
 private Tabla tab_consulta = new Tabla();
 private Tabla set_servicio = new Tabla();
 private Tabla set_vehiculo = new Tabla();
@@ -51,7 +53,10 @@ private Etiqueta etifec = new Etiqueta();
 private Grid grid1 = new Grid();
 private Dialogo dia_dialogoe = new Dialogo();
 private Grid grid_de = new Grid();
+private Dialogo dia_dialogop = new Dialogo();
+private Grid grid_dp = new Grid();
 private Grid gride = new Grid();
+private Grid gridp = new Grid();
 private Dialogo dia_dialogo1 = new Dialogo();
 private Grid grid_de1 = new Grid();
 
@@ -80,7 +85,18 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
     private Serviciobusqueda serviciobusqueda =(Serviciobusqueda) utilitario.instanciarEJB(Serviciobusqueda.class);
 
     public pre_entrega_placa() {
-
+        /*
+         * CREACION DE BOTON BUSQUEDA POR NOMBRE
+         */
+        
+        Boton bot_req = new Boton();
+        bot_req.setValue("BUSQUEDA PROPIETARIO - NOMBRE");
+        bot_req.setIcon("ui-icon-search");
+        bot_req.setMetodo("buscaNombrep");
+        bar_botones.agregarBoton(bot_req);
+        /*
+         * CREACION DE DE CAMPOS QUE MOSTRARAN LOS DATOS EN GRID DENTRO DE UN PANEL
+         */
         pan_opcion2.setId("pan_opcion2");
         pan_opcion2.setHeader("REFERENCIAS DE SOLICITUD");
 	pan_opcion2.setTransient(true);
@@ -230,6 +246,9 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
 //        pan_opcion.getChildren().add(pan_opcion1);
         agregarComponente(pan_opcion);
         
+        /*
+         * DIALOGOS PARA BUSQUEDA DE PROPIETARIO
+         */
         dia_dialogoe.setId("dia_dialogoe");
         dia_dialogoe.setTitle("BUSCAR PROPIETARIO"); //titulo
         dia_dialogoe.setWidth("80%"); //siempre en porcentajes  ancho
@@ -238,9 +257,17 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         dia_dialogoe.getBot_aceptar().setMetodo("aceptoValores");
         grid_de.setColumns(4);
         agregarComponente(dia_dialogoe);
+
+        dia_dialogop.setId("dia_dialogop");
+        dia_dialogop.setTitle("BUSCAR PROPIETARIO"); //titulo
+        dia_dialogop.setWidth("80%"); //siempre en porcentajes  ancho
+        dia_dialogop.setHeight("50%");//siempre porcentaje   alto
+        dia_dialogop.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogop.getBot_aceptar().setMetodo("aceptoPersona");
+        grid_dp.setColumns(4);
+        agregarComponente(dia_dialogop);
         
-       
-                         /**
+         /**
          * CONFIGURACIÓN DE OBJETO REPORTE
          */
         bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
@@ -276,7 +303,6 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         set_propietario.getColumna("CEDULA_RUC_PROPIETARIO").setFiltro(true);
         set_propietario.setRows(5);
         set_propietario.setTipoSeleccion(false);
-//        set_propietario.dibujar();
         dia_dialogoe.setDialogo(grid_de);
         set_propietario.dibujar();
         dia_dialogoe.dibujar();
@@ -351,6 +377,74 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
      }
     
     
+     public void buscaNombrep(){
+        dia_dialogop.Limpiar();
+        dia_dialogop.setDialogo(gridp);
+        grid_dp.getChildren().add(set_propietario1);
+        set_propietario1.setId("set_propietario1");
+        set_propietario1.setHeader("PROPIETARIOS PARA ENTREGAS");
+        set_propietario1.setSql("SELECT DISTINCT d.IDE_DETALLE_SOLICITUD,d.CEDULA_RUC_PROPIETARIO,d.NOMBRE_PROPIETARIO,p.PLACA,v.des_tipo_vehiculo,s.DESCRIPCION_SERVICIO,\n" +
+                                "d.IDE_SOLICITUD_PLACA,e.DESCRIPCION_ESTADO,a.USU_APROBACION\n" +
+                                "FROM dbo.TRANS_DETALLE_SOLICITUD_PLACA AS d ,dbo.TRANS_PLACA AS p ,dbo.TRANS_TIPO_ESTADO AS e ,dbo.TRANS_APROBACION_PLACA AS a ,\n" +
+                                "dbo.trans_tipo_vehiculo AS v ,dbo.TRANS_TIPO_SERVICIO s\n" +
+                                "WHERE d.IDE_PLACA = p.IDE_PLACA AND p.IDE_TIPO_ESTADO = e.IDE_TIPO_ESTADO AND d.IDE_APROBACION_PLACA = a.IDE_APROBACION_PLACA AND\n" +
+                                "d.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND s.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND d.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO AND\n" +
+                                "e.DESCRIPCION_ESTADO LIKE 'asignada'");
+        set_propietario1.getColumna("NOMBRE_PROPIETARIO").setFiltro(true);
+        set_propietario1.setRows(10);
+        set_propietario1.setTipoSeleccion(false);
+        dia_dialogop.setDialogo(grid_dp);
+        set_propietario1.dibujar();
+        dia_dialogop.dibujar();
+     }
+     
+     public void aceptoPersona(){
+         if (set_propietario1.getValorSeleccionado()!= null) {
+            TablaGenerica tab_dato = ser_Placa.getEntrega(Integer.parseInt(set_propietario1.getValorSeleccionado()));
+            if (!tab_dato.isEmpty()) {
+                // Cargo la información de la base de datos maestra   
+                tab_entrega.setValor("NOMBRE_PROPIETARIO", tab_dato.getValor("NOMBRE_PROPIETARIO"));
+                tab_entrega.setValor("CEDULA_RUC_PROPIETARIO", tab_dato.getValor("CEDULA_RUC_PROPIETARIO"));
+                tex_fecha.setValue(tab_dato.getValor("FECHA_SOLICITUD"));
+                tex_num_sol.setValue(tab_dato.getValor("IDE_SOLICITUD_PLACA"));
+                tex_empresa.setValue(tab_dato.getValor("NOMBRE_EMPRESA"));
+                tex_gestor.setValue(tab_dato.getValor("NOMBRE_GESTOR"));
+                tex_usu_in.setValue(tab_dato.getValor("USU_SOLICITUD"));
+                
+                tex_tip_sol.setValue(tab_dato.getValor("DESCRIPCION_GESTOR"));
+                tex_automotor.setValue(tab_dato.getValor("des_tipo_vehiculo"));
+                tex_servicio.setValue(tab_dato.getValor("DESCRIPCION_SERVICIO"));
+                
+                tex_fech_apro.setValue(tab_dato.getValor("FECHA_APROBACION"));
+                tex_placa.setValue(tab_dato.getValor("PLACA"));
+                tex_usu_ap.setValue(tab_dato.getValor("USU_APROBACION"));
+                
+                eti_etiqueta.setStyle("font-size:25px;color:black;text-align:center;");
+                eti_etiqueta.setValue(tab_dato.getValor("PLACA"));
+                eti_etiqueta1.setStyle("font-size:25px;color:black;text-align:center;");
+                eti_etiqueta1.setValue("PLACA:");
+                pan_opcion2.getChildren().add(eti_etiqueta1);
+                pan_opcion2.getChildren().add(eti_etiqueta);
+                
+                consulta = Integer.parseInt(tab_dato.getValor("IDE_DETALLE_SOLICITUD"));
+                cedula = tab_dato.getValor("CEDULA_RUC_PROPIETARIO");
+                placa = Integer.parseInt(tab_dato.getValor("IDE_PLACA"));
+                vehiculo=Integer.parseInt(tab_dato.getValor("IDE_TIPO_VEHICULO"));
+                servicio=Integer.parseInt(tab_dato.getValor("IDE_TIPO_SERVICIO"));
+                factura=tab_dato.getValor("NUMERO_FACTURA");
+                
+                utilitario.addUpdate("tab_entrega");
+                utilitario.addUpdate("pan_opcion");
+                dia_dialogoe.cerrar();
+                dia_dialogop.cerrar();
+            } else {
+                utilitario.agregarMensajeInfo("no existe en la base de datos", "");
+            }
+       }else {
+       utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
+       }
+     }
+     
     @Override
     public void abrirListaReportes() {
         rep_reporte.dibujar();
@@ -455,16 +549,20 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
     public void guardar() {
     if (tab_entrega.guardar()) {
             if (guardarPantalla().isEmpty()) {
-                ser_Placa.actualizarDS(Integer.parseInt(tab_entrega.getValor("ide_entrega_placa")),consulta);
                 tab_entrega.actualizar();
+                ser_Placa.actualizarDS(Integer.parseInt(tab_entrega.getValor("ide_entrega_placa")),consulta);
                 utilitario.addUpdate("tab_entrega");
-                ser_Placa.actualizarDE(consulta, cedula, placa);
+                actualizarDE();
             }
         }else {
             utilitario.agregarMensajeInfo("No Puede Guardar Placa Entregada", "");
         }
     }
 
+    public void actualizarDE(){
+                        System.err.println("Actualizado");
+        ser_Placa.actualizarDE(consulta, cedula, placa);
+    }
     @Override
     public void eliminar() {
         tab_entrega.eliminar();
@@ -516,6 +614,14 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
 
     public void setSet_vehiculo(Tabla set_vehiculo) {
         this.set_vehiculo = set_vehiculo;
+    }
+
+    public Tabla getSet_propietario1() {
+        return set_propietario1;
+    }
+
+    public void setSet_propietario1(Tabla set_propietario1) {
+        this.set_propietario1 = set_propietario1;
     }
     
 }
