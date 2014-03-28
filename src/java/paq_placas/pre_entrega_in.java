@@ -293,18 +293,28 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
                 tex_gestor.setValue(tab_dato.getValor("NOMBRE_GESTOR"));
                 tex_usu_in.setValue(tab_dato.getValor("USU_SOLICITUD"));
                 
+                tex_tip_sol.setValue(tab_dato.getValor("DESCRIPCION_GESTOR"));
+                tex_automotor.setValue(tab_dato.getValor("des_tipo_vehiculo"));
+                tex_servicio.setValue(tab_dato.getValor("DESCRIPCION_SERVICIO"));
+                
+                tex_fech_apro.setValue(tab_dato.getValor("FECHA_APROBACION"));
+                tex_placa.setValue(tab_dato.getValor("PLACA"));
+                tex_usu_ap.setValue(tab_dato.getValor("USU_APROBACION"));
+                
+                eti_etiqueta.setStyle("font-size:25px;color:black;text-align:center;");
+                eti_etiqueta.setValue(tab_dato.getValor("PLACA"));
+                eti_etiqueta1.setStyle("font-size:25px;color:black;text-align:center;");
+                eti_etiqueta1.setValue("PLACA:");
+                pan_opcion2.getChildren().add(eti_etiqueta1);
+                pan_opcion2.getChildren().add(eti_etiqueta);
+                
                 consulta = Integer.parseInt(tab_dato.getValor("IDE_DETALLE_SOLICITUD"));
                 cedula = tab_dato.getValor("CEDULA_RUC_PROPIETARIO");
                 placa = Integer.parseInt(tab_dato.getValor("IDE_PLACA"));
                 vehiculo=Integer.parseInt(tab_dato.getValor("IDE_TIPO_VEHICULO"));
                 servicio=Integer.parseInt(tab_dato.getValor("IDE_TIPO_SERVICIO"));
                 factura=tab_dato.getValor("NUMERO_FACTURA");
-                eti_etiqueta.setStyle("font-size:25px;color:black;text-align:center;");
-                eti_etiqueta.setValue(tab_dato.getValor("PLACA"));
-                eti_etiqueta1.setStyle("font-size:25px;color:black;text-align:center;");
-                eti_etiqueta1.setValue("PLACA:");
-                pan_opcion.getChildren().add(eti_etiqueta1);
-                pan_opcion.getChildren().add(eti_etiqueta);
+                
                 utilitario.addUpdate("tab_entrega");
                 utilitario.addUpdate("pan_opcion");
                 dia_dialogoe.cerrar();
