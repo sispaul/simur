@@ -236,7 +236,6 @@ Integer identificacion;
         }
         tab_solicitud.getColumna("DESCRIPCION_SOLICITUD").setMayusculas(true);
         tab_solicitud.getColumna("NUMERO_AUTOMOTORES").setVisible(false);
-        tab_solicitud.getColumna("FECHA_SOLICITUD").setNombreVisual("FECHA");
         tab_solicitud.getColumna("FECHA_SOLICITUD").setLectura(true);
         tab_solicitud.getColumna("USU_SOLICITUD").setVisible(false);
         tab_solicitud.getColumna("IDE_SOLICITUD_PLACA").setNombreVisual("Nro. SOLICITUD");
