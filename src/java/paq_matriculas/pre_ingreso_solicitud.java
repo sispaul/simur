@@ -46,8 +46,6 @@ public class pre_ingreso_solicitud extends Pantalla{
     private Grid grid_en = new Grid();
     private Grid grid_de = new Grid();
     private Grid gride = new Grid();
-    private Panel pan_opcion = new Panel();
-    private Efecto efecto = new Efecto();
     private Panel pan_opcion1 = new Panel();
     private Efecto efecto1 = new Efecto();
     private Dialogo dia_dialogoe = new Dialogo();
@@ -86,13 +84,11 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_solicitud.setTabla("TRANS_SOLICITUD_PLACA", "IDE_SOLICITUD_PLACA", 1);
         tab_solicitud.getColumna("CEDULA_RUC_EMPRESA").setMetodoChange("cargarEmpresa");
         tab_solicitud.getColumna("CEDULA_RUC_EMPRESA").setRequerida(true);
-        tab_solicitud.getColumna("DESCRIPCION_SOLICITUD").setNombreVisual("DESCRIPCIÓN DE SOLICITUD");
         tab_solicitud.getColumna("DESCRIPCION_SOLICITUD").setMayusculas(true);
         tab_solicitud.getColumna("NUMERO_AUTOMOTORES").setVisible(false);
         tab_solicitud.getColumna("FECHA_SOLICITUD").setNombreVisual("FECHA");
         tab_solicitud.getColumna("FECHA_SOLICITUD").setValorDefecto(utilitario.getFechaActual());
         tab_solicitud.getColumna("FECHA_SOLICITUD").setLectura(true);
-        tab_solicitud.getColumna("NOMBRE_EMPRESA").setNombreVisual("NOMBRE EMPRESA");
         tab_solicitud.getColumna("USU_SOLICITUD").setVisible(false);
         tab_solicitud.getColumna("IDE_SOLICITUD_PLACA").setNombreVisual("Nro. SOLICITUD");
         tab_solicitud.getColumna("IDE_TIPO_GESTOR").setNombreVisual("TIPO DE SOLICITUD");
@@ -121,13 +117,10 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_detalle.setId("tab_detalle"); // NOMBRE PANTALLA
         tab_detalle.setTabla("TRANS_DETALLE_SOLICITUD_PLACA", "IDE_DETALLE_SOLICITUD", 2);
         tab_detalle.getColumna("NOMBRE_PROPIETARIO").setMayusculas(true);
-        tab_detalle.getColumna("NOMBRE_PROPIETARIO").setNombreVisual("NOMBRE PROPIETARIO");
         tab_detalle.getColumna("CEDULA_RUC_PROPIETARIO").setNombreVisual("C.I./RUC");
          tab_detalle.getColumna("CEDULA_RUC_PROPIETARIO").setRequerida(true);
         tab_detalle.getColumna("CEDULA_RUC_PROPIETARIO").setMetodoChange("buscaPersona");
-        tab_detalle.getColumna("NUMERO_FACTURA").setNombreVisual("Nro.FACTURA");
         tab_detalle.getColumna("NUMERO_FACTURA").setRequerida(true);
-        tab_detalle.getColumna("IDE_TIPO_VEHICULO").setNombreVisual("TIPO DE VEHICULO");
         tab_detalle.getColumna("IDE_TIPO_VEHICULO").setCombo("SELECT ide_tipo_vehiculo,des_tipo_vehiculo FROM trans_tipo_vehiculo\n" 
                                                                 +"WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
         tab_detalle.getColumna("IDE_TIPO_VEHICULO").setMetodoChange("cargarServicio");
@@ -160,9 +153,7 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_requisito.setTabla("TRANS_DETALLE_REQUISITOS_SOLICITUD", "IDE_DETALLE_REQUISITOS_SOLICITUD", 3);
         tab_requisito.getColumna("ide_tipo_requisito").setCombo("SELECT r.IDE_TIPO_REQUISITO,r.DECRIPCION_REQUISITO FROM TRANS_TIPO_REQUISITO r\n" 
                                                                 +"INNER JOIN TRANS_TIPO_SERVICIO s ON r.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO\n" 
-                                                                +"INNER JOIN trans_tipo_vehiculo v ON s.ide_tipo_vehiculo = v.ide_tipo_vehiculo\n");
-        tab_requisito.getColumna("CONFIRMAR_REQUISITO").setNombreVisual("CONFIRMAR");
-        
+                                                                +"INNER JOIN trans_tipo_vehiculo v ON s.ide_tipo_vehiculo = v.ide_tipo_vehiculo\n");       
         tab_requisito.dibujar();
         PanelTabla tabp3=new PanelTabla();
         tabp3.getMenuTabla().getItem_eliminar().setRendered(false);//nucontextual().setrendered(false);
@@ -301,6 +292,14 @@ public class pre_ingreso_solicitud extends Pantalla{
         public void aceptoValores() {
         if (set_gestor.getValorSeleccionado()!= null) {
                         tab_solicitud.setValor("ide_gestor", set_gestor.getValorSeleccionado());
+                             TablaGenerica tab_dato = ser_Placa.getIDGestor(Integer.parseInt(set_gestor.getValorSeleccionado()));
+                              if (!tab_dato.isEmpty()) {
+                                    // Cargo la información de la base de datos maestra  
+                                    tab_solicitud.setValor("nombre_gestor", tab_dato.getValor("NOMBRE_GESTOR"));
+                                    utilitario.addUpdate("tab_solicitud");
+                                } else {
+                                    utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ciudadania del municipio", "");
+                                }
                         dia_dialogoEN.cerrar();
                         utilitario.addUpdate("tab_solicitud");
        }else {
