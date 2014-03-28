@@ -148,12 +148,16 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_requisito.dibujar();
         PanelTabla tabp3=new PanelTabla();
         tabp3.getMenuTabla().getItem_eliminar().setRendered(false);//nucontextual().setrendered(false);
+        tabp3.getMenuTabla().getItem_buscar().setRendered(false);//nucontextual().setrendered(false);
+        tabp3.getMenuTabla().getItem_guardar().setRendered(false);//nucontextual().setrendered(false);
+        tabp3.getMenuTabla().getItem_insertar().setRendered(false);//nucontextual().setrendered(false);
+        tabp3.getMenuTabla().getItem_actualizar().setRendered(false);//nucontextual().setrendered(false);
         tabp3.setPanelTabla(tab_requisito);
 
         ItemMenu itm_actualizar = new ItemMenu();
         itm_actualizar.setValue("Actualizar");
-//        itm_actualizar.setIcon("");
-//        itm_actualizar.setMetodo(null);
+        itm_actualizar.setIcon("ui-icon-refresh");
+        itm_actualizar.setMetodo("Actualizar");
          
         tabp3.getMenuTabla().getChildren().add(itm_actualizar);
         
@@ -441,8 +445,8 @@ public class pre_ingreso_solicitud extends Pantalla{
                      }  
     }
 
-    @Override
-    public void actualizar() {
+
+    public void Actualizar() {
         requisito();
         utilitario.addUpdate("tab_requisito");
     }
