@@ -21,8 +21,6 @@ public class pre_tipo_estado extends Pantalla{
         tab_tabla.setId("tab_tabla");
         tab_tabla.setTabla("trans_tipo_estado", "ide_tipo_estado",1);
         tab_tabla.setHeader("TIPOS ESTADO DE PLACA");
-        tab_tabla.getColumna("ide_tipo_estado").setNombreVisual("CODIGO");
-        tab_tabla.getColumna("descripcion_estado").setNombreVisual("TIPO ESTADO");
         tab_tabla.getColumna("descripcion_estado").setMayusculas(true);
         tab_tabla.dibujar();
         PanelTabla pat_panel = new PanelTabla();
