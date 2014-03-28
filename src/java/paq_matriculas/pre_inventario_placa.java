@@ -35,8 +35,6 @@ private Tabla tab_consulta = new Tabla();
 
 private Panel pan_opcion = new Panel();
 private Efecto efecto = new Efecto();
-private Texto txt_rango1 = new Texto();
-private Texto txt_rango2 = new Texto();
 
 private Dialogo dia_dialogoe = new Dialogo();
 private Dialogo dia_dialogop = new Dialogo();
@@ -54,7 +52,6 @@ private Tabla set_servicio = new Tabla();
 private Tabla set_tipo = new Tabla();
 private Tabla set_estado = new Tabla();
 
-    private Dialogo dia_dialogoDes = new Dialogo();
     private Calendario cal_fechaini = new Calendario();
     private Texto txt_acta= new Texto();
     private Grid grid = new Grid();
@@ -75,15 +72,9 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         tab_ingreso.setTabla("trans_ingresos_placas", "ide_ingreso_placas", 1);
         tab_ingreso.setHeader("ACTA DE INGRESO");
         tab_ingreso.getColumna("IDE_INGRESO_PLACAS").setNombreVisual("ID");
-        tab_ingreso.getColumna("FECHA_ENVIO_ACTA").setNombreVisual("FECHA DE ENVIO(ACTA)");
-        tab_ingreso.getColumna("FECHA_REGISTRO_ACTA").setNombreVisual("FECHA DE REGISTRO");
-        tab_ingreso.getColumna("ANO").setNombreVisual("AÑO");
         tab_ingreso.getColumna("ANO").setValorDefecto(utilitario.getAnio(utilitario.getFechaActual())+"");
         tab_ingreso.getColumna("ANO").setLectura(true);
-        tab_ingreso.getColumna("NUMERO_ACTA").setNombreVisual("Nro. ACTA");
         tab_ingreso.getColumna("NUMERO_ACTA").setMayusculas(true);
-        tab_ingreso.getColumna("ENTREGADO_ACTA").setNombreVisual("QUIEN ENTREGA ANT");
-        tab_ingreso.getColumna("RECIBIDO_ACTA").setNombreVisual("QUIEN RECIBE GADMUR");
         tab_ingreso.getColumna("ENTREGADO_ACTA").setMayusculas(true);
         tab_ingreso.getColumna("RECIBIDO_ACTA").setMayusculas(true);
         tab_ingreso.getColumna("fecha_envio_acta").setValorDefecto(utilitario.getFechaActual());
@@ -103,20 +94,14 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         tab_placa.getColumna("cedula_ruc_propietario").setVisible(false);
         tab_placa.getColumna("nombre_propietario").setVisible(false);
         tab_placa.getColumna("fecha_entrega_placa").setVisible(false);
-        tab_placa.getColumna("ide_placa").setNombreVisual("ID");
-        tab_placa.getColumna("placa").setNombreVisual("Nro. PLACA");
         tab_placa.getColumna("placa").setMayusculas(true);
         tab_placa.getColumna("placa").setUnico(true);
-        tab_placa.getColumna("FECHA_REGISTRO_placa").setNombreVisual("FECHA REGS.");
         tab_placa.getColumna("fecha_registro_placa").setValorDefecto(utilitario.getFechaActual());
         tab_placa.getColumna("fecha_registro_placa").setLectura(true);
         tab_placa.getColumna("ide_tipo_vehiculo").setLectura(true);
         tab_placa.getColumna("ide_tipo_servicio").setLectura(true);
         tab_placa.getColumna("ide_tipo_placa").setLectura(true);
-        tab_placa.getColumna("ide_tipo_placa").setNombreVisual("TIPO");
         tab_placa.getColumna("ide_tipo_estado").setLectura(true);
-        tab_placa.getColumna("ide_tipo_vehiculo").setNombreVisual("VEHICULO");
-        tab_placa.getColumna("ide_tipo_servicio").setNombreVisual("SERVICIO");
         tab_placa.getColumna("ide_tipo_vehiculo").setCombo("SELECT ide_tipo_vehiculo,des_tipo_vehiculo FROM trans_tipo_vehiculo WHERE ide_tipo_vehiculo BETWEEN 4 and 5");
         tab_placa.getColumna("ide_tipo_servicio").setCombo("SELECT IDE_TIPO_SERVICIO,DESCRIPCION_SERVICIO FROM TRANS_TIPO_SERVICIO");
         tab_placa.getColumna("ide_tipo_placa").setCombo("SELECT IDE_TIPO_PLACA,DESCRIPCION_PLACA FROM TRANS_TIPO_PLACA");
@@ -289,7 +274,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         set_servicio.setHeader("TIPO DE SERVICIO");
         set_servicio.setSql("SELECT s.IDE_TIPO_SERVICIO,s.DESCRIPCION_SERVICIO FROM trans_tipo_vehiculo v,TRANS_TIPO_SERVICIO s\n" 
                             +"WHERE s.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND v.ide_tipo_vehiculo ="+set_vehiculo.getValorSeleccionado());
-        set_servicio.getColumna("DESCRIPCION_SERVICIO").setNombreVisual("Servicio");
+        set_servicio.getColumna("DESCRIPCION_SERVICIO").setNombreVisual("SERVICIO");
         set_servicio.setRows(10);
         set_servicio.setTipoSeleccion(false);
         dia_dialogo1.setDialogo(grid_de1);
