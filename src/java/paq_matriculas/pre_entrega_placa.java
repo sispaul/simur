@@ -4,7 +4,6 @@
  */
 package paq_matriculas;
 
-import paq_placas.*;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Calendario;
 import framework.componentes.Dialogo;
