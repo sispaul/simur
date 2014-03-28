@@ -124,7 +124,6 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_detalle.getColumna("IDE_TIPO_VEHICULO").setCombo("SELECT ide_tipo_vehiculo,des_tipo_vehiculo FROM trans_tipo_vehiculo\n" 
                                                                 +"WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
         tab_detalle.getColumna("IDE_TIPO_VEHICULO").setMetodoChange("cargarServicio");
-//        tab_detalle.getColumna("IDE_TIPO_SERVICIO").setNombreVisual("TIPO DE SERVICIO");
         tab_detalle.getColumna("IDE_TIPO_SERVICIO").setCombo("SELECT IDE_TIPO_SERVICIO,DESCRIPCION_SERVICIO FROM TRANS_TIPO_SERVICIO");
 //        tab_detalle.getColumna("IDE_TIPO_SERVICIO").setMetodoChange("ingresoRequisitos");
         tab_detalle.getColumna("IDE_PLACA").setVisible(false);
