@@ -370,13 +370,16 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
                         } 
                break;
                case "REPORTE PLACAS":
+                   if (set_estado.getValorSeleccionado()!= null) {
                       p_parametros = new HashMap();
                       p_parametros.put("estado", Integer.parseInt(set_estado.getValorSeleccionado()+""));
                       p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
                       rep_reporte.cerrar();
                       sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                       sef_formato.dibujar();
-                      System.out.println(sef_formato);
+                      }else {
+                        utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
+                        }
                break;
         }
     }
