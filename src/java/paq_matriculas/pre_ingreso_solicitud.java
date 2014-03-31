@@ -114,8 +114,7 @@ public class pre_ingreso_solicitud extends Pantalla{
          tab_detalle.getColumna("CEDULA_RUC_PROPIETARIO").setRequerida(true);
         tab_detalle.getColumna("CEDULA_RUC_PROPIETARIO").setMetodoChange("buscaPersona");
         tab_detalle.getColumna("NUMERO_FACTURA").setRequerida(true);
-        tab_detalle.getColumna("IDE_TIPO_VEHICULO").setCombo("SELECT ide_tipo_vehiculo,des_tipo_vehiculo FROM trans_tipo_vehiculo\n" 
-                                                                +"WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
+        tab_detalle.getColumna("IDE_TIPO_VEHICULO").setCombo("SELECT ide_tipo_vehiculo,des_tipo_vehiculo FROM trans_tipo_vehiculo");
         tab_detalle.getColumna("IDE_TIPO_VEHICULO").setMetodoChange("cargarServicio");
         tab_detalle.getColumna("IDE_TIPO_SERVICIO").setCombo("SELECT IDE_TIPO_SERVICIO,DESCRIPCION_SERVICIO FROM TRANS_TIPO_SERVICIO");
 //        tab_detalle.getColumna("IDE_TIPO_SERVICIO").setMetodoChange("ingresoRequisitos");
