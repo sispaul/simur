@@ -7,7 +7,6 @@ package paq_matriculas;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
-import framework.componentes.Combo;
 import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Efecto;
@@ -520,9 +519,10 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
     public void guardar() {
     if (tab_entrega.guardar()) {
             if (guardarPantalla().isEmpty()) {
-                tab_entrega.actualizar();
+//                tab_entrega.actualizar();
                 ser_Placa.actualizarDS(Integer.parseInt(tab_entrega.getValor("ide_entrega_placa")),consulta);
-                utilitario.addUpdate("tab_entrega");
+//                tab_entrega.actualizar();
+//                utilitario.addUpdate("tab_entrega");
                 actualizarDE();
             }
         }else {
