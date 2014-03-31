@@ -271,28 +271,34 @@ public class pre_ingreso_solicitud extends Pantalla{
     }
 
         public void cargarEmpresa() {
-         if (utilitario.validarCedula(tab_solicitud.getValor("CEDULA_RUC_EMPRESA"))) {
+            if (utilitario.validarRUC(tab_solicitud.getValor("CEDULA_RUC_EMPRESA"))) {
             TablaGenerica tab_dato = ser_Placa.getGestor1(tab_solicitud.getValor("CEDULA_RUC_EMPRESA"));
             if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra   
                 tab_solicitud.setValor("NOMBRE_EMPRESA", tab_dato.getValor("NOMBRE_GESTOR"));
                 utilitario.addUpdate("tab_solicitud");
-            } else {
-                utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ciudadania del municipio", "");
-            }
-        } else if (utilitario.validarRUC(tab_solicitud.getValor("CEDULA_RUC_EMPRESA"))) {
-            TablaGenerica tab_dato = ser_Placa.getGestor(tab_solicitud.getValor("CEDULA_RUC_EMPRESA"));
-            if (!tab_dato.isEmpty()) {
-                // Cargo la información de la base de datos maestra   
-                tab_solicitud.setValor("NOMBRE_EMPRESA", tab_dato.getValor("NOMBRE_EMPRESA"));
-                utilitario.addUpdate("tab_solicitud");
                 aceptoDialogoe();
             } else {
-                utilitario.agregarMensajeInfo("El Número de RUC ingresado no existe en la base de datos ciudadania del municipio", "");
+            TablaGenerica tab_dato2 = ser_Placa.getGestor(tab_solicitud.getValor("CEDULA_RUC_EMPRESA"));
+            if (!tab_dato2.isEmpty()) {
+                // Cargo la información de la base de datos maestra   
+                tab_solicitud.setValor("NOMBRE_EMPRESA", tab_dato2.getValor("NOMBRE_EMPRESA"));
+                utilitario.addUpdate("tab_solicitud");
+            } else {
+                utilitario.agregarMensajeInfo("El Número de RUC ingresado no existe en la base de datos", "");
+            }
+            }
+         }else if (utilitario.validarCedula(tab_solicitud.getValor("CEDULA_RUC_EMPRESA"))) {
+            TablaGenerica tab_dato1 = ser_Placa.getGestor1(tab_solicitud.getValor("CEDULA_RUC_EMPRESA"));
+            if (!tab_dato1.isEmpty()) {
+                // Cargo la información de la base de datos maestra   
+                tab_solicitud.setValor("NOMBRE_EMPRESA", tab_dato1.getValor("NOMBRE_GESTOR"));
+                utilitario.addUpdate("tab_solicitud");
+            } else {
+                utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ", "");
             }
         }
     }
-
         /*
          * LLAMADO PARA LA CREACION DE REQUISITOS AUTOMATICOS DEPENDIENTO TIPO Y SOLICITUD
          */
