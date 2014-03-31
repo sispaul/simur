@@ -12,7 +12,8 @@
 		<![CDATA[SELECT DISTINCT p.CEDULA_RUC_PROPIETARIO,
 d.NOMBRE_PROPIETARIO,d.FECHA_ENTREGA_PLACA,
 v.des_tipo_vehiculo,t.DESCRIPCION_SERVICIO,
-i.DECRIPCION_REQUISITO,r.CONFIRMAR_REQUISITO,
+i.DECRIPCION_REQUISITO,
+(case when r.CONFIRMAR_REQUISITO = 1 then 'SI' when r.CONFIRMAR_REQUISITO= 0 then 'NO' end ) as confirma,
 d.NUMERO_FACTURA,s.IDE_SOLICITUD_PLACA,
 l.PLACA,p.CEDULA_PERSONA_RETIRA,
 p.NOMBRE_PERSONA_RETIRA,h.IDE_SOLICITUD_PLACA,
@@ -37,11 +38,12 @@ l.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND
 l.IDE_TIPO_ESTADO = e.IDE_TIPO_ESTADO AND
 l.IDE_TIPO_SERVICIO = t.IDE_TIPO_SERVICIO AND
 d.IDE_PLACA = l.IDE_PLACA AND
-d.IDE_SOLICITUD_PLACA = h.IDE_SOLICITUD_PLACA AND
+d.IDE_SOLICITUD_PLACA = h.IDE_SOLICITUD_PLACA  AND
 p.CEDULA_RUC_PROPIETARIO =$P{cedula} AND
 d.IDE_TIPO_VEHICULO =$P{vehiculo} AND
 d.NUMERO_FACTURA =$P{factura} AND
-d.IDE_TIPO_SERVICIO =$P{servicio}]]>
+d.IDE_TIPO_SERVICIO =$P{servicio}
+order by p.CEDULA_RUC_PROPIETARIO]]>
 	</queryString>
 	<field name="CEDULA_RUC_PROPIETARIO" class="java.lang.String"/>
 	<field name="NOMBRE_PROPIETARIO" class="java.lang.String"/>
@@ -49,7 +51,7 @@ d.IDE_TIPO_SERVICIO =$P{servicio}]]>
 	<field name="des_tipo_vehiculo" class="java.lang.String"/>
 	<field name="DESCRIPCION_SERVICIO" class="java.lang.String"/>
 	<field name="DECRIPCION_REQUISITO" class="java.lang.String"/>
-	<field name="CONFIRMAR_REQUISITO" class="java.lang.Boolean"/>
+	<field name="confirma" class="java.lang.String"/>
 	<field name="NUMERO_FACTURA" class="java.lang.Integer"/>
 	<field name="IDE_SOLICITUD_PLACA" class="java.lang.Long"/>
 	<field name="PLACA" class="java.lang.String"/>
@@ -218,7 +220,7 @@ d.IDE_TIPO_SERVICIO =$P{servicio}]]>
 			<textField>
 				<reportElement uuid="61f27303-bc79-4eb6-aea1-53f507d597fc" x="629" y="0" width="146" height="13"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$F{CONFIRMAR_REQUISITO}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{confirma}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="72134d04-f886-4187-8a93-7ba4564c3a6a" x="192" y="0" width="402" height="13"/>
