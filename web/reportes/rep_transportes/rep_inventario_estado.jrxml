@@ -4,9 +4,9 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="nomp_res" class="java.lang.String"/>
-	<parameter name="estado" class="java.lang.String"/>
+	<parameter name="estado" class="java.lang.Integer"/>
 	<queryString>
-		<![CDATA[SELECT DISTINCT p.NUMERO,
+		<![CDATA[SELECT DISTINCT
 p.PLACA,p.IDE_PLACA,
 s.DESCRIPCION_SERVICIO,
 v.des_tipo_vehiculo,s.IDE_TIPO_SERVICIO,
@@ -25,7 +25,6 @@ p.IDE_TIPO_PLACA = r.IDE_TIPO_PLACA AND
 e.IDE_TIPO_ESTADO = $P{estado}
 ORDER BY p.PLACA ASC]]>
 	</queryString>
-	<field name="NUMERO" class="java.lang.Integer"/>
 	<field name="PLACA" class="java.lang.String"/>
 	<field name="IDE_PLACA" class="java.lang.Long"/>
 	<field name="DESCRIPCION_SERVICIO" class="java.lang.String"/>
@@ -38,7 +37,7 @@ ORDER BY p.PLACA ASC]]>
 	<group name="vehiculo">
 		<groupExpression><![CDATA[$F{ide_tipo_vehiculo}]]></groupExpression>
 		<groupHeader>
-			<band height="36">
+			<band height="28">
 				<textField>
 					<reportElement uuid="e0cb862d-9f8a-4f45-8177-4a09945cc085" x="400" y="6" width="100" height="20" forecolor="#FFFFFF"/>
 					<textElement>
@@ -70,15 +69,25 @@ ORDER BY p.PLACA ASC]]>
 					</textElement>
 					<text><![CDATA[AUTOMOTOR:]]></text>
 				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="8"/>
+		</groupFooter>
+	</group>
+	<group name="automotor">
+		<groupExpression><![CDATA[$F{IDE_TIPO_SERVICIO}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
 				<textField>
-					<reportElement uuid="8cc95706-c4fb-4d15-a949-54dd46a26ae3" x="388" y="6" width="100" height="20" forecolor="#FFFFFF"/>
+					<reportElement uuid="8cc95706-c4fb-4d15-a949-54dd46a26ae3" x="142" y="0" width="100" height="20" forecolor="#000000"/>
 					<textElement>
 						<font isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{DESCRIPCION_SERVICIO}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement uuid="f96175e2-aaa6-419d-af5d-c8d260d4e082" x="264" y="6" width="128" height="20" forecolor="#FFFFFF"/>
+					<reportElement uuid="f96175e2-aaa6-419d-af5d-c8d260d4e082" x="18" y="0" width="128" height="20" forecolor="#000000"/>
 					<textElement>
 						<font isBold="true"/>
 					</textElement>
@@ -144,19 +153,14 @@ ORDER BY p.PLACA ASC]]>
 	<detail>
 		<band height="23" splitType="Stretch">
 			<textField>
-				<reportElement uuid="3ea13434-f6c8-4c43-aacd-427c4a288530" x="223" y="0" width="100" height="20"/>
+				<reportElement uuid="3ea13434-f6c8-4c43-aacd-427c4a288530" x="146" y="0" width="100" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{PLACA}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="2448b4b2-7825-4462-af31-338af078e228" x="324" y="0" width="100" height="20"/>
+				<reportElement uuid="2448b4b2-7825-4462-af31-338af078e228" x="289" y="3" width="100" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{DESCRIPCION_PLACA}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="9aa8e48e-527f-4e42-b65e-913c4ce98f6f" x="123" y="0" width="100" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{NUMERO}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
