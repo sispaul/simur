@@ -22,7 +22,7 @@ det.NOMBRE_PROPIETARIO,
 det.NUMERO_FACTURA,
 req.IDE_DETALLE_REQUISITOS_SOLICITUD,
 req.IDE_DETALLE_SOLICITUD,
-req.CONFIRMAR_REQUISITO,
+(case when req.CONFIRMAR_REQUISITO = 1 then 'SI' when req.CONFIRMAR_REQUISITO= 0 then 'NO' end ) as confirma,
 r.DECRIPCION_REQUISITO,
 dbo.TRANS_TIPO_SERVICIO.DESCRIPCION_SERVICIO,
 dbo.trans_tipo_vehiculo.des_tipo_vehiculo
@@ -37,7 +37,7 @@ INNER JOIN dbo.trans_tipo_vehiculo ON dbo.TRANS_TIPO_SERVICIO.IDE_TIPO_VEHICULO 
 WHERE
 cab.IDE_SOLICITUD_PLACA = det.IDE_SOLICITUD_PLACA AND
 det.IDE_detalle_SOLICITUD = req.IDE_detalle_SOLICITUD AND
-req.IDE_TIPO_REQUISITO = r.IDE_TIPO_REQUISITO AND
+req.IDE_TIPO_REQUISITO = r.IDE_TIPO_REQUISITO  AND
 cab.FECHA_SOLICITUD = cast ($P{fecha} as date) AND
 cab.CEDULA_RUC_EMPRESA LIKE $P{ruc}
 
@@ -56,7 +56,7 @@ req.IDE_detalle_SOLICITUD ASC]]>
 	<field name="NUMERO_FACTURA" class="java.lang.Integer"/>
 	<field name="IDE_DETALLE_REQUISITOS_SOLICITUD" class="java.lang.Long"/>
 	<field name="IDE_DETALLE_SOLICITUD" class="java.lang.Long"/>
-	<field name="CONFIRMAR_REQUISITO" class="java.lang.Boolean"/>
+	<field name="confirma" class="java.lang.String"/>
 	<field name="DECRIPCION_REQUISITO" class="java.lang.String"/>
 	<field name="DESCRIPCION_SERVICIO" class="java.lang.String"/>
 	<field name="des_tipo_vehiculo" class="java.lang.String"/>
@@ -108,18 +108,6 @@ req.IDE_detalle_SOLICITUD ASC]]>
 						<font size="8" isBold="true"/>
 					</textElement>
 					<text><![CDATA[NOMBRE:]]></text>
-				</staticText>
-				<textField>
-					<reportElement uuid="9ef1deb6-b1f4-463e-8c16-27e435519132" x="455" y="20" width="100" height="20" forecolor="#FFFFFF"/>
-					<textElement/>
-					<textFieldExpression><![CDATA[$F{NUMERO_AUTOMOTORES}]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement uuid="a7d052c0-5f4c-44f4-a897-0ef5e27d5a06" x="355" y="20" width="100" height="20" forecolor="#FFFFFF"/>
-					<textElement>
-						<font size="8" isBold="true"/>
-					</textElement>
-					<text><![CDATA[NRO. AUTOMOTORES]]></text>
 				</staticText>
 				<textField>
 					<reportElement uuid="1e0a8bd6-d386-4df5-8483-d4d81c42a872" x="112" y="26" width="215" height="20" forecolor="#FFFFFF"/>
@@ -286,7 +274,7 @@ req.IDE_detalle_SOLICITUD ASC]]>
 		</band>
 	</title>
 	<detail>
-		<band height="18">
+		<band height="15">
 			<textField>
 				<reportElement uuid="0de40d01-e399-49ed-aace-c2b7f0beba55" x="13" y="0" width="100" height="13"/>
 				<textElement/>
@@ -298,9 +286,9 @@ req.IDE_detalle_SOLICITUD ASC]]>
 				<textFieldExpression><![CDATA[$F{DECRIPCION_REQUISITO}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="25f7c23d-b7f8-4c50-971e-5a446974c6b5" x="455" y="0" width="100" height="13"/>
+				<reportElement uuid="328dd4af-c219-442a-b327-ff336b1dbad4" x="454" y="0" width="100" height="13"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[$F{CONFIRMAR_REQUISITO}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{confirma}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
