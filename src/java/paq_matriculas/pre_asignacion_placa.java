@@ -36,22 +36,27 @@ import persistencia.Conexion;
 public class pre_asignacion_placa extends Pantalla{
 
 Integer identificacion;
+
+    private AutoCompletar aut_busca = new AutoCompletar();
     //DECLARACION OBJETOS TABLA
     private Tabla tab_solicitud = new Tabla();
     private Tabla tab_detalle = new Tabla();
     private Tabla tab_requisito = new Tabla();
     private Tabla tab_consulta = new Tabla();
     private SeleccionTabla set_solicitud = new SeleccionTabla();
+    
     private Texto txt_comentario = new Texto();
+    
     private Panel pan_opcion = new Panel();
     private String str_opcion = "";// sirve para identificar la opcion que se encuentra dibujada en pantalla
     private PanelMenu pam_menu = new PanelMenu();
-    private AutoCompletar aut_busca = new AutoCompletar();
     private Panel pan_opcion1 = new Panel();
     private Panel pan_opcion2 = new Panel();
     private Efecto efecto1 = new Efecto();
     private Efecto efecto2 = new Efecto();
+    
     private Calendario cal_fechabus = new Calendario();
+    
     private Dialogo dia_dialogoe = new Dialogo();
     private Dialogo dia_dialogoq = new Dialogo();
     private Grid grid_de = new Grid();
@@ -80,12 +85,9 @@ Integer identificacion;
         bot_busca.setMetodo("abrirBusqueda");
         bar_botones.agregarBoton(bot_busca);
         
-//        bar_botones.agregarComponente(new Etiqueta("Buscador Personas:"));
-//        bar_botones.agregarComponente(aut_busca);
-        
+        /*Boton para asignacion de estados*/
         Grid gri_busca = new Grid();
-        gri_busca.setColumns(2);
- //campos fecha       
+        gri_busca.setColumns(2);    
         gri_busca.getChildren().add(new Etiqueta("BUSCAR FECHA"));
         gri_busca.getChildren().add(cal_fechabus);
         Boton bot_buscar = new Boton();
@@ -165,17 +167,8 @@ Integer identificacion;
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
         
-//        dia_dialogoe.setId("dia_dialogoe");
-//        dia_dialogoe.setTitle("CONFIRMAR ASIGNACIÓN"); //titulo
-//        dia_dialogoe.setWidth("17%"); //siempre en porcentajes  ancho
-//        dia_dialogoe.setHeight("8%");//siempre porcentaje   alto
-//        dia_dialogoe.setResizable(false); //para que no se pueda cambiar el tamaño
-//        dia_dialogoe.getBot_aceptar().setMetodo("aceptoValores");
-//        dia_dialogoe.getBot_cancelar().setMetodo("cancelarValores");
-//        grid_de.setColumns(4);
-//        agregarComponente(dia_dialogoe);
     }
-
+/*creacion de menú*/
     private void contruirMenu() {
         // SUB MENU 1
         Submenu sum_empleado = new Submenu();
@@ -191,6 +184,7 @@ Integer identificacion;
         sum_empleado.getChildren().add(itm_datos_empl);
     }
     
+    /*Busqueda de empresa para seleccion*/
     public void buscarEmpresa() {
         if (cal_fechabus.getValue() != null && cal_fechabus.getValue().toString().isEmpty() == false) {
             set_solicitud.getTab_seleccion().setSql("SELECT IDE_SOLICITUD_PLACA,CEDULA_RUC_EMPRESA,NOMBRE_EMPRESA FROM TRANS_SOLICITUD_PLACA where FECHA_SOLICITUD ='" + cal_fechabus.getFecha()+"'");
@@ -200,14 +194,14 @@ Integer identificacion;
         }
 
     }
-
+/*permite abrir la busqueda para la seleccion de la solicitud aprobar*/
     public void abrirBusqueda() {
 
         set_solicitud.dibujar();
         cal_fechabus.limpiar();
         set_solicitud.getTab_seleccion().limpiar();
     }
-
+/*aceptaqcion de busqueda y autocompletado d elos datos*/
     public void aceptarBusqueda() {
         if (set_solicitud.getValorSeleccionado() != null) {
             aut_busca.setValor(set_solicitud.getValorSeleccionado());
@@ -220,6 +214,7 @@ Integer identificacion;
 
     }
     
+    /*Dibujar datos a mostrar*/
     public void dibujarSolicitud(){
          if (aut_busca.getValue() != null) {
             str_opcion = "0";
@@ -229,6 +224,7 @@ Integer identificacion;
          */
         tab_solicitud.setId("tab_solicitud"); // NOMBRE PANTALLA - DECLARACION DE CABECERA
         tab_solicitud.setTabla("TRANS_SOLICITUD_PLACA", "IDE_SOLICITUD_PLACA", 1);
+        /*Filtro estatico para los datos a mostrar*/
         if (aut_busca.getValue() == null) {
             tab_solicitud.setCondicion("IDE_SOLICITUD_PLACA=-1");
         } else {
