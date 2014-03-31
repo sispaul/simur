@@ -203,7 +203,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         
         set_vehiculo.setId("set_vehiculo");
         set_vehiculo.setHeader("TIPO DE VEHICULO");
-        set_vehiculo.setSql("select ide_tipo_vehiculo,des_tipo_vehiculo from trans_tipo_vehiculo WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
+        set_vehiculo.setSql("select ide_tipo_vehiculo,des_tipo_vehiculo from trans_tipo_vehiculo");
         set_vehiculo.getColumna("des_tipo_vehiculo").setNombreVisual("Vehiculo");
         set_vehiculo.setRows(5);
         set_vehiculo.setTipoSeleccion(false);

@@ -257,7 +257,7 @@ Integer identificacion;
         
         tab_detalle.setId("tab_detalle");//DECLARACION DE DETALLE
         tab_detalle.setTabla("TRANS_DETALLE_SOLICITUD_PLACA","IDE_DETALLE_SOLICITUD", 2);
-        tab_detalle.getColumna("IDE_TIPO_VEHICULO").setCombo("SELECT ide_tipo_vehiculo,des_tipo_vehiculo FROM trans_tipo_vehiculo WHERE ide_tipo_vehiculo BETWEEN 4 AND 5");
+        tab_detalle.getColumna("IDE_TIPO_VEHICULO").setCombo("SELECT ide_tipo_vehiculo,des_tipo_vehiculo FROM trans_tipo_vehiculo");
         tab_detalle.getColumna("IDE_TIPO_SERVICIO").setCombo("select ide_tipo_servicio,descripcion_servicio from trans_tipo_servicio");
         tab_detalle.getColumna("IDE_TIPO_VEHICULO").setLectura(true);
         tab_detalle.getColumna("IDE_TIPO_SERVICIO").setLectura(true);
