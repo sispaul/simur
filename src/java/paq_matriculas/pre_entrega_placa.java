@@ -325,7 +325,6 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         if (set_propietario.getValorSeleccionado()!= null) {
             
             TablaGenerica tab_dato = ser_Placa.getEntrega(Integer.parseInt(set_propietario.getValorSeleccionado()));
-            System.out.println(tab_dato);
             if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra   
                 tab_entrega.setValor("NOMBRE_PROPIETARIO", tab_dato.getValor("NOMBRE_PROPIETARIO"));
@@ -478,18 +477,6 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
            case "REPORTE DIARIO ENTREGA PLACA":
                aceptoDialogo();
                break;
-           case "REPORTE MES ENTREGA PLACA": 
-                dia_dialogoe.Limpiar();
-
-                dia_dialogoe.setDialogo(etifec);
-                dia_dialogoe.setDialogo(grid);
-                
-                grid_de.getChildren().add(set_vehiculo);
-                dia_dialogoe.setDialogo(grid_de);
-                set_vehiculo.dibujar();
-                dia_dialogoe.dibujar();
-
-               break;
                 
         }
     }     
@@ -499,6 +486,9 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         switch (rep_reporte.getNombre()) {
                case "ENTREGA PLACA":
                       p_parametros = new HashMap();
+                      System.out.println(vehiculo);
+                      System.err.println(servicio);
+                      System.out.println(factura);
                       p_parametros.put("cedula", tab_entrega.getValor("CEDULA_RUC_PROPIETARIO")+"");
                       p_parametros.put("vehiculo", vehiculo);
                       p_parametros.put("servicio", servicio);
