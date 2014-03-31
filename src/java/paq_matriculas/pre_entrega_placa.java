@@ -256,17 +256,17 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
          */
         dia_dialogoe.setId("dia_dialogoe");
         dia_dialogoe.setTitle("BUSCAR PROPIETARIO"); //titulo
-        dia_dialogoe.setWidth("20%"); //siempre en porcentajes  ancho
+        dia_dialogoe.setWidth("80%"); //siempre en porcentajes  ancho
         dia_dialogoe.setHeight("30%");//siempre porcentaje   alto
         dia_dialogoe.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_dialogoe.getBot_aceptar().setMetodo("aceptoValores");
-        Grid gri_busca = new Grid();
-        gri_busca.setColumns(2);
-        gri_busca.getChildren().add(new Etiqueta("FECHA INICIO"));
-        gri_busca.getChildren().add(cal_fechaini);
-        gri_busca.getChildren().add(new Etiqueta("FECHA FINAL"));
-        gri_busca.getChildren().add(cal_fechafin);
-        dia_dialogoe.getGri_cuerpo().setHeader(gri_busca);
+//        Grid gri_busca = new Grid();
+//        gri_busca.setColumns(2);
+//        gri_busca.getChildren().add(new Etiqueta("FECHA INICIO"));
+//        gri_busca.getChildren().add(cal_fechaini);
+//        gri_busca.getChildren().add(new Etiqueta("FECHA FINAL"));
+//        gri_busca.getChildren().add(cal_fechafin);
+//        dia_dialogoe.getGri_cuerpo().setHeader(gri_busca);
         grid_de.setColumns(4);
         agregarComponente(dia_dialogoe);
 
@@ -323,7 +323,9 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
      }   
     public void aceptoValores(){
         if (set_propietario.getValorSeleccionado()!= null) {
+            
             TablaGenerica tab_dato = ser_Placa.getEntrega(Integer.parseInt(set_propietario.getValorSeleccionado()));
+            System.out.println(tab_dato);
             if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra   
                 tab_entrega.setValor("NOMBRE_PROPIETARIO", tab_dato.getValor("NOMBRE_PROPIETARIO"));
@@ -449,7 +451,6 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
                 
                 utilitario.addUpdate("tab_entrega");
                 utilitario.addUpdate("pan_opcion");
-                dia_dialogoe.cerrar();
                 dia_dialogop.cerrar();
             } else {
                 utilitario.agregarMensajeInfo("no existe en la base de datos", "");
@@ -515,19 +516,6 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
                       rep_reporte.cerrar();
                       sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                       sef_formato.dibujar();
-               break;
-               case "REPORTE MES ENTREGA PLACA":
-                      p_parametros = new HashMap();
-                      p_parametros.put("pide_fechai", cal_fechaini.getFecha());
-                      p_parametros.put("pide_fechaf", cal_fechafin.getFecha());
-                      p_parametros.put("vehiculo", Integer.parseInt(set_vehiculo.getValorSeleccionado()+""));
-                      p_parametros.put("servicio", Integer.parseInt(set_servicio.getValorSeleccionado()+""));
-                      p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
-                       dia_dialogo1.cerrar();
-                      rep_reporte.cerrar();
-                      sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                      sef_formato.dibujar();
-                      System.out.println(sef_formato);
                break;                   
         }
         }else{
