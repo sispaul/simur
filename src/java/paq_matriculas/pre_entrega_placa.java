@@ -34,9 +34,6 @@ public class pre_entrega_placa extends Pantalla{
 Integer consulta,placa,vehiculo,servicio;
 String cedula,factura;
 
-private Combo cmb_servicio = new Combo();
-private Combo cmb_vehiculo = new Combo();
-
 private Calendario cal_fechaini = new Calendario();
 private Calendario cal_fechafin = new Calendario();
 
@@ -194,16 +191,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         pan_opcion1.getChildren().add(gri_ti);
         pan_opcion1.getChildren().add(gri_pl);
         pan_opcion1.getChildren().add(gri_pr);        
-        
-//        etifec.setStyle("font-size:16px;color:blue");
-//        etifec.setValue("SELECCIONE RANGO DE FECHAS");
-//        grid.setColumns(4);
-//        //campos fecha       
-//        grid.getChildren().add(new Etiqueta("FECHA INICIAL"));
-//        grid.getChildren().add(cal_fechaini);
-//        grid.getChildren().add(new Etiqueta("   FECHA FINAL"));
-//        grid.getChildren().add(cal_fechafin);
-        
+               
         Division div = new Division();
         div.dividir2( pan_opcion4,  pan_opcion1, "50%", "v");
         Division div1 = new Division();
@@ -260,13 +248,6 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         dia_dialogoe.setHeight("30%");//siempre porcentaje   alto
         dia_dialogoe.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_dialogoe.getBot_aceptar().setMetodo("aceptoValores");
-//        Grid gri_busca = new Grid();
-//        gri_busca.setColumns(2);
-//        gri_busca.getChildren().add(new Etiqueta("FECHA INICIO"));
-//        gri_busca.getChildren().add(cal_fechaini);
-//        gri_busca.getChildren().add(new Etiqueta("FECHA FINAL"));
-//        gri_busca.getChildren().add(cal_fechafin);
-//        dia_dialogoe.getGri_cuerpo().setHeader(gri_busca);
         grid_de.setColumns(4);
         agregarComponente(dia_dialogoe);
 
@@ -307,7 +288,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         grid_de.getChildren().add(set_propietario);
         set_propietario.setId("set_propietario");
         set_propietario.setHeader("PROPIETARIOS PARA ENTREGAS");
-        set_propietario.setSql("SELECT DISTINCT d.IDE_DETALLE_SOLICITUD,d.CEDULA_RUC_PROPIETARIO,d.NOMBRE_PROPIETARIO,p.PLACA,v.des_tipo_vehiculo,s.DESCRIPCION_SERVICIO,\n" +
+        set_propietario.setSql("SELECT d.IDE_DETALLE_SOLICITUD,d.CEDULA_RUC_PROPIETARIO,d.NOMBRE_PROPIETARIO,p.PLACA,v.des_tipo_vehiculo,s.DESCRIPCION_SERVICIO,\n" +
                                 "d.IDE_SOLICITUD_PLACA,e.DESCRIPCION_ESTADO,a.USU_APROBACION\n" +
                                 "FROM dbo.TRANS_DETALLE_SOLICITUD_PLACA AS d ,dbo.TRANS_PLACA AS p ,dbo.TRANS_TIPO_ESTADO AS e ,dbo.TRANS_APROBACION_PLACA AS a ,\n" +
                                 "dbo.trans_tipo_vehiculo AS v ,dbo.TRANS_TIPO_SERVICIO s\n" +
@@ -323,7 +304,6 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
      }   
     public void aceptoValores(){
         if (set_propietario.getValorSeleccionado()!= null) {
-            
             TablaGenerica tab_dato = ser_Placa.getEntrega(Integer.parseInt(set_propietario.getValorSeleccionado()));
             if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra   
@@ -368,7 +348,6 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
      }
     
         public void aceptoretiro(){
-            System.out.println(tab_entrega.getValor("CEDULA_PERSONA_RETIRA"));
          if (utilitario.validarCedula(tab_entrega.getValor("CEDULA_PERSONA_RETIRA"))) {
             TablaGenerica tab_dato = serviciobusqueda.getPersona(tab_entrega.getValor("CEDULA_PERSONA_RETIRA"));
             if (!tab_dato.isEmpty()) {
@@ -398,7 +377,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         grid_dp.getChildren().add(set_propietario1);
         set_propietario1.setId("set_propietario1");
         set_propietario1.setHeader("PROPIETARIOS PARA ENTREGAS");
-        set_propietario1.setSql("SELECT DISTINCT d.IDE_DETALLE_SOLICITUD,d.CEDULA_RUC_PROPIETARIO,d.NOMBRE_PROPIETARIO,p.PLACA,v.des_tipo_vehiculo,s.DESCRIPCION_SERVICIO,\n" +
+        set_propietario1.setSql("SELECT d.IDE_DETALLE_SOLICITUD,d.CEDULA_RUC_PROPIETARIO,d.NOMBRE_PROPIETARIO,p.PLACA,v.des_tipo_vehiculo,s.DESCRIPCION_SERVICIO,\n" +
                                 "d.IDE_SOLICITUD_PLACA,e.DESCRIPCION_ESTADO,a.USU_APROBACION\n" +
                                 "FROM dbo.TRANS_DETALLE_SOLICITUD_PLACA AS d ,dbo.TRANS_PLACA AS p ,dbo.TRANS_TIPO_ESTADO AS e ,dbo.TRANS_APROBACION_PLACA AS a ,\n" +
                                 "dbo.trans_tipo_vehiculo AS v ,dbo.TRANS_TIPO_SERVICIO s\n" +
@@ -416,6 +395,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
      public void aceptoPersona(){
          if (set_propietario1.getValorSeleccionado()!= null) {
             TablaGenerica tab_dato = ser_Placa.getEntrega(Integer.parseInt(set_propietario1.getValorSeleccionado()));
+            
             if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra   
                 tab_entrega.setValor("NOMBRE_PROPIETARIO", tab_dato.getValor("NOMBRE_PROPIETARIO"));
@@ -486,9 +466,6 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         switch (rep_reporte.getNombre()) {
                case "ENTREGA PLACA":
                       p_parametros = new HashMap();
-                      System.out.println(vehiculo);
-                      System.err.println(servicio);
-                      System.out.println(factura);
                       p_parametros.put("cedula", tab_entrega.getValor("CEDULA_RUC_PROPIETARIO")+"");
                       p_parametros.put("vehiculo", vehiculo);
                       p_parametros.put("servicio", servicio);
@@ -554,7 +531,6 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
     }
 
     public void actualizarDE(){
-                        System.err.println("Actualizado");
         ser_Placa.actualizarDE(consulta, cedula, placa);
     }
     @Override
