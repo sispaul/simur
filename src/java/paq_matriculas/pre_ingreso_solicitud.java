@@ -277,13 +277,13 @@ public class pre_ingreso_solicitud extends Pantalla{
                 // Cargo la información de la base de datos maestra   
                 tab_solicitud.setValor("NOMBRE_EMPRESA", tab_dato.getValor("NOMBRE_GESTOR"));
                 utilitario.addUpdate("tab_solicitud");
-                aceptoDialogoe();
             } else {
             TablaGenerica tab_dato2 = ser_Placa.getGestor(tab_solicitud.getValor("CEDULA_RUC_EMPRESA"));
             if (!tab_dato2.isEmpty()) {
                 // Cargo la información de la base de datos maestra   
                 tab_solicitud.setValor("NOMBRE_EMPRESA", tab_dato2.getValor("NOMBRE_EMPRESA"));
                 utilitario.addUpdate("tab_solicitud");
+                           aceptoDialogoe();
             } else {
                 utilitario.agregarMensajeInfo("El Número de RUC ingresado no existe en la base de datos", "");
             }
@@ -426,8 +426,6 @@ public class pre_ingreso_solicitud extends Pantalla{
          tab_solicitud.insertar();
             } else if (tab_detalle.isFocus()) {
                         tab_detalle.insertar();
-                        tab_solicitud.guardar();
-                         guardarPantalla();
                      }   
     }
 
