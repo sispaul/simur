@@ -192,8 +192,9 @@ public void guardarhistorial(Integer ide,String ruc,Integer detalle,String cedul
                         "d.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO AND d.IDE_SOLICITUD_PLACA = f.IDE_SOLICITUD_PLACA AND f.IDE_TIPO_GESTOR = g.IDE_TIPO_GESTOR AND\n" +
                         "d.IDE_APROBACION_PLACA = a.IDE_APROBACION_PLACA AND f.IDE_GESTOR = i.IDE_GESTOR AND d.IDE_DETALLE_SOLICITUD ="+propie);
         tab_persona.ejecutarSql();
-        
 //        conexion.desconectar();
+//        conexion = null;
+
         return tab_persona;
     }
       
