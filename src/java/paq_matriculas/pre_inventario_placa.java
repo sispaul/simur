@@ -30,11 +30,18 @@ import paq_transportes.ejb.servicioPlaca;
  * @author KEJA
  */
 public class pre_inventario_placa extends  Pantalla{
-Integer codigo;
+
+    Integer codigo;
+
 private Tabla tab_ingreso = new Tabla();
 private Tabla tab_placa = new Tabla();
 private Tabla tab_consulta = new Tabla();
+private Tabla set_vehiculo = new Tabla();
+private Tabla set_servicio = new Tabla();
+private Tabla set_tipo = new Tabla();
+private Tabla set_estado = new Tabla();
 private SeleccionTabla set_acta = new SeleccionTabla();
+
 private Panel pan_opcion = new Panel();
 private Efecto efecto = new Efecto();
 
@@ -49,10 +56,7 @@ private Grid grid_dt = new Grid();
 private Grid grid1 = new Grid();
 private Grid grid_de1 = new Grid();
 
-private Tabla set_vehiculo = new Tabla();
-private Tabla set_servicio = new Tabla();
-private Tabla set_tipo = new Tabla();
-private Tabla set_estado = new Tabla();
+
 
     private Calendario cal_fechaini = new Calendario();
     private Calendario cal_fechafin = new Calendario();

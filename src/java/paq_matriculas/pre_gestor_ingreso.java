@@ -176,9 +176,8 @@ public class pre_gestor_ingreso extends Pantalla{
 
         public void cargarEmpresa() {
          if (utilitario.validarRUC(tab_comercial.getValor("ruc_empresa"))) {
-             System.out.println(tab_comercial.getValor("ruc_empresa"));
+
             TablaGenerica tab_dato = serviciobusqueda.getEmpresa(tab_comercial.getValor("ruc_empresa"));
-            System.out.println(tab_comercial.getValor("ruc_empresa"));
             if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra   
                 tab_comercial.setValor("nombre_empresa", tab_dato.getValor("razon_social"));

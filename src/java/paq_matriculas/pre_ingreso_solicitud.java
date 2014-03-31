@@ -43,15 +43,16 @@ public class pre_ingreso_solicitud extends Pantalla{
     private SeleccionTabla set_solicitud = new SeleccionTabla();
     //DECLARACION OBJETO DIALOGO
     private Dialogo dia_dialogoEN = new Dialogo();
-    
-    // DELCARACION OBJETOS PANEL Y GRID
+    private Dialogo dia_dialogoe = new Dialogo();
+    private Dialogo dia_dialogoDes = new Dialogo();
     private Grid grid_en = new Grid();
     private Grid grid_de = new Grid();
     private Grid gride = new Grid();
+    
+    // DELCARACION OBJETOS PANEL
     private Panel pan_opcion1 = new Panel();
     private Efecto efecto1 = new Efecto();
-    private Dialogo dia_dialogoe = new Dialogo();
-    private Dialogo dia_dialogoDes = new Dialogo();
+   
     private Texto txt_ced_ruc = new Texto();
     private Combo cmb_estado = new Combo();
     private Calendario cal_fechaini = new Calendario();
