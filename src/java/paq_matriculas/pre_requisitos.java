@@ -22,7 +22,7 @@ private Tabla tab_requisitos = new Tabla();
     public pre_requisitos() {
         tab_vehiculo.setId("tab_vehiculo");
         tab_vehiculo.setHeader("INGRESO DE REQUISITOS PARA AUTOMOTORES");
-        tab_vehiculo.setTabla("trans_tipo_vehiculo", "ide_tipo_vehiculo", 1);
+        tab_vehiculo.setTabla("trans_vehiculo_tipo", "ide_tipo_vehiculo", 1);
         tab_vehiculo.getColumna("ide_tipo_vehiculo").setNombreVisual("ID");
         tab_vehiculo.agregarRelacion(tab_servicio);
         tab_vehiculo.dibujar();
