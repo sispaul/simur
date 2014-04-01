@@ -79,13 +79,12 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_solicitud.getColumna("CEDULA_RUC_EMPRESA").setMetodoChange("cargarEmpresa");
         tab_solicitud.getColumna("CEDULA_RUC_EMPRESA").setRequerida(true);
         tab_solicitud.getColumna("DESCRIPCION_SOLICITUD").setMayusculas(true);
-        tab_solicitud.getColumna("NUMERO_AUTOMOTORES").setVisible(false);
         tab_solicitud.getColumna("FECHA_SOLICITUD").setValorDefecto(utilitario.getFechaActual());
         tab_solicitud.getColumna("FECHA_SOLICITUD").setLectura(true);
         tab_solicitud.getColumna("USU_SOLICITUD").setVisible(false);
         tab_solicitud.getColumna("IDE_SOLICITUD_PLACA").setNombreVisual("Nro. SOLICITUD");
-        tab_solicitud.getColumna("IDE_TIPO_GESTOR").setNombreVisual("TIPO DE SOLICITUD");
-        tab_solicitud.getColumna("IDE_TIPO_GESTOR").setCombo("SELECT IDE_TIPO_GESTOR,DESCRIPCION_GESTOR FROM TRANS_TIPO_GESTOR");
+        tab_solicitud.getColumna("IDE_TIPO_SOLICTUD").setNombreVisual("TIPO DE SOLICITUD");
+        tab_solicitud.getColumna("IDE_TIPO_SOLICTUD").setCombo("SELECT IDE_TIPO_SOLICTUD,DESCRIPCION_SOLICITUD FROM TRANS_TIPO_SOLICTUD");
         tab_solicitud.getColumna("IDE_GESTOR").setVisible(false);
         tab_solicitud.getColumna("USU_SOLICITUD").setValorDefecto(tab_consulta.getValor("NICK_USUA")); 
         tab_solicitud.agregarRelacion(tab_detalle);
@@ -114,10 +113,9 @@ public class pre_ingreso_solicitud extends Pantalla{
          tab_detalle.getColumna("CEDULA_RUC_PROPIETARIO").setRequerida(true);
         tab_detalle.getColumna("CEDULA_RUC_PROPIETARIO").setMetodoChange("buscaPersona");
         tab_detalle.getColumna("NUMERO_FACTURA").setRequerida(true);
-        tab_detalle.getColumna("IDE_TIPO_VEHICULO").setCombo("SELECT ide_tipo_vehiculo,des_tipo_vehiculo FROM trans_tipo_vehiculo");
+        tab_detalle.getColumna("IDE_TIPO_VEHICULO").setCombo("SELECT ide_tipo_vehiculo,descripcion_vehiculo FROM trans_vehiculo_tipo");
         tab_detalle.getColumna("IDE_TIPO_VEHICULO").setMetodoChange("cargarServicio");
         tab_detalle.getColumna("IDE_TIPO_SERVICIO").setCombo("SELECT IDE_TIPO_SERVICIO,DESCRIPCION_SERVICIO FROM TRANS_TIPO_SERVICIO");
-//        tab_detalle.getColumna("IDE_TIPO_SERVICIO").setMetodoChange("ingresoRequisitos");
         tab_detalle.getColumna("IDE_PLACA").setVisible(false);
         tab_detalle.getColumna("IDE_ENTREGA_PLACA").setVisible(false);
         tab_detalle.getColumna("IDE_APROBACION_PLACA").setVisible(false);
@@ -144,7 +142,7 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_requisito.setTabla("TRANS_DETALLE_REQUISITOS_SOLICITUD", "IDE_DETALLE_REQUISITOS_SOLICITUD", 3);
         tab_requisito.getColumna("ide_tipo_requisito").setCombo("SELECT r.IDE_TIPO_REQUISITO,r.DECRIPCION_REQUISITO FROM TRANS_TIPO_REQUISITO r\n" 
                                                                 +"INNER JOIN TRANS_TIPO_SERVICIO s ON r.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO\n" 
-                                                                +"INNER JOIN trans_tipo_vehiculo v ON s.ide_tipo_vehiculo = v.ide_tipo_vehiculo\n");       
+                                                                +"INNER JOIN trans_vehiculo_tipo v ON s.ide_tipo_vehiculo = v.ide_tipo_vehiculo\n");       
         tab_requisito.dibujar();
         PanelTabla tabp3=new PanelTabla();
         tabp3.getMenuTabla().getItem_eliminar().setRendered(false);//nucontextual().setrendered(false);
@@ -211,7 +209,7 @@ public class pre_ingreso_solicitud extends Pantalla{
         gri_busca.getChildren().add(new Etiqueta("FECHA FINAL"));
         gri_busca.getChildren().add(cal_fechafin);
         gri_busca.getChildren().add(new Etiqueta("TIPO DE SOLICITUD"));
-        cmb_estado.setCombo("SELECT IDE_TIPO_GESTOR,DESCRIPCION_GESTOR FROM TRANS_TIPO_GESTOR");
+        cmb_estado.setCombo("SELECT IDE_TIPO_SOLICTUD,DESCRIPCION_SOLICITUD FROM TRANS_TIPO_SOLICTUD");
         gri_busca.getChildren().add(cmb_estado);
         Boton bot_buscar = new Boton();
         bot_buscar.setValue("Buscar");
@@ -233,7 +231,7 @@ public class pre_ingreso_solicitud extends Pantalla{
     
     public void buscarEmpresa() {
         if (cal_fechaini.getValue() != null && cal_fechaini.getValue().toString().isEmpty() == false && cal_fechafin.getValue() != null && cal_fechafin.getValue().toString().isEmpty() == false) {
-            set_solicitud.getTab_seleccion().setSql("SELECT IDE_SOLICITUD_PLACA,NOMBRE_GESTOR,NOMBRE_EMPRESA FROM TRANS_SOLICITUD_PLACA WHERE IDE_TIPO_GESTOR="+cmb_estado.getValue()+" AND FECHA_SOLICITUD BETWEEN '"+cal_fechaini.getFecha()+"' AND '"+cal_fechafin.getFecha()+"'");
+            set_solicitud.getTab_seleccion().setSql("SELECT IDE_SOLICITUD_PLACA,NOMBRE_GESTOR,NOMBRE_EMPRESA FROM TRANS_SOLICITUD_PLACA WHERE IDE_TIPO_SOLICTUD="+cmb_estado.getValue()+" AND FECHA_SOLICITUD BETWEEN '"+cal_fechaini.getFecha()+"' AND '"+cal_fechafin.getFecha()+"'");
             set_solicitud.getTab_seleccion().ejecutarSql();
         } else {
             utilitario.agregarMensajeInfo("Debe seleccionar una fecha", "");

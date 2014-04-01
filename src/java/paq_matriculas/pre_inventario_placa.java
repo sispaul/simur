@@ -106,7 +106,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         tab_placa.getColumna("ide_tipo_servicio").setLectura(true);
         tab_placa.getColumna("ide_tipo_placa").setLectura(true);
         tab_placa.getColumna("ide_tipo_estado").setLectura(true);
-        tab_placa.getColumna("ide_tipo_vehiculo").setCombo("SELECT ide_tipo_vehiculo,des_tipo_vehiculo FROM trans_tipo_vehiculo");
+        tab_placa.getColumna("ide_tipo_vehiculo").setCombo("SELECT ide_tipo_vehiculo,descripcion_vehiculo FROM trans_vehiculo_tipo");
         tab_placa.getColumna("ide_tipo_servicio").setCombo("SELECT IDE_TIPO_SERVICIO,DESCRIPCION_SERVICIO FROM TRANS_TIPO_SERVICIO");
         tab_placa.getColumna("ide_tipo_placa").setCombo("SELECT IDE_TIPO_PLACA,DESCRIPCION_PLACA FROM TRANS_TIPO_PLACA");
         tab_placa.getColumna("ide_tipo_estado").setVisible(false);
@@ -208,8 +208,8 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         
         set_vehiculo.setId("set_vehiculo");
         set_vehiculo.setHeader("TIPO DE VEHICULO");
-        set_vehiculo.setSql("select ide_tipo_vehiculo,des_tipo_vehiculo from trans_tipo_vehiculo");
-        set_vehiculo.getColumna("des_tipo_vehiculo").setNombreVisual("VEHICULO");
+        set_vehiculo.setSql("select ide_tipo_vehiculo,descripcion_vehiculo from trans_vehiculo_tipo");
+        set_vehiculo.getColumna("descripcion_vehiculo").setNombreVisual("VEHICULO");
         set_vehiculo.setRows(5);
         set_vehiculo.setTipoSeleccion(false);
         set_vehiculo.dibujar();
@@ -281,7 +281,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         grid_de1.getChildren().add(set_servicio);
         set_servicio.setId("set_servicio");
         set_servicio.setHeader("TIPO DE SERVICIO");
-        set_servicio.setSql("SELECT s.IDE_TIPO_SERVICIO,s.DESCRIPCION_SERVICIO FROM trans_tipo_vehiculo v,TRANS_TIPO_SERVICIO s\n" 
+        set_servicio.setSql("SELECT s.IDE_TIPO_SERVICIO,s.DESCRIPCION_SERVICIO FROM trans_vehiculo_tipo v,TRANS_TIPO_SERVICIO s\n" 
                             +"WHERE s.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND v.ide_tipo_vehiculo ="+set_vehiculo.getValorSeleccionado());
         set_servicio.getColumna("DESCRIPCION_SERVICIO").setNombreVisual("SERVICIO");
         set_servicio.setRows(10);
