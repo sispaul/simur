@@ -16,7 +16,7 @@ import persistencia.Conexion;
 public class servicioPlaca {
 private Conexion conexion;
 private Utilitario utilitario = new Utilitario();
-private Conexion con_postgres = new Conexion();
+private Conexion con_postgres;
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
 
@@ -161,6 +161,16 @@ public void guardarhistorial(Integer ide,String ruc,Integer detalle,String cedul
         conexion.desconectar();
         conexion = null;
 }
+
+//BORRA REGISTROS DE DETALLE REQUISITOS
+public void borrarRequisito(Integer requisito){
+        String requisit="DELETE FROM TRANS_DETALLE_REQUISITOS_SOLICITUD WHERE IDE_DETALLE_SOLICITUD ="+requisito;
+        conectar();
+        conexion.ejecutarSql(requisit);
+        conexion.desconectar();
+        conexion = null;
+}
+
 //RECUPERACION DE INFORMACION
    public TablaGenerica getGestor(String iden) {
         //Busca a una empresa en la tabla maestra_ruc por ruc
@@ -289,16 +299,17 @@ public void guardarhistorial(Integer ide,String ruc,Integer detalle,String cedul
     }
  
  
- public TablaGenerica Funcionario(){
-        conectar();
+ public TablaGenerica Funcionario(String empleado){
+        conec();
         TablaGenerica tab_funcionario = new TablaGenerica();
+        conec();
         tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("");
+        tab_funcionario.setSql("SELECT cedula_pass,nombres FROM srh_empleado WHERE cedula_pass LIKE '"+empleado+"'");
         tab_funcionario.ejecutarSql();
-        
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
+        
  }
  
  private void conec() {
