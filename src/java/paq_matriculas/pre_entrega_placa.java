@@ -313,7 +313,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
                 tex_gestor.setValue(tab_dato.getValor("NOMBRE_GESTOR"));
                 tex_usu_in.setValue(tab_dato.getValor("USU_SOLICITUD"));
                 
-                tex_tip_sol.setValue(tab_dato.getValor("DESCRIPCION_GESTOR"));
+                tex_tip_sol.setValue(tab_dato.getValor("DESCRIPCION_SOLICITUD"));
                 tex_automotor.setValue(tab_dato.getValor("descripcion_vehiculo"));
                 tex_servicio.setValue(tab_dato.getValor("DESCRIPCION_SERVICIO"));
                 
@@ -405,7 +405,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
                 tex_gestor.setValue(tab_dato.getValor("NOMBRE_GESTOR"));
                 tex_usu_in.setValue(tab_dato.getValor("USU_SOLICITUD"));
                 
-                tex_tip_sol.setValue(tab_dato.getValor("DESCRIPCION_GESTOR"));
+                tex_tip_sol.setValue(tab_dato.getValor("DESCRIPCION_SOLICITUD"));
                 tex_automotor.setValue(tab_dato.getValor("descripcion_vehiculo"));
                 tex_servicio.setValue(tab_dato.getValor("DESCRIPCION_SERVICIO"));
                 

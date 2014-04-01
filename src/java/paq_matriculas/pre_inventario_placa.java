@@ -78,9 +78,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         tab_ingreso.getColumna("IDE_INGRESO_PLACAS").setNombreVisual("ID");
         tab_ingreso.getColumna("ANO").setValorDefecto(utilitario.getAnio(utilitario.getFechaActual())+"");
         tab_ingreso.getColumna("ANO").setLectura(true);
-        tab_ingreso.getColumna("NUMERO_ACTA").setMayusculas(true);
-        tab_ingreso.getColumna("ENTREGADO_ACTA").setMayusculas(true);
-        tab_ingreso.getColumna("RECIBIDO_ACTA").setMayusculas(true);
+        tab_ingreso.getColumna("NUMERO_ACTA").setMascara("999-9999-**-***");
         tab_ingreso.getColumna("fecha_envio_acta").setValorDefecto(utilitario.getFechaActual());
         tab_ingreso.getColumna("fecha_registro_acta").setValorDefecto(utilitario.getFechaActual());      
         tab_ingreso.getColumna("fecha_registro_acta").setLectura(true);
@@ -147,7 +145,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         dia_dialogoe.setId("dia_dialogoe");
         dia_dialogoe.setTitle("PLACAS - ASIGNACION DE TIPOS"); //titulo
         dia_dialogoe.setWidth("35%"); //siempre en porcentajes  ancho
-        dia_dialogoe.setHeight("40%");//siempre porcentaje   alto
+        dia_dialogoe.setHeight("20%");//siempre porcentaje   alto
         dia_dialogoe.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_dialogoe.getBot_aceptar().setMetodo("aceptoValores");
         grid_de.setColumns(4);

@@ -71,6 +71,12 @@ public class pre_ingreso_solicitud extends Pantalla{
     
     public pre_ingreso_solicitud() {
         
+        tab_consulta.setId("tab_consulta");
+        tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
+        tab_consulta.setCampoPrimaria("IDE_USUA");
+        tab_consulta.setLectura(true);
+        tab_consulta.dibujar();
+        
         /**
          PANTALLA CABECERA DE SOLICITUS
          */
@@ -83,7 +89,6 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_solicitud.getColumna("FECHA_SOLICITUD").setLectura(true);
         tab_solicitud.getColumna("USU_SOLICITUD").setVisible(false);
         tab_solicitud.getColumna("IDE_SOLICITUD_PLACA").setNombreVisual("Nro. SOLICITUD");
-        tab_solicitud.getColumna("IDE_TIPO_SOLICTUD").setNombreVisual("TIPO DE SOLICITUD");
         tab_solicitud.getColumna("IDE_TIPO_SOLICTUD").setCombo("SELECT IDE_TIPO_SOLICTUD,DESCRIPCION_SOLICITUD FROM TRANS_TIPO_SOLICTUD");
         tab_solicitud.getColumna("IDE_GESTOR").setVisible(false);
         tab_solicitud.getColumna("USU_SOLICITUD").setValorDefecto(tab_consulta.getValor("NICK_USUA")); 
@@ -109,7 +114,7 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_detalle.setId("tab_detalle"); // NOMBRE PANTALLA
         tab_detalle.setTabla("TRANS_DETALLE_SOLICITUD_PLACA", "IDE_DETALLE_SOLICITUD", 2);
         tab_detalle.getColumna("NOMBRE_PROPIETARIO").setMayusculas(true);
-        tab_detalle.getColumna("CEDULA_RUC_PROPIETARIO").setNombreVisual("C.I./RUC");
+        tab_detalle.getColumna("CEDULA_RUC_PROPIETARIO").setNombreVisual("C.I.o RUC");
          tab_detalle.getColumna("CEDULA_RUC_PROPIETARIO").setRequerida(true);
         tab_detalle.getColumna("CEDULA_RUC_PROPIETARIO").setMetodoChange("buscaPersona");
         tab_detalle.getColumna("NUMERO_FACTURA").setRequerida(true);
