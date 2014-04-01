@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.ejb.EJB;
 import paq_sistema.aplicacion.Pantalla;
 import paq_transportes.ejb.servicioPlaca;
+import persistencia.Conexion;
 
 /**
  *
@@ -31,7 +32,7 @@ import paq_transportes.ejb.servicioPlaca;
  */
 public class pre_inventario_placa extends  Pantalla{
 
-    Integer codigo;
+Integer codigo;
 
 private Tabla tab_ingreso = new Tabla();
 private Tabla tab_placa = new Tabla();
@@ -40,36 +41,43 @@ private Tabla set_vehiculo = new Tabla();
 private Tabla set_servicio = new Tabla();
 private Tabla set_tipo = new Tabla();
 private Tabla set_estado = new Tabla();
+private Tabla set_colaborador = new Tabla();
 private SeleccionTabla set_acta = new SeleccionTabla();
 
 private Panel pan_opcion = new Panel();
 private Efecto efecto = new Efecto();
 
 private Dialogo dia_dialogoe = new Dialogo();
+private Dialogo dia_dialogoc = new Dialogo();
 private Dialogo dia_dialogop = new Dialogo();
 private Dialogo dia_dialogot = new Dialogo();
 private Dialogo dia_dialogo1 = new Dialogo();
 private Grid grid_de = new Grid();
+private Grid grid_dc = new Grid();
 private Grid gride = new Grid();
+private Grid gridc = new Grid();
 private Grid grid_dp = new Grid();
 private Grid grid_dt = new Grid();
 private Grid grid1 = new Grid();
 private Grid grid_de1 = new Grid();
 
-
+private Conexion con_postgres= new Conexion();
 
     private Calendario cal_fechaini = new Calendario();
     private Calendario cal_fechafin = new Calendario();
     private Texto txt_acta= new Texto();
-@EJB
-private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servicioPlaca.class);
+    @EJB
+    private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servicioPlaca.class);
         ///REPORTES
     private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
     private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
     private Map p_parametros = new HashMap();
     
     public pre_inventario_placa() {      
-
+//Persistencia a la postgres.
+        con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
+        con_postgres.NOMBRE_MARCA_BASE="postgres";
+        
         /****CREACION DE OBJETOS TABLAS****/
 
         tab_ingreso.setId("tab_ingreso");//tabla acta de solicitud
@@ -79,6 +87,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         tab_ingreso.getColumna("ANO").setValorDefecto(utilitario.getAnio(utilitario.getFechaActual())+"");
         tab_ingreso.getColumna("ANO").setLectura(true);
         tab_ingreso.getColumna("NUMERO_ACTA").setMascara("999-9999-**-***");
+        tab_ingreso.getColumna("RECIBIDO_ACTA").setMetodoChange("buscaColaborador");
         tab_ingreso.getColumna("fecha_envio_acta").setValorDefecto(utilitario.getFechaActual());
         tab_ingreso.getColumna("fecha_registro_acta").setValorDefecto(utilitario.getFechaActual());      
         tab_ingreso.getColumna("fecha_registro_acta").setLectura(true);
@@ -237,6 +246,15 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         set_acta.getBot_aceptar().setMetodo("aceptoInventario");
         set_acta.setHeader("BUSCAR ACTA DE PLACAS");
         agregarComponente(set_acta);
+        
+        dia_dialogoc.setId("dia_dialogoc");
+        dia_dialogoc.setTitle("BUSCAR COLABORADOR"); //titulo
+        dia_dialogoc.setWidth("50%"); //siempre en porcentajes  ancho
+        dia_dialogoc.setHeight("45%");//siempre porcentaje   alto
+        dia_dialogoc.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogoc.getBot_aceptar().setMetodo("aceptoColaborador");
+        grid_dc.setColumns(4);
+        agregarComponente(dia_dialogoc);
     }
 
        public void buscarEmpresa() {
@@ -249,6 +267,22 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         }
     }
     
+       public void buscaColaborador(){
+        dia_dialogoc.Limpiar();
+        dia_dialogoc.setDialogo(gridc);
+        grid_dc.getChildren().add(set_colaborador);
+        set_colaborador.setId("set_colaborador");
+        set_colaborador.setConexion(con_postgres);
+        set_colaborador.setHeader("LISTA DE COLABORADORES");
+        set_colaborador.setSql("SELECT cedula_pass,nombres FROM srh_empleado WHERE nombres LIKE '%"+tab_ingreso.getValor("RECIBIDO_ACTA")+"%'");
+        set_colaborador.getColumna("nombres").setFiltro(true);
+        set_colaborador.setRows(10);
+        set_colaborador.setTipoSeleccion(false);
+        dia_dialogoc.setDialogo(grid_dc);
+        set_colaborador.dibujar();
+        dia_dialogoc.dibujar();
+       }
+       
     public void buscarServicio(){
         dia_dialogoe.Limpiar();
         dia_dialogoe.setDialogo(gride);
@@ -273,6 +307,23 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
        }        
     }
     
+    public void aceptoColaborador(){
+     if (set_colaborador.getValorSeleccionado()!= null) {
+         System.err.println(set_colaborador.getValorSeleccionado());
+          TablaGenerica tab_dato = ser_Placa.Funcionario(set_colaborador.getValorSeleccionado());
+                if (!tab_dato.isEmpty()) {
+                     tab_ingreso.setValor("RECIBIDO_ACTA", tab_dato.getValor("nombres"));
+                      utilitario.addUpdate("tab_ingreso");
+                      dia_dialogoc.cerrar();
+                       } else {
+                               utilitario.agregarMensajeInfo("No Existen Coincidencias en la base de datos empleados del municipio", "");
+                               }
+       }else {
+       utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
+       }
+        
+    }      
+        
      public void aceptoDialogo1() {
         dia_dialogo1.Limpiar();
         dia_dialogo1.setDialogo(grid1);
@@ -486,6 +537,22 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
 
     public void setSet_acta(SeleccionTabla set_acta) {
         this.set_acta = set_acta;
+    }
+
+    public Tabla getSet_colaborador() {
+        return set_colaborador;
+    }
+
+    public void setSet_colaborador(Tabla set_colaborador) {
+        this.set_colaborador = set_colaborador;
+    }
+
+    public Conexion getCon_postgres() {
+        return con_postgres;
+    }
+
+    public void setCon_postgres(Conexion con_postgres) {
+        this.con_postgres = con_postgres;
     }
     
 }

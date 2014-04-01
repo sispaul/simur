@@ -88,6 +88,8 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_solicitud.getColumna("FECHA_SOLICITUD").setValorDefecto(utilitario.getFechaActual());
         tab_solicitud.getColumna("FECHA_SOLICITUD").setLectura(true);
         tab_solicitud.getColumna("USU_SOLICITUD").setVisible(false);
+        tab_solicitud.getColumna("IDE_TIPO_GESTOR").setVisible(false);
+        tab_solicitud.getColumna("NUMERO_AUTOMOTORES").setVisible(false);
         tab_solicitud.getColumna("IDE_SOLICITUD_PLACA").setNombreVisual("Nro. SOLICITUD");
         tab_solicitud.getColumna("IDE_TIPO_SOLICTUD").setCombo("SELECT IDE_TIPO_SOLICTUD,DESCRIPCION_SOLICITUD FROM TRANS_TIPO_SOLICTUD");
         tab_solicitud.getColumna("IDE_GESTOR").setVisible(false);
@@ -448,6 +450,7 @@ public class pre_ingreso_solicitud extends Pantalla{
      if (tab_solicitud.isFocus()) {
          tab_solicitud.eliminar();
             } else if (tab_detalle.isFocus()) {
+                        ser_Placa.borrarRequisito(Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")));
                         tab_detalle.eliminar();
                      }  
     }
