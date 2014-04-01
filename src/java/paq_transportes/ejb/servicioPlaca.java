@@ -261,7 +261,6 @@ public void guardarhistorial(Integer ide,String ruc,Integer detalle,String cedul
         tab_persona.setSql("SELECT IDE_INGRESO_PLACAS,FECHA_ENVIO_ACTA, FECHA_REGISTRO_ACTA, ANO,\n" +
                             "NUMERO_ACTA,ENTREGADO_ACTA,RECIBIDO_ACTA,USU_INGRESO FROM TRANS_INGRESOS_PLACAS WHERE IDE_INGRESO_PLACAS ="+acta);
         tab_persona.ejecutarSql();
-        
         conexion.desconectar();
         conexion = null;
         return tab_persona;
