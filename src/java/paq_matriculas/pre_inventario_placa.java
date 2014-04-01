@@ -333,6 +333,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
     public void aceptarReporte() {
         rep_reporte.cerrar();
         cal_fechaini.setFechaActual();
+        cal_fechafin.setFechaActual();
         switch (rep_reporte.getNombre()) {
            case "INGRESO ACTA":
                 set_acta.dibujar();
