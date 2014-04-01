@@ -20,9 +20,9 @@ public class pre_tipo_solicitud extends Pantalla{
     public pre_tipo_solicitud() {
         //id a la tabla
         tab_tabla.setId("tab_tabla");
-        tab_tabla.setTabla("trans_tipo_gestor", "ide_tipo_gestor",1);
+        tab_tabla.setTabla("TRANS_TIPO_SOLICTUD", "IDE_TIPO_SOLICTUD",1);
         tab_tabla.setHeader("TIPOS DE SOLICTUD");
-        tab_tabla.getColumna("descripcion_gestor").setMayusculas(true);
+        tab_tabla.getColumna("DESCRIPCION_SOLICITUD").setMayusculas(true);
         tab_tabla.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
