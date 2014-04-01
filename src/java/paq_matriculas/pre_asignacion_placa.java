@@ -235,8 +235,8 @@ Integer identificacion;
         tab_solicitud.getColumna("FECHA_SOLICITUD").setLectura(true);
         tab_solicitud.getColumna("USU_SOLICITUD").setVisible(false);
         tab_solicitud.getColumna("IDE_SOLICITUD_PLACA").setNombreVisual("Nro. SOLICITUD");
-        tab_solicitud.getColumna("IDE_TIPO_GESTOR").setNombreVisual("TIPO DE SOLICITUD");
-        tab_solicitud.getColumna("IDE_TIPO_GESTOR").setCombo("SELECT IDE_TIPO_GESTOR,DESCRIPCION_GESTOR FROM TRANS_TIPO_GESTOR");
+        tab_solicitud.getColumna("IDE_TIPO_SOLICTUD").setNombreVisual("TIPO DE SOLICITUD");
+        tab_solicitud.getColumna("IDE_TIPO_SOLICTUD").setCombo("SELECT IDE_TIPO_SOLICTUD,DESCRIPCION_SOLICITUD FROM TRANS_TIPO_SOLICTUD");
         tab_solicitud.getColumna("IDE_GESTOR").setVisible(false);
         tab_solicitud.agregarRelacion(tab_detalle);
         tab_solicitud.getGrid().setColumns(4);
@@ -257,7 +257,7 @@ Integer identificacion;
         
         tab_detalle.setId("tab_detalle");//DECLARACION DE DETALLE
         tab_detalle.setTabla("TRANS_DETALLE_SOLICITUD_PLACA","IDE_DETALLE_SOLICITUD", 2);
-        tab_detalle.getColumna("IDE_TIPO_VEHICULO").setCombo("SELECT ide_tipo_vehiculo,des_tipo_vehiculo FROM trans_tipo_vehiculo");
+        tab_detalle.getColumna("IDE_TIPO_VEHICULO").setCombo("SELECT ide_tipo_vehiculo,descripcion_vehiculo FROM trans_vehiculo_tipo");
         tab_detalle.getColumna("IDE_TIPO_SERVICIO").setCombo("select ide_tipo_servicio,descripcion_servicio from trans_tipo_servicio");
         tab_detalle.getColumna("IDE_TIPO_VEHICULO").setLectura(true);
         tab_detalle.getColumna("IDE_TIPO_SERVICIO").setLectura(true);

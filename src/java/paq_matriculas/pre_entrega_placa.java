@@ -203,8 +203,8 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         
         set_vehiculo.setId("set_vehiculo");
         set_vehiculo.setHeader("TIPO DE VEHICULO");
-        set_vehiculo.setSql("select ide_tipo_vehiculo,des_tipo_vehiculo from trans_tipo_vehiculo");
-        set_vehiculo.getColumna("des_tipo_vehiculo").setNombreVisual("Vehiculo");
+        set_vehiculo.setSql("select ide_tipo_vehiculo,descripcion_vehiculo from trans_vehiculo_tipo");
+        set_vehiculo.getColumna("descripcion_vehiculo").setNombreVisual("Vehiculo");
         set_vehiculo.setRows(5);
         set_vehiculo.setTipoSeleccion(false);
         set_vehiculo.dibujar();
@@ -287,10 +287,10 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         grid_de.getChildren().add(set_propietario);
         set_propietario.setId("set_propietario");
         set_propietario.setHeader("PROPIETARIOS PARA ENTREGAS");
-        set_propietario.setSql("SELECT d.IDE_DETALLE_SOLICITUD,d.CEDULA_RUC_PROPIETARIO,d.NOMBRE_PROPIETARIO,p.PLACA,v.des_tipo_vehiculo,s.DESCRIPCION_SERVICIO,\n" +
+        set_propietario.setSql("SELECT d.IDE_DETALLE_SOLICITUD,d.CEDULA_RUC_PROPIETARIO,d.NOMBRE_PROPIETARIO,p.PLACA,v.descripcion_vehiculo,s.DESCRIPCION_SERVICIO,\n" +
                                 "d.IDE_SOLICITUD_PLACA,e.DESCRIPCION_ESTADO,a.USU_APROBACION\n" +
                                 "FROM dbo.TRANS_DETALLE_SOLICITUD_PLACA AS d ,dbo.TRANS_PLACA AS p ,dbo.TRANS_TIPO_ESTADO AS e ,dbo.TRANS_APROBACION_PLACA AS a ,\n" +
-                                "dbo.trans_tipo_vehiculo AS v ,dbo.TRANS_TIPO_SERVICIO s\n" +
+                                "dbo.trans_vehiculo_tipo AS v ,dbo.TRANS_TIPO_SERVICIO s\n" +
                                 "WHERE d.IDE_PLACA = p.IDE_PLACA AND p.IDE_TIPO_ESTADO = e.IDE_TIPO_ESTADO AND d.IDE_APROBACION_PLACA = a.IDE_APROBACION_PLACA AND\n" +
                                 "d.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND s.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND d.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO AND\n" +
                                 "e.DESCRIPCION_ESTADO LIKE 'asignada' AND d.CEDULA_RUC_PROPIETARIO LIKE '"+tab_entrega.getValor("CEDULA_RUC_PROPIETARIO")+"'");
@@ -314,7 +314,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
                 tex_usu_in.setValue(tab_dato.getValor("USU_SOLICITUD"));
                 
                 tex_tip_sol.setValue(tab_dato.getValor("DESCRIPCION_GESTOR"));
-                tex_automotor.setValue(tab_dato.getValor("des_tipo_vehiculo"));
+                tex_automotor.setValue(tab_dato.getValor("descripcion_vehiculo"));
                 tex_servicio.setValue(tab_dato.getValor("DESCRIPCION_SERVICIO"));
                 
                 tex_fech_apro.setValue(tab_dato.getValor("FECHA_APROBACION"));
@@ -376,10 +376,10 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         grid_dp.getChildren().add(set_propietario1);
         set_propietario1.setId("set_propietario1");
         set_propietario1.setHeader("PROPIETARIOS PARA ENTREGAS");
-        set_propietario1.setSql("SELECT d.IDE_DETALLE_SOLICITUD,d.CEDULA_RUC_PROPIETARIO,d.NOMBRE_PROPIETARIO,p.PLACA,v.des_tipo_vehiculo,s.DESCRIPCION_SERVICIO,\n" +
+        set_propietario1.setSql("SELECT d.IDE_DETALLE_SOLICITUD,d.CEDULA_RUC_PROPIETARIO,d.NOMBRE_PROPIETARIO,p.PLACA,v.descripcion_vehiculo,s.DESCRIPCION_SERVICIO,\n" +
                                 "d.IDE_SOLICITUD_PLACA,e.DESCRIPCION_ESTADO,a.USU_APROBACION\n" +
                                 "FROM dbo.TRANS_DETALLE_SOLICITUD_PLACA AS d ,dbo.TRANS_PLACA AS p ,dbo.TRANS_TIPO_ESTADO AS e ,dbo.TRANS_APROBACION_PLACA AS a ,\n" +
-                                "dbo.trans_tipo_vehiculo AS v ,dbo.TRANS_TIPO_SERVICIO s\n" +
+                                "dbo.trans_vehiculo_tipo AS v ,dbo.TRANS_TIPO_SERVICIO s\n" +
                                 "WHERE d.IDE_PLACA = p.IDE_PLACA AND p.IDE_TIPO_ESTADO = e.IDE_TIPO_ESTADO AND d.IDE_APROBACION_PLACA = a.IDE_APROBACION_PLACA AND\n" +
                                 "d.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND s.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND d.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO AND\n" +
                                 "e.DESCRIPCION_ESTADO LIKE 'asignada'");
@@ -406,7 +406,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
                 tex_usu_in.setValue(tab_dato.getValor("USU_SOLICITUD"));
                 
                 tex_tip_sol.setValue(tab_dato.getValor("DESCRIPCION_GESTOR"));
-                tex_automotor.setValue(tab_dato.getValor("des_tipo_vehiculo"));
+                tex_automotor.setValue(tab_dato.getValor("descripcion_vehiculo"));
                 tex_servicio.setValue(tab_dato.getValor("DESCRIPCION_SERVICIO"));
                 
                 tex_fech_apro.setValue(tab_dato.getValor("FECHA_APROBACION"));
@@ -495,7 +495,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
         grid_de1.getChildren().add(set_servicio);
         set_servicio.setId("set_servicio");
         set_servicio.setHeader("TIPO DE SERVICIO");
-        set_servicio.setSql("SELECT s.IDE_TIPO_SERVICIO,s.DESCRIPCION_SERVICIO FROM trans_tipo_vehiculo v,TRANS_TIPO_SERVICIO s\n" 
+        set_servicio.setSql("SELECT s.IDE_TIPO_SERVICIO,s.DESCRIPCION_SERVICIO FROM trans_vehiculo_tipo v,TRANS_TIPO_SERVICIO s\n" 
                             +"WHERE s.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND v.ide_tipo_vehiculo ="+set_vehiculo.getValorSeleccionado());
         set_servicio.getColumna("DESCRIPCION_SERVICIO").setNombreVisual("Servicio");
         set_servicio.setRows(10);
