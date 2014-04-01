@@ -13,11 +13,11 @@ import paq_sistema.aplicacion.Pantalla;
  *
  * @author KEJA
  */
-public class pre_tipo_gestor extends Pantalla{
+public class pre_tipo_solicitud extends Pantalla{
 
     private Tabla tab_tabla = new Tabla();
     
-    public pre_tipo_gestor() {
+    public pre_tipo_solicitud() {
         //id a la tabla
         tab_tabla.setId("tab_tabla");
         tab_tabla.setTabla("trans_tipo_gestor", "ide_tipo_gestor",1);
