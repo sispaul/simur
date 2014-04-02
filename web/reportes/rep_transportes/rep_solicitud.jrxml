@@ -24,20 +24,22 @@ req.IDE_DETALLE_REQUISITOS_SOLICITUD,
 req.IDE_DETALLE_SOLICITUD,
 (case when req.CONFIRMAR_REQUISITO = 1 then 'SI' when req.CONFIRMAR_REQUISITO= 0 then 'NO' end ) as confirma,
 r.DECRIPCION_REQUISITO,
-dbo.TRANS_TIPO_SERVICIO.DESCRIPCION_SERVICIO,
-dbo.trans_tipo_vehiculo.des_tipo_vehiculo
+ser.DESCRIPCION_SERVICIO,
+ve.descripcion_vehiculo
 
 FROM
 dbo.TRANS_SOLICITUD_PLACA AS cab ,
 dbo.trans_detalle_solicitud_placa AS det ,
 dbo.trans_detalle_requisitos_solicitud AS req ,
-dbo.TRANS_TIPO_REQUISITO AS r
-INNER JOIN dbo.TRANS_TIPO_SERVICIO ON r.IDE_TIPO_SERVICIO = dbo.TRANS_TIPO_SERVICIO.IDE_TIPO_SERVICIO
-INNER JOIN dbo.trans_tipo_vehiculo ON dbo.TRANS_TIPO_SERVICIO.IDE_TIPO_VEHICULO = dbo.trans_tipo_vehiculo.ide_tipo_vehiculo
+dbo.TRANS_TIPO_REQUISITO AS r ,
+dbo.TRANS_TIPO_SERVICIO ser,
+dbo.trans_vehiculo_tipo ve
 WHERE
 cab.IDE_SOLICITUD_PLACA = det.IDE_SOLICITUD_PLACA AND
 det.IDE_detalle_SOLICITUD = req.IDE_detalle_SOLICITUD AND
 req.IDE_TIPO_REQUISITO = r.IDE_TIPO_REQUISITO  AND
+r.IDE_TIPO_SERVICIO = ser.IDE_TIPO_SERVICIO AND
+ser.IDE_TIPO_VEHICULO = ve.ide_tipo_vehiculo  AND
 cab.FECHA_SOLICITUD = cast ($P{fecha} as date) AND
 cab.CEDULA_RUC_EMPRESA LIKE $P{ruc}
 
@@ -59,7 +61,7 @@ req.IDE_detalle_SOLICITUD ASC]]>
 	<field name="confirma" class="java.lang.String"/>
 	<field name="DECRIPCION_REQUISITO" class="java.lang.String"/>
 	<field name="DESCRIPCION_SERVICIO" class="java.lang.String"/>
-	<field name="des_tipo_vehiculo" class="java.lang.String"/>
+	<field name="descripcion_vehiculo" class="java.lang.String"/>
 	<group name="grupo1">
 		<groupExpression><![CDATA[$F{IDE_SOLICITUD_PLACA}]]></groupExpression>
 		<groupHeader>
@@ -153,7 +155,7 @@ req.IDE_detalle_SOLICITUD ASC]]>
 					<textElement>
 						<font size="8"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{des_tipo_vehiculo}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{descripcion_vehiculo}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement uuid="0ff8c9b4-0849-4801-af68-9aa41383dfa3" x="472" y="26" width="80" height="20"/>
