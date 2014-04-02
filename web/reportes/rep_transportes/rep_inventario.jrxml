@@ -12,13 +12,13 @@ t.FECHA_REGISTRO_ACTA,
 t.ANO,t.NUMERO_ACTA,
 t.ENTREGADO_ACTA,t.RECIBIDO_ACTA,
 p.IDE_PLACA,s.DESCRIPCION_SERVICIO,
-v.des_tipo_vehiculo,s.IDE_TIPO_SERVICIO,
+v.descripcion_vehiculo,s.IDE_TIPO_SERVICIO,
 v.ide_tipo_vehiculo,t.IDE_INGRESO_PLACAS,
 e.DESCRIPCION_ESTADO,r.DESCRIPCION_PLACA
 FROM
 dbo.TRANS_PLACA AS p ,
 dbo.TRANS_INGRESOS_PLACAS AS t ,
-dbo.trans_tipo_vehiculo AS v ,
+dbo.trans_vehiculo_tipo AS v ,
 dbo.TRANS_TIPO_SERVICIO AS s ,
 dbo.TRANS_TIPO_ESTADO AS e,
 dbo.TRANS_TIPO_PLACA r
@@ -41,9 +41,9 @@ ORDER BY p.PLACA ASC]]>
 	<field name="RECIBIDO_ACTA" class="java.lang.String"/>
 	<field name="IDE_PLACA" class="java.lang.Long"/>
 	<field name="DESCRIPCION_SERVICIO" class="java.lang.String"/>
-	<field name="des_tipo_vehiculo" class="java.lang.String"/>
+	<field name="descripcion_vehiculo" class="java.lang.String"/>
 	<field name="IDE_TIPO_SERVICIO" class="java.lang.Long"/>
-	<field name="ide_tipo_vehiculo" class="java.lang.Integer"/>
+	<field name="ide_tipo_vehiculo" class="java.lang.Long"/>
 	<field name="IDE_INGRESO_PLACAS" class="java.lang.Long"/>
 	<field name="DESCRIPCION_ESTADO" class="java.lang.String"/>
 	<field name="DESCRIPCION_PLACA" class="java.lang.String"/>
@@ -142,7 +142,7 @@ ORDER BY p.PLACA ASC]]>
 					<textElement>
 						<font isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{des_tipo_vehiculo}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{descripcion_vehiculo}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement uuid="92440ba7-04c2-4f49-9dcf-dca4c67ded70" x="19" y="6" width="100" height="20" forecolor="#FFFFFF"/>
