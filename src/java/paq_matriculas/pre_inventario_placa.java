@@ -32,36 +32,36 @@ import persistencia.Conexion;
  */
 public class pre_inventario_placa extends  Pantalla{
 
-Integer codigo;
+    Integer codigo;
 
-private Tabla tab_ingreso = new Tabla();
-private Tabla tab_placa = new Tabla();
-private Tabla tab_consulta = new Tabla();
-private Tabla set_vehiculo = new Tabla();
-private Tabla set_servicio = new Tabla();
-private Tabla set_tipo = new Tabla();
-private Tabla set_estado = new Tabla();
-private Tabla set_colaborador = new Tabla();
-private SeleccionTabla set_acta = new SeleccionTabla();
+    private Tabla tab_ingreso = new Tabla();
+    private Tabla tab_placa = new Tabla();
+    private Tabla tab_consulta = new Tabla();
+    private Tabla set_vehiculo = new Tabla();
+    private Tabla set_servicio = new Tabla();
+    private Tabla set_tipo = new Tabla();
+    private Tabla set_estado = new Tabla();
+    private Tabla set_colaborador = new Tabla();
+    private SeleccionTabla set_acta = new SeleccionTabla();
 
-private Panel pan_opcion = new Panel();
-private Efecto efecto = new Efecto();
+    private Panel pan_opcion = new Panel();
+    private Efecto efecto = new Efecto();
 
-private Dialogo dia_dialogoe = new Dialogo();
-private Dialogo dia_dialogoc = new Dialogo();
-private Dialogo dia_dialogop = new Dialogo();
-private Dialogo dia_dialogot = new Dialogo();
-private Dialogo dia_dialogo1 = new Dialogo();
-private Grid grid_de = new Grid();
-private Grid grid_dc = new Grid();
-private Grid gride = new Grid();
-private Grid gridc = new Grid();
-private Grid grid_dp = new Grid();
-private Grid grid_dt = new Grid();
-private Grid grid1 = new Grid();
-private Grid grid_de1 = new Grid();
+    private Dialogo dia_dialogoe = new Dialogo();
+    private Dialogo dia_dialogoc = new Dialogo();
+    private Dialogo dia_dialogop = new Dialogo();
+    private Dialogo dia_dialogot = new Dialogo();
+    private Dialogo dia_dialogo1 = new Dialogo();
+    private Grid grid_de = new Grid();
+    private Grid grid_dc = new Grid();
+    private Grid gride = new Grid();
+    private Grid gridc = new Grid();
+    private Grid grid_dp = new Grid();
+    private Grid grid_dt = new Grid();
+    private Grid grid1 = new Grid();
+    private Grid grid_de1 = new Grid();
 
-private Conexion con_postgres= new Conexion();
+    private Conexion con_postgres= new Conexion();
 
     private Calendario cal_fechaini = new Calendario();
     private Calendario cal_fechafin = new Calendario();
