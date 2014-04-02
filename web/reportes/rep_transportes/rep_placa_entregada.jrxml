@@ -11,7 +11,7 @@
 	<queryString>
 		<![CDATA[SELECT DISTINCT p.CEDULA_RUC_PROPIETARIO,
 d.NOMBRE_PROPIETARIO,d.FECHA_ENTREGA_PLACA,
-v.des_tipo_vehiculo,t.DESCRIPCION_SERVICIO,
+v.descripcion_vehiculo,t.DESCRIPCION_SERVICIO,
 i.DECRIPCION_REQUISITO,
 (case when r.CONFIRMAR_REQUISITO = 1 then 'SI' when r.CONFIRMAR_REQUISITO= 0 then 'NO' end ) as confirma,
 d.NUMERO_FACTURA,s.IDE_SOLICITUD_PLACA,
@@ -21,7 +21,7 @@ d.IDE_TIPO_VEHICULO,d.IDE_TIPO_SERVICIO
 
 FROM
 dbo.TRANS_ENTREGA_PLACA AS p ,dbo.TRANS_DETALLE_SOLICITUD_PLACA AS d ,
-dbo.TRANS_SOLICITUD_PLACA AS s ,dbo.trans_tipo_vehiculo AS v ,
+dbo.TRANS_SOLICITUD_PLACA AS s ,dbo.trans_vehiculo_tipo AS v ,
 dbo.TRANS_TIPO_ESTADO AS e ,dbo.TRANS_TIPO_SERVICIO AS t ,
 dbo.TRANS_DETALLE_REQUISITOS_SOLICITUD AS r ,
 dbo.TRANS_TIPO_REQUISITO AS i ,dbo.TRANS_PLACA AS l,TRANS_SOLICITUD_PLACA h
@@ -48,7 +48,7 @@ order by p.CEDULA_RUC_PROPIETARIO]]>
 	<field name="CEDULA_RUC_PROPIETARIO" class="java.lang.String"/>
 	<field name="NOMBRE_PROPIETARIO" class="java.lang.String"/>
 	<field name="FECHA_ENTREGA_PLACA" class="java.lang.String"/>
-	<field name="des_tipo_vehiculo" class="java.lang.String"/>
+	<field name="descripcion_vehiculo" class="java.lang.String"/>
 	<field name="DESCRIPCION_SERVICIO" class="java.lang.String"/>
 	<field name="DECRIPCION_REQUISITO" class="java.lang.String"/>
 	<field name="confirma" class="java.lang.String"/>
@@ -57,7 +57,7 @@ order by p.CEDULA_RUC_PROPIETARIO]]>
 	<field name="PLACA" class="java.lang.String"/>
 	<field name="CEDULA_PERSONA_RETIRA" class="java.lang.String"/>
 	<field name="NOMBRE_PERSONA_RETIRA" class="java.lang.String"/>
-	<field name="IDE_TIPO_VEHICULO" class="java.lang.Integer"/>
+	<field name="IDE_TIPO_VEHICULO" class="java.lang.Long"/>
 	<field name="IDE_TIPO_SERVICIO" class="java.lang.Long"/>
 	<group name="CEDULA_RUC_PROPIETARIO">
 		<groupExpression><![CDATA[$F{CEDULA_RUC_PROPIETARIO}]]></groupExpression>
@@ -133,7 +133,7 @@ order by p.CEDULA_RUC_PROPIETARIO]]>
 			<textField>
 				<reportElement uuid="ff980b22-06ad-4cb7-bab9-0ef89eb1eaeb" x="379" y="112" width="100" height="20" forecolor="#FFFFFF"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[$F{des_tipo_vehiculo}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{descripcion_vehiculo}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="f3eec74f-e318-4a69-b72c-7029c5f221bc" x="629" y="112" width="100" height="20" forecolor="#FFFFFF"/>
