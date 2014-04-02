@@ -191,7 +191,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
     if (utilitario.validarCedula(set_entrega.getValor("CEDULA_PERSONA_RETIRA"))) {
      if (set_entrega.guardar()) {
             if (guardarPantalla().isEmpty()) {
-                ser_Placa.actualizarDS(Integer.parseInt(set_entrega.getValor("ide_entrega_placa")),consulta,utilitario.StringToByte(set_entrega.getValor("ENTREGA_PLACA")));
+//                ser_Placa.actualizarDS(Integer.parseInt(set_entrega.getValor("ide_entrega_placa")),consulta,utilitario.StringToByte(set_entrega.getValor("ENTREGA_PLACA")));
                 set_entrega.actualizar();
                 utilitario.addUpdate("set_solicitud");
                 ser_Placa.actualizarDE(consulta, set_detalle.getValor("CEDULA_RUC_PROPIETARIO"), Integer.parseInt(set_detalle.getValor("ide_placa")));
