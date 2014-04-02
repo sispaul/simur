@@ -7,8 +7,10 @@ package paq_turismo;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Division;
+import framework.componentes.Efecto;
 import framework.componentes.Etiqueta;
 import framework.componentes.Imagen;
+import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionCalendario;
@@ -35,6 +37,9 @@ private AutoCompletar aut_busca = new AutoCompletar();
 private Reporte rep_reporte = new Reporte();
 private SeleccionFormatoReporte sef_reporte = new SeleccionFormatoReporte();
 
+private Panel pan_opcion = new Panel();
+private Efecto efecto = new Efecto();
+    
     public pre_licencia_anual() {
         
         aut_busca.setId("aut_busca");
@@ -89,9 +94,10 @@ private SeleccionFormatoReporte sef_reporte = new SeleccionFormatoReporte();
         tabp.setStyle("width:100%;overflow: auto;");
         
         tab_licencia.setId("tab_licencia");
-        tab_licencia.setHeader("LICENCIA ANUAL DE FUNCIONAMIENTO");
+//        tab_licencia.setHeader("LICENCIA ANUAL DE FUNCIONAMIENTO");
         tab_licencia.setTabla("TUR_LICENCIA", "CODIGO_LICEN", 2);
-        tab_licencia.getColumna("CODIGO_TIPO").setCombo("select CODIGO_TIPO,DESCRIPCION_TIPO from TUR_TIPO_ESTABLECIMIENTO");
+        tab_licencia.getColumna("CODIGO_TIPO").setCombo("select CODIGO_TIPO,DESCRIPCION_TIPO from TUR_TIPO_ESTABLECIMIENTO ");
+//        tab_licencia.getColumna("CODIGO_TIPO").setValorDefecto(tab_establecimiento.getValor("CODIGO_TIPO"));
         tab_licencia.getColumna("CODIGO_LICEN").setNombreVisual("ID");
         tab_licencia.getColumna("CODIGO_TIPO").setNombreVisual("TIPO ESTABLECIMIENTO");
         tab_licencia.getColumna("NUMERO_LICENCIA").setNombreVisual("Nro. PERMISO");
@@ -105,25 +111,40 @@ private SeleccionFormatoReporte sef_reporte = new SeleccionFormatoReporte();
         PanelTabla tabp1 = new PanelTabla();
         tabp1.setPanelTabla(tab_licencia);
         tab_licencia.setStyle(null);
-        tabp1.setStyle("width:70%;overflow:auto;");
+//        tabp1.setStyle("width:70%;overflow:auto;");
 
         Imagen quinde = new Imagen();
-        quinde.setStyle("text-align:center;position:absolute;top:190px;left:40px;");
+        quinde.setStyle("text-align:center;position:absolute;top:100px;left:490px;");
         quinde.setValue("imagenes/logo.png");
         tabp1.setWidth("100%");
         tabp1.getChildren().add(quinde);
         
+        pan_opcion.setId("pan_opcion");
+        pan_opcion.setStyle("font-size:12px;color:black;text-align:left;");
+	pan_opcion.setTransient(true);
+        pan_opcion.setHeader("LICENCIA ANUAL DE FUNCIONAMIENTO");
+	efecto.setType("drop");
+	efecto.setSpeed(150);
+	efecto.setPropiedad("mode", "'show'");
+	efecto.setEvent("load");
+       
+        pan_opcion.getChildren().add(efecto);
+//        pan_opcion.getChildren().add(quinde);
+        pan_opcion.getChildren().add(tabp1);
         Division div = new Division();
-        div.dividir2(tabp, tabp1, "40%", "h");
+        div.dividir2(tabp, pan_opcion, "40%", "h");
+
         agregarComponente(div);
-        
         tab_consulta.setId("tab_consulta");
         tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
         tab_consulta.setCampoPrimaria("IDE_USUA");
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
     }
-
+//    public void tipo(){
+//        tab_licencia.getColumna("CODIGO_TIPO").setCombo("select CODIGO_TIPO,DESCRIPCION_TIPO from TUR_TIPO_ESTABLECIMIENTO WHERE CODIGO_TIPO ="+tab_establecimiento.getValor("CODIGO_TIPO"));
+//        utilitario.addUpdateTabla(tab_licencia,"CODIGO_TIPO","");//actualiza solo componentes
+//    }
 @Override
     public void aceptarReporte() {
               //los parametros de este reporte
