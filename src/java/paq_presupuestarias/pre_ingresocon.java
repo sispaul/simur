@@ -206,7 +206,7 @@ public class pre_ingresocon extends Pantalla{
 	efecto.setEvent("load");
 
         Imagen quinde = new Imagen();
-        quinde.setStyle("text-align:center;position:absolute;top:190px;right:100px;");
+        quinde.setStyle("text-align:center;position:absolute;top:190px;left:500px;");
         quinde.setValue("imagenes/logo.png");
 //        tabp2.setWidth("100%");
         
