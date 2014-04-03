@@ -58,14 +58,7 @@ public class pre_ingresocon extends Pantalla{
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         con_postgres.NOMBRE_MARCA_BASE = "postgres"; 
         
-        String str_sqlt ="delete from conc_cedula_presupuestaria_fechas";
-        con_postgres.ejecutarSql(str_sqlt);
-        String str_sqlr ="insert into conc_cedula_presupuestaria_fechas (ide_clasificador,pre_codigo,con_ide_clasificador,pre_descripcion,tipo,nivel,ide_funcion,des_funcion,cod_funcion)\n" +
-                            "select ide_clasificador,pre_codigo,con_ide_clasificador,pre_descripcion,tipo,nivel,ide_funcion,des_funcion,cod_funcion\n" +
-                            "from conc_clasificador,pre_funcion_programa\n" +
-                            "order by ide_funcion,pre_codigo";
-        con_postgres.ejecutarSql(str_sqlr);
-        
+         inicioCedula();
          Panel tabp2 = new Panel();
          tabp2.setStyle("font-size:19px;color:black;text-align:center;");
          tabp2.setHeader("CEDULAS PRESUPUESTARIAS INGRESOS Y GASTOS - SALDOS NEGATIVOS");
@@ -177,12 +170,12 @@ public class pre_ingresocon extends Pantalla{
             "1", "INGRESOS CONSOLIDADOS"
         };
         Object filau[] = {
-            "2", "GASTOS PROGRAMADOS"
+            "2", "GASTOS POR PROGRAMAS"
         };
         lista2.add(filat);;
         lista2.add(filau);;
         cmb_licenti.setCombo(lista2);
-        cmb_licenti.eliminarVacio();
+//        cmb_licenti.eliminarVacio();
         cmb_licenti.setMetodo("programas");
         gri_busca.getChildren().add(cmb_licenti);
         
@@ -246,11 +239,23 @@ public class pre_ingresocon extends Pantalla{
         cmb_progam.setCombo("select DISTINCT cod_funcion,des_funcion from  conc_cedula_presupuestaria_fechas WHERE ano_curso = 1900 ORDER BY des_funcion");
         utilitario.addUpdate("cmb_progam");
         }
-        else {
+        else  {
         cmb_progam.setCombo("select DISTINCT cod_funcion,des_funcion from  conc_cedula_presupuestaria_fechas  WHERE tipo ="+cmb_licenti.getValue()+" ORDER BY des_funcion");
         utilitario.addUpdate("cmb_progam");
         cmb_progam.eliminarVacio();
         }
+    }
+    
+    
+    public void inicioCedula(){
+        System.out.println("Ingreso Cedula");
+        String str_sqlt ="delete from conc_cedula_presupuestaria_fechas";
+        con_postgres.ejecutarSql(str_sqlt);
+        String str_sqlr ="insert into conc_cedula_presupuestaria_fechas (ide_clasificador,pre_codigo,con_ide_clasificador,pre_descripcion,tipo,nivel,ide_funcion,des_funcion,cod_funcion)\n" +
+                            "select ide_clasificador,pre_codigo,con_ide_clasificador,pre_descripcion,tipo,nivel,ide_funcion,des_funcion,cod_funcion\n" +
+                            "from conc_clasificador,pre_funcion_programa\n" +
+                            "order by ide_funcion,pre_codigo";
+        con_postgres.ejecutarSql(str_sqlr);
     }
     
     /*
