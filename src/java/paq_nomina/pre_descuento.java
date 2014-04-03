@@ -100,31 +100,30 @@ private Conexion con_postgres= new Conexion();
        
         dia_dialogoDes.setId("dia_dialogoDes");
         dia_dialogoDes.setTitle("PARAMETROS - DECUENTOS"); //titulo
-        dia_dialogoDes.setWidth("30%"); //siempre en porcentajes  ancho
+        dia_dialogoDes.setWidth("50%"); //siempre en porcentajes  ancho
         dia_dialogoDes.setHeight("25%");//siempre porcentaje   alto
         dia_dialogoDes.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_dialogoDes.getBot_aceptar().setMetodo("aceptoDialogo");
         grid_dt.setColumns(4);
         agregarComponente(dia_dialogoDes);
         ///configurar tabla Destino
-         
-//        gri_busca.setColumns(2);
-//        gri_busca.getChildren().add(new Etiqueta("AÑO  :"));
+        
         cmb_anio.setId("cmb_anio");
         cmb_anio.setConexion(con_postgres);
         cmb_anio.setCombo("select ano_curso, ano_curso from conc_ano order by ano_curso");
         
-//        gri_busca.getChildren().add(new Etiqueta("PERIODO  :"));
         cmb_periodo.setId("cmb_periodo");
         cmb_periodo.setConexion(con_postgres);
         cmb_periodo.setCombo("SELECT ide_periodo,per_descripcion FROM cont_periodo_actual ORDER BY ide_periodo");
         
         cmb_descripcion.setId("cmb_descripcion");
         cmb_descripcion.setConexion(con_postgres);
-        cmb_descripcion.getChildren().add(new Etiqueta("DESCRIPCIÓN  :"));
         cmb_descripcion.setCombo("SELECT id_distributivo,descripcion FROM srh_tdistributivo ORDER BY id_distributivo");
 
-
+        cmb_rol.setId("cmb_rol");
+        cmb_rol.setConexion(con_postgres);
+        cmb_rol.setCombo("SELECT ide_col,descripcion_col FROM SRH_COLUMNAS ");
+//        cmb_rol.setCombo("SELECT ide_col,descripcion_col FROM SRH_COLUMNAS WHERE DISTRIBUTIVO="+cmb_descripcion.getValue());
         
          /*
          * CONFIGURACIÓN DE OBJETO REPORTE
@@ -141,8 +140,6 @@ private Conexion con_postgres= new Conexion();
         tab_usuario.setLectura(true);
         tab_usuario.dibujar();
     }
-    
-    
     
       public void completar() {
   
@@ -212,6 +209,7 @@ private Conexion con_postgres= new Conexion();
                 grid_dt.getChildren().add(cmb_anio);
                 grid_dt.getChildren().add(cmb_periodo);
                 grid_dt.getChildren().add(cmb_descripcion);
+                grid_dt.getChildren().add(cmb_rol);
                 dia_dialogoDes.setDialogo(grid_dt);
                 dia_dialogoDes.dibujar();
                break;
