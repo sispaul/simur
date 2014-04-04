@@ -4,6 +4,7 @@
  */
 package paq_nomina.ejb;
 
+import framework.aplicacion.TablaGenerica;
 import javax.ejb.Stateless;
 import paq_sistema.aplicacion.Utilitario;
 import persistencia.Conexion;
@@ -78,6 +79,46 @@ public class mergeDescuento {
         con_postgres = null;
      }
        
+       
+public TablaGenerica periodo(Integer periodo){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT ide_periodo,per_descripcion FROM cont_periodo_actual where ide_periodo="+periodo );
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+ 
+ public TablaGenerica distibutivo(Integer distri){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT id_distributivo,descripcion FROM srh_tdistributivo where id_distributivo="+distri);
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+ 
+ public TablaGenerica columnas(Integer colum){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT ide_col,descripcion_col FROM SRH_COLUMNAS WHERE ide_col="+colum );
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+ 
         private void conectar() {
         if (con_postgres == null) {
             con_postgres = new Conexion();
