@@ -7,13 +7,13 @@ package paq_nomina;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
 import framework.componentes.Combo;
-import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
+import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,21 +36,16 @@ public class pre_descuento extends Pantalla{
     private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
     private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
     private Map p_parametros = new HashMap();
-    
-private Tabla tab_tabla = new Tabla();
-private Tabla tab_consulta = new Tabla();
-private Tabla tab_usuario = new Tabla();
+    private Tabla tab_tabla = new Tabla();
+    private Tabla tab_consulta = new Tabla();
+    private Tabla tab_usuario = new Tabla();
+    private SeleccionTabla set_rol = new SeleccionTabla();
 
 //COMBOS DE SELECICON
+    private Combo cmb_anio = new Combo();
+    private Combo cmb_periodo = new Combo();
+    private Combo cmb_descripcion = new Combo();
 
-private Combo cmb_anio = new Combo();
-private Combo cmb_periodo = new Combo();
-private Combo cmb_rol = new Combo();
-private Combo cmb_descripcion = new Combo();
-
-private Dialogo dia_dialogoDes = new Dialogo();
-private Grid grid_dt = new Grid();
-private Grid gri_busca = new Grid();
 //1.-
  @EJB
 private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(mergeDescuento.class);
@@ -98,33 +93,44 @@ private Conexion con_postgres= new Conexion();
          * CONFIGURACIÓN DE COMBOS
          */
        
-        dia_dialogoDes.setId("dia_dialogoDes");
-        dia_dialogoDes.setTitle("PARAMETROS - DECUENTOS"); //titulo
-        dia_dialogoDes.setWidth("50%"); //siempre en porcentajes  ancho
-        dia_dialogoDes.setHeight("25%");//siempre porcentaje   alto
-        dia_dialogoDes.setResizable(false); //para que no se pueda cambiar el tamaño
-        dia_dialogoDes.getBot_aceptar().setMetodo("aceptoDialogo");
-        grid_dt.setColumns(4);
-        agregarComponente(dia_dialogoDes);
-        ///configurar tabla Destino
+        Grid gri_busca = new Grid();
+        gri_busca.setColumns(2);
         
+        gri_busca.getChildren().add(new Etiqueta("AÑO:"));
         cmb_anio.setId("cmb_anio");
         cmb_anio.setConexion(con_postgres);
         cmb_anio.setCombo("select ano_curso, ano_curso from conc_ano order by ano_curso");
+//        cmb_anio.eliminarVacio();
+        gri_busca.getChildren().add(cmb_anio);
         
+        gri_busca.getChildren().add(new Etiqueta("PERIODO:"));
         cmb_periodo.setId("cmb_periodo");
         cmb_periodo.setConexion(con_postgres);
         cmb_periodo.setCombo("SELECT ide_periodo,per_descripcion FROM cont_periodo_actual ORDER BY ide_periodo");
+//        cmb_periodo.eliminarVacio();
+        gri_busca.getChildren().add(cmb_periodo);
         
+        gri_busca.getChildren().add(new Etiqueta("DESCRIPCIÓN:"));
         cmb_descripcion.setId("cmb_descripcion");
         cmb_descripcion.setConexion(con_postgres);
         cmb_descripcion.setCombo("SELECT id_distributivo,descripcion FROM srh_tdistributivo ORDER BY id_distributivo");
-
-        cmb_rol.setId("cmb_rol");
-        cmb_rol.setConexion(con_postgres);
-        cmb_rol.setCombo("SELECT ide_col,descripcion_col FROM SRH_COLUMNAS ");
-//        cmb_rol.setCombo("SELECT ide_col,descripcion_col FROM SRH_COLUMNAS WHERE DISTRIBUTIVO="+cmb_descripcion.getValue());
+        cmb_descripcion.setMetodo("buscarColumna");
+        gri_busca.getChildren().add(cmb_descripcion);
         
+        /*
+         * CREACION DE TABLA SELECCION PARA COLUMNAS
+         */
+        set_rol.setId("set_rol");
+        set_rol.getTab_seleccion().setConexion(con_postgres);//conexion para seleccion con otra base
+        set_rol.setSeleccionTabla("SELECT ide_col,descripcion_col FROM SRH_COLUMNAS WHERE ide_col=-1", "ide_col");
+        set_rol.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
+        set_rol.getTab_seleccion().setRows(12);
+        set_rol.setRadio();
+        set_rol.getGri_cuerpo().setHeader(gri_busca);
+        set_rol.getBot_aceptar().setMetodo("aceptoDescuentos");
+        set_rol.setHeader("REPORTES DE DESCUENTOS - SELECCIONE PARAMETROS");
+        agregarComponente(set_rol);
+               
          /*
          * CONFIGURACIÓN DE OBJETO REPORTE
          */
@@ -141,6 +147,14 @@ private Conexion con_postgres= new Conexion();
         tab_usuario.dibujar();
     }
     
+        public void buscarColumna() {
+        if (cmb_descripcion.getValue() != null && cmb_descripcion.getValue().toString().isEmpty() == false ) {
+            set_rol.getTab_seleccion().setSql("SELECT ide_col,descripcion_col FROM SRH_COLUMNAS WHERE DISTRIBUTIVO="+cmb_descripcion.getValue());
+            set_rol.getTab_seleccion().ejecutarSql();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar una fecha", "");
+        }
+    }
       public void completar() {
   
          Integer ano;
@@ -198,20 +212,13 @@ private Conexion con_postgres= new Conexion();
     @Override
     public void aceptarReporte() {
         rep_reporte.cerrar();
-//        cal_fechaini.setFechaActual();
-//        cal_fechafin.setFechaActual();
         switch (rep_reporte.getNombre()) {
            case "INCONSISTENCIA EN DESCUENTOS":
             aceptoDescuentos();
                break;
            case "DESCUENTOS ANIO Y PERIODO":
-                dia_dialogoDes.Limpiar();
-                grid_dt.getChildren().add(cmb_anio);
-                grid_dt.getChildren().add(cmb_periodo);
-                grid_dt.getChildren().add(cmb_descripcion);
-                grid_dt.getChildren().add(cmb_rol);
-                dia_dialogoDes.setDialogo(grid_dt);
-                dia_dialogoDes.dibujar();
+                set_rol.dibujar();
+                set_rol.getTab_seleccion().limpiar();
                break;
                 
         }
@@ -226,34 +233,52 @@ private Conexion con_postgres= new Conexion();
                     sef_formato.dibujar();
                break;
                case "DESCUENTOS ANIO Y PERIODO":
-//                   if (set_estado.getValorSeleccionado()!= null) {
-//                      p_parametros = new HashMap();
-//                      p_parametros.put("estado", Integer.parseInt(set_estado.getValorSeleccionado()+""));
-//                      p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
-//                      rep_reporte.cerrar();
-//                      sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-//                      sef_formato.dibujar();
-//                      }else {
-//                        utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
-//                        }
+                   if (set_rol.getValorSeleccionado()!= null) {
+                        TablaGenerica tab_dato = mDescuento.periodo(Integer.parseInt(cmb_periodo.getValue()+""));
+                         if (!tab_dato.isEmpty()) {
+                             TablaGenerica tab_dato1 = mDescuento.distibutivo(Integer.parseInt(cmb_descripcion.getValue()+""));
+                              if (!tab_dato1.isEmpty()) {
+                                 TablaGenerica tab_dato2 = mDescuento.columnas(Integer.parseInt(set_rol.getValorSeleccionado()+""));
+                                 if (!tab_dato2.isEmpty()) {
+                                    p_parametros = new HashMap();
+                                    p_parametros.put("pide_ano",Integer.parseInt(cmb_anio.getValue()+"")); 
+                                    p_parametros.put("periodo",Integer.parseInt(cmb_periodo.getValue()+""));
+                                    p_parametros.put("p_nombre",tab_dato.getValor("per_descripcion")+"");
+                                    p_parametros.put("distributivo",Integer.parseInt(cmb_descripcion.getValue()+""));
+                                    p_parametros.put("descripcion",tab_dato1.getValor("descripcion")+"");
+                                    p_parametros.put("columnas", Integer.parseInt(set_rol.getValorSeleccionado()+""));
+                                    p_parametros.put("descrip",tab_dato2.getValor("descripcion_col")+"");
+                                    p_parametros.put("nom_resp", tab_usuario.getValor("NICK_USUA")+"");
+                                    rep_reporte.cerrar();
+                                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                                    sef_formato.dibujar();
+                                    } else {
+                                        utilitario.agregarMensajeInfo("no existe en la base de datos", "");
+                                        }
+                                } else {
+                                  utilitario.agregarMensajeInfo("no existe en la base de datos", "");
+                                  }
+                            } else {
+                              utilitario.agregarMensajeInfo("no existe en la base de datos", "");
+                              }
+                      }else {
+                        utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
+                        }
                break;
         }
     }
-
-
  
     
     
     @Override
     public void insertar() {
-        utilitario.getTablaisFocus().insertar();
+    utilitario.getTablaisFocus().insertar();
     }
 
     @Override
     public void guardar() {
         tab_tabla.guardar();
-        utilitario.getConexion().guardarPantalla();
-
+            con_postgres.guardarPantalla();
     }
 
     @Override
@@ -293,6 +318,13 @@ private Conexion con_postgres= new Conexion();
         this.p_parametros = p_parametros;
     }
 
+    public SeleccionTabla getSet_rol() {
+        return set_rol;
+    }
+
+    public void setSet_rol(SeleccionTabla set_rol) {
+        this.set_rol = set_rol;
+    }
    
     
 }
