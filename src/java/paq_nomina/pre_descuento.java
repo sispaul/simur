@@ -7,6 +7,7 @@ package paq_nomina;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
 import framework.componentes.Combo;
+import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
@@ -45,7 +46,11 @@ public class pre_descuento extends Pantalla{
     private Combo cmb_anio = new Combo();
     private Combo cmb_periodo = new Combo();
     private Combo cmb_descripcion = new Combo();
-
+// DIALOGO DE ACCIÓN
+    private Dialogo dia_dialogoe = new Dialogo();
+    private Grid grid_de = new Grid();
+    private Grid gride = new Grid();
+  
 //1.-
  @EJB
 private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(mergeDescuento.class);
@@ -80,7 +85,7 @@ private Conexion con_postgres= new Conexion();
         Boton bot2 = new Boton();
         bot2.setValue("MIGRAR DESCUENTO");
         bot2.setIcon("ui-icon-document"); //pone icono de jquery temeroller
-        bot2.setMetodo("migrar");
+        bot2.setMetodo("abrirDialogo");
        bar_botones.agregarBoton(bot2); 
        
         Boton bot3 = new Boton();
@@ -145,6 +150,53 @@ private Conexion con_postgres= new Conexion();
         tab_usuario.setCampoPrimaria("IDE_USUA");
         tab_usuario.setLectura(true);
         tab_usuario.dibujar();
+        
+        //DIALOGO DE CONFIRMACIÓN DE ACCIÓN -DESCUENTOS  
+        dia_dialogoe.setId("dia_dialogoe");
+        dia_dialogoe.setTitle("CONFIRMAR SUBIDA A ROL"); //titulo
+        dia_dialogoe.setWidth("27%"); //siempre en porcentajes  ancho
+        dia_dialogoe.setHeight("18%");//siempre porcentaje   alto 
+        dia_dialogoe.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogoe.getBot_aceptar().setMetodo("migrar");
+        dia_dialogoe.getBot_cancelar().setMetodo("cancelarValores");
+        grid_de.setColumns(4);
+        
+        Etiqueta eti = new Etiqueta();
+        eti.setValue("ADVERTENCIA - EL SIGUIENTE PROCESO AFECTARA ");
+        eti.setStyle("font-size:13px;color:red");
+        Etiqueta eti1 = new Etiqueta();
+        eti1.setValue("AÑO  :");
+        Etiqueta eti4 = new Etiqueta();
+        eti4.setStyle("text-align:center;position:absolute;top:28px;left:60px;");
+        eti4.setValue(utilitario.getAnio(utilitario.getFechaActual()));
+        Etiqueta eti2 = new Etiqueta();
+        eti2.setValue("PERIODO  :");
+        Etiqueta eti5 = new Etiqueta();
+        eti5.setStyle("text-align:center;position:absolute;top:50px;left:84px;");
+        eti5.setValue(utilitario.getMes(utilitario.getFechaActual()));
+        Etiqueta eti6 = new Etiqueta();
+        eti6.setStyle("text-align:center;position:absolute;top:50px;left:104px;");
+        eti6.setValue(utilitario.getNombreMes(utilitario.getMes(utilitario.getFechaActual())));
+        Etiqueta eti3 = new Etiqueta();
+        eti3.setValue("DEL ROL DE PAGOS ");
+        eti3.setStyle("font-size:13px;color:red");
+        
+        dia_dialogoe.setDialogo(eti);
+        dia_dialogoe.setDialogo(eti1);
+        dia_dialogoe.setDialogo(eti4);
+        dia_dialogoe.setDialogo(eti2);
+        dia_dialogoe.setDialogo(eti5);
+        dia_dialogoe.setDialogo(eti6);
+        dia_dialogoe.setDialogo(eti3);
+        agregarComponente(dia_dialogoe);
+
+
+        
+    }
+    
+    public void cancelarValores(){
+        utilitario.agregarMensajeInfo("NINGUN REGISTRO FUE AFECTADO", "");
+        dia_dialogoe.cerrar();
     }
     
         public void buscarColumna() {
@@ -191,6 +243,7 @@ private Conexion con_postgres= new Conexion();
          id_distributivo_roles=Integer.parseInt(tab_consulta.getValor("id_distributivo_roles"));
          ide_columna=Integer.parseInt(tab_consulta.getValor("ide_columna")) ;  
          mDescuento.migrarDescuento(ano,ide_periodo,id_distributivo_roles,ide_columna);
+         utilitario.agregarMensaje("PROCESO REALIZADO CON EXITO", "");
          }
                     
          public void borrar()
@@ -270,7 +323,9 @@ private Conexion con_postgres= new Conexion();
     }
  
     
-    
+    public void abrirDialogo() {
+        dia_dialogoe.dibujar();
+    }
     @Override
     public void insertar() {
     utilitario.getTablaisFocus().insertar();
@@ -325,6 +380,14 @@ private Conexion con_postgres= new Conexion();
 
     public void setSet_rol(SeleccionTabla set_rol) {
         this.set_rol = set_rol;
+    }
+
+    public Dialogo getDia_dialogoe() {
+        return dia_dialogoe;
+    }
+
+    public void setDia_dialogoe(Dialogo dia_dialogoe) {
+        this.dia_dialogoe = dia_dialogoe;
     }
    
     
