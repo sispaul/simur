@@ -202,13 +202,14 @@ private Conexion con_postgres= new Conexion();
 /*
  * CREACION DE REPORTES
  */
-    
+    //llamada a reporte
     @Override
     public void abrirListaReportes() {
         rep_reporte.dibujar();
 
     }
     
+    //llamado para seleccionar el reporte
     @Override
     public void aceptarReporte() {
         rep_reporte.cerrar();
@@ -223,7 +224,7 @@ private Conexion con_postgres= new Conexion();
                 
         }
     }     
-       
+       // dibujo de reporte y envio de parametros
   public void aceptoDescuentos(){
         switch (rep_reporte.getNombre()) {
                case "INCONSISTENCIA EN DESCUENTOS":
