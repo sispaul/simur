@@ -244,10 +244,8 @@ private Conexion con_postgres= new Conexion();
          id_distributivo_roles=Integer.parseInt(tab_consulta.getValor("id_distributivo_roles"));
          ide_columna=Integer.parseInt(tab_consulta.getValor("ide_columna")) ;  
          mDescuento.migrarDescuento(ano,ide_periodo,id_distributivo_roles,ide_columna);
-//         tab.setConexion(con_postgres);
-//         tab.setSql("select count (*) from srh_descuento");
-//         tab.ejecutarSql();
-//         utilitario.agregarMensaje("PROCESO REALIZADO CON EXITO", tab.getValor("count (*)"));
+         utilitario.agregarMensaje("PROCESO REALIZADO CON EXITO", " ");
+         dia_dialogoe.cerrar();
          }
                     
          public void borrar()
