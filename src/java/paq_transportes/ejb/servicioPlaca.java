@@ -152,6 +152,16 @@ public void asigancionPlaca(String usuario){
         conexion = null;
 }
 
+//ENTREGA DE PLACAS
+public void entregaPlaca(String ci,String nom,String cedula,String nome,String coment){
+        String actual="INSERT INTO TRANS_ENTREGA_PLACA (FECHA_ENTREGA_PLACA,CEDULA_RUC_PROPIETARIO,NOMBRE_PROPIETARIO,CEDULA_PERSONA_RETIRA,NOMBRE_PERSONA_RETIRA,USU_ENTREGA)\n" +
+                      "VALUES (" + utilitario.getFormatoFechaSQL(utilitario.getFechaActual()) +",'"+ci+"','"+nom+"','"+cedula+"','"+nome+"','"+coment+"')";
+        conectar();
+        conexion.ejecutarSql(actual);
+        conexion.desconectar();
+        conexion = null;
+}
+
 //GUARDAR AUDITORIA DE PLACAS DESASIGNADAS
 public void guardarhistorial(Integer ide,String ruc,Integer detalle,String cedula,String nome,Integer servicio,String nomb, Integer vehiculo,Integer factura,String coment){
         String actual="INSERT INTO TRANS_QUITAR_ASIGNACION (IDE_SOLICITUD,RUC_CEDULA_EMPRESA,NOMBRE_EMPRESA,IDE_DETALLE,CEDULA_RUC_PROPIETARIO,NOMBRE_PROPIETARIO,\n" +
