@@ -15,10 +15,13 @@ import framework.componentes.Panel;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
+import framework.componentes.Dialogo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ejb.EJB;
+import paq_presupuestaria.ejb.Programas;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
@@ -36,7 +39,6 @@ public class pre_ingresocon extends Pantalla{
     private Combo cmb_niveli = new Combo();
     private Combo cmb_nivelf = new Combo();
     private Combo cmb_licenti = new Combo();
-    private Combo cmb_progam = new Combo();
     
     //Creacion Calendarios
     private Calendario cal_fechain = new Calendario();
@@ -53,12 +55,21 @@ public class pre_ingresocon extends Pantalla{
     //obejto tabla usuario
     private Tabla tab_consulta = new Tabla();
     
+    // DIALOGO DE ACCIÓN
+    private Dialogo dia_dialogoe = new Dialogo();
+    private Grid grid_de = new Grid();
+    private Grid grid_de1 = new Grid();
+    
+    private Tabla set_distribu = new Tabla();
+     @EJB
+    private Programas programas =(Programas) utilitario.instanciarEJB(Programas.class);
+     
     public pre_ingresocon() {
         
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         con_postgres.NOMBRE_MARCA_BASE = "postgres"; 
         
-         inicioCedula();
+//         inicioCedula();
          Panel tabp2 = new Panel();
          tabp2.setStyle("font-size:19px;color:black;text-align:center;");
          tabp2.setHeader("CEDULAS PRESUPUESTARIAS INGRESOS Y GASTOS - SALDOS NEGATIVOS");
@@ -176,18 +187,8 @@ public class pre_ingresocon extends Pantalla{
         lista2.add(filau);;
         cmb_licenti.setCombo(lista2);
 //        cmb_licenti.eliminarVacio();
-        cmb_licenti.setMetodo("programas");
         gri_busca.getChildren().add(cmb_licenti);
-        
-        /*
-         * TIPOS DE GASTOS
-         */
-        gri_busca.getChildren().add(new Etiqueta("PROGRAMAS: "));
-        cmb_progam.setId("cmb_progam");
-        cmb_progam.setConexion(con_postgres);
-//        cmb_progam.setCombo("select DISTINCT cod_funcion,des_funcion from  conc_cedula_presupuestaria_fechas ORDER BY des_funcion");
-        gri_busca.getChildren().add(cmb_progam);
-        
+                
         
         pan_opcion.setId("pan_opcion");
         pan_opcion.setStyle("font-size:12px;color:black;text-align:left;");
@@ -232,30 +233,43 @@ public class pre_ingresocon extends Pantalla{
         tab_consulta.setCampoPrimaria("IDE_USUA");
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
+        
+                //DIALOGO DE CONFIRMACIÓN DE ACCIÓN -DESCUENTOS  
+        dia_dialogoe.setId("dia_dialogoe");
+        dia_dialogoe.setTitle("GASTOS PROGRAMAS"); //titulo
+        dia_dialogoe.setWidth("50%"); //siempre en porcentajes  ancho
+        dia_dialogoe.setHeight("35%");//siempre porcentaje   alto 
+        dia_dialogoe.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogoe.getBot_aceptar().setMetodo("aceptoDialogo");
+        grid_de.setColumns(4);
+        agregarComponente(dia_dialogoe);
+
     }
 
-    public void programas (){
-        if(cmb_licenti.getValue().equals("1")){
-        cmb_progam.setCombo("select DISTINCT cod_funcion,des_funcion from  conc_cedula_presupuestaria_fechas WHERE ano_curso = 1900 ORDER BY des_funcion");
-        utilitario.addUpdate("cmb_progam");
-        }
-        else  {
-        cmb_progam.setCombo("select DISTINCT cod_funcion,des_funcion from  conc_cedula_presupuestaria_fechas  WHERE tipo ="+cmb_licenti.getValue()+" ORDER BY des_funcion");
-        utilitario.addUpdate("cmb_progam");
-        cmb_progam.eliminarVacio();
-        }
+    public void inicioCedula(){
+
+        programas.eiminarIngreso();
+        programas.actualizacionPrograma();
+               programas.eiminarIngreso();
+               programas.insertaIngresos(Integer.parseInt(cmb_ano.getValue()+""), Integer.parseInt(cmb_licenti.getValue()+""), cal_fechafin.getFecha());
+               programas.actualizarIngresos(Integer.parseInt(cmb_licenti.getValue()+""));
+               programas.actualizarDatosIngresos(cal_fechain.getFecha(), cal_fechafin.getFecha(), Integer.parseInt(cmb_ano.getValue()+""), Integer.parseInt(cmb_licenti.getValue()+""));
+               programas.actualizarDatos2();
+               programas.actualizarDatosg3();
+               programas.actualizarDatosg4(Integer.parseInt(cmb_ano.getValue()+""), Integer.parseInt(cmb_licenti.getValue()+""));
     }
     
-    
-    public void inicioCedula(){
-        System.out.println("Ingreso Cedula");
-        String str_sqlt ="delete from conc_cedula_presupuestaria_fechas";
-        con_postgres.ejecutarSql(str_sqlt);
-        String str_sqlr ="insert into conc_cedula_presupuestaria_fechas (ide_clasificador,pre_codigo,con_ide_clasificador,pre_descripcion,tipo,nivel,ide_funcion,des_funcion,cod_funcion)\n" +
-                            "select ide_clasificador,pre_codigo,con_ide_clasificador,pre_descripcion,tipo,nivel,ide_funcion,des_funcion,cod_funcion\n" +
-                            "from conc_clasificador,pre_funcion_programa\n" +
-                            "order by ide_funcion,pre_codigo";
-        con_postgres.ejecutarSql(str_sqlr);
+      //ACTUALIZACIONES PARA OPCION DE GASTOS PROGRAMADOS 
+    public void deleteTablaGastos() { 
+
+        programas.eiminarIngreso();
+        programas.insertarGastos(Integer.parseInt(cmb_ano.getValue()+""), cal_fechafin.getFecha(), Integer.parseInt(cmb_licenti.getValue()+""));
+               programas.actualizarGastos(Integer.parseInt(cmb_licenti.getValue()+""));
+               programas.actualizarGastos1(cal_fechain.getFecha(), cal_fechafin.getFecha(), Integer.parseInt(cmb_ano.getValue()+""), Integer.parseInt(cmb_licenti.getValue()+""));
+               programas.actualizarGastos2(Integer.parseInt(cmb_ano.getValue()+""), Integer.parseInt(cmb_licenti.getValue()+""));
+               programas.actualizarTablaGastos3(Integer.parseInt(cmb_ano.getValue()+""), cal_fechain.getFecha(), cal_fechafin.getFecha(), Integer.parseInt(cmb_licenti.getValue()+""));
+               programas.actualizarTablaGastos4(Integer.parseInt(cmb_licenti.getValue()+""));
+               programas.actualizarTablaGastos5(Integer.parseInt(cmb_licenti.getValue()+""), Integer.parseInt(cmb_ano.getValue()+""));
     }
     
     /*
@@ -273,14 +287,26 @@ public class pre_ingresocon extends Pantalla{
         rep_reporte.cerrar();
         switch (rep_reporte.getNombre()) {
            case "INGRESOS CONSOLIDADOS":
-               deleteTablaIngresos();
+               inicioCedula();
                aceptoDialogo();
                break;
-           case "GASTOS PROGRAMADOS POR TIPO":
-               deleteTablaGastos();
-               aceptoDialogo();
+           case "GASTOS PROGRAMAS POR TIPO":
+               deleteTablaGastos(); 
+               dia_dialogoe.Limpiar();
+                set_distribu.setId("set_distribu");
+                set_distribu.setConexion(con_postgres);
+                set_distribu.setSql("select DISTINCT cod_funcion,cod_funcion as Codigo,des_funcion from  conc_cedula_presupuestaria_fechas  WHERE tipo ="+cmb_licenti.getValue()+" ORDER BY cod_funcion");
+                set_distribu.setRows(13);
+                set_distribu.setTipoSeleccion(false);
+                
+                grid_de.getChildren().add(set_distribu);
+                dia_dialogoe.setDialogo(grid_de);
+                set_distribu.dibujar();
+                dia_dialogoe.dibujar();
+                
+
            break;
-           case "GASTOS PROGRAMADOS TOTAL":
+           case "GASTOS PROGRAMAS TOTAL":
                deleteTablaGastos();
                aceptoDialogo();
            break;
@@ -288,7 +314,7 @@ public class pre_ingresocon extends Pantalla{
         }
     }     
        
-        public void aceptoDialogo(){
+    public void aceptoDialogo(){
         switch (rep_reporte.getNombre()) {
                case "INGRESOS CONSOLIDADOS":
                     p_parametros.put("pide_ano",Integer.parseInt(cmb_ano.getValue()+""));
@@ -300,9 +326,14 @@ public class pre_ingresocon extends Pantalla{
                     p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
                     rep_reporte.cerrar();
                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    System.out.println(p_parametros);
+                    System.out.println(rep_reporte.getPath());
+                    System.out.println(sef_formato);
                     sef_formato.dibujar();
+                    System.out.println(sef_formato);
                break;
-               case "GASTOS PROGRAMADOS POR TIPO":
+               case "GASTOS PROGRAMAS POR TIPO":
+                   if (set_distribu.getValorSeleccionado()!= null) {
                     p_parametros = new HashMap();
                     p_parametros.put("pide_ano",Integer.parseInt(cmb_ano.getValue()+""));
                     p_parametros.put("pide_fechai", cal_fechain.getFecha());
@@ -310,13 +341,16 @@ public class pre_ingresocon extends Pantalla{
                     p_parametros.put("tipo",Integer.parseInt(cmb_licenti.getValue()+"")); 
                     p_parametros.put("pnivel1",Integer.parseInt(cmb_niveli.getValue()+"")); 
                     p_parametros.put("pnivel2",Integer.parseInt(cmb_nivelf.getValue()+""));
-                    p_parametros.put("funcion",cmb_progam.getValue());
+                    p_parametros.put("funcion",Integer.parseInt(set_distribu.getValorSeleccionado()+""));
                     p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
                     rep_reporte.cerrar();
                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                     sef_formato.dibujar();
+                     }else {
+                        utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
+                        }
                break;
-               case "GASTOS PROGRAMADOS TOTAL":
+               case "GASTOS PROGRAMAS TOTAL":
                     p_parametros = new HashMap();
                     p_parametros.put("pide_ano",Integer.parseInt(cmb_ano.getValue()+""));
                     p_parametros.put("pide_fechai", cal_fechain.getFecha());
@@ -332,194 +366,7 @@ public class pre_ingresocon extends Pantalla{
         }
 
     }
-
-    //ACTUALIZACIONES PARA OPCION DE INGRESOS CONSOLIDADOS
-        public void deleteTablaIngresos() { 
-            // Forma el sql para eliminar
-        String str_sql ="delete from conc_cedula_presupuestaria_fechas";
-        con_postgres.ejecutarSql(str_sql);
-        insertarDatosIngresos();
-    }
-   
-     public void insertarDatosIngresos() {
-        // Forma el sql para el ingreso
-        String str_sql1 =       "insert into conc_cedula_presupuestaria_fechas (ide_clasificador,pre_codigo,con_ide_clasificador,pre_descripcion,tipo,ano_curso,nivel,fechaced)" +
-                                "select ide_clasificador,pre_codigo,con_ide_clasificador,pre_descripcion,tipo,'"+Integer.parseInt(cmb_ano.getValue()+"")+"',nivel,'"+cal_fechafin.getFecha()+"' from conc_clasificador" +
-                                " where tipo ='"+Integer.parseInt(cmb_licenti.getValue()+"")+"'order by pre_codigo ";
-
-        con_postgres.ejecutarSql(str_sql1);
-        actualizarDatosIngresos();
-    }   
-             
-    public void actualizarDatosIngresos() {
-        // Forma el sql para actualizacion
-        String str_sql2 = "update conc_cedula_presupuestaria_fechas \n" +
-                           "set reforma1= 0, devengado1=0, pagado1=0, cobrado1=0, compromiso1=0, cobradoc1=0,val_inicial=0 where tipo='"+Integer.parseInt(cmb_licenti.getValue()+"")+"'";
-        con_postgres.ejecutarSql(str_sql2);
-        actualizarDatosIngresos1();
-    } 
-      
-    public void actualizarDatosIngresos1() {
-        // Forma1 el sql para actualizacion
-        String str_sql3 = "update conc_cedula_presupuestaria_fechas set \n" +
-                                    "reforma1 = reforma \n" +
-                                    "from ( select ide_clasificador, ((case when sum(debito) is null then 0 else sum(debito) end) -(case when sum(credito) is null then 0 else sum(credito) end) ) as reforma\n" +
-                                    "from pre_anual a,( select sum (val_reforma_d) as debito,sum(val_reforma_h) as credito,ide_pre_anual  from pre_reforma_mes where fecha_reforma between '"+cal_fechain.getFecha()+"'" +
-                                    " and '"+cal_fechafin.getFecha()+"' group by ide_pre_anual) b where a.ide_pre_anual=b.ide_pre_anual and ano='"+Integer.parseInt(cmb_ano.getValue()+"")+"' and not ide_clasificador is null group by ide_clasificador ) \n" +
-                                    " a where a.ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador; update conc_cedula_presupuestaria_fechas set val_inicial = inicial from \n" +
-                                    " ( select sum (val_presupuestado_i) as inicial, ide_clasificador from pre_anual where  ano='"+Integer.parseInt(cmb_ano.getValue()+"")+"' and not ide_clasificador is null group by ide_clasificador ) a \n" +
-                                    " where a.ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador; update conc_cedula_presupuestaria_fechas  \n" +
-                                    " set cobradoc1= comprometido, devengado1=devengado from ( select b.ide_clasificador,ano,tipo, \n" +
-                                    " sum( (case when cobradoc is null then 0 else cobradoc end ) )as comprometido, \n" +
-                                    " sum((case when devengado is null then 0 else devengado end) ) as devengado from pre_anual a,\n" +
-                                    "  conc_clasificador b,pre_mensual c where a.ide_clasificador=b.ide_clasificador and a.ide_pre_anual = c.ide_pre_anual and ano='"+Integer.parseInt(cmb_ano.getValue()+"")+"'" +
-                                    "  and fecha_ejecucion between '"+cal_fechain.getFecha()+"' and '"+cal_fechafin.getFecha()+"' and tipo= '"+Integer.parseInt(cmb_licenti.getValue()+"")+"' group by b.ide_clasificador,ano,tipo order by tipo ) a \n" +
-                                    "  where a.ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador";
-   con_postgres.ejecutarSql(str_sql3);
-   actualizarDatos2 ();
-    }
-    
-      public void actualizarDatos2 (){
-        String str_sqlg="update conc_cedula_presupuestaria_fechas set reforma1 = reforma \n" +
-                                    "from ( select sum(reforma1) as reforma,con_ide_clasificador \n" +
-                                    "from conc_cedula_presupuestaria_fechas group by con_ide_clasificador ) a where a.con_ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador";  
-    con_postgres.ejecutarSql(str_sqlg);
-    actualizarDatosg3 ();
-    }
-    public void actualizarDatosg3 (){
-        String str_sqlg1="update conc_cedula_presupuestaria_fechas set val_inicial = reforma from ( select sum(val_inicial) as reforma,con_ide_clasificador \n" +
-                                    "from conc_cedula_presupuestaria_fechas group by con_ide_clasificador ) a where a.con_ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador";
-    con_postgres.ejecutarSql(str_sqlg1);
-    actualizarDatosg4 ();
-    }
-
-    public void actualizarDatosg4 (){
-        String str_sqlg2="update conc_cedula_presupuestaria_fechas  set cobradoc1= conbrado, devengado1=devengado \n" +
-                                    "from ( select sum((case when cobradoc1 is null then 0 else cobradoc1 end)) as conbrado, \n" +
-                                    "sum((case when devengado1 is null then 0 else devengado1 end)) as devengado, con_ide_clasificador \n" +
-                                    "from conc_cedula_presupuestaria_fechas  where ano_curso='"+Integer.parseInt(cmb_ano.getValue()+"")+"' and tipo= '"+Integer.parseInt(cmb_licenti.getValue()+"")+"' group by  con_ide_clasificador ) a \n" +
-                                    "where a.con_ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador";
-    con_postgres.ejecutarSql(str_sqlg2);
-    }      
-    
-  //ACTUALIZACIONES PARA OPCION DE GASTOS PROGRAMADOS 
-    public void deleteTablaGastos() { 
-            // Forma el sql para eliminar
-        String str_sql ="delete from conc_cedula_presupuestaria_fechas";
-        con_postgres.ejecutarSql(str_sql);
-        insertarTablaGastos();
-    }
-    public void insertarTablaGastos() { 
-            // Forma el sql para insertar
-        String str_sql1 ="insert into conc_cedula_presupuestaria_fechas (ide_clasificador,pre_codigo,con_ide_clasificador,pre_descripcion,tipo,ano_curso,nivel,\n" +
-                                    "ide_funcion,des_funcion,cod_funcion,fechaced)\n" +
-                                    "select ide_clasificador,pre_codigo,con_ide_clasificador,pre_descripcion,tipo,'"+Integer.parseInt(cmb_ano.getValue()+"")+"',nivel,ide_funcion,des_funcion,cod_funcion,'"+cal_fechafin.getFecha()+"'\n" +
-                                    "from conc_clasificador,pre_funcion_programa\n" +
-                                    "where tipo = '"+Integer.parseInt(cmb_licenti.getValue()+"")+"'" +
-                                    "order by ide_funcion,pre_codigo";
-        con_postgres.ejecutarSql(str_sql1);
-        actualizarTablaGastos();
-    }
-    public void actualizarTablaGastos() { 
-            // Forma el sql para actualizar
-        String str_sql2 ="update conc_cedula_presupuestaria_fechas \n" +
-                                         "set reforma1= 0, devengado1=0, pagado1=0, cobrado1=0, compromiso1=0, cobradoc1=0,val_inicial=0 where tipo= '"+Integer.parseInt(cmb_licenti.getValue()+"")+"'";
-        con_postgres.ejecutarSql(str_sql2);
-        actualizarTablaGastos1();
-    }
-    public void actualizarTablaGastos1() { 
-            // Forma el sql para actualizar 1
-        String str_sql3 ="update conc_cedula_presupuestaria_fechas\n" +
-                                        "set reforma1 = reforma\n" +
-                                        "from (select a.ide_clasificador,sum(reforma) as reforma,ide_funcion\n" +
-                                        "from prec_programas a, (select ide_programa,\n" +
-                                        "((case when sum(debito) is null then 0 else sum(debito) end) -(case when sum(credito) is null then 0 else sum(credito) end) ) as reforma\n" +
-                                        "from pre_anual a,(select sum (val_reforma_d) as debito,sum(val_reforma_h) as credito,ide_pre_anual \n" +
-                                        "from pre_reforma_mes where fecha_reforma between '"+cal_fechain.getFecha()+"' and '"+cal_fechafin.getFecha()+"'\n" +
-                                        "group by ide_pre_anual) b\n" +
-                                        "where a.ide_pre_anual=b.ide_pre_anual\n" +
-                                        "and ano='"+Integer.parseInt(cmb_ano.getValue()+"")+"' and not ide_programa is null\n" +
-                                        "group by ide_programa ) b\n" +
-                                        "where a.ide_programa = b.ide_programa\n" +
-                                        "group by a.ide_clasificador,ide_funcion) a\n" +
-                                        "where a.ide_funcion = conc_cedula_presupuestaria_fechas.ide_funcion and conc_cedula_presupuestaria_fechas.tipo='"+Integer.parseInt(cmb_licenti.getValue()+"")+"' and  a.ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador";
-        con_postgres.ejecutarSql(str_sql3);
-        actualizarTablasGastos2();
-    }
-    public void actualizarTablasGastos2() { 
-            // Forma el sql para actualizar 2
-        String str_sql4 ="update conc_cedula_presupuestaria_fechas\n" +
-                                        "set val_inicial = inicial\n" +
-                                        "from (select ide_clasificador,sum(inicial) as inicial,ide_funcion\n" +
-                                        "from prec_programas a,(select sum (val_presupuestado_i) as inicial, ide_programa\n" +
-                                        "from pre_anual\n" +
-                                        "where  ano='"+Integer.parseInt(cmb_ano.getValue()+"")+"' and not  ide_programa is null\n" +
-                                        "group by ide_programa) b\n" +
-                                        "where a.ide_programa=b.ide_programa\n" +
-                                        "group by ide_clasificador,ide_funcion) a\n" +
-                                        "where a.ide_funcion = conc_cedula_presupuestaria_fechas.ide_funcion and conc_cedula_presupuestaria_fechas.tipo='"+Integer.parseInt(cmb_licenti.getValue()+"")+"' and  a.ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador;";
-        con_postgres.ejecutarSql(str_sql4);
-        actualizarTablaGastos3();
-    }
-    public void actualizarTablaGastos3() { 
-            // Forma el sql para actualizar 3
-        String str_sql5 ="update conc_cedula_presupuestaria_fechas \n" +
-                                        "set compromiso1= comprometido,\n" +
-                                        "devengado1=devengado,\n" +
-                                        "pagado1=pagado\n" +
-                                        "from (select ide_clasificador,sum(comprometido) as comprometido,sum(devengado) as devengado,sum(pagado) as pagado,ide_funcion\n" +
-                                        "from prec_programas a, (select b.ide_programa,ano,\n" +
-                                        "sum( (case when comprometido is null then 0 else comprometido end ) )as comprometido,\n" +
-                                        "sum((case when devengado is null then 0 else devengado end) ) as devengado,\n" +
-                                        "sum((case when pagado is null then 0 else pagado end) ) as pagado\n" +
-                                        "from pre_anual a, prec_programas b,pre_mensual c\n" +
-                                        "where a.ide_programa=b.ide_programa\n" +
-                                        "and a.ide_pre_anual = c.ide_pre_anual and ano='"+Integer.parseInt(cmb_ano.getValue()+"")+"'\n" +
-                                        "and fecha_ejecucion between '"+cal_fechain.getFecha()+"' and '"+cal_fechafin.getFecha()+"'\n" +
-                                        "group by b.ide_programa,ano) b\n" +
-                                        "where a.ide_programa=b.ide_programa\n" +
-                                        "group by ide_clasificador,ide_funcion) a\n" +
-                                        "where a.ide_funcion = conc_cedula_presupuestaria_fechas.ide_funcion \n" +
-                                        "and conc_cedula_presupuestaria_fechas.tipo='"+Integer.parseInt(cmb_licenti.getValue()+"")+"' and a.ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador;";
-        con_postgres.ejecutarSql(str_sql5);
-        actualizarTablaGastos4();
-    }
-    public void actualizarTablaGastos4() { 
-            // Forma el sql para actualizar 4
-        String str_sql6 ="update conc_cedula_presupuestaria_fechas\n" +
-                                        "set reforma1 = reforma\n" +
-                                        "from (select sum(reforma1) as reforma,con_ide_clasificador,ide_funcion,tipo\n" +
-                                        "from conc_cedula_presupuestaria_fechas\n" +
-                                        "group by con_ide_clasificador,ide_funcion,tipo having tipo='"+Integer.parseInt(cmb_licenti.getValue()+"")+"') a\n" +
-                                        "where a.ide_funcion = conc_cedula_presupuestaria_fechas.ide_funcion and conc_cedula_presupuestaria_fechas.tipo=a.tipo \n" +
-                                        "and  a.con_ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador";
-        con_postgres.ejecutarSql(str_sql6);
-        actualizarTablaGastos5();
-    }
-    public void actualizarTablaGastos5() { 
-            // Forma el sql para actualizar 5
-        String str_sql7 ="update conc_cedula_presupuestaria_fechas\n" +
-                                        "set val_inicial = reforma\n" +
-                                        "from (select sum(val_inicial) as reforma,con_ide_clasificador,ide_funcion,tipo\n" +
-                                        "from conc_cedula_presupuestaria_fechas\n" +
-                                        "group by con_ide_clasificador,ide_funcion,tipo having tipo='"+Integer.parseInt(cmb_licenti.getValue()+"")+"') a\n" +
-                                        "where a.ide_funcion = conc_cedula_presupuestaria_fechas.ide_funcion and conc_cedula_presupuestaria_fechas.tipo=a.tipo \n" +
-                                        "and a.con_ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador;\n" +
-                                        "update conc_cedula_presupuestaria_fechas \n" +
-                                        "set compromiso1= comprometido,\n" +
-                                        "devengado1=devengado,\n" +
-                                        "pagado1=pagado\n" +
-                                        "from (select sum((case when compromiso1 is null then 0 else compromiso1 end)) as comprometido,\n" +
-                                        "sum((case when devengado1 is null then 0 else devengado1 end)) as devengado,\n" +
-                                        "sum((case when pagado1 is null then 0 else pagado1 end)) as pagado,\n" +
-                                        "con_ide_clasificador,ide_funcion,tipo\n" +
-                                        "from conc_cedula_presupuestaria_fechas \n" +
-                                        "where ano_curso= '"+Integer.parseInt(cmb_ano.getValue()+"")+"' and tipo= '"+Integer.parseInt(cmb_licenti.getValue()+"")+"'\n" +
-                                        "group by  con_ide_clasificador,ide_funcion,tipo ) a\n" +
-                                        "where a.ide_funcion = conc_cedula_presupuestaria_fechas.ide_funcion and conc_cedula_presupuestaria_fechas.tipo=a.tipo \n" +
-                                        "and a.con_ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador";
-        con_postgres.ejecutarSql(str_sql7);
-    }
+ 
         
     @Override
     public void insertar() {
@@ -597,14 +444,6 @@ public class pre_ingresocon extends Pantalla{
         this.cmb_licenti = cmb_licenti;
     }
 
-    public Combo getCmb_progam() {
-        return cmb_progam;
-    }
-
-    public void setCmb_progam(Combo cmb_progam) {
-        this.cmb_progam = cmb_progam;
-    }
-
     public Calendario getCal_fechain() {
         return cal_fechain;
     }
@@ -619,6 +458,14 @@ public class pre_ingresocon extends Pantalla{
 
     public void setCal_fechafin(Calendario cal_fechafin) {
         this.cal_fechafin = cal_fechafin;
+    }
+
+    public Tabla getSet_distribu() {
+        return set_distribu;
+    }
+
+    public void setSet_distribu(Tabla set_distribu) {
+        this.set_distribu = set_distribu;
     }
     
 }
