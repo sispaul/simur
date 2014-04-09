@@ -129,6 +129,8 @@ public class pre_ingreso_solicitud extends Pantalla{
         tab_detalle.getColumna("FECHA_ENTREGA_PLACA").setVisible(false);
         tab_detalle.getColumna("APROBADO_SOLICITUD").setVisible(false);
         tab_detalle.getColumna("ENTREGADA_PLACA").setVisible(false);
+        tab_detalle.getColumna("CEDULA_PERSONA_RETIRA").setVisible(false);
+        tab_detalle.getColumna("NOMBRE_PERSONA_RETIRA").setVisible(false);
         tab_detalle.getColumna("IDE_DETALLE_SOLICITUD").setNombreVisual("Nro. TRAMITE");
         tab_detalle.getGrid().setColumns(4);
         tab_detalle.setTipoFormulario(true);
