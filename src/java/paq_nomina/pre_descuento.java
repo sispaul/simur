@@ -245,11 +245,11 @@ private Conexion con_postgres= new Conexion();
          dia_dialogoe.cerrar();
 //        con_postgres.desconectar();
 //        con_postgres = null;
-
          }
                     
          public void borrar()
          {
+             
          mDescuento.borrarDescuento();
          tab_tabla.actualizar();
          }
