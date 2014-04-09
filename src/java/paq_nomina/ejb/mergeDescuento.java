@@ -30,7 +30,7 @@ public class mergeDescuento {
     
         String str_sql1;
         str_sql1 = "update srh_descuento set ide_empleado=srh_empleado.cod_empleado "
-                  +"from  srh_empleado where srh_descuento.ANO="+utilitario.getAnio(utilitario.getFechaActual())+" and srh_descuento.IDE_PERIODO="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and "
+                  +"from  srh_empleado where srh_descuento.ANO="+utilitario.getAnio(utilitario.getFechaActual())+" and srh_descuento.IDE_PERIODO="+utilitario.getMes(utilitario.getFechaActual())+" and "
                   +"srh_descuento.ID_DISTRIBUTIVO_ROLES="+id_distributivo_roles+" and "
                   +"srh_descuento.IDE_COLUMNA="+ide_columna+" and srh_empleado.cedula_pass=srh_descuento.cedula";
         conectar();
@@ -45,7 +45,7 @@ public class mergeDescuento {
     
         String str_sql1;
         str_sql1 ="update srh_descuento set ide_empleado_rol=srh_roles.ide_empleado "
-                  +"from sRH_ROLES WHERE sRH_ROLES.ANO="+utilitario.getAnio(utilitario.getFechaActual())+" AND sRH_ROLES.IDE_PERIODO="+(utilitario.getMes(utilitario.getFechaActual())-1)+" AND "
+                  +"from sRH_ROLES WHERE sRH_ROLES.ANO="+utilitario.getAnio(utilitario.getFechaActual())+" AND sRH_ROLES.IDE_PERIODO="+utilitario.getMes(utilitario.getFechaActual())+" AND "
                   +"sRH_ROLES.ID_DISTRIBUTIVO_ROLES="+id_distributivo_roles+" AND sRH_ROLES.IDE_COLUMNAS="+ide_columna+" and "
                   +"srh_roles.ide_empleado=srh_descuento.ide_empleado";  
         conectar();
@@ -68,10 +68,10 @@ public class mergeDescuento {
                 {
         // Forma el sql para el ingreso
     
-        String str_sql4 = "update sRH_ROLES set valor_egreso=srh_descuento.descuento"
+        String str_sql4 = "update SRH_ROLES set valor_egreso=srh_descuento.descuento"
                                 +", valor=srh_descuento.descuento  from srh_descuento"
-                                +" WHERE sRH_ROLES.ANO="+utilitario.getAnio(utilitario.getFechaActual())+" AND sRH_ROLES.IDE_PERIODO="+(utilitario.getMes(utilitario.getFechaActual())-1)+" AND"
-                                +" sRH_ROLES.ID_DISTRIBUTIVO_ROLES="+id_distributivo_roles+" AND sRH_ROLES.IDE_COLUMNAS="+ide_columna+" and "
+                                +" WHERE SRH_ROLES.ANO="+utilitario.getAnio(utilitario.getFechaActual())+" AND SRH_ROLES.IDE_PERIODO="+utilitario.getMes(utilitario.getFechaActual())+" AND"
+                                +" SRH_ROLES.ID_DISTRIBUTIVO_ROLES="+id_distributivo_roles+" AND SRH_ROLES.IDE_COLUMNAS="+ide_columna+" and "
                                 +"srh_roles.ide_empleado=srh_descuento.ide_empleado";
         conectar();
         con_postgres.ejecutarSql(str_sql4);

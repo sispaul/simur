@@ -40,7 +40,6 @@ public class pre_descuento extends Pantalla{
     private Tabla tab_tabla = new Tabla();
     private Tabla tab_consulta = new Tabla();
     private Tabla tab_usuario = new Tabla();
-    private Tabla tab = new Tabla();
     private SeleccionTabla set_rol = new SeleccionTabla();
 
 //COMBOS DE SELECICON
@@ -50,7 +49,6 @@ public class pre_descuento extends Pantalla{
 // DIALOGO DE ACCIÓN
     private Dialogo dia_dialogoe = new Dialogo();
     private Grid grid_de = new Grid();
-    private Grid gride = new Grid();
   
 //1.-
  @EJB
@@ -189,9 +187,8 @@ private Conexion con_postgres= new Conexion();
         dia_dialogoe.setDialogo(eti5);
         dia_dialogoe.setDialogo(eti6);
         dia_dialogoe.setDialogo(eti3);
+        utilitario.addUpdate("tab_tabla");
         agregarComponente(dia_dialogoe);
-
-
         
     }
     
@@ -226,16 +223,16 @@ private Conexion con_postgres= new Conexion();
         mDescuento.actualizarDescuento(ano, ide_periodo, id_distributivo_roles, ide_columna);
         mDescuento.actualizarDescuento1(ano, ide_periodo, id_distributivo_roles, ide_columna);
         tab_tabla.actualizar();
-        
+//        con_postgres.desconectar();
+//        con_postgres = null;
         }
       
-       public void migrar(){                     
+       public void migrar(){  
+
          Integer ano;
          Integer ide_periodo;
          Integer id_distributivo_roles;
          Integer ide_columna;
-                 
-         
          tab_consulta.setConexion(con_postgres);
          tab_consulta.setSql("select ano,ide_periodo,id_distributivo_roles,ide_columna from srh_descuento");
          tab_consulta.ejecutarSql();
@@ -246,6 +243,9 @@ private Conexion con_postgres= new Conexion();
          mDescuento.migrarDescuento(ano,ide_periodo,id_distributivo_roles,ide_columna);
          utilitario.agregarMensaje("PROCESO REALIZADO CON EXITO", " ");
          dia_dialogoe.cerrar();
+//        con_postgres.desconectar();
+//        con_postgres = null;
+
          }
                     
          public void borrar()
