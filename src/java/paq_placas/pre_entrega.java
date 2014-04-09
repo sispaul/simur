@@ -126,7 +126,6 @@ public class pre_entrega extends Pantalla{
     }
 
     public void abrirBusqueda() {
-
         set_solicitud.dibujar();
         txt_buscar.limpiar();
         set_solicitud.getTab_seleccion().limpiar();
@@ -178,7 +177,7 @@ public class pre_entrega extends Pantalla{
         tab_detalle.getColumna("IDE_TIPO_VEHICULO").setCombo("SELECT IDE_TIPO_VEHICULO,DESCRIPCION_VEHICULO FROM TRANS_VEHICULO_TIPO");
         tab_detalle.getColumna("IDE_TIPO_SERVICIO").setCombo("SELECT IDE_TIPO_SERVICIO,DESCRIPCION_SERVICIO FROM TRANS_TIPO_SERVICIO");
         tab_detalle.getColumna("IDE_PLACA").setCombo("SELECT IDE_PLACA,PLACA FROM TRANS_PLACA");
-        tab_detalle.getColumna("CEDULA_RUC_RETIRA").setMetodoChange("aceptoretiro");
+        tab_detalle.getColumna("CEDULA_PERSONA_RETIRA").setMetodoChange("aceptoretiro");
         tab_detalle.setTipoFormulario(true);
         tab_detalle.getGrid().setColumns(4);
         tab_detalle.dibujar();
