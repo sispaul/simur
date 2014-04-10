@@ -207,7 +207,7 @@ Integer identificacion;
             aut_busca.setValor(set_solicitud.getValorSeleccionado());
             set_solicitud.cerrar();
             dibujarPanel();
-            utilitario.addUpdate("aut_empresas,pan_opcion");
+            utilitario.addUpdate("aut_busca,pan_opcion");
         } else {
             utilitario.agregarMensajeInfo("Debe seleccionar una empresa", "");
         }
