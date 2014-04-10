@@ -326,9 +326,6 @@ public class pre_ingresocon extends Pantalla{
                     p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
                     rep_reporte.cerrar();
                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                    System.out.println(p_parametros);
-                    System.out.println(rep_reporte.getPath());
-                    System.out.println(sef_formato);
                     sef_formato.dibujar();
                     System.out.println(sef_formato);
                break;
