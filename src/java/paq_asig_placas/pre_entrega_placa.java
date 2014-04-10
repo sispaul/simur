@@ -211,7 +211,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
                
         tab_entrega.setId("tab_entrega");
         tab_entrega.setTabla("trans_entrega_placa", "ide_entrega_placa", 1);
-        tab_entrega.getColumna("CEDULA_RUC_PROPIETARIO").setMetodoChange("aceptarPlaca");
+//        tab_entrega.getColumna("CEDULA_RUC_PROPIETARIO").setMetodoChange("aceptarPlaca");
         tab_entrega.getColumna("FECHA_ENTREGA_PLACA ").setValorDefecto(utilitario.getFechaActual());
         tab_entrega.getColumna("FECHA_ENTREGA_PLACA ").setLectura(true);
         tab_entrega.getColumna("USU_ENTREGA").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
@@ -384,6 +384,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
                                 "d.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND s.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND d.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO AND\n" +
                                 "e.DESCRIPCION_ESTADO LIKE 'asignada'");
         set_propietario1.getColumna("NOMBRE_PROPIETARIO").setFiltro(true);
+        set_propietario1.getColumna("CEDULA_RUC_PROPIETARIO").setFiltro(true);
         set_propietario1.setRows(10);
         set_propietario1.setTipoSeleccion(false);
         dia_dialogop.setDialogo(grid_dp);
@@ -396,6 +397,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
             TablaGenerica tab_dato = ser_Placa.getEntrega(Integer.parseInt(set_propietario1.getValorSeleccionado()));
             
             if (!tab_dato.isEmpty()) {
+                tab_entrega.insertar();
                 // Cargo la información de la base de datos maestra   
                 tab_entrega.setValor("NOMBRE_PROPIETARIO", tab_dato.getValor("NOMBRE_PROPIETARIO"));
                 tab_entrega.setValor("CEDULA_RUC_PROPIETARIO", tab_dato.getValor("CEDULA_RUC_PROPIETARIO"));
@@ -430,6 +432,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
                 utilitario.addUpdate("tab_entrega");
                 utilitario.addUpdate("pan_opcion");
                 dia_dialogop.cerrar();
+                
             } else {
                 utilitario.agregarMensajeInfo("no existe en la base de datos", "");
             }
@@ -512,7 +515,7 @@ private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servic
     
     @Override
     public void insertar() {
-      tab_entrega.insertar();
+//      tab_entrega.insertar();
     }
 
     @Override
