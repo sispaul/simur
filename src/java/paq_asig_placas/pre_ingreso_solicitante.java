@@ -179,7 +179,7 @@ public class pre_ingreso_solicitante extends Pantalla{
          grid_en.getChildren().add(new Etiqueta("SELECCIONE GESTOR"));
         agregarComponente(dia_dialogoEN);
         
-                 /*
+        /*
          * CONFIGURACIÓN DE OBJETO REPORTE
          */
         bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
@@ -187,7 +187,7 @@ public class pre_ingreso_solicitante extends Pantalla{
         sef_formato.setId("sef_formato");
         agregarComponente(sef_formato);
         
-               ///configurar la tabla Seleccion Destino
+         ///configurar la tabla Seleccion Destino
         //Configurando el dialogo
         dia_dialogoDes.setId("dia_dialogoDes");
         dia_dialogoDes.setTitle("SOLICITUD - INGRESADA"); //titulo
@@ -311,7 +311,6 @@ public class pre_ingreso_solicitante extends Pantalla{
         set_colaborador1.dibujar();
         dia_dialogoc1.dibujar();
        }    
-    
     
     public void aceptoColaborador(){
      if (set_colaborador.getValorSeleccionado()!= null) {
