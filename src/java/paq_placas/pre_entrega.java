@@ -7,7 +7,6 @@ package paq_placas;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
-import framework.componentes.Calendario;
 import framework.componentes.Division;
 import framework.componentes.Efecto;
 import framework.componentes.Etiqueta;
@@ -352,9 +351,8 @@ String cedula,factura;
     } 
        
    public void aceptoretiro(){
-       System.err.println("Ingresando");
+
          if (utilitario.validarCedula(tab_detalle.getValor("CEDULA_PERSONA_RETIRA"))) {
-             System.out.println("Buscando");
             TablaGenerica tab_dato = serviciobusqueda.getPersona(tab_detalle.getValor("CEDULA_PERSONA_RETIRA"));
             if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra   
@@ -429,7 +427,7 @@ String cedula,factura;
                 // Cargo la información de la base de datos maestra   
                 ser_Placa.actualizarDS(Integer.parseInt(tab_dato.getValor("IDE_ENTREGA_PLACA")),consulta);
                 utilitario.addUpdate("tab_detalle");
-//                actualizarDE();
+                actualizarDE();
             } else {
                 utilitario.agregarMensajeInfo("Proceso no ejcutado no encuentra ide de entrega", "");
             }
@@ -519,6 +517,30 @@ String cedula,factura;
 
     public void setSet_solicitud(SeleccionTabla set_solicitud) {
         this.set_solicitud = set_solicitud;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSef_formato() {
+        return sef_formato;
+    }
+
+    public void setSef_formato(SeleccionFormatoReporte sef_formato) {
+        this.sef_formato = sef_formato;
+    }
+
+    public Map getP_parametros() {
+        return p_parametros;
+    }
+
+    public void setP_parametros(Map p_parametros) {
+        this.p_parametros = p_parametros;
     }
     
 }

@@ -14,6 +14,7 @@ import framework.componentes.Division;
 import framework.componentes.Efecto;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
+import framework.componentes.ItemMenu;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
@@ -144,6 +145,13 @@ public class pre_ingreso_solicitante extends Pantalla{
         tabp3.getMenuTabla().getItem_insertar().setRendered(false);//nucontextual().setrendered(false);
         tabp3.getMenuTabla().getItem_actualizar().setRendered(false);//nucontextual().setrendered(false);
         tabp3.setPanelTabla(tab_requisito);
+        
+        ItemMenu itm_actualizar = new ItemMenu();
+        itm_actualizar.setValue("Guardar");
+        itm_actualizar.setIcon("ui-icon-refresh");
+        itm_actualizar.setMetodo("Actualizar");
+         
+        tabp3.getMenuTabla().getChildren().add(itm_actualizar);
         
         Division div_division = new Division();
         div_division.setId("div_division");
@@ -282,6 +290,7 @@ public class pre_ingreso_solicitante extends Pantalla{
          */
         
    public void ingresoRequisitos() {
+       System.out.println("Holas");
        ser_Placa.insertarRequisito(Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")),Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")), Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")));
        tab_requisito.actualizar();       
     }
