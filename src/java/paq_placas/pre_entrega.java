@@ -7,6 +7,7 @@ package paq_placas;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
+import framework.componentes.Calendario;
 import framework.componentes.Division;
 import framework.componentes.Efecto;
 import framework.componentes.Etiqueta;
@@ -62,6 +63,8 @@ String cedula,factura;
     private Map p_parametros = new HashMap();
     
     private Tabla tab_detalle = new Tabla();
+    private Tabla tab_consulta = new Tabla();
+    
     private SeleccionTabla set_solicitud = new SeleccionTabla();
 
     private Texto txt_buscar = new Texto();
@@ -76,6 +79,7 @@ String cedula,factura;
     public pre_entrega() {
                 bar_botones.quitarBotonInsertar();
 		bar_botones.quitarBotonEliminar();
+                bar_botones.quitarBotonGuardar();
 		bar_botones.quitarBotonsNavegacion();
         
         /*
@@ -154,6 +158,12 @@ String cedula,factura;
         agregarComponente(rep_reporte); //2 agregar el listado de reportes
         sef_formato.setId("sef_formato");
         agregarComponente(sef_formato);
+        
+        tab_consulta.setId("tab_consulta");
+        tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
+        tab_consulta.setCampoPrimaria("IDE_USUA");
+        tab_consulta.setLectura(true);
+        tab_consulta.dibujar();
     }
     
         public void buscarEmpresa() {
@@ -230,12 +240,15 @@ String cedula,factura;
         PanelTabla pat_panel=new PanelTabla();
         pat_panel.getMenuTabla().getItem_buscar().setRendered(false);//nucontextual().setrendered(false);
         pat_panel.getMenuTabla().getItem_actualizar().setRendered(false);//nucontextual().setrendered(false);
-        pat_panel.setPanelTabla(tab_detalle);
+        
         
         ItemMenu itm_actualizar = new ItemMenu();
-        itm_actualizar.setValue("Entrega");
+        itm_actualizar.setValue("Guardar");
         itm_actualizar.setIcon("ui-icon-refresh");
-        itm_actualizar.setMetodo("Entrega");
+        itm_actualizar.setMetodo("ejeMetodo");
+         
+        pat_panel.getMenuTabla().getChildren().add(itm_actualizar);
+        pat_panel.setPanelTabla(tab_detalle);
         
                 /*
          * CREACION DE DE CAMPOS QUE MOSTRARAN LOS DATOS EN GRID DENTRO DE UN PANEL
@@ -338,13 +351,15 @@ String cedula,factura;
         utilitario.addUpdate("pan_opcion");
     } 
        
-            public void aceptoretiro(){
+   public void aceptoretiro(){
+       System.err.println("Ingresando");
          if (utilitario.validarCedula(tab_detalle.getValor("CEDULA_PERSONA_RETIRA"))) {
+             System.out.println("Buscando");
             TablaGenerica tab_dato = serviciobusqueda.getPersona(tab_detalle.getValor("CEDULA_PERSONA_RETIRA"));
             if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra   
                 tab_detalle.setValor("NOMBRE_PERSONA_RETIRA", tab_dato.getValor("nombre"));
-                utilitario.addUpdate("tab_entrega");
+                utilitario.addUpdate("tab_detalle");
                 
             } else {
                 utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ciudadania del municipio", "");
@@ -373,7 +388,7 @@ String cedula,factura;
                 tex_usu_in.setValue(tab_dato.getValor("USU_SOLICITUD"));
                 
                 tex_fech_apro.setValue(tab_dato.getValor("FECHA_APROBACION"));
-                tex_placa.setValue(tab_dato.getValor("PLACA"));
+                tex_placa.setValue(tab_dato.getValor("DESCRIPCION_SOLICITUD"));
                 tex_usu_ap.setValue(tab_dato.getValor("USU_APROBACION"));
                 
                 eti_etiqueta.setStyle("font-size:25px;color:black;text-align:center;");
@@ -400,10 +415,76 @@ String cedula,factura;
        }
      }       
             
-     public void Entrega(){
+         public void ejeMetodo(){
+             ser_Placa.entregaPlaca(tab_detalle.getValor("CEDULA_RUC_PROPIETARIO"), tab_detalle.getValor("NOMBRE_PROPIETARIO"), tab_detalle.getValor("CEDULA_PERSONA_RETIRA"), 
+             tab_detalle.getValor("NOMBRE_PERSONA_RETIRA"), tab_consulta.getValor("NICK_USUA"), Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")));
+             utilitario.agregarMensaje("Guardado Correctamente ", "");
+             ejeGuardar();
+         }
+    
          
-     }
-            
+    public void ejeGuardar(){
+        TablaGenerica tab_dato = ser_Placa.getIDEntrega(Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")));
+            if (!tab_dato.isEmpty()) {
+                // Cargo la información de la base de datos maestra   
+                ser_Placa.actualizarDS(Integer.parseInt(tab_dato.getValor("IDE_ENTREGA_PLACA")),consulta);
+                utilitario.addUpdate("tab_detalle");
+//                actualizarDE();
+            } else {
+                utilitario.agregarMensajeInfo("Proceso no ejcutado no encuentra ide de entrega", "");
+            }
+    }   
+         
+    public void actualizarDE(){
+        ser_Placa.actualizarDE(consulta, cedula, placa);
+    }
+    
+        @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+
+    }
+    
+    @Override
+    public void aceptarReporte() {
+        rep_reporte.cerrar();
+        switch (rep_reporte.getNombre()) {
+           case "ENTREGA PLACA":
+               aceptoDialogo();
+               break;       
+           case "REPORTE DIARIO ENTREGA PLACA":
+               aceptoDialogo();
+               break;
+                
+        }
+    }     
+       
+        public void aceptoDialogo(){
+        switch (rep_reporte.getNombre()) {
+               case "ENTREGA PLACA":
+                      p_parametros = new HashMap();
+                      p_parametros.put("cedula", tab_detalle.getValor("CEDULA_RUC_PROPIETARIO")+"");
+                      p_parametros.put("vehiculo", vehiculo);
+                      p_parametros.put("servicio", servicio);
+                      p_parametros.put("factura", factura);
+                      p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
+                      rep_reporte.cerrar();
+                      sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                      sef_formato.dibujar();
+               break;
+               case "REPORTE DIARIO ENTREGA PLACA":
+                      p_parametros = new HashMap();
+                      p_parametros.put("pide_fechai", utilitario.getFechaActual());
+                      p_parametros.put("pide_fechaf", utilitario.getFechaActual());
+                      p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
+                      rep_reporte.cerrar();
+                      sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                      sef_formato.dibujar();
+               break;                   
+        }
+    }
+    
+    
     @Override
     public void insertar() {
     }
