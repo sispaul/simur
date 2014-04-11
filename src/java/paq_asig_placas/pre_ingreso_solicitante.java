@@ -357,6 +357,7 @@ public class pre_ingreso_solicitante extends Pantalla{
 //        cal_fechaini.setFechaActual();
         switch (rep_reporte.getNombre()) {
            case "SOLICITUD MATRICULA":
+               System.out.println(rep_reporte.getNombre());
                aceptoDialogo();
                break;
            case "SOLICITUD MATRICULA FECHA":

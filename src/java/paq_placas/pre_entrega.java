@@ -119,15 +119,7 @@ String cedula,factura;
 	efecto1.setPropiedad("mode", "'show'");
 	efecto1.setEvent("load");
         pan_opcion.getChildren().add(efecto1);
-        contruirMenu();
-        Division div_division = new Division();
-        div_division.setId("div_division");
-        div_division.dividir2(pam_menu, pan_opcion, "10%", "V");
-        div_division.getDivision1().setCollapsible(true);
-        div_division.getDivision1().setHeader("TRANSPORTES");
-        agregarComponente(div_division);
-        dibujarDetalle();
-        
+                
         /*Boton para asignacion de estados*/
         Grid gri_busca = new Grid();
         gri_busca.setColumns(2);    
@@ -157,6 +149,15 @@ String cedula,factura;
         agregarComponente(rep_reporte); //2 agregar el listado de reportes
         sef_formato.setId("sef_formato");
         agregarComponente(sef_formato);
+        
+        contruirMenu();
+        Division div_division = new Division();
+        div_division.setId("div_division");
+        div_division.dividir2(pam_menu, pan_opcion, "10%", "V");
+        div_division.getDivision1().setCollapsible(true);
+        div_division.getDivision1().setHeader("TRANSPORTES");
+        agregarComponente(div_division);
+        dibujarDetalle();
         
         tab_consulta.setId("tab_consulta");
         tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
@@ -474,7 +475,7 @@ String cedula,factura;
                       p_parametros = new HashMap();
                       p_parametros.put("pide_fechai", utilitario.getFechaActual());
                       p_parametros.put("pide_fechaf", utilitario.getFechaActual());
-                      p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
+                      p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
                       rep_reporte.cerrar();
                       sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                       sef_formato.dibujar();
