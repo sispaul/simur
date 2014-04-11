@@ -36,6 +36,7 @@ import paq_transportes.ejb.servicioPlaca;
  * @author KEJA
  */
 public class pre_ingreso_solicitante extends Pantalla{
+    
     // DELCARACION OBJETOS PANEL
     private Panel pan_opcion1 = new Panel();
     private Efecto efecto1 = new Efecto();
@@ -49,6 +50,7 @@ public class pre_ingreso_solicitante extends Pantalla{
     private Tabla set_colaborador = new Tabla();
     private Tabla set_colaborador1 = new Tabla();
     private SeleccionTabla set_solicitud = new SeleccionTabla();
+    
     //DECLARACION OBJETO DIALOGO
     private Dialogo dia_dialogoEN = new Dialogo();
     private Dialogo dia_dialogoe = new Dialogo();
@@ -63,7 +65,6 @@ public class pre_ingreso_solicitante extends Pantalla{
     private Grid grid_dc1 = new Grid();
     private Grid gridc1 = new Grid();
     
-    private Texto txt_ced_ruc = new Texto();
     private Combo cmb_estado = new Combo();
     private Calendario cal_fechaini = new Calendario();
     private Calendario cal_fechafin = new Calendario();
