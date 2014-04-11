@@ -80,7 +80,6 @@ String cedula,factura;
 		bar_botones.quitarBotonEliminar();
                 bar_botones.quitarBotonGuardar();
 		bar_botones.quitarBotonsNavegacion();
-        
         /*
          * Creación de Botones; Busqueda/Limpieza
          */
@@ -181,6 +180,21 @@ String cedula,factura;
 
     }
 
+     public void buscarNombres() {
+        if (txt_buscar.getValue() != null && txt_buscar.getValue().toString().isEmpty() == false) {
+            set_solicitud.getTab_seleccion().setSql("SELECT d.IDE_DETALLE_SOLICITUD,d.CEDULA_RUC_PROPIETARIO,d.NOMBRE_PROPIETARIO,d.IDE_PLACA,d.NUMERO_FACTURA,\n" +
+                                                    "d.IDE_SOLICITUD_PLACA,d.IDE_TIPO_SERVICIO,d.IDE_APROBACION_PLACA,\n" +
+                                                    "d.IDE_TIPO_VEHICULO,d.APROBADO_SOLICITUD\n" +
+                                                    "FROM TRANS_DETALLE_SOLICITUD_PLACA d,TRANS_PLACA p,TRANS_TIPO_ESTADO e\n" +
+                                                    "WHERE d.IDE_PLACA = p.IDE_PLACA AND p.IDE_TIPO_ESTADO = e.IDE_TIPO_ESTADO AND\n" +
+                                                    "e.DESCRIPCION_ESTADO LIKE 'asignada' AND d.NOMBRE_PROPIETARIO LIKE'" + txt_buscar.getValue() + "'");
+            set_solicitud.getTab_seleccion().ejecutarSql();
+        } else {
+            utilitario.agregarMensajeInfo("Debe ingresar un valor en el texto", "");
+        }
+
+    }    
+        
     public void abrirBusqueda() {
         set_solicitud.dibujar();
         txt_buscar.limpiar();
@@ -335,7 +349,6 @@ String cedula,factura;
         utilitario.addUpdate("aut_busca");
     }
   
-   
     public void filtrarSolicitud(SelectEvent evt) {
         //Filtra el cliente seleccionado en el autocompletar
         aut_busca.onSelect(evt);
