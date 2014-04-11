@@ -88,7 +88,6 @@ public class pre_ingreso_solicitante extends Pantalla{
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
         
-        
         tab_solicitud.setId("tab_solicitud");
         tab_solicitud.setTabla("TRANS_SOLICITUD_PLACA", "IDE_SOLICITUD_PLACA", 1);
         tab_solicitud.getColumna("CEDULA_RUC_EMPRESA").setMetodoChange("cargarEmpresa");
