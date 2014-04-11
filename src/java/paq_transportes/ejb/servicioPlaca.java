@@ -199,7 +199,20 @@ public void borrarRequisito(Integer requisito){
         conectar();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(conexion);
-        tab_persona.setSql("SELECT CEDULA_GESTOR,NOMBRE_GESTOR,IDE_GESTOR FROM TRANS_GESTOR WHERE CEDULA_GESTOR='" + iden+ "'");
+        tab_persona.setSql("SELECT CEDULA_GESTOR,NOMBRE_GESTOR,IDE_GESTOR FROM TRANS_GESTOR WHERE ESTADO = 1 AND CEDULA_GESTOR='" + iden+ "'");
+        tab_persona.ejecutarSql();
+        
+        conexion.desconectar();
+        conexion = null;
+        return tab_persona;
+    } 
+   
+      public TablaGenerica getGestor2(Integer iden) {
+        //Busca a una empresa en la tabla maestra_ruc por ruc
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT CEDULA_GESTOR,NOMBRE_GESTOR,IDE_GESTOR FROM TRANS_GESTOR WHERE ESTADO = 1 AND IDE_GESTOR='" + iden+ "'");
         tab_persona.ejecutarSql();
         
         conexion.desconectar();
@@ -327,6 +340,19 @@ public TablaGenerica placasDis(Integer veh,Integer ser) {
         conexion = null;
         return tab_persona;
     } 
+
+public TablaGenerica getDevEmpresa(Integer solii) {
+        //Busca a una empresa en la tabla maestra_ruc por ruc
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT IDE_COMERCIAL_AUTOMOTORES,NOMBRE_EMPRESA,RUC_EMPRESA FROM TRANS_COMERCIAL_AUTOMOTORES WHERE IDE_COMERCIAL_AUTOMOTORES ="+solii);
+        tab_persona.ejecutarSql();
+        conexion.desconectar();
+        conexion = null;
+        return tab_persona;
+    }
+
 
  private void conectar() {
         if (conexion == null) {

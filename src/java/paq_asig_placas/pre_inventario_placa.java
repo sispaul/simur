@@ -122,7 +122,7 @@ public class pre_inventario_placa extends  Pantalla{
         
         pan_opcion.setId("pan_opcion");
 	pan_opcion.setTransient(true);
-        pan_opcion.setHeader("SERVICIOS DE PLACAS A INGRESAR");
+        pan_opcion.setHeader("INVENTARIO DE PLACAS A INGRESAR");
 	efecto.setType("drop");
 	efecto.setSpeed(150);
 	efecto.setPropiedad("mode", "'show'");
@@ -136,11 +136,12 @@ public class pre_inventario_placa extends  Pantalla{
         pan_opcion.getChildren().add(bot_bus);
         
 	pan_opcion.getChildren().add(efecto);
-        tabp.getChildren().add(pan_opcion);
+//        tabp.getChildren().add(pan_opcion);
         tabp.setPanelTabla(tab_placa);
+        pan_opcion.getChildren().add(tabp);
         
         Division div = new Division();
-        div.dividir2(tabi, tabp, "30%", "h");
+        div.dividir2(tabi, pan_opcion, "30%", "h");
         agregarComponente(div);
         
         tab_consulta.setId("tab_consulta");
@@ -309,7 +310,6 @@ public class pre_inventario_placa extends  Pantalla{
     
     public void aceptoColaborador(){
      if (set_colaborador.getValorSeleccionado()!= null) {
-         System.err.println(set_colaborador.getValorSeleccionado());
           TablaGenerica tab_dato = ser_Placa.Funcionario(set_colaborador.getValorSeleccionado());
                 if (!tab_dato.isEmpty()) {
                      tab_ingreso.setValor("RECIBIDO_ACTA", tab_dato.getValor("nombres"));
