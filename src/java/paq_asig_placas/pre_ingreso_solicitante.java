@@ -46,14 +46,22 @@ public class pre_ingreso_solicitante extends Pantalla{
     private Tabla tab_requisito = new Tabla();
     private Tabla tab_consulta = new Tabla();
     private Tabla set_gestor = new Tabla();
+    private Tabla set_colaborador = new Tabla();
+    private Tabla set_colaborador1 = new Tabla();
     private SeleccionTabla set_solicitud = new SeleccionTabla();
     //DECLARACION OBJETO DIALOGO
     private Dialogo dia_dialogoEN = new Dialogo();
     private Dialogo dia_dialogoe = new Dialogo();
     private Dialogo dia_dialogoDes = new Dialogo();
+    private Dialogo dia_dialogoc = new Dialogo();
+    private Dialogo dia_dialogoc1 = new Dialogo();
     private Grid grid_en = new Grid();
     private Grid grid_de = new Grid();
     private Grid gride = new Grid();
+    private Grid grid_dc = new Grid();
+    private Grid gridc = new Grid();
+    private Grid grid_dc1 = new Grid();
+    private Grid gridc1 = new Grid();
     
     private Texto txt_ced_ruc = new Texto();
     private Combo cmb_estado = new Combo();
@@ -84,6 +92,7 @@ public class pre_ingreso_solicitante extends Pantalla{
         tab_solicitud.setTabla("TRANS_SOLICITUD_PLACA", "IDE_SOLICITUD_PLACA", 1);
         tab_solicitud.getColumna("CEDULA_RUC_EMPRESA").setMetodoChange("cargarEmpresa");
         tab_solicitud.getColumna("IDE_TIPO_SOLICTUD").setCombo("SELECT IDE_TIPO_SOLICTUD,DESCRIPCION_SOLICITUD FROM TRANS_TIPO_SOLICTUD");
+        tab_solicitud.getColumna("NOMBRE_EMPRESA").setMetodoChange("buscaColaborador");
         tab_solicitud.getColumna("IDE_GESTOR").setVisible(false);
         tab_solicitud.getColumna("USU_SOLICITUD").setVisible(false);
         tab_solicitud.getColumna("FECHA_SOLICITUD").setValorDefecto(utilitario.getFechaActual());
@@ -206,6 +215,24 @@ public class pre_ingreso_solicitante extends Pantalla{
         bar_botones.agregarBoton(bot_buscar);
         gri_busca.getChildren().add(bot_buscar);
         
+        dia_dialogoc.setId("dia_dialogoc");
+        dia_dialogoc.setTitle("BUSCAR DATOS DE EMPRESA"); //titulo
+        dia_dialogoc.setWidth("50%"); //siempre en porcentajes  ancho
+        dia_dialogoc.setHeight("45%");//siempre porcentaje   alto
+        dia_dialogoc.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogoc.getBot_aceptar().setMetodo("aceptoColaborador");
+        grid_dc.setColumns(4);
+        agregarComponente(dia_dialogoc);
+        
+        dia_dialogoc1.setId("dia_dialogoc1");
+        dia_dialogoc1.setTitle("SELECICONAR GESTOR"); //titulo
+        dia_dialogoc1.setWidth("50%"); //siempre en porcentajes  ancho
+        dia_dialogoc1.setHeight("35%");//siempre porcentaje   alto
+        dia_dialogoc1.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogoc1.getBot_aceptar().setMetodo("aceptoGestorco");
+        grid_dc1.setColumns(4);
+        agregarComponente(dia_dialogoc1);
+        
         set_solicitud.setId("set_solicitud");
         set_solicitud.setSeleccionTabla("SELECT IDE_SOLICITUD_PLACA,NOMBRE_GESTOR,NOMBRE_EMPRESA FROM TRANS_SOLICITUD_PLACA WHERE IDE_SOLICITUD_PLACA=-1", "IDE_SOLICITUD_PLACA");
         set_solicitud.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
@@ -256,7 +283,72 @@ public class pre_ingreso_solicitante extends Pantalla{
         } 
     }
 
-        public void cargarEmpresa() {
+    public void buscaColaborador(){
+        dia_dialogoc.Limpiar();
+        dia_dialogoc.setDialogo(gridc);
+        grid_dc.getChildren().add(set_colaborador);
+        set_colaborador.setId("set_colaborador");
+        set_colaborador.setHeader("LISTA DE EMPRESAS");
+        set_colaborador.setSql("SELECT IDE_COMERCIAL_AUTOMOTORES,NOMBRE_EMPRESA,RUC_EMPRESA FROM TRANS_COMERCIAL_AUTOMOTORES WHERE NOMBRE_EMPRESA LIKE '%"+tab_solicitud.getValor("NOMBRE_EMPRESA")+"%'");
+        set_colaborador.getColumna("NOMBRE_EMPRESA").setFiltro(true);
+        set_colaborador.setRows(10);
+        set_colaborador.setTipoSeleccion(false);
+        dia_dialogoc.setDialogo(grid_dc);
+        set_colaborador.dibujar();
+        dia_dialogoc.dibujar();
+       }
+    
+    public void buscaGestorco(){
+        dia_dialogoc1.Limpiar();
+        dia_dialogoc1.setDialogo(gridc1);
+        grid_dc1.getChildren().add(set_colaborador1);
+        set_colaborador1.setId("set_colaborador1");
+        set_colaborador1.setHeader("LISTA DE GESTORES");
+        set_colaborador1.setSql("SELECT IDE_GESTOR,CEDULA_GESTOR,NOMBRE_GESTOR,ESTADO FROM TRANS_GESTOR WHERE IDE_COMERCIAL_AUTOMOTORES ="+set_colaborador.getValorSeleccionado());
+        set_colaborador1.setRows(10);
+        set_colaborador1.setTipoSeleccion(false);
+        dia_dialogoc1.setDialogo(grid_dc1);
+        set_colaborador1.dibujar();
+        dia_dialogoc1.dibujar();
+       }    
+    
+    
+    public void aceptoColaborador(){
+     if (set_colaborador.getValorSeleccionado()!= null) {
+          TablaGenerica tab_dato = ser_Placa.getDevEmpresa(Integer.parseInt(set_colaborador.getValorSeleccionado()));
+                if (!tab_dato.isEmpty()) {
+                     tab_solicitud.setValor("cedula_ruc_empresa", tab_dato.getValor("RUC_EMPRESA"));
+                     tab_solicitud.setValor("NOMBRE_EMPRESA", tab_dato.getValor("NOMBRE_EMPRESA"));
+                      utilitario.addUpdate("tab_solicitud");
+                      dia_dialogoc.cerrar();
+                      buscaGestorco();
+                       } else {
+                               utilitario.agregarMensajeInfo("No Existen Coincidencias en la base de datos", "");
+                               }
+       }else {
+       utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
+       }
+        
+    } 
+    
+       public void aceptoGestorco(){
+     if (set_colaborador1.getValorSeleccionado()!= null) {
+          TablaGenerica tab_dato = ser_Placa.getGestor2(Integer.parseInt(set_colaborador1.getValorSeleccionado()));
+                if (!tab_dato.isEmpty()) {
+                     tab_solicitud.setValor("NOMBRE_GESTOR", tab_dato.getValor("NOMBRE_GESTOR"));
+                     tab_solicitud.setValor("IDE_GESTOR", tab_dato.getValor("IDE_GESTOR"));
+                      utilitario.addUpdate("tab_solicitud");
+                      dia_dialogoc1.cerrar();
+                       } else {
+                               utilitario.agregarMensajeInfo("No Existen Coincidencias en la base de datos", "");
+                               }
+       }else {
+       utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
+       }
+        
+    }
+    
+    public void cargarEmpresa() {
             if (utilitario.validarRUC(tab_solicitud.getValor("CEDULA_RUC_EMPRESA"))) {
             TablaGenerica tab_dato = ser_Placa.getGestor1(tab_solicitud.getValor("CEDULA_RUC_EMPRESA"));
             if (!tab_dato.isEmpty()) {
@@ -523,6 +615,22 @@ public class pre_ingreso_solicitante extends Pantalla{
 
     public void setP_parametros(Map p_parametros) {
         this.p_parametros = p_parametros;
+    }
+
+    public Tabla getSet_colaborador() {
+        return set_colaborador;
+    }
+
+    public void setSet_colaborador(Tabla set_colaborador) {
+        this.set_colaborador = set_colaborador;
+    }
+
+    public Tabla getSet_colaborador1() {
+        return set_colaborador1;
+    }
+
+    public void setSet_colaborador1(Tabla set_colaborador1) {
+        this.set_colaborador1 = set_colaborador1;
     }
     
 }
