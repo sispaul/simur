@@ -301,18 +301,33 @@ public void borrarRequisito(Integer requisito){
 
 public TablaGenerica getIDEntrega(Integer solii) {
         //Busca a una empresa en la tabla maestra_ruc por ruc
-    System.err.println(solii);
         conectar();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(conexion);
         tab_persona.setSql("SELECT IDE_ENTREGA_PLACA,IDE_DETALLE_SOLICITUD FROM TRANS_ENTREGA_PLACA WHERE IDE_DETALLE_SOLICITUD ="+solii);
         tab_persona.ejecutarSql();
-        System.out.println(tab_persona);
         conexion.desconectar();
         conexion = null;
         return tab_persona;
     }      
-      
+
+public TablaGenerica placasDis(Integer veh,Integer ser) {
+        //Busca a una empresa en la tabla maestra_ruc por ruc
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT COUNT(*) as numero, v.DESCRIPCION_VEHICULO, s.DESCRIPCION_SERVICIO\n" +
+                            "FROM TRANS_PLACA p,TRANS_VEHICULO_TIPO v, TRANS_TIPO_SERVICIO s\n" +
+                            "WHERE  p.IDE_TIPO_VEHICULO = v.IDE_TIPO_VEHICULO AND s.IDE_TIPO_VEHICULO = v.IDE_TIPO_VEHICULO AND \n" +
+                            "p.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO AND p.IDE_TIPO_VEHICULO = "+veh+" AND p.IDE_TIPO_SERVICIO = "+ser+" AND\n" +
+                            "p.IDE_TIPO_ESTADO = (SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO WHERE DESCRIPCION_ESTADO LIKE 'asignada')\n" +
+                            "GROUP BY v.DESCRIPCION_VEHICULO, s.DESCRIPCION_SERVICIO");
+        tab_persona.ejecutarSql();
+        conexion.desconectar();
+        conexion = null;
+        return tab_persona;
+    } 
+
  private void conectar() {
         if (conexion == null) {
             conexion = new Conexion();

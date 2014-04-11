@@ -383,6 +383,7 @@ Integer identificacion;
         utilitario.agregarMensaje("ASIGNACIÓN REALIZADA", "");
         utilitario.addUpdate("tab_detalle");
         dia_dialogoe.cerrar();
+        placasDispo();
         } else {
                 utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ciudadania del municipio", "");
             }
@@ -390,6 +391,21 @@ Integer identificacion;
    public void cancelarValores(){
         utilitario.agregarMensajeInfo("ASIGNACIÓN NO REALIZADA", "");
         dia_dialogoe.cerrar();
+   }
+   
+   public void placasDispo(){
+       String cadena1,cadena2,cadena3;
+   TablaGenerica tab_dato = ser_Placa.placasDis(Integer.parseInt(tab_detalle.getValor("IDE_tipo_vehiculo")), Integer.parseInt(tab_detalle.getValor("IDE_tipo_servicio")));
+            if (!tab_dato.isEmpty()) {
+                cadena1 = tab_dato.getValor("numero");
+                cadena2 = tab_dato.getValor("DESCRIPCION_VEHICULO");
+                cadena3 = tab_dato.getValor("DESCRIPCION_SERVICIO");
+                utilitario.agregarMensaje("TIPO DE AUTOMOTOR", cadena2);
+                utilitario.agregarMensaje("TIPO DE SERVICIO", cadena3);
+                utilitario.agregarMensajeInfo("NUMERO DE PLACAS DISPONIBLES", cadena1);
+        } else {
+                utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ciudadania del municipio", "");
+            }
    }
            
    // METODOS PARA CANCELACION DE PLACA ASIGNADAS 
