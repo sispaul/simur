@@ -48,10 +48,13 @@ public void seleccionarP(Integer id_s,Integer vehiculo,Integer servicio,Integer 
 //ACTUALIZACION DE ENTREGA EN SOLICITUD
 public void actualizarDS(Integer id_en,Integer id_s2)
     {
+        System.err.println(id_en);
+        System.out.println(id_s2);
         String actualiza1 = "update TRANS_DETALLE_SOLICITUD_PLACA \n" 
                             +"set IDE_ENTREGA_PLACA="+id_en+",ENTREGADA_PLACA=1, FECHA_ENTREGA_PLACA= '"+utilitario.getFechaActual()+"'\n" 
                             +"where IDE_DETALLE_SOLICITUD="+id_s2; 
         conectar();
+        System.err.println(actualiza1);
         conexion.ejecutarSql(actualiza1);
         conexion.desconectar();
         conexion = null;
@@ -153,9 +156,9 @@ public void asigancionPlaca(String usuario){
 }
 
 //ENTREGA DE PLACAS
-public void entregaPlaca(String ci,String nom,String cedula,String nome,String coment){
-        String actual="INSERT INTO TRANS_ENTREGA_PLACA (FECHA_ENTREGA_PLACA,CEDULA_RUC_PROPIETARIO,NOMBRE_PROPIETARIO,CEDULA_PERSONA_RETIRA,NOMBRE_PERSONA_RETIRA,USU_ENTREGA)\n" +
-                      "VALUES (" + utilitario.getFormatoFechaSQL(utilitario.getFechaActual()) +",'"+ci+"','"+nom+"','"+cedula+"','"+nome+"','"+coment+"')";
+public void entregaPlaca(String ci,String nom,String cedula,String nome,String coment,Integer soli){
+        String actual="INSERT INTO TRANS_ENTREGA_PLACA (FECHA_ENTREGA_PLACA,CEDULA_RUC_PROPIETARIO,NOMBRE_PROPIETARIO,CEDULA_PERSONA_RETIRA,NOMBRE_PERSONA_RETIRA,USU_ENTREGA,IDE_DETALLE_SOLICITUD)\n" +
+                      "VALUES (" + utilitario.getFormatoFechaSQL(utilitario.getFechaActual()) +",'"+ci+"','"+nom+"','"+cedula+"','"+nome+"','"+coment+"',"+soli+")";
         conectar();
         conexion.ejecutarSql(actual);
         conexion.desconectar();
@@ -299,6 +302,20 @@ public void borrarRequisito(Integer requisito){
         return tab_persona;
     }
 
+public TablaGenerica getIDEntrega(Integer solii) {
+        //Busca a una empresa en la tabla maestra_ruc por ruc
+    System.err.println(solii);
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT IDE_ENTREGA_PLACA,IDE_DETALLE_SOLICITUD FROM TRANS_ENTREGA_PLACA WHERE IDE_DETALLE_SOLICITUD ="+solii);
+        tab_persona.ejecutarSql();
+        System.out.println(tab_persona);
+        conexion.desconectar();
+        conexion = null;
+        return tab_persona;
+    }      
+      
  private void conectar() {
         if (conexion == null) {
             conexion = new Conexion();
