@@ -147,7 +147,7 @@ public class pre_ingreso_solicitante extends Pantalla{
         tabp3.setPanelTabla(tab_requisito);
         
         ItemMenu itm_actualizar = new ItemMenu();
-        itm_actualizar.setValue("Guardar");
+        itm_actualizar.setValue("Actualizar");
         itm_actualizar.setIcon("ui-icon-refresh");
         itm_actualizar.setMetodo("Actualizar");
          
@@ -290,9 +290,9 @@ public class pre_ingreso_solicitante extends Pantalla{
          */
         
    public void ingresoRequisitos() {
-       System.out.println("Holas");
        ser_Placa.insertarRequisito(Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")),Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")), Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")));
-       tab_requisito.actualizar();       
+       tab_requisito.actualizar();
+       utilitario.addUpdate("tab_requisito");
     }
    
    /*
@@ -441,6 +441,7 @@ public class pre_ingreso_solicitante extends Pantalla{
         public void Actualizar() {
         requisito();
         utilitario.addUpdate("tab_requisito");
+        utilitario.agregarMensaje("Registros Almacenados Corectamente", "");
     }
     /*
      * FUNCION QUE PERMITE RECORRER LA TABLA RECUPERANDO EVENTOS ACTUALES

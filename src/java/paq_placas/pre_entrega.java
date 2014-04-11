@@ -243,7 +243,7 @@ String cedula,factura;
         
         ItemMenu itm_actualizar = new ItemMenu();
         itm_actualizar.setValue("Guardar");
-        itm_actualizar.setIcon("ui-icon-refresh");
+        itm_actualizar.setIcon("ui-icon-disk");
         itm_actualizar.setMetodo("ejeMetodo");
          
         pat_panel.getMenuTabla().getChildren().add(itm_actualizar);
@@ -352,7 +352,7 @@ String cedula,factura;
        
    public void aceptoretiro(){
 
-         if (utilitario.validarCedula(tab_detalle.getValor("CEDULA_PERSONA_RETIRA"))) {
+        if (utilitario.validarCedula(tab_detalle.getValor("CEDULA_PERSONA_RETIRA"))) {
             TablaGenerica tab_dato = serviciobusqueda.getPersona(tab_detalle.getValor("CEDULA_PERSONA_RETIRA"));
             if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra   

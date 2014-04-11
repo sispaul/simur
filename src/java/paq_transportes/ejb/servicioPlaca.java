@@ -48,13 +48,10 @@ public void seleccionarP(Integer id_s,Integer vehiculo,Integer servicio,Integer 
 //ACTUALIZACION DE ENTREGA EN SOLICITUD
 public void actualizarDS(Integer id_en,Integer id_s2)
     {
-        System.err.println(id_en);
-        System.out.println(id_s2);
         String actualiza1 = "update TRANS_DETALLE_SOLICITUD_PLACA \n" 
                             +"set IDE_ENTREGA_PLACA="+id_en+",ENTREGADA_PLACA=1, FECHA_ENTREGA_PLACA= '"+utilitario.getFechaActual()+"'\n" 
                             +"where IDE_DETALLE_SOLICITUD="+id_s2; 
         conectar();
-        System.err.println(actualiza1);
         conexion.ejecutarSql(actualiza1);
         conexion.desconectar();
         conexion = null;
