@@ -17,9 +17,13 @@ import framework.componentes.Grupo;
 import framework.componentes.ItemMenu;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
+import java.util.HashMap;
+import java.util.Map;
 import javax.ejb.EJB;
 import org.primefaces.component.panelmenu.PanelMenu;
 import org.primefaces.component.submenu.Submenu;
@@ -56,17 +60,26 @@ Integer identificacion;
     private Efecto efecto2 = new Efecto();
     
     private Calendario cal_fechabus = new Calendario();
+    private Calendario cal_fechabus1 = new Calendario();
     
     private Dialogo dia_dialogoe = new Dialogo();
+    private Dialogo dia_dialogol = new Dialogo();
     private Dialogo dia_dialogoq = new Dialogo();
     private Grid grid_de = new Grid();
+    private Grid grid_dl = new Grid();
     private Grid grid_dq = new Grid();
     private Grid gride = new Grid();
     private Grid gridq = new Grid();
+    private Grid gridl = new Grid();
     
     private Conexion conexion= new Conexion();
     @EJB
     private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servicioPlaca.class);
+    
+    ///REPORTES
+    private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
+    private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
+    private Map p_parametros = new HashMap();
     
     public pre_asignacion_placa() {
             conexion.NOMBRE_MARCA_BASE="sqlserver";
@@ -167,6 +180,26 @@ Integer identificacion;
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
         
+        /**
+         * CONFIGURACIÓN DE OBJETO REPORTE
+         */
+        bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
+        agregarComponente(rep_reporte); //2 agregar el listado de reportes
+        sef_formato.setId("sef_formato");
+        agregarComponente(sef_formato);
+        
+        /*
+         * VENTANA DE BUSQUEDA
+         */
+        dia_dialogol.setId("dia_dialogol");
+        dia_dialogol.setTitle("CONFIRMAR LIBERACIÒN"); //titulo
+        dia_dialogol.setWidth("26%"); //siempre en porcentajes  ancho
+        dia_dialogol.setHeight("12%");//siempre porcentaje   alto 
+        dia_dialogol.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogol.getBot_aceptar().setMetodo("aceptoValores");
+//        dia_dialogol.getBot_cancelar().setMetodo("cancelarValores");
+        grid_dl.setColumns(4);
+        agregarComponente(dia_dialogol);
     }
 /*creacion de menú*/
     private void contruirMenu() {
@@ -182,6 +215,13 @@ Integer identificacion;
         itm_datos_empl.setMetodo("dibujarSolicitud");
         itm_datos_empl.setUpdate("pan_opcion");
         sum_empleado.getChildren().add(itm_datos_empl);
+        
+        ItemMenu itm_datos = new ItemMenu();
+        itm_datos.setValue("LIBERAR ASIGNADAS");
+        itm_datos.setIcon("ui-icon-gear");
+        itm_datos.setMetodo("liberar");
+        itm_datos.setUpdate("pan_opcion");
+        sum_empleado.getChildren().add(itm_datos);
     }
     
     /*Busqueda de empresa para seleccion*/
@@ -364,6 +404,18 @@ Integer identificacion;
         dia_dialogoe.setDialogo(grid_de);
         dia_dialogoe.dibujar();
     }
+    
+        public void liberar(){
+        dia_dialogol.Limpiar();
+        dia_dialogol.setDialogo(gridl);
+        grid_dl.getChildren().add(new Etiqueta("DESDE:"));
+        grid_dl.getChildren().add(cal_fechabus);
+        grid_dl.getChildren().add(new Etiqueta("HASTA:"));
+        grid_dl.getChildren().add(cal_fechabus1);
+        dia_dialogol.setDialogo(grid_dl);
+        dia_dialogol.dibujar();
+    }
+    
    public void aceptoValores(){
      TablaGenerica tab_dato = ser_Placa.getAprobacion(utilitario.getFormatoFechaSQL(utilitario.getFechaActual()), Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")));
             if (!tab_dato.isEmpty()) {

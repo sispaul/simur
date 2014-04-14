@@ -353,6 +353,19 @@ public TablaGenerica getDevEmpresa(Integer solii) {
         return tab_persona;
     }
 
+public TablaGenerica getValidarPlaca(Integer solii, Integer tipo) {
+        //Busca a una empresa en la tabla maestra_ruc por ruc
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT s.IDE_TIPO_SERVICIO,s.DESCRIPCION_SERVICIO,v.IDE_TIPO_VEHICULO,v.DESCRIPCION_VEHICULO\n" +
+                            "FROM dbo.TRANS_TIPO_SERVICIO s,dbo.TRANS_VEHICULO_TIPO v \n" +
+                            "WHERE s.IDE_TIPO_VEHICULO = v.IDE_TIPO_VEHICULO AND s.IDE_TIPO_SERVICIO = "+tipo+" and v.IDE_TIPO_VEHICULO ="+solii);
+        tab_persona.ejecutarSql();
+        conexion.desconectar();
+        conexion = null;
+        return tab_persona;
+    }
 
  private void conectar() {
         if (conexion == null) {
