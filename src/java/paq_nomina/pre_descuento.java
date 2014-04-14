@@ -240,7 +240,7 @@ private Conexion con_postgres= new Conexion();
          ide_periodo=Integer.parseInt(tab_consulta.getValor("ide_columna"));
          id_distributivo_roles=Integer.parseInt(tab_consulta.getValor("id_distributivo_roles"));
          ide_columna=Integer.parseInt(tab_consulta.getValor("ide_columna")) ;  
-         mDescuento.migrarDescuento(ano,ide_periodo,id_distributivo_roles,ide_columna);
+         mDescuento.migrarDescuento(ano,ide_periodo,id_distributivo_roles,ide_columna,tab_usuario.getValor("NICK_USUA")+"");
          utilitario.agregarMensaje("PROCESO REALIZADO CON EXITO", " ");
          dia_dialogoe.cerrar();
 //        con_postgres.desconectar();
