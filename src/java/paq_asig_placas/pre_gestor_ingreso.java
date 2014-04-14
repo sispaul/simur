@@ -42,7 +42,7 @@ public class pre_gestor_ingreso extends Pantalla{
         contruirMenu();
         Division div_division = new Division();
         div_division.setId("div_division");
-        div_division.dividir2(pam_menu, pan_opcion, "20%", "V");
+        div_division.dividir2(pam_menu, pan_opcion, "16%", "V");
         div_division.getDivision1().setCollapsible(true);
         div_division.getDivision1().setHeader("TIPOS DE GESTORES");
         agregarComponente(div_division);
