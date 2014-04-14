@@ -21,7 +21,6 @@ import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
-import framework.componentes.Texto;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;

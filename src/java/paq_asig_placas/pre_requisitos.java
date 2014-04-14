@@ -55,7 +55,7 @@ private Tabla tab_requisitos = new Tabla();
         tab_tabulador.agregarTab("REQUISITOS PARA AUTOMOTORES", tabp2);
 
         Division div = new Division();
-        div.dividir3(tabp, tabp1, tab_tabulador, "26%", "50%", "H");
+        div.dividir3(tabp, tabp1, tab_tabulador, "21%", "55%", "H");
         agregarComponente(div);
         
     }
