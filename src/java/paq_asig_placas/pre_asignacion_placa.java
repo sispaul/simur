@@ -8,6 +8,7 @@ import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
+import framework.componentes.Combo;
 import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Efecto;
@@ -65,12 +66,17 @@ Integer identificacion;
     private Dialogo dia_dialogoe = new Dialogo();
     private Dialogo dia_dialogol = new Dialogo();
     private Dialogo dia_dialogoq = new Dialogo();
+    private Dialogo dia_dialogou = new Dialogo();
     private Grid grid_de = new Grid();
     private Grid grid_dl = new Grid();
+    private Grid grid_du = new Grid();
     private Grid grid_dq = new Grid();
     private Grid gride = new Grid();
     private Grid gridq = new Grid();
     private Grid gridl = new Grid();
+    private Grid gridu = new Grid();
+    
+    private Combo cmb_usuario = new Combo();
     
     private Conexion conexion= new Conexion();
     @EJB
@@ -200,6 +206,16 @@ Integer identificacion;
 //        dia_dialogol.getBot_cancelar().setMetodo("cancelarValores");
         grid_dl.setColumns(4);
         agregarComponente(dia_dialogol);
+        
+        dia_dialogou.setId("dia_dialogou");
+        dia_dialogou.setTitle("CONFIRMAR LIBERACIÒN"); //titulo
+        dia_dialogou.setWidth("26%"); //siempre en porcentajes  ancho
+        dia_dialogou.setHeight("25%");//siempre porcentaje   alto 
+        dia_dialogou.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogou.getBot_aceptar().setMetodo("aceptoReporte");
+        grid_du.setColumns(4);
+        agregarComponente(dia_dialogou);
+        
     }
 /*creacion de menú*/
     private void contruirMenu() {
@@ -405,16 +421,17 @@ Integer identificacion;
         dia_dialogoe.dibujar();
     }
     
-        public void liberar(){
-        dia_dialogol.Limpiar();
-        dia_dialogol.setDialogo(gridl);
-        grid_dl.getChildren().add(new Etiqueta("DESDE:"));
-        grid_dl.getChildren().add(cal_fechabus);
-        grid_dl.getChildren().add(new Etiqueta("HASTA:"));
-        grid_dl.getChildren().add(cal_fechabus1);
-        dia_dialogol.setDialogo(grid_dl);
-        dia_dialogol.dibujar();
-    }
+//        public void liberar(){
+//        dia_dialogol.Limpiar();
+//        dia_dialogol.setDialogo(gridl);
+//        grid_dl.getChildren().add(new Etiqueta("DESDE:"));
+//        grid_dl.getChildren().add(cal_fechabus);
+//        grid_dl.getChildren().add(new Etiqueta("HASTA:"));
+//        grid_dl.getChildren().add(cal_fechabus1);
+//        grid_dl.getChildren().add(new Etiqueta("ELEGIR USUARIO:"));
+//        dia_dialogol.setDialogo(grid_dl);
+//        dia_dialogol.dibujar();
+//    }
     
    public void aceptoValores(){
      TablaGenerica tab_dato = ser_Placa.getAprobacion(utilitario.getFormatoFechaSQL(utilitario.getFechaActual()), Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")));
@@ -492,6 +509,45 @@ Integer identificacion;
         utilitario.agregarMensajeInfo("ASIGNACIÓN ELIMINADA", "");
         dia_dialogoq.cerrar();
     }
+    
+    /*
+ * CREACION DE REPORTES
+ */
+    
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+
+    }
+    
+    @Override
+    public void aceptarReporte() {
+        rep_reporte.cerrar();
+        cal_fechabus.setFechaActual();
+        cal_fechabus1.setFechaActual();
+        switch (rep_reporte.getNombre()) {
+           case "SOLICTUD POR USUARIO":
+                dia_dialogou.Limpiar();
+                dia_dialogou.setDialogo(gridu);
+                grid_du.getChildren().add(new Etiqueta("DESDE:"));
+                grid_du.getChildren().add(cal_fechabus);
+                grid_du.getChildren().add(new Etiqueta("HASTA:"));
+                grid_du.getChildren().add(cal_fechabus1);
+                grid_du.getChildren().add(new Etiqueta("ELEGIR USUARIO:"));
+                cmb_usuario.setId("cmb_usuario");
+                cmb_usuario.setCombo("SELECT IDE_SOLICITUD_PLACA,USU_SOLICITUD FROM TRANS_SOLICITUD_PLACA");
+                cmb_usuario.eliminarVacio();
+                grid_du.getChildren().add(cmb_usuario);
+                dia_dialogou.setDialogo(grid_du);
+                dia_dialogou.dibujar();
+               break;
+           case "REPORTE ASIGNADAS - LIBERAR":
+               
+               break;
+                
+        }
+    }
+    
     @Override
     public void insertar() {
     }
@@ -542,6 +598,38 @@ Integer identificacion;
 
     public void setSet_solicitud(SeleccionTabla set_solicitud) {
         this.set_solicitud = set_solicitud;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSef_formato() {
+        return sef_formato;
+    }
+
+    public void setSef_formato(SeleccionFormatoReporte sef_formato) {
+        this.sef_formato = sef_formato;
+    }
+
+    public Map getP_parametros() {
+        return p_parametros;
+    }
+
+    public void setP_parametros(Map p_parametros) {
+        this.p_parametros = p_parametros;
+    }
+
+    public Combo getCmb_usuario() {
+        return cmb_usuario;
+    }
+
+    public void setCmb_usuario(Combo cmb_usuario) {
+        this.cmb_usuario = cmb_usuario;
     }
     
 }
