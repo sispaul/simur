@@ -64,12 +64,12 @@ public class mergeDescuento {
         con_postgres.desconectar();
         con_postgres = null;
      }   
-       public void migrarDescuento(Integer ano,Integer ide_periodo,Integer id_distributivo_roles,Integer ide_columna) 
+       public void migrarDescuento(Integer ano,Integer ide_periodo,Integer id_distributivo_roles,Integer ide_columna,String nombre) 
                 {
         // Forma el sql para el ingreso
     
         String str_sql4 = "update SRH_ROLES set valor_egreso=srh_descuento.descuento"
-                                +", valor=srh_descuento.descuento  from srh_descuento"
+                                +", valor=srh_descuento.descuento,ip_responsable='"+utilitario.getIp()+"',nom_responsable='"+nombre+"',fecha_responsable='"+utilitario.getFechaActual()+"'  from srh_descuento"//MODIFICACION
                                 +" WHERE SRH_ROLES.ANO="+utilitario.getAnio(utilitario.getFechaActual())+" AND SRH_ROLES.IDE_PERIODO="+utilitario.getMes(utilitario.getFechaActual())+" AND"
                                 +" SRH_ROLES.ID_DISTRIBUTIVO_ROLES="+id_distributivo_roles+" AND SRH_ROLES.IDE_COLUMNAS="+ide_columna+" and "
                                 +"srh_roles.ide_empleado=srh_descuento.ide_empleado";
