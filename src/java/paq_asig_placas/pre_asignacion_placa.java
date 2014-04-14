@@ -265,6 +265,8 @@ Integer identificacion;
         tab_detalle.getColumna("FECHA_ENTREGA_PLACA").setVisible(false);
         tab_detalle.getColumna("ENTREGADA_PLACA").setVisible(false);
         tab_detalle.getColumna("IDE_SOLICITUD_PLACA").setVisible(false);
+        tab_detalle.getColumna("CEDULA_PERSONA_RETIRA").setVisible(false);
+        tab_detalle.getColumna("NOMBRE_PERSONA_RETIRA").setVisible(false);
         tab_detalle.getColumna("IDE_PLACA").setNombreVisual("PLACA");
         tab_detalle.getColumna("IDE_PLACA").setCombo("SELECT IDE_PLACA,PLACA FROM TRANS_PLACA");       
         tab_detalle.getColumna("NOMBRE_PROPIETARIO").setLectura(true);
