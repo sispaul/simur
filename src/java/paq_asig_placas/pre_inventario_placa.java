@@ -32,7 +32,8 @@ import persistencia.Conexion;
  */
 public class pre_inventario_placa extends  Pantalla{
 
-    Integer codigo;
+    Integer valinicio,valfinal;
+    String valor,placas,letra;
 
     private Tabla tab_ingreso = new Tabla();
     private Tabla tab_placa = new Tabla();
@@ -52,6 +53,7 @@ public class pre_inventario_placa extends  Pantalla{
     private Dialogo dia_dialogop = new Dialogo();
     private Dialogo dia_dialogot = new Dialogo();
     private Dialogo dia_dialogo1 = new Dialogo();
+    private Dialogo dia_dialogor = new Dialogo();
     private Grid grid_de = new Grid();
     private Grid grid_dc = new Grid();
     private Grid gride = new Grid();
@@ -60,12 +62,17 @@ public class pre_inventario_placa extends  Pantalla{
     private Grid grid_dt = new Grid();
     private Grid grid1 = new Grid();
     private Grid grid_de1 = new Grid();
+    private Grid grid_dr = new Grid();
+    private Grid gridr = new Grid();
 
     private Conexion con_postgres= new Conexion();
 
     private Calendario cal_fechaini = new Calendario();
     private Calendario cal_fechafin = new Calendario();
     private Texto txt_acta= new Texto();
+    private Texto txt_plaserie= new Texto();
+    private Texto txt_numinicio= new Texto();
+    private Texto txt_numfinal= new Texto();
     @EJB
     private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servicioPlaca.class);
         ///REPORTES
@@ -200,6 +207,8 @@ public class pre_inventario_placa extends  Pantalla{
         dia_dialogo1.setHeight("20%");//siempre porcentaje   alto
         dia_dialogo1.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_dialogo1.getBot_aceptar().setMetodo("aceptoValores1");
+//        dia_dialogo1.getBot_aceptar().setMetodo("buscarRango");
+        
         grid_de1.setColumns(4);
         grid_de1.getChildren().add(new Etiqueta("SELECCIONE SERVICIO"));
         agregarComponente(dia_dialogo1);
@@ -256,6 +265,17 @@ public class pre_inventario_placa extends  Pantalla{
         dia_dialogoc.getBot_aceptar().setMetodo("aceptoColaborador");
         grid_dc.setColumns(4);
         agregarComponente(dia_dialogoc);
+        
+       /****** CREACION DE RANGOS PARA PLACAS ******/
+        
+        dia_dialogor.setId("dia_dialogor");
+        dia_dialogor.setTitle("PLACAS - RANGO DE INGRESO"); //titulo
+        dia_dialogor.setWidth("36%"); //siempre en porcentajes  ancho
+        dia_dialogor.setHeight("15%");//siempre porcentaje   alto
+        dia_dialogor.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogor.getBot_aceptar().setMetodo("aceptoRango");
+        grid_dr.setColumns(4);
+        agregarComponente(dia_dialogor);
     }
 
        public void buscarEmpresa() {
@@ -342,15 +362,49 @@ public class pre_inventario_placa extends  Pantalla{
     
         public void aceptoValores1() {
             if (set_servicio.getValorSeleccionado()!= null) {
-                        codigo = 1;
                         tab_placa.getColumna("ide_tipo_servicio").setValorDefecto(set_servicio.getValorSeleccionado());
-                        tab_placa.insertar();
-                        dia_dialogo1.cerrar();
+                        buscarRango();
+                     dia_dialogo1.cerrar();
        }else {
        utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
        }        
     } 
      
+    public void buscarRango(){
+        dia_dialogor.Limpiar();
+        dia_dialogor.setDialogo(gridr);
+        grid_dr.getChildren().add(new Etiqueta("RANGO INICIO:"));
+        grid_dr.getChildren().add(txt_numinicio);
+        grid_dr.getChildren().add(new Etiqueta("RANGO FINAL:"));
+        grid_dr.getChildren().add(txt_numfinal);
+        grid_dr.getChildren().add(new Etiqueta("SERIE INGRESO:"));
+        grid_dr.getChildren().add(txt_plaserie);
+        dia_dialogor.setDialogo(grid_dr);
+        dia_dialogor.dibujar();
+    }    
+    
+    public void aceptoRango(){
+        valinicio = Integer.parseInt(txt_numinicio.getValue()+"");
+        valfinal = Integer.parseInt(txt_numfinal.getValue()+"");
+        TablaGenerica tab_dato1 = ser_Placa.getValidarPlaca(Integer.parseInt(set_servicio.getValorSeleccionado()),Integer.parseInt(set_vehiculo.getValorSeleccionado()));
+        System.err.println(tab_dato1);
+        if (!tab_dato1.isEmpty()) {
+             if(tab_dato1.getValor("DESCRIPCION_VEHICULO") == "MOTO" && tab_dato1.getValor("DESCRIPCION_SERVICIO") == "PARTICULAR"){
+                 letra = "H";
+                    for (int i = valinicio; i < valfinal; i++) {
+                       valor = String.valueOf(i);
+                       placas = letra + txt_plaserie.getValue() + valor;
+                       tab_placa.setValor("placa", placas);
+                       tab_placa.insertar();
+                       dia_dialogor.cerrar();
+                    }
+             }
+         } else {
+          utilitario.agregarMensajeInfo("No Existen Coincidencias en la base de datos", "");
+                   }
+    }
+            
+    
     @Override
     public void insertar() {
         utilitario.getTablaisFocus().insertar();
