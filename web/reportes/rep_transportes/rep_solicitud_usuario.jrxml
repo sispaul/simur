@@ -7,10 +7,9 @@
 		<defaultValueExpression><![CDATA["C:\\Users\\KEJA\\Documents\\Nueva carpeta\\"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="nomp_res" class="java.lang.String"/>
-	<parameter name="finicio" class="java.lang.String"/>
 	<parameter name="SUBREPORT_DIR_1" class="java.lang.String"/>
 	<parameter name="usuario" class="java.lang.String"/>
-	<parameter name="ffinal" class="java.lang.String"/>
+	<parameter name="finicio" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT cab.IDE_SOLICITUD_PLACA,cab.FECHA_SOLICITUD,
 cab.CEDULA_RUC_EMPRESA,cab.NOMBRE_EMPRESA,
@@ -33,7 +32,7 @@ det.IDE_detalle_SOLICITUD = req.IDE_detalle_SOLICITUD AND
 req.IDE_TIPO_REQUISITO = r.IDE_TIPO_REQUISITO  AND
 r.IDE_TIPO_SERVICIO = ser.IDE_TIPO_SERVICIO AND
 ser.IDE_TIPO_VEHICULO = ve.ide_tipo_vehiculo  AND
-cab.FECHA_SOLICITUD  between cast ($P{finicio} as date) AND cast ($P{ffinal} as date) AND
+cab.FECHA_SOLICITUD = cast ($P{finicio} as date) AND
 cab.USU_SOLICITUD LIKE $P{usuario}
 ORDER BY
 det.IDE_SOLICITUD_PLACA ASC,
@@ -59,73 +58,73 @@ req.IDE_detalle_SOLICITUD ASC]]>
 		<groupHeader>
 			<band height="50">
 				<rectangle>
-					<reportElement uuid="99c5d26e-1a87-42d4-891e-e65758e6a93a" x="6" y="-1" width="549" height="50" forecolor="#FFFFFF" backcolor="#999999"/>
+					<reportElement x="6" y="-1" width="549" height="50" forecolor="#FFFFFF" backcolor="#999999" uuid="99c5d26e-1a87-42d4-891e-e65758e6a93a"/>
 				</rectangle>
 				<textField>
-					<reportElement uuid="aa95bec5-21a8-4247-8802-2da9f801fb4d" x="82" y="4" width="100" height="20" forecolor="#FFFFFF"/>
+					<reportElement x="82" y="4" width="100" height="20" forecolor="#FFFFFF" uuid="aa95bec5-21a8-4247-8802-2da9f801fb4d"/>
 					<textElement>
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{IDE_SOLICITUD_PLACA}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement uuid="97038e9c-e610-4aeb-9578-a94cc1375f37" x="12" y="4" width="100" height="20" forecolor="#FFFFFF"/>
+					<reportElement x="12" y="4" width="100" height="20" forecolor="#FFFFFF" uuid="97038e9c-e610-4aeb-9578-a94cc1375f37"/>
 					<textElement>
 						<font size="8" isBold="true"/>
 					</textElement>
 					<text><![CDATA[ID SOLICIT.]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="097cf5e8-ef26-457a-aa59-15b52a858cfb" x="410" y="3" width="100" height="20" forecolor="#FFFFFF"/>
+					<reportElement x="410" y="3" width="100" height="20" forecolor="#FFFFFF" uuid="097cf5e8-ef26-457a-aa59-15b52a858cfb"/>
 					<textElement>
 						<font size="8" isBold="true"/>
 					</textElement>
 					<text><![CDATA[FECHA:]]></text>
 				</staticText>
 				<textField>
-					<reportElement uuid="3bfd6cd1-867f-4a57-a546-3553d910cbed" x="455" y="3" width="100" height="20" forecolor="#FFFFFF"/>
+					<reportElement x="455" y="3" width="100" height="20" forecolor="#FFFFFF" uuid="3bfd6cd1-867f-4a57-a546-3553d910cbed"/>
 					<textElement>
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{FECHA_SOLICITUD}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement uuid="fec53bfd-6e2f-4c21-986f-ac3492e17219" x="12" y="16" width="100" height="20" forecolor="#FFFFFF"/>
+					<reportElement x="12" y="16" width="100" height="20" forecolor="#FFFFFF" uuid="fec53bfd-6e2f-4c21-986f-ac3492e17219"/>
 					<textElement>
 						<font size="8" isBold="true"/>
 					</textElement>
 					<text><![CDATA[RUC O C.I. :]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="e4b560e9-5bb9-40d4-adc7-9b5db26de573" x="12" y="29" width="100" height="20" forecolor="#FFFFFF"/>
+					<reportElement x="12" y="29" width="100" height="20" forecolor="#FFFFFF" uuid="e4b560e9-5bb9-40d4-adc7-9b5db26de573"/>
 					<textElement>
 						<font size="8" isBold="true"/>
 					</textElement>
 					<text><![CDATA[NOMBRE:]]></text>
 				</staticText>
 				<textField>
-					<reportElement uuid="1e0a8bd6-d386-4df5-8483-d4d81c42a872" x="82" y="29" width="215" height="20" forecolor="#FFFFFF"/>
+					<reportElement x="82" y="29" width="215" height="20" forecolor="#FFFFFF" uuid="1e0a8bd6-d386-4df5-8483-d4d81c42a872"/>
 					<textElement>
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{NOMBRE_EMPRESA}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement uuid="e4707705-30ae-47fb-89ad-2cfe88d0c132" x="83" y="16" width="100" height="20" forecolor="#FFFFFF"/>
+					<reportElement x="83" y="16" width="100" height="20" forecolor="#FFFFFF" uuid="e4707705-30ae-47fb-89ad-2cfe88d0c132"/>
 					<textElement>
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{CEDULA_RUC_EMPRESA}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement uuid="015fbbda-9c0f-4d8e-a609-a71bf20dd2ed" x="454" y="29" width="100" height="20" forecolor="#FFFFFF"/>
+					<reportElement x="454" y="29" width="100" height="20" forecolor="#FFFFFF" uuid="015fbbda-9c0f-4d8e-a609-a71bf20dd2ed"/>
 					<textElement>
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{USU_SOLICITUD}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement uuid="3ef4f696-dab6-4c72-8b44-e56eb5213eee" x="345" y="29" width="110" height="20" forecolor="#FFFFFF"/>
+					<reportElement x="345" y="29" width="110" height="20" forecolor="#FFFFFF" uuid="3ef4f696-dab6-4c72-8b44-e56eb5213eee"/>
 					<textElement>
 						<font size="8" isBold="true"/>
 					</textElement>
@@ -142,87 +141,87 @@ req.IDE_detalle_SOLICITUD ASC]]>
 		<groupHeader>
 			<band height="52">
 				<rectangle>
-					<reportElement uuid="e6ab96a1-5dcb-4455-8c48-bf460389fbee" x="3" y="0" width="551" height="50"/>
+					<reportElement x="3" y="0" width="551" height="50" uuid="e6ab96a1-5dcb-4455-8c48-bf460389fbee"/>
 				</rectangle>
 				<textField>
-					<reportElement uuid="b64457f4-dbf5-449b-9e6d-d8f1ee19340a" x="60" y="2" width="100" height="20"/>
+					<reportElement x="60" y="2" width="100" height="20" uuid="b64457f4-dbf5-449b-9e6d-d8f1ee19340a"/>
 					<textElement>
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{IDE_DETALLE_SOLICITUD}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement uuid="8cec98f4-aeaf-4a76-9b6e-a60410307e2c" x="8" y="2" width="52" height="20"/>
+					<reportElement x="8" y="2" width="52" height="20" uuid="8cec98f4-aeaf-4a76-9b6e-a60410307e2c"/>
 					<textElement>
 						<font size="8" isBold="true"/>
 					</textElement>
 					<text><![CDATA[CODIGO:]]></text>
 				</staticText>
 				<textField>
-					<reportElement uuid="a35efac2-2791-4900-a7f7-57267279ee02" x="345" y="26" width="100" height="20"/>
+					<reportElement x="345" y="26" width="100" height="20" uuid="a35efac2-2791-4900-a7f7-57267279ee02"/>
 					<textElement>
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{descripcion_vehiculo}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement uuid="0ff8c9b4-0849-4801-af68-9aa41383dfa3" x="472" y="26" width="80" height="20"/>
+					<reportElement x="472" y="26" width="80" height="20" uuid="0ff8c9b4-0849-4801-af68-9aa41383dfa3"/>
 					<textElement>
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{DESCRIPCION_SERVICIO}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement uuid="4c4bd011-eef8-4886-a073-72fd6d7796ed" x="279" y="26" width="100" height="20"/>
+					<reportElement x="279" y="26" width="100" height="20" uuid="4c4bd011-eef8-4886-a073-72fd6d7796ed"/>
 					<textElement>
 						<font size="8" isBold="true"/>
 					</textElement>
 					<text><![CDATA[AUTOMOTOR:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="0a0e6e3a-a282-4c82-bc4c-0df8dcc8ed8e" x="426" y="26" width="100" height="20"/>
+					<reportElement x="426" y="26" width="100" height="20" uuid="0a0e6e3a-a282-4c82-bc4c-0df8dcc8ed8e"/>
 					<textElement>
 						<font size="8" isBold="true"/>
 					</textElement>
 					<text><![CDATA[SERVICIO:]]></text>
 				</staticText>
 				<textField>
-					<reportElement uuid="fdaa9f1e-c86b-4fa0-b4f5-1486397ea39d" x="63" y="14" width="100" height="20"/>
+					<reportElement x="63" y="14" width="100" height="20" uuid="fdaa9f1e-c86b-4fa0-b4f5-1486397ea39d"/>
 					<textElement>
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{CEDULA_RUC_PROPIETARIO}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement uuid="b3d1dde3-9736-43d2-b859-558f39622d59" x="60" y="28" width="155" height="20"/>
+					<reportElement x="60" y="28" width="155" height="20" uuid="b3d1dde3-9736-43d2-b859-558f39622d59"/>
 					<textElement>
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{NOMBRE_PROPIETARIO}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement uuid="e206c83b-c6ae-4507-b74a-03c320f8d9ed" x="455" y="6" width="100" height="20"/>
+					<reportElement x="455" y="6" width="100" height="20" uuid="e206c83b-c6ae-4507-b74a-03c320f8d9ed"/>
 					<textElement>
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{NUMERO_FACTURA}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement uuid="c5182221-744d-4aca-b5bb-6aedb102cb70" x="355" y="6" width="100" height="20"/>
+					<reportElement x="355" y="6" width="100" height="20" uuid="c5182221-744d-4aca-b5bb-6aedb102cb70"/>
 					<textElement>
 						<font size="8" isBold="true"/>
 					</textElement>
 					<text><![CDATA[NRO. FACTURA]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="a8bb9981-b851-4fc9-b5c5-2cda2897b496" x="8" y="14" width="52" height="20"/>
+					<reportElement x="8" y="14" width="52" height="20" uuid="a8bb9981-b851-4fc9-b5c5-2cda2897b496"/>
 					<textElement>
 						<font size="8" isBold="true"/>
 					</textElement>
 					<text><![CDATA[C.I. O RUC:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="cb3d291e-a17e-43b2-8663-2b01ab16a9ef" x="8" y="28" width="52" height="20"/>
+					<reportElement x="8" y="28" width="52" height="20" uuid="cb3d291e-a17e-43b2-8663-2b01ab16a9ef"/>
 					<textElement>
 						<font size="8" isBold="true"/>
 					</textElement>
@@ -240,7 +239,7 @@ req.IDE_detalle_SOLICITUD ASC]]>
 	<title>
 		<band height="60">
 			<staticText>
-				<reportElement uuid="dae7ddbe-968f-481d-8c2f-8f4d0dc9be4a" key="staticText-1" x="1" y="36" width="412" height="18" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="staticText-1" x="1" y="36" width="412" height="18" forecolor="#000000" backcolor="#FFFFFF" uuid="dae7ddbe-968f-481d-8c2f-8f4d0dc9be4a"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -253,7 +252,7 @@ req.IDE_detalle_SOLICITUD ASC]]>
 				<text><![CDATA[SOLICITUDES DE MATRICULAS INGRESADAS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="ab997940-c794-469f-ba65-6e69c7bb2d46" key="staticText" x="1" y="2" width="555" height="25" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="staticText" x="1" y="2" width="555" height="25" forecolor="#000000" backcolor="#FFFFFF" uuid="ab997940-c794-469f-ba65-6e69c7bb2d46"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -266,7 +265,7 @@ req.IDE_detalle_SOLICITUD ASC]]>
 				<text><![CDATA[Ilustre Municipio del Cantón Rumiñahui]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="3d898d2b-9f7d-47ae-bb15-363345922bc4" key="staticText-1" x="1" y="18" width="555" height="18" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="staticText-1" x="1" y="18" width="555" height="18" forecolor="#000000" backcolor="#FFFFFF" uuid="3d898d2b-9f7d-47ae-bb15-363345922bc4"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -279,10 +278,10 @@ req.IDE_detalle_SOLICITUD ASC]]>
 				<text><![CDATA[DIRECCIÓN DE TRANSPORTE]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement uuid="ac4a9008-e463-41de-bac0-be1fb2342e41" x="3" y="54" width="556" height="0"/>
+				<reportElement x="3" y="54" width="556" height="0" uuid="ac4a9008-e463-41de-bac0-be1fb2342e41"/>
 			</rectangle>
 			<image>
-				<reportElement uuid="6afe42cc-ca78-41c5-a0a7-0d938d52e169" x="439" y="0" width="115" height="59"/>
+				<reportElement x="439" y="0" width="115" height="59" uuid="6afe42cc-ca78-41c5-a0a7-0d938d52e169"/>
 				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
 			</image>
 		</band>
@@ -290,18 +289,15 @@ req.IDE_detalle_SOLICITUD ASC]]>
 	<detail>
 		<band height="15">
 			<textField>
-				<reportElement uuid="0de40d01-e399-49ed-aace-c2b7f0beba55" x="13" y="0" width="100" height="13"/>
-				<textElement/>
+				<reportElement x="13" y="0" width="100" height="13" uuid="0de40d01-e399-49ed-aace-c2b7f0beba55"/>
 				<textFieldExpression><![CDATA[$F{IDE_DETALLE_REQUISITOS_SOLICITUD}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="e776d292-638b-4863-8e7b-7e0d542fbac4" x="113" y="0" width="332" height="13"/>
-				<textElement/>
+				<reportElement x="113" y="0" width="332" height="13" uuid="e776d292-638b-4863-8e7b-7e0d542fbac4"/>
 				<textFieldExpression><![CDATA[$F{DECRIPCION_REQUISITO}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="328dd4af-c219-442a-b327-ff336b1dbad4" x="454" y="0" width="100" height="13"/>
-				<textElement/>
+				<reportElement x="454" y="0" width="100" height="13" uuid="328dd4af-c219-442a-b327-ff336b1dbad4"/>
 				<textFieldExpression><![CDATA[$F{confirma}]]></textFieldExpression>
 			</textField>
 		</band>
@@ -309,7 +305,7 @@ req.IDE_detalle_SOLICITUD ASC]]>
 	<pageFooter>
 		<band height="22">
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement uuid="d4b59c20-0151-4f1a-86f6-9c146de8d895" key="textField-5" x="0" y="2" width="115" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="textField-5" x="0" y="2" width="115" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="d4b59c20-0151-4f1a-86f6-9c146de8d895"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -322,7 +318,7 @@ req.IDE_detalle_SOLICITUD ASC]]>
 				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement uuid="17a692d6-71f0-49ab-935a-0e74cb8f1af8" key="textField" x="345" y="3" width="170" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="textField" x="345" y="3" width="170" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="17a692d6-71f0-49ab-935a-0e74cb8f1af8"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -335,7 +331,7 @@ req.IDE_detalle_SOLICITUD ASC]]>
 				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
-				<reportElement uuid="4df7edfb-4af4-4d47-a59f-d4ab439eb635" key="textField" x="519" y="3" width="36" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="textField" x="519" y="3" width="36" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="4df7edfb-4af4-4d47-a59f-d4ab439eb635"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -348,12 +344,11 @@ req.IDE_detalle_SOLICITUD ASC]]>
 				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="912c4b28-edd2-4317-af58-94fc56aeb5d9" x="179" y="2" width="100" height="20"/>
-				<textElement/>
+				<reportElement x="179" y="2" width="100" height="20" uuid="912c4b28-edd2-4317-af58-94fc56aeb5d9"/>
 				<textFieldExpression><![CDATA[$P{nomp_res}]]></textFieldExpression>
 			</textField>
 			<rectangle>
-				<reportElement uuid="b6bf1b64-2a64-4ce6-8bc1-ceda8761ce2c" x="1" y="2" width="555" height="0"/>
+				<reportElement x="1" y="2" width="555" height="0" uuid="b6bf1b64-2a64-4ce6-8bc1-ceda8761ce2c"/>
 			</rectangle>
 		</band>
 	</pageFooter>
