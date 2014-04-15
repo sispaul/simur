@@ -393,7 +393,7 @@ public class pre_inventario_placa extends  Pantalla{
            valinicio = Integer.parseInt(txt_numinicio.getValue()+"");
            valfinal = Integer.parseInt(txt_numfinal.getValue()+"");
 //             if(tab_dato.getValor("DESCRIPCION_VEHICULO") == "MOTO" && tab_dato.getValor("DESCRIPCION_SERVICIO") == "PARTICULAR"){
-                    for (int i = valinicio; i < valfinal; i++) {
+                    for (int i = valinicio; i <= valfinal; i++) {
                        valor = String.valueOf(i);
                        placas = txt_plaserie.getValue() + valor;
                        tab_placa.setValor("placa", placas);

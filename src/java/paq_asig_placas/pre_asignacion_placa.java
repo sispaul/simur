@@ -61,6 +61,7 @@ Integer identificacion;
     private Efecto efecto2 = new Efecto();
     
     private Calendario cal_fechabus = new Calendario();
+    private Calendario cal_fechabus1 = new Calendario();
     
     private Dialogo dia_dialogoe = new Dialogo();
     private Dialogo dia_dialogol = new Dialogo();
@@ -510,13 +511,13 @@ Integer identificacion;
     @Override
     public void aceptarReporte() {
         rep_reporte.cerrar();
-        cal_fechabus.setFechaActual();
+        cal_fechabus1.setFechaActual();
         switch (rep_reporte.getNombre()) {
            case "SOLICTUD POR USUARIO":
                 dia_dialogou.Limpiar();
                 dia_dialogou.setDialogo(gridu);
                 grid_du.getChildren().add(new Etiqueta("DESDE FECHA:"));
-                grid_du.getChildren().add(cal_fechabus);
+                grid_du.getChildren().add(cal_fechabus1);
                 grid_du.getChildren().add(new Etiqueta("ELEGIR USUARIO:"));
                 cmb_usuario.setId("cmb_usuario");
                 cmb_usuario.setCombo("SELECT IDE_USUA,NICK_USUA FROM SIS_USUARIO WHERE IDE_PERF <> 1");
@@ -546,7 +547,7 @@ Integer identificacion;
                           TablaGenerica tab_dato = ser_Placa.getUsuario(Integer.parseInt(cmb_usuario.getValue()+""));
                      if (!tab_dato.isEmpty()) {
                       p_parametros = new HashMap();
-                      p_parametros.put("fecha", cal_fechabus.getFecha());
+                      p_parametros.put("fecha", cal_fechabus1.getFecha());
                       p_parametros.put("usuario", tab_dato.getValor("NICK_USUA"));
                       p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
                       rep_reporte.cerrar();
