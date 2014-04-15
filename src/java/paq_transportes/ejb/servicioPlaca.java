@@ -360,7 +360,7 @@ public TablaGenerica getValidarPlaca(Integer solii, Integer tipo) {
         tab_persona.setConexion(conexion);
         tab_persona.setSql("SELECT s.IDE_TIPO_SERVICIO,s.DESCRIPCION_SERVICIO,v.IDE_TIPO_VEHICULO,v.DESCRIPCION_VEHICULO\n" +
                             "FROM dbo.TRANS_TIPO_SERVICIO s,dbo.TRANS_VEHICULO_TIPO v \n" +
-                            "WHERE s.IDE_TIPO_VEHICULO = v.IDE_TIPO_VEHICULO AND s.IDE_TIPO_SERVICIO = "+tipo+" and v.IDE_TIPO_VEHICULO ="+solii);
+                            "WHERE s.IDE_TIPO_VEHICULO = v.IDE_TIPO_VEHICULO AND s.IDE_TIPO_SERVICIO = "+solii+" and v.IDE_TIPO_VEHICULO ="+tipo);
         tab_persona.ejecutarSql();
         conexion.desconectar();
         conexion = null;
