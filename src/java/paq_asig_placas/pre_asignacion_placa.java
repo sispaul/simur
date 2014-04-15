@@ -61,7 +61,6 @@ Integer identificacion;
     private Efecto efecto2 = new Efecto();
     
     private Calendario cal_fechabus = new Calendario();
-    private Calendario cal_fechabus1 = new Calendario();
     
     private Dialogo dia_dialogoe = new Dialogo();
     private Dialogo dia_dialogol = new Dialogo();
@@ -77,6 +76,7 @@ Integer identificacion;
     private Grid gridu = new Grid();
     
     private Combo cmb_usuario = new Combo();
+    private Combo cmb_tipos = new Combo();
     
     private Conexion conexion= new Conexion();
     @EJB
@@ -198,12 +198,11 @@ Integer identificacion;
          * VENTANA DE BUSQUEDA
          */
         dia_dialogol.setId("dia_dialogol");
-        dia_dialogol.setTitle("CONFIRMAR LIBERACIÒN"); //titulo
+        dia_dialogol.setTitle("DATOS PARA LIBERACIÒN"); //titulo
         dia_dialogol.setWidth("26%"); //siempre en porcentajes  ancho
         dia_dialogol.setHeight("12%");//siempre porcentaje   alto 
         dia_dialogol.setResizable(false); //para que no se pueda cambiar el tamaño
-        dia_dialogol.getBot_aceptar().setMetodo("aceptoValores");
-//        dia_dialogol.getBot_cancelar().setMetodo("cancelarValores");
+        dia_dialogol.getBot_aceptar().setMetodo("aceptoReporte");
         grid_dl.setColumns(4);
         agregarComponente(dia_dialogol);
         
@@ -232,12 +231,12 @@ Integer identificacion;
         itm_datos_empl.setUpdate("pan_opcion");
         sum_empleado.getChildren().add(itm_datos_empl);
         
-        ItemMenu itm_datos = new ItemMenu();
-        itm_datos.setValue("LIBERAR ASIGNADAS");
-        itm_datos.setIcon("ui-icon-gear");
-        itm_datos.setMetodo("liberar");
-        itm_datos.setUpdate("pan_opcion");
-        sum_empleado.getChildren().add(itm_datos);
+//        ItemMenu itm_datos = new ItemMenu();
+//        itm_datos.setValue("LIBERAR ASIGNADAS");
+//        itm_datos.setIcon("ui-icon-gear");
+//        itm_datos.setMetodo("liberar");
+//        itm_datos.setUpdate("pan_opcion");
+//        sum_empleado.getChildren().add(itm_datos);
     }
     
     /*Busqueda de empresa para seleccion*/
@@ -420,18 +419,7 @@ Integer identificacion;
         dia_dialogoe.setDialogo(grid_de);
         dia_dialogoe.dibujar();
     }
-    
-   public void liberar(){
-        dia_dialogol.Limpiar();
-        dia_dialogol.setDialogo(gridl);
-        grid_dl.getChildren().add(new Etiqueta("DESDE:"));
-        grid_dl.getChildren().add(cal_fechabus);
-        grid_dl.getChildren().add(new Etiqueta("HASTA:"));
-        grid_dl.getChildren().add(cal_fechabus1);
-        dia_dialogol.setDialogo(grid_dl);
-        dia_dialogol.dibujar();
-    }
-    
+       
    public void aceptoValores(){
      TablaGenerica tab_dato = ser_Placa.getAprobacion(utilitario.getFormatoFechaSQL(utilitario.getFechaActual()), Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")));
             if (!tab_dato.isEmpty()) {
@@ -523,7 +511,6 @@ Integer identificacion;
     public void aceptarReporte() {
         rep_reporte.cerrar();
         cal_fechabus.setFechaActual();
-        cal_fechabus1.setFechaActual();
         switch (rep_reporte.getNombre()) {
            case "SOLICTUD POR USUARIO":
                 dia_dialogou.Limpiar();
@@ -539,7 +526,14 @@ Integer identificacion;
                 dia_dialogou.dibujar();
                break;
            case "REPORTE ASIGNADAS - LIBERAR":
-               
+                     dia_dialogol.Limpiar();
+                    dia_dialogol.setDialogo(gridl);
+                    cmb_tipos.setId("cmb_tipos");
+                    cmb_tipos.setCombo("SELECT IDE_TIPO_SOLICTUD,DESCRIPCION_SOLICITUD FROM TRANS_TIPO_SOLICTUD");
+                    cmb_tipos.eliminarVacio();
+                    grid_dl.getChildren().add(cmb_tipos);
+                    dia_dialogol.setDialogo(grid_dl);
+                    dia_dialogol.dibujar();
                break;
                 
         }
@@ -556,8 +550,6 @@ Integer identificacion;
                       p_parametros.put("usuario", tab_dato.getValor("USU_SOLICITUD"));
                       p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
                       rep_reporte.cerrar();
-                      System.out.println(p_parametros);
-                      System.out.println(rep_reporte.getPath());
                       sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                       sef_formato.dibujar();
                                                   } else {
@@ -568,23 +560,12 @@ Integer identificacion;
                         }
                break;
                case "REPORTE ASIGNADAS - LIBERAR":
-                    if (set_solicitud.getValorSeleccionado()!= null) {
-                          TablaGenerica tab_dato = ser_Placa.getIDSolicitud(Integer.parseInt(set_solicitud.getValorSeleccionado()));
-                            if (!tab_dato.isEmpty()) {
                       p_parametros = new HashMap();
-                      p_parametros.put("ruc", tab_dato.getValor("CEDULA_RUC_EMPRESA")+"");
-                      p_parametros.put("fecha", tab_dato.getValor("FECHA_SOLICITUD")+"");
-                      
+                      p_parametros.put("tipo", Integer.parseInt(cmb_tipos.getValue()+""));           
                       p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
                       rep_reporte.cerrar();
                       sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                      sef_formato.dibujar();
-                      } else {
-                        utilitario.agregarMensajeInfo("no existe en la base de datos", "");
-                        }
-                         }else {
-                            utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
-                           } 
+                      sef_formato.dibujar();               
                break;
         }
 

@@ -34,7 +34,7 @@ public class pre_inventario_placa extends  Pantalla{
 
     Integer valinicio,valfinal;
     String valor,placas,letra;
-
+    
     private Tabla tab_ingreso = new Tabla();
     private Tabla tab_placa = new Tabla();
     private Tabla tab_consulta = new Tabla();
@@ -271,7 +271,7 @@ public class pre_inventario_placa extends  Pantalla{
         dia_dialogor.setId("dia_dialogor");
         dia_dialogor.setTitle("PLACAS - RANGO DE INGRESO"); //titulo
         dia_dialogor.setWidth("36%"); //siempre en porcentajes  ancho
-        dia_dialogor.setHeight("15%");//siempre porcentaje   alto
+        dia_dialogor.setHeight("18%");//siempre porcentaje   alto
         dia_dialogor.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_dialogor.getBot_aceptar().setMetodo("aceptoRango");
         grid_dr.setColumns(4);
@@ -364,7 +364,8 @@ public class pre_inventario_placa extends  Pantalla{
             if (set_servicio.getValorSeleccionado()!= null) {
                         tab_placa.getColumna("ide_tipo_servicio").setValorDefecto(set_servicio.getValorSeleccionado());
                         buscarRango();
-                     dia_dialogo1.cerrar();
+                        tab_placa.insertar();
+                        dia_dialogo1.cerrar();
        }else {
        utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
        }        
@@ -372,6 +373,7 @@ public class pre_inventario_placa extends  Pantalla{
      
     public void buscarRango(){
         dia_dialogor.Limpiar();
+        grid_dr.getChildren().clear();
         dia_dialogor.setDialogo(gridr);
         grid_dr.getChildren().add(new Etiqueta("RANGO INICIO:"));
         grid_dr.getChildren().add(txt_numinicio);
@@ -384,26 +386,33 @@ public class pre_inventario_placa extends  Pantalla{
     }    
     
     public void aceptoRango(){
-        valinicio = Integer.parseInt(txt_numinicio.getValue()+"");
-        valfinal = Integer.parseInt(txt_numfinal.getValue()+"");
-        TablaGenerica tab_dato1 = ser_Placa.getValidarPlaca(Integer.parseInt(set_servicio.getValorSeleccionado()),Integer.parseInt(set_vehiculo.getValorSeleccionado()));
-        System.err.println(tab_dato1);
-        if (!tab_dato1.isEmpty()) {
-             if(tab_dato1.getValor("DESCRIPCION_VEHICULO") == "MOTO" && tab_dato1.getValor("DESCRIPCION_SERVICIO") == "PARTICULAR"){
-                 letra = "H";
+//if (set_servicio.getValorSeleccionado()!= null) {
+//if (set_vehiculo.getValorSeleccionado()!= null) {
+//        TablaGenerica tab_dato = ser_Placa.getValidarPlaca(Integer.parseInt(set_servicio.getValorSeleccionado()),Integer.parseInt(set_vehiculo.getValorSeleccionado()));
+//        if (!tab_dato.isEmpty()) {
+           valinicio = Integer.parseInt(txt_numinicio.getValue()+"");
+           valfinal = Integer.parseInt(txt_numfinal.getValue()+"");
+//             if(tab_dato.getValor("DESCRIPCION_VEHICULO") == "MOTO" && tab_dato.getValor("DESCRIPCION_SERVICIO") == "PARTICULAR"){
                     for (int i = valinicio; i < valfinal; i++) {
                        valor = String.valueOf(i);
-                       placas = letra + txt_plaserie.getValue() + valor;
+                       placas = txt_plaserie.getValue() + valor;
                        tab_placa.setValor("placa", placas);
                        tab_placa.insertar();
                        dia_dialogor.cerrar();
                     }
-             }
-         } else {
-          utilitario.agregarMensajeInfo("No Existen Coincidencias en la base de datos", "");
-                   }
+//             }
+//         } else {
+//          utilitario.agregarMensajeInfo("No Existen Coincidencias en la base de datos", "");
+//                   }
+//        }else {
+//                            utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
+//                           } 
+//        }else {
+//                            utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
+//                           } 
     }
             
+    
     
     @Override
     public void insertar() {
