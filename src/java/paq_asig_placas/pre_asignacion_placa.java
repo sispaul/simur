@@ -208,7 +208,7 @@ Integer identificacion;
         agregarComponente(dia_dialogol);
         
         dia_dialogou.setId("dia_dialogou");
-        dia_dialogou.setTitle("CONFIRMAR LIBERACIÒN"); //titulo
+        dia_dialogou.setTitle("SLECCIONAR USUARIO"); //titulo
         dia_dialogou.setWidth("26%"); //siempre en porcentajes  ancho
         dia_dialogou.setHeight("25%");//siempre porcentaje   alto 
         dia_dialogou.setResizable(false); //para que no se pueda cambiar el tamaño
@@ -421,17 +421,16 @@ Integer identificacion;
         dia_dialogoe.dibujar();
     }
     
-//        public void liberar(){
-//        dia_dialogol.Limpiar();
-//        dia_dialogol.setDialogo(gridl);
-//        grid_dl.getChildren().add(new Etiqueta("DESDE:"));
-//        grid_dl.getChildren().add(cal_fechabus);
-//        grid_dl.getChildren().add(new Etiqueta("HASTA:"));
-//        grid_dl.getChildren().add(cal_fechabus1);
-//        grid_dl.getChildren().add(new Etiqueta("ELEGIR USUARIO:"));
-//        dia_dialogol.setDialogo(grid_dl);
-//        dia_dialogol.dibujar();
-//    }
+   public void liberar(){
+        dia_dialogol.Limpiar();
+        dia_dialogol.setDialogo(gridl);
+        grid_dl.getChildren().add(new Etiqueta("DESDE:"));
+        grid_dl.getChildren().add(cal_fechabus);
+        grid_dl.getChildren().add(new Etiqueta("HASTA:"));
+        grid_dl.getChildren().add(cal_fechabus1);
+        dia_dialogol.setDialogo(grid_dl);
+        dia_dialogol.dibujar();
+    }
     
    public void aceptoValores(){
      TablaGenerica tab_dato = ser_Placa.getAprobacion(utilitario.getFormatoFechaSQL(utilitario.getFechaActual()), Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")));
@@ -529,10 +528,8 @@ Integer identificacion;
            case "SOLICTUD POR USUARIO":
                 dia_dialogou.Limpiar();
                 dia_dialogou.setDialogo(gridu);
-                grid_du.getChildren().add(new Etiqueta("DESDE:"));
+                grid_du.getChildren().add(new Etiqueta("DESDE FECHA:"));
                 grid_du.getChildren().add(cal_fechabus);
-                grid_du.getChildren().add(new Etiqueta("HASTA:"));
-                grid_du.getChildren().add(cal_fechabus1);
                 grid_du.getChildren().add(new Etiqueta("ELEGIR USUARIO:"));
                 cmb_usuario.setId("cmb_usuario");
                 cmb_usuario.setCombo("SELECT IDE_SOLICITUD_PLACA,USU_SOLICITUD FROM TRANS_SOLICITUD_PLACA");
@@ -547,6 +544,52 @@ Integer identificacion;
                 
         }
     }
+    
+    public void aceptoReporte(){
+        switch (rep_reporte.getNombre()) {
+               case "SOLICTUD POR USUARIO":
+                   if (cmb_usuario.getValue()!= null) {
+                          TablaGenerica tab_dato = ser_Placa.getUsuario(Integer.parseInt(cmb_usuario.getValue()+""));
+                     if (!tab_dato.isEmpty()) {
+                      p_parametros = new HashMap();
+                      p_parametros.put("finicio", cal_fechabus.getFecha());
+                      p_parametros.put("usuario", tab_dato.getValor("USU_SOLICITUD"));
+                      p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
+                      rep_reporte.cerrar();
+                      System.out.println(p_parametros);
+                      System.out.println(rep_reporte.getPath());
+                      sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                      sef_formato.dibujar();
+                                                  } else {
+                                utilitario.agregarMensajeInfo("no existe en la base de datos", "");
+                            }
+                      }else {
+                        utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
+                        }
+               break;
+               case "REPORTE ASIGNADAS - LIBERAR":
+                    if (set_solicitud.getValorSeleccionado()!= null) {
+                          TablaGenerica tab_dato = ser_Placa.getIDSolicitud(Integer.parseInt(set_solicitud.getValorSeleccionado()));
+                            if (!tab_dato.isEmpty()) {
+                      p_parametros = new HashMap();
+                      p_parametros.put("ruc", tab_dato.getValor("CEDULA_RUC_EMPRESA")+"");
+                      p_parametros.put("fecha", tab_dato.getValor("FECHA_SOLICITUD")+"");
+                      
+                      p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
+                      rep_reporte.cerrar();
+                      sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                      sef_formato.dibujar();
+                      } else {
+                        utilitario.agregarMensajeInfo("no existe en la base de datos", "");
+                        }
+                         }else {
+                            utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
+                           } 
+               break;
+        }
+
+    }
+   
     
     @Override
     public void insertar() {
