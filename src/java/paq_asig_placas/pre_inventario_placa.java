@@ -270,7 +270,7 @@ public class pre_inventario_placa extends  Pantalla{
         
         dia_dialogor.setId("dia_dialogor");
         dia_dialogor.setTitle("PLACAS - RANGO DE INGRESO"); //titulo
-        dia_dialogor.setWidth("36%"); //siempre en porcentajes  ancho
+        dia_dialogor.setWidth("37%"); //siempre en porcentajes  ancho
         dia_dialogor.setHeight("18%");//siempre porcentaje   alto
         dia_dialogor.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_dialogor.getBot_aceptar().setMetodo("aceptoRango");

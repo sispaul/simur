@@ -519,7 +519,7 @@ Integer identificacion;
                 grid_du.getChildren().add(cal_fechabus);
                 grid_du.getChildren().add(new Etiqueta("ELEGIR USUARIO:"));
                 cmb_usuario.setId("cmb_usuario");
-                cmb_usuario.setCombo("SELECT IDE_SOLICITUD_PLACA,USU_SOLICITUD FROM TRANS_SOLICITUD_PLACA");
+                cmb_usuario.setCombo("SELECT IDE_USUA,NICK_USUA FROM SIS_USUARIO WHERE IDE_PERF <> 1");
                 cmb_usuario.eliminarVacio();
                 grid_du.getChildren().add(cmb_usuario);
                 dia_dialogou.setDialogo(grid_du);
@@ -546,11 +546,14 @@ Integer identificacion;
                           TablaGenerica tab_dato = ser_Placa.getUsuario(Integer.parseInt(cmb_usuario.getValue()+""));
                      if (!tab_dato.isEmpty()) {
                       p_parametros = new HashMap();
-                      p_parametros.put("finicio", cal_fechabus.getFecha());
-                      p_parametros.put("usuario", tab_dato.getValor("USU_SOLICITUD"));
+                      p_parametros.put("fecha", cal_fechabus.getFecha());
+                      p_parametros.put("usuario", tab_dato.getValor("NICK_USUA"));
                       p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
                       rep_reporte.cerrar();
+                         System.err.println(p_parametros);
+                         
                       sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                      System.out.println(rep_reporte.getPath());
                       sef_formato.dibujar();
                                                   } else {
                                 utilitario.agregarMensajeInfo("no existe en la base de datos", "");
