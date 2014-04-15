@@ -8,51 +8,47 @@
 	</parameter>
 	<parameter name="nomp_res" class="java.lang.String"/>
 	<parameter name="SUBREPORT_DIR_1" class="java.lang.String"/>
-	<parameter name="usuario" class="java.lang.String"/>
-	<parameter name="fecha" class="java.lang.String"/>
+	<parameter name="tipo" class="java.lang.Integer"/>
 	<queryString>
-		<![CDATA[SELECT cab.IDE_SOLICITUD_PLACA,cab.FECHA_SOLICITUD,
-cab.CEDULA_RUC_EMPRESA,cab.NOMBRE_EMPRESA,
-cab.DESCRIPCION_SOLICITUD,det.CEDULA_RUC_PROPIETARIO,
-det.NOMBRE_PROPIETARIO,det.NUMERO_FACTURA,
-req.IDE_DETALLE_REQUISITOS_SOLICITUD,req.IDE_DETALLE_SOLICITUD,
-(case when req.CONFIRMAR_REQUISITO = 1 then 'SI' when req.CONFIRMAR_REQUISITO= 0 then 'NO' end ) as confirma,
-r.DECRIPCION_REQUISITO,ser.DESCRIPCION_SERVICIO,
-ve.descripcion_vehiculo,cab.USU_SOLICITUD
+		<![CDATA[SELECT t.IDE_SOLICITUD_PLACA,s.IDE_TIPO_SOLICTUD,
+t.FECHA_SOLICITUD,t.CEDULA_RUC_EMPRESA,
+t.NOMBRE_EMPRESA,d.IDE_DETALLE_SOLICITUD,
+d.CEDULA_RUC_PROPIETARIO,d.NOMBRE_PROPIETARIO,
+d.NUMERO_FACTURA,p.IDE_PLACA,p.PLACA,
+v.DESCRIPCION_VEHICULO,
+g.DESCRIPCION_SERVICIO
 FROM
-dbo.TRANS_SOLICITUD_PLACA AS cab ,
-dbo.trans_detalle_solicitud_placa AS det ,
-dbo.trans_detalle_requisitos_solicitud AS req ,
-dbo.TRANS_TIPO_REQUISITO AS r ,
-dbo.TRANS_TIPO_SERVICIO ser,
-dbo.trans_vehiculo_tipo ve
+dbo.TRANS_DETALLE_SOLICITUD_PLACA AS d ,
+dbo.TRANS_SOLICITUD_PLACA AS t ,
+dbo.TRANS_TIPO_SOLICTUD AS s ,
+dbo.TRANS_PLACA AS p,
+TRANS_VEHICULO_TIPO v,
+TRANS_TIPO_SERVICIO g
 WHERE
-cab.IDE_SOLICITUD_PLACA = det.IDE_SOLICITUD_PLACA AND
-det.IDE_detalle_SOLICITUD = req.IDE_detalle_SOLICITUD AND
-req.IDE_TIPO_REQUISITO = r.IDE_TIPO_REQUISITO  AND
-r.IDE_TIPO_SERVICIO = ser.IDE_TIPO_SERVICIO AND
-ser.IDE_TIPO_VEHICULO = ve.ide_tipo_vehiculo AND
-cab.USU_SOLICITUD = $P{usuario} AND
-cab.FECHA_SOLICITUD = cast ($P{fecha} as date)
-ORDER BY
-det.IDE_SOLICITUD_PLACA ASC,
-req.IDE_detalle_SOLICITUD ASC]]>
+d.IDE_SOLICITUD_PLACA = t.IDE_SOLICITUD_PLACA AND
+t.IDE_TIPO_SOLICTUD = s.IDE_TIPO_SOLICTUD AND
+d.IDE_PLACA = p.IDE_PLACA AND
+d.IDE_TIPO_VEHICULO = v.IDE_TIPO_VEHICULO AND
+p.IDE_TIPO_VEHICULO = v.IDE_TIPO_VEHICULO AND
+g.IDE_TIPO_VEHICULO = v.IDE_TIPO_VEHICULO AND
+d.IDE_TIPO_SERVICIO = g.IDE_TIPO_SERVICIO AND
+p.IDE_TIPO_SERVICIO = g.IDE_TIPO_SERVICIO AND
+p.IDE_TIPO_ESTADO = (SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO WHERE DESCRIPCION_ESTADO LIKE 'ASIGNADA') AND
+s.IDE_TIPO_SOLICTUD = $P{tipo}]]>
 	</queryString>
 	<field name="IDE_SOLICITUD_PLACA" class="java.lang.Long"/>
+	<field name="IDE_TIPO_SOLICTUD" class="java.lang.Long"/>
 	<field name="FECHA_SOLICITUD" class="java.lang.String"/>
 	<field name="CEDULA_RUC_EMPRESA" class="java.lang.String"/>
 	<field name="NOMBRE_EMPRESA" class="java.lang.String"/>
-	<field name="DESCRIPCION_SOLICITUD" class="java.lang.String"/>
+	<field name="IDE_DETALLE_SOLICITUD" class="java.lang.Long"/>
 	<field name="CEDULA_RUC_PROPIETARIO" class="java.lang.String"/>
 	<field name="NOMBRE_PROPIETARIO" class="java.lang.String"/>
 	<field name="NUMERO_FACTURA" class="java.lang.Integer"/>
-	<field name="IDE_DETALLE_REQUISITOS_SOLICITUD" class="java.lang.Long"/>
-	<field name="IDE_DETALLE_SOLICITUD" class="java.lang.Long"/>
-	<field name="confirma" class="java.lang.String"/>
-	<field name="DECRIPCION_REQUISITO" class="java.lang.String"/>
+	<field name="IDE_PLACA" class="java.lang.Long"/>
+	<field name="PLACA" class="java.lang.String"/>
+	<field name="DESCRIPCION_VEHICULO" class="java.lang.String"/>
 	<field name="DESCRIPCION_SERVICIO" class="java.lang.String"/>
-	<field name="descripcion_vehiculo" class="java.lang.String"/>
-	<field name="USU_SOLICITUD" class="java.lang.String"/>
 	<group name="grupo1">
 		<groupExpression><![CDATA[$F{IDE_SOLICITUD_PLACA}]]></groupExpression>
 		<groupHeader>
@@ -116,20 +112,6 @@ req.IDE_detalle_SOLICITUD ASC]]>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{CEDULA_RUC_EMPRESA}]]></textFieldExpression>
 				</textField>
-				<textField>
-					<reportElement uuid="015fbbda-9c0f-4d8e-a609-a71bf20dd2ed" x="454" y="29" width="100" height="20" forecolor="#FFFFFF"/>
-					<textElement>
-						<font size="8"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{USU_SOLICITUD}]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement uuid="3ef4f696-dab6-4c72-8b44-e56eb5213eee" x="345" y="29" width="110" height="20" forecolor="#FFFFFF"/>
-					<textElement>
-						<font size="8" isBold="true"/>
-					</textElement>
-					<text><![CDATA[USUARIO - INGRESO:]]></text>
-				</staticText>
 			</band>
 		</groupHeader>
 		<groupFooter>
@@ -162,7 +144,7 @@ req.IDE_detalle_SOLICITUD ASC]]>
 					<textElement>
 						<font size="8"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{descripcion_vehiculo}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{DESCRIPCION_VEHICULO}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement uuid="0ff8c9b4-0849-4801-af68-9aa41383dfa3" x="472" y="26" width="80" height="20"/>
@@ -287,23 +269,7 @@ req.IDE_detalle_SOLICITUD ASC]]>
 		</band>
 	</title>
 	<detail>
-		<band height="15">
-			<textField>
-				<reportElement uuid="0de40d01-e399-49ed-aace-c2b7f0beba55" x="13" y="0" width="100" height="13"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{IDE_DETALLE_REQUISITOS_SOLICITUD}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="e776d292-638b-4863-8e7b-7e0d542fbac4" x="113" y="0" width="332" height="13"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{DECRIPCION_REQUISITO}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="328dd4af-c219-442a-b327-ff336b1dbad4" x="454" y="0" width="100" height="13"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{confirma}]]></textFieldExpression>
-			</textField>
-		</band>
+		<band height="15"/>
 	</detail>
 	<pageFooter>
 		<band height="22">
