@@ -198,10 +198,11 @@ Integer identificacion;
         /*
          * VENTANA DE BUSQUEDA
          */
+       
         dia_dialogol.setId("dia_dialogol");
-        dia_dialogol.setTitle("DATOS PARA LIBERACIÒN"); //titulo
+        dia_dialogol.setTitle("SLECCIONAR USUARIO"); //titulo
         dia_dialogol.setWidth("26%"); //siempre en porcentajes  ancho
-        dia_dialogol.setHeight("12%");//siempre porcentaje   alto 
+        dia_dialogol.setHeight("25%");//siempre porcentaje   alto 
         dia_dialogol.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_dialogol.getBot_aceptar().setMetodo("aceptoReporte");
         grid_dl.setColumns(4);
@@ -431,20 +432,20 @@ Integer identificacion;
                 utilitario.addUpdate("tab_detalle");
                 aceptoValores1();
             } else {
-                utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ciudadania del municipio", "");
+                utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ", "");
             }
    }
    
    public void aceptoValores1(){
        TablaGenerica tab_dato = ser_Placa.getIDPlaca(identificacion, Integer.parseInt(tab_solicitud.getValor("IDE_SOLICITUD_PLACA")));
-            if (!tab_dato.isEmpty()) {
+       if (!tab_dato.isEmpty()) {
         ser_Placa.estadoPlaca(Integer.parseInt(tab_dato.getValor("IDE_PLACA")));
         utilitario.agregarMensaje("ASIGNACIÓN REALIZADA", "");
         utilitario.addUpdate("tab_detalle");
         dia_dialogoe.cerrar();
         placasDispo();
         } else {
-                utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ciudadania del municipio", "");
+                utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ", "");
             }
    }
    public void cancelarValores(){
@@ -551,8 +552,6 @@ Integer identificacion;
                       p_parametros.put("usuario", tab_dato.getValor("NICK_USUA"));
                       p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
                       rep_reporte.cerrar();
-                         System.err.println(p_parametros);
-                         
                       sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                       System.out.println(rep_reporte.getPath());
                       sef_formato.dibujar();
