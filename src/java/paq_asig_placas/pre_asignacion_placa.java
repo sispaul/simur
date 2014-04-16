@@ -546,6 +546,7 @@ Integer identificacion;
                case "SOLICTUD POR USUARIO":
                    if (cmb_usuario.getValue()!= null) {
                           TablaGenerica tab_dato = ser_Placa.getUsuario(Integer.parseInt(cmb_usuario.getValue()+""));
+                          System.out.println(Integer.parseInt(cmb_usuario.getValue()+""));
                      if (!tab_dato.isEmpty()) {
                       p_parametros = new HashMap();
                       p_parametros.put("fecha", cal_fechabus1.getFecha());
