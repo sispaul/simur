@@ -370,9 +370,10 @@ public TablaGenerica getValidarPlaca(Integer solii, Integer tipo) {
 public TablaGenerica getUsuario(Integer usu) {
         //Busca a una empresa en la tabla maestra_ruc por ruc
         conectar();
+        System.out.println(usu);
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(conexion);
-        tab_persona.setSql("SELECT IDE_SOLICITUD_PLACA,USU_SOLICITUD FROM TRANS_SOLICITUD_PLACA WHERE IDE_SOLICITUD_PLACA ="+usu);
+        tab_persona.setSql("SELECT IDE_USUA,NICK_USUA FROM SIS_USUARIO WHERE IDE_USUA ="+usu);
         tab_persona.ejecutarSql();
         conexion.desconectar();
         conexion = null;
