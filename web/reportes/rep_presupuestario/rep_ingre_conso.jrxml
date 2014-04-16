@@ -361,7 +361,7 @@ order by pre_codigo]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cobradoc1}]]></textFieldExpression>
 			</textField>
-			<textField pattern="###0.00;###0.00-">
+			<textField pattern="###0.00;-###0.00">
 				<reportElement uuid="11935105-ad29-4fb2-9e6f-a306331786b1" x="716" y="0" width="49" height="14"/>
 				<textElement>
 					<font size="7"/>

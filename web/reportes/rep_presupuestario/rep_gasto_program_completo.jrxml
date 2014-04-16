@@ -430,7 +430,7 @@ order by pre_codigo]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{compromiso1}]]></textFieldExpression>
 			</textField>
-			<textField pattern="###0.00;###0.00-">
+			<textField pattern="###0.00;-###0.00">
 				<reportElement uuid="a7f4f87d-661c-4ac5-ae34-c4a0e1ec63e4" key="textField" x="710" y="0" width="72" height="14" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Right">
 					<font size="7"/>
