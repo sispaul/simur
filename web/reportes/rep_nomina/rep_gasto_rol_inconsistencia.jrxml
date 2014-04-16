@@ -16,8 +16,10 @@ num_descuento,descuento,cedula,nombres,ide_descuento,
 ide_empleado,ide_empleado_rol
 
 FROM srh_descuento
-where ide_empleado_rol <> ide_empleado
-ORDER BY descuento]]>
+where ide_empleado_rol is null and
+ide_empleado is null or
+ide_empleado_rol <> ide_empleado
+ORDER BY nombres]]>
 	</queryString>
 	<field name="id_distributivo_roles" class="java.lang.Integer"/>
 	<field name="ano" class="java.lang.Integer"/>
