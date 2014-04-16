@@ -3,9 +3,6 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["C:\\Users\\KEJA\\Documents\\Nueva carpeta\\"]]></defaultValueExpression>
-	</parameter>
 	<parameter name="ruc" class="java.lang.String"/>
 	<parameter name="nomp_res" class="java.lang.String"/>
 	<parameter name="fecha" class="java.lang.String"/>
@@ -45,8 +42,7 @@ cab.CEDULA_RUC_EMPRESA LIKE $P{ruc}
 
 ORDER BY
 det.IDE_SOLICITUD_PLACA ASC,
-req.IDE_detalle_SOLICITUD ASC
-]]>
+req.IDE_detalle_SOLICITUD ASC]]>
 	</queryString>
 	<field name="IDE_SOLICITUD_PLACA" class="java.lang.Long"/>
 	<field name="FECHA_SOLICITUD" class="java.lang.String"/>
@@ -275,7 +271,7 @@ req.IDE_detalle_SOLICITUD ASC
 			</rectangle>
 			<image>
 				<reportElement uuid="a1230b58-a781-40c3-8b0c-106cdcbd567b" x="439" y="0" width="113" height="57"/>
-				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR_1}+"/upload/logos/logo_reporte.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>
