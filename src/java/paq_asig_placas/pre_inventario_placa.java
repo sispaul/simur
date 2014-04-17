@@ -407,7 +407,6 @@ public class pre_inventario_placa extends  Pantalla{
                     }
     }
     
-    
         public void requisito(){
             if (set_tipo.getValorSeleccionado()!= null) {
                 TablaGenerica tab_dato = ser_Placa.getPlacaActual(Integer.parseInt(set_tipo.getValorSeleccionado()));
@@ -435,20 +434,7 @@ public class pre_inventario_placa extends  Pantalla{
        utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
        }    
     }
-    
-    public void aceptoRango1(){
-           valinicio = Integer.parseInt(txt_numinicio.getValue()+"");
-           valfinal = Integer.parseInt(txt_numfinal.getValue()+"");
-                    for (int i = valinicio; i <= valfinal; i++) {
-                       valor = String.valueOf(i);
-                       placas = txt_plaserie.getValue() + valor + txt_moto.getValue();
-                       tab_placa.setValor("placa", placas);
-                       requisito();
-                       tab_placa.insertar();
-                       dia_dialogor.cerrar();
-                    }
-    }
-        
+           
     @Override
     public void insertar() {
         utilitario.getTablaisFocus().insertar();
