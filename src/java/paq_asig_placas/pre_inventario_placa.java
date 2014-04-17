@@ -32,7 +32,7 @@ import persistencia.Conexion;
  */
 public class pre_inventario_placa extends  Pantalla{
 
-    Integer valinicio,valfinal;
+    Integer valinicio,valfinal,moto;
     String valor,placas,letra;
     
     private Tabla tab_ingreso = new Tabla();
@@ -73,6 +73,7 @@ public class pre_inventario_placa extends  Pantalla{
     private Texto txt_plaserie= new Texto();
     private Texto txt_numinicio= new Texto();
     private Texto txt_numfinal= new Texto();
+    private Texto txt_moto= new Texto();
     @EJB
     private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servicioPlaca.class);
         ///REPORTES
@@ -120,6 +121,8 @@ public class pre_inventario_placa extends  Pantalla{
         tab_placa.getColumna("ide_tipo_servicio").setLectura(true);
         tab_placa.getColumna("ide_tipo_placa").setLectura(true);
         tab_placa.getColumna("ide_tipo_estado").setLectura(true);
+//        tab_placa.getColumna("ide_tipo_placa2").setVisible(false);
+        tab_placa.getColumna("tipo_entrega2").setVisible(false);
         tab_placa.getColumna("ide_tipo_vehiculo").setCombo("SELECT ide_tipo_vehiculo,descripcion_vehiculo FROM trans_vehiculo_tipo");
         tab_placa.getColumna("ide_tipo_servicio").setCombo("SELECT IDE_TIPO_SERVICIO,DESCRIPCION_SERVICIO FROM TRANS_TIPO_SERVICIO");
         tab_placa.getColumna("ide_tipo_placa").setCombo("SELECT IDE_TIPO_PLACA,DESCRIPCION_PLACA FROM TRANS_TIPO_PLACA");
@@ -270,7 +273,7 @@ public class pre_inventario_placa extends  Pantalla{
         
         dia_dialogor.setId("dia_dialogor");
         dia_dialogor.setTitle("PLACAS - RANGO DE INGRESO"); //titulo
-        dia_dialogor.setWidth("37%"); //siempre en porcentajes  ancho
+        dia_dialogor.setWidth("30%"); //siempre en porcentajes  ancho
         dia_dialogor.setHeight("18%");//siempre porcentaje   alto
         dia_dialogor.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_dialogor.getBot_aceptar().setMetodo("aceptoRango");
@@ -375,45 +378,77 @@ public class pre_inventario_placa extends  Pantalla{
         dia_dialogor.Limpiar();
         grid_dr.getChildren().clear();
         dia_dialogor.setDialogo(gridr);
+        txt_numinicio.setSize(7);
         grid_dr.getChildren().add(new Etiqueta("RANGO INICIO:"));
         grid_dr.getChildren().add(txt_numinicio);
+        txt_numfinal.setSize(7);
         grid_dr.getChildren().add(new Etiqueta("RANGO FINAL:"));
         grid_dr.getChildren().add(txt_numfinal);
+        txt_plaserie.setSize(4);
         grid_dr.getChildren().add(new Etiqueta("SERIE INGRESO:"));
         grid_dr.getChildren().add(txt_plaserie);
+        txt_moto.setSize(1);
+        grid_dr.getChildren().add(new Etiqueta("ADICIONAL MOTO:"));
+        grid_dr.getChildren().add(txt_moto);
         dia_dialogor.setDialogo(grid_dr);
         dia_dialogor.dibujar();
     }    
     
     public void aceptoRango(){
-//if (set_servicio.getValorSeleccionado()!= null) {
-//if (set_vehiculo.getValorSeleccionado()!= null) {
-//        TablaGenerica tab_dato = ser_Placa.getValidarPlaca(Integer.parseInt(set_servicio.getValorSeleccionado()),Integer.parseInt(set_vehiculo.getValorSeleccionado()));
-//        if (!tab_dato.isEmpty()) {
            valinicio = Integer.parseInt(txt_numinicio.getValue()+"");
            valfinal = Integer.parseInt(txt_numfinal.getValue()+"");
-//             if(tab_dato.getValor("DESCRIPCION_VEHICULO") == "MOTO" && tab_dato.getValor("DESCRIPCION_SERVICIO") == "PARTICULAR"){
                     for (int i = valinicio; i <= valfinal; i++) {
                        valor = String.valueOf(i);
-                       placas = txt_plaserie.getValue() + valor;
+                       placas = txt_plaserie.getValue() + valor + txt_moto.getValue();
                        tab_placa.setValor("placa", placas);
+                       requisito();
                        tab_placa.insertar();
                        dia_dialogor.cerrar();
                     }
-//             }
-//         } else {
-//          utilitario.agregarMensajeInfo("No Existen Coincidencias en la base de datos", "");
-//                   }
-//        }else {
-//                            utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
-//                           } 
-//        }else {
-//                            utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
-//                           } 
     }
-            
     
     
+        public void requisito(){
+            if (set_tipo.getValorSeleccionado()!= null) {
+                TablaGenerica tab_dato = ser_Placa.getPlacaActual(Integer.parseInt(set_tipo.getValorSeleccionado()));
+                if (!tab_dato.isEmpty()) {
+                    
+                    if(tab_dato.getValor("DESCRIPCION_PLACA") != "PAPEL"){
+                          for (int i = 0; i < tab_placa.getTotalFilas(); i++) {
+                            tab_placa.getValor(i,"IDE_PLACA");
+                            tab_placa.getValor(i,"PLACA");
+                            tab_placa.getValor(i,"IDE_TIPO_PLACA2");
+                            if (tab_placa.getValor(i,"PLACA").equals(placas)){
+                                utilitario.agregarMensajeInfo("Se repite ", placas);
+                                ser_Placa.placaActual(placas);
+                            }else {
+                                  utilitario.agregarMensajeInfo("No existen series igual, Guarda con seguridad ", "");         
+                            }
+                        }
+                    }else {
+                         utilitario.agregarMensajeInfo("No Cumple Condición ", "");
+                               }
+             } else {
+                         utilitario.agregarMensajeInfo("No Existen Coincidencias ", "");
+                               }
+                }else {
+       utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
+       }    
+    }
+    
+    public void aceptoRango1(){
+           valinicio = Integer.parseInt(txt_numinicio.getValue()+"");
+           valfinal = Integer.parseInt(txt_numfinal.getValue()+"");
+                    for (int i = valinicio; i <= valfinal; i++) {
+                       valor = String.valueOf(i);
+                       placas = txt_plaserie.getValue() + valor + txt_moto.getValue();
+                       tab_placa.setValor("placa", placas);
+                       requisito();
+                       tab_placa.insertar();
+                       dia_dialogor.cerrar();
+                    }
+    }
+        
     @Override
     public void insertar() {
         utilitario.getTablaisFocus().insertar();
