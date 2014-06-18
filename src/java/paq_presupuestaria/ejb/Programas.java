@@ -4,7 +4,9 @@
  */
 package paq_presupuestaria.ejb;
 
+import framework.aplicacion.TablaGenerica;
 import javax.ejb.Stateless;
+import org.hsqldb.types.Binary;
 import paq_sistema.aplicacion.Utilitario;
 import persistencia.Conexion;
 
@@ -255,7 +257,175 @@ public class Programas {
         con_postgres.ejecutarSql(str_sql7);
         con_postgres.desconectar();
         con_postgres = null;
-    }   
+    } 
+      
+     public void actuProveedor (Integer provee,String titular,Integer banco,String cuenta,String tipcuen,String activida,String fono,Integer tiprov,String fono1,String ruc,String cuban,String usu){
+         String proveedor="UPDATE tes_proveedores set titular = '"+titular+"' ,ban_codigo ="+banco+",numero_cuenta ='"+cuenta+"',\n" +
+                            "tipo_cuenta = '"+tipcuen+"',actividad ='"+activida+"',telefono1 ='"+fono+"',ide_tipo_proveedor ="+tiprov+" ,\n" +
+                            "telefono2 ='"+fono1+"' ,ruc ='"+ruc+"',codigo_banco ='"+cuban+"',\n" +
+                            "usuario_actua ='"+usu+"',ip_actua = '"+utilitario.getIp()+"',fecha_actua ='"+utilitario.getFechaActual()+"' WHERE ide_proveedor ="+provee;
+         conectar();
+        con_postgres.ejecutarSql(proveedor);
+        con_postgres.desconectar();
+        con_postgres = null;
+     }
+     
+    public void actuEmpleado(Integer banco,String numero,String usu,Integer ci,Integer tipo){
+       String empleado="Update srh_empleado set cod_banco="+banco+",numero_cuenta='"+numero+"',ip_responsable ='"+utilitario.getIp()+"',"
+                        + "nom_responsable='"+usu+"',cod_cuenta="+tipo+",fecha_responsable='"+utilitario.getFechaActual()+"'WHERE cod_empleado = "+ci;
+       conectar();
+       con_postgres.ejecutarSql(empleado);
+       con_postgres.desconectar();
+       con_postgres = null;
+    }
+   
+    public void actuListado(String ci, String respon,String usu,Integer ide){
+     String str_sqlg="UPDATE  tes_comprobante_pago_listado \n" +
+                    "set fecha_pagado = '"+utilitario.getFechaActual()+"',ci_paga='"+ci+"' ,responsable_paga='"+respon+"',"
+                    + "usuario_actua_paga='"+usu+"',ip_actua_paga='"+utilitario.getIp()+"'\n" +
+                    "WHERE ide_listado ="+ide;
+       
+    conectar();
+    con_postgres.ejecutarSql(str_sqlg);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+    
+    public void actualizarComprobante (String cuenta,Integer codigo,String tipo,Integer detalle,Integer listado,String usu,String registro,Integer estado){
+
+        String str_sqlg="UPDATE tes_detalle_comprobante_pago_listado \n" +
+                        "set numero_cuenta ='"+cuenta+"',ban_codigo="+codigo+",\n" +
+                        "tipo_cuenta='"+tipo+"',usuario_actua_pagado='"+usu+"',ide_estado_detalle_listado ="+estado+" ,ban_nombre = (SELECT o.ban_nombre FROM ocebanco o WHERE o.ban_codigo ="+codigo+"),num_transferencia = '"+registro+"',ip_actua_pagado='"+utilitario.getIp()+"'\n" +
+                        "WHERE ide_detalle_listado="+detalle+" and ide_listado ="+listado;  
+    conectar();
+    con_postgres.ejecutarSql(str_sqlg);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+    
+    public void actuLis(String ci, String respon,Integer ide){
+    String str_sqlg="UPDATE tes_comprobante_pago_listado\n" +
+                    "set fecha_devolucion='"+utilitario.getFechaActual()+"',ci_devolucion='"+ci+"',usuario_actua_devolucion='"+respon+"',"
+                    + "ip_actua_devolucion ='"+utilitario.getIp()+"'\n" +
+                    "where ide_listado = "+ide;
+    conectar();
+    con_postgres.ejecutarSql(str_sqlg);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+
+   public void actuLisDevol(Integer ide){
+    String str_sqlg="UPDATE tes_comprobante_pago_listado\n" +
+                    "set devolucion='1' where ide_listado = "+ide;
+    conectar();
+    con_postgres.ejecutarSql(str_sqlg);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+    
+    public void actuLisDevolver(Integer ide){
+    String str_sqlg="UPDATE tes_comprobante_pago_listado\n" +
+                    "set estado='2' where ide_listado = "+ide;
+    conectar();
+    con_postgres.ejecutarSql(str_sqlg);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+      
+    public void actuComponente(String cuenta,Integer codigo,String tipo,Integer detalle,Integer listado,String usu,String registro,Integer estado){
+    String str_sqlg="UPDATE tes_detalle_comprobante_pago_listado\n" +
+                    "set numero_cuenta ='"+cuenta+"',ban_codigo="+codigo+",ban_nombre=(SELECT ban_nombre FROM ocebanco WHERE ban_codigo ="+codigo+"),"
+                      + "tipo_cuenta='"+tipo+"',usuario_actua_devolucion='"+usu+"',num_transferencia='"+registro+"',ip_actua_devolucion='"+utilitario.getIp()+"',ide_estado_detalle_listado="+estado+"\n" +
+                    "where ide_detalle_listado = "+detalle+" and ide_listado = "+listado;
+                        conectar();
+    con_postgres.ejecutarSql(str_sqlg);
+    con_postgres.desconectar();
+    con_postgres = null;    
+    }
+    
+     public TablaGenerica periodo(Integer periodo){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT ide_tipo_cuenta,tipo_cuenta,cuenta FROM ocebanco_tipo_cuenta WHERE ide_tipo_cuenta ="+periodo);
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+     
+  public TablaGenerica banco(Integer banco){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT ban_codigo,ban_nombre,num_banco FROM ocebanco WHERE ban_codigo ="+banco);
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+    
+ public TablaGenerica empleado(){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT cod_empleado,cedula_pass,nombres,cod_empleado,estado\n" +
+                                "FROM srh_empleado WHERE cod_cargo = 101 and estado = 1");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+  public TablaGenerica empleado1(String cedula){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT cod_empleado,cedula_pass,nombres,cod_empleado,estado,cod_banco,\n" +
+                                "(case when cod_cuenta = 1 then 'A' when cod_cuenta = 2 then 'C' when cod_cuenta = 3 then 'O' end ) as tipo_cuenta\n" +
+                                ",numero_cuenta\n" +
+                                "FROM srh_empleado  WHERE cedula_pass like '"+cedula+"'");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ } 
+ 
+   public TablaGenerica proveedor(String ruc){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT ide_proveedor,ruc,titular,ban_codigo,numero_cuenta,tipo_cuenta,ide_tipo_proveedor,codigo_banco\n" +
+                                "FROM tes_proveedores where ruc like '"+ruc+"'");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+   
+ public TablaGenerica busEstado(Integer estado){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT ide_detalle_listado,ide_listado,ide_estado_detalle_listado\n" +
+                                "FROM tes_detalle_comprobante_pago_listado WHERE ide_detalle_listado ="+estado);
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+  
      private void conectar() {
         if (con_postgres == null) {
             con_postgres = new Conexion();
