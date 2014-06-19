@@ -327,7 +327,6 @@ public class pre_ingresocon extends Pantalla{
                     rep_reporte.cerrar();
                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                     sef_formato.dibujar();
-                    System.out.println(sef_formato);
                break;
                case "GASTOS PROGRAMAS POR TIPO":
                    if (set_distribu.getValorSeleccionado()!= null) {
