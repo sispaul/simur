@@ -48,7 +48,11 @@ public class pre_descuento extends Pantalla{
     private Combo cmb_descripcion = new Combo();
 // DIALOGO DE ACCIÓN
     private Dialogo dia_dialogoe = new Dialogo();
+    private Dialogo dia_dialorol = new Dialogo();
+    private Dialogo dia_dialohor = new Dialogo();
     private Grid grid_de = new Grid();
+    private Grid grid_rol = new Grid();
+    private Grid grid_hor = new Grid();
   
 //1.-
  @EJB
@@ -190,6 +194,25 @@ private Conexion con_postgres= new Conexion();
         utilitario.addUpdate("tab_tabla");
         agregarComponente(dia_dialogoe);
         
+        //DIALOGO DE CONFIRMACIÓN DE ACCIÓN -DESCUENTOS  
+        dia_dialorol.setId("dia_dialorol");
+        dia_dialorol.setTitle("REPORTES DE ROL - EMPLEADOS"); //titulo
+        dia_dialorol.setWidth("35%"); //siempre en porcentajes  ancho
+        dia_dialorol.setHeight("20%");//siempre porcentaje   alto 
+        dia_dialorol.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialorol.getBot_aceptar().setMetodo("aceptoDescuentos");
+        grid_rol.setColumns(4);
+        agregarComponente(dia_dialorol);
+        
+        dia_dialohor.setId("dia_dialohor");
+        dia_dialohor.setTitle("REPORTE DE TRABAJADORES"); //titulo
+        dia_dialohor.setWidth("35%"); //siempre en porcentajes  ancho
+        dia_dialohor.setHeight("20%");//siempre porcentaje   alto 
+        dia_dialohor.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialohor.getBot_aceptar().setMetodo("aceptoDescuentos");
+        grid_hor.setColumns(4);
+        agregarComponente(dia_dialohor);
+        
     }
     
     public void cancelarValores(){
@@ -276,9 +299,32 @@ private Conexion con_postgres= new Conexion();
                 set_rol.dibujar();
                 set_rol.getTab_seleccion().limpiar();
                break;
+           case "ROL DE PAGOS EMPLEADOS - POR MES":
+                dia_dialorol.Limpiar();
+                grid_rol.getChildren().add(new Etiqueta("AÑO :"));
+                grid_rol.getChildren().add(cmb_anio);
+                grid_rol.getChildren().add(new Etiqueta("PERIODO :"));
+                grid_rol.getChildren().add(cmb_periodo);
+                grid_rol.getChildren().add(new Etiqueta("DISTRIBUTIVO :"));
+                grid_rol.getChildren().add(cmb_descripcion);
+                dia_dialorol.setDialogo(grid_rol);
+                dia_dialorol.dibujar();
+               break;
+           case "ROL TRABAJADORES":
+                dia_dialohor.Limpiar();
+                grid_hor.getChildren().add(new Etiqueta("AÑO :"));
+                grid_hor.getChildren().add(cmb_anio);
+                grid_hor.getChildren().add(new Etiqueta("PERIODO :"));
+                grid_hor.getChildren().add(cmb_periodo);
+                grid_hor.getChildren().add(new Etiqueta("DISTRIBUTIVO :"));
+                grid_hor.getChildren().add(cmb_descripcion);
+                dia_dialohor.setDialogo(grid_hor);
+                dia_dialohor.dibujar();
+               break;
                 
         }
-    }     
+    } 
+        
        // dibujo de reporte y envio de parametros
   public void aceptoDescuentos(){
         switch (rep_reporte.getNombre()) {
@@ -321,6 +367,38 @@ private Conexion con_postgres= new Conexion();
                         utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
                         }
                break;
+               case "ROL DE PAGOS EMPLEADOS - POR MES":
+                   TablaGenerica tab_dato1 = mDescuento.distibutivo(Integer.parseInt(cmb_descripcion.getValue()+""));
+                    if (!tab_dato1.isEmpty()) {
+                    p_parametros = new HashMap();
+                    p_parametros.put("anio",Integer.parseInt(cmb_anio.getValue()+"")); 
+                    p_parametros.put("periodo",Integer.parseInt(cmb_periodo.getValue()+""));
+                    p_parametros.put("distributivo",Integer.parseInt(cmb_descripcion.getValue()+""));
+                    p_parametros.put("nom_distri",tab_dato1.getValor("descripcion")+"");
+                    p_parametros.put("nom_resp", tab_usuario.getValor("NICK_USUA")+"");
+                    rep_reporte.cerrar();
+                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_formato.dibujar();
+                    } else {
+                            utilitario.agregarMensajeInfo("no existe en la base de datos", "");
+                            }
+               break;
+               case "ROL TRABAJADORES":
+                   TablaGenerica tab_dato2 = mDescuento.distibutivo(Integer.parseInt(cmb_descripcion.getValue()+""));
+                    if (!tab_dato2.isEmpty()) {
+                    p_parametros = new HashMap();
+                    p_parametros.put("anio",Integer.parseInt(cmb_anio.getValue()+"")); 
+                    p_parametros.put("periodo",Integer.parseInt(cmb_periodo.getValue()+""));
+                    p_parametros.put("distributivo",Integer.parseInt(cmb_descripcion.getValue()+""));
+                    p_parametros.put("nom_distri",tab_dato2.getValor("descripcion")+"");
+                    p_parametros.put("nom_resp", tab_usuario.getValor("NICK_USUA")+"");
+                    rep_reporte.cerrar();
+                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_formato.dibujar();
+                    } else {
+                            utilitario.agregarMensajeInfo("no existe en la base de datos", "");
+                            }
+               break;     
         }
     }
  
