@@ -51,8 +51,10 @@ Integer identificacion;
     private Tabla tab_requisito = new Tabla();
     private Tabla tab_consulta = new Tabla();
     private SeleccionTabla set_solicitud = new SeleccionTabla();
+    private SeleccionTabla set_placa = new SeleccionTabla();
     
     private Texto txt_comentario = new Texto();
+    private Texto txt_busca = new Texto();
         
     private Panel pan_opcion = new Panel();
     private String str_opcion = "";// sirve para identificar la opcion que se encuentra dibujada en pantalla
@@ -192,6 +194,32 @@ Integer identificacion;
         set_solicitud.setHeader("BUSCAR SOLICITUD");
         agregarComponente(set_solicitud);
         
+        Grid gri_placa = new Grid();
+        gri_placa.setColumns(2);
+        txt_comentario.setSize(50);
+        gri_placa.getChildren().add(new Etiqueta("RAZON POR LA QUE SE DESVINCULA"));
+        gri_placa.getChildren().add(txt_comentario);
+        txt_busca.setSize(9);
+        gri_placa.getChildren().add(new Etiqueta("# PLACA"));
+        gri_placa.getChildren().add(txt_busca);
+        Boton bot_placa = new Boton();
+        bot_placa.setValue("Buscar");
+        bot_placa.setIcon("ui-icon-search");
+        bot_placa.setMetodo("buscarPlaca");
+        bar_botones.agregarBoton(bot_placa);
+        gri_placa.getChildren().add(bot_placa);
+        
+        set_placa.setId("set_placa");
+        set_placa.setSeleccionTabla("SELECT IDE_DETALLE_SOLICITUD,NOMBRE_PROPIETARIO,IDE_PLACA,NUMERO_RVMO FROM dbo.TRANS_DETALLE_SOLICITUD_PLACA where IDE_DETALLE_SOLICITUD=-1", "IDE_DETALLE_SOLICITUD");
+        set_placa.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
+        set_placa.getTab_seleccion().setRows(10);
+        set_placa.setRadio();
+        set_placa.getGri_cuerpo().setHeader(gri_placa);
+        set_placa.getBot_aceptar().setMetodo("aceptarDeligar");
+        set_placa.setHeader("BUSCAR PLACA - DESASIGNACION");
+        agregarComponente(set_placa);
+        
+        
         dia_dialogoq.setId("dia_dialogoq");
         dia_dialogoq.setTitle("PORQUE DESEA CANCELAR ASIGNACIÒN"); //titulo
         dia_dialogoq.setWidth("25%"); //siempre en porcentajes  ancho
@@ -254,7 +282,8 @@ Integer identificacion;
         Boton bot_quita = new Boton();
         bot_quita.setValue("QUITAR");
         bot_quita.setIcon("ui-icon-closethick");
-        bot_quita.setMetodo("quitar");
+//        bot_quita.setMetodo("quitar");
+        bot_quita.setMetodo("abrirBusPlaca");
         bar_botones.agregarBoton(bot_quita);
     }
 /*creacion de menú*/
@@ -291,7 +320,16 @@ Integer identificacion;
         } else {
             utilitario.agregarMensajeInfo("Debe seleccionar una fecha", "");
         }
-
+    }
+    
+    public void buscarPlaca(){
+        TablaGenerica tab_dato = ser_Placa.getPlacaActualEli(txt_busca.getValue()+"");
+                     if (!tab_dato.isEmpty()) {
+                            set_placa.getTab_seleccion().setSql("SELECT IDE_DETALLE_SOLICITUD,NOMBRE_PROPIETARIO,IDE_PLACA,NUMERO_RVMO FROM dbo.TRANS_DETALLE_SOLICITUD_PLACA where IDE_PLACA= "+tab_dato.getValor("IDE_PLACA"));
+                            set_placa.getTab_seleccion().ejecutarSql();
+                        } else {
+                               utilitario.agregarMensajeInfo("no existe en la base de datos", "");
+                               }
     }
 /*permite abrir la busqueda para la seleccion de la solicitud aprobar*/
     public void abrirBusqueda() {
@@ -300,6 +338,11 @@ Integer identificacion;
         set_solicitud.dibujar();
         cal_fechabus.limpiar();
         set_solicitud.getTab_seleccion().limpiar();
+    }
+    
+    public void abrirBusPlaca() {
+        set_placa.dibujar();
+        set_placa.getTab_seleccion().limpiar();
     }
 /*aceptaqcion de busqueda y autocompletado d elos datos*/
     public void aceptarBusqueda() {
@@ -456,8 +499,6 @@ Integer identificacion;
    public void aceptoValores(){
        Integer fisicap = Integer.parseInt(ser_Placa.getTipoDisponibleFP(Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")), Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO"))));
        Integer papel = Integer.parseInt(ser_Placa.getTipoDisponiblePP(Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")), Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO"))));
-       System.err.println(fisicap);//39
-       System.out.println(papel);//102
         if(fisicap> 0){
                  TablaGenerica tab_dato = ser_Placa.getAprobacion(Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")));
                     if (!tab_dato.isEmpty()) {
@@ -465,10 +506,8 @@ Integer identificacion;
                      identificacion = Integer.parseInt(tab_dato.getValor("IDE_APROBACION_PLACA"));
                      ser_Placa.seleccionarPF(Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")), Integer.parseInt(tab_detalle.getValor("IDE_tipo_vehiculo")), 
                      Integer.parseInt(tab_detalle.getValor("IDE_tipo_servicio")), identificacion);
-//                     utilitario.addUpdate("tab_detalle");
                      aceptoValores1();
                      dia_dialogoe.cerrar();
-//                     utilitario.addUpdate("tab_detalle");
                      utilitario.agregarMensajeInfo("Placas Fisica Asignada", "");
                      } else {
                          utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ", "");
@@ -480,10 +519,8 @@ Integer identificacion;
                         identificacion = Integer.parseInt(tab_dato.getValor("IDE_APROBACION_PLACA"));
                         ser_Placa.seleccionarPP(Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")), Integer.parseInt(tab_detalle.getValor("IDE_tipo_vehiculo")), 
                         Integer.parseInt(tab_detalle.getValor("IDE_tipo_servicio")), identificacion);
-//                        utilitario.addUpdate("tab_detalle");
                         aceptoValores1();
                         dia_dialogoe.cerrar();
-//                        utilitario.addUpdate("tab_detalle");
                         utilitario.agregarMensajeInfo("Placa Papel Asignada", "");
                         } else {
                             utilitario.agregarMensajeInfo("Datos no validos", "");
@@ -499,7 +536,6 @@ Integer identificacion;
        if (!tab_dato.isEmpty()) {
         ser_Placa.estadoPlaca(Integer.parseInt(tab_dato.getValor("IDE_PLACA")));
         utilitario.agregarMensaje("ASIGNACIÓN REALIZADA", "");
-//        utilitario.addUpdate("tab_detalle");
         dia_dialogoe.cerrar();
         placasDispo();
         } else {
@@ -512,15 +548,18 @@ Integer identificacion;
    }
    
    public void placasDispo(){
-       String cadena1,cadena2,cadena3;
+       String cadena1,cadena2,cadena3,cadena4;
    TablaGenerica tab_dato = ser_Placa.placasDis(Integer.parseInt(tab_detalle.getValor("IDE_tipo_vehiculo")), Integer.parseInt(tab_detalle.getValor("IDE_tipo_servicio")));
             if (!tab_dato.isEmpty()) {
-                cadena1 = tab_dato.getValor("numero");
-                cadena2 = tab_dato.getValor("DESCRIPCION_VEHICULO");
-                cadena3 = tab_dato.getValor("DESCRIPCION_SERVICIO");
-                utilitario.agregarMensaje("TIPO DE AUTOMOTOR", cadena2);
-                utilitario.agregarMensaje("TIPO DE SERVICIO", cadena3);
-                utilitario.agregarMensajeInfo("NUMERO DE PLACAS DISPONIBLES", cadena1);
+//                cadena1 = tab_dato.getValor("numero");
+//                cadena2 = tab_dato.getValor("DESCRIPCION_VEHICULO");
+//                cadena3 = tab_dato.getValor("DESCRIPCION_SERVICIO");
+                cadena4 = tab_dato.getValor("placa");
+                utilitario.agregarMensaje("NUMERO DE PLACAS", cadena4);
+                utilitario.agregarMensaje("NUMERO DE PLACAS", tab_detalle.getValor("nombre_propietario"));
+//                utilitario.agregarMensaje("TIPO DE AUTOMOTOR", cadena2);
+//                utilitario.agregarMensaje("TIPO DE SERVICIO", cadena3);
+//                utilitario.agregarMensajeInfo("NUMERO DE PLACAS DISPONIBLES", cadena1);
                 utilitario.addUpdate("tab_detalle");
         } else {
                 utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ciudadania del municipio", "");
@@ -540,28 +579,53 @@ Integer identificacion;
     }
        
     public void aceptarDeligar(){
-        ser_Placa.guardarhistorial(Integer.parseInt(tab_solicitud.getValor("IDE_SOLICITUD_PLACA")), tab_solicitud.getValor("CEDULA_RUC_EMPRESA"), 
-                Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")), tab_detalle.getValor("CEDULA_RUC_PROPIETARIO"), 
-                tab_solicitud.getValor("NOMBRE_EMPRESA"),Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")),
-                tab_detalle.getValor("NOMBRE_PROPIETARIO"), Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")), 
-                tab_detalle.getValor("NUMERO_RVMO"), txt_comentario.getValue()+"",tab_detalle.getValor("ide_placa"));
-        quitarPlaca();
+        TablaGenerica tab_dato = ser_Placa.getPlacaActualEli(txt_busca.getValue()+"");
+             if (!tab_dato.isEmpty()) {
+                 System.err.println("Ing");
+                     ser_Placa.guardarhistorial(Integer.parseInt(tab_dato.getValor("IDE_SOLICITUD_PLACA")), tab_dato.getValor("CEDULA_RUC_EMPRESA"), 
+                     Integer.parseInt(tab_dato.getValor("IDE_DETALLE_SOLICITUD")), tab_dato.getValor("CEDULA_RUC_PROPIETARIO"), 
+                     tab_dato.getValor("NOMBRE_EMPRESA"),Integer.parseInt(tab_dato.getValor("IDE_TIPO_SERVICIO")),
+                     tab_dato.getValor("NOMBRE_PROPIETARIO"), Integer.parseInt(tab_dato.getValor("IDE_TIPO_VEHICULO")), 
+                     tab_dato.getValor("NUMERO_RVMO"), txt_comentario.getValue()+"",tab_dato.getValor("ide_placa"));
+                     quitarPlaca();
+                  } else {
+                          utilitario.agregarMensajeInfo("no existe en la base de datos", "");
+                          }
     } 
     
     public void quitarPlaca(){
-        ser_Placa.quitarPlaca(Integer.parseInt(tab_detalle.getValor("IDE_PLACA")));
-        quitarDetalle();
+        TablaGenerica tab_dato = ser_Placa.getPlacaActualEli(txt_busca.getValue()+"");
+             if (!tab_dato.isEmpty()) {
+                 System.err.println("Ing1");
+                    ser_Placa.quitarPlaca(Integer.parseInt(tab_dato.getValor("IDE_PLACA")));
+                    quitarDetalle();
+                } else {
+                        utilitario.agregarMensajeInfo("no existe en la base de datos", "");
+                       }
     }
+    
     public void quitarDetalle(){
-        ser_Placa.quitarDetalle(Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")));
-        eliminarAprobacion();
+        TablaGenerica tab_dato = ser_Placa.getPlacaActualEli(txt_busca.getValue()+"");
+             if (!tab_dato.isEmpty()) {
+                 System.err.println("Ing3");
+                    ser_Placa.quitarDetalle(Integer.parseInt(tab_dato.getValor("IDE_DETALLE_SOLICITUD")));
+                    eliminarAprobacion();
+                } else {
+                        utilitario.agregarMensajeInfo("no existe en la base de datos", "");
+                        }
     }
+    
     public void eliminarAprobacion(){
-        ser_Placa.eliminarAprobacion(Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")));
-        utilitario.agregarMensajeInfo("ASIGNACIÓN ELIMINADA", "");
-        dia_dialogoq.cerrar();
-        ser_Placa.actuEstado1(Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")));
-        utilitario.addUpdate("tab_detalle");
+        TablaGenerica tab_dato = ser_Placa.getPlacaActualEli(txt_busca.getValue()+"");
+             if (!tab_dato.isEmpty()) {
+                 System.err.println("Ing4");
+                    ser_Placa.eliminarAprobacion(Integer.parseInt(tab_dato.getValor("IDE_DETALLE_SOLICITUD")));
+                    utilitario.agregarMensajeInfo("ASIGNACIÓN ELIMINADA", "");
+                    set_placa.cerrar();
+                    ser_Placa.actuEstado1(Integer.parseInt(tab_dato.getValor("IDE_DETALLE_SOLICITUD")));
+                } else {
+                       utilitario.agregarMensajeInfo("no existe en la base de datos", "");
+                       }
     }
     
     //CREACION DE REPORTES
@@ -761,6 +825,14 @@ Integer identificacion;
 
     public void setCmb_placas(Combo cmb_placas) {
         this.cmb_placas = cmb_placas;
+    }
+
+    public SeleccionTabla getSet_placa() {
+        return set_placa;
+    }
+
+    public void setSet_placa(SeleccionTabla set_placa) {
+        this.set_placa = set_placa;
     }
     
 }
