@@ -8,16 +8,26 @@
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT DISTINCT
-p.PLACA,t.FECHA_ENVIO_ACTA,
+p.PLACA,
+t.FECHA_ENVIO_ACTA,
 t.FECHA_REGISTRO_ACTA,
-t.ANO,t.NUMERO_ACTA,
-t.ENTREGADO_ACTA,t.RECIBIDO_ACTA,
-p.IDE_PLACA,s.DESCRIPCION_SERVICIO,
-v.descripcion_vehiculo,s.IDE_TIPO_SERVICIO,
-v.ide_tipo_vehiculo,t.IDE_INGRESO_PLACAS,
-e.DESCRIPCION_ESTADO,r.DESCRIPCION_PLACA
+t.ANO,
+t.NUMERO_ACTA,
+t.ENTREGADO_ACTA,
+t.RECIBIDO_ACTA,
+p.IDE_PLACA,
+s.DESCRIPCION_SERVICIO,
+v.descripcion_vehiculo,
+s.IDE_TIPO_SERVICIO,
+v.ide_tipo_vehiculo,
+t.IDE_INGRESO_PLACAS,
+e.DESCRIPCION_ESTADO,
+r.DESCRIPCION_PLACA,
+p.FECHA_DEFINITIVA_PLACA,
+(case when p.IDE_TIPO_PLACA2 = (SELECT IDE_TIPO_PLACA FROM TRANS_TIPO_PLACA WHERE DESCRIPCION_PLACA LIKE 'definitiva') then 'DEFINITIVA' when p.IDE_TIPO_PLACA2 <> (SELECT IDE_TIPO_PLACA FROM TRANS_TIPO_PLACA WHERE DESCRIPCION_PLACA LIKE 'definitiva') then 'PAPEL' end ) as cambio
+
 FROM
-dbo.TRANS_PLACA AS p ,
+dbo.TRANS_PLACAS AS p ,
 dbo.TRANS_INGRESOS_PLACAS AS t ,
 dbo.trans_vehiculo_tipo AS v ,
 dbo.TRANS_TIPO_SERVICIO AS s ,
@@ -30,7 +40,7 @@ s.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND
 p.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO AND
 p.IDE_TIPO_ESTADO = e.IDE_TIPO_ESTADO AND
 p.IDE_TIPO_PLACA = r.IDE_TIPO_PLACA AND
-t.NUMERO_ACTA = $P{acta}
+t.NUMERO_ACTA LIKE $P{acta}
 ORDER BY p.PLACA ASC]]>
 	</queryString>
 	<field name="PLACA" class="java.lang.String"/>
@@ -48,6 +58,8 @@ ORDER BY p.PLACA ASC]]>
 	<field name="IDE_INGRESO_PLACAS" class="java.lang.Long"/>
 	<field name="DESCRIPCION_ESTADO" class="java.lang.String"/>
 	<field name="DESCRIPCION_PLACA" class="java.lang.String"/>
+	<field name="FECHA_DEFINITIVA_PLACA" class="java.lang.String"/>
+	<field name="cambio" class="java.lang.String"/>
 	<group name="acta">
 		<groupExpression><![CDATA[$F{IDE_INGRESO_PLACAS}]]></groupExpression>
 		<groupHeader>
@@ -152,6 +164,20 @@ ORDER BY p.PLACA ASC]]>
 					</textElement>
 					<text><![CDATA[AUTOMOTOR:]]></text>
 				</staticText>
+				<staticText>
+					<reportElement uuid="3b2ce027-160d-4abf-ac3d-ca7ee15c7adc" x="448" y="6" width="100" height="20" forecolor="#FFFFFF"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[ESTADO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="04707d07-366d-4187-af91-1219d177c7e1" x="347" y="6" width="100" height="20" forecolor="#FFFFFF"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[FECHA DE CAMBIO]]></text>
+				</staticText>
 			</band>
 		</groupHeader>
 		<groupFooter>
@@ -235,12 +261,12 @@ ORDER BY p.PLACA ASC]]>
 	<detail>
 		<band height="22" splitType="Stretch">
 			<textField>
-				<reportElement uuid="a852a5b8-8997-4e37-b949-536e59dee363" x="143" y="0" width="100" height="20"/>
+				<reportElement uuid="a852a5b8-8997-4e37-b949-536e59dee363" x="132" y="0" width="100" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{PLACA}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="e581d67d-8382-4aab-99b6-e38ffca4d8be" x="276" y="0" width="100" height="20"/>
+				<reportElement uuid="e581d67d-8382-4aab-99b6-e38ffca4d8be" x="218" y="0" width="100" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{DESCRIPCION_PLACA}]]></textFieldExpression>
 			</textField>
@@ -248,6 +274,16 @@ ORDER BY p.PLACA ASC]]>
 				<reportElement uuid="87b1221e-0ce8-49be-85c7-ad49749a38c1" x="43" y="0" width="100" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="62f84c6d-c714-41a0-87f5-00acee9bd128" x="450" y="2" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cambio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="cc73f7f3-0876-4f98-8338-529f40729338" x="349" y="2" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{FECHA_DEFINITIVA_PLACA}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
