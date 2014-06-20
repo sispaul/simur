@@ -544,7 +544,7 @@ Integer identificacion;
                 Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")), tab_detalle.getValor("CEDULA_RUC_PROPIETARIO"), 
                 tab_solicitud.getValor("NOMBRE_EMPRESA"),Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")),
                 tab_detalle.getValor("NOMBRE_PROPIETARIO"), Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")), 
-                Integer.parseInt(tab_detalle.getValor("NUMERO_RVMO")), txt_comentario.getValue()+"",tab_detalle.getValor("ide_placa"));
+                tab_detalle.getValor("NUMERO_RVMO"), txt_comentario.getValue()+"",tab_detalle.getValor("ide_placa"));
         quitarPlaca();
     } 
     
@@ -641,7 +641,7 @@ Integer identificacion;
                         utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
                         }
                break;
-               case "REPORTE ASIGNADAS - LIBERAR":
+               case "REPORTE ASIGNADAS":
                       p_parametros = new HashMap();
                       p_parametros.put("tipo", Integer.parseInt(cmb_tipos.getValue()+""));           
                       p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
