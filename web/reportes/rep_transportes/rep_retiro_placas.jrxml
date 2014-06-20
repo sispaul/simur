@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_retiro_placas" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0e1fe908-be1d-4ba6-9d42-082ca76b048e">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="nomp_res" class="java.lang.String"/>
+	<parameter name="num_tramite" class="java.lang.Integer"/>
+	<parameter name="cedula" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+e.CODIGO,
+e.TIPO,
+p.CODIGO_ENTREGA,
+p.CEDULA_QUIEN_RETIRA,
+p.NOMBRE_QUIEN_RETIRA,
+p.FECHA_RETIRO,
+p.PLACA,
+p.PARTICULAR_EMPRESA,
+p.PROPIETARIO
+FROM
+dbo.TRANS_ENCAB_ENTREGAS e,dbo.TRANS_PLACAS_PENDIENTES p
+WHERE
+p.CODIGO = e.CODIGO and
+p.CEDULA_QUIEN_RETIRA like $P{cedula} AND e.CODIGO = $P{num_tramite}]]>
+	</queryString>
+	<field name="CODIGO" class="java.lang.Long"/>
+	<field name="TIPO" class="java.lang.String"/>
+	<field name="CODIGO_ENTREGA" class="java.lang.Long"/>
+	<field name="CEDULA_QUIEN_RETIRA" class="java.lang.String"/>
+	<field name="NOMBRE_QUIEN_RETIRA" class="java.lang.String"/>
+	<field name="FECHA_RETIRO" class="java.lang.String"/>
+	<field name="PLACA" class="java.lang.String"/>
+	<field name="PARTICULAR_EMPRESA" class="java.lang.String"/>
+	<field name="PROPIETARIO" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="244" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="fed04ec6-654e-4707-b233-179e9f4dbc6d" x="9" y="149" width="532" height="87" backcolor="#999999"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="3c663e43-4f2b-40e7-9248-274a5236d9e6" x="38" y="92" width="473" height="39"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="22" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COMPROBANTE DE ENTREGA DE PLACAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c0810aef-82d7-4820-84eb-ef24080f2f3c" x="21" y="159" width="100" height="20" forecolor="#FFFFFF"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[TIPO PERSONA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="494b96d3-a777-4f79-9177-7275c17e8ced" x="21" y="183" width="100" height="20" forecolor="#FFFFFF"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[CEDULA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9ff1ebde-4d59-45f5-a170-661a2f71b547" x="276" y="159" width="100" height="20" forecolor="#FFFFFF"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[FECHA RETIRO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3ac408e0-fbe4-4bb4-8713-6bb174ee39f7" x="21" y="207" width="100" height="20" forecolor="#FFFFFF"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[NOMBRES:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a4e1cb2c-4887-4a04-8836-b5cd9e455273" x="276" y="183" width="100" height="20" forecolor="#FFFFFF"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[EMPRESA:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="55f25a65-e808-41ae-aa76-50aca7f4ef06" x="121" y="159" width="100" height="20" forecolor="#FFFFFF"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TIPO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0fe74c22-817c-4472-8893-02ea7182c7af" x="94" y="183" width="127" height="20" forecolor="#FFFFFF"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CEDULA_QUIEN_RETIRA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="61964bf4-9e56-4bd7-9243-1746245ed972" x="94" y="207" width="266" height="20" forecolor="#FFFFFF"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOMBRE_QUIEN_RETIRA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="417cffdb-2e64-4a7e-a2df-31ba06d86d57" x="355" y="183" width="186" height="20" forecolor="#FFFFFF"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PARTICULAR_EMPRESA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="a0196b64-0c48-4ff9-a25f-e2969fd8d957" key="textField-5" x="375" y="160" width="115" height="19" forecolor="#FFFFFF" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement uuid="588b4cdd-959b-4df7-8279-4e24e1e119ca" x="96" y="3" width="430" height="80"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_transporte.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="26" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="7cb1b85a-6746-4436-a5e2-528d9f134f9f" x="38" y="1" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[#]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7b7f480e-f7e1-42ac-9558-e1f7f3700236" x="211" y="1" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[PLACA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="feaac0c8-b13e-4e43-a3ab-e6c99565ef44" x="365" y="0" width="181" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[PROPIETARIO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="29" splitType="Stretch">
+			<textField>
+				<reportElement uuid="ebfe2a03-e8cd-4f67-8cb4-22eb4bf6af5c" x="211" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{PLACA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2b123cb0-fda6-4dff-9be3-a8f81d78c2bd" x="38" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f5fdf16d-66c2-4266-b60c-7d1f334b5e40" x="365" y="0" width="181" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{PROPIETARIO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="66" splitType="Stretch">
+			<line>
+				<reportElement uuid="5ea93d9e-688b-49ea-ae55-b289ca46ab71" x="398" y="12" width="100" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="8f5bc937-1278-4e9d-93bc-585435274058" x="62" y="38" width="100" height="20"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Persona Que Retira]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="fe7fe0f3-c607-40bf-97e8-ed0749520255" x="10" y="10" width="201" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{NOMBRE_QUIEN_RETIRA}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="12849381-1d16-423d-acaf-17f9ff567fcf" x="398" y="31" width="100" height="20"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Usuario Entrega]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="3f2ab9b8-054d-4e55-bc8f-3c7a204de655" x="398" y="13" width="100" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$P{nomp_res}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c4641b0d-f0e6-4b7d-8e86-01c2aaff513a" x="62" y="24" width="100" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{CEDULA_QUIEN_RETIRA}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="b191bdf4-ae33-4ff8-b8f8-1424b6349a9a" x="28" y="10" width="160" height="1"/>
+			</line>
+		</band>
+	</pageFooter>
+</jasperReport>

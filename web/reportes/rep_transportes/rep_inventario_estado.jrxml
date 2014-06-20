@@ -12,8 +12,10 @@ p.PLACA,p.IDE_PLACA,
 s.DESCRIPCION_SERVICIO,
 v.descripcion_vehiculo,s.IDE_TIPO_SERVICIO,
 v.ide_tipo_vehiculo,e.DESCRIPCION_ESTADO,
-r.DESCRIPCION_PLACA,p.FECHA_ENTREGA_PLACA
-FROM dbo.TRANS_PLACA AS p ,
+r.DESCRIPCION_PLACA,p.FECHA_ENTREGA_PLACA,
+(case when p.IDE_TIPO_PLACA2 = (SELECT IDE_TIPO_PLACA FROM TRANS_TIPO_PLACA WHERE DESCRIPCION_PLACA LIKE 'definitiva') then 'DEFINITIVA' when p.IDE_TIPO_PLACA2 <> (SELECT IDE_TIPO_PLACA FROM TRANS_TIPO_PLACA WHERE DESCRIPCION_PLACA LIKE 'definitiva') then 'PAPEL' end ) as cambio
+
+FROM dbo.TRANS_PLACAS AS p ,
 dbo.trans_vehiculo_tipo AS v ,
 dbo.TRANS_TIPO_SERVICIO AS s ,
 dbo.TRANS_TIPO_ESTADO AS e ,
@@ -35,6 +37,7 @@ ORDER BY p.PLACA ASC]]>
 	<field name="DESCRIPCION_ESTADO" class="java.lang.String"/>
 	<field name="DESCRIPCION_PLACA" class="java.lang.String"/>
 	<field name="FECHA_ENTREGA_PLACA" class="java.lang.String"/>
+	<field name="cambio" class="java.lang.String"/>
 	<group name="vehiculo">
 		<groupExpression><![CDATA[$F{ide_tipo_vehiculo}]]></groupExpression>
 		<groupHeader>
@@ -69,6 +72,13 @@ ORDER BY p.PLACA ASC]]>
 						<font isBold="true"/>
 					</textElement>
 					<text><![CDATA[AUTOMOTOR:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="4968825f-a775-4976-9f05-3358a927515e" x="418" y="8" width="100" height="20" forecolor="#FFFFFF"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[ESTADO ACTUAL]]></text>
 				</staticText>
 			</band>
 		</groupHeader>
@@ -163,7 +173,7 @@ ORDER BY p.PLACA ASC]]>
 				<textFieldExpression><![CDATA[$F{PLACA}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="2448b4b2-7825-4462-af31-338af078e228" x="289" y="0" width="100" height="20"/>
+				<reportElement uuid="2448b4b2-7825-4462-af31-338af078e228" x="257" y="0" width="100" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{DESCRIPCION_PLACA}]]></textFieldExpression>
 			</textField>
@@ -171,6 +181,11 @@ ORDER BY p.PLACA ASC]]>
 				<reportElement uuid="77c53ca5-adf0-46da-8324-bd64b21d9709" x="42" y="0" width="100" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e79ddc69-85e4-4d09-97b6-84710d8f6b94" x="415" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cambio}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

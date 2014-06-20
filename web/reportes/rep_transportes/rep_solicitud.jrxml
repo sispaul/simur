@@ -6,7 +6,6 @@
 	<parameter name="ruc" class="java.lang.String"/>
 	<parameter name="nomp_res" class="java.lang.String"/>
 	<parameter name="fecha" class="java.lang.String"/>
-	<parameter name="SUBREPORT_DIR_1" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
 cab.IDE_SOLICITUD_PLACA,
@@ -37,7 +36,7 @@ det.IDE_detalle_SOLICITUD = req.IDE_detalle_SOLICITUD AND
 req.IDE_TIPO_REQUISITO = r.IDE_TIPO_REQUISITO  AND
 r.IDE_TIPO_SERVICIO = ser.IDE_TIPO_SERVICIO AND
 ser.IDE_TIPO_VEHICULO = ve.ide_tipo_vehiculo  AND
-cab.FECHA_SOLICITUD = cast ($P{fecha} as date) AND
+cab.FECHA_SOLICITUD LIKE cast ($P{fecha} as date) AND
 cab.CEDULA_RUC_EMPRESA LIKE $P{ruc}
 
 ORDER BY
@@ -269,10 +268,6 @@ req.IDE_detalle_SOLICITUD ASC]]>
 			<rectangle>
 				<reportElement uuid="ac4a9008-e463-41de-bac0-be1fb2342e41" x="3" y="54" width="556" height="0"/>
 			</rectangle>
-			<image>
-				<reportElement uuid="a1230b58-a781-40c3-8b0c-106cdcbd567b" x="439" y="0" width="113" height="57"/>
-				<imageExpression><![CDATA[$P{SUBREPORT_DIR_1}+"/upload/logos/logo_reporte.png"]]></imageExpression>
-			</image>
 		</band>
 	</title>
 	<detail>

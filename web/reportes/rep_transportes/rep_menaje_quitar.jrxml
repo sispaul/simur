@@ -21,7 +21,7 @@ FROM
 dbo.TRANS_DETALLE_SOLICITUD_PLACA AS d ,
 dbo.TRANS_SOLICITUD_PLACA AS t ,
 dbo.TRANS_TIPO_SOLICTUD AS s ,
-dbo.TRANS_PLACA AS p,
+dbo.TRANS_PLACAS AS p,
 TRANS_VEHICULO_TIPO v,
 TRANS_TIPO_SERVICIO g
 WHERE
@@ -140,7 +140,7 @@ s.IDE_TIPO_SOLICTUD = $P{tipo}]]>
 					<text><![CDATA[CODIGO:]]></text>
 				</staticText>
 				<textField>
-					<reportElement uuid="a35efac2-2791-4900-a7f7-57267279ee02" x="345" y="26" width="100" height="20"/>
+					<reportElement uuid="a35efac2-2791-4900-a7f7-57267279ee02" x="328" y="26" width="100" height="20"/>
 					<textElement>
 						<font size="8"/>
 					</textElement>
@@ -154,7 +154,7 @@ s.IDE_TIPO_SOLICTUD = $P{tipo}]]>
 					<textFieldExpression><![CDATA[$F{DESCRIPCION_SERVICIO}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement uuid="4c4bd011-eef8-4886-a073-72fd6d7796ed" x="279" y="26" width="100" height="20"/>
+					<reportElement uuid="4c4bd011-eef8-4886-a073-72fd6d7796ed" x="262" y="26" width="100" height="20"/>
 					<textElement>
 						<font size="8" isBold="true"/>
 					</textElement>
@@ -182,18 +182,18 @@ s.IDE_TIPO_SOLICTUD = $P{tipo}]]>
 					<textFieldExpression><![CDATA[$F{NOMBRE_PROPIETARIO}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement uuid="e206c83b-c6ae-4507-b74a-03c320f8d9ed" x="455" y="6" width="100" height="20"/>
+					<reportElement uuid="e206c83b-c6ae-4507-b74a-03c320f8d9ed" x="335" y="6" width="100" height="20"/>
 					<textElement>
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{NUMERO_FACTURA}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement uuid="c5182221-744d-4aca-b5bb-6aedb102cb70" x="355" y="6" width="100" height="20"/>
+					<reportElement uuid="c5182221-744d-4aca-b5bb-6aedb102cb70" x="261" y="6" width="100" height="20"/>
 					<textElement>
 						<font size="8" isBold="true"/>
 					</textElement>
-					<text><![CDATA[NRO. FACTURA]]></text>
+					<text><![CDATA[NRO. FACTURA:]]></text>
 				</staticText>
 				<staticText>
 					<reportElement uuid="a8bb9981-b851-4fc9-b5c5-2cda2897b496" x="8" y="14" width="52" height="20"/>
@@ -209,6 +209,20 @@ s.IDE_TIPO_SOLICTUD = $P{tipo}]]>
 					</textElement>
 					<text><![CDATA[NOMBRE:]]></text>
 				</staticText>
+				<staticText>
+					<reportElement uuid="46f3c42b-b6c2-4d29-aea8-ea7cecf28629" x="428" y="6" width="100" height="20"/>
+					<textElement>
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[PLACA:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="6a43e6b9-c66c-4458-a991-d3ecba4b5f2d" x="472" y="7" width="80" height="20"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{PLACA}]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupHeader>
 		<groupFooter>
@@ -231,7 +245,7 @@ s.IDE_TIPO_SOLICTUD = $P{tipo}]]>
 				<textElement textAlignment="Left">
 					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
-				<text><![CDATA[SOLICITUDES DE MATRICULAS INGRESADAS]]></text>
+				<text><![CDATA[SOLICITUDES CON PLACAS ASIGNADAS]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="ab997940-c794-469f-ba65-6e69c7bb2d46" key="staticText" x="1" y="2" width="555" height="25" forecolor="#000000" backcolor="#FFFFFF"/>
