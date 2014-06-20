@@ -587,12 +587,14 @@ public TablaGenerica placasDis(Integer veh,Integer ser) {
         conectar();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(conexion);
-        tab_persona.setSql("SELECT COUNT(*) as numero, v.DESCRIPCION_VEHICULO, s.DESCRIPCION_SERVICIO\n" +
+        tab_persona.setSql("SELECT COUNT(*) as numero, v.DESCRIPCION_VEHICULO, s.DESCRIPCION_SERVICIO,\n" +
+                            "p.PLACA\n" +
                             "FROM TRANS_PLACAS p,TRANS_VEHICULO_TIPO v, TRANS_TIPO_SERVICIO s\n" +
                             "WHERE  p.IDE_TIPO_VEHICULO = v.IDE_TIPO_VEHICULO AND s.IDE_TIPO_VEHICULO = v.IDE_TIPO_VEHICULO AND \n" +
                             "p.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO AND p.IDE_TIPO_VEHICULO = "+veh+" AND p.IDE_TIPO_SERVICIO = "+ser+" AND\n" +
                             "p.IDE_TIPO_ESTADO = (SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO WHERE DESCRIPCION_ESTADO LIKE 'asignada')\n" +
-                            "GROUP BY v.DESCRIPCION_VEHICULO, s.DESCRIPCION_SERVICIO");
+                            "GROUP BY v.DESCRIPCION_VEHICULO, s.DESCRIPCION_SERVICIO,\n" +
+                            "p.PLACA");
         tab_persona.ejecutarSql();
         conexion.desconectar();
         conexion = null;
@@ -643,6 +645,35 @@ public TablaGenerica getPlacaActual(Integer placas) {
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(conexion);
         tab_persona.setSql("SELECT IDE_TIPO_PLACA,DESCRIPCION_PLACA FROM TRANS_TIPO_PLACA WHERE IDE_TIPO_PLACA ="+placas);
+        tab_persona.ejecutarSql();
+        conexion.desconectar();
+        conexion = null;
+        return tab_persona;
+    }
+
+public TablaGenerica getPlacaActualEli(String placas) {
+        //Busca a una empresa en la tabla maestra_ruc por ruc
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT\n" +
+                            "s.IDE_SOLICITUD_PLACA,\n" +
+                            "s.CEDULA_RUC_EMPRESA,\n" +
+                            "s.NOMBRE_EMPRESA,\n" +
+                            "d.IDE_DETALLE_SOLICITUD,\n" +
+                            "d.CEDULA_RUC_PROPIETARIO,\n" +
+                            "d.NOMBRE_PROPIETARIO,\n" +
+                            "d.IDE_TIPO_SERVICIO,\n" +
+                            "d.IDE_TIPO_VEHICULO,\n" +
+                            "p.IDE_PLACA,\n" +
+                            "d.NUMERO_RVMO\n" +
+                            "FROM\n" +
+                            "dbo.TRANS_DETALLE_SOLICITUD_PLACA d ,\n" +
+                            "dbo.TRANS_SOLICITUD_PLACA s,\n" +
+                            "dbo.TRANS_PLACAS p\n" +
+                            "where d.IDE_SOLICITUD_PLACA = s.IDE_SOLICITUD_PLACA and \n" +
+                            "d.IDE_PLACA = p.IDE_PLACA and\n" +
+                            "p.PLACA like '"+placas+"'");
         tab_persona.ejecutarSql();
         conexion.desconectar();
         conexion = null;
