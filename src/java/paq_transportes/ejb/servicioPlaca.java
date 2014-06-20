@@ -254,9 +254,9 @@ public void entregaPlaca(String ci,String nom,String cedula,String nome,String c
 }
 
 //GUARDAR AUDITORIA DE PLACAS DESASIGNADAS
-public void guardarhistorial(Integer ide,String ruc,Integer detalle,String cedula,String nome,Integer servicio,String nomb, Integer vehiculo,Integer factura,String coment,String placa){
+public void guardarhistorial(Integer ide,String ruc,Integer detalle,String cedula,String nome,Integer servicio,String nomb, Integer vehiculo,String factura,String coment,String placa){
         String actual="INSERT INTO TRANS_QUITAR_ASIGNACION (IDE_SOLICITUD,RUC_CEDULA_EMPRESA,NOMBRE_EMPRESA,IDE_DETALLE,CEDULA_RUC_PROPIETARIO,NOMBRE_PROPIETARIO,\n" +
-                      "TIPO_SERVICIO,TIPO_VEHICULO,FACTURA,COMENTARIO,PLACA,FECHA_LIBERADO)VALUES("+ide+",'"+ruc+"','"+nome+"',"+detalle+",'"+cedula+"','"+nomb+"',"+servicio+","+vehiculo+","+factura+",'"+coment+"','"+placa+"'," + utilitario.getFormatoFechaSQL(utilitario.getFechaActual()) +")";
+                      "TIPO_SERVICIO,TIPO_VEHICULO,FACTURA,COMENTARIO,PLACA,FECHA_LIBERADO)VALUES("+ide+",'"+ruc+"','"+nome+"',"+detalle+",'"+cedula+"','"+nomb+"',"+servicio+","+vehiculo+",'"+factura+"','"+coment+"','"+placa+"'," + utilitario.getFormatoFechaSQL(utilitario.getFechaActual()) +")";
         conectar();
         conexion.ejecutarSql(actual);
         conexion.desconectar();
@@ -562,7 +562,7 @@ public void deleteDetalle(Integer requisito){
         conectar();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(conexion);
-        tab_persona.setSql("SELECT IDE_SOLICITUD_PLACA,FECHA_SOLICITUD,CEDULA_RUC_EMPRESA,NOMBRE_EMPRESA,DESCRIPCION_SOLICITUD FROM TRANS_SOLICITUD_PLACA WHERE IDE_SOLICITUD_PLACA ="+soli);
+        tab_persona.setSql("SELECT IDE_SOLICITUD_PLACA,FECHA_SOLICITUD,CEDULA_RUC_EMPRESA,NOMBRE_EMPRESA FROM TRANS_SOLICITUD_PLACA WHERE IDE_SOLICITUD_PLACA ="+soli);
         tab_persona.ejecutarSql();
         
         conexion.desconectar();
