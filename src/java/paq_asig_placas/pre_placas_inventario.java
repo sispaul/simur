@@ -252,8 +252,8 @@ public class pre_placas_inventario extends Pantalla{
         
         dia_dialogoc.setId("dia_dialogoc");
         dia_dialogoc.setTitle("BUSCAR COLABORADOR"); //titulo
-        dia_dialogoc.setWidth("50%"); //siempre en porcentajes  ancho
-        dia_dialogoc.setHeight("45%");//siempre porcentaje   alto
+        dia_dialogoc.setWidth("25%"); //siempre en porcentajes  ancho
+        dia_dialogoc.setHeight("40%");//siempre porcentaje   alto
         dia_dialogoc.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_dialogoc.getBot_aceptar().setMetodo("aceptoColaborador");
         grid_dc.setColumns(4);

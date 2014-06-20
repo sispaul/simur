@@ -426,7 +426,7 @@ public class pre_placas_fisicas extends Pantalla{
                                     p_parametros.put("cedula", tab_detalle.getValor("CEDULA_RUC_PROPIETARIO")+"");
                                     p_parametros.put("vehiculo", Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")+""));
                                     p_parametros.put("servicio", Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO")+""));
-                                    p_parametros.put("factura", Integer.parseInt(tab_detalle.getValor("NUMERO_RVMO")+""));
+                                    p_parametros.put("factura", tab_detalle.getValor("NUMERO_RVMO")+"");
                                     p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
                                     rep_reporte.cerrar();
                                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
@@ -438,7 +438,7 @@ public class pre_placas_fisicas extends Pantalla{
                                                         p_parametros.put("cedula", tab_detalle1.getValor("CEDULA_RUC_PROPIETARIO")+"");
                                                         p_parametros.put("vehiculo", Integer.parseInt(tab_detalle1.getValor("IDE_TIPO_VEHICULO")+""));
                                                         p_parametros.put("servicio", Integer.parseInt(tab_detalle1.getValor("IDE_TIPO_SERVICIO")+""));
-                                                        p_parametros.put("factura", Integer.parseInt(tab_detalle1.getValor("NUMERO_RVMO")+""));
+                                                        p_parametros.put("factura", tab_detalle1.getValor("NUMERO_RVMO")+"");
                                                         p_parametros.put("nomp_res", tab_consulta.getValor("NICK_USUA")+"");
                                                         rep_reporte.cerrar();
                                                         sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
