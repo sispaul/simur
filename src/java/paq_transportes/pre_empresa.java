@@ -378,8 +378,9 @@ public class pre_empresa extends Pantalla {
             tab_vehiculos.setTabla("trans_vehiculos", "ide_vehiculo", 4);
             tab_vehiculos.setHeader("VEHÍCULOS DEL SOCIO");
             tab_vehiculos.setRows(10);
-            tab_vehiculos.getColumna("ide_modelo").setCombo("select ide_modelo,des_modelo,marca from trans_modelos mode INNER JOIN trans_marcas marca on mode.ide_marca=marca.ide_marca order by des_modelo,marca");
+//            tab_vehiculos.getColumna("ide_modelo").setCombo("select ide_modelo,des_modelo,marca from trans_modelos mode INNER JOIN trans_marcas marca on mode.ide_marca=marca.ide_marca order by des_modelo,marca");
             tab_vehiculos.getColumna("fecha_responsable").setCalendarioFechaHora();
+            tab_vehiculos.getColumna("ide_modelo").setVisible(false);
             tab_vehiculos.getColumna("fecha_responsable").setVisible(false);
             tab_vehiculos.getColumna("ip_responsable").setValorDefecto(utilitario.getIp());
             tab_vehiculos.getColumna("ip_responsable").setVisible(false);
