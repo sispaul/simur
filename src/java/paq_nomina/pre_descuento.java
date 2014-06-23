@@ -79,27 +79,37 @@ private Conexion con_postgres= new Conexion();
         agregarComponente(div_division);
         
         Boton bot1 = new Boton();
-        bot1.setValue("DEPURAR DESCUENTO");
-        bot1.setIcon("ui-icon-document"); //pone icono de jquery temeroller
-        bot1.setMetodo("completar");
-       bar_botones.agregarBoton(bot1); 
-     
-    
+        bot1.setValue("DEPURAR ANTICIPO");
+        bot1.setIcon("ui-icon-arrow-4-diag"); //pone icono de jquery temeroller
+        bot1.setMetodo("anticipo");
+        bar_botones.agregarBoton(bot1);
+        
         Boton bot2 = new Boton();
-        bot2.setValue("MIGRAR DESCUENTO");
-        bot2.setIcon("ui-icon-document"); //pone icono de jquery temeroller
-        bot2.setMetodo("abrirDialogo");
-       bar_botones.agregarBoton(bot2); 
-       
+        bot2.setValue("MIGRAR ANTICIPO");
+        bot2.setIcon("ui-icon-extlink"); //pone icono de jquery temeroller
+        bot2.setMetodo("anticipo");
+        bar_botones.agregarBoton(bot2);
+        
         Boton bot3 = new Boton();
-        bot3.setValue("BORRAR DESCUENTO");
+        bot3.setValue("DEPURAR DESCUENTO");
         bot3.setIcon("ui-icon-document"); //pone icono de jquery temeroller
-        bot3.setMetodo("borrar");
-       bar_botones.agregarBoton(bot3);  
+        bot3.setMetodo("completar");
+        bar_botones.agregarBoton(bot3); 
+     
+        Boton bot4 = new Boton();
+        bot4.setValue("MIGRAR DESCUENTO");
+        bot4.setIcon("ui-icon-document"); //pone icono de jquery temeroller
+        bot4.setMetodo("abrirDialogo");
+        bar_botones.agregarBoton(bot4); 
        
-       /**
-         * CONFIGURACIÓN DE COMBOS
-         */
+        Boton bot5 = new Boton();
+        bot5.setValue("BORRAR DESCUENTO");
+        bot5.setIcon("ui-icon-closethick"); //pone icono de jquery temeroller
+        bot5.setMetodo("borrar");
+        bar_botones.agregarBoton(bot5);
+       
+       
+       /*CONFIGURACIÓN DE COMBOS*/
        
         Grid gri_busca = new Grid();
         gri_busca.setColumns(2);
@@ -276,10 +286,13 @@ private Conexion con_postgres= new Conexion();
          mDescuento.borrarDescuento();
          tab_tabla.actualizar();
          }
-                                  
-/*
- * CREACION DE REPORTES
- */
+             
+         public void anticipo(){
+             
+         }
+         
+         
+/*CREACION DE REPORTES */
     //llamada a reporte
     @Override
     public void abrirListaReportes() {
