@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_inventario" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a1132c86-1902-48e5-9bef-caed57bafaab">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="nomp_res" class="java.lang.String"/>
+	<parameter name="acta" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT DISTINCT
+p.PLACA,
+t.FECHA_ENVIO_ACTA,
+t.FECHA_REGISTRO_ACTA,
+t.ANO,
+t.NUMERO_ACTA,
+t.ENTREGADO_ACTA,
+t.RECIBIDO_ACTA,
+p.IDE_PLACA,
+s.DESCRIPCION_SERVICIO,
+v.descripcion_vehiculo,
+s.IDE_TIPO_SERVICIO,
+v.ide_tipo_vehiculo,
+t.IDE_INGRESO_PLACAS,
+e.DESCRIPCION_ESTADO,
+r.DESCRIPCION_PLACA,
+p.FECHA_DEFINITIVA_PLACA,
+(case when p.IDE_TIPO_PLACA2 = (SELECT IDE_TIPO_PLACA FROM TRANS_TIPO_PLACA WHERE DESCRIPCION_PLACA LIKE 'definitiva') then 'DEFINITIVA' when p.IDE_TIPO_PLACA2 <> (SELECT IDE_TIPO_PLACA FROM TRANS_TIPO_PLACA WHERE DESCRIPCION_PLACA LIKE 'definitiva') then 'PAPEL' end ) as cambio
+
+FROM
+dbo.TRANS_PLACAS AS p ,
+dbo.TRANS_INGRESOS_PLACAS AS t ,
+dbo.trans_vehiculo_tipo AS v ,
+dbo.TRANS_TIPO_SERVICIO AS s ,
+dbo.TRANS_TIPO_ESTADO AS e,
+dbo.TRANS_TIPO_PLACA r
+WHERE
+p.IDE_INGRESO_PLACAS = t.IDE_INGRESO_PLACAS AND
+p.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND
+s.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND
+p.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO AND
+p.IDE_TIPO_ESTADO = e.IDE_TIPO_ESTADO AND
+p.IDE_TIPO_PLACA = r.IDE_TIPO_PLACA AND
+t.NUMERO_ACTA LIKE $P{acta}
+ORDER BY p.PLACA ASC]]>
+	</queryString>
+	<field name="PLACA" class="java.lang.String"/>
+	<field name="FECHA_ENVIO_ACTA" class="java.lang.String"/>
+	<field name="FECHA_REGISTRO_ACTA" class="java.lang.String"/>
+	<field name="ANO" class="java.lang.Integer"/>
+	<field name="NUMERO_ACTA" class="java.lang.String"/>
+	<field name="ENTREGADO_ACTA" class="java.lang.String"/>
+	<field name="RECIBIDO_ACTA" class="java.lang.String"/>
+	<field name="IDE_PLACA" class="java.lang.Long"/>
+	<field name="DESCRIPCION_SERVICIO" class="java.lang.String"/>
+	<field name="descripcion_vehiculo" class="java.lang.String"/>
+	<field name="IDE_TIPO_SERVICIO" class="java.lang.Long"/>
+	<field name="ide_tipo_vehiculo" class="java.lang.Long"/>
+	<field name="IDE_INGRESO_PLACAS" class="java.lang.Long"/>
+	<field name="DESCRIPCION_ESTADO" class="java.lang.String"/>
+	<field name="DESCRIPCION_PLACA" class="java.lang.String"/>
+	<field name="FECHA_DEFINITIVA_PLACA" class="java.lang.String"/>
+	<field name="cambio" class="java.lang.String"/>
+	<group name="acta">
+		<groupExpression><![CDATA[$F{IDE_INGRESO_PLACAS}]]></groupExpression>
+		<groupHeader>
+			<band height="59">
+				<rectangle>
+					<reportElement uuid="98490a13-08cd-4d63-88de-1dff00e9ab2f" x="5" y="1" width="546" height="54"/>
+				</rectangle>
+				<textField>
+					<reportElement uuid="2b075b42-57d3-46fd-af50-c88121c79a03" x="91" y="7" width="100" height="11"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{NUMERO_ACTA}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="c145cc2a-5af2-4f7e-88ab-74948314f31e" x="328" y="7" width="100" height="11"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{FECHA_ENVIO_ACTA}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="ebcce923-5671-4840-b603-2f6fcc6b5f7a" x="109" y="29" width="167" height="12"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{ENTREGADO_ACTA}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="bfe0babb-e6b6-42c0-b02e-ead0a6e0f329" x="109" y="41" width="167" height="12"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{RECIBIDO_ACTA}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="91768d03-7657-42e8-9cd0-583ea7e2860d" x="491" y="7" width="57" height="11"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{ANO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="9783433e-7b93-4d59-a09b-d183f5ce98ec" x="12" y="7" width="100" height="11"/>
+					<textElement>
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[NRO. ACTA:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="58570fb7-cfe7-4edf-95dd-c8bc0557e830" x="218" y="7" width="110" height="11"/>
+					<textElement>
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[FECHA ENVIO (ACTA):]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="9749aae2-bd7a-4edf-a70c-47de1941a13d" x="12" y="29" width="100" height="12"/>
+					<textElement>
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ENTREGA (ANT):]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="c538493f-7968-454e-99f6-3bae82de14e9" x="449" y="7" width="42" height="11"/>
+					<textElement>
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[AÑO:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="7e9b0202-c40e-4b98-ae27-abf81e8108b9" x="12" y="41" width="100" height="12"/>
+					<textElement>
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[RECIBE (GADMUR):]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="3"/>
+		</groupFooter>
+	</group>
+	<group name="vehiculo">
+		<groupExpression><![CDATA[$F{ide_tipo_vehiculo}]]></groupExpression>
+		<groupHeader>
+			<band height="29">
+				<rectangle>
+					<reportElement uuid="d81d16e3-c6d8-4677-82b5-8cc179b78c4e" x="7" y="6" width="544" height="20" backcolor="#999999"/>
+				</rectangle>
+				<textField>
+					<reportElement uuid="588fe640-1a74-49e3-b84f-503463cc8dd9" x="101" y="6" width="100" height="20" forecolor="#FFFFFF"/>
+					<textElement>
+						<font isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{descripcion_vehiculo}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="92440ba7-04c2-4f49-9dcf-dca4c67ded70" x="19" y="6" width="100" height="20" forecolor="#FFFFFF"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[AUTOMOTOR:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="3b2ce027-160d-4abf-ac3d-ca7ee15c7adc" x="448" y="6" width="100" height="20" forecolor="#FFFFFF"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[ESTADO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="04707d07-366d-4187-af91-1219d177c7e1" x="347" y="6" width="100" height="20" forecolor="#FFFFFF"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[FECHA DE CAMBIO]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="automotor">
+		<groupExpression><![CDATA[$F{IDE_TIPO_SERVICIO}]]></groupExpression>
+		<groupHeader>
+			<band height="22">
+				<textField>
+					<reportElement uuid="0ef318d3-a02f-4f18-bcfc-af8fa467377c" x="143" y="0" width="100" height="20" forecolor="#000000"/>
+					<textElement>
+						<font isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DESCRIPCION_SERVICIO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="07dae1f4-29ad-42e1-9b0d-884fc255ae6f" x="19" y="0" width="128" height="20" forecolor="#000000"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[SERVICIO AUTOMOTOR:]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="6"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="63" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="ad93a081-d196-461f-b6ee-1e3e036f45fe" key="staticText-1" x="0" y="44" width="412" height="18" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[REPORTE DE PLACAS INGRESADAS POR ACTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="135621e3-affc-4243-9416-f195179a0e22" key="staticText" x="0" y="0" width="555" height="25" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Ilustre Municipio del Cantón Rumiñahui]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a5eea435-1207-4048-97f0-8ef7d066355c" key="staticText-1" x="0" y="16" width="555" height="18" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[DIRECCIÓN DE TRANSPORTE]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="b9ee1727-229c-492a-aebe-c692fe694cce" x="419" y="1" width="136" height="62"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement uuid="a852a5b8-8997-4e37-b949-536e59dee363" x="132" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{PLACA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e581d67d-8382-4aab-99b6-e38ffca4d8be" x="218" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{DESCRIPCION_PLACA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="87b1221e-0ce8-49be-85c7-ad49749a38c1" x="43" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="62f84c6d-c714-41a0-87f5-00acee9bd128" x="450" y="2" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cambio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="cc73f7f3-0876-4f98-8338-529f40729338" x="349" y="2" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{FECHA_DEFINITIVA_PLACA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="24" splitType="Stretch">
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
+				<reportElement uuid="ac8cb349-eb42-4a42-9a6b-f29082cdea4f" key="textField" x="520" y="0" width="36" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="caf2aaeb-f0da-4135-adcf-80dfcf12d1cb" key="textField" x="347" y="0" width="170" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="724cf755-0422-45e7-b295-ca27bf634f47" key="textField-5" x="4" y="0" width="115" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c3186a0a-1ee6-45c0-815d-70a146650ff1" x="191" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{nomp_res}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>
