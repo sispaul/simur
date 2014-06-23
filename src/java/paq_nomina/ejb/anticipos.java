@@ -922,6 +922,24 @@ public void actuaAutorizador(Integer id,Integer cod,String ci,String nombre,Stri
     con_postgres.desconectar();
     con_postgres = null;
 }
+
+public void anularSolicitud (Integer id){
+    String au_sql="delete from srh_anticipo where ide_anticipo = "+id;
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+}
+
+public void llenarSolicitud(Integer anti,Double cuota,Double valor,Integer descuento,Integer descontado,Integer estado, String obser){
+    String au_sql="insert into srh_detalle_anticipo (ide_anticipo,cuota,valor,ide_periodo_descuento,ide_periodo_descontado,ide_estado_cuota,observacion)\n" +
+                  "values ("+anti+","+cuota+","+valor+","+descuento+","+descontado+","+estado+",'"+obser+"')";
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+}
+
 public TablaGenerica validar(String id ){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
@@ -951,6 +969,35 @@ public TablaGenerica validar(String id ){
         
  }
 
+ public TablaGenerica caTabla(){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT\n" +
+                                "ide_anticipo,\n" +
+                                "ide_periodo_anticipo_inicial,\n" +
+                                "ide_periodo_anticipo_final,\n" +
+                                "valor_anticipo,\n" +
+                                "valor_pagado,\n" +
+                                "valor_cuota_mensual,\n" +
+                                "valor_cuota_adicional,\n" +
+                                "numero_cuotas_anticipo,\n" +
+                                "numero_cuotas_pagadas,\n" +
+                                "ide_empleado_solicitante,\n" +
+                                "ci_solicitante,\n" +
+                                "solicitante,\n" +
+                                "ide_empleado_autorizador,\n" +
+                                "observacion_autorizador,\n" +
+                                "ide_estado_anticipo\n" +
+                                "FROM srh_anticipo\n" +
+                                "where ide_estado_anticipo = 2");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+ }
+ 
 private void conectar() {
         if (con_postgres == null) {
             con_postgres = new Conexion();
