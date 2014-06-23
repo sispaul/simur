@@ -200,7 +200,8 @@ public class pre_placas_fisicas extends Pantalla{
         tab_detalle.getColumna("FECHA_ENTREGA_PLACA").setLectura(true);
         tab_detalle.getColumna("TIPO_VEHICULO").setVisible(false);
         tab_detalle.getColumna("TIPO_SERVICIO").setVisible(false);
-        tab_detalle.getColumna("NUMERO_MATRICULA").setLectura(true);
+        tab_detalle.getColumna("CEDULA_PERSONA_CAMBIO").setVisible(false);
+        tab_detalle.getColumna("NOMBRE_PERSONA_CAMBIO").setVisible(false);
         tab_detalle.getColumna("CEDULA_PERSONA_RETIRA").setMetodoChange("aceptoCambio");
         tab_detalle.setTipoFormulario(true);
         tab_detalle.getGrid().setColumns(4);
@@ -287,7 +288,6 @@ public class pre_placas_fisicas extends Pantalla{
         tab_detalle1.getColumna("TIPO_SERVICIO").setVisible(false);
         tab_detalle1.getColumna("CEDULA_PERSONA_CAMBIO").setVisible(false);
         tab_detalle1.getColumna("NOMBRE_PERSONA_CAMBIO").setVisible(false);
-        tab_detalle1.getColumna("NUMERO_MATRICULA").setVisible(false);
         tab_detalle1.getColumna("CEDULA_PERSONA_RETIRA").setMetodoChange("aceptoCambio1");
         tab_detalle1.setTipoFormulario(true);
         tab_detalle1.getGrid().setColumns(4);
