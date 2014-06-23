@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_placas_papel" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4bc546ad-01a7-42e3-b4ae-dc91d975f4f4">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="placa" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT
+d.CEDULA_RUC_PROPIETARIO,
+d.NOMBRE_PROPIETARIO,
+d.NUMERO_MATRICULA,
+e.FECHA_ENTREGA_PLACA,
+p.PLACA,
+p.IDE_PLACA
+FROM
+TRANS_DETALLE_SOLICITUD_PLACA d,
+TRANS_PLACAS p,
+TRANS_ENTREGA_PLACA e
+WHERE d.IDE_PLACA = p.IDE_PLACA AND
+d.IDE_ENTREGA_PLACA = e.IDE_ENTREGA_PLACA]]>
+	</queryString>
+	<field name="CEDULA_RUC_PROPIETARIO" class="java.lang.String"/>
+	<field name="NOMBRE_PROPIETARIO" class="java.lang.String"/>
+	<field name="NUMERO_MATRICULA" class="java.lang.String"/>
+	<field name="FECHA_ENTREGA_PLACA" class="java.lang.String"/>
+	<field name="PLACA" class="java.lang.String"/>
+	<field name="IDE_PLACA" class="java.lang.Long"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="80" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="82d26e42-7712-4188-b09d-fe869916c1ab" x="0" y="0" width="802" height="79"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="5464e052-a958-4f13-ac09-679751b7fdef" x="530" y="5" width="252" height="67"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Black" size="42" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ECUADOR]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="e74fe8dc-813c-44f3-bb54-3c3d4b901e39" x="4" y="4" width="410" height="74"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_transporte.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<detail>
+		<band height="357">
+			<rectangle>
+				<reportElement uuid="67d4fabc-5fce-491d-a671-b1a559fa7a4b" x="0" y="317" width="802" height="38"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="a3653ad9-f3ad-44c0-a04a-c44b328c4d48" x="0" y="252" width="802" height="65"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="19e3361a-48d2-4876-be72-5b997aa6bdeb" x="9" y="18" width="100" height="20"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="d74efbb1-8720-4608-8073-edb88d30f036" x="0" y="0" width="802" height="254"/>
+			</rectangle>
+			<textField>
+				<reportElement uuid="871f07d9-223b-4d26-aac8-cd1eddf0cd93" x="46" y="18" width="710" height="217"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="120" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PLACA}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="6ea2f0c6-9865-4546-9589-b876efc6c378" x="28" y="255" width="738" height="29"/>
+				<textElement textAlignment="Center">
+					<font size="22" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PLACA PROVISIONAL AUTORIZADA POR EL GAD RUMIÑAHUI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="12f33740-c6eb-4d72-afa0-84bcc14cf6ed" x="193" y="297" width="432" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FIRMA Y SELLO DEL RESPONSABLE DE ENTREGA DE PLACAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0186ca7b-c5b6-4af7-b50a-4b69504911c1" x="9" y="319" width="113" height="16"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PROPIETARIO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cef90c7f-7de3-482d-a9c0-62031aa56727" x="9" y="339" width="194" height="16"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NÙMERO DE MATRICULA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9a8dd9ec-adc7-41d3-a05d-f6d9c79dd0f1" x="404" y="319" width="395" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTE DOCUMENTO NO TIENE TEMPO DE CADUCIDAD]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="c86e5e51-6b99-48b5-8e13-9a1dd7ce1588" x="129" y="319" width="251" height="16"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOMBRE_PROPIETARIO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e92e1ee8-f0df-49e5-b023-887bc0a1f5c6" x="212" y="339" width="130" height="16"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NUMERO_MATRICULA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
