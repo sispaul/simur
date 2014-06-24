@@ -115,7 +115,7 @@ Integer identificacion;
         bar_botones.agregarBoton(bot_busca);
         
         cmb_usuario.setId("cmb_usuario");
-        cmb_usuario.setCombo("SELECT IDE_USUA,NICK_USUA FROM SIS_USUARIO WHERE IDE_PERF <> 1");
+        cmb_usuario.setCombo("SELECT IDE_USUA,NICK_USUA FROM SIS_USUARIO WHERE IDE_PERF = 13");
         cmb_usuario.eliminarVacio();
         
         /*Boton para asignacion de estados*/
@@ -658,7 +658,7 @@ Integer identificacion;
                 cal_fechabus2.setFechaActual();
                 grid_du.getChildren().add(new Etiqueta("ELEGIR USUARIO:"));
                 cmb_usuario.setId("cmb_usuario");
-                cmb_usuario.setCombo("SELECT IDE_USUA,NICK_USUA FROM SIS_USUARIO WHERE IDE_PERF <> 1");
+                cmb_usuario.setCombo("SELECT IDE_USUA,NICK_USUA FROM SIS_USUARIO WHERE IDE_PERF = 13");
                 cmb_usuario.eliminarVacio();
                 grid_du.getChildren().add(cmb_usuario);
                 dia_dialogou.setDialogo(grid_du);
