@@ -536,8 +536,19 @@ Integer identificacion;
        if (!tab_dato.isEmpty()) {
         ser_Placa.estadoPlaca(Integer.parseInt(tab_dato.getValor("IDE_PLACA")));
         utilitario.agregarMensaje("ASIGNACIÓN REALIZADA", "");
-        dia_dialogoe.cerrar();
-        placasDispo();
+                dia_dialogoe.cerrar();
+                TablaGenerica tab_dato1 = ser_Placa.placasAsigna(Integer.parseInt(tab_detalle.getValor("IDE_tipo_vehiculo")), Integer.parseInt(tab_detalle.getValor("IDE_tipo_servicio")),tab_detalle.getValor("CEDULA_RUC_PROPIETARIO"));
+                    if (!tab_dato1.isEmpty()) {
+                        System.err.println(tab_dato1.getValor("placa"));
+                        utilitario.agregarMensaje("NUMERO DE PLACAS", tab_dato1.getValor("placa"));
+                        utilitario.agregarMensaje("NOMBRE PROPIETARIO", tab_detalle.getValor("nombre_propietario"));
+                        utilitario.addUpdate("tab_detalle");
+                        tab_detalle.actualizar();
+                } else {
+                        utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ciudadania del municipio", "");
+                        utilitario.addUpdate("tab_detalle");
+                    }
+//        placasDispo();
         } else {
                 utilitario.agregarMensajeInfo("Datos no disponibles ", "");
             }
@@ -549,18 +560,13 @@ Integer identificacion;
    
    public void placasDispo(){
        String cadena1,cadena2,cadena3,cadena4;
+       cadena4 = null;
    TablaGenerica tab_dato = ser_Placa.placasDis(Integer.parseInt(tab_detalle.getValor("IDE_tipo_vehiculo")), Integer.parseInt(tab_detalle.getValor("IDE_tipo_servicio")));
             if (!tab_dato.isEmpty()) {
-//                cadena1 = tab_dato.getValor("numero");
-//                cadena2 = tab_dato.getValor("DESCRIPCION_VEHICULO");
-//                cadena3 = tab_dato.getValor("DESCRIPCION_SERVICIO");
-                cadena4 = tab_dato.getValor("placa");
-                utilitario.agregarMensaje("NUMERO DE PLACAS", cadena4);
+                utilitario.agregarMensaje("NUMERO DE PLACAS", tab_dato.getValor("placa"));
                 utilitario.agregarMensaje("NUMERO DE PLACAS", tab_detalle.getValor("nombre_propietario"));
-//                utilitario.agregarMensaje("TIPO DE AUTOMOTOR", cadena2);
-//                utilitario.agregarMensaje("TIPO DE SERVICIO", cadena3);
-//                utilitario.agregarMensajeInfo("NUMERO DE PLACAS DISPONIBLES", cadena1);
                 utilitario.addUpdate("tab_detalle");
+//                tab_detalle.actualizar();
         } else {
                 utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ciudadania del municipio", "");
                 utilitario.addUpdate("tab_detalle");
@@ -588,6 +594,7 @@ Integer identificacion;
                      tab_dato.getValor("NOMBRE_PROPIETARIO"), Integer.parseInt(tab_dato.getValor("IDE_TIPO_VEHICULO")), 
                      tab_dato.getValor("NUMERO_RVMO"), txt_comentario.getValue()+"",tab_dato.getValor("ide_placa"));
                      quitarPlaca();
+                     set_placa.cerrar();
                   } else {
                           utilitario.agregarMensajeInfo("no existe en la base de datos", "");
                           }
@@ -621,7 +628,6 @@ Integer identificacion;
                  System.err.println("Ing4");
                     ser_Placa.eliminarAprobacion(Integer.parseInt(tab_dato.getValor("IDE_DETALLE_SOLICITUD")));
                     utilitario.agregarMensajeInfo("ASIGNACIÓN ELIMINADA", "");
-                    set_placa.cerrar();
                     ser_Placa.actuEstado1(Integer.parseInt(tab_dato.getValor("IDE_DETALLE_SOLICITUD")));
                 } else {
                        utilitario.agregarMensajeInfo("no existe en la base de datos", "");
