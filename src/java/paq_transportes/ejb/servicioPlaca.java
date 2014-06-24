@@ -601,6 +601,42 @@ public TablaGenerica placasDis(Integer veh,Integer ser) {
         return tab_persona;
     } 
 
+ public TablaGenerica placasAsigna(Integer veh,Integer ser,String cedu) {
+        //Busca a una empresa en la tabla maestra_ruc por ruc
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT\n" +
+                            "v.DESCRIPCION_VEHICULO,\n" +
+                            "s.DESCRIPCION_SERVICIO,\n" +
+                            "p.PLACA,\n" +
+                            "d.CEDULA_RUC_PROPIETARIO\n" +
+                            "FROM\n" +
+                            "dbo.TRANS_PLACAS AS p ,\n" +
+                            "dbo.TRANS_VEHICULO_TIPO AS v ,\n" +
+                            "dbo.TRANS_TIPO_SERVICIO AS s,\n" +
+                            "dbo.TRANS_DETALLE_SOLICITUD_PLACA d \n" +
+                            "WHERE\n" +
+                            "p.IDE_TIPO_VEHICULO = v.IDE_TIPO_VEHICULO AND\n" +
+                            "s.IDE_TIPO_VEHICULO = v.IDE_TIPO_VEHICULO AND\n" +
+                            "p.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO AND\n" +
+                            "d.IDE_PLACA = p.IDE_PLACA AND \n" +
+                            "d.IDE_TIPO_VEHICULO = v.IDE_TIPO_VEHICULO AND\n" +
+                            "p.IDE_TIPO_VEHICULO = 4 AND\n" +
+                            "p.IDE_TIPO_SERVICIO = 39 AND\n" +
+                            "p.IDE_TIPO_ESTADO = (SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO WHERE DESCRIPCION_ESTADO LIKE 'asignada') AND\n" +
+                            "d.CEDULA_RUC_PROPIETARIO LIKE '1717632366'\n" +
+                            "GROUP BY\n" +
+                            "v.DESCRIPCION_VEHICULO,\n" +
+                            "s.DESCRIPCION_SERVICIO,\n" +
+                            "p.PLACA,\n" +
+                            "d.CEDULA_RUC_PROPIETARIO");
+        tab_persona.ejecutarSql();
+        conexion.desconectar();
+        conexion = null;
+        return tab_persona;
+    } 
+
 public TablaGenerica getDevEmpresa(Integer solii) {
         //Busca a una empresa en la tabla maestra_ruc por ruc
         conectar();
