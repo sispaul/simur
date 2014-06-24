@@ -746,13 +746,23 @@ public class pre_ingreso_solicitante extends Pantalla{
 
     @Override
     public void guardar() {
-        if (tab_solicitud.guardar()) {
-               utilitario.addUpdate("tab_solicitud");
-            if (tab_detalle.guardar()) {
-                 guardarPantalla();
-                 utilitario.addUpdate("tab_detalle");
-              }
-      } 
+         if (utilitario.validarRUC(tab_solicitud.getValor("CEDULA_RUC_PROPIETARIO"))) {
+                if (tab_solicitud.guardar()) {
+                        utilitario.addUpdate("tab_solicitud");
+                        if (tab_detalle.guardar()) {
+                                guardarPantalla();
+                                utilitario.addUpdate("tab_detalle");
+                            }
+                }
+                }else if (utilitario.validarCedula(tab_solicitud.getValor("CEDULA_RUC_PROPIETARIO"))) {
+                            if (tab_solicitud.guardar()) {
+                                utilitario.addUpdate("tab_solicitud");
+                                if (tab_detalle.guardar()) {
+                                    guardarPantalla();
+                                    utilitario.addUpdate("tab_detalle");
+                                }
+                            }
+                        }
     }
 
     @Override
