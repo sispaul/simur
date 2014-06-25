@@ -394,8 +394,7 @@ public class pre_ingreso_solicitante extends Pantalla{
             TablaGenerica tab_dato = ser_Placa.getNuevoReg(Integer.parseInt(set_activadas.getValorSeleccionado()));
             if (!tab_dato.isEmpty()) {
                 ser_Placa.DataNew(Integer.parseInt(detalle),Integer.parseInt(tab_dato.getValor("IDE_TIPO_SERVICIO")), Integer.parseInt(tab_dato.getValor("IDE_TIPO_VEHICULO")), Integer.parseInt(solicitud), tab_dato.getValor("CEDULA_RUC_PROPIETARIO"), tab_dato.getValor("NOMBRE_PROPIETARIO"), 
-                                Integer.parseInt(tab_dato.getValor("NUMERO_RVMO")));
-//                actuaD();
+                                tab_dato.getValor("NUMERO_RVMO"));
                 }else {
                                     utilitario.agregarMensajeInfo("no existe datos1", "");
                                 }
