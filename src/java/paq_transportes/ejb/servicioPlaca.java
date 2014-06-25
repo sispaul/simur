@@ -284,10 +284,10 @@ public void nuevo(Integer codigo,Integer id, String cedu,String nom,Integer cod,
     conexion = null;
 }
 
-public void DataNew(Integer codigo, Integer ser,Integer veh,Integer soli,String cedula, String nomb,Integer fact){
+public void DataNew(Integer codigo, Integer ser,Integer veh,Integer soli,String cedula, String nomb,String fact){
     String devolver ="INSERT INTO TRANS_DETALLE_SOLICITUD_PLACA (IDE_DETALLE_SOLICITUD,IDE_SOLICITUD_PLACA,IDE_TIPO_SERVICIO,\n" +
 "IDE_TIPO_VEHICULO,CEDULA_RUC_PROPIETARIO,NOMBRE_PROPIETARIO,NUMERO_RVMO,TIPO_SERVICIO,TIPO_VEHICULO,ESTADO)\n" +
-"VALUES ("+codigo+","+soli+","+ser+","+veh+",'"+cedula+"','"+nomb+"',"+fact+","+ser+","+veh+",'1')";
+"VALUES ("+codigo+","+soli+","+ser+","+veh+",'"+cedula+"','"+nomb+"','"+fact+"',"+ser+","+veh+",'1')";
     conectar();
     conexion.ejecutarSql(devolver);
     conexion.desconectar();
