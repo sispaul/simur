@@ -103,12 +103,12 @@ public class pre_ingreso_solicitante extends Pantalla{
         
             solicitud=ser_Placa.getGestorNum();
             detalle = ser_Placa.getGestorNumDe();
-        Boton bot_busca = new Boton();
-        bot_busca.setValue("Busqueda Retenidos");
-        bot_busca.setExcluirLectura(true);
-        bot_busca.setIcon("ui-icon-search");
-        bot_busca.setMetodo("abrirBusqueda");
-        bar_botones.agregarBoton(bot_busca);
+//        Boton bot_busca = new Boton();
+//        bot_busca.setValue("Busqueda Retenidos");
+//        bot_busca.setExcluirLectura(true);
+//        bot_busca.setIcon("ui-icon-search");
+//        bot_busca.setMetodo("abrirBusqueda");
+//        bar_botones.agregarBoton(bot_busca);
         
         /*
          * Saca el usuario que esta igresando al sistema
@@ -516,7 +516,7 @@ public class pre_ingreso_solicitante extends Pantalla{
                 if (!tab_dato.isEmpty()) {
                      tab_solicitud.setValor("NOMBRE_GESTOR", tab_dato.getValor("NOMBRE_GESTOR"));
                      tab_solicitud.setValor("IDE_GESTOR", tab_dato.getValor("IDE_GESTOR"));
-                     tab_solicitud.setValor("IDE_TIPO_SOLICTUD", "6");
+                     tab_solicitud.setValor("IDE_TIPO_SOLICTUD", "2");
                       utilitario.addUpdate("tab_solicitud");
                       dia_dialogoc1.cerrar();
                        } else {
@@ -533,14 +533,14 @@ public class pre_ingreso_solicitante extends Pantalla{
                 if (!tab_dato.isEmpty()) {
                     // Cargo la información de la base de datos maestra   
                     tab_solicitud.setValor("NOMBRE_EMPRESA", tab_dato.getValor("NOMBRE_GESTOR"));
-                    tab_solicitud.setValor("IDE_TIPO_SOLICTUD", "6");
+                    tab_solicitud.setValor("IDE_TIPO_SOLICTUD", "2");
                     utilitario.addUpdate("tab_solicitud");
                 } else {
             TablaGenerica tab_dato2 = ser_Placa.getGestor(tab_solicitud.getValor("CEDULA_RUC_EMPRESA"));
                 if (!tab_dato2.isEmpty()) {
                     // Cargo la información de la base de datos maestra   
                     tab_solicitud.setValor("NOMBRE_EMPRESA", tab_dato2.getValor("NOMBRE_EMPRESA"));
-                    tab_solicitud.setValor("IDE_TIPO_SOLICTUD", "6");
+                    tab_solicitud.setValor("IDE_TIPO_SOLICTUD", "2");
                     utilitario.addUpdate("tab_solicitud");
                     aceptoDialogoe();
                 } else {
@@ -552,7 +552,7 @@ public class pre_ingreso_solicitante extends Pantalla{
             if (!tab_dato1.isEmpty()) {
                 // Cargo la información de la base de datos maestra   
                 tab_solicitud.setValor("NOMBRE_EMPRESA", tab_dato1.getValor("NOMBRE_GESTOR"));
-                tab_solicitud.setValor("IDE_TIPO_SOLICTUD", "8");
+                tab_solicitud.setValor("IDE_TIPO_SOLICTUD", "4");
                 utilitario.addUpdate("tab_solicitud");
             } else {
                     utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ", "");

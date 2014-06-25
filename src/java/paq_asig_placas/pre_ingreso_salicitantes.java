@@ -79,15 +79,12 @@ public class pre_ingreso_salicitantes extends Pantalla{
     
     public pre_ingreso_salicitantes() {
         
-        solicitud=ser_Placa.getGestorNum();
-        detalle = ser_Placa.getGestorNumDe();
-        
-        Boton bot_busca = new Boton();
-        bot_busca.setValue("Busqueda Retenidos");
-        bot_busca.setExcluirLectura(true);
-        bot_busca.setIcon("ui-icon-search");
-        bot_busca.setMetodo("abrirBusqueda");
-        bar_botones.agregarBoton(bot_busca);
+//        Boton bot_busca = new Boton();
+//        bot_busca.setValue("Busqueda Retenidos");
+//        bot_busca.setExcluirLectura(true);
+//        bot_busca.setIcon("ui-icon-search");
+//        bot_busca.setMetodo("abrirBusqueda");
+//        bar_botones.agregarBoton(bot_busca);
         
         //Saca el usuario que esta igresando al sistema
         tab_consulta.setId("tab_consulta");
@@ -140,6 +137,7 @@ public class pre_ingreso_salicitantes extends Pantalla{
         tab_detalle.setTipoFormulario(true);
         tab_detalle.dibujar();
         PanelTabla tabp2 = new PanelTabla();
+        tabp2.setPanelTabla(tab_detalle);
         Boton bot_new = new Boton();
         bot_new.setValue("NUEVO");
         bot_new.setIcon("ui-icon-document");
@@ -155,13 +153,12 @@ public class pre_ingreso_salicitantes extends Pantalla{
         bot_save.setIcon("ui-icon-disk");
         bot_save.setMetodo("guardar");
         
-         pan_opcion2.setId("pan_opcion2");
-         pan_opcion2.getChildren().add(bot_new);
-         pan_opcion2.getChildren().add(bot_save);
-         pan_opcion2.getChildren().add(bot_delete);
-        tabp2.setPanelTabla(tab_detalle);
+        pan_opcion2.setId("pan_opcion2");
+        pan_opcion2.getChildren().add(bot_new);
+        pan_opcion2.getChildren().add(bot_save);
+        pan_opcion2.getChildren().add(bot_delete);
         tabp2.getChildren().add(pan_opcion2);
-        
+//        
         pan_opcion1.setId("pan_opcion1");
 	pan_opcion1.setTransient(true);
         pan_opcion1.setHeader("INGRESO DE SOLICITUD PARA PEDIDO - PLACA");
@@ -297,14 +294,14 @@ public class pre_ingreso_salicitantes extends Pantalla{
                 if (!tab_dato.isEmpty()) {
                     // Cargo la información de la base de datos maestra   
                     tab_solicitud.setValor("NOMBRE_EMPRESA", tab_dato.getValor("NOMBRE_GESTOR"));
-                    tab_solicitud.setValor("IDE_TIPO_SOLICTUD", "6");
+                    tab_solicitud.setValor("IDE_TIPO_SOLICTUD", "2");
                     utilitario.addUpdate("tab_solicitud");
                 } else {
             TablaGenerica tab_dato2 = ser_Placa.getGestor(tab_solicitud.getValor("CEDULA_RUC_EMPRESA"));
                 if (!tab_dato2.isEmpty()) {
                     // Cargo la información de la base de datos maestra   
                     tab_solicitud.setValor("NOMBRE_EMPRESA", tab_dato2.getValor("NOMBRE_EMPRESA"));
-                    tab_solicitud.setValor("IDE_TIPO_SOLICTUD", "6");
+                    tab_solicitud.setValor("IDE_TIPO_SOLICTUD", "2");
                     utilitario.addUpdate("tab_solicitud");
                     aceptoDialogoe();
                 } else {
@@ -316,7 +313,7 @@ public class pre_ingreso_salicitantes extends Pantalla{
             if (!tab_dato1.isEmpty()) {
                 // Cargo la información de la base de datos maestra   
                 tab_solicitud.setValor("NOMBRE_EMPRESA", tab_dato1.getValor("NOMBRE_GESTOR"));
-                tab_solicitud.setValor("IDE_TIPO_SOLICTUD", "8");
+                tab_solicitud.setValor("IDE_TIPO_SOLICTUD", "4");
                 utilitario.addUpdate("tab_solicitud");
             } else {
                     utilitario.agregarMensajeInfo("El Número de Cédula ingresado no existe en la base de datos ", "");
@@ -409,7 +406,7 @@ public class pre_ingreso_salicitantes extends Pantalla{
                 if (!tab_dato.isEmpty()) {
                      tab_solicitud.setValor("NOMBRE_GESTOR", tab_dato.getValor("NOMBRE_GESTOR"));
                      tab_solicitud.setValor("IDE_GESTOR", tab_dato.getValor("IDE_GESTOR"));
-                     tab_solicitud.setValor("IDE_TIPO_SOLICTUD", "6");
+                     tab_solicitud.setValor("IDE_TIPO_SOLICTUD", "2");
                       utilitario.addUpdate("tab_solicitud");
                       dia_dialogoc1.cerrar();
                        } else {
@@ -494,6 +491,8 @@ public class pre_ingreso_salicitantes extends Pantalla{
     
     /*aceptacion de busqueda y autocompletado d elos datos*/
     public void aceptarBusquedaDE() {
+        solicitud=ser_Placa.getGestorNum();
+        detalle = ser_Placa.getGestorNumDe();
         if (set_activadas.getValorSeleccionado() != null) {
             TablaGenerica tab_dato = ser_Placa.getNuevoReg(Integer.parseInt(set_activadas.getValorSeleccionado()));
             if (!tab_dato.isEmpty()) {
