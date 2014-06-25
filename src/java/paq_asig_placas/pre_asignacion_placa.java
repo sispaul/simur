@@ -421,7 +421,6 @@ Integer identificacion;
         tab_detalle.getColumna("CEDULA_PERSONA_CAMBIO").setVisible(false);
         tab_detalle.getColumna("NOMBRE_PERSONA_CAMBIO").setVisible(false);
         tab_detalle.getColumna("APROBADO_SOLICITUD").setVisible(false);
-        tab_detalle.getColumna("NUMERO_MATRICULA").setVisible(false);
         tab_detalle.agregarRelacion(tab_requisito);
         tab_detalle.setTipoFormulario(true);
         tab_detalle.getGrid().setColumns(4);
