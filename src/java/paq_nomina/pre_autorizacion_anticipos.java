@@ -150,6 +150,13 @@ private Tabla tab_consulta = new Tabla();
                  }
     }
         
+    public void cuotas(){
+         for (int i = 0; i < Integer.parseInt(tab_anticipo.getValor("numero_cuotas anticipo"))-1; i++){
+             
+         }
+             
+    }
+    
     @Override
     public void insertar() {
     }
