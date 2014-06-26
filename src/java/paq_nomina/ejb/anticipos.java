@@ -940,9 +940,9 @@ public void llenarSolicitud(Integer anti,Double cuota,Double valor,Integer descu
     con_postgres = null;
 }
 
-public void llenarSolicitud(Integer ant,String cuota,double valor,Integer desc ,Integer descon,Integer estado,String observacion){
+public void llenarSolicitud(Integer ant,String cuota,double valor,Integer desc ,Integer descon,Integer estado,String obser){
     String au_sql="insert into srh_detalle_anticipo (ide_anticipo,cuota,valor,ide_periodo_descuento,ide_periodo_descontado,ide_estado_cuota,observacion)\n" +
-                   "values ()";
+                   "values ("+ant+",'"+cuota+"',"+valor+","+desc+","+descon+","+estado+",'"+obser+"')";
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
