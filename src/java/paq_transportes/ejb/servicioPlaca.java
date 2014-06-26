@@ -199,6 +199,18 @@ public void actualFinalPlaca(Integer detal,Integer entrega,String usuario ){
         conexion.desconectar();
         conexion = null;
 }
+
+public void actualPlacaDes(String placa){
+        String detalle ="update TRANS_PLACAS\n" +
+                        "set IDE_TIPO_ESTADO = (SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO WHERE DESCRIPCION_ESTADO like 'asignada'),\n" +
+                        "IDE_TIPO_ESTADO2 = (SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO WHERE DESCRIPCION_ESTADO like 'asignada')\n" +
+                        "WHERE PLACA LIKE '"+placa+"'";
+        conectar();
+        conexion.ejecutarSql(detalle);
+        conexion.desconectar();
+        conexion = null;
+}
+
 //ELIMINAR APROBACION
 
 public void eliminarAprobacion(Integer eliminar){
@@ -288,6 +300,15 @@ public void DataNew(Integer codigo, Integer ser,Integer veh,Integer soli,String 
     String devolver ="INSERT INTO TRANS_DETALLE_SOLICITUD_PLACA (IDE_DETALLE_SOLICITUD,IDE_SOLICITUD_PLACA,IDE_TIPO_SERVICIO,\n" +
 "IDE_TIPO_VEHICULO,CEDULA_RUC_PROPIETARIO,NOMBRE_PROPIETARIO,NUMERO_RVMO,TIPO_SERVICIO,TIPO_VEHICULO,ESTADO)\n" +
 "VALUES ("+codigo+","+soli+","+ser+","+veh+",'"+cedula+"','"+nomb+"','"+fact+"',"+ser+","+veh+",'1')";
+    conectar();
+    conexion.ejecutarSql(devolver);
+    conexion.desconectar();
+    conexion = null;
+}
+
+public void InsHistoPlaca(String placa, String comentario,String usu){
+    String devolver ="insert into TRANS_PLACAS_REGISTRADAS_ANT(FECHA_APROBACION,PLACA,COMENTARIO,USUARIO) \n" +
+                    "values ("+utilitario.getFormatoFechaSQL(utilitario.getFechaActual())+",'"+placa+"','"+comentario+"','"+usu+"')";
     conectar();
     conexion.ejecutarSql(devolver);
     conexion.desconectar();
