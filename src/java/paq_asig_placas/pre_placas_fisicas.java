@@ -373,7 +373,9 @@ public class pre_placas_fisicas extends Pantalla{
              utilitario.agregarMensaje("Guardado Correctamente ", "");
              ejeGuardar();
     }
-         
+ 
+    
+    ////        
     public void ejeGuardar(){
         TablaGenerica tab_dato = ser_Placa.getIDEntrega(Integer.parseInt(tab_detalle1.getValor("IDE_DETALLE_SOLICITUD")));
             if (!tab_dato.isEmpty()) {
@@ -387,7 +389,7 @@ public class pre_placas_fisicas extends Pantalla{
     }   
          
     public void actualizarDE(){
-        ser_Placa.actualizarDE(Integer.parseInt(tab_detalle1.getValor("IDE_DETALLE_SOLICITUD")), tab_detalle1.getValor("CEDULA_RUC_PROPIETARIO"), Integer.parseInt(tab_detalle1.getValor("IDE_PLACA")));
+//        ser_Placa.actualizarDE(Integer.parseInt(tab_detalle1.getValor("IDE_DETALLE_SOLICITUD")), tab_detalle1.getValor("CEDULA_RUC_PROPIETARIO"), Integer.parseInt(tab_detalle1.getValor("IDE_PLACA")));
     }
     
     
@@ -398,7 +400,7 @@ public class pre_placas_fisicas extends Pantalla{
     }
     
     public void actualizaMetodo(){
-     ser_Placa.actualFinalPlaca(Integer.parseInt(tab_detalle.getValor("IDE_PLACA")), Integer.parseInt(tab_detalle.getValor("IDE_PLACA")), tab_consulta.getValor("NICK_USUA"));
+//     ser_Placa.actualFinalPlaca(Integer.parseInt(tab_detalle.getValor("IDE_PLACA")), Integer.parseInt(tab_detalle.getValor("IDE_PLACA")), tab_consulta.getValor("NICK_USUA"));
     }
       
     
