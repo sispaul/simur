@@ -45,6 +45,7 @@ public class pre_placa_asignada extends Pantalla{
     
     //
     private Texto txt_comentario = new Texto();
+    private Texto txt_comentario1 = new Texto();
     private Texto txt_busca = new Texto();
     private Texto txt_placa = new Texto();
     
@@ -179,11 +180,11 @@ public class pre_placa_asignada extends Pantalla{
         agregarComponente(dia_dialogoq);
         
         dia_dialogoa.setId("dia_dialogoa");
-        dia_dialogoa.setTitle("CONFIRMAR ASIGNACIÓN"); //titulo
-        dia_dialogoa.setWidth("20%"); //siempre en porcentajes  ancho
-        dia_dialogoa.setHeight("10%");//siempre porcentaje   alto 
+        dia_dialogoa.setTitle("PLACA ASGINADA - ANULAR"); //titulo
+        dia_dialogoa.setWidth("30%"); //siempre en porcentajes  ancho
+        dia_dialogoa.setHeight("20%");//siempre porcentaje   alto 
         dia_dialogoa.setResizable(false); //para que no se pueda cambiar el tamaño
-        dia_dialogoa.getBot_aceptar().setMetodo("aceptoValores");
+        dia_dialogoa.getBot_aceptar().setMetodo("desahPlaca");
         grid_da.setColumns(4);
         agregarComponente(dia_dialogoa);
         
@@ -479,6 +480,25 @@ public class pre_placa_asignada extends Pantalla{
    
     //
     
+    public void abrirPlacaAsig (){
+        dia_dialogoa.Limpiar();
+        dia_dialogoa.setDialogo(grida);
+        txt_comentario1.setSize(50);
+        grida.getChildren().add(new Etiqueta("COMENTARIO DE BLOQUEO:"));
+        grida.getChildren().add(txt_comentario1);
+        txt_placa.setSize(10);
+        grida.getChildren().add(new Etiqueta("PLACA:"));
+        grida.getChildren().add(txt_placa);
+        dia_dialogoa.setDialogo(grid_da);
+        dia_dialogoa.dibujar();
+    }
+    
+    public void desahPlaca(){
+        ser_Placa.actualPlacaDes(txt_placa.getValue()+"");
+        ser_Placa.InsHistoPlaca(txt_placa.getValue()+"", txt_comentario1.getValue()+"", tab_consulta.getValor("NICK_USUA"));
+        dia_dialogoa.cerrar();
+    }
+    
     @Override
     public void insertar() {
     }
@@ -493,7 +513,7 @@ public class pre_placa_asignada extends Pantalla{
                  }
             }
     }
-
+    
     @Override
     public void eliminar() {
     }
