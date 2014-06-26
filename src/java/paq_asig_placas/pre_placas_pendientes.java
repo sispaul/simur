@@ -190,10 +190,7 @@ public class pre_placas_pendientes extends Pantalla{
             if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra 
                 nombre = tab_dato.getValor("NOMBRE_GESTOR");
-                empresa = tab_dato.getValor("NOMBRE_EMPRESA");
-//                tab_entrega.setValor("cedula_quien_retira", cedula);
                 tab_entrega.setValor("nombre_quien_retira", nombre);
-                tab_entrega.setValor("PARTICULAR_EMPRESA", empresa);
                 utilitario.addUpdate("tab_entrega");
                 cantidad();
                 } else {
@@ -220,7 +217,6 @@ public class pre_placas_pendientes extends Pantalla{
                              tab_entrega.insertar();
                                 tab_entrega.setValor("cedula_quien_retira", cedula);
                                 tab_entrega.setValor("nombre_quien_retira", nombre);
-                                tab_entrega.setValor("PARTICULAR_EMPRESA", empresa);
                              dia_dialogoe.cerrar();
                          }
     }
@@ -229,7 +225,7 @@ public class pre_placas_pendientes extends Pantalla{
       TablaGenerica tab_dato = ser_Placa.getPlacaBus(tab_entrega.getValor("placa"));
         if(!tab_dato.isEmpty()) {
             utilitario.agregarMensaje("Placa Entregada", tab_dato.getValor("placa"));
-            utilitario.agregarMensaje("Propietario", tab_dato.getValor("PROPIETARIO"));
+            utilitario.agregarMensaje("Propietario", tab_dato.getValor("NOMBRE_PROPIETARIO"));
             utilitario.addUpdate("tab_entrega");
             }else {
                     TablaGenerica tab_dato1 = ser_Placa.getPlacaBusc(tab_entrega.getValor("placa"));
@@ -237,7 +233,15 @@ public class pre_placas_pendientes extends Pantalla{
                             utilitario.agregarMensaje("Placa Entregada", tab_dato1.getValor("placa"));
                             utilitario.addUpdate("tab_entrega");
                             }else {
-                                   utilitario.agregarMensajeInfo("Placa No Entregada", "Puede Entregarla");
+                                   TablaGenerica tab_dato2 = ser_Placa.getPlacaBusc(tab_entrega.getValor("placa"));
+                                    if(!tab_dato2.isEmpty()) {
+                                        tab_entrega.setValor("cedula_propietario", tab_dato2.getValor("CEDULA_RUC_PROPIETARIO"));
+                                        tab_entrega.setValor("nombre_propietario", tab_dato2.getValor("NOMBRE_PROPIETARIO"));
+                                        tab_entrega.setValor("ide_detalle_solicitud", tab_dato2.getValor("IDE_DETALLE_SOLICITUD"));
+                                        utilitario.addUpdate("tab_entrega");
+                                        }else {
+                                               utilitario.agregarMensajeInfo("Placa No Asignada", "O NO EXISTE");
+                                                }
                                     }
                     }
     }
