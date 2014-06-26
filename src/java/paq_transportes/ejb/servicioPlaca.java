@@ -851,7 +851,8 @@ public TablaGenerica getDevolucion(Integer placas) {
                             "NOMBRE_QUIEN_RETIRA,\n" +
                             "FECHA_RETIRO,\n" +
                             "PLACA,\n" +
-                            "PARTICULAR_EMPRESA\n" +
+                            "CEDULA_PROPIETARIO,\n" +
+                            "NOMBRE_PROPIETARIO\n" +
                             "FROM\n" +
                             "TRANS_PLACAS_PENDIENTES\n" +
                             "where placa like '"+placas+"'");
@@ -870,6 +871,28 @@ public TablaGenerica getDevolucion(Integer placas) {
                             "FROM\n" +
                             "TRANS_PLACAS_ANTIGUAS\n" +
                             "WHERE placa like '"+placas+"'");
+        tab_persona.ejecutarSql();
+        conexion.desconectar();
+        conexion = null;
+        return tab_persona;
+    }
+    
+    public TablaGenerica getPlacaEntrega(String placas) {
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT\n" +
+                            "	d.IDE_DETALLE_SOLICITUD,\n" +
+                            "	d.CEDULA_RUC_PROPIETARIO,\n" +
+                            "	d.NOMBRE_PROPIETARIO,\n" +
+                            "	p.PLACA\n" +
+                            "FROM\n" +
+                            "	dbo.TRANS_DETALLE_SOLICITUD_PLACA d,\n" +
+                            "	dbo.TRANS_PLACAS p\n" +
+                            "WHERE\n" +
+                            "	d.IDE_PLACA = p.IDE_PLACA\n" +
+                            "AND d.APROBADO_SOLICITUD = 1\n" +
+                            "AND p.placa like '"+placas+"'");
         tab_persona.ejecutarSql();
         conexion.desconectar();
         conexion = null;
