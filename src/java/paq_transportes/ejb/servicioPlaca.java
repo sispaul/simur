@@ -105,10 +105,10 @@ public void actualizarDE(Integer iden,String ruc,Integer placa)
     {
         String actualiza2 = "update TRANS_PLACAS set NOMBRE_PROPIETARIO=nombre,ide_tipo_estado = \n" +
                             "(SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO WHERE DESCRIPCION_ESTADO LIKE 'entregada'),\n" +
-                            "FECHA_ENTREGA_PLACA='"+utilitario.getFechaActual()+"',CEDULA_RUC_PROPIETARIO=identi,\n" +
+                            "FECHA_ENTREGA_PLACA='"+utilitario.getFechaActual()+"',CEDULA_RUC_PROPIETARIO='"+ruc+"',\n" +
                             "IDE_TIPO_ESTADO2 = (SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO WHERE DESCRIPCION_ESTADO LIKE 'asignada')\n" +
                             "from( select CEDULA_RUC_PROPIETARIO as identi,NOMBRE_PROPIETARIO as nombre from TRANS_DETALLE_SOLICITUD_PLACA\n" +
-                            "where IDE_DETALLE_SOLICITUD = "+iden+" and CEDULA_RUC_PROPIETARIO ="+ruc+")a\n" +
+                            "where IDE_DETALLE_SOLICITUD = "+iden+" and CEDULA_RUC_PROPIETARIO ='"+ruc+"')a\n" +
                             "where ide_tipo_estado <> (SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO \n" +
                             "WHERE DESCRIPCION_ESTADO LIKE 'entregada') and ide_placa ="+placa; 
         conectar();
@@ -193,7 +193,7 @@ public void actualFinal(Integer detal,String cedula,String nombre ){
 }
 
 public void actualFinalPlaca(Integer detal,Integer entrega,String usuario ){
-        String detalle ="UPDATE TRANS_PLACAS SET IDE_TIPO_ESTADO2 =(SELECT IDE_TIPO_ESTADO FROM TRANS_PLACAS WHERE IDE_PLACA ="+entrega+"),USU_ENTREGA ='"+usuario+"',FECHA_ENTREGA_FINAL ='"+utilitario.getFechaActual()+"' WHERE IDE_PLACA ="+detal;
+        String detalle ="UPDATE TRANS_PLACAS SET IDE_TIPO_ESTADO2 =(SELECT IDE_TIPO_ESTADO FROM TRANS_PLACAS WHERE IDE_PLACA = "+entrega+"),USU_ENTREGA ='"+usuario+"',FECHA_ENTREGA_FINAL ='"+utilitario.getFechaActual()+"' WHERE IDE_PLACA ="+detal;
         conectar();
         conexion.ejecutarSql(detalle);
         conexion.desconectar();
@@ -596,7 +596,7 @@ public TablaGenerica getIDEntrega(Integer solii) {
         conectar();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(conexion);
-        tab_persona.setSql("SELECT IDE_ENTREGA_PLACA,IDE_DETALLE_SOLICITUD FROM TRANS_ENTREGA_PLACA WHERE IDE_DETALLE_SOLICITUD ="+solii);
+        tab_persona.setSql("SELECT IDE_ENTREGA_PLACA,IDE_DETALLE_SOLICITUD FROM dbo.TRANS_ENTREGAR_PLACA where IDE_DETALLE_SOLICITUD ="+solii);
         tab_persona.ejecutarSql();
         conexion.desconectar();
         conexion = null;
@@ -846,15 +846,18 @@ public TablaGenerica getDevolucion(Integer placas) {
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(conexion);
         tab_persona.setSql("SELECT\n" +
-                            "CODIGO_ENTREGA,\n" +
+                            "IDE_ENTREGA_PLACA,\n" +
+                            "FECHA_RETIRO,\n" +
+                            "CEDULA_PROPIETARIO,\n" +
+                            "NOMBRE_PROPIETARIO,\n" +
                             "CEDULA_QUIEN_RETIRA,\n" +
                             "NOMBRE_QUIEN_RETIRA,\n" +
-                            "FECHA_RETIRO,\n" +
+                            "USU_ENTREGA,\n" +
+                            "IDE_DETALLE_SOLICITUD,\n" +
                             "PLACA,\n" +
-                            "CEDULA_PROPIETARIO,\n" +
-                            "NOMBRE_PROPIETARIO\n" +
+                            "CODIGO\n" +
                             "FROM\n" +
-                            "TRANS_PLACAS_PENDIENTES\n" +
+                            "dbo.TRANS_ENTREGAR_PLACA\n" +
                             "where placa like '"+placas+"'");
         tab_persona.ejecutarSql();
         conexion.desconectar();
