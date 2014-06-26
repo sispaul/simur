@@ -92,7 +92,8 @@ public class pre_placas_pendientes extends Pantalla{
         tab_entrega.getColumna("cedula_quien_retira").setMetodoChange("quienEs");
         tab_entrega.getColumna("fecha_retiro").setValorDefecto(utilitario.getFechaActual());
         tab_entrega.getColumna("placa").setMetodoChange("revisar");
-        tab_entrega.getColumna("fecha_retiro").setLectura(true);        
+        tab_entrega.getColumna("fecha_retiro").setLectura(true);
+        tab_entrega.getColumna("USU_ENTREGA").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         tab_entrega.dibujar();
         PanelTabla tpe=new PanelTabla();
         tpe.setPanelTabla(tab_entrega);
@@ -152,7 +153,7 @@ public class pre_placas_pendientes extends Pantalla{
         public void quienEs(){
         if(tab_cabecera.getValor("tipo").equals("PARTICULAR")){ //PARTICULAR
                 IDquien();
-                tab_entrega.setValor("PARTICULAR_EMPRESA","PARTICULAR");
+//                tab_entrega.setValor("PARTICULAR_EMPRESA","PARTICULAR");
                 utilitario.addUpdate("tab_entrega");
             }else if(tab_cabecera.getValor("tipo").equals("GESTOR")){//GESTOR
                         QueS();
@@ -233,7 +234,7 @@ public class pre_placas_pendientes extends Pantalla{
                             utilitario.agregarMensaje("Placa Entregada", tab_dato1.getValor("placa"));
                             utilitario.addUpdate("tab_entrega");
                             }else {
-                                   TablaGenerica tab_dato2 = ser_Placa.getPlacaBusc(tab_entrega.getValor("placa"));
+                                   TablaGenerica tab_dato2 = ser_Placa.getPlacaEntrega(tab_entrega.getValor("placa"));
                                     if(!tab_dato2.isEmpty()) {
                                         tab_entrega.setValor("cedula_propietario", tab_dato2.getValor("CEDULA_RUC_PROPIETARIO"));
                                         tab_entrega.setValor("nombre_propietario", tab_dato2.getValor("NOMBRE_PROPIETARIO"));
@@ -246,6 +247,47 @@ public class pre_placas_pendientes extends Pantalla{
                     }
     }
     
+    public void ejeGuardar(){
+         System.err.println("Hola");
+         System.err.println(Integer.parseInt(tab_entrega.getValor("IDE_DETALLE_SOLICITUD")));
+        TablaGenerica tab_dato = ser_Placa.getIDEntrega(Integer.parseInt(tab_entrega.getValor("IDE_DETALLE_SOLICITUD")));
+            if (!tab_dato.isEmpty()) {
+                // Cargo la información de la base de datos maestra  
+                System.err.println("Hola");
+                ser_Placa.actualizarDS1(Integer.parseInt(tab_dato.getValor("CODIGO_ENTREGA")),Integer.parseInt(tab_entrega.getValor("IDE_DETALLE_SOLICITUD")),tab_entrega.getValor("NOMBRE_quien_RETIRA"), tab_entrega.getValor("CEDULA_quien_RETIRA"));
+                actualizarDE();
+            } else {
+                utilitario.agregarMensajeInfo("Proceso no ejcutado no encuentra ide de entrega", "");
+            }
+    }   
+         
+    public void actualizarDE(){
+        TablaGenerica tab_dato = ser_Placa.getPlacaActualEli(tab_entrega.getValor("placa"));
+         System.err.println("Hola1");
+         if (!tab_dato.isEmpty()) {
+        ser_Placa.actualizarDE(Integer.parseInt(tab_entrega.getValor("IDE_DETALLE_SOLICITUD")), tab_entrega.getValor("CEDULA_PROPIETARIO"), Integer.parseInt(tab_dato.getValor("IDE_PLACA")));
+        actuaMetodo();
+        } else {
+                utilitario.agregarMensajeInfo("Proceso no ejcutado no encuentra ide de entrega", "");
+            }
+    }
+    
+    public void actuaMetodo(){
+         System.err.println("Hola2");
+        ser_Placa.actualFinal(Integer.parseInt(tab_entrega.getValor("IDE_DETALLE_SOLICITUD")),tab_entrega.getValor("CEDULA_quien_RETIRA"),tab_entrega.getValor("NOMBRE_quien_RETIRA"));
+        actualizaMetodo();
+    }
+    
+    public void actualizaMetodo(){
+        TablaGenerica tab_dato = ser_Placa.getPlacaActualEli(tab_entrega.getValor("placa"));
+         System.err.println("Hola3");
+         if (!tab_dato.isEmpty()) {
+        ser_Placa.actualFinalPlaca(Integer.parseInt(tab_dato.getValor("IDE_PLACA")), Integer.parseInt(tab_dato.getValor("IDE_PLACA")), tab_consulta.getValor("NICK_USUA"));
+        } else {
+                utilitario.agregarMensajeInfo("Proceso no ejcutado no encuentra ide de entrega", "");
+            }
+         }
+    
     @Override
     public void insertar() {
         utilitario.getTablaisFocus().insertar();
@@ -256,6 +298,13 @@ public class pre_placas_pendientes extends Pantalla{
         if (tab_cabecera.guardar()) {
             if (tab_entrega.guardar()) {
                 guardarPantalla();
+                TablaGenerica tab_dato = ser_Placa.getPlacaActualEli(tab_entrega.getValor("placa"));
+                if (!tab_dato.isEmpty()) {
+                    System.err.println("Ingreso");
+                ejeGuardar();
+                } else {
+                    //utilitario.agregarMensajeInfo("Proceso no ejcutado no encuentra ide de entrega", "");
+                }
             }
         }
     }
