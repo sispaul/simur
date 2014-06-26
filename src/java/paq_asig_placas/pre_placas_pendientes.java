@@ -88,7 +88,7 @@ public class pre_placas_pendientes extends Pantalla{
         pan_opcion1.getChildren().add(tpc);
         
         tab_entrega.setId("tab_entrega");
-        tab_entrega.setTabla("trans_placas_pendientes", "codigo_entrega", 2);
+        tab_entrega.setTabla("trans_entregar_placa", "IDE_ENTREGA_PLACA", 2);
         tab_entrega.getColumna("cedula_quien_retira").setMetodoChange("quienEs");
         tab_entrega.getColumna("fecha_retiro").setValorDefecto(utilitario.getFechaActual());
         tab_entrega.getColumna("placa").setMetodoChange("revisar");
@@ -248,13 +248,11 @@ public class pre_placas_pendientes extends Pantalla{
     }
     
     public void ejeGuardar(){
-         System.err.println("Hola");
-         System.err.println(Integer.parseInt(tab_entrega.getValor("IDE_DETALLE_SOLICITUD")));
         TablaGenerica tab_dato = ser_Placa.getIDEntrega(Integer.parseInt(tab_entrega.getValor("IDE_DETALLE_SOLICITUD")));
             if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra  
                 System.err.println("Hola");
-                ser_Placa.actualizarDS1(Integer.parseInt(tab_dato.getValor("CODIGO_ENTREGA")),Integer.parseInt(tab_entrega.getValor("IDE_DETALLE_SOLICITUD")),tab_entrega.getValor("NOMBRE_quien_RETIRA"), tab_entrega.getValor("CEDULA_quien_RETIRA"));
+                ser_Placa.actualizarDS1(Integer.parseInt(tab_dato.getValor("IDE_ENTREGA_PLACA")),Integer.parseInt(tab_entrega.getValor("IDE_DETALLE_SOLICITUD")),tab_entrega.getValor("NOMBRE_quien_RETIRA"), tab_entrega.getValor("CEDULA_quien_RETIRA"));
                 actualizarDE();
             } else {
                 utilitario.agregarMensajeInfo("Proceso no ejcutado no encuentra ide de entrega", "");
@@ -283,7 +281,8 @@ public class pre_placas_pendientes extends Pantalla{
          System.err.println("Hola3");
          if (!tab_dato.isEmpty()) {
         ser_Placa.actualFinalPlaca(Integer.parseInt(tab_dato.getValor("IDE_PLACA")), Integer.parseInt(tab_dato.getValor("IDE_PLACA")), tab_consulta.getValor("NICK_USUA"));
-        } else {
+        utilitario.agregarMensajeInfo("Campo Actualizado", "");
+         } else {
                 utilitario.agregarMensajeInfo("Proceso no ejcutado no encuentra ide de entrega", "");
             }
          }

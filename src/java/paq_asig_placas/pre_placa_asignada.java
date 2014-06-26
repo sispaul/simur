@@ -92,7 +92,7 @@ public class pre_placa_asignada extends Pantalla{
         bar_botones.agregarBoton(bot_busca);
         
         cmb_usuario.setId("cmb_usuario");
-        cmb_usuario.setCombo("SELECT IDE_USUA,NICK_USUA FROM SIS_USUARIO WHERE IDE_PERF <> 1");
+        cmb_usuario.setCombo("SELECT IDE_USUA,NICK_USUA FROM SIS_USUARIO WHERE IDE_PERF = 13");
         cmb_usuario.eliminarVacio();
         
         //Boton para asignacion de estados
