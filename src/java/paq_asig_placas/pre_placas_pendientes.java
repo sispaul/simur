@@ -241,7 +241,7 @@ public class pre_placas_pendientes extends Pantalla{
                                         tab_entrega.setValor("ide_detalle_solicitud", tab_dato2.getValor("IDE_DETALLE_SOLICITUD"));
                                         utilitario.addUpdate("tab_entrega");
                                         }else {
-                                               utilitario.agregarMensajeInfo("Placa No Asignada", "O NO EXISTE");
+                                               utilitario.agregarMensajeInfo("Placa No Entregada", "");
                                                 }
                                     }
                     }
@@ -297,13 +297,13 @@ public class pre_placas_pendientes extends Pantalla{
         if (tab_cabecera.guardar()) {
             if (tab_entrega.guardar()) {
                 guardarPantalla();
-                TablaGenerica tab_dato = ser_Placa.getPlacaActualEli(tab_entrega.getValor("placa"));
-                if (!tab_dato.isEmpty()) {
+                    TablaGenerica tab_dato = ser_Placa.getPlacaActualEli(tab_entrega.getValor("placa"));
+                    if (!tab_dato.isEmpty()) {
                     System.err.println("Ingreso");
-                ejeGuardar();
-                } else {
+                    ejeGuardar();
+                      } else {
                     //utilitario.agregarMensajeInfo("Proceso no ejcutado no encuentra ide de entrega", "");
-                }
+                    }
             }
         }
     }

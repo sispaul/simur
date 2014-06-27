@@ -456,7 +456,6 @@ public void deleteDetalle(Integer requisito){
         return tab_persona;
     }       
   public TablaGenerica getREntrega(Integer propie) {
-        //Busca a una empresa en la tabla maestra_ruc por ruc
       conectar();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(conexion);
@@ -500,7 +499,6 @@ public void deleteDetalle(Integer requisito){
     }
 
     public TablaGenerica getEntrega(Integer propie) {
-        //Busca a una empresa en la tabla maestra_ruc por ruc 
       conectar();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(conexion);
@@ -643,10 +641,10 @@ public TablaGenerica placasDis(Integer veh,Integer ser) {
                             "p.IDE_TIPO_SERVICIO = s.IDE_TIPO_SERVICIO AND\n" +
                             "d.IDE_PLACA = p.IDE_PLACA AND \n" +
                             "d.IDE_TIPO_VEHICULO = v.IDE_TIPO_VEHICULO AND\n" +
-                            "p.IDE_TIPO_VEHICULO = 4 AND\n" +
-                            "p.IDE_TIPO_SERVICIO = 39 AND\n" +
+                            "p.IDE_TIPO_VEHICULO = "+veh+" AND\n" +
+                            "p.IDE_TIPO_SERVICIO = "+ser+"9 AND\n" +
                             "p.IDE_TIPO_ESTADO = (SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO WHERE DESCRIPCION_ESTADO LIKE 'asignada') AND\n" +
-                            "d.CEDULA_RUC_PROPIETARIO LIKE '1717632366'\n" +
+                            "d.CEDULA_RUC_PROPIETARIO LIKE '"+cedu+"'\n" +
                             "GROUP BY\n" +
                             "v.DESCRIPCION_VEHICULO,\n" +
                             "s.DESCRIPCION_SERVICIO,\n" +
