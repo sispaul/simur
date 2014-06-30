@@ -127,8 +127,8 @@ public class pre_anticipos_gadmur extends Pantalla{
         tab_anticipo.getColumna("ide_estado_anticipo").setLectura(true);
         
         tab_anticipo.getColumna("ide_estado_anticipo").setCombo("SELECT ide_estado_tipo,estado FROM srh_estado_anticipo");
-        tab_anticipo.getColumna("ide_periodo_anticipo_inicial").setCombo("select ide_periodo_anticipo, (mes || '/' || anio) As Cliente from srh_periodo_anticipo order by ide_periodo_anticipo");
-        tab_anticipo.getColumna("ide_periodo_anticipo_final").setCombo("select ide_periodo_anticipo, (mes || '/' || anio) As Cliente from srh_periodo_anticipo order by ide_periodo_anticipo");
+        tab_anticipo.getColumna("ide_periodo_anticipo_inicial").setCombo("select ide_periodo_anticipo, (periodo || '/' || anio) As Cliente from srh_periodo_anticipo order by ide_periodo_anticipo");
+        tab_anticipo.getColumna("ide_periodo_anticipo_final").setCombo("select ide_periodo_anticipo, (periodo || '/' || anio) As Clientes from srh_periodo_anticipo order by ide_periodo_anticipo");
         
         tab_anticipo.getColumna("ide_empleado_autorizador").setVisible(false);
         tab_anticipo.getColumna("ci_autorizador").setVisible(false);
