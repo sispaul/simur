@@ -48,7 +48,6 @@ private Tabla tab_consulta = new Tabla();
     @EJB
     private anticipos iAnticipos = (anticipos) utilitario.instanciarEJB(anticipos.class);
 
-    
     public pre_autorizacion_anticipos() {
         
         //agregar usuario actual   
