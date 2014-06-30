@@ -145,16 +145,41 @@ private Tabla tab_consulta = new Tabla();
             utilitario.agregarMensaje("Empleado / Trabajador", tab_anticipo.getValor("solicitante"));
             utilitario.agregarMensaje("Monto de Anticipo", tab_anticipo.getValor("valor_anticipo"));
             dia_autoriza.cerrar();
+            cuotas();
           } else {
                  utilitario.agregarMensajeInfo("No existe en la base de datos", "");
                  }
     }
         
     public void cuotas(){
-         for (int i = 0; i < Integer.parseInt(tab_anticipo.getValor("numero_cuotas anticipo"))-1; i++){
-             
-         }
-             
+        Integer conta =Integer.parseInt(tab_anticipo.getValor("numero_cuotas anticipo"));
+        if(tab_anticipo.getValor("valor_cuota_adicional")!= null && tab_anticipo.getValor("valor_cuota_adicional").isEmpty()){
+            
+            iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), Integer.parseInt("1"), Integer.parseInt(tab_anticipo.getValor("valor_cuota_adicional")), 
+                             Integer.parseInt("ide_periodo_descuento"),txt_comentario.getValue()+"");
+            
+                for (int i = 0; i < (conta-2); i++){
+                     iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), 1+i, Integer.parseInt(tab_anticipo.getValor("valor_cuota_mensual")), 
+                             Integer.parseInt("ide_periodo_descuento"),txt_comentario.getValue()+"");
+                    }
+                     Double valorp,valors,totall;
+                     valorp = conta*Double.parseDouble(tab_anticipo.getValor("valor_cuota_mensual"));
+                     valors= Double.parseDouble(tab_anticipo.getValor("valor_cuota_adicional"))+valorp ;
+                     totall = Double.parseDouble(tab_anticipo.getValor("valor_anticipo"))-valors ;
+                     iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), Integer.parseInt(tab_anticipo.getValor("numero_cuotas anticipo")), Integer.parseInt(String.valueOf(totall)), 
+                             Integer.parseInt("ide_periodo_descuento"),txt_comentario.getValue()+"");
+        }else{
+                
+                for (int i = 0; i < Integer.parseInt(tab_anticipo.getValor("numero_cuotas anticipo"))-1; i++){
+                    iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), 0+i, Integer.parseInt(tab_anticipo.getValor("valor_cuota_mensual")), 
+                             Integer.parseInt("ide_periodo_descuento"),txt_comentario.getValue()+"");
+                    }
+                    Double valor1,total;
+                    valor1 = conta*Double.parseDouble(tab_anticipo.getValor("valor_cuota_mensual"));
+                    total = Double.parseDouble(tab_anticipo.getValor("valor_anticipo"))-valor1 ;
+                    iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), Integer.parseInt(tab_anticipo.getValor("numero_cuotas anticipo")), Integer.parseInt(String.valueOf(total)), 
+                             Integer.parseInt("ide_periodo_descuento"),txt_comentario.getValue()+"");
+             }
     }
     
     @Override

@@ -931,18 +931,9 @@ public void anularSolicitud (Integer id){
     con_postgres = null;
 }
 
-public void llenarSolicitud(Integer anti,Double cuota,Double valor,Integer descuento,Integer descontado,Integer estado, String obser){
-    String au_sql="insert into srh_detalle_anticipo (ide_anticipo,cuota,valor,ide_periodo_descuento,ide_periodo_descontado,ide_estado_cuota,observacion)\n" +
-                  "values ("+anti+","+cuota+","+valor+","+descuento+","+descontado+","+estado+",'"+obser+"')";
-    conectar();
-    con_postgres.ejecutarSql(au_sql);
-    con_postgres.desconectar();
-    con_postgres = null;
-}
-
-public void llenarSolicitud(Integer ant,String cuota,double valor,Integer desc ,Integer descon,Integer estado,String obser){
-    String au_sql="insert into srh_detalle_anticipo (ide_anticipo,cuota,valor,ide_periodo_descuento,ide_periodo_descontado,ide_estado_cuota,observacion)\n" +
-                   "values ("+ant+",'"+cuota+"',"+valor+","+desc+","+descon+","+estado+",'"+obser+"')";
+public void llenarSolicitud(Integer anti,Integer cuota,Integer valor,Integer descuento,String obser){
+    String au_sql="insert into srh_detalle_anticipo (ide_anticipo,cuota,valor,ide_periodo_descuento,observacion)\n" +
+                  "values ("+anti+","+cuota+","+valor+","+descuento+",'"+obser+"')";
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
