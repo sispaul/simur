@@ -255,7 +255,7 @@ public class pre_placas_pendientes extends Pantalla{
                 ser_Placa.actualizarDS1(Integer.parseInt(tab_dato.getValor("IDE_ENTREGA_PLACA")),Integer.parseInt(tab_entrega.getValor("IDE_DETALLE_SOLICITUD")),tab_entrega.getValor("NOMBRE_quien_RETIRA"), tab_entrega.getValor("CEDULA_quien_RETIRA"));
                 actualizarDE();
             } else {
-                utilitario.agregarMensajeInfo("Proceso no ejcutado no encuentra ide de entrega", "");
+                utilitario.agregarMensajeInfo("Proceso no encuentra ide detalle", "");
             }
     }   
          
@@ -266,7 +266,7 @@ public class pre_placas_pendientes extends Pantalla{
         ser_Placa.actualizarDE(Integer.parseInt(tab_entrega.getValor("IDE_DETALLE_SOLICITUD")), tab_entrega.getValor("CEDULA_PROPIETARIO"), Integer.parseInt(tab_dato.getValor("IDE_PLACA")));
         actuaMetodo();
         } else {
-                utilitario.agregarMensajeInfo("Proceso no ejcutado no encuentra ide de entrega", "");
+                utilitario.agregarMensajeInfo("Proceso no encuentra placa", "");
             }
     }
     
@@ -283,7 +283,7 @@ public class pre_placas_pendientes extends Pantalla{
         ser_Placa.actualFinalPlaca(Integer.parseInt(tab_dato.getValor("IDE_PLACA")), Integer.parseInt(tab_dato.getValor("IDE_PLACA")), tab_consulta.getValor("NICK_USUA"));
         utilitario.agregarMensajeInfo("Campo Actualizado", "");
          } else {
-                utilitario.agregarMensajeInfo("Proceso no ejcutado no encuentra ide de entrega", "");
+                utilitario.agregarMensajeInfo("Proceso no encuentra placa1", "");
             }
          }
     
