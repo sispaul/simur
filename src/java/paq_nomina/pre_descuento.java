@@ -149,9 +149,7 @@ private Conexion con_postgres= new Conexion();
         set_rol.setHeader("REPORTES DE DESCUENTOS - SELECCIONE PARAMETROS");
         agregarComponente(set_rol);
                
-         /*
-         * CONFIGURACIÓN DE OBJETO REPORTE
-         */
+         /*         * CONFIGURACIÓN DE OBJETO REPORTE         */
         bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
         agregarComponente(rep_reporte); //2 agregar el listado de reportes
         sef_formato.setId("sef_formato");
