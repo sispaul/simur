@@ -931,9 +931,9 @@ public void anularSolicitud (Integer id){
     con_postgres = null;
 }
 
-public void llenarSolicitud(Integer anti,Integer cuota,Integer valor,Integer descuento,String obser){
-    String au_sql="insert into srh_detalle_anticipo (ide_anticipo,cuota,valor,ide_periodo_descuento,observacion)\n" +
-                  "values ("+anti+","+cuota+","+valor+","+descuento+",'"+obser+"')";
+public void llenarSolicitud(Integer anti,String cuota,Double valor,String obser,Integer perdes){
+    String au_sql="insert into srh_detalle_anticipo (ide_anticipo,cuota,valor,observacion,ide_periodo_descuento)\n" +
+                  "values ("+anti+",'"+cuota+"',"+valor+",'"+obser+"',"+perdes+")";
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
@@ -961,7 +961,7 @@ public TablaGenerica validar(String id ){
         conectar();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT cod_empleado,cedula_pass,nombres,estado,cod_cargo\n" +
-                                "FROM srh_empleado where cod_cargo = 300 and estado = 1");
+                                "FROM srh_empleado where cod_cargo = 391 and estado = 1");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
