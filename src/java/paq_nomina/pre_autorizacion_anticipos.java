@@ -73,28 +73,40 @@ private Tabla tab_consulta = new Tabla();
         
         tab_anticipo.setId("tab_anticipo");
         tab_anticipo.setConexion(con_postgres);
-        tab_anticipo.setSql("SELECT  \n" +
-                            "a.ide_anticipo,a.fecha_anticipo,  \n" +
-                            "a.ide_empleado_solicitante,a.ci_solicitante,  \n" +
-                            "a.solicitante,a.rmu,  \n" +
-                            "a.rmu_liquido_anterior,a.valor_anticipo,  \n" +
-                            "a.numero_cuotas_anticipo,  \n" +
-                            "(select (periodo || '/' || anio) As periodos from srh_periodo_anticipo where ide_periodo_anticipo = \"a\".ide_periodo_anticipo_inicial) as periodo_inicial,\n" +
-                            "(select (periodo || '/' || anio) As periodos from srh_periodo_anticipo where ide_periodo_anticipo = \"a\".ide_periodo_anticipo_final) as periodo_final,\n" +
-                            "a.valor_cuota_mensual,a.valor_cuota_adicional,  \n" +
-                            "a.ide_empleado_garante,a.ci_garante,  \n" +
-                            "a.garante,a.observacion_solicitante,  \n" +
-                            "a.aprobado_solicitante,e.estado  \n" +
+        tab_anticipo.setSql("SELECT\n" +
+                            "\"a\".ide_anticipo,\n" +
+                            "\"a\".fecha_anticipo,\n" +
+                            "\"a\".ide_empleado_solicitante,\n" +
+                            "\"a\".ci_solicitante,\n" +
+                            "\"a\".solicitante,\n" +
+                            "\"a\".rmu,\n" +
+                            "\"a\".rmu_liquido_anterior,\n" +
+                            "\"a\".valor_anticipo,\n" +
+                            "\"a\".numero_cuotas_anticipo,\n" +
+                            "(select (mes || '/' || anio) As periodos from srh_periodo_anticipo where ide_periodo_anticipo = a.ide_periodo_anticipo_inicial) AS periodo_inicial,\n" +
+                            "(select (mes || '/' || anio) As periodos from srh_periodo_anticipo where ide_periodo_anticipo = a.ide_periodo_anticipo_final) AS periodo_final,\n" +
+                            "\"a\".valor_cuota_mensual,\n" +
+                            "\"a\".valor_cuota_adicional,\n" +
+                            "\"a\".ide_empleado_garante,\n" +
+                            "\"a\".ci_garante,\n" +
+                            "\"a\".garante,\n" +
+                            "\"a\".observacion_solicitante,\n" +
+                            "\"a\".aprobado_solicitante,\n" +
+                            "e.estado,\n" +
+                            "\"a\".ide_periodo_anticipo_inicial,\n" +
+                            "\"a\".ide_periodo_anticipo_final\n" +
                             "FROM  \n" +
                             "srh_anticipo a ,  \n" +
                             "srh_estado_anticipo e,  \n" +
-                            "srh_periodo_anticipo p  \n" +
+                            "srh_periodo_anticipo p\n" +
                             "WHERE  \n" +
-                            "a.ide_estado_anticipo = 1 AND  \n" +
+                            "a.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO') AND \n" +
                             "a.ide_estado_anticipo = e.ide_estado_tipo AND  \n" +
                             "a.ide_periodo_anticipo_inicial = p.ide_periodo_anticipo");
 
         tab_anticipo.setCampoPrimaria("ide_anticipo");
+        tab_anticipo.getColumna("ide_periodo_anticipo_inicial").setVisible(false);
+        tab_anticipo.getColumna("ide_periodo_anticipo_final").setVisible(false);
         tab_anticipo.setTipoFormulario(true);
         tab_anticipo.getGrid().setColumns(4);
         tab_anticipo.setLectura(true);
@@ -137,6 +149,7 @@ private Tabla tab_consulta = new Tabla();
     public void Autoriza(){
       TablaGenerica tab_dato = iAnticipos.director();
         if (!tab_dato.isEmpty()) {
+            System.err.println(tab_anticipo.getValor("ide_anticipo"));
             iAnticipos.actuaAutorizador(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), Integer.parseInt(tab_dato.getValor("cod_empleado")),
                     tab_dato.getValor("cedula_pass"), tab_dato.getValor("nombres"), utilitario.getVariable("NICK"), txt_comentario.getValue()+"");
             utilitario.addUpdate("tab_anticipo");
@@ -146,38 +159,46 @@ private Tabla tab_consulta = new Tabla();
             dia_autoriza.cerrar();
             cuotas();
           } else {
-                 utilitario.agregarMensajeInfo("No existe en la base de datos", "");
+                 utilitario.agregarMensajeInfo("No existe en la base de datos", "1");
                  }
     }
         
     public void cuotas(){
-        Integer conta =Integer.parseInt(tab_anticipo.getValor("numero_cuotas anticipo"));
+        Integer conta =Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"));
         if(tab_anticipo.getValor("valor_cuota_adicional")!= null && tab_anticipo.getValor("valor_cuota_adicional").isEmpty()){
+            System.out.println(tab_anticipo.getValor("ide_anticipo"));
+            iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), "1", Double.parseDouble(tab_anticipo.getValor("valor_cuota_adicional")), 
+                            txt_comentario.getValue()+"",Integer.parseInt(tab_anticipo.getValor("ide_periodo_anticipo_inicial")));
             
-            iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), Integer.parseInt("1"), Integer.parseInt(tab_anticipo.getValor("valor_cuota_adicional")), 
-                             Integer.parseInt("ide_periodo_descuento"),txt_comentario.getValue()+"");
-            
-                for (int i = 0; i < (conta-2); i++){
-                     iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), 1+i, Integer.parseInt(tab_anticipo.getValor("valor_cuota_mensual")), 
-                             Integer.parseInt("ide_periodo_descuento"),txt_comentario.getValue()+"");
+                for (int i = 1; i < (conta-2); i++){
+                    System.out.println(tab_anticipo.getValor("ide_periodo_anticipo_inicial"));
+                     iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), String.valueOf(i), Double.parseDouble(tab_anticipo.getValor("valor_cuota_mensual")), 
+                             txt_comentario.getValue()+"",Integer.parseInt(tab_anticipo.getValor("ide_periodo_anticipo_inicial"))+i);
                     }
+                    System.err.println(tab_anticipo.getValor("valor_cuota_mensual"));
+                    System.err.println(tab_anticipo.getValor("valor_anticipo"));
+                    System.err.println(tab_anticipo.getValor("valor_cuota_adicional"));
+                    System.out.println(tab_anticipo.getValor("ide_periodo_anticipo_final"));
                      Double valorp,valors,totall;
-                     valorp = conta*Double.parseDouble(tab_anticipo.getValor("valor_cuota_mensual"));
+                     valorp = (conta-2)*Double.parseDouble(tab_anticipo.getValor("valor_cuota_mensual"));
                      valors= Double.parseDouble(tab_anticipo.getValor("valor_cuota_adicional"))+valorp ;
                      totall = Double.parseDouble(tab_anticipo.getValor("valor_anticipo"))-valors ;
-                     iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), Integer.parseInt(tab_anticipo.getValor("numero_cuotas anticipo")), Integer.parseInt(String.valueOf(totall)), 
-                             Integer.parseInt("ide_periodo_descuento"),txt_comentario.getValue()+"");
+                     iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), tab_anticipo.getValor("numero_cuotas anticipo"),  Double.parseDouble(String.valueOf(totall)), 
+                             txt_comentario.getValue()+"",Integer.parseInt(tab_anticipo.getValor("ide_periodo_anticipo_final")));
         }else{
+                System.err.println(tab_anticipo.getValor("valor_cuota_mensual"));
+                System.err.println(tab_anticipo.getValor("numero_cuotas_anticipo"));
                 
-                for (int i = 0; i < Integer.parseInt(tab_anticipo.getValor("numero_cuotas anticipo"))-1; i++){
-                    iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), 0+i, Integer.parseInt(tab_anticipo.getValor("valor_cuota_mensual")), 
-                             Integer.parseInt("ide_periodo_descuento"),txt_comentario.getValue()+"");
+                for (int i = 0; i < conta-1; i++){
+                    iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), String.valueOf(1+i), Double.parseDouble(tab_anticipo.getValor("valor_cuota_mensual")), 
+                             txt_comentario.getValue()+"",Integer.parseInt(tab_anticipo.getValor("ide_periodo_anticipo_inicial"))+i);
                     }
+                
                     Double valor1,total;
-                    valor1 = conta*Double.parseDouble(tab_anticipo.getValor("valor_cuota_mensual"));
+                    valor1 = (conta-1)*Double.parseDouble(tab_anticipo.getValor("valor_cuota_mensual"));
                     total = Double.parseDouble(tab_anticipo.getValor("valor_anticipo"))-valor1 ;
-                    iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), Integer.parseInt(tab_anticipo.getValor("numero_cuotas anticipo")), Integer.parseInt(String.valueOf(total)), 
-                             Integer.parseInt("ide_periodo_descuento"),txt_comentario.getValue()+"");
+                    iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), tab_anticipo.getValor("numero_cuotas_anticipo"), total, 
+                             txt_comentario.getValue()+"",Integer.parseInt(tab_anticipo.getValor("ide_periodo_anticipo_final")));
              }
     }
     
