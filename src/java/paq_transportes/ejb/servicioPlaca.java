@@ -52,7 +52,7 @@ public void seleccionarPF(Integer id_s,Integer vehiculo,Integer servicio,Integer
                         "WHERE IDE_TIPO_ESTADO =(SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO WHERE DESCRIPCION_ESTADO LIKE 'disponible')\n" +
                         "AND IDE_TIPO_VEHICULO= "+vehiculo+" \n" +
                         "AND IDE_TIPO_SERVICIO = "+servicio+"\n" +
-                        "AND IDE_TIPO_PLACA2 = (SELECT IDE_TIPO_PLACA FROM TRANS_TIPO_PLACA WHERE DESCRIPCION_PLACA LIKE 'definitiva')) \n" +
+                        "AND IDE_TIPO_PLACA2 = (SELECT IDE_TIPO_PLACA FROM TRANS_TIPO_PLACA WHERE DESCRIPCION_PLACA LIKE 'definitiva')order by IDE_PLACA) \n" +
                         "TRANS_PLACAS ORDER BY NEWID(),IDE_PLACA ASC) where IDE_DETALLE_SOLICITUD="+id_s;
       conectar();
       conexion.ejecutarSql(actualiza);
@@ -70,7 +70,7 @@ public void seleccionarPP(Integer id_s,Integer vehiculo,Integer servicio,Integer
                         "AND IDE_TIPO_VEHICULO= "+vehiculo+" \n" +
                         "AND IDE_TIPO_SERVICIO = "+servicio+"\n" +
                         "AND IDE_TIPO_PLACA = (SELECT IDE_TIPO_PLACA FROM TRANS_TIPO_PLACA WHERE DESCRIPCION_PLACA LIKE 'papel')\n" +
-                        "AND IDE_TIPO_PLACA2 = (SELECT IDE_TIPO_PLACA FROM TRANS_TIPO_PLACA WHERE DESCRIPCION_PLACA LIKE 'papel')) \n" +
+                        "AND IDE_TIPO_PLACA2 = (SELECT IDE_TIPO_PLACA FROM TRANS_TIPO_PLACA WHERE DESCRIPCION_PLACA LIKE 'papel')order by IDE_PLACA) \n" +
                         "TRANS_PLACAS ORDER BY NEWID(),IDE_PLACA ASC) where IDE_DETALLE_SOLICITUD="+id_s;
       conectar();
       conexion.ejecutarSql(actualiza);
