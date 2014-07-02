@@ -297,13 +297,6 @@ public class pre_placas_pendientes extends Pantalla{
         if (tab_cabecera.guardar()) {
             if (tab_entrega.guardar()) {
                 guardarPantalla();
-                    TablaGenerica tab_dato = ser_Placa.getPlacaActualEli(tab_entrega.getValor("placa"));
-                    if (!tab_dato.isEmpty()) {
-                    System.err.println("Ingreso");
-                    ejeGuardar();
-                      } else {
-                    //utilitario.agregarMensajeInfo("Proceso no ejcutado no encuentra ide de entrega", "");
-                    }
             }
         }
     }
@@ -317,6 +310,15 @@ public class pre_placas_pendientes extends Pantalla{
                             }
     }
 
+    @Override
+    public void actualizar(){
+        TablaGenerica tab_dato = ser_Placa.getPlacaActualEli(tab_entrega.getValor("placa"));
+             if (!tab_dato.isEmpty()) {
+                    ejeGuardar();
+                } else {
+                    //utilitario.agregarMensajeInfo("Proceso no ejcutado no encuentra ide de entrega", "");
+                        }
+    }
 //CREACION DE REPORTES
     
     @Override
