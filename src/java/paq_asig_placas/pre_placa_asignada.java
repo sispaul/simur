@@ -431,7 +431,6 @@ public class pre_placa_asignada extends Pantalla{
     public void aceptarDeligar(){
         TablaGenerica tab_dato = ser_Placa.getPlacaActualEli(txt_busca.getValue()+"");
              if (!tab_dato.isEmpty()) {
-                 System.err.println("Ing");
                      ser_Placa.guardarhistorial(Integer.parseInt(tab_dato.getValor("IDE_SOLICITUD_PLACA")), tab_dato.getValor("CEDULA_RUC_EMPRESA"), 
                      Integer.parseInt(tab_dato.getValor("IDE_DETALLE_SOLICITUD")), tab_dato.getValor("CEDULA_RUC_PROPIETARIO"), 
                      tab_dato.getValor("NOMBRE_EMPRESA"),Integer.parseInt(tab_dato.getValor("IDE_TIPO_SERVICIO")),
@@ -447,7 +446,6 @@ public class pre_placa_asignada extends Pantalla{
     public void quitarPlaca(){
         TablaGenerica tab_dato = ser_Placa.getPlacaActualEli(txt_busca.getValue()+"");
              if (!tab_dato.isEmpty()) {
-                 System.err.println("Ing1");
                     ser_Placa.quitarPlaca(Integer.parseInt(tab_dato.getValor("IDE_PLACA")));
                     quitarDetalle();
                 } else {
@@ -458,11 +456,8 @@ public class pre_placa_asignada extends Pantalla{
     public void quitarDetalle(){
         TablaGenerica tab_dato = ser_Placa.getPlacaActualEli(txt_busca.getValue()+"");
              if (!tab_dato.isEmpty()) {
-                 System.err.println("Ing3");
                     ser_Placa.quitarDetalle(Integer.parseInt(tab_dato.getValor("IDE_DETALLE_SOLICITUD")));
-                    System.err.println("Ing4");
                     ser_Placa.eliminarAprobacion(Integer.parseInt(tab_dato.getValor("IDE_DETALLE_SOLICITUD")));
-                    System.err.println("Ing5");
                      ser_Placa.actuEstado1(Integer.parseInt(tab_dato.getValor("IDE_DETALLE_SOLICITUD")));
 
                      utilitario.agregarMensajeInfo("ASIGNACIÓN ELIMINADA", "");
