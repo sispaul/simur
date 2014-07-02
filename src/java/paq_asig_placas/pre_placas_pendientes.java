@@ -316,7 +316,7 @@ public class pre_placas_pendientes extends Pantalla{
              if (!tab_dato.isEmpty()) {
                     ejeGuardar();
                 } else {
-                    //utilitario.agregarMensajeInfo("Proceso no ejcutado no encuentra ide de entrega", "");
+                    utilitario.agregarMensajeError("Placa no posee ide de asignacion", "");
                         }
     }
 //CREACION DE REPORTES
