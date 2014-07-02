@@ -274,7 +274,11 @@ public class pre_solicitud_anticipos extends Pantalla{
                 utilitario.agregarMensajeInfo("Saludos", "Empleado");
                     if(utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))<=10){//VALIDACION POR DIA HASTA 10
                                 if(tab_dato.getValor("cod_tipo").equals("3")|| tab_dato.getValor("cod_tipo").equals("4")|| tab_dato.getValor("cod_tipo").equals("8")|| tab_dato.getValor("cod_tipo").equals("10")){
-                                    
+                                        if(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))<=15){
+                                            
+                                        }else{
+                                                utilitario.agregarMensaje("Tiempo Maximo de Pago", "15 MESES");
+                                            }
                                     }else{
                                             meses=utilitario.getMes(tab_dato.getValor("fecha_ingreso"));
                                             if(meses!=1){
@@ -285,7 +289,11 @@ public class pre_solicitud_anticipos extends Pantalla{
                                         }
                         }else if(utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))>11 && utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))<=28){//VALIDACION POR DIAS DEL 11 AL 28
                                         if(tab_dato.getValor("cod_tipo").equals("3")|| tab_dato.getValor("cod_tipo").equals("4")|| tab_dato.getValor("cod_tipo").equals("8")|| tab_dato.getValor("cod_tipo").equals("10")){
-                                    
+                                                    if(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))<=15){
+                                            
+                                                        }else{
+                                                                utilitario.agregarMensaje("Tiempo Maximo de Pago", "15 MESES");
+                                                            }
                                             }else{
                                                     meses=utilitario.getMes(tab_dato.getValor("fecha_ingreso"));
                                                     if(meses!=1){
@@ -299,7 +307,11 @@ public class pre_solicitud_anticipos extends Pantalla{
                         utilitario.agregarMensajeInfo("Saludos", "Trabajador");
                             if(utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))<=10){//VALIDACION POR DIA HASTA 10
                                         if(tab_dato.getValor("cod_tipo").equals("3")|| tab_dato.getValor("cod_tipo").equals("4")|| tab_dato.getValor("cod_tipo").equals("8")|| tab_dato.getValor("cod_tipo").equals("10")){
-                                    
+                                                if(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))<=15){
+                                            
+                                                    }else{
+                                                            utilitario.agregarMensaje("Tiempo Maximo de Pago", "15 MESES");
+                                                        }
                                             }else{
                                                     meses=utilitario.getMes(tab_dato.getValor("fecha_ingreso"));
                                                     if(meses!=1){
@@ -310,7 +322,11 @@ public class pre_solicitud_anticipos extends Pantalla{
                                                 }
                                 }else if(utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))>11 && utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))<=28){//VALIDACION POR DIAS DEL 11 AL 28
                                             if(tab_dato.getValor("cod_tipo").equals("3")|| tab_dato.getValor("cod_tipo").equals("4")|| tab_dato.getValor("cod_tipo").equals("8")|| tab_dato.getValor("cod_tipo").equals("10")){
-                                    
+                                                    if(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))<=15){
+                                            
+                                                        }else{
+                                                                utilitario.agregarMensaje("Tiempo Maximo de Pago", "15 MESES");
+                                                            }
                                                 }else{
                                                         meses=utilitario.getMes(tab_dato.getValor("fecha_ingreso"));
                                                         if(meses!=1){
