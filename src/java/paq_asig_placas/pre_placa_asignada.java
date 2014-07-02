@@ -92,7 +92,7 @@ public class pre_placa_asignada extends Pantalla{
         bar_botones.agregarBoton(bot_busca);
         
         cmb_usuario.setId("cmb_usuario");
-        cmb_usuario.setCombo("SELECT IDE_USUA,NICK_USUA FROM SIS_USUARIO WHERE IDE_PERF = 13");
+        cmb_usuario.setCombo("SELECT IDE_USUA,NICK_USUA FROM SIS_USUARIO WHERE IDE_PERF <> 13");
         cmb_usuario.eliminarVacio();
         
         //Boton para asignacion de estados
@@ -460,25 +460,18 @@ public class pre_placa_asignada extends Pantalla{
              if (!tab_dato.isEmpty()) {
                  System.err.println("Ing3");
                     ser_Placa.quitarDetalle(Integer.parseInt(tab_dato.getValor("IDE_DETALLE_SOLICITUD")));
-                    eliminarAprobacion();
+                    
+                    ser_Placa.eliminarAprobacion(Integer.parseInt(tab_dato.getValor("IDE_DETALLE_SOLICITUD")));
+                    
+                     ser_Placa.actuEstado1(Integer.parseInt(tab_dato.getValor("IDE_DETALLE_SOLICITUD")));
+                     
+                     utilitario.agregarMensajeInfo("ASIGNACIÓN ELIMINADA", "");
+//                    eliminarAprobacion();
                 } else {
                         utilitario.agregarMensajeInfo("no existe en la base de datos", "");
                         }
     }
     
-    public void eliminarAprobacion(){
-        TablaGenerica tab_dato = ser_Placa.getPlacaActualEli(txt_busca.getValue()+"");
-             if (!tab_dato.isEmpty()) {
-                 System.err.println("Ing4");
-                    ser_Placa.eliminarAprobacion(Integer.parseInt(tab_dato.getValor("IDE_DETALLE_SOLICITUD")));
-                    utilitario.agregarMensajeInfo("ASIGNACIÓN ELIMINADA", "");
-                    ser_Placa.actuEstado1(Integer.parseInt(tab_dato.getValor("IDE_DETALLE_SOLICITUD")));
-                } else {
-                       utilitario.agregarMensajeInfo("no existe en la base de datos", "");
-                       }
-    }
-   
-    //
     
     public void abrirPlacaAsig (){
         dia_dialogoa.Limpiar();
