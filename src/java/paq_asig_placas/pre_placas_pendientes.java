@@ -251,7 +251,6 @@ public class pre_placas_pendientes extends Pantalla{
         TablaGenerica tab_dato = ser_Placa.getIDEntrega(Integer.parseInt(tab_entrega.getValor("IDE_DETALLE_SOLICITUD")));
             if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra  
-                System.err.println("Hola");
                 ser_Placa.actualizarDS1(Integer.parseInt(tab_dato.getValor("IDE_ENTREGA_PLACA")),Integer.parseInt(tab_entrega.getValor("IDE_DETALLE_SOLICITUD")),tab_entrega.getValor("NOMBRE_quien_RETIRA"), tab_entrega.getValor("CEDULA_quien_RETIRA"));
                 actualizarDE();
             } else {
@@ -261,7 +260,6 @@ public class pre_placas_pendientes extends Pantalla{
          
     public void actualizarDE(){
         TablaGenerica tab_dato = ser_Placa.getPlacaActualEli(tab_entrega.getValor("placa"));
-         System.err.println("Hola1");
          if (!tab_dato.isEmpty()) {
         ser_Placa.actualizarDE(Integer.parseInt(tab_entrega.getValor("IDE_DETALLE_SOLICITUD")), tab_entrega.getValor("CEDULA_PROPIETARIO"), Integer.parseInt(tab_dato.getValor("IDE_PLACA")));
         actuaMetodo();
@@ -271,14 +269,12 @@ public class pre_placas_pendientes extends Pantalla{
     }
     
     public void actuaMetodo(){
-         System.err.println("Hola2");
         ser_Placa.actualFinal(Integer.parseInt(tab_entrega.getValor("IDE_DETALLE_SOLICITUD")),tab_entrega.getValor("CEDULA_quien_RETIRA"),tab_entrega.getValor("NOMBRE_quien_RETIRA"));
         actualizaMetodo();
     }
     
     public void actualizaMetodo(){
         TablaGenerica tab_dato = ser_Placa.getPlacaActualEli(tab_entrega.getValor("placa"));
-         System.err.println("Hola3");
          if (!tab_dato.isEmpty()) {
         ser_Placa.actualFinalPlaca(Integer.parseInt(tab_dato.getValor("IDE_PLACA")), Integer.parseInt(tab_dato.getValor("IDE_PLACA")), tab_consulta.getValor("NICK_USUA"));
         utilitario.agregarMensajeInfo("Campo Actualizado", "");

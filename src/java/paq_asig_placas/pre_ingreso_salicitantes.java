@@ -560,11 +560,11 @@ public class pre_ingreso_salicitantes extends Pantalla{
 
     @Override
     public void eliminar() {
-        if (tab_solicitud.isFocus()) {
-         tab_solicitud.eliminar();
-            } else if (tab_detalle.isFocus()) {
-                        tab_detalle.eliminar();
-                     }
+//        if (tab_solicitud.isFocus()) {
+//         tab_solicitud.eliminar();
+//            } else if (tab_detalle.isFocus()) {
+//                        tab_detalle.eliminar();
+//                     }
     }
 
     public Tabla getTab_solicitud() {
