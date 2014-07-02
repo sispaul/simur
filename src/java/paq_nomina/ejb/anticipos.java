@@ -806,8 +806,44 @@ public TablaGenerica empleado(String ci){
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
         tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT cod_empleado,cedula_pass,nombres,fecha_ingreso,fecha_nombramiento,relacion_laboral,id_distributivo\n" +
-                                "FROM srh_empleado where estado = 1 and cedula_pass like '"+ci+"'");
+        tab_funcionario.setSql("SELECT\n" +
+                                "cod_empleado,\n" +
+                                "cedula_pass,\n" +
+                                "nombres,\n" +
+                                "fecha_ingreso,\n" +
+                                "fecha_nombramiento,\n" +
+                                "id_distributivo,\n" +
+                                "cod_tipo\n" +
+                                "FROM\n" +
+                                "\"public\".srh_empleado\n" +
+                                "WHERE\n" +
+                                "estado = 1 \n" +
+                                "and cedula_pass like '"+ci+"'");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+
+public TablaGenerica Garantemple(String ci){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT\n" +
+                                "e.cod_empleado, e.cedula_pass,\n" +
+                                "e.nombres,e.fecha_ingreso,\n" +
+                                "e.fecha_nombramiento,e.id_distributivo,\n" +
+                                "e.cod_tipo,i.tipo\n" +
+                                "FROM\n" +
+                                "\"public\".srh_empleado e,\n" +
+                                "\"public\".srh_tipo_empleado i\n" +
+                                "WHERE\n" +
+                                "e.estado = 1 AND\n" +
+                                "e.cod_tipo = i.cod_tipo AND\n" +
+                                "e.cod_tipo in (4,7,8,3,10)\n" +
+                                "and e.cedula_pass like '"+ci+"'");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
@@ -820,8 +856,19 @@ public TablaGenerica empleadoNom(String nombre){
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
         tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT cod_empleado,cedula_pass,nombres,fecha_ingreso,fecha_nombramiento,relacion_laboral,id_distributivo\n" +
-                                "FROM srh_empleado where estado = 1 and nombres like '"+nombre+"'");
+        tab_funcionario.setSql("SELECT\n" +
+                                "e.cod_empleado, e.cedula_pass,\n" +
+                                "e.nombres,e.fecha_ingreso,\n" +
+                                "e.fecha_nombramiento,e.id_distributivo,\n" +
+                                "e.cod_tipo,i.tipo\n" +
+                                "FROM\n" +
+                                "\"public\".srh_empleado e,\n" +
+                                "\"public\".srh_tipo_empleado i\n" +
+                                "WHERE\n" +
+                                "e.estado = 1 AND\n" +
+                                "e.cod_tipo = i.cod_tipo AND\n" +
+                                "e.cod_tipo in (4,7,8,3,10)\n" +
+                                "order by e.nombres and e.nombres like '"+nombre+"'");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
