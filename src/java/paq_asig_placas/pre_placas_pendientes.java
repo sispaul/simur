@@ -299,11 +299,7 @@ public class pre_placas_pendientes extends Pantalla{
 
     @Override
     public void eliminar() {
-        if (tab_cabecera.isFocus()) {
-                tab_cabecera.eliminar();
-                } else if (tab_entrega.isFocus()) {
-                            tab_entrega.eliminar();
-                            }
+       utilitario.getTablaisFocus().eliminar();
     }
 
     @Override
