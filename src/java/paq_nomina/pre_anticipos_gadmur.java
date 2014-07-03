@@ -463,11 +463,12 @@ public class pre_anticipos_gadmur extends Pantalla{
         anio = String.valueOf(utilitario.getAnio(tab_anticipo.getValor("FECHA_ANTICIPO")));
         mes = String.valueOf(utilitario.getMes(tab_anticipo.getValor("FECHA_ANTICIPO")));
         dia = String.valueOf(utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO")));
+        
         if(utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))<=10){
                  if(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))==12){
                         calculo1 = 12 -  Integer.parseInt(mes);
                         calculo2 = calculo1- Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"));
-                               if(calculo2<=0){
+                               if(calculo2==0){
                                    TablaGenerica tab_dato = iAnticipos.periodos(meses(Integer.parseInt(mes)),String.valueOf(Integer.parseInt(anio)));
                                    if (!tab_dato.isEmpty()) {
                                        fecha= tab_dato.getValor("ide_periodo_anticipo");
