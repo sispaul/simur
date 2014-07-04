@@ -460,13 +460,14 @@ public class pre_solicitud_anticipos extends Pantalla{
     
     public void llenarFecha(){
 
-        Integer calculo=0,calculo1=0,calculo2=0,calculo3=0;
+        Integer calculo=0,calculo1=0,calculo2=0,calculo3=0,mess=0;
         String mes,anio,dia,fecha,busca;
         
         anio = String.valueOf(utilitario.getAnio(tab_anticipo.getValor("FECHA_ANTICIPO")));
         mes = String.valueOf(utilitario.getMes(tab_anticipo.getValor("FECHA_ANTICIPO")));
         dia = String.valueOf(utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO")));
         
+        mess = utilitario.getMes(tab_anticipo.getValor("FECHA_ANTICIPO"));
         if(utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))<=10){
              if(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))==12){
                 calculo = 12 - Integer.parseInt(mes);
@@ -474,49 +475,300 @@ public class pre_solicitud_anticipos extends Pantalla{
                 if(calculo1<0){
                     TablaGenerica tab_dato = iAnticipos.periodos(meses(Integer.parseInt(mes)),String.valueOf(Integer.parseInt(anio)));
                          if (!tab_dato.isEmpty()) {
+                                       //fecha inicial
                                        fecha= tab_dato.getValor("ide_periodo_anticipo");
                                        tab_anticipo.setValor("ide_periodo_anticipo_inicial", fecha);
                                         utilitario.addUpdate("tab_anticipo");
-                                        
+                                        //fecha final
+                                        if(mes.equals("1")){//mes de enero
+                                                TablaGenerica tab_dato1 = iAnticipos.periodos(meses(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))),String.valueOf(Integer.parseInt(anio)));
+                                                    if (!tab_dato1.isEmpty()) {
+                                                        fecha= tab_dato1.getValor("ide_periodo_anticipo");
+                                                        tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                        utilitario.addUpdate("tab_anticipo");
+                                                    } else {
+                                                            utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                            }
+                                        }else{//otros meses
+                                              TablaGenerica tab_dato2 = iAnticipos.periodos(meses(Integer.parseInt(mes)-1),String.valueOf(Integer.parseInt(anio)+1));
+                                                if (!tab_dato2.isEmpty()) {
+                                                    fecha= tab_dato2.getValor("ide_periodo_anticipo");
+                                                    tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                    utilitario.addUpdate("tab_anticipo");
+                                                } else {
+                                                        utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                        }
+                                        }
                              }else {
                                    utilitario.agregarMensajeInfo("No existen Datos", "");
                                    }
                     
                 }
             }else if(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))<12){
+                        Integer cuota =0; 
                         calculo = 12 - Integer.parseInt(mes);
                         calculo1 = calculo - Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"));
                         if(calculo1<0){
                               TablaGenerica tab_dato = iAnticipos.periodos(meses(Integer.parseInt(mes)),String.valueOf(Integer.parseInt(anio)));
                                 if (!tab_dato.isEmpty()) {
+                                        //fecha inicial
                                         fecha= tab_dato.getValor("ide_periodo_anticipo");
                                         tab_anticipo.setValor("ide_periodo_anticipo_inicial", fecha);
                                         utilitario.addUpdate("tab_anticipo");
-
+                                        //fecha final
+                                        calculo2 = calculo1*-1;
+                                        cuota = Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"));
+                                        if(mes.equals("2")){//para febrero
+                                            TablaGenerica tab_dato1 = iAnticipos.periodos(meses(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))+mess-1),String.valueOf(Integer.parseInt(anio)));
+                                                    if (!tab_dato1.isEmpty()) {
+                                                        fecha= tab_dato1.getValor("ide_periodo_anticipo");
+                                                        tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                        utilitario.addUpdate("tab_anticipo");
+                                                    } else {
+                                                            utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                            }
+                                        }else if(mes.equals("3")){
+                                            if(cuota == 11){
+                                                    TablaGenerica tab_datoa = iAnticipos.periodos(meses(calculo2-1),String.valueOf(Integer.parseInt(anio)+1));
+                                                    if (!tab_datoa.isEmpty()) {
+                                                        fecha= tab_datoa.getValor("ide_periodo_anticipo");
+                                                        tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                        utilitario.addUpdate("tab_anticipo");
+                                                    } else {
+                                                            utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                            }
+                                            }else{
+                                                TablaGenerica tab_dato1 = iAnticipos.periodos(meses(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))+mess-1),String.valueOf(Integer.parseInt(anio)));
+                                                    if (!tab_dato1.isEmpty()) {
+                                                        fecha= tab_dato1.getValor("ide_periodo_anticipo");
+                                                        tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                        utilitario.addUpdate("tab_anticipo");
+                                                    } else {
+                                                            utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                            }
+                                            }
+                                            }else if(mes.equals("4")){
+                                                if(cuota == 11||cuota == 10){
+                                                TablaGenerica tab_datoa = iAnticipos.periodos(meses(calculo2-1),String.valueOf(Integer.parseInt(anio)+1));
+                                                    if (!tab_datoa.isEmpty()) {
+                                                        fecha= tab_datoa.getValor("ide_periodo_anticipo");
+                                                        tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                        utilitario.addUpdate("tab_anticipo");
+                                                    } else {
+                                                            utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                            }
+                                                }else{
+                                                    TablaGenerica tab_dato1 = iAnticipos.periodos(meses(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))+mess-1),String.valueOf(Integer.parseInt(anio)));
+                                                    if (!tab_dato1.isEmpty()) {
+                                                        fecha= tab_dato1.getValor("ide_periodo_anticipo");
+                                                        tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                        utilitario.addUpdate("tab_anticipo");
+                                                    } else {
+                                                            utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                            }
+                                                }
+                                                }else if(mes.equals("5")){
+                                                    if(cuota == 11||cuota == 10||cuota == 9){
+                                                        TablaGenerica tab_datoa = iAnticipos.periodos(meses(calculo2-1),String.valueOf(Integer.parseInt(anio)+1));
+                                                        if (!tab_datoa.isEmpty()) {
+                                                            fecha= tab_datoa.getValor("ide_periodo_anticipo");
+                                                            tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                            utilitario.addUpdate("tab_anticipo");
+                                                        } else {
+                                                                utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                                }
+                                                    }else{
+                                                        TablaGenerica tab_dato1 = iAnticipos.periodos(meses(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))+mess-1),String.valueOf(Integer.parseInt(anio)));
+                                                        if (!tab_dato1.isEmpty()) {
+                                                            fecha= tab_dato1.getValor("ide_periodo_anticipo");
+                                                            tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                            utilitario.addUpdate("tab_anticipo");
+                                                        } else {
+                                                                utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                                }
+                                                    }
+                                                    }else if(mes.equals("6")){
+                                                        if(cuota == 11||cuota == 10||cuota == 9||cuota == 8){
+                                                            TablaGenerica tab_datoa = iAnticipos.periodos(meses(calculo2-1),String.valueOf(Integer.parseInt(anio)+1));
+                                                            if (!tab_datoa.isEmpty()) {
+                                                                fecha= tab_datoa.getValor("ide_periodo_anticipo");
+                                                                tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                                utilitario.addUpdate("tab_anticipo");
+                                                            } else {
+                                                                    utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                                    }
+                                                        }else{
+                                                            TablaGenerica tab_dato1 = iAnticipos.periodos(meses(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))+mess-1),String.valueOf(Integer.parseInt(anio)));
+                                                            if (!tab_dato1.isEmpty()) {
+                                                                fecha= tab_dato1.getValor("ide_periodo_anticipo");
+                                                                tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                                utilitario.addUpdate("tab_anticipo");
+                                                            } else {
+                                                                    utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                                    }
+                                                        }
+                                                        }else if(mes.equals("7")){
+                                                            if(cuota == 11||cuota == 10||cuota == 9||cuota == 8||cuota == 7){
+                                                                TablaGenerica tab_datoa = iAnticipos.periodos(meses(calculo2-1),String.valueOf(Integer.parseInt(anio)+1));
+                                                                          if (!tab_datoa.isEmpty()) {
+                                                                              fecha= tab_datoa.getValor("ide_periodo_anticipo");
+                                                                              tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                                              utilitario.addUpdate("tab_anticipo");
+                                                                          } else {
+                                                                                  utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                                                  }
+                                                            }else{
+                                                                TablaGenerica tab_dato1 = iAnticipos.periodos(meses(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))+mess-1),String.valueOf(Integer.parseInt(anio)));
+                                                                if (!tab_dato1.isEmpty()) {
+                                                                    fecha= tab_dato1.getValor("ide_periodo_anticipo");
+                                                                    tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                                    utilitario.addUpdate("tab_anticipo");
+                                                                } else {
+                                                                        utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                                        }
+                                                            }
+                                                            }else if(mes.equals("8")){
+                                                                if(cuota == 11||cuota == 10||cuota == 9||cuota == 8||cuota == 7||cuota == 6){
+                                                                    TablaGenerica tab_datoa = iAnticipos.periodos(meses(calculo2-1),String.valueOf(Integer.parseInt(anio)+1));
+                                                                              if (!tab_datoa.isEmpty()) {
+                                                                                  fecha= tab_datoa.getValor("ide_periodo_anticipo");
+                                                                                  tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                                                  utilitario.addUpdate("tab_anticipo");
+                                                                              } else {
+                                                                                      utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                                                      }
+                                                                }else{
+                                                                    TablaGenerica tab_dato1 = iAnticipos.periodos(meses(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))+mess-1),String.valueOf(Integer.parseInt(anio)));
+                                                                    if (!tab_dato1.isEmpty()) {
+                                                                        fecha= tab_dato1.getValor("ide_periodo_anticipo");
+                                                                        tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                                        utilitario.addUpdate("tab_anticipo");
+                                                                    } else {
+                                                                            utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                                            }
+                                                                }
+                                                                }else if(mes.equals("9")){
+                                                                    if(cuota == 11||cuota == 10||cuota == 9||cuota == 8||cuota == 7||cuota == 6||cuota == 5){
+                                                                        TablaGenerica tab_datoa = iAnticipos.periodos(meses(calculo2-1),String.valueOf(Integer.parseInt(anio)+1));
+                                                                                  if (!tab_datoa.isEmpty()) {
+                                                                                      fecha= tab_datoa.getValor("ide_periodo_anticipo");
+                                                                                      tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                                                      utilitario.addUpdate("tab_anticipo");
+                                                                                  } else {
+                                                                                          utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                                                          }
+                                                                    }else{
+                                                                        TablaGenerica tab_dato1 = iAnticipos.periodos(meses(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))+mess-1),String.valueOf(Integer.parseInt(anio)));
+                                                                        if (!tab_dato1.isEmpty()) {
+                                                                            fecha= tab_dato1.getValor("ide_periodo_anticipo");
+                                                                            tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                                            utilitario.addUpdate("tab_anticipo");
+                                                                        } else {
+                                                                                utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                                                }
+                                                                    }
+                                                                    }else if(mes.equals("10")){
+                                                                        if(cuota == 11||cuota == 10||cuota == 9||cuota == 8||cuota == 7||cuota == 6||cuota == 5||cuota == 4){
+                                                                            TablaGenerica tab_datoa = iAnticipos.periodos(meses(calculo2-1),String.valueOf(Integer.parseInt(anio)+1));
+                                                                                      if (!tab_datoa.isEmpty()) {
+                                                                                          fecha= tab_datoa.getValor("ide_periodo_anticipo");
+                                                                                          tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                                                          utilitario.addUpdate("tab_anticipo");
+                                                                                      } else {
+                                                                                              utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                                                              }
+                                                                        }else{
+                                                                            TablaGenerica tab_dato1 = iAnticipos.periodos(meses(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))+mess-1),String.valueOf(Integer.parseInt(anio)));
+                                                                            if (!tab_dato1.isEmpty()) {
+                                                                                fecha= tab_dato1.getValor("ide_periodo_anticipo");
+                                                                                tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                                                utilitario.addUpdate("tab_anticipo");
+                                                                            } else {
+                                                                                    utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                                                    }
+                                                                        }
+                                                                        }else if(mes.equals("11")){
+                                                                            if(cuota == 11||cuota == 10||cuota == 9||cuota == 8||cuota == 7||cuota == 6||cuota == 5||cuota == 4||cuota == 3){
+                                                                                TablaGenerica tab_datoa = iAnticipos.periodos(meses(calculo2-1),String.valueOf(Integer.parseInt(anio)+1));
+                                                                                          if (!tab_datoa.isEmpty()) {
+                                                                                              fecha= tab_datoa.getValor("ide_periodo_anticipo");
+                                                                                              tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                                                              utilitario.addUpdate("tab_anticipo");
+                                                                                          } else {
+                                                                                                  utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                                                                  }
+                                                                            }else{
+                                                                                TablaGenerica tab_dato1 = iAnticipos.periodos(meses(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))+mess-1),String.valueOf(Integer.parseInt(anio)));
+                                                                                if (!tab_dato1.isEmpty()) {
+                                                                                    fecha= tab_dato1.getValor("ide_periodo_anticipo");
+                                                                                    tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                                                    utilitario.addUpdate("tab_anticipo");
+                                                                                } else {
+                                                                                        utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                                                        }
+                                                                            }
+                                                                            }else if(mes.equals("12")){
+                                                                                if(cuota == 11||cuota == 10||cuota == 9||cuota == 8||cuota == 7||cuota == 6||cuota == 5||cuota == 4||cuota == 1){
+                                                                                    TablaGenerica tab_datoa = iAnticipos.periodos(meses(calculo2-1),String.valueOf(Integer.parseInt(anio)+1));
+                                                                                              if (!tab_datoa.isEmpty()) {
+                                                                                                  fecha= tab_datoa.getValor("ide_periodo_anticipo");
+                                                                                                  tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                                                                  utilitario.addUpdate("tab_anticipo");
+                                                                                              } else {
+                                                                                                      utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                                                                      }
+                                                                                }else{
+                                                                                    TablaGenerica tab_dato1 = iAnticipos.periodos(meses(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))+mess-1),String.valueOf(Integer.parseInt(anio)));
+                                                                                    if (!tab_dato1.isEmpty()) {
+                                                                                        fecha= tab_dato1.getValor("ide_periodo_anticipo");
+                                                                                        tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                                                        utilitario.addUpdate("tab_anticipo");
+                                                                                    } else {
+                                                                                            utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                                                            }
+                                                                                }
+                                                                            }
                                     }else {
                                           utilitario.agregarMensajeInfo("No existen Datos", "");
                                           }
                         }else if(calculo1>0){
                                  TablaGenerica tab_dato = iAnticipos.periodos(meses(Integer.parseInt(mes)),String.valueOf(Integer.parseInt(anio)));
                                     if (!tab_dato.isEmpty()) {
+                                            //fecha inicial
                                             fecha= tab_dato.getValor("ide_periodo_anticipo");
                                             tab_anticipo.setValor("ide_periodo_anticipo_inicial", fecha);
                                             utilitario.addUpdate("tab_anticipo");
-
+                                            //fecha final
+                                            TablaGenerica tab_dato1 = iAnticipos.periodos(meses(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))+mess-1),String.valueOf(Integer.parseInt(anio)));
+                                             if (!tab_dato1.isEmpty()) {
+                                                  fecha= tab_dato1.getValor("ide_periodo_anticipo");
+                                                  tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                  utilitario.addUpdate("tab_anticipo");
+                                                } else {
+                                                       utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                       }
                                         }else {
                                               utilitario.agregarMensajeInfo("No existen Datos", "");
                                               }
                         }else  if(calculo1==0){
                                 TablaGenerica tab_dato = iAnticipos.periodos(meses(Integer.parseInt(mes)),String.valueOf(Integer.parseInt(anio)));
                                      if (!tab_dato.isEmpty()) {
+                                            //fecha inicial
                                             fecha= tab_dato.getValor("ide_periodo_anticipo");
                                             tab_anticipo.setValor("ide_periodo_anticipo_inicial", fecha);
                                             utilitario.addUpdate("tab_anticipo");
-
+                                            //fecha final
+                                            TablaGenerica tab_dato1 = iAnticipos.periodos(meses(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))+mess-1),String.valueOf(Integer.parseInt(anio)));
+                                             if (!tab_dato1.isEmpty()) {
+                                                  fecha= tab_dato1.getValor("ide_periodo_anticipo");
+                                                  tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                  utilitario.addUpdate("tab_anticipo");
+                                                } else {
+                                                       utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                       }
                                          }else {
                                                utilitario.agregarMensajeInfo("No existen Datos", "");
                                                }
-
                                 }
                     }else if(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))>12 && Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))<=18){
                             calculo = 12 - Integer.parseInt(mes);
@@ -524,16 +776,24 @@ public class pre_solicitud_anticipos extends Pantalla{
                             if(calculo1<0){
                                 TablaGenerica tab_dato = iAnticipos.periodos(meses(Integer.parseInt(mes)),String.valueOf(Integer.parseInt(anio)));
                                      if (!tab_dato.isEmpty()) {
+                                            //fecha inicial
                                             fecha= tab_dato.getValor("ide_periodo_anticipo");
                                             tab_anticipo.setValor("ide_periodo_anticipo_inicial", fecha);
                                             utilitario.addUpdate("tab_anticipo");
-
+                                            //fecha final
+                                            TablaGenerica tab_dato1 = iAnticipos.periodos(meses(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))+mess-12-1),String.valueOf(Integer.parseInt(anio)+1));
+                                             if (!tab_dato1.isEmpty()) {
+                                                  fecha= tab_dato1.getValor("ide_periodo_anticipo");
+                                                  tab_anticipo.setValor("ide_periodo_anticipo_final", fecha);
+                                                  utilitario.addUpdate("tab_anticipo");
+                                                } else {
+                                                       utilitario.agregarMensajeInfo("No existen Datos", "");
+                                                       }
                                          }else {
                                                utilitario.agregarMensajeInfo("No existen Datos", "");
                                                }
                                             }
                     }
-            
             }else if(utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))< 28 ){
                         if(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))==12){
                         calculo = 12 - Integer.parseInt(mes);
@@ -541,9 +801,12 @@ public class pre_solicitud_anticipos extends Pantalla{
                         if(calculo1<0){
                             TablaGenerica tab_dato = iAnticipos.periodos(meses(Integer.parseInt(mes)+1),String.valueOf(Integer.parseInt(anio)));
                                  if (!tab_dato.isEmpty()) {
+                                      //fecha inicial
                                         fecha= tab_dato.getValor("ide_periodo_anticipo");
                                         tab_anticipo.setValor("ide_periodo_anticipo_inicial", fecha);
                                         utilitario.addUpdate("tab_anticipo");
+                                        //fecha final
+                                        
 
                                      }else {
                                            utilitario.agregarMensajeInfo("No existen Datos", "");
@@ -556,9 +819,11 @@ public class pre_solicitud_anticipos extends Pantalla{
                                 if(calculo1<0){
                                       TablaGenerica tab_dato = iAnticipos.periodos(meses(Integer.parseInt(mes)+1),String.valueOf(Integer.parseInt(anio)));
                                         if (!tab_dato.isEmpty()) {
+                                             //fecha inicial
                                                 fecha= tab_dato.getValor("ide_periodo_anticipo");
                                                 tab_anticipo.setValor("ide_periodo_anticipo_inicial", fecha);
                                                 utilitario.addUpdate("tab_anticipo");
+                                                //fecha final
 
                                             }else {
                                                   utilitario.agregarMensajeInfo("No existen Datos", "");
@@ -566,9 +831,11 @@ public class pre_solicitud_anticipos extends Pantalla{
                                 }else if(calculo1>0){
                                          TablaGenerica tab_dato = iAnticipos.periodos(meses(Integer.parseInt(mes)+1),String.valueOf(Integer.parseInt(anio)));
                                             if (!tab_dato.isEmpty()) {
+                                                 //fecha inicial
                                                     fecha= tab_dato.getValor("ide_periodo_anticipo");
                                                     tab_anticipo.setValor("ide_periodo_anticipo_inicial", fecha);
                                                     utilitario.addUpdate("tab_anticipo");
+                                                    //fecha final
 
                                                 }else {
                                                       utilitario.agregarMensajeInfo("No existen Datos", "");
@@ -576,9 +843,11 @@ public class pre_solicitud_anticipos extends Pantalla{
                                 }else  if(calculo1==0){
                                         TablaGenerica tab_dato = iAnticipos.periodos(meses(Integer.parseInt(mes)+1),String.valueOf(Integer.parseInt(anio)));
                                              if (!tab_dato.isEmpty()) {
+                                                  //fecha inicial
                                                     fecha= tab_dato.getValor("ide_periodo_anticipo");
                                                     tab_anticipo.setValor("ide_periodo_anticipo_inicial", fecha);
                                                     utilitario.addUpdate("tab_anticipo");
+                                                    //fecha final
 
                                                  }else {
                                                        utilitario.agregarMensajeInfo("No existen Datos", "");
@@ -591,9 +860,11 @@ public class pre_solicitud_anticipos extends Pantalla{
                                     if(calculo1<0){
                                         TablaGenerica tab_dato = iAnticipos.periodos(meses(Integer.parseInt(mes)+1),String.valueOf(Integer.parseInt(anio)));
                                              if (!tab_dato.isEmpty()) {
+                                                  //fecha inicial
                                                     fecha= tab_dato.getValor("ide_periodo_anticipo");
                                                     tab_anticipo.setValor("ide_periodo_anticipo_inicial", fecha);
                                                      utilitario.addUpdate("tab_anticipo");
+                                                     //fecha final
 
                                                  }else {
                                                        utilitario.agregarMensajeInfo("No existen Datos", "");
