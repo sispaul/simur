@@ -136,7 +136,7 @@ public class pre_placa_asignada extends Pantalla{
         agregarComponente(dia_dialogoe);
         
         set_solicitud.setId("set_solicitud");
-        set_solicitud.setSeleccionTabla("SELECT IDE_SOLICITUD_PLACA,CEDULA_RUC_EMPRESA,NOMBRE_EMPRESA FROM TRANS_SOLICITUD_PLACA where IDE_SOLICITUD_PLACA=-1", "IDE_SOLICITUD_PLACA");
+        set_solicitud.setSeleccionTabla("SELECT IDE_SOLICITUD_PLACA,CEDULA_RUC_EMPRESA,NOMBRE_EMPRESA FROM TRANS_SOLICITUD_PLACA where IDE_SOLICITUD_PLACA=-1 order by IDE_SOLICITUD_PLACA", "IDE_SOLICITUD_PLACA");
         set_solicitud.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
         set_solicitud.getTab_seleccion().setRows(10);
         set_solicitud.setRadio();
