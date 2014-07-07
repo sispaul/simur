@@ -78,12 +78,6 @@ private Conexion con_postgres= new Conexion();
         
         agregarComponente(div_division);
         
-        Boton bot1 = new Boton();
-        bot1.setValue("DEPURAR ANTICIPO");
-        bot1.setIcon("ui-icon-arrow-4-diag"); //pone icono de jquery temeroller
-        bot1.setMetodo("anticipo");
-        bar_botones.agregarBoton(bot1);
-        
         Boton bot2 = new Boton();
         bot2.setValue("MIGRAR ANTICIPO");
         bot2.setIcon("ui-icon-extlink"); //pone icono de jquery temeroller
@@ -286,7 +280,12 @@ private Conexion con_postgres= new Conexion();
          }
              
          public void anticipo(){
-             
+             TablaGenerica tab_dato =  mDescuento. DescuentoSubir();
+             if (!tab_dato.isEmpty()) {
+                 
+             }else {
+                    utilitario.agregarMensajeInfo("No existen Datos", "");
+                    }
          }
          
          
