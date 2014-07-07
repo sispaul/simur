@@ -282,7 +282,9 @@ private Conexion con_postgres= new Conexion();
          public void anticipo(){
              TablaGenerica tab_dato =  mDescuento. DescuentoSubir();
              if (!tab_dato.isEmpty()) {
-                 
+                 mDescuento.InsertarAnticipo(Integer.parseInt(tab_dato.getValor("id_distributivo")),Integer.parseInt(tab_dato.getValor("anio")), Integer.parseInt(tab_dato.getValor("dist")),
+                         Integer.parseInt(tab_dato.getValor("periodo")), Double.parseDouble(tab_dato.getValor("valor")), tab_dato.getValor("ci_solicitante"),tab_dato.getValor("solicitante"));
+             tab_tabla.actualizar();
              }else {
                     utilitario.agregarMensajeInfo("No existen Datos", "");
                     }
