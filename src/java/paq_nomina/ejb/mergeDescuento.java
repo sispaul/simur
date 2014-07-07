@@ -80,9 +80,10 @@ public class mergeDescuento {
      }
        
        
-     public void InsertarAnticipo(){
+     public void InsertarAnticipo(Integer dis,Integer anio,Integer col,Integer per,Double des,String ced, String nom){
         // Forma el sql para el ingreso
-        String str_sql3 = "DELETE FROM srh_descuento";
+        String str_sql3 = "insert into srh_descuento (id_distributivo_roles,ano,ide_columna,ide_periodo,descuento,cedula,nombres)\n" +
+                            "values ("+dis+","+anio+","+col+","+per+","+des+",'"+ced+"','"+nom+"')";
         conectar();
         con_postgres.ejecutarSql(str_sql3);
         con_postgres.desconectar();
@@ -136,12 +137,11 @@ public TablaGenerica periodo(Integer periodo){
         tab_funcionario.setSql("SELECT\n" +
                                 "a.id_distributivo,\n" +
                                 "q.anio,\n" +
-                                "1,\n" +
+                                "1 as dist,\n" +
                                 "q.periodo,\n" +
                                 "d.valor,\n" +
-                                "\"a\".ci_solicitante,\n" +
-                                "\"a\".solicitante,\n" +
-                                "\"a\".ide_empleado_solicitante\n" +
+                                "a.ci_solicitante,\n" +
+                                "a.solicitante\n" +
                                 "FROM\n" +
                                 "srh_detalle_anticipo d,\n" +
                                 "srh_periodo_anticipo q,\n" +
