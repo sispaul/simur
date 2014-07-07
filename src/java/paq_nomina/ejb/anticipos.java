@@ -35,7 +35,7 @@ public TablaGenerica empleados(String cedula){
                                 "i.ANTICIPOS,(case when i.ANTICIPOS is NULL then '0' when i.ANTICIPOS > 0 then i.ANTICIPOS end ) as confirma6,\n" +
                                 "j.OTROS_EGRESOS,(case when j.OTROS_EGRESOS is NULL then '0' when j.OTROS_EGRESOS > 0 then j.OTROS_EGRESOS end ) as confirma7,k.TOTAL_EGRESOS from\n" +
                                 "\n" +
-                                "(select E.COD_EMPLEADO,e.cod_biometrico,e.cedula_pass,e.nombres,e.partida_pres,e.partida_indv,(case when e.partida_indv is NULL then '0' when e.partida_indv <> NULL then e.partida_indv end ) as confirma,c.nombre_cargo,r.valor AS RU\n" +
+                                "(select E.COD_EMPLEADO,e.cod_biometrico,e.cedula_pass,e.nombres,e.partida_pres,e.partida_indv,(case when e.partida_indv is NULL then '0' when e.partida_indv <> NULL then e.partida_indv end ) as confirma,c.nombre_cargo,r.valor AS RU,id_distributivo_roles\n" +
                                 "\n" +
                                 "from srh_roles as r inner join prec_programas as  p\n" +
                                 "on r.ide_programa=p.ide_programa\n" +
@@ -143,7 +143,7 @@ public TablaGenerica empleadoCodigo(Integer codigo){
                                 "i.ANTICIPOS,(case when i.ANTICIPOS is NULL then '0' when i.ANTICIPOS > 0 then i.ANTICIPOS end ) as confirma6,\n" +
                                 "j.OTROS_EGRESOS,(case when j.OTROS_EGRESOS is NULL then '0' when j.OTROS_EGRESOS > 0 then j.OTROS_EGRESOS end ) as confirma7,k.TOTAL_EGRESOS from\n" +
                                 "\n" +
-                                "(select E.COD_EMPLEADO,e.cod_biometrico,e.cedula_pass,e.nombres,e.partida_pres,e.partida_indv,(case when e.partida_indv is NULL then '0' when e.partida_indv <> NULL then e.partida_indv end ) as confirma,c.nombre_cargo,r.valor AS RU\n" +
+                                "(select E.COD_EMPLEADO,e.cod_biometrico,e.cedula_pass,e.nombres,e.partida_pres,e.partida_indv,(case when e.partida_indv is NULL then '0' when e.partida_indv <> NULL then e.partida_indv end ) as confirma,c.nombre_cargo,r.valor AS RU,id_distributivo_roles\n" +
                                 "\n" +
                                 "from srh_roles as r inner join prec_programas as  p\n" +
                                 "on r.ide_programa=p.ide_programa\n" +
@@ -248,7 +248,7 @@ public TablaGenerica trabajadores(String cedula){
                         "c.SUB_FAMILIAR,d.SUB_ANTIGUEDAD,e.SUB_COMISARIATO,f.OTROS_INGRESOS,h.APORTE_IESS,i.PRESTAMO_IESS,j.ANTICIPOS,k.OTROS_EGRESOS,\n" +
                         "l.TOTAL_EGRESOS,total_ingresos\n" +
                         "from\n" +
-                        "(select E.COD_EMPLEADO,e.cod_biometrico,e.cedula_pass,e.nombres,e.partida_pres,e.partida_indv,c.nombre_cargo,r.valor\n" +
+                        "(select E.COD_EMPLEADO,e.cod_biometrico,e.cedula_pass,e.nombres,e.partida_pres,e.partida_indv,c.nombre_cargo,r.valor,id_distributivo_roles\n" +
                         "AS SU\n" +
                         "from srh_roles as r inner join prec_programas as  p\n" +
                         "on r.ide_programa=p.ide_programa\n" +
@@ -400,7 +400,7 @@ public TablaGenerica trabajadoresCod(Integer codigo){
                         "c.SUB_FAMILIAR,d.SUB_ANTIGUEDAD,e.SUB_COMISARIATO,f.OTROS_INGRESOS,h.APORTE_IESS,i.PRESTAMO_IESS,j.ANTICIPOS,k.OTROS_EGRESOS,\n" +
                         "l.TOTAL_EGRESOS,total_ingresos\n" +
                         "from\n" +
-                        "(select E.COD_EMPLEADO,e.cod_biometrico,e.cedula_pass,e.nombres,e.partida_pres,e.partida_indv,c.nombre_cargo,r.valor\n" +
+                        "(select E.COD_EMPLEADO,e.cod_biometrico,e.cedula_pass,e.nombres,e.partida_pres,e.partida_indv,c.nombre_cargo,r.valor,id_distributivo_roles\n" +
                         "AS SU\n" +
                         "from srh_roles as r inner join prec_programas as  p\n" +
                         "on r.ide_programa=p.ide_programa\n" +
@@ -555,7 +555,7 @@ public TablaGenerica empleadoNombre(String nombre){
                                 "i.ANTICIPOS,(case when i.ANTICIPOS is NULL then '0' when i.ANTICIPOS > 0 then i.ANTICIPOS end ) as confirma6,\n" +
                                 "j.OTROS_EGRESOS,(case when j.OTROS_EGRESOS is NULL then '0' when j.OTROS_EGRESOS > 0 then j.OTROS_EGRESOS end ) as confirma7,k.TOTAL_EGRESOS from\n" +
                                 "\n" +
-                                "(select E.COD_EMPLEADO,e.cod_biometrico,e.cedula_pass,e.nombres,e.partida_pres,e.partida_indv,(case when e.partida_indv is NULL then '0' when e.partida_indv <> NULL then e.partida_indv end ) as confirma,c.nombre_cargo,r.valor AS RU\n" +
+                                "(select E.COD_EMPLEADO,e.cod_biometrico,e.cedula_pass,e.nombres,e.partida_pres,e.partida_indv,(case when e.partida_indv is NULL then '0' when e.partida_indv <> NULL then e.partida_indv end ) as confirma,c.nombre_cargo,r.valor AS,id_distributivo_roles RU\n" +
                                 "\n" +
                                 "from srh_roles as r inner join prec_programas as  p\n" +
                                 "on r.ide_programa=p.ide_programa\n" +
@@ -660,7 +660,7 @@ public TablaGenerica trabajadorNombre(String nombre){
                         "c.SUB_FAMILIAR,d.SUB_ANTIGUEDAD,e.SUB_COMISARIATO,f.OTROS_INGRESOS,h.APORTE_IESS,i.PRESTAMO_IESS,j.ANTICIPOS,k.OTROS_EGRESOS,\n" +
                         "l.TOTAL_EGRESOS,total_ingresos\n" +
                         "from\n" +
-                        "(select E.COD_EMPLEADO,e.cod_biometrico,e.cedula_pass,e.nombres,e.partida_pres,e.partida_indv,c.nombre_cargo,r.valor\n" +
+                        "(select E.COD_EMPLEADO,e.cod_biometrico,e.cedula_pass,e.nombres,e.partida_pres,e.partida_indv,c.nombre_cargo,r.valor,id_distributivo_roles\n" +
                         "AS SU\n" +
                         "from srh_roles as r inner join prec_programas as  p\n" +
                         "on r.ide_programa=p.ide_programa\n" +

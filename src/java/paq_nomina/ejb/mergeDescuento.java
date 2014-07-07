@@ -80,6 +80,15 @@ public class mergeDescuento {
      }
        
        
+     public void InsertarAnticipo(){
+        // Forma el sql para el ingreso
+        String str_sql3 = "DELETE FROM srh_descuento";
+        conectar();
+        con_postgres.ejecutarSql(str_sql3);
+        con_postgres.desconectar();
+        con_postgres = null;
+     }
+       
 public TablaGenerica periodo(Integer periodo){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
@@ -112,6 +121,36 @@ public TablaGenerica periodo(Integer periodo){
         conectar();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT ide_col,descripcion_col FROM SRH_COLUMNAS WHERE ide_col="+colum );
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+ 
+   public TablaGenerica DescuentoSubir(){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT\n" +
+                                "a.id_distributivo,\n" +
+                                "q.anio,\n" +
+                                "1,\n" +
+                                "q.periodo,\n" +
+                                "d.valor,\n" +
+                                "\"a\".ci_solicitante,\n" +
+                                "\"a\".solicitante,\n" +
+                                "\"a\".ide_empleado_solicitante\n" +
+                                "FROM\n" +
+                                "srh_detalle_anticipo d,\n" +
+                                "srh_periodo_anticipo q,\n" +
+                                "srh_anticipo a\n" +
+                                "WHERE\n" +
+                                "d.ide_periodo_descuento = q.ide_periodo_anticipo AND\n" +
+                                "d.ide_anticipo = a.ide_anticipo AND\n" +
+                                "d.ide_periodo_descuento  = "+utilitario.getMes(utilitario.getFechaActual())+" and \n" +
+                                "q.anio like '"+utilitario.getAnio(utilitario.getFechaActual())+"'");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
