@@ -1090,7 +1090,7 @@ public static int calcularMes(Calendar cal1,Calendar cal2) {
 
     @Override
     public void guardar() {
-        Integer cedula, cedula1;
+        Integer cedula=0, cedula1=0;
         TablaGenerica tab_dato = iAnticipos.validar(tab_anticipo.getValor("ci_solicitante"));
         if (!tab_dato.isEmpty()) {
             cedula = Integer.parseInt(tab_anticipo.getValor("ci_solicitante"));
@@ -1130,7 +1130,7 @@ public static int calcularMes(Calendar cal1,Calendar cal2) {
 
     @Override
     public void eliminar() {
-        Integer cedula, cedula1;
+        Integer cedula=0, cedula1=0;
         TablaGenerica tab_dato = iAnticipos.validar(tab_anticipo.getValor("ci_solicitante"));
         if (!tab_dato.isEmpty()) {
             cedula = Integer.parseInt(tab_anticipo.getValor("ci_solicitante"));
