@@ -274,7 +274,6 @@ private Conexion con_postgres= new Conexion();
                     
          public void borrar()
          {
-             
          mDescuento.borrarDescuento();
          tab_tabla.actualizar();
          }
