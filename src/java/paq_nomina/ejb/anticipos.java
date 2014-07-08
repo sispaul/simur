@@ -248,8 +248,8 @@ public TablaGenerica trabajadores(String cedula){
                         "c.SUB_FAMILIAR,d.SUB_ANTIGUEDAD,e.SUB_COMISARIATO,f.OTROS_INGRESOS,h.APORTE_IESS,i.PRESTAMO_IESS,j.ANTICIPOS,k.OTROS_EGRESOS,\n" +
                         "l.TOTAL_EGRESOS,total_ingresos\n" +
                         "from\n" +
-                        "(select E.COD_EMPLEADO,e.cod_biometrico,e.cedula_pass,e.nombres,e.partida_pres,e.partida_indv,c.nombre_cargo,r.valor,id_distributivo_roles\n" +
-                        "AS SU\n" +
+                        "(select E.COD_EMPLEADO,e.cod_biometrico,e.cedula_pass,e.nombres,e.partida_pres,e.partida_indv,c.nombre_cargo,r.valor\n" +
+                        "AS SU,id_distributivo_roles\n" +
                         "from srh_roles as r inner join prec_programas as  p\n" +
                         "on r.ide_programa=p.ide_programa\n" +
                         "inner join srh_empleado as e\n" +
@@ -400,8 +400,8 @@ public TablaGenerica trabajadoresCod(Integer codigo){
                         "c.SUB_FAMILIAR,d.SUB_ANTIGUEDAD,e.SUB_COMISARIATO,f.OTROS_INGRESOS,h.APORTE_IESS,i.PRESTAMO_IESS,j.ANTICIPOS,k.OTROS_EGRESOS,\n" +
                         "l.TOTAL_EGRESOS,total_ingresos\n" +
                         "from\n" +
-                        "(select E.COD_EMPLEADO,e.cod_biometrico,e.cedula_pass,e.nombres,e.partida_pres,e.partida_indv,c.nombre_cargo,r.valor,id_distributivo_roles\n" +
-                        "AS SU\n" +
+                        "(select E.COD_EMPLEADO,e.cod_biometrico,e.cedula_pass,e.nombres,e.partida_pres,e.partida_indv,c.nombre_cargo,r.valor\n" +
+                        "AS SU,id_distributivo_roles\n" +
                         "from srh_roles as r inner join prec_programas as  p\n" +
                         "on r.ide_programa=p.ide_programa\n" +
                         "inner join srh_empleado as e\n" +
@@ -660,8 +660,8 @@ public TablaGenerica trabajadorNombre(String nombre){
                         "c.SUB_FAMILIAR,d.SUB_ANTIGUEDAD,e.SUB_COMISARIATO,f.OTROS_INGRESOS,h.APORTE_IESS,i.PRESTAMO_IESS,j.ANTICIPOS,k.OTROS_EGRESOS,\n" +
                         "l.TOTAL_EGRESOS,total_ingresos\n" +
                         "from\n" +
-                        "(select E.COD_EMPLEADO,e.cod_biometrico,e.cedula_pass,e.nombres,e.partida_pres,e.partida_indv,c.nombre_cargo,r.valor,id_distributivo_roles\n" +
-                        "AS SU\n" +
+                        "(select E.COD_EMPLEADO,e.cod_biometrico,e.cedula_pass,e.nombres,e.partida_pres,e.partida_indv,c.nombre_cargo,r.valor\n" +
+                        "AS SU,id_distributivo_roles\n" +
                         "from srh_roles as r inner join prec_programas as  p\n" +
                         "on r.ide_programa=p.ide_programa\n" +
                         "inner join srh_empleado as e\n" +
