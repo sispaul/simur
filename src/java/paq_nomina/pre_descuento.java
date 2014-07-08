@@ -19,6 +19,7 @@ import framework.componentes.Tabla;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
+import org.primefaces.event.SelectEvent;
 import paq_nomina.ejb.mergeDescuento;
 
 import paq_sistema.aplicacion.Pantalla;
@@ -40,6 +41,7 @@ public class pre_descuento extends Pantalla{
     private Tabla tab_tabla = new Tabla();
     private Tabla tab_consulta = new Tabla();
     private Tabla tab_usuario = new Tabla();
+    private Tabla tab_detalle = new Tabla();
     private SeleccionTabla set_rol = new SeleccionTabla();
 
 //COMBOS DE SELECICON
@@ -156,6 +158,13 @@ private Conexion con_postgres= new Conexion();
         tab_usuario.setLectura(true);
         tab_usuario.dibujar();
         
+        tab_detalle.setId("tab_detalle");
+        tab_detalle.setConexion(con_postgres);
+        tab_detalle.setSql("");
+        tab_detalle.setCampoPrimaria("IDE_USUA");
+        tab_detalle.setLectura(true);
+        tab_detalle.dibujar();
+        
         //DIALOGO DE CONFIRMACIÓN DE ACCIÓN -DESCUENTOS  
         dia_dialogoe.setId("dia_dialogoe");
         dia_dialogoe.setTitle("CONFIRMAR SUBIDA A ROL"); //titulo
@@ -248,8 +257,6 @@ private Conexion con_postgres= new Conexion();
         mDescuento.actualizarDescuento(ano, ide_periodo, id_distributivo_roles, ide_columna);
         mDescuento.actualizarDescuento1(ano, ide_periodo, id_distributivo_roles, ide_columna);
         tab_tabla.actualizar();
-//        con_postgres.desconectar();
-//        con_postgres = null;
         }
       
        public void migrar(){ 
@@ -267,7 +274,10 @@ private Conexion con_postgres= new Conexion();
          mDescuento.migrarDescuento(ano,ide_periodo,id_distributivo_roles,ide_columna,tab_usuario.getValor("NICK_USUA")+"");
          utilitario.agregarMensaje("PROCESO REALIZADO CON EXITO", " ");
                 if(tab_tabla.getValor("ide_columna").equals("1")){
+                    System.out.println("Ingreso");
                              mDescuento.migrarAnticipo();
+                             utilitario.agregarMensaje("Anticipos ", "Sueldos Subidos ");
+                             actu();
                 }
          dia_dialogoe.cerrar();
          }
@@ -282,7 +292,10 @@ private Conexion con_postgres= new Conexion();
              mDescuento.InsertarAnticipo();
              tab_tabla.actualizar();
          }
-         
+         public void actu(){
+             System.err.println("Holas");
+             mDescuento.ActualizaAnticipo();
+         }
 /*CREACION DE REPORTES */
     //llamada a reporte
     @Override
@@ -426,6 +439,16 @@ private Conexion con_postgres= new Conexion();
     utilitario.getTablaisFocus().eliminar();
     }
 
+    /*      FUNCION QUE PERMITE RECORRER LA TABLA RECUPERANDO EVENTOS ACTUALES     */
+     public void seleccionar_tabla1(SelectEvent evt) {
+        tab_detalle.seleccionarFila(evt);
+    }
+    
+     public void requisito(){
+         for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
+              tab_detalle.getValor(i, "CONFIRMAR_REQUISITO");
+        }
+    }
     public Tabla getTab_tabla() {
         return tab_tabla;
     }

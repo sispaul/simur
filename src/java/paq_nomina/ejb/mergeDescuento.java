@@ -101,7 +101,21 @@ public class mergeDescuento {
         con_postgres = null;
      }
        
-       
+    public void ActualizaAnticipo(){
+        String str_sql4 = "update srh_anticipo\n" +
+                            "set valor_pagado =pagado,\n" +
+                            "numero_cuotas_pagadas=cuota,id_distributivo = 3\n" +
+                            "from (SELECT \"sum\"(valor) as pagado,(\"sum\"(valor)/valor) as cuota,ide_anticipo\n" +
+                            "FROM \"public\".srh_detalle_anticipo\n" +
+                            "where ide_estado_cuota = 't'\n" +
+                            "GROUP BY valor,ide_anticipo) h\n" +
+                            "where srh_anticipo.ide_anticipo = h.ide_anticipo";
+        conectar();
+        con_postgres.ejecutarSql(str_sql4);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+    
      public void InsertarAnticipo(){
         // Forma el sql para el ingreso
         String str_sql3 = "insert into srh_descuento (id_distributivo_roles,ano,ide_columna,ide_periodo,num_descuento,descuento,cedula,nombres)\n" +
