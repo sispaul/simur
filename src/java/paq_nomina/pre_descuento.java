@@ -252,8 +252,7 @@ private Conexion con_postgres= new Conexion();
 //        con_postgres = null;
         }
       
-       public void migrar(){  
-
+       public void migrar(){ 
          Integer ano;
          Integer ide_periodo;
          Integer id_distributivo_roles;
@@ -267,9 +266,10 @@ private Conexion con_postgres= new Conexion();
          ide_columna=Integer.parseInt(tab_consulta.getValor("ide_columna")) ;  
          mDescuento.migrarDescuento(ano,ide_periodo,id_distributivo_roles,ide_columna,tab_usuario.getValor("NICK_USUA")+"");
          utilitario.agregarMensaje("PROCESO REALIZADO CON EXITO", " ");
+                if(tab_tabla.getValor("ide_columna").equals("1")){
+                             mDescuento.migrarAnticipo();
+                }
          dia_dialogoe.cerrar();
-//        con_postgres.desconectar();
-//        con_postgres = null;
          }
                     
          public void borrar()
@@ -277,18 +277,11 @@ private Conexion con_postgres= new Conexion();
          mDescuento.borrarDescuento();
          tab_tabla.actualizar();
          }
-             
+          //subida de anticcipos de sueldo a rol   
          public void anticipo(){
-             TablaGenerica tab_dato =  mDescuento. DescuentoSubir();
-             if (!tab_dato.isEmpty()) {
-                 mDescuento.InsertarAnticipo(Integer.parseInt(tab_dato.getValor("id_distributivo")),Integer.parseInt(tab_dato.getValor("anio")), Integer.parseInt(tab_dato.getValor("dist")),
-                         Integer.parseInt(tab_dato.getValor("periodo")), Double.parseDouble(tab_dato.getValor("valor")), tab_dato.getValor("ci_solicitante"),tab_dato.getValor("solicitante"));
+             mDescuento.InsertarAnticipo();
              tab_tabla.actualizar();
-             }else {
-                    utilitario.agregarMensajeInfo("No existen Datos", "");
-                    }
          }
-         
          
 /*CREACION DE REPORTES */
     //llamada a reporte

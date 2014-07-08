@@ -103,8 +103,8 @@ public class pre_solicitud_anticipos extends Pantalla{
         tab_anticipo.getColumna("login_actua_solicitante").setVisible(false);
         tab_anticipo.getColumna("ip_actua_solicitante").setVisible(false);
         tab_anticipo.getColumna("fecha_actua_solicitante").setVisible(false);
-        tab_anticipo.getColumna("valor_pagado").setVisible(false);
-        tab_anticipo.getColumna("numero_cuotas_pagadas").setVisible(false);
+//        tab_anticipo.getColumna("valor_pagado").setVisible(false);
+//        tab_anticipo.getColumna("numero_cuotas_pagadas").setVisible(false);
         
         tab_anticipo.setTipoFormulario(true);
         tab_anticipo.getGrid().setColumns(4);
