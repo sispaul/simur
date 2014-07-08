@@ -79,11 +79,50 @@ public class mergeDescuento {
         con_postgres = null;
      }
        
-       
-     public void InsertarAnticipo(Integer dis,Integer anio,Integer col,Integer per,Double des,String ced, String nom){
+    public void migrarAnticipo(){
         // Forma el sql para el ingreso
-        String str_sql3 = "insert into srh_descuento (id_distributivo_roles,ano,ide_columna,ide_periodo,descuento,cedula,nombres)\n" +
-                            "values ("+dis+","+anio+","+col+","+per+","+des+",'"+ced+"','"+nom+"')";
+        String str_sql4 = "update srh_detalle_anticipo\n" +
+                            "set ide_periodo_descontado = ide_periodo,\n" +
+                            "ide_estado_cuota = 't'\n" +
+                            "from \n" +
+                            "(select\n" +
+                            "ide_descuento,\n" +
+                            "ano,\n" +
+                            "ide_periodo,\n" +
+                            "descuento,\n" +
+                            "num_descuento\n" +
+                            "from srh_descuento) d\n" +
+                            "WHERE srh_detalle_anticipo.ide_detalle_anticipo = d.num_descuento and \n" +
+                            "srh_detalle_anticipo.valor = d.descuento and \n" +
+                            "srh_detalle_anticipo.ide_periodo_descuento = d.ide_periodo";
+        conectar();
+        con_postgres.ejecutarSql(str_sql4);
+        con_postgres.desconectar();
+        con_postgres = null;
+     }
+       
+       
+     public void InsertarAnticipo(){
+        // Forma el sql para el ingreso
+        String str_sql3 = "insert into srh_descuento (id_distributivo_roles,ano,ide_columna,ide_periodo,num_descuento,descuento,cedula,nombres)\n" +
+                            "SELECT\n" +
+                            "a.id_distributivo,\n" +
+                            "CAST(q.anio AS int),\n" +
+                            "1 AS dist,\n" +
+                            "CAST(q.periodo AS int),\n" +
+                            "CAST(d.ide_detalle_anticipo AS int),\n" +
+                            "d.valor,\n" +
+                            "a.ci_solicitante,\n" +
+                            "a.solicitante\n" +
+                            "FROM\n" +
+                            "srh_detalle_anticipo d,\n" +
+                            "srh_periodo_anticipo q,\n" +
+                            "srh_anticipo a\n" +
+                            "WHERE\n" +
+                            "d.ide_periodo_descuento = q.ide_periodo_anticipo AND\n" +
+                            "d.ide_anticipo = a.ide_anticipo AND\n" +
+                            "d.ide_periodo_descuento  = "+utilitario.getMes(utilitario.getFechaActual())+" and \n" +
+                            "q.anio like '"+utilitario.getAnio(utilitario.getFechaActual())+"'";
         conectar();
         con_postgres.ejecutarSql(str_sql3);
         con_postgres.desconectar();
@@ -128,36 +167,6 @@ public TablaGenerica periodo(Integer periodo){
         return tab_funcionario;
         
  }
- 
-   public TablaGenerica DescuentoSubir(){
-        conectar();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT\n" +
-                                "a.id_distributivo,\n" +
-                                "q.anio,\n" +
-                                "1 as dist,\n" +
-                                "q.periodo,\n" +
-                                "d.valor,\n" +
-                                "a.ci_solicitante,\n" +
-                                "a.solicitante\n" +
-                                "FROM\n" +
-                                "srh_detalle_anticipo d,\n" +
-                                "srh_periodo_anticipo q,\n" +
-                                "srh_anticipo a\n" +
-                                "WHERE\n" +
-                                "d.ide_periodo_descuento = q.ide_periodo_anticipo AND\n" +
-                                "d.ide_anticipo = a.ide_anticipo AND\n" +
-                                "d.ide_periodo_descuento  = "+utilitario.getMes(utilitario.getFechaActual())+" and \n" +
-                                "q.anio like '"+utilitario.getAnio(utilitario.getFechaActual())+"'");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
-        
- }
- 
         private void conectar() {
         if (con_postgres == null) {
             con_postgres = new Conexion();
