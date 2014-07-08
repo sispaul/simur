@@ -5,8 +5,7 @@
 package paq_nomina;
 
 import framework.aplicacion.TablaGenerica;
-import framework.componentes.Grupo;
-import framework.componentes.Panel;
+import framework.componentes.Division;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import java.util.Calendar;
@@ -35,9 +34,6 @@ public class pre_solicitud_anticipos extends Pantalla{
     //PARA ASIGNACION DE MES
     String selec_mes = new String();
     
-     //dibujar cuadros de panel
-    private Panel pan_opcion = new Panel();
-    
     @EJB
     private anticipos iAnticipos = (anticipos) utilitario.instanciarEJB(anticipos.class);
     
@@ -52,12 +48,6 @@ public class pre_solicitud_anticipos extends Pantalla{
         
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         con_postgres.NOMBRE_MARCA_BASE = "postgres";
-        
-        //Creación de Divisiones
-        pan_opcion.setId("pan_opcion");
-        pan_opcion.setTransient(true);
-        pan_opcion.setHeader("SOLICITUD PARA ANTICIPO DE SUELDO");
-        agregarComponente(pan_opcion);
         
         tab_anticipo.setId("tab_anticipo");
         tab_anticipo.setConexion(con_postgres);
@@ -121,19 +111,17 @@ public class pre_solicitud_anticipos extends Pantalla{
         tab_detalle.dibujar();
         PanelTabla tpd = new PanelTabla();
         tpd.setPanelTabla(tab_detalle);
-        
-        Grupo gru = new Grupo();
-        gru.getChildren().add(tpa);
-        gru.getChildren().add(tpd);
-        pan_opcion.getChildren().add(gru);
-        
+         Division div = new Division();
+         div.dividir2(tpa, tpd, "60%", "h");
+
+        agregarComponente(div);
     }
 
 //LLENAR DATOS DE SOLICTANTE Y GARANTE
     /*POR IDENTIFICACION*/
         public void llenarDatosE(){
     if (utilitario.validarCedula(tab_anticipo.getValor("ci_solicitante"))) {    
-        TablaGenerica tab_dato = iAnticipos.empleados(tab_anticipo.getValor("ci_solicitante"));
+        TablaGenerica tab_dato = iAnticipos.empleados(tab_anticipo.getValor("ci_solicitante"));//empleados
         if (!tab_dato.isEmpty()) {
             tab_anticipo.setValor("solicitante", tab_dato.getValor("nombres"));
             tab_anticipo.setValor("rmu", tab_dato.getValor("ru"));
@@ -142,13 +130,13 @@ public class pre_solicitud_anticipos extends Pantalla{
             tab_anticipo.setValor("id_distributivo", tab_dato.getValor("id_distributivo_roles"));
             utilitario.addUpdate("tab_anticipo");
         }else {
-           TablaGenerica tab_dato1 = iAnticipos.trabajadores(tab_anticipo.getValor("ci_solicitante"));
+           TablaGenerica tab_dato1 = iAnticipos.trabajadores(tab_anticipo.getValor("ci_solicitante"));//trabajadores
                 if (!tab_dato1.isEmpty()) {
                     tab_anticipo.setValor("solicitante", tab_dato1.getValor("nombres"));
                     tab_anticipo.setValor("rmu", tab_dato1.getValor("su"));
                     tab_anticipo.setValor("rmu_liquido_anterior", tab_dato1.getValor("liquido_recibir"));
-                    tab_anticipo.setValor("ide_empleado_solicitante", tab_dato.getValor("COD_EMPLEADO"));
-                    tab_anticipo.setValor("id_distributivo", tab_dato.getValor("id_distributivo_roles"));
+                    tab_anticipo.setValor("ide_empleado_solicitante", tab_dato1.getValor("COD_EMPLEADO"));
+                    tab_anticipo.setValor("id_distributivo", tab_dato1.getValor("id_distributivo_roles"));
                     utilitario.addUpdate("tab_anticipo");
                 }else {
                   utilitario.agregarMensajeInfo("No existen Datos", "");
@@ -183,16 +171,16 @@ public class pre_solicitud_anticipos extends Pantalla{
             tab_anticipo.setValor("rmu", tab_dato.getValor("ru"));
             tab_anticipo.setValor("rmu_liquido_anterior", tab_dato.getValor("liquido_recibir"));
             tab_anticipo.setValor("ci_solicitante", tab_dato.getValor("cedula_pass"));
-            tab_anticipo.setValor("id_distributivo", tab_dato.getValor("id_distributivo_roles"));
+            tab_anticipo.setValor("id_distributivo", tab_dato.getValor("id_distributivo"));
             utilitario.addUpdate("tab_anticipo");
         }else {
-           TablaGenerica tab_dato1 = iAnticipos.trabajadoresCod(Integer.parseInt(tab_anticipo.getValor("ide_empleado_solicitante")));
+           TablaGenerica tab_dato1 = iAnticipos.trabajadoresCod(Integer.parseInt(tab_anticipo.getValor("ide_empleado_solicitante")));//trabajadores
                 if (!tab_dato1.isEmpty()) {
                     tab_anticipo.setValor("solicitante", tab_dato1.getValor("nombres"));
                     tab_anticipo.setValor("rmu", tab_dato1.getValor("su"));
                     tab_anticipo.setValor("rmu_liquido_anterior", tab_dato1.getValor("liquido_recibir"));
-                    tab_anticipo.setValor("ci_solicitante", tab_dato.getValor("cedula_pass"));
-                    tab_anticipo.setValor("id_distributivo", tab_dato.getValor("id_distributivo_roles"));
+                    tab_anticipo.setValor("ci_solicitante", tab_dato1.getValor("cedula_pass"));
+                    tab_anticipo.setValor("id_distributivo", tab_dato1.getValor("id_distributivo_roles"));
                     utilitario.addUpdate("tab_anticipo");
                 }else {
                         utilitario.agregarMensajeInfo("No se encunetra en roles", "");
@@ -222,13 +210,13 @@ public class pre_solicitud_anticipos extends Pantalla{
             tab_anticipo.setValor("id_distributivo", tab_dato.getValor("id_distributivo_roles"));
             utilitario.addUpdate("tab_anticipo");
         }else {
-           TablaGenerica tab_dato1 = iAnticipos.trabajadorNombre(tab_anticipo.getValor("solicitante"));
+           TablaGenerica tab_dato1 = iAnticipos.trabajadorNombre(tab_anticipo.getValor("solicitante"));//trabajadores
                 if (!tab_dato1.isEmpty()) {
                     tab_anticipo.setValor("ide_empleado_solicitante", tab_dato.getValor("COD_EMPLEADO"));
                     tab_anticipo.setValor("rmu", tab_dato1.getValor("su"));
                     tab_anticipo.setValor("rmu_liquido_anterior", tab_dato1.getValor("liquido_recibir"));
-                    tab_anticipo.setValor("ci_solicitante", tab_dato.getValor("cedula_pass"));
-                    tab_anticipo.setValor("id_distributivo", tab_dato.getValor("id_distributivo_roles"));
+                    tab_anticipo.setValor("ci_solicitante", tab_dato1.getValor("cedula_pass"));
+                    tab_anticipo.setValor("id_distributivo", tab_dato1.getValor("id_distributivo_roles"));
                     utilitario.addUpdate("tab_anticipo");
                 }else {
                         utilitario.agregarMensajeInfo("No se encuentra en roles", "");
