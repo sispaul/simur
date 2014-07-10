@@ -289,21 +289,21 @@ public class pre_solicitud_anticipos extends Pantalla{
         dato1 = Double.parseDouble(tab_anticipo.getValor("valor_anticipo"));
         
         if((dato1/dato2)<=1){
-         tab_anticipo.setValor("numero_cuotas_anticipo", "2");
-         utilitario.addUpdate("tab_anticipo");
-         utilitario.agregarMensajeInfo("Tiempo de Cobro por Monto", "2 Meses");
-         
-         if(tab_anticipo.getValor("numero_cuotas_anticipo").equals("2")){
-         llenarFecha();
-         cuotas();
+            tab_anticipo.setValor("numero_cuotas_anticipo", "2");
+            utilitario.addUpdate("tab_anticipo");
+            utilitario.agregarMensajeInfo("Tiempo de Cobro por Monto", "2 Meses");
+
+            if(tab_anticipo.getValor("numero_cuotas_anticipo").equals("2")){
+                llenarFecha();
+                cuotas();
          }
          
          tab_anticipo.getColumna("numero_cuotas_anticipo").setLectura(true);
                 
         }else if((dato1/dato2)>1&&(dato1/dato2)<3){
-            tab_anticipo.getColumna("numero_cuotas_anticipo").setLectura(false);
-            utilitario.addUpdate("tab_anticipo");
-            utilitario.agregarMensajeInfo("Ingresar Plazo de Cobro", "");
+                tab_anticipo.getColumna("numero_cuotas_anticipo").setLectura(false);
+                utilitario.addUpdate("tab_anticipo");
+                utilitario.agregarMensajeInfo("Ingresar Plazo de Cobro", "");
                 
         }else{
             utilitario.agregarMensajeInfo("El Monto Excede Remuneracion", "Liquida Percibida Anterior");
