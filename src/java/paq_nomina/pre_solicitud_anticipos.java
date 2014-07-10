@@ -5,12 +5,16 @@
 package paq_nomina;
 
 import framework.aplicacion.TablaGenerica;
+import framework.componentes.AutoCompletar;
+import framework.componentes.Boton;
 import framework.componentes.Division;
+import framework.componentes.Etiqueta;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.ejb.EJB;
+import org.primefaces.event.SelectEvent;
 import paq_nomina.ejb.anticipos;
 import static paq_nomina.pre_anticipos_gadmur.calcularAnios;
 import static paq_nomina.pre_anticipos_gadmur.calcularMes;
@@ -23,7 +27,6 @@ import persistencia.Conexion;
  */
 public class pre_solicitud_anticipos extends Pantalla{
 
-    
     //Conexion a base
     private Conexion con_postgres= new Conexion();
     //tablas
@@ -33,6 +36,9 @@ public class pre_solicitud_anticipos extends Pantalla{
     
     //PARA ASIGNACION DE MES
     String selec_mes = new String();
+    
+    //buscar solicitud
+    private AutoCompletar aut_busca = new AutoCompletar();
     
     @EJB
     private anticipos iAnticipos = (anticipos) utilitario.instanciarEJB(anticipos.class);
@@ -49,6 +55,33 @@ public class pre_solicitud_anticipos extends Pantalla{
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         con_postgres.NOMBRE_MARCA_BASE = "postgres";
         
+        aut_busca.setId("aut_busca");
+        aut_busca.setConexion(con_postgres);
+        aut_busca.setAutoCompletar("SELECT  \n" +
+                                    "ide_anticipo,  \n" +
+                                    "ide_empleado_solicitante,  \n" +
+                                    "ci_solicitante,  \n" +
+                                    "solicitante,  \n" +
+                                    "ide_estado_anticipo  \n" +
+                                    "FROM srh_anticipo  \n" +
+                                    "where ide_estado_anticipo = (SELECT ide_estado_tipo  \n" +
+                                    "FROM srh_estado_anticipo   where estado LIKE 'INGRESADO')OR\n" +
+                                    "ide_estado_anticipo = (SELECT ide_estado_tipo  \n" +
+                                    "FROM srh_estado_anticipo   where estado LIKE 'AUTORIZADO')OR\n" +
+                                    "ide_estado_anticipo = (SELECT ide_estado_tipo  \n" +
+                                    "FROM srh_estado_anticipo   where estado LIKE 'COBRADO')\n" +
+                                    "order by fecha_anticipo");
+        aut_busca.setMetodoChange("buscarPersona");
+        aut_busca.setSize(100);
+        
+        bar_botones.agregarComponente(new Etiqueta("Buscador Personas:"));
+        bar_botones.agregarComponente(aut_busca);
+        
+        Boton bot_limpiar = new Boton();
+        bot_limpiar.setIcon("ui-icon-cancel");
+        bot_limpiar.setMetodo("limpiar");
+        bar_botones.agregarBoton(bot_limpiar);
+
         tab_anticipo.setId("tab_anticipo");
         tab_anticipo.setConexion(con_postgres);
         tab_anticipo.setTabla("srh_anticipo", "ide_anticipo", 1);
@@ -94,7 +127,6 @@ public class pre_solicitud_anticipos extends Pantalla{
         tab_anticipo.getColumna("ip_actua_solicitante").setVisible(false);
         tab_anticipo.getColumna("fecha_actua_solicitante").setVisible(false);
         tab_anticipo.getColumna("observacion_solicitante").setVisible(false);
-//        tab_anticipo.getColumna("numero_cuotas_pagadas").setVisible(false);
         
         tab_anticipo.setTipoFormulario(true);
         tab_anticipo.getGrid().setColumns(4);
@@ -112,11 +144,24 @@ public class pre_solicitud_anticipos extends Pantalla{
         PanelTabla tpd = new PanelTabla();
         tpd.setPanelTabla(tab_detalle);
          Division div = new Division();
-         div.dividir2(tpa, tpd, "50%", "h");
+         div.dividir2(tpa, tpd, "55%", "h");
 
         agregarComponente(div);
     }
 
+    //PARA BUSQUEDA DE SOLICITUD INGRESADA
+    public void buscarPersona(SelectEvent evt) {
+        aut_busca.onSelect(evt);
+        if (aut_busca.getValor() != null) {
+            tab_anticipo.setFilaActual(aut_busca.getValor());
+            utilitario.addUpdate("tab_anticipo");
+        }
+    }
+    public void limpiar() {
+        aut_busca.limpiar();
+        utilitario.addUpdate("aut_busca");
+    }
+    
 //LLENAR DATOS DE SOLICTANTE Y GARANTE
     /*POR IDENTIFICACION*/
         public void llenarDatosE(){
@@ -1041,11 +1086,8 @@ public class pre_solicitud_anticipos extends Pantalla{
 
     @Override
     public void guardar() {
-        Integer cedula=0, cedula1=0;
         TablaGenerica tab_dato = iAnticipos.validar(tab_anticipo.getValor("ci_solicitante"));
         if (!tab_dato.isEmpty()) {
-            cedula = Integer.parseInt(tab_anticipo.getValor("ci_solicitante"));
-            cedula1 = Integer.parseInt(tab_dato.getValor("ci_solicitante"));
             if(tab_anticipo.getValor("ci_solicitante").equals(tab_dato.getValor("ci_solicitante"))){
                 if(tab_dato.getValor("ide_estado_anticipo").equals("4")){
                     if (utilitario.validarCedula(tab_anticipo.getValor("ci_solicitante"))) {
@@ -1081,11 +1123,8 @@ public class pre_solicitud_anticipos extends Pantalla{
 
     @Override
     public void eliminar() {
-        Integer cedula=0, cedula1=0;
         TablaGenerica tab_dato = iAnticipos.validar(tab_anticipo.getValor("ci_solicitante"));
         if (!tab_dato.isEmpty()) {
-            cedula = Integer.parseInt(tab_anticipo.getValor("ci_solicitante"));
-            cedula1 = Integer.parseInt(tab_dato.getValor("ci_solicitante"));
             if(tab_anticipo.getValor("ci_solicitante").equals(tab_dato.getValor("ci_solicitante"))){
                 if(tab_dato.getValor("ide_estado_anticipo").equals("4")||tab_dato.getValor("ide_estado_anticipo").equals("1")){
                     tab_anticipo.eliminar();
@@ -1132,6 +1171,14 @@ public class pre_solicitud_anticipos extends Pantalla{
 
     public void setTab_detalle(Tabla tab_detalle) {
         this.tab_detalle = tab_detalle;
+    }
+
+    public AutoCompletar getAut_busca() {
+        return aut_busca;
+    }
+
+    public void setAut_busca(AutoCompletar aut_busca) {
+        this.aut_busca = aut_busca;
     }
     
 }
