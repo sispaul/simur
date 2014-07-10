@@ -8,58 +8,62 @@
 	<parameter name="vehiculo" class="java.lang.String"/>
 	<parameter name="servicio" class="java.lang.String"/>
 	<parameter name="factura" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT DISTINCT
-dbo.TRANS_SOLICITUD_PLACA.IDE_SOLICITUD_PLACA,
-dbo.TRANS_DETALLE_SOLICITUD_PLACA.CEDULA_RUC_PROPIETARIO,
-dbo.TRANS_DETALLE_SOLICITUD_PLACA.NOMBRE_PROPIETARIO,
-dbo.TRANS_DETALLE_SOLICITUD_PLACA.NUMERO_RVMO,
-dbo.TRANS_DETALLE_SOLICITUD_PLACA.CEDULA_PERSONA_RETIRA,
-dbo.TRANS_DETALLE_SOLICITUD_PLACA.NOMBRE_PERSONA_RETIRA,
-dbo.TRANS_DETALLE_SOLICITUD_PLACA.NUMERO_MATRICULA,
-dbo.TRANS_TIPO_REQUISITO.DECRIPCION_REQUISITO,
-(case when dbo.TRANS_DETALLE_REQUISITOS_SOLICITUD.CONFIRMAR_REQUISITO = 1 then 'SI' when dbo.TRANS_DETALLE_REQUISITOS_SOLICITUD.CONFIRMAR_REQUISITO= 0 then 'NO' end ) AS confirma,
-dbo.TRANS_VEHICULO_TIPO.DESCRIPCION_VEHICULO,
-dbo.TRANS_TIPO_SERVICIO.DESCRIPCION_SERVICIO,
-dbo.TRANS_PLACAS.PLACA,
-(case when dbo.TRANS_PLACAS.IDE_TIPO_PLACA2 = (SELECT IDE_TIPO_PLACA FROM TRANS_TIPO_PLACA WHERE DESCRIPCION_PLACA LIKE 'definitiva') then 'FISICA' ELSE 'PAPEL'end ) as descripcion_placa
-FROM dbo.TRANS_SOLICITUD_PLACA
-,dbo.TRANS_DETALLE_SOLICITUD_PLACA
-,dbo.TRANS_DETALLE_REQUISITOS_SOLICITUD
-,dbo.TRANS_TIPO_REQUISITO
-,dbo.TRANS_VEHICULO_TIPO
-,dbo.TRANS_TIPO_SERVICIO
-,dbo.TRANS_PLACAS
+		<![CDATA[SELECT DISTINCT p.CEDULA_RUC_PROPIETARIO,
+d.NOMBRE_PROPIETARIO,d.FECHA_ENTREGA_PLACA,
+v.descripcion_vehiculo,t.DESCRIPCION_SERVICIO,
+i.DECRIPCION_REQUISITO,
+(case when r.CONFIRMAR_REQUISITO = 1 then 'SI' when r.CONFIRMAR_REQUISITO= 0 then 'NO' end ) as confirma,
+d.NUMERO_FACTURA,s.IDE_SOLICITUD_PLACA,
+l.PLACA,p.CEDULA_PERSONA_RETIRA,
+p.NOMBRE_PERSONA_RETIRA,h.IDE_SOLICITUD_PLACA,
+d.IDE_TIPO_VEHICULO,d.IDE_TIPO_SERVICIO,
+(case when l.IDE_TIPO_PLACA2 = (SELECT IDE_TIPO_PLACA FROM TRANS_TIPO_PLACA WHERE DESCRIPCION_PLACA LIKE 'definitiva') then 'FISICA' ELSE 'PAPEL'end ) as descripcion_placa
+
+FROM
+dbo.TRANS_ENTREGA_PLACA AS p ,dbo.TRANS_DETALLE_SOLICITUD_PLACA AS d ,
+dbo.TRANS_SOLICITUD_PLACA AS s ,dbo.trans_vehiculo_tipo AS v ,
+dbo.TRANS_TIPO_ESTADO AS e ,dbo.TRANS_TIPO_SERVICIO AS t ,
+dbo.TRANS_DETALLE_REQUISITOS_SOLICITUD AS r ,
+dbo.TRANS_TIPO_REQUISITO AS i ,dbo.TRANS_PLACAS AS l,TRANS_SOLICITUD_PLACA h,
+dbo.TRANS_TIPO_PLACA AS x
+
 WHERE
-dbo.TRANS_PLACAS.IDE_TIPO_VEHICULO = dbo.TRANS_VEHICULO_TIPO.IDE_TIPO_VEHICULO
-AND dbo.TRANS_DETALLE_REQUISITOS_SOLICITUD.IDE_TIPO_REQUISITO = dbo.TRANS_TIPO_REQUISITO.IDE_TIPO_REQUISITO
-AND dbo.TRANS_TIPO_SERVICIO.IDE_TIPO_VEHICULO = dbo.TRANS_VEHICULO_TIPO.IDE_TIPO_VEHICULO
-AND dbo.TRANS_DETALLE_SOLICITUD_PLACA.IDE_TIPO_VEHICULO = dbo.TRANS_VEHICULO_TIPO.IDE_TIPO_VEHICULO
-AND dbo.TRANS_DETALLE_REQUISITOS_SOLICITUD.IDE_DETALLE_SOLICITUD = dbo.TRANS_DETALLE_SOLICITUD_PLACA.IDE_DETALLE_SOLICITUD
-AND dbo.TRANS_DETALLE_SOLICITUD_PLACA.IDE_SOLICITUD_PLACA = dbo.TRANS_SOLICITUD_PLACA.IDE_SOLICITUD_PLACA
-AND dbo.TRANS_TIPO_REQUISITO.IDE_TIPO_SERVICIO = dbo.TRANS_TIPO_SERVICIO.IDE_TIPO_SERVICIO
-AND dbo.TRANS_TIPO_REQUISITO.IDE_TIPO_SERVICIO = dbo.TRANS_TIPO_SERVICIO.IDE_TIPO_SERVICIO
-AND dbo.TRANS_TIPO_REQUISITO.IDE_TIPO_SERVICIO = dbo.TRANS_TIPO_SERVICIO.IDE_TIPO_SERVICIO
-AND dbo.TRANS_DETALLE_SOLICITUD_PLACA.CEDULA_RUC_PROPIETARIO like $P{cedula}
-AND dbo.TRANS_VEHICULO_TIPO.IDE_TIPO_VEHICULO = $P{vehiculo}
-AND dbo.TRANS_DETALLE_SOLICITUD_PLACA.NUMERO_RVMO like $P{factura}
-AND dbo.TRANS_TIPO_SERVICIO.IDE_TIPO_SERVICIO = $P{servicio}
-AND dbo.TRANS_DETALLE_SOLICITUD_PLACA.IDE_PLACA = dbo.TRANS_PLACAS.IDE_PLACA
-ORDER BY
-dbo.TRANS_DETALLE_SOLICITUD_PLACA.CEDULA_RUC_PROPIETARIO ASC]]>
+d.IDE_ENTREGA_PLACA = p.IDE_ENTREGA_PLACA AND
+d.IDE_SOLICITUD_PLACA = s.IDE_SOLICITUD_PLACA AND
+d.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND
+t.ide_tipo_vehiculo = v.ide_tipo_vehiculo AND
+d.IDE_TIPO_SERVICIO = t.IDE_TIPO_SERVICIO AND
+r.IDE_DETALLE_SOLICITUD = d.IDE_DETALLE_SOLICITUD AND
+i.IDE_TIPO_SERVICIO = t.IDE_TIPO_SERVICIO AND
+r.IDE_TIPO_REQUISITO = i.IDE_TIPO_REQUISITO AND
+l.IDE_TIPO_VEHICULO = v.ide_tipo_vehiculo AND
+l.IDE_TIPO_ESTADO = e.IDE_TIPO_ESTADO AND
+l.IDE_TIPO_SERVICIO = t.IDE_TIPO_SERVICIO AND
+d.IDE_PLACA = l.IDE_PLACA AND
+d.IDE_SOLICITUD_PLACA = h.IDE_SOLICITUD_PLACA  AND
+l.IDE_TIPO_PLACA = x.IDE_TIPO_PLACA AND
+p.CEDULA_RUC_PROPIETARIO LIKE $P{cedula} AND
+d.IDE_TIPO_VEHICULO =$P{vehiculo} AND
+d.NUMERO_FACTURA =$P{factura} AND
+d.IDE_TIPO_SERVICIO =$P{servicio}
+order by p.CEDULA_RUC_PROPIETARIO]]>
 	</queryString>
-	<field name="IDE_SOLICITUD_PLACA" class="java.lang.Long"/>
 	<field name="CEDULA_RUC_PROPIETARIO" class="java.lang.String"/>
 	<field name="NOMBRE_PROPIETARIO" class="java.lang.String"/>
-	<field name="NUMERO_RVMO" class="java.lang.String"/>
-	<field name="CEDULA_PERSONA_RETIRA" class="java.lang.String"/>
-	<field name="NOMBRE_PERSONA_RETIRA" class="java.lang.String"/>
-	<field name="NUMERO_MATRICULA" class="java.lang.String"/>
+	<field name="FECHA_ENTREGA_PLACA" class="java.lang.String"/>
+	<field name="descripcion_vehiculo" class="java.lang.String"/>
+	<field name="DESCRIPCION_SERVICIO" class="java.lang.String"/>
 	<field name="DECRIPCION_REQUISITO" class="java.lang.String"/>
 	<field name="confirma" class="java.lang.String"/>
-	<field name="DESCRIPCION_VEHICULO" class="java.lang.String"/>
-	<field name="DESCRIPCION_SERVICIO" class="java.lang.String"/>
+	<field name="NUMERO_FACTURA" class="java.lang.Integer"/>
+	<field name="IDE_SOLICITUD_PLACA" class="java.lang.Long"/>
 	<field name="PLACA" class="java.lang.String"/>
+	<field name="CEDULA_PERSONA_RETIRA" class="java.lang.String"/>
+	<field name="NOMBRE_PERSONA_RETIRA" class="java.lang.String"/>
+	<field name="IDE_TIPO_VEHICULO" class="java.lang.Long"/>
+	<field name="IDE_TIPO_SERVICIO" class="java.lang.Long"/>
 	<field name="descripcion_placa" class="java.lang.String"/>
 	<group name="CEDULA_RUC_PROPIETARIO">
 		<groupExpression><![CDATA[$F{CEDULA_RUC_PROPIETARIO}]]></groupExpression>
@@ -118,7 +122,7 @@ dbo.TRANS_DETALLE_SOLICITUD_PLACA.CEDULA_RUC_PROPIETARIO ASC]]>
 			<textField>
 				<reportElement uuid="4545c6bd-b16b-4ba4-adcb-7a3b8633fe0d" x="120" y="137" width="100" height="20" forecolor="#FFFFFF"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[$F{NUMERO_RVMO}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{NUMERO_FACTURA}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="99eb4e47-5308-4b9f-bf33-4832378ceca2" x="281" y="18" width="187" height="20"/>
@@ -130,7 +134,7 @@ dbo.TRANS_DETALLE_SOLICITUD_PLACA.CEDULA_RUC_PROPIETARIO ASC]]>
 			<textField>
 				<reportElement uuid="ff980b22-06ad-4cb7-bab9-0ef89eb1eaeb" x="373" y="137" width="100" height="20" forecolor="#FFFFFF"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[$F{DESCRIPCION_VEHICULO}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{descripcion_vehiculo}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="f3eec74f-e318-4a69-b72c-7029c5f221bc" x="617" y="137" width="100" height="20" forecolor="#FFFFFF"/>
@@ -156,7 +160,7 @@ dbo.TRANS_DETALLE_SOLICITUD_PLACA.CEDULA_RUC_PROPIETARIO ASC]]>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[NRO. RAMV:]]></text>
+				<text><![CDATA[NRO. FACTURA:]]></text>
 			</staticText>
 			<textField>
 				<reportElement uuid="82a09c8e-a944-465e-9593-04501dd1fd51" x="105" y="111" width="246" height="20" forecolor="#FFFFFF"/>
@@ -195,14 +199,14 @@ dbo.TRANS_DETALLE_SOLICITUD_PLACA.CEDULA_RUC_PROPIETARIO ASC]]>
 				<textFieldExpression><![CDATA[$F{IDE_SOLICITUD_PLACA}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="739b71f0-93df-495e-8420-34d4e924329f" x="180" y="67" width="207" height="20"/>
+				<reportElement uuid="739b71f0-93df-495e-8420-34d4e924329f" x="473" y="67" width="207" height="20"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[PLACA  QUE SE ENTREGA:]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="284431ac-e5c8-4609-866b-2c3e06406055" x="342" y="67" width="128" height="20"/>
+				<reportElement uuid="284431ac-e5c8-4609-866b-2c3e06406055" x="635" y="67" width="128" height="20"/>
 				<textElement>
 					<font size="12" isBold="true" isUnderline="true"/>
 				</textElement>
@@ -228,20 +232,10 @@ dbo.TRANS_DETALLE_SOLICITUD_PLACA.CEDULA_RUC_PROPIETARIO ASC]]>
 				</textElement>
 				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement uuid="c243ec13-30c7-4d7c-b391-38c7f3aa9857" x="541" y="67" width="87" height="20"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[MATRICULA:]]></text>
-			</staticText>
-			<textField>
-				<reportElement uuid="9ed76c44-1bd4-414c-b55f-e0b8f4b2c9c3" x="628" y="67" width="114" height="20"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{NUMERO_MATRICULA}]]></textFieldExpression>
-			</textField>
+			<image>
+				<reportElement uuid="1b7ff568-c0fc-4aa7-aa25-cd096c94945d" x="0" y="1" width="179" height="86"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<pageHeader>
