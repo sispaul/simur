@@ -5,7 +5,7 @@
         <property name="serverName" value="192.168.1.245"/>
         <property name="databaseName" value="SIGAG"/>
         <property name="User" value="sa"/>
-        <property name="Password" value="RUMINAHUI"/>
+        <property name="Password" value="pruebas"/>
         <property name="URL" value="jdbc:sqlserver://192.168.1.245;databaseName=SIGAG"/>
         <property name="driverClass" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
     </jdbc-connection-pool>
@@ -14,7 +14,7 @@
         <property name="serverName" value="192.168.1.245"/>
         <property name="databaseName" value="ciudadania"/>
         <property name="User" value="sa"/>
-        <property name="Password" value="RUMINAHUI"/>
+        <property name="Password" value="pruebas"/>
         <property name="URL" value="jdbc:sqlserver://192.168.1.245;databaseName=ciudadania"/>
         <property name="driverClass" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
     </jdbc-connection-pool>
