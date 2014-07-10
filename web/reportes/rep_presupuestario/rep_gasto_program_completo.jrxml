@@ -40,9 +40,9 @@ where tipo= $P{tipo}
 and ano_curso=$P{pide_ano}
 and nivel between $P{pnivel1} and $P{pnivel2}
 and fechaced between cast ($P{pide_fechai} as date) and cast ($P{pide_fechaf} as date)
-and(val_inicial + reforma1+devengado1)!=0 and ((devengado1 -pagado1) <0
-or (compromiso1-devengado1)<0 or ((val_inicial + reforma1+devengado1) < compromiso1))
-or (val_inicial + reforma1)<compromiso1
+and (val_inicial + reforma1+devengado1)!=0
+and ((devengado1 -pagado1) <0 or (compromiso1-devengado1)<0 or ((val_inicial + reforma1+devengado1) < compromiso1))
+and (val_inicial + reforma1)<compromiso1
 order by pre_codigo]]>
 	</queryString>
 	<field name="pre_codigo" class="java.lang.String"/>

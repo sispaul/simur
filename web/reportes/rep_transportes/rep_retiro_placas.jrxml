@@ -9,30 +9,34 @@
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
-e.CODIGO,
-e.TIPO,
-p.CODIGO_ENTREGA,
-p.CEDULA_QUIEN_RETIRA,
-p.NOMBRE_QUIEN_RETIRA,
-p.FECHA_RETIRO,
-p.PLACA,
-p.PARTICULAR_EMPRESA,
-p.PROPIETARIO
+c.CODIGO,
+c.TIPO,
+e.IDE_ENTREGA_PLACA,
+e.FECHA_RETIRO,
+e.CEDULA_PROPIETARIO,
+e.NOMBRE_PROPIETARIO,
+e.CEDULA_QUIEN_RETIRA,
+e.NOMBRE_QUIEN_RETIRA,
+e.USU_ENTREGA,
+e.IDE_DETALLE_SOLICITUD,
+e.PLACA,
+e.CODIGO
 FROM
-dbo.TRANS_ENCAB_ENTREGAS e,dbo.TRANS_PLACAS_PENDIENTES p
-WHERE
-p.CODIGO = e.CODIGO and
-p.CEDULA_QUIEN_RETIRA like $P{cedula} AND e.CODIGO = $P{num_tramite}]]>
+dbo.TRANS_ENCAB_ENTREGAS c, dbo.TRANS_ENTREGAR_PLACA e
+where e.CODIGO = c.CODIGO AND
+e.CEDULA_QUIEN_RETIRA like $P{cedula} AND e.CODIGO = $P{num_tramite}]]>
 	</queryString>
 	<field name="CODIGO" class="java.lang.Long"/>
 	<field name="TIPO" class="java.lang.String"/>
-	<field name="CODIGO_ENTREGA" class="java.lang.Long"/>
+	<field name="IDE_ENTREGA_PLACA" class="java.lang.Long"/>
+	<field name="FECHA_RETIRO" class="java.lang.String"/>
+	<field name="CEDULA_PROPIETARIO" class="java.lang.String"/>
+	<field name="NOMBRE_PROPIETARIO" class="java.lang.String"/>
 	<field name="CEDULA_QUIEN_RETIRA" class="java.lang.String"/>
 	<field name="NOMBRE_QUIEN_RETIRA" class="java.lang.String"/>
-	<field name="FECHA_RETIRO" class="java.lang.String"/>
+	<field name="USU_ENTREGA" class="java.lang.String"/>
+	<field name="IDE_DETALLE_SOLICITUD" class="java.lang.Long"/>
 	<field name="PLACA" class="java.lang.String"/>
-	<field name="PARTICULAR_EMPRESA" class="java.lang.String"/>
-	<field name="PROPIETARIO" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -76,13 +80,6 @@ p.CEDULA_QUIEN_RETIRA like $P{cedula} AND e.CODIGO = $P{num_tramite}]]>
 				</textElement>
 				<text><![CDATA[NOMBRES:]]></text>
 			</staticText>
-			<staticText>
-				<reportElement uuid="a4e1cb2c-4887-4a04-8836-b5cd9e455273" x="276" y="183" width="100" height="20" forecolor="#FFFFFF"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[EMPRESA:]]></text>
-			</staticText>
 			<textField>
 				<reportElement uuid="55f25a65-e808-41ae-aa76-50aca7f4ef06" x="121" y="159" width="100" height="20" forecolor="#FFFFFF"/>
 				<textElement>
@@ -103,13 +100,6 @@ p.CEDULA_QUIEN_RETIRA like $P{cedula} AND e.CODIGO = $P{num_tramite}]]>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{NOMBRE_QUIEN_RETIRA}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="417cffdb-2e64-4a7e-a2df-31ba06d86d57" x="355" y="183" width="186" height="20" forecolor="#FFFFFF"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{PARTICULAR_EMPRESA}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
 				<reportElement uuid="a0196b64-0c48-4ff9-a25f-e2969fd8d957" key="textField-5" x="375" y="160" width="115" height="19" forecolor="#FFFFFF" backcolor="#FFFFFF"/>
@@ -133,14 +123,14 @@ p.CEDULA_QUIEN_RETIRA like $P{cedula} AND e.CODIGO = $P{num_tramite}]]>
 	<columnHeader>
 		<band height="26" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="7cb1b85a-6746-4436-a5e2-528d9f134f9f" x="38" y="1" width="100" height="20"/>
+				<reportElement uuid="7cb1b85a-6746-4436-a5e2-528d9f134f9f" x="9" y="1" width="100" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[#]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="7b7f480e-f7e1-42ac-9558-e1f7f3700236" x="211" y="1" width="100" height="20"/>
+				<reportElement uuid="7b7f480e-f7e1-42ac-9558-e1f7f3700236" x="130" y="1" width="100" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
@@ -153,24 +143,36 @@ p.CEDULA_QUIEN_RETIRA like $P{cedula} AND e.CODIGO = $P{num_tramite}]]>
 				</textElement>
 				<text><![CDATA[PROPIETARIO]]></text>
 			</staticText>
+			<staticText>
+				<reportElement uuid="cf581bb8-2a61-431e-8e0b-d66734c32176" x="257" y="1" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[C.I]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="29" splitType="Stretch">
 			<textField>
-				<reportElement uuid="ebfe2a03-e8cd-4f67-8cb4-22eb4bf6af5c" x="211" y="0" width="100" height="20"/>
+				<reportElement uuid="ebfe2a03-e8cd-4f67-8cb4-22eb4bf6af5c" x="130" y="0" width="100" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{PLACA}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="2b123cb0-fda6-4dff-9be3-a8f81d78c2bd" x="38" y="0" width="100" height="20"/>
+				<reportElement uuid="2b123cb0-fda6-4dff-9be3-a8f81d78c2bd" x="9" y="0" width="100" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="f5fdf16d-66c2-4266-b60c-7d1f334b5e40" x="365" y="0" width="181" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[$F{PROPIETARIO}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{NOMBRE_PROPIETARIO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3c8542db-8069-418d-adce-ec95d2f4e03c" x="257" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{CEDULA_PROPIETARIO}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
