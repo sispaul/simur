@@ -230,6 +230,7 @@ private Tabla tab_consulta = new Tabla();
                         iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), tab_anticipo.getValor("numero_cuotas_anticipo"), total, 
                                  txt_comentario.getValue()+"",Integer.parseInt(tab_anticipo.getValor("ide_periodo_anticipo_final")));
              }
+        tab_anticipo.actualizar();
     }
     
     @Override
