@@ -1081,7 +1081,9 @@ public class pre_solicitud_anticipos extends Pantalla{
     
     @Override
     public void insertar() {
-        tab_anticipo.insertar();
+        if (tab_anticipo.isFocus()) {
+            tab_anticipo.insertar();
+        }
     }
 
     @Override
@@ -1127,7 +1129,9 @@ public class pre_solicitud_anticipos extends Pantalla{
         if (!tab_dato.isEmpty()) {
             if(tab_anticipo.getValor("ci_solicitante").equals(tab_dato.getValor("ci_solicitante"))){
                 if(tab_dato.getValor("ide_estado_anticipo").equals("4")||tab_dato.getValor("ide_estado_anticipo").equals("1")){
-                    tab_anticipo.eliminar();
+                    if (tab_anticipo.isFocus()) {
+                            tab_anticipo.eliminar();
+                        }
                 }else{
                     utilitario.agregarMensajeError("Solicitud", "En proceso");
                     }
@@ -1135,7 +1139,9 @@ public class pre_solicitud_anticipos extends Pantalla{
                 utilitario.agregarMensajeError("Solicitud", "En proceso");
                 }
         }else{
-            tab_anticipo.eliminar();
+              if (tab_anticipo.isFocus()) {
+                     tab_anticipo.eliminar();
+                 }
         }
     }
 
