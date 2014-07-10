@@ -625,6 +625,7 @@ public class pre_empresa extends Pantalla {
             }
             if (utilitario.validarRUC(tab_tabla.getValor("ruc"))) {
                 tab_tabla.guardar();
+                guardarPantalla();
             } else {
                 utilitario.agregarMensajeError("El Número de RUC no es válido", "");
                 return;
