@@ -191,10 +191,11 @@ public class pre_empresa extends Pantalla {
     }
 
     public void abrirBusqueda() {
-
+        
         set_empresa.dibujar();
         tex_busqueda.limpiar();
         set_empresa.getTab_seleccion().limpiar();
+        
     }
 
     public void aceptarBusqueda() {
