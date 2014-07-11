@@ -285,7 +285,7 @@ public class pre_solicitud_anticipos extends Pantalla{
         public void remuneracion(){
         double  dato1 = 0,dato2=0;
         
-        dato2 = Double.parseDouble(tab_anticipo.getValor("rmu_liquido_anterior"));
+        dato2 = Double.parseDouble(tab_anticipo.getValor("rmu"));
         dato1 = Double.parseDouble(tab_anticipo.getValor("valor_anticipo"));
         
         if((dato1/dato2)<=1){
@@ -306,7 +306,7 @@ public class pre_solicitud_anticipos extends Pantalla{
                 utilitario.agregarMensajeInfo("Ingresar Plazo de Cobro", "");
                 
         }else{
-            utilitario.agregarMensajeInfo("El Monto Excede Remuneracion", "Liquida Percibida Anterior");
+            utilitario.agregarMensajeInfo("El Monto Excede Remuneracion", "Liquida Percibida");
         }
     }
     
@@ -960,34 +960,45 @@ public class pre_solicitud_anticipos extends Pantalla{
         double valora=0,valorm=0,media=0,rmu=0,valan=0,valorff=0;
         rmu =Double.parseDouble(tab_anticipo.getValor("rmu"));
         valan= Double.parseDouble(tab_anticipo.getValor("valor_anticipo"));
-        
         TablaGenerica tab_dato = iAnticipos.periodos1(Integer.parseInt(tab_anticipo.getValor("ide_periodo_anticipo_inicial")));
+        
         if (!tab_dato.isEmpty()) {
-            
             rango = Integer.parseInt(tab_dato.getValor("periodo"))+Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"));
+            
             if(rango > 12){
                 valora= ((rmu*70)/100);
-                if(valora>=Integer.parseInt(tab_anticipo.getValor("valor_anticipo"))){
+                
+                if(valora>=Double.parseDouble(tab_anticipo.getValor("valor_anticipo"))){
                         valorff= ((valan*80)/100);
                         valorm = (valan-valorff)/(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))-1);
-                        media = Double.parseDouble(tab_anticipo.getValor("rmu_liquido_anterior"))/2;
+                        media = Double.parseDouble(tab_anticipo.getValor("rmu"))/2;
+                        
                         if((valorm-media)<=0){
                             tab_anticipo.setValor("valor_cuota_adicional", String.valueOf(valorff));
                             tab_anticipo.setValor("valor_cuota_mensual", String.valueOf(Math.rint(valorm*100)/100));
                             utilitario.addUpdate("tab_anticipo");
                             }
+                        
                 }else{
                         valorm = (valan-valora)/(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))-1);
-                        media = Double.parseDouble(tab_anticipo.getValor("rmu_liquido_anterior"))/2;
+                        media = Double.parseDouble(tab_anticipo.getValor("rmu"))/2;
+                        
                         if((valorm-media)<=0){
                             tab_anticipo.setValor("valor_cuota_adicional", String.valueOf(valora));
                             tab_anticipo.setValor("valor_cuota_mensual", String.valueOf(Math.rint(valorm*100)/100));
                             utilitario.addUpdate("tab_anticipo");
-                            }
+                            }else{
+                                tab_anticipo.setValor("valor_cuota_adicional", String.valueOf(valora));
+                                tab_anticipo.setValor("valor_cuota_mensual", String.valueOf(Math.rint(valorm*100)/100));
+                                utilitario.addUpdate("tab_anticipo");
+                                }
+                        
                 }
+                
             }else if(rango <= 12){
+                
                     valora = Double.parseDouble(tab_anticipo.getValor("valor_anticipo")) / Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"));
-                    media = Double.parseDouble(tab_anticipo.getValor("rmu_liquido_anterior"))/2;
+                    media = Double.parseDouble(tab_anticipo.getValor("rmu"))/2;
                     if( media > valora){
                         tab_anticipo.setValor("valor_cuota_adicional", "NULL");
                         tab_anticipo.setValor("valor_cuota_mensual", String.valueOf(Math.rint(valora*100)/100));
@@ -997,8 +1008,8 @@ public class pre_solicitud_anticipos extends Pantalla{
                                 tab_anticipo.setValor("valor_cuota_mensual", String.valueOf(Math.rint(valora*100)/100));
                                 utilitario.addUpdate("tab_anticipo");
                     }
+                    
                 }
-            
         }else {
                utilitario.agregarMensajeInfo("No existen Datos", "");
                }
