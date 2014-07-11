@@ -104,6 +104,7 @@ public class pre_solicitud_anticipos extends Pantalla{
         tab_anticipo.getColumna("fecha_anticipo").setLectura(true);
         tab_anticipo.getColumna("ide_estado_anticipo").setLectura(true);
         tab_anticipo.getColumna("id_distributivo").setLectura(true);
+        tab_anticipo.getColumna("garante").setLectura(true);
         
         tab_anticipo.getColumna("ide_estado_anticipo").setCombo("SELECT ide_estado_tipo,estado FROM srh_estado_anticipo");
         tab_anticipo.getColumna("ide_periodo_anticipo_inicial").setCombo("select ide_periodo_anticipo, (mes || '/' || anio) As Cliente from srh_periodo_anticipo order by ide_periodo_anticipo");
@@ -194,14 +195,22 @@ public class pre_solicitud_anticipos extends Pantalla{
     
     public void llenarGarante(){
     if (utilitario.validarCedula(tab_anticipo.getValor("ci_garante"))) {
-        TablaGenerica tab_dato = iAnticipos.Garantemple(tab_anticipo.getValor("ci_garante"));
-            if (!tab_dato.isEmpty()) {
-                    tab_anticipo.setValor("garante", tab_dato.getValor("nombres"));
-                    tab_anticipo.setValor("ide_empleado_garante", tab_dato.getValor("COD_EMPLEADO"));
-                    utilitario.addUpdate("tab_anticipo");
-                }else {
-                      utilitario.agregarMensajeInfo("No existen Datos", "");
-                      }
+        System.err.println("ingreo");
+        TablaGenerica tab_dato1 = iAnticipos.VerifGaranteid(tab_anticipo.getValor("ci_garante"));
+                if (!tab_dato1.isEmpty()) {
+                    System.out.println("holas");
+                        TablaGenerica tab_dato = iAnticipos.Garantemple(tab_anticipo.getValor("ci_garante"));
+                           if (!tab_dato.isEmpty()) {
+                                   tab_anticipo.setValor("garante", tab_dato.getValor("nombres"));
+                                   tab_anticipo.setValor("ide_empleado_garante", tab_dato.getValor("COD_EMPLEADO"));
+                                   utilitario.addUpdate("tab_anticipo");
+                                }else {
+                                      utilitario.agregarMensajeInfo("No existen Datos", "");
+                                      }
+                 }else {
+                        utilitario.agregarMensajeInfo("Garante No Disponible", "");
+                        }
+                
     } else {
             utilitario.agregarMensajeError("El Número de Cédula no es válido", "");
             }    
@@ -216,7 +225,7 @@ public class pre_solicitud_anticipos extends Pantalla{
             tab_anticipo.setValor("rmu", tab_dato.getValor("ru"));
             tab_anticipo.setValor("rmu_liquido_anterior", tab_dato.getValor("liquido_recibir"));
             tab_anticipo.setValor("ci_solicitante", tab_dato.getValor("cedula_pass"));
-            tab_anticipo.setValor("id_distributivo", tab_dato.getValor("id_distributivo"));
+            tab_anticipo.setValor("id_distributivo", tab_dato.getValor("id_distributivo_roles"));
             utilitario.addUpdate("tab_anticipo");
         }else {
            TablaGenerica tab_dato1 = iAnticipos.trabajadoresCod(Integer.parseInt(tab_anticipo.getValor("ide_empleado_solicitante")));//trabajadores
@@ -228,19 +237,24 @@ public class pre_solicitud_anticipos extends Pantalla{
                     tab_anticipo.setValor("id_distributivo", tab_dato1.getValor("id_distributivo_roles"));
                     utilitario.addUpdate("tab_anticipo");
                 }else {
-                        utilitario.agregarMensajeInfo("No se encunetra en roles", "");
+                        utilitario.agregarMensajeInfo("No se encuentra en roles", "");
                       }
           }
     }
     
     public void llenarGaranteCodigo(){
-      TablaGenerica tab_dato = iAnticipos.empleadoCodigo(Integer.parseInt(tab_anticipo.getValor("ide_empleado_garante")));
-        if (!tab_dato.isEmpty()) {
-            tab_anticipo.setValor("garante", tab_dato.getValor("nombres"));
-            tab_anticipo.setValor("ci_garante", tab_dato.getValor("cedula_pass"));
-            utilitario.addUpdate("tab_anticipo");
-        }else {
-               utilitario.agregarMensajeInfo("No existen Datos", "");
+      TablaGenerica tab_dato1 = iAnticipos.VerifGarantecod(Integer.parseInt(tab_anticipo.getValor("ide_empleado_garante")));
+       if (!tab_dato1.isEmpty()) {  
+              TablaGenerica tab_dato = iAnticipos.empleadoCodigo(Integer.parseInt(tab_anticipo.getValor("ide_empleado_garante")));
+                if (!tab_dato.isEmpty()) {
+                    tab_anticipo.setValor("garante", tab_dato.getValor("nombres"));
+                    tab_anticipo.setValor("ci_garante", tab_dato.getValor("cedula_pass"));
+                    utilitario.addUpdate("tab_anticipo");
+                }else {
+                       utilitario.agregarMensajeInfo("No existen Datos", "");
+                      }
+       }else {
+               utilitario.agregarMensajeInfo("Garante No Disponible", "");
               }
     }
     
@@ -323,7 +337,7 @@ public class pre_solicitud_anticipos extends Pantalla{
             
             if(tab_dato.getValor("id_distributivo").equals("1")){//VALIDACION DE EMPLEADOS
                 utilitario.agregarMensajeInfo("Saludos", "Empleado");
-                    if(utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))<=10){//VALIDACION POR DIA HASTA 10
+                    if(utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))<=15){//VALIDACION POR DIA HASTA 10
                                             anos=utilitario.getAnio(tab_dato.getValor("fecha_ingreso"));
                                             dias=utilitario.getDia(tab_dato.getValor("fecha_ingreso"));
                                             meses=utilitario.getMes(tab_dato.getValor("fecha_ingreso"));
@@ -364,7 +378,7 @@ public class pre_solicitud_anticipos extends Pantalla{
                                                                    }
                                                     }
 
-                        }else if(utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))<=28){//VALIDACION POR DIAS DEL 11 AL 28
+                        }else if(utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))>=16 && utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28
                                         if(tab_dato.getValor("cod_tipo").equals("4")||tab_dato.getValor("cod_tipo").equals("10")){
                                                     if(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))<=18){
                                                         llenarFecha();
@@ -409,7 +423,7 @@ public class pre_solicitud_anticipos extends Pantalla{
                                 }
                 }else if(tab_dato.getValor("id_distributivo").equals("2")){//VALIDACION DE TRABAJADORES
                         utilitario.agregarMensajeInfo("Saludos", "Trabajador");
-                            if(utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))<=10){//VALIDACION POR DIA HASTA 10
+                            if(utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))<=16){//VALIDACION POR DIA HASTA 10
                                                     anos=utilitario.getAnio(tab_dato.getValor("fecha_ingreso"));
                                                     dias=utilitario.getDia(tab_dato.getValor("fecha_ingreso"));
                                                     meses=utilitario.getMes(tab_dato.getValor("fecha_ingreso"));
@@ -451,7 +465,7 @@ public class pre_solicitud_anticipos extends Pantalla{
                                                                            }
                                                             }
                                                 
-                                }else if(utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))<=28){//VALIDACION POR DIAS DEL 11 AL 28
+                                }else if(utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))>=16 && utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28
                                             if(tab_dato.getValor("cod_tipo").equals("4")||tab_dato.getValor("cod_tipo").equals("10")){
                                                     if(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))<=18){
                                                             llenarFecha();
@@ -512,7 +526,7 @@ public class pre_solicitud_anticipos extends Pantalla{
         dia = String.valueOf(utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO")));
         
         mess = utilitario.getMes(tab_anticipo.getValor("FECHA_ANTICIPO"));
-        if(utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))<=10){
+        if(utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))<=15){
              if(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))==12){
                 calculo = 12 - Integer.parseInt(mes);
                 calculo1 = calculo - Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"));
@@ -837,7 +851,7 @@ public class pre_solicitud_anticipos extends Pantalla{
                                                }
                                             }
                     }
-            }else if(utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))<=28 ){
+            }else if(utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))>=16 && utilitario.getDia(tab_anticipo.getValor("FECHA_ANTICIPO"))<=31 ){
                         if(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))==12){
                         calculo = 12 - Integer.parseInt(mes);
                         calculo1 = calculo - Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"));
