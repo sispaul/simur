@@ -1008,8 +1008,9 @@ public class pre_solicitud_anticipos extends Pantalla{
                                 tab_anticipo.setValor("valor_cuota_mensual", String.valueOf(Math.rint(valora*100)/100));
                                 utilitario.addUpdate("tab_anticipo");
                     }
-                    
                 }
+            
+            
         }else {
                utilitario.agregarMensajeInfo("No existen Datos", "");
                }
