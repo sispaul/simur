@@ -942,6 +942,46 @@ public TablaGenerica periodos1(Integer id ){
         
  }
 
+public TablaGenerica VerifGaranteid(String cedu ){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT\n" +
+                                "ide_empleado_garante,\n" +
+                                "ci_garante,\n" +
+                                "garante\n" +
+                                "FROM\n" +
+                                "srh_anticipo\n" +
+                                "WHERE id_distributivo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'COBRADO')\n" +
+                                "OR ci_garante like '"+cedu+"'");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+
+public TablaGenerica VerifGarantecod(Integer id){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT\n" +
+                                "ide_empleado_garante,\n" +
+                                "ci_garante,\n" +
+                                "garante\n" +
+                                "FROM\n" +
+                                "srh_anticipo\n" +
+                                "WHERE id_distributivo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'COBRADO')\n" +
+                                "OR ide_empleado_garante = "+id);
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+
 public void actuaIngSoli(Integer id,String login){
     String str_sql1;
     str_sql1 = "update srh_anticipo\n" +
