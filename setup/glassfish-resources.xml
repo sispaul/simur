@@ -5,76 +5,9 @@
         <property name="serverName" value="192.168.1.245"/>
         <property name="databaseName" value="SIGAG"/>
         <property name="User" value="sa"/>
-        <property name="Password" value="pruebas"/>
+        <property name="Password" value="RUMINAHUI"/>
         <property name="URL" value="jdbc:sqlserver://192.168.1.245;databaseName=SIGAG"/>
         <property name="driverClass" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
     </jdbc-connection-pool>
-    <jdbc-resource enabled="true" jndi-name="PruebasSIGAG" object-type="user" pool-name="microsoft_sql_SIGAG_saPool"/>
-    <jdbc-connection-pool allow-non-component-callers="false" associate-with-thread="false" connection-creation-retry-attempts="0" connection-creation-retry-interval-in-seconds="10" connection-leak-reclaim="false" connection-leak-timeout-in-seconds="0" connection-validation-method="auto-commit" datasource-classname="com.microsoft.sqlserver.jdbc.SQLServerDataSource" fail-all-connections="false" idle-timeout-in-seconds="300" is-connection-validation-required="false" is-isolation-level-guaranteed="true" lazy-connection-association="false" lazy-connection-enlistment="false" match-connections="false" max-connection-usage-count="0" max-pool-size="32" max-wait-time-in-millis="60000" name="microsoft_sql_ciudadania_saPool" non-transactional-connections="false" pool-resize-quantity="2" res-type="javax.sql.DataSource" statement-timeout-in-seconds="-1" steady-pool-size="8" validate-atmost-once-period-in-seconds="0" wrap-jdbc-objects="false">
-        <property name="serverName" value="192.168.1.245"/>
-        <property name="databaseName" value="ciudadania"/>
-        <property name="User" value="sa"/>
-        <property name="Password" value="pruebas"/>
-        <property name="URL" value="jdbc:sqlserver://192.168.1.245;databaseName=ciudadania"/>
-        <property name="driverClass" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
-    </jdbc-connection-pool>
-    <jdbc-resource enabled="true" jndi-name="PruebasCiudadania" object-type="user" pool-name="microsoft_sql_ciudadania_saPool"/>
-    <jdbc-connection-pool allow-non-component-callers="false" associate-with-thread="false" connection-creation-retry-attempts="0" connection-creation-retry-interval-in-seconds="10" connection-leak-reclaim="false" connection-leak-timeout-in-seconds="0" connection-validation-method="auto-commit" datasource-classname="org.postgresql.ds.PGSimpleDataSource" fail-all-connections="false" idle-timeout-in-seconds="300" is-connection-validation-required="false" is-isolation-level-guaranteed="true" lazy-connection-association="false" lazy-connection-enlistment="false" match-connections="false" max-connection-usage-count="0" max-pool-size="32" max-wait-time-in-millis="60000" name="post-gre-sql_produccion2013_postgresPool" non-transactional-connections="false" pool-resize-quantity="2" res-type="javax.sql.DataSource" statement-timeout-in-seconds="-1" steady-pool-size="8" validate-atmost-once-period-in-seconds="0" wrap-jdbc-objects="false">
-        <property name="serverName" value="192.168.1.62"/>
-        <property name="portNumber" value="5432"/>
-        <property name="databaseName" value="produccion2013"/>
-        <property name="User" value="postgres"/>
-        <property name="Password" value="postgres"/>
-        <property name="URL" value="jdbc:postgresql://192.168.1.62:5432/produccion2013"/>
-        <property name="driverClass" value="org.postgresql.Driver"/>
-    </jdbc-connection-pool>
-    <jdbc-resource enabled="true" jndi-name="PruebaPostgres" object-type="user" pool-name="post-gre-sql_produccion2013_postgresPool"/>
-    <jdbc-connection-pool allow-non-component-callers="false" associate-with-thread="false" connection-creation-retry-attempts="0" connection-creation-retry-interval-in-seconds="10" connection-leak-reclaim="false" connection-leak-timeout-in-seconds="0" connection-validation-method="auto-commit" datasource-classname="com.microsoft.sqlserver.jdbc.SQLServerDataSource" fail-all-connections="false" idle-timeout-in-seconds="300" is-connection-validation-required="false" is-isolation-level-guaranteed="true" lazy-connection-association="false" lazy-connection-enlistment="false" match-connections="false" max-connection-usage-count="0" max-pool-size="32" max-wait-time-in-millis="60000" name="microsoft_sql_SIGAG_sigag_userPool" non-transactional-connections="false" pool-resize-quantity="2" res-type="javax.sql.DataSource" statement-timeout-in-seconds="-1" steady-pool-size="8" validate-atmost-once-period-in-seconds="0" wrap-jdbc-objects="false">
-        <property name="serverName" value="192.168.1.222"/>
-        <property name="databaseName" value="SIGAG"/>
-        <property name="User" value="sigag_user"/>
-        <property name="Password" value="sigag_user"/>
-        <property name="URL" value="jdbc:sqlserver://192.168.1.222;databaseName=SIGAG"/>
-        <property name="driverClass" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
-    </jdbc-connection-pool>
-    <jdbc-resource enabled="true" jndi-name="SIGAG" object-type="user" pool-name="microsoft_sql_SIGAG_sigag_userPool"/>
-    <jdbc-connection-pool allow-non-component-callers="false" associate-with-thread="false" connection-creation-retry-attempts="0" connection-creation-retry-interval-in-seconds="10" connection-leak-reclaim="false" connection-leak-timeout-in-seconds="0" connection-validation-method="auto-commit" datasource-classname="com.microsoft.sqlserver.jdbc.SQLServerDataSource" fail-all-connections="false" idle-timeout-in-seconds="300" is-connection-validation-required="false" is-isolation-level-guaranteed="true" lazy-connection-association="false" lazy-connection-enlistment="false" match-connections="false" max-connection-usage-count="0" max-pool-size="32" max-wait-time-in-millis="60000" name="microsoft_sql_ciudadania_sigag_userPool" non-transactional-connections="false" pool-resize-quantity="2" res-type="javax.sql.DataSource" statement-timeout-in-seconds="-1" steady-pool-size="8" validate-atmost-once-period-in-seconds="0" wrap-jdbc-objects="false">
-        <property name="serverName" value="192.168.1.222"/>
-        <property name="databaseName" value="ciudadania"/>
-        <property name="User" value="sigag_user"/>
-        <property name="Password" value="sigag_user"/>
-        <property name="URL" value="jdbc:sqlserver://192.168.1.222;databaseName=ciudadania"/>
-        <property name="driverClass" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
-    </jdbc-connection-pool>
-    <jdbc-resource enabled="true" jndi-name="ciudadania" object-type="user" pool-name="microsoft_sql_ciudadania_sigag_userPool"/>
-    <jdbc-connection-pool allow-non-component-callers="false" associate-with-thread="false" connection-creation-retry-attempts="0" connection-creation-retry-interval-in-seconds="10" connection-leak-reclaim="false" connection-leak-timeout-in-seconds="0" connection-validation-method="auto-commit" datasource-classname="org.postgresql.ds.PGSimpleDataSource" fail-all-connections="false" idle-timeout-in-seconds="300" is-connection-validation-required="false" is-isolation-level-guaranteed="true" lazy-connection-association="false" lazy-connection-enlistment="false" match-connections="false" max-connection-usage-count="0" max-pool-size="32" max-wait-time-in-millis="60000" name="post-gre-sql_produccion2013_postgresPool_1" non-transactional-connections="false" pool-resize-quantity="2" res-type="javax.sql.DataSource" statement-timeout-in-seconds="-1" steady-pool-size="8" validate-atmost-once-period-in-seconds="0" wrap-jdbc-objects="false">
-        <property name="serverName" value="192.168.1.217"/>
-        <property name="portNumber" value="5432"/>
-        <property name="databaseName" value="produccion2013"/>
-        <property name="User" value="postgres"/>
-        <property name="Password" value="postgres"/>
-        <property name="URL" value="jdbc:postgresql://192.168.1.217:5432/produccion2013"/>
-        <property name="driverClass" value="org.postgresql.Driver"/>
-    </jdbc-connection-pool>
-    <jdbc-resource enabled="true" jndi-name="Produccion2013" object-type="user" pool-name="post-gre-sql_produccion2013_postgresPool_1"/>
-    <jdbc-connection-pool allow-non-component-callers="false" associate-with-thread="false" connection-creation-retry-attempts="0" connection-creation-retry-interval-in-seconds="10" connection-leak-reclaim="false" connection-leak-timeout-in-seconds="0" connection-validation-method="auto-commit" datasource-classname="org.postgresql.ds.PGSimpleDataSource" fail-all-connections="false" idle-timeout-in-seconds="300" is-connection-validation-required="false" is-isolation-level-guaranteed="true" lazy-connection-association="false" lazy-connection-enlistment="false" match-connections="false" max-connection-usage-count="0" max-pool-size="32" max-wait-time-in-millis="60000" name="post-gre-sql_produccion2014_postgresPool" non-transactional-connections="false" pool-resize-quantity="2" res-type="javax.sql.DataSource" statement-timeout-in-seconds="-1" steady-pool-size="8" validate-atmost-once-period-in-seconds="0" wrap-jdbc-objects="false">
-        <property name="serverName" value="192.168.1.62"/>
-        <property name="portNumber" value="5432"/>
-        <property name="databaseName" value="produccion2014"/>
-        <property name="User" value="postgres"/>
-        <property name="Password" value="postgres"/>
-        <property name="URL" value="jdbc:postgresql://192.168.1.62:5432/produccion2014"/>
-        <property name="driverClass" value="org.postgresql.Driver"/>
-    </jdbc-connection-pool>
-    <jdbc-resource enabled="true" jndi-name="PruebasPostgres4" object-type="user" pool-name="post-gre-sql_produccion2014_postgresPool"/>
-    <jdbc-connection-pool allow-non-component-callers="false" associate-with-thread="false" connection-creation-retry-attempts="0" connection-creation-retry-interval-in-seconds="10" connection-leak-reclaim="false" connection-leak-timeout-in-seconds="0" connection-validation-method="auto-commit" datasource-classname="org.postgresql.ds.PGSimpleDataSource" fail-all-connections="false" idle-timeout-in-seconds="300" is-connection-validation-required="false" is-isolation-level-guaranteed="true" lazy-connection-association="false" lazy-connection-enlistment="false" match-connections="false" max-connection-usage-count="0" max-pool-size="32" max-wait-time-in-millis="60000" name="post-gre-sql_produccion2014_postgresPool_1" non-transactional-connections="false" pool-resize-quantity="2" res-type="javax.sql.DataSource" statement-timeout-in-seconds="-1" steady-pool-size="8" validate-atmost-once-period-in-seconds="0" wrap-jdbc-objects="false">
-        <property name="serverName" value="192.168.1.217"/>
-        <property name="portNumber" value="5432"/>
-        <property name="databaseName" value="produccion2014"/>
-        <property name="User" value="postgres"/>
-        <property name="Password" value="postgres"/>
-        <property name="URL" value="jdbc:postgresql://192.168.1.217:5432/produccion2014"/>
-        <property name="driverClass" value="org.postgresql.Driver"/>
-    </jdbc-connection-pool>
-    <jdbc-resource enabled="true" jndi-name="Produccion2014" object-type="user" pool-name="post-gre-sql_produccion2014_postgresPool_1"/>
+    <jdbc-resource enabled="true" jndi-name="ProduccionSIGAG" object-type="user" pool-name="microsoft_sql_SIGAG_saPool"/>
 </resources>
