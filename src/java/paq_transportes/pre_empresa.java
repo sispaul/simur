@@ -13,7 +13,8 @@ import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
 import framework.componentes.ItemMenu;
-import framework.componentes.Panel;import framework.componentes.PanelTabla;
+import framework.componentes.Panel;
+import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
@@ -191,11 +192,10 @@ public class pre_empresa extends Pantalla {
     }
 
     public void abrirBusqueda() {
-        
+
         set_empresa.dibujar();
         tex_busqueda.limpiar();
         set_empresa.getTab_seleccion().limpiar();
-        
     }
 
     public void aceptarBusqueda() {
@@ -379,9 +379,8 @@ public class pre_empresa extends Pantalla {
             tab_vehiculos.setTabla("trans_vehiculos", "ide_vehiculo", 4);
             tab_vehiculos.setHeader("VEHÍCULOS DEL SOCIO");
             tab_vehiculos.setRows(10);
-//            tab_vehiculos.getColumna("ide_modelo").setCombo("select ide_modelo,des_modelo,marca from trans_modelos mode INNER JOIN trans_marcas marca on mode.ide_marca=marca.ide_marca order by des_modelo,marca");
+            tab_vehiculos.getColumna("ide_modelo").setCombo("select ide_modelo,des_modelo,marca from trans_modelos mode INNER JOIN trans_marcas marca on mode.ide_marca=marca.ide_marca order by des_modelo,marca");
             tab_vehiculos.getColumna("fecha_responsable").setCalendarioFechaHora();
-            tab_vehiculos.getColumna("ide_modelo").setVisible(false);
             tab_vehiculos.getColumna("fecha_responsable").setVisible(false);
             tab_vehiculos.getColumna("ip_responsable").setValorDefecto(utilitario.getIp());
             tab_vehiculos.getColumna("ip_responsable").setVisible(false);
@@ -626,7 +625,6 @@ public class pre_empresa extends Pantalla {
             }
             if (utilitario.validarRUC(tab_tabla.getValor("ruc"))) {
                 tab_tabla.guardar();
-                guardarPantalla();
             } else {
                 utilitario.agregarMensajeError("El Número de RUC no es válido", "");
                 return;
