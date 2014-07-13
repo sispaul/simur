@@ -1,35 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
-  <persistence-unit name="PruebasSIGAG" transaction-type="JTA">
-    <jta-data-source>PruebasSIGAG</jta-data-source>
-    <properties/>
-  </persistence-unit>
-  <persistence-unit name="PruebasCiudadania" transaction-type="JTA">
-    <jta-data-source>PruebasCiudadania</jta-data-source>
-    <properties/>
-  </persistence-unit>
-  <persistence-unit name="PruebasPostgres" transaction-type="JTA">
-    <jta-data-source>PruebasPostgres</jta-data-source>
-    <properties/>
-  </persistence-unit>
-  <persistence-unit name="SIGAG" transaction-type="JTA">
-    <jta-data-source>SIGAG</jta-data-source>
-    <properties/>
-  </persistence-unit>
-  <persistence-unit name="ciudadania" transaction-type="JTA">
-    <jta-data-source>ciudadania</jta-data-source>
-    <properties/>
-  </persistence-unit>
-  <persistence-unit name="Produccion2013" transaction-type="JTA">
-    <jta-data-source>Produccion2013</jta-data-source>
-    <properties/>
-  </persistence-unit>
-  <persistence-unit name="PruebasPostgres4" transaction-type="JTA">
-    <jta-data-source>PruebasPostgres4</jta-data-source>
-    <properties/>
-  </persistence-unit>
-  <persistence-unit name="Produccion2014" transaction-type="JTA">
-    <jta-data-source>Produccion2014</jta-data-source>
+  <persistence-unit name="ProduccionSIGAG" transaction-type="JTA">
+    <jta-data-source>ProduccionSIGAG</jta-data-source>
     <properties/>
   </persistence-unit>
 </persistence>
