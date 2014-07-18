@@ -93,16 +93,24 @@ public class pre_decimo_cuarto extends Pantalla{
     }
     
     public void decimo_4to(){
+        
+        
+        System.out.println("holas1");
         if(tab_decimo.getValor("cod_tipo").equals("4") || tab_decimo.getValor("cod_tipo").equals("7") ){
+            System.err.println("holas1");
              Dcuarto.decimo_cod();
              tab_decimo.actualizar();
+             utilitario.agregarMensaje("Valores Calculados con Exito", ":)");
         }else{
+            System.out.println("holas");
              Integer anos=0, dias=0,meses=0,anio_a=0;
              anio_a= utilitario.getAnio(utilitario.getFechaActual());
              
              calcularMes(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(anio_a,7,30));
              
         }
+        
+        
     }
     
     public void verificar(){
