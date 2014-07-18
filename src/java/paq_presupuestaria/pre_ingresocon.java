@@ -337,7 +337,7 @@ public class pre_ingresocon extends Pantalla{
                     p_parametros.put("tipo",Integer.parseInt(cmb_licenti.getValue()+"")); 
                     p_parametros.put("pnivel1",Integer.parseInt(cmb_niveli.getValue()+"")); 
                     p_parametros.put("pnivel2",Integer.parseInt(cmb_nivelf.getValue()+""));
-                    p_parametros.put("funcion",Integer.parseInt(set_distribu.getValorSeleccionado()+""));
+                    p_parametros.put("funcion",set_distribu.getValorSeleccionado()+"");
                     p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
                     rep_reporte.cerrar();
                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
