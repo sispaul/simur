@@ -48,7 +48,7 @@ public void seleccionarPF(Integer id_s,Integer vehiculo,Integer servicio,Integer
       String actualiza ="update TRANS_DETALLE_SOLICITUD_PLACA \n" +
                         "set APROBADO_SOLICITUD= 1,IDE_APROBACION_PLACA= "+id_a+",ide_placa =\n" +
                         "(SELECT TOP 1 IDE_PLACA \n" +
-                        "FROM (SELECT TOP 3 IDE_PLACA FROM TRANS_PLACAS\n" +
+                        "FROM (SELECT TOP 2 IDE_PLACA FROM TRANS_PLACAS\n" +
                         "WHERE IDE_TIPO_ESTADO =(SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO WHERE DESCRIPCION_ESTADO LIKE 'disponible')\n" +
                         "AND IDE_TIPO_VEHICULO= "+vehiculo+" \n" +
                         "AND IDE_TIPO_SERVICIO = "+servicio+"\n" +
@@ -65,7 +65,7 @@ public void seleccionarPP(Integer id_s,Integer vehiculo,Integer servicio,Integer
       String actualiza ="update TRANS_DETALLE_SOLICITUD_PLACA \n" +
                         "set APROBADO_SOLICITUD= 1,IDE_APROBACION_PLACA= "+id_a+",ide_placa =\n" +
                         "(SELECT TOP 1 IDE_PLACA \n" +
-                        "FROM (SELECT TOP 3 IDE_PLACA FROM TRANS_PLACAS\n" +
+                        "FROM (SELECT TOP 2 IDE_PLACA FROM TRANS_PLACAS\n" +
                         "WHERE IDE_TIPO_ESTADO =(SELECT IDE_TIPO_ESTADO FROM TRANS_TIPO_ESTADO WHERE DESCRIPCION_ESTADO LIKE 'disponible')\n" +
                         "AND IDE_TIPO_VEHICULO= "+vehiculo+" \n" +
                         "AND IDE_TIPO_SERVICIO = "+servicio+"\n" +
