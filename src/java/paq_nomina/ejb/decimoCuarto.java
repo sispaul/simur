@@ -25,24 +25,8 @@ public class decimoCuarto {
     public void Nomina(){
 
         String nomina ="insert into srh_decimo_cuarto (id_distributivo_roles,ano,ide_columna,ide_periodo,cod_tipo,fecha_ingreso,cedula,nombres)\n" +
-                        "SELECT DISTINCT\n" +
-                        "e.id_distributivo,\n" +
-                        "extract(year from CURRENT_TIMESTAMP) AS anio,\n" +
-                        "(SELECT ide_col FROM srh_columnas where codigo_col like 'D4TO') AS columna,\n" +
-                        "extract(month from CURRENT_TIMESTAMP) AS mes,\n" +
-                        "e.cod_tipo,\n" +
-                        "n.fecha_contrato,\n" +
-                        "e.cedula_pass,\n" +
-                        "e.nombres\n" +
-                        "FROM\n" +
-                        "srh_empleado e,\n" +
-                        "srh_num_contratos n\n" +
-                        "WHERE\n" +
-                        "e.estado = 1 AND\n" +
-                        "n.cod_empleado = e.cod_empleado\n" +
-                        "ORDER BY\n" +
-                        "e.id_distributivo ASC,\n" +
-                        "e.nombres ASC";
+                        "select id_distributivo,anio,columna,mes,cod_tipo,fecha_contrato,cedula_pass,nombres \n" +
+                        "from nomv_decimo_cuarto";
         conectar();
         con_postgres.ejecutarSql(nomina);
         con_postgres.desconectar();
