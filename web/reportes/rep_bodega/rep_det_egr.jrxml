@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_det_egr" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3bdfd5b5-7ccd-478a-9558-d23537f694ad">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[select numero_egreso,fec_egreso,(select nombres from bodt_concepto_egreso a,srh_empleado b where cod_empleado=solicita and ide_egreso=c.ide_egreso )as solicita,(select nombres from bodt_concepto_egreso a,srh_empleado b where cod_empleado=recibe and ide_egreso=c.ide_egreso)as recibe,uso, (select descripcion  from bodc_destinos a, bodt_concepto_egreso b where  a.id_destino=b.ide_destino and  ide_egreso=c.ide_egreso)as destino,doc_egreso , cod_material,des_material,cant_egreso,costo_egreso,total_egreso from bodt_egreso a, srh_empleado b, bodt_concepto_egreso c,bodt_articulos d, bodc_material f where a.cod_empleado=b.cod_empleado and a.ide_egreso=c.ide_egreso and a.ide_bodt_articulo=d.ide_bodt_articulo and f.ide_mat_bodega=d.ide_mat_bodega order by numero_egreso]]>
+	</queryString>
+	<field name="numero_egreso" class="java.lang.Integer"/>
+	<field name="fec_egreso" class="java.sql.Date"/>
+	<field name="solicita" class="java.lang.String">
+		<fieldDescription><![CDATA[código único del empleado]]></fieldDescription>
+	</field>
+	<field name="recibe" class="java.lang.String">
+		<fieldDescription><![CDATA[código único del empleado]]></fieldDescription>
+	</field>
+	<field name="uso" class="java.lang.String"/>
+	<field name="destino" class="java.lang.String"/>
+	<field name="doc_egreso" class="java.lang.String"/>
+	<field name="cod_material" class="java.lang.String">
+		<fieldDescription><![CDATA[COD_MATERIAL]]></fieldDescription>
+	</field>
+	<field name="des_material" class="java.lang.String"/>
+	<field name="cant_egreso" class="java.lang.Integer"/>
+	<field name="costo_egreso" class="java.math.BigDecimal"/>
+	<field name="total_egreso" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="52" splitType="Stretch">
+			<staticText>
+				<reportElement key="staticText" x="242" y="12" width="270" height="18" forecolor="#000000" backcolor="#FFFFFF" uuid="40dec067-d6c9-4474-b3b3-6e7042f472f1"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="11" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[BODEGA MUNICIPAL DE RUMIÑAHUI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" x="242" y="28" width="270" height="16" forecolor="#000000" backcolor="#FFFFFF" uuid="266277a6-7db2-4530-ae7a-43ce54586bc7"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[DETALLE DE EGRESOS]]></text>
+			</staticText>
+			<line>
+				<reportElement key="line" x="0" y="46" width="802" height="1" uuid="7a7da209-89d6-45e8-8dcb-321257396032"/>
+			</line>
+			<image isUsingCache="true" evaluationTime="Report">
+				<reportElement key="image-1" x="16" y="4" width="100" height="38" uuid="42874616-7ff1-4291-a479-e6f198c99053"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<imageExpression><![CDATA["../../imagenes/logo.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="18" splitType="Stretch">
+			<staticText>
+				<reportElement x="1" y="4" width="35" height="14" uuid="223931a3-9e25-4e37-b361-236acca2effe"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NUMERO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="35" y="4" width="35" height="14" uuid="615c3fde-6c3f-4cac-ba94-11f8f24d62ca"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="634" y="4" width="50" height="14" uuid="791f8806-1a05-4756-ba17-b587cb38fda9"/>
+				<textElement textAlignment="Center">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CANTIDAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="743" y="4" width="59" height="14" uuid="7a43e054-6fb4-4ebd-a7b4-3071fb36c649"/>
+				<textElement textAlignment="Center">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="490" y="4" width="50" height="14" uuid="435016bd-ab9b-47df-8b84-f28ca1591368"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CODIGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="540" y="4" width="95" height="14" uuid="36a763f2-4363-40d1-9c1a-002815375f34"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MATERIAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="70" y="4" width="90" height="14" uuid="95e248f9-1d4b-4725-b42e-ac124a620e1f"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SOLICITA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="684" y="4" width="59" height="14" uuid="e6d7c745-247c-486c-a3f2-8763fc2b40c3"/>
+				<textElement textAlignment="Center">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COSTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="160" y="3" width="90" height="14" uuid="b7177b4f-e867-4322-bd49-3b346d073dc0"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RECIBE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="250" y="3" width="90" height="14" uuid="9894a56c-1eba-4736-822d-1fd8e60c4ea0"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[USO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="350" y="3" width="90" height="14" uuid="eaffab19-08e0-46a5-a454-183f46aa1ea4"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DESTINO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="440" y="4" width="50" height="14" uuid="7ab8285e-f73a-450b-9f75-2a312c9ee8cc"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DOC. EGRESO]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="35" height="15" uuid="9d9898f6-d7fb-480b-84e6-70e5100258be"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numero_egreso}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="490" y="0" width="50" height="15" uuid="2a21d3bc-ad02-43ab-a10b-00bc1d49479f"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cod_material}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="540" y="0" width="95" height="15" uuid="461adeeb-d702-4567-b2b1-c887af006beb"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{des_material}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="70" y="0" width="90" height="15" uuid="028f8f26-c442-421d-937c-c36a26d60b97"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{solicita}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="35" y="0" width="35" height="15" uuid="9c458d27-96e4-4f0e-a356-a01ffe4709dc"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fec_egreso}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="634" y="0" width="50" height="15" uuid="7608ab81-0eb7-47eb-88ef-bd683dd6dd2d"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cant_egreso}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="684" y="0" width="59" height="15" uuid="298ec509-3ee1-45b5-8921-a862ebd9dbf2"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{costo_egreso}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="743" y="0" width="60" height="15" uuid="2f7e442e-a999-43b7-b19b-5b33c45cbe10"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_egreso}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="160" y="0" width="90" height="15" uuid="ed837b72-4088-4643-bdd6-f990d4884a73"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{recibe}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="250" y="0" width="90" height="15" uuid="cdf14317-2d82-4de7-901a-2ea0b3c2a693"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{uso}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="350" y="0" width="90" height="15" uuid="0114327b-3ad4-4cf2-9f70-8448effab8f7"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{destino}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="440" y="0" width="50" height="15" uuid="eab04dcb-584d-40a6-9e07-8db130ec9113"/>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{doc_egreso}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField" x="585" y="11" width="170" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="b0f8fe01-fae7-4c7b-b02e-d805a503ae02"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
+				<reportElement key="textField" x="759" y="11" width="36" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="a3651152-c936-41d2-bf87-acbda64d0c98"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement key="line" x="0" y="10" width="802" height="1" uuid="1b845d58-f790-461b-9568-8b389eb72865"/>
+			</line>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField" x="7" y="11" width="209" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="9dd12ec3-975b-4e45-a624-c4a075d5f4c1"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
