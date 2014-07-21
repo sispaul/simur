@@ -11,7 +11,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.ejb.EJB;
 import paq_nomina.ejb.decimoCuarto;
-import static paq_nomina.pre_anticipos_gadmur.calcularMes;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
@@ -21,7 +20,6 @@ import persistencia.Conexion;
  */
 public class pre_decimo_cuarto extends Pantalla{
 
-    
     //Conexion a base
     private Conexion con_postgres= new Conexion();
     
@@ -30,7 +28,6 @@ public class pre_decimo_cuarto extends Pantalla{
     private Tabla tab_consulta = new Tabla();
     
     //
-    
     @EJB
     private decimoCuarto Dcuarto = (decimoCuarto) utilitario.instanciarEJB(decimoCuarto.class);
     
@@ -93,24 +90,39 @@ public class pre_decimo_cuarto extends Pantalla{
     }
     
     public void decimo_4to(){
-        
-        
-        System.out.println("holas1");
-        if(tab_decimo.getValor("cod_tipo").equals("4") || tab_decimo.getValor("cod_tipo").equals("7") ){
-            System.err.println("holas1");
-             Dcuarto.decimo_cod();
-             tab_decimo.actualizar();
-             utilitario.agregarMensaje("Valores Calculados con Exito", ":)");
-        }else{
-            System.out.println("holas");
-             Integer anos=0, dias=0,meses=0,anio_a=0;
-             anio_a= utilitario.getAnio(utilitario.getFechaActual());
-             
-             calcularMes(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(anio_a,7,30));
-             
-        }
-        
-        
+       for (int i = 0; i < tab_decimo.getTotalFilas(); i++) {
+           tab_decimo.getValor(i, "fecha_ingreso");
+           tab_decimo.getValor(i, "ide_decimo_cuarto");
+           tab_decimo.getValor(i, "cod_tipo");
+           tab_decimo.getValor(i, "cedula");
+                       if(tab_decimo.getValor(i, "cod_tipo").equals("4") ||tab_decimo.getValor(i, "cod_tipo").equals("7")){
+                           Dcuarto.decimo_nom(tab_decimo.getValor(i, "cedula"),Integer.parseInt(tab_decimo.getValor(i, "ide_decimo_cuarto")),Integer.parseInt(tab_decimo.getValor(i, "cod_tipo")), Integer.parseInt(tab_decimo.getValor(i, "cod_tipo")));
+                           tab_decimo.actualizar();
+                 }else{
+                       Integer anos=0,meses=0,dias=0;
+                       anos=utilitario.getAnio(tab_decimo.getValor(i, "fecha_ingreso"));
+                       meses=utilitario.getMes(tab_decimo.getValor(i, "fecha_ingreso"));
+                       dias=utilitario.getDia(tab_decimo.getValor(i, "fecha_ingreso"));
+                       
+                                    tab_decimo.getValor(i, "fecha_ingreso");
+                                    tab_decimo.getValor(i, "ide_decimo_cuarto");
+                                    tab_decimo.getValor(i, "cod_tipo");
+                                    tab_decimo.getValor(i, "cedula");
+                        if(calcularAnios(new GregorianCalendar(anos,meses,dias))>=1){
+                             Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble("340"),Integer.parseInt(tab_decimo.getValor(i, "ide_decimo_cuarto")),Integer.parseInt(tab_decimo.getValor(i, "cod_tipo")), Integer.parseInt(tab_decimo.getValor(i, "cod_tipo")));
+                           }else {
+                                    Integer totdia=0;
+                                    double valor=0;
+                                        if(calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31))>=360){
+                                            Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble("340"),Integer.parseInt(tab_decimo.getValor(i, "ide_decimo_cuarto")),Integer.parseInt(tab_decimo.getValor(i, "cod_tipo")), Integer.parseInt(tab_decimo.getValor(i, "cod_tipo")));
+                                        }else if (calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31))<360){
+                                                totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
+                                                Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)),Integer.parseInt(tab_decimo.getValor(i, "ide_decimo_cuarto")),Integer.parseInt(tab_decimo.getValor(i, "cod_tipo")), Integer.parseInt(tab_decimo.getValor(i, "cod_tipo")));
+                                        }
+                            }
+                       } 
+       }
+        tab_decimo.actualizar();
     }
     
     public void verificar(){
@@ -151,6 +163,21 @@ public class pre_decimo_cuarto extends Pantalla{
      //long diffMounth = diffWeek / 4 ; // calcular la diferencia en meses
 
      return Integer.parseInt(String.valueOf(diffDays));
+    }
+    
+    //CALCULAR ANIOS
+    public static int calcularAnios(Calendar AnioLab) {
+    Calendar fechaActual = Calendar.getInstance();
+    // Cálculo de las diferencias.
+    int anios = fechaActual.get(Calendar.YEAR) - AnioLab.get(Calendar.YEAR);
+    int meses = fechaActual.get(Calendar.MONTH) - AnioLab.get(Calendar.MONTH);
+    int dias = fechaActual.get(Calendar.DAY_OF_MONTH) - AnioLab.get(Calendar.DAY_OF_MONTH);
+  
+    if(meses < 0 // Aún no es el mes 
+       || (meses==0 && dias < 0)) { // o es el mes pero no ha llegado el día.
+        anios--;
+    }
+    return anios;
     }
     
     public Tabla getTab_decimo() {

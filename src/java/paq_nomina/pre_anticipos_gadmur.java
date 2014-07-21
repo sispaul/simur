@@ -25,8 +25,6 @@ import java.util.Map;
 import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
 import paq_nomina.ejb.anticipos;
-import static paq_nomina.pre_solicitud_anticipos.calcularAnios;
-import static paq_nomina.pre_solicitud_anticipos.calcularMes;
 import paq_sistema.aplicacion.Pantalla;
 import paq_transportes.ejb.servicioPlaca;
 import persistencia.Conexion;
