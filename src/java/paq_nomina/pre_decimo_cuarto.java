@@ -111,12 +111,12 @@ public class pre_decimo_cuarto extends Pantalla{
                         if(calcularAnios(new GregorianCalendar(anos,meses,dias))>=1){
                              Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble("340"),Integer.parseInt(tab_decimo.getValor(i, "ide_decimo_cuarto")),Integer.parseInt(tab_decimo.getValor(i, "cod_tipo")), Integer.parseInt(tab_decimo.getValor(i, "cod_tipo")));
                            }else {
-                                    Integer totdia=0;
-                                    double valor=0;
+                                    double valor=0,totdia=0;
                                         if(calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31))>=360){
                                             Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble("340"),Integer.parseInt(tab_decimo.getValor(i, "ide_decimo_cuarto")),Integer.parseInt(tab_decimo.getValor(i, "cod_tipo")), Integer.parseInt(tab_decimo.getValor(i, "cod_tipo")));
                                         }else if (calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31))<360){
                                                 totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
+                                                valor= (totdia*340)/360;
                                                 Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)),Integer.parseInt(tab_decimo.getValor(i, "ide_decimo_cuarto")),Integer.parseInt(tab_decimo.getValor(i, "cod_tipo")), Integer.parseInt(tab_decimo.getValor(i, "cod_tipo")));
                                         }
                             }
