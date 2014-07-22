@@ -108,6 +108,7 @@ public class pre_decimo_cuarto extends Pantalla{
                     }
        }
         tab_decimo.actualizar();
+        newColum();
     }    
     
     public void migrar(){ 
@@ -126,6 +127,13 @@ public class pre_decimo_cuarto extends Pantalla{
     public void borrar(){
         Dcuarto.borrarDecimo();
         tab_decimo.actualizar();
+    }
+    
+    public void newColum(){
+        Dcuarto.InsertEm();
+        System.err.println("Empleado");
+        Dcuarto.InsertTra();
+        System.out.println("Trabajador");
     }
     
     @Override

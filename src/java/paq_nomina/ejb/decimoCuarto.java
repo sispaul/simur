@@ -35,6 +35,30 @@ public class decimoCuarto {
         
     }
 
+    public void InsertEm(){
+
+        String nomina ="insert into srh_roles (ide_empleado,ano,ide_periodo,ide_columnas,valor,fecha_responsable,cod_cargo_rol,ide_programa,id_distributivo_roles)\n" +
+                        "select ide_empleado,ano,ide_periodo,125 as  ide_columnas,0.00 as valor, current_date as fecha_responsable,cod_cargo_rol,ide_programa,id_distributivo_roles\n" +
+                        "from srh_roles where ano=2013 and ide_periodo=7  and id_distributivo_roles=1  \n" +
+                        "and ide_columnas=14";
+        conectar();
+        con_postgres.ejecutarSql(nomina);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+    
+    public void InsertTra(){
+
+        String nomina ="insert into srh_roles (ide_empleado,ano,ide_periodo,ide_columnas,valor,fecha_responsable,cod_cargo_rol,ide_programa,id_distributivo_roles)\n" +
+                        "select ide_empleado,ano,ide_periodo,125 as ide_columnas,0.0 as valor,now() as fecha_responsable,\n" +
+                        "cod_cargo_rol,ide_programa,id_distributivo_roles\n" +
+                        "from srh_roles where ano=2013 and ide_periodo=7 and ide_columnas=40 and id_distributivo_roles";
+        conectar();
+        con_postgres.ejecutarSql(nomina);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+    
     public void verificar(String iden){
         String decimo="update srh_decimo_cuarto\n" +
                         "set fecha_ingreso = (SELECT fecha_contrato FROM srh_num_contratos\n" +
@@ -78,7 +102,7 @@ public class decimoCuarto {
                             "nom_responsable='"+nombre+"',\n" +
                             "fecha_responsable='"+utilitario.getFechaActual()+"'\n" +
                             "WHERE SRH_ROLES.ANO="+utilitario.getAnio(utilitario.getFechaActual())+" AND \n" +
-                            "SRH_ROLES.IDE_PERIODO="+(utilitario.getMes(utilitario.getFechaActual())-1)+" AND \n" +
+                            "SRH_ROLES.IDE_PERIODO="+utilitario.getMes(utilitario.getFechaActual())+" AND \n" +
                             "SRH_ROLES.ID_DISTRIBUTIVO_ROLES="+id_distributivo_rol+" AND \n" +
                             "SRH_ROLES.IDE_COLUMNAS="+ide_columna+" and \n" +
                             "srh_roles.ide_empleado ="+ide_emple;
