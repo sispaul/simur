@@ -26,7 +26,6 @@ public class pre_decimo_cuarto extends Pantalla{
     //dibujar tablas
     private Tabla tab_decimo = new Tabla();
     private Tabla tab_consulta = new Tabla();
-    
     //
     @EJB
     private decimoCuarto Dcuarto = (decimoCuarto) utilitario.instanciarEJB(decimoCuarto.class);
@@ -60,21 +59,15 @@ public class pre_decimo_cuarto extends Pantalla{
         bar_botones.agregarBoton(bot1);
         
         Boton bot2 = new Boton();
-        bot2.setValue("Calculo Decimo 4to");
+        bot2.setValue("CALCULO DECIMO 4to");
         bot2.setIcon("ui-icon-extlink"); //pone icono de jquery temeroller
-        bot2.setMetodo("decimo_4to");
+        bot2.setMetodo("decimo_4to_Nom");
         bar_botones.agregarBoton(bot2);
-        
-        Boton bot3 = new Boton();
-        bot3.setValue("DEPURAR DESCUENTO");
-        bot3.setIcon("ui-icon-document"); //pone icono de jquery temeroller
-        bot3.setMetodo("verificar");
-        bar_botones.agregarBoton(bot3); 
      
         Boton bot4 = new Boton();
         bot4.setValue("MIGRAR DESCUENTO");
         bot4.setIcon("ui-icon-document"); //pone icono de jquery temeroller
-        bot4.setMetodo("abrirDialogo");
+        bot4.setMetodo("migrar");
         bar_botones.agregarBoton(bot4); 
        
         Boton bot5 = new Boton();
@@ -87,54 +80,52 @@ public class pre_decimo_cuarto extends Pantalla{
     public void completa(){
         Dcuarto.Nomina();
         tab_decimo.actualizar();
+        completar_nomina();
     }
     
-    public void decimo_4to(){
+    public void completar_nomina(){
+        for (int i = 0; i < tab_decimo.getTotalFilas(); i++) {
+            Dcuarto.verificar(tab_decimo.getValor(i, "cedula"));
+        }
+      tab_decimo.actualizar();
+    }
+    
+    public void decimo_4to_Nom(){
        for (int i = 0; i < tab_decimo.getTotalFilas(); i++) {
            tab_decimo.getValor(i, "fecha_ingreso");
-           tab_decimo.getValor(i, "ide_decimo_cuarto");
-           tab_decimo.getValor(i, "cod_tipo");
            tab_decimo.getValor(i, "cedula");
-                       if(tab_decimo.getValor(i, "cod_tipo").equals("4") ||tab_decimo.getValor(i, "cod_tipo").equals("7")){
-                           Dcuarto.decimo_nom(tab_decimo.getValor(i, "cedula"),Integer.parseInt(tab_decimo.getValor(i, "ide_decimo_cuarto")),Integer.parseInt(tab_decimo.getValor(i, "cod_tipo")), Integer.parseInt(tab_decimo.getValor(i, "cod_tipo")));
-                           tab_decimo.actualizar();
-                 }else{
-                       Integer anos=0,meses=0,dias=0;
-                       anos=utilitario.getAnio(tab_decimo.getValor(i, "fecha_ingreso"));
-                       meses=utilitario.getMes(tab_decimo.getValor(i, "fecha_ingreso"));
-                       dias=utilitario.getDia(tab_decimo.getValor(i, "fecha_ingreso"));
-                       
-                                    tab_decimo.getValor(i, "fecha_ingreso");
-                                    tab_decimo.getValor(i, "ide_decimo_cuarto");
-                                    tab_decimo.getValor(i, "cod_tipo");
-                                    tab_decimo.getValor(i, "cedula");
-                        if(calcularAnios(new GregorianCalendar(anos,meses,dias))>=1){
-                             Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble("340"),Integer.parseInt(tab_decimo.getValor(i, "ide_decimo_cuarto")),Integer.parseInt(tab_decimo.getValor(i, "cod_tipo")), Integer.parseInt(tab_decimo.getValor(i, "cod_tipo")));
-                           }else {
-                                    double valor=0,totdia=0;
-                                        if(calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31))>=360){
-                                            Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble("340"),Integer.parseInt(tab_decimo.getValor(i, "ide_decimo_cuarto")),Integer.parseInt(tab_decimo.getValor(i, "cod_tipo")), Integer.parseInt(tab_decimo.getValor(i, "cod_tipo")));
-                                        }else if (calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31))<360){
-                                                totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
-                                                valor= (totdia*340)/360;
-                                                Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)),Integer.parseInt(tab_decimo.getValor(i, "ide_decimo_cuarto")),Integer.parseInt(tab_decimo.getValor(i, "cod_tipo")), Integer.parseInt(tab_decimo.getValor(i, "cod_tipo")));
-                                        }
-                            }
-                       } 
+              Integer anos=0,meses=0,dias=0;
+                anos=utilitario.getAnio(tab_decimo.getValor(i, "fecha_ingreso"));
+                meses=utilitario.getMes(tab_decimo.getValor(i, "fecha_ingreso"));
+                dias=utilitario.getDia(tab_decimo.getValor(i, "fecha_ingreso"));
+           if(calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31))>=360){
+                     Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble("340"));
+                }else{
+                    double valor=0,totdia=0;
+                    totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
+                    valor= (totdia*340)/360;
+                    Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)));
+                    }
        }
         tab_decimo.actualizar();
-    }
+    }    
     
-    public void verificar(){
-        
-    }
-    
-    public void abrirDialogo(){
-        
+    public void migrar(){ 
+
+        for (int i = 0; i < tab_decimo.getTotalFilas(); i++) {
+            tab_decimo.getValor(i, "ide_empleado");
+            tab_decimo.getValor(i, "ide_columna");
+            tab_decimo.getValor(i, "id_distributivo_roles");
+            tab_decimo.getValor(i, "valor_decimo");
+            Dcuarto.migrarDescuento(Integer.parseInt(tab_decimo.getValor(i, "id_distributivo_roles")), Integer.parseInt(tab_decimo.getValor(i, "ide_columna")), 
+                    tab_consulta.getValor("NICK_USUA")+"", Double.parseDouble(tab_decimo.getValor(i, "valor_decimo")), Integer.parseInt(tab_decimo.getValor(i, "ide_empleado")));
+        }
+        utilitario.agregarMensaje("Decimo 4to Sueldo", "Subido Con Exito");
     }
       
     public void borrar(){
-        
+        Dcuarto.borrarDecimo();
+        tab_decimo.actualizar();
     }
     
     @Override
@@ -143,6 +134,8 @@ public class pre_decimo_cuarto extends Pantalla{
 
     @Override
     public void guardar() {
+        tab_decimo.guardar();
+            con_postgres.guardarPantalla();
     }
 
     @Override

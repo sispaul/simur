@@ -24,8 +24,8 @@ public class decimoCuarto {
     //Forma la nomina e insercion en la tabla srh_decimo_cuarto
     public void Nomina(){
 
-        String nomina ="insert into srh_decimo_cuarto (id_distributivo_roles,ano,ide_columna,ide_periodo,cod_tipo,fecha_ingreso,cedula,nombres)\n" +
-                        "select id_distributivo,anio,columna,mes,cod_tipo,fecha_contrato,cedula_pass,nombres \n" +
+        String nomina ="insert into srh_decimo_cuarto (id_distributivo_roles,ano,ide_columna,ide_periodo,cod_tipo,cedula,nombres,ide_empleado)\n" +
+                        "select id_distributivo,anio,columna,mes,cod_tipo,cedula_pass,nombres,cod_empleado\n" +
                         "from nomv_decimo_cuarto\n" +
                         "order by id_distributivo, nombres";
         conectar();
@@ -34,24 +34,59 @@ public class decimoCuarto {
         con_postgres = null;
         
     }
-    
-    public void decimo_nom(String iden,Integer ide,Integer tipo1, Integer tipo2){
-        String decimo="update srh_decimo_cuarto \n" +
-                       "set valor_decimo = 340 where cedula like '"+iden+"' and ide_decimo_cuarto ="+ide+" and (cod_tipo = "+tipo1+" or cod_tipo ="+tipo2+")";
+
+    public void verificar(String iden){
+        String decimo="update srh_decimo_cuarto\n" +
+                        "set fecha_ingreso = (SELECT fecha_contrato FROM srh_num_contratos\n" +
+                        "where cod_empleado = (SELECT cod_empleado FROM srh_empleado where cedula_pass like '"+iden+"')\n" +
+                        "order by fecha_contrato desc LIMIT 1)\n" +
+                        "where cedula like '"+iden+"'";
         conectar();
         con_postgres.ejecutarSql(decimo);
         con_postgres.desconectar();
         con_postgres = null;
     }
     
-    public void decimo_cont(String iden,Double valor,Integer ide,Integer tipo1, Integer tipo2){
+    public void decimo_cont(String iden,Double valor){
         String decimo="update srh_decimo_cuarto \n" +
-                       "set valor_decimo = "+valor+" where cedula like '"+iden+"' and ide_decimo_cuarto ="+ide+" and (cod_tipo = "+tipo1+" or cod_tipo ="+tipo2+")";
+                       "set valor_decimo = "+valor+" where cedula like '"+iden+"'";
         conectar();
         con_postgres.ejecutarSql(decimo);
         con_postgres.desconectar();
         con_postgres = null;
     }
+    
+    public void borrarDecimo() 
+                {
+        // Forma el sql para el ingreso
+    
+        String str_sql3 = "DELETE FROM srh_decimo_cuarto";
+        conectar();
+        con_postgres.ejecutarSql(str_sql3);
+        con_postgres.desconectar();
+        con_postgres = null;
+     }
+     
+     public void migrarDescuento(Integer id_distributivo_rol,Integer ide_columna,String nombre,Double valor,Integer ide_emple) 
+                {
+        // Forma el sql para el ingreso
+    
+        String str_sql4 = "update SRH_ROLES \n" +
+                            "set valor_ingreso= "+valor+", \n" +
+                            "valor="+valor+",\n" +
+                            "ip_responsable='"+utilitario.getIp()+"',\n" +
+                            "nom_responsable='"+nombre+"',\n" +
+                            "fecha_responsable='"+utilitario.getFechaActual()+"'\n" +
+                            "WHERE SRH_ROLES.ANO="+utilitario.getAnio(utilitario.getFechaActual())+" AND \n" +
+                            "SRH_ROLES.IDE_PERIODO="+(utilitario.getMes(utilitario.getFechaActual())-1)+" AND \n" +
+                            "SRH_ROLES.ID_DISTRIBUTIVO_ROLES="+id_distributivo_rol+" AND \n" +
+                            "SRH_ROLES.IDE_COLUMNAS="+ide_columna+" and \n" +
+                            "srh_roles.ide_empleado ="+ide_emple;
+        conectar();
+        con_postgres.ejecutarSql(str_sql4);
+        con_postgres.desconectar();
+        con_postgres = null;
+     }
     
     private void conectar() {
         if (con_postgres == null) {
