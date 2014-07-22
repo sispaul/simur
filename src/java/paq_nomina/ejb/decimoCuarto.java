@@ -39,7 +39,7 @@ public class decimoCuarto {
 
         String nomina ="insert into srh_roles (ide_empleado,ano,ide_periodo,ide_columnas,valor,fecha_responsable,cod_cargo_rol,ide_programa,id_distributivo_roles)\n" +
                         "select ide_empleado,ano,ide_periodo,125 as  ide_columnas,0.00 as valor, current_date as fecha_responsable,cod_cargo_rol,ide_programa,id_distributivo_roles\n" +
-                        "from srh_roles where ano=2013 and ide_periodo=7  and id_distributivo_roles=1  \n" +
+                        "from srh_roles where ano=2013 and ide_periodo=6  and id_distributivo_roles=1  \n" +
                         "and ide_columnas=14";
         conectar();
         con_postgres.ejecutarSql(nomina);
@@ -52,7 +52,7 @@ public class decimoCuarto {
         String nomina ="insert into srh_roles (ide_empleado,ano,ide_periodo,ide_columnas,valor,fecha_responsable,cod_cargo_rol,ide_programa,id_distributivo_roles)\n" +
                         "select ide_empleado,ano,ide_periodo,125 as ide_columnas,0.0 as valor,now() as fecha_responsable,\n" +
                         "cod_cargo_rol,ide_programa,id_distributivo_roles\n" +
-                        "from srh_roles where ano=2013 and ide_periodo=7 and ide_columnas=40 and id_distributivo_roles";
+                        "from srh_roles where ano=2013 and ide_periodo=6 and ide_columnas=40 and id_distributivo_roles=2";
         conectar();
         con_postgres.ejecutarSql(nomina);
         con_postgres.desconectar();
@@ -91,10 +91,8 @@ public class decimoCuarto {
         con_postgres = null;
      }
      
-     public void migrarDescuento(Integer id_distributivo_rol,Integer ide_columna,String nombre,Double valor,Integer ide_emple) 
-                {
+     public void migrarDescuento(Integer id_distributivo_rol,Integer ide_columna,String nombre,Double valor,Integer ide_emple){
         // Forma el sql para el ingreso
-    
         String str_sql4 = "update SRH_ROLES \n" +
                             "set valor_ingreso= "+valor+", \n" +
                             "valor="+valor+",\n" +
