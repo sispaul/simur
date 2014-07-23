@@ -5,6 +5,7 @@
 package paq_nomina.ejb;
 
 
+import framework.aplicacion.TablaGenerica;
 import javax.ejb.Stateless;
 import paq_sistema.aplicacion.Utilitario;
 import persistencia.Conexion;
@@ -38,10 +39,8 @@ public class decimoCuarto {
     public void InsertEm(){
 
         String nomina ="insert into srh_roles (ide_empleado,ano,ide_periodo,ide_columnas,valor,fecha_responsable,cod_cargo_rol,ide_programa,id_distributivo_roles)\n" +
-                        "select ide_empleado,ano,ide_periodo,125 as  ide_columnas,0.00 as valor, current_date as fecha_responsable,"
-                        + "cod_cargo_rol,ide_programa,id_distributivo_roles\n" +
-                        "from srh_roles where ano=2013 and ide_periodo=6  and id_distributivo_roles=1  \n" +
-                        "and ide_columnas=14";
+                        "select ide_empleado,ano,ide_periodo,125 as  ide_columnas,0.00 as valor, current_date as fecha_responsable,cod_cargo_rol,ide_programa,id_distributivo_roles\n" +
+                        "from srh_roles where ano="+utilitario.getAnio(utilitario.getFechaActual())+" and ide_periodo=6 and id_distributivo_roles=1 and ide_columnas=14";
         conectar();
         con_postgres.ejecutarSql(nomina);
         con_postgres.desconectar();
@@ -51,9 +50,8 @@ public class decimoCuarto {
     public void InsertTra(){
 
         String nomina ="insert into srh_roles (ide_empleado,ano,ide_periodo,ide_columnas,valor,fecha_responsable,cod_cargo_rol,ide_programa,id_distributivo_roles)\n" +
-                        "select ide_empleado,ano,ide_periodo,125 as ide_columnas,0.0 as valor,current_date as fecha_responsable,\n" +
-                        "cod_cargo_rol,ide_programa,id_distributivo_roles\n" +
-                        "from srh_roles where ano=2013 and ide_periodo=6 and ide_columnas=40 and id_distributivo_roles=2";
+                        "select ide_empleado,ano,ide_periodo,125 as ide_columnas,0.0 as valor,current_date as fecha_responsable,cod_cargo_rol,ide_programa,id_distributivo_roles\n" +
+                        "from srh_roles where ano="+utilitario.getAnio(utilitario.getFechaActual())+" and ide_periodo=6 and ide_columnas=40 and id_distributivo_roles=2";
         conectar();
         con_postgres.ejecutarSql(nomina);
         con_postgres.desconectar();
@@ -99,9 +97,9 @@ public class decimoCuarto {
                             "valor="+valor+",\n" +
                             "ip_responsable='"+utilitario.getIp()+"',\n" +
                             "nom_responsable='"+nombre+"',\n" +
+                            "ide_periodo="+utilitario.getMes(utilitario.getFechaActual())+",\n" +
                             "fecha_responsable='"+utilitario.getFechaActual()+"'\n" +
                             "WHERE SRH_ROLES.ANO="+utilitario.getAnio(utilitario.getFechaActual())+" AND \n" +
-                            "SRH_ROLES.IDE_PERIODO="+utilitario.getMes(utilitario.getFechaActual())+" AND \n" +
                             "SRH_ROLES.ID_DISTRIBUTIVO_ROLES="+id_distributivo_rol+" AND \n" +
                             "SRH_ROLES.IDE_COLUMNAS="+ide_columna+" and \n" +
                             "srh_roles.ide_empleado ="+ide_emple;
@@ -111,6 +109,45 @@ public class decimoCuarto {
         con_postgres = null;
      }
     
+     public TablaGenerica periodo(Integer periodo){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT ide_periodo,per_descripcion FROM cont_periodo_actual where ide_periodo="+periodo );
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+ 
+ public TablaGenerica distibutivo(Integer distri){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT id_distributivo,descripcion FROM srh_tdistributivo where id_distributivo="+distri);
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+ 
+ public TablaGenerica columnas(Integer colum){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT ide_col,descripcion_col FROM SRH_COLUMNAS WHERE ide_col="+colum );
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+     
     private void conectar() {
         if (con_postgres == null) {
             con_postgres = new Conexion();
