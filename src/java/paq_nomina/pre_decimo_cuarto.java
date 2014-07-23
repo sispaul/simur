@@ -236,34 +236,33 @@ public class pre_decimo_cuarto extends Pantalla{
     public void aceptoDecimo4To(){
         switch (rep_reporte.getNombre()) {
                case "REPORTE DE DECIMO 4to":
-
-                             TablaGenerica tab_dato = Dcuarto.distibutivo(Integer.parseInt(cmb_descripcion.getValue()+""));
-                              if (!tab_dato.isEmpty()) {
-                                                                   TablaGenerica tab_dato2 = Dcuarto.columnas(Integer.parseInt("125"));
+                    TablaGenerica tab_dato = Dcuarto.distibutivo(Integer.parseInt(cmb_descripcion.getValue()+""));
+                        if (!tab_dato.isEmpty()) {
+                            TablaGenerica tab_dato2 = Dcuarto.columnas(Integer.parseInt("125"));
                                  if (!tab_dato2.isEmpty()) {
-                                                             TablaGenerica tab_dato3 = Dcuarto.periodo(Integer.parseInt(utilitario.getMes(utilitario.getFechaActual())+""));
-                         if (!tab_dato3.isEmpty()) {
-                                    p_parametros = new HashMap();
-                                    p_parametros.put("pide_ano",Integer.parseInt(cmb_anio.getValue()+""));
-                                    p_parametros.put("distributivo",Integer.parseInt(cmb_descripcion.getValue()+""));
-                                    p_parametros.put("descripcion",tab_dato.getValor("descripcion")+"");
-                                    p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
-                                    p_parametros.put("columnas", Integer.parseInt("125"));
-                                    p_parametros.put("periodo",Integer.parseInt(utilitario.getMes(utilitario.getFechaActual())+""));
-                                    p_parametros.put("descrip",tab_dato2.getValor("descripcion_col")+"");
-                                    p_parametros.put("p_nombre",tab_dato3.getValor("per_descripcion")+"");
-                                    rep_reporte.cerrar();
-                                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                                    sef_formato.dibujar();
-                                    } else {
+                                     TablaGenerica tab_dato3 = Dcuarto.periodo(Integer.parseInt(utilitario.getMes(utilitario.getFechaActual())+""));
+                                        if (!tab_dato3.isEmpty()) {
+                                            p_parametros = new HashMap();
+                                            p_parametros.put("pide_ano",Integer.parseInt(cmb_anio.getValue()+""));
+                                            p_parametros.put("distributivo",Integer.parseInt(cmb_descripcion.getValue()+""));
+                                            p_parametros.put("descripcion",tab_dato.getValor("descripcion")+"");
+                                            p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
+                                            p_parametros.put("columnas", Integer.parseInt("125"));
+                                            p_parametros.put("periodo",Integer.parseInt(utilitario.getMes(utilitario.getFechaActual())+""));
+                                            p_parametros.put("descrip",tab_dato2.getValor("descripcion_col")+"");
+                                            p_parametros.put("p_nombre",tab_dato3.getValor("per_descripcion")+"");
+                                            rep_reporte.cerrar();
+                                            sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                                            sef_formato.dibujar();
+                                        } else {
+                                                utilitario.agregarMensajeInfo("no existe en la base de datos", "");
+                                                }
+                                  } else {
                                         utilitario.agregarMensajeInfo("no existe en la base de datos", "");
                                         }
-                                                                     } else {
-                                        utilitario.agregarMensajeInfo("no existe en la base de datos", "");
-                                        }
-                                                                                                      } else {
-                                        utilitario.agregarMensajeInfo("no existe en la base de datos", "");
-                                        }
+                          } else {
+                                  utilitario.agregarMensajeInfo("no existe en la base de datos", "");
+                                  }
                break;
         }
     }
