@@ -351,7 +351,7 @@ public class pre_anticipos_gadmur extends Pantalla{
                     utilitario.agregarMensajeInfo("Ingresar Plazo de Cobro", "");
 
             }else{
-                utilitario.agregarMensajeInfo("El Monto Excede Remuneracion", "Liquida Percibida");
+                utilitario.agregarMensajeInfo("El Monto Excede Remuneracion", "");
                         tab_anticipo.setValor("valor_cuota_mensual", "NULL");
                         tab_anticipo.setValor("numero_cuotas_anticipo", "NULL");
                         tab_anticipo.setValor("valor_cuota_adicional", "NULL");
@@ -369,7 +369,6 @@ public class pre_anticipos_gadmur extends Pantalla{
     public void servidor(){
         
         Integer anos=0, dias=0,meses=0,mesesf=0,aniosf=0,diasf=0,meses_a=0,anios_a=0,dias_a=0;
-        
         TablaGenerica tab_dato = iAnticipos.empleado(tab_anticipo.getValor("ci_solicitante"));
         if (!tab_dato.isEmpty()) {
             anios_a = utilitario.getAnio(utilitario.getFechaActual());
@@ -1018,7 +1017,6 @@ public class pre_anticipos_gadmur extends Pantalla{
         rmu =Double.parseDouble(tab_anticipo.getValor("rmu"));
         valan= Double.parseDouble(tab_anticipo.getValor("valor_anticipo"));
         media = Double.parseDouble(tab_anticipo.getValor("rmu_liquido_anterior"))/2;
-        
         TablaGenerica tab_dato = iAnticipos.periodos1(Integer.parseInt(tab_anticipo.getValor("ide_periodo_anticipo_inicial")));
         if (!tab_dato.isEmpty()) {
             rango = Integer.parseInt(tab_dato.getValor("periodo"))+Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"));
@@ -1028,22 +1026,27 @@ public class pre_anticipos_gadmur extends Pantalla{
                 if(valora>=Double.parseDouble(tab_anticipo.getValor("valor_anticipo"))){
                         valorff= ((valan*80)/100);
                         valorm = (valan-valorff)/(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))-1);
-                        
-                        if(media > (Math.rint(valorm*100)/100)){
+                        System.err.println((Math.rint(valorm*100)/100));
+                        if(media>=(Math.rint(valorm*100)/100)){
                             tab_anticipo.setValor("valor_cuota_adicional", String.valueOf(valorff));
                             tab_anticipo.setValor("valor_cuota_mensual", String.valueOf(Math.rint(valorm*100)/100));
                             utilitario.addUpdate("tab_anticipo");
                             }else{
-                                    utilitario.agregarMensajeError("Cuota Mensual Excede 50% Sueldo Anterior", "");
+                                   tab_anticipo.setValor("valor_cuota_mensual", "NULL");
+                                   tab_anticipo.setValor("valor_cuota_adicional", "NULL");
+                                   utilitario.addUpdate("tab_anticipo");
+                                   utilitario.agregarMensajeError("Cuota Mensual Excede 50% Sueldo Anterior", "");
                                   }
                 }else{
                         valorm = (valan-valora)/(Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"))-1);
-                        
-                        if(media > (Math.rint(valorm*100)/100)){
+                        if(media>=(Math.rint(valorm*100)/100)){
                             tab_anticipo.setValor("valor_cuota_adicional", String.valueOf(valora));
                             tab_anticipo.setValor("valor_cuota_mensual", String.valueOf(Math.rint(valorm*100)/100));
                             utilitario.addUpdate("tab_anticipo");
                             }else{
+                                   tab_anticipo.setValor("valor_cuota_mensual", "NULL");
+                                   tab_anticipo.setValor("valor_cuota_adicional", "NULL");
+                                   utilitario.addUpdate("tab_anticipo");
                                    utilitario.agregarMensajeError("Cuota Mensual Excede 50% Sueldo Anterior", "");
                                 }
                 }
@@ -1051,11 +1054,14 @@ public class pre_anticipos_gadmur extends Pantalla{
             }else if(rango <= 12){
                     
                     valora1 = Double.parseDouble(tab_anticipo.getValor("valor_anticipo")) / Integer.parseInt(tab_anticipo.getValor("numero_cuotas_anticipo"));
-                    if( media > (Math.rint(valora1*100)/100)){
+                    if(media>=(Math.rint(valora1*100)/100)){
                         tab_anticipo.setValor("valor_cuota_adicional", "NULL");
                         tab_anticipo.setValor("valor_cuota_mensual", String.valueOf(Math.rint(valora1*100)/100));
                         utilitario.addUpdate("tab_anticipo");
                     }else{
+                                   tab_anticipo.setValor("valor_cuota_mensual", "NULL");
+                                   tab_anticipo.setValor("valor_cuota_adicional", "NULL");
+                                   utilitario.addUpdate("tab_anticipo");
                             utilitario.agregarMensajeError("Cuota Mensual Excede 50% Sueldo Anterior", "");
                     }
                 }

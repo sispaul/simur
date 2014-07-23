@@ -130,10 +130,19 @@ public class pre_decimo_cuarto extends Pantalla{
     }
     
     public void newColum(){
-        Dcuarto.InsertEm();
-        System.err.println("Empleado");
-        Dcuarto.InsertTra();
-        System.out.println("Trabajador");
+        
+        for (int i = 0; i < tab_decimo.getTotalFilas(); i++) {
+                   tab_decimo.getValor(i, "id_distributivo_roles");
+            if(tab_decimo.getValor(i, "id_distributivo_roles").equals("1")){
+                 Dcuarto.InsertEm();
+            }else{
+                 Dcuarto.InsertTra();
+            }
+        
+        }
+
+
+        
     }
     
     @Override
