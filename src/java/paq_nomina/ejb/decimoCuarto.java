@@ -38,7 +38,8 @@ public class decimoCuarto {
     public void InsertEm(){
 
         String nomina ="insert into srh_roles (ide_empleado,ano,ide_periodo,ide_columnas,valor,fecha_responsable,cod_cargo_rol,ide_programa,id_distributivo_roles)\n" +
-                        "select ide_empleado,ano,ide_periodo,125 as  ide_columnas,0.00 as valor, current_date as fecha_responsable,cod_cargo_rol,ide_programa,id_distributivo_roles\n" +
+                        "select ide_empleado,ano,ide_periodo,125 as  ide_columnas,0.00 as valor, current_date as fecha_responsable,"
+                        + "cod_cargo_rol,ide_programa,id_distributivo_roles\n" +
                         "from srh_roles where ano=2013 and ide_periodo=6  and id_distributivo_roles=1  \n" +
                         "and ide_columnas=14";
         conectar();
@@ -50,7 +51,7 @@ public class decimoCuarto {
     public void InsertTra(){
 
         String nomina ="insert into srh_roles (ide_empleado,ano,ide_periodo,ide_columnas,valor,fecha_responsable,cod_cargo_rol,ide_programa,id_distributivo_roles)\n" +
-                        "select ide_empleado,ano,ide_periodo,125 as ide_columnas,0.0 as valor,now() as fecha_responsable,\n" +
+                        "select ide_empleado,ano,ide_periodo,125 as ide_columnas,0.0 as valor,current_date as fecha_responsable,\n" +
                         "cod_cargo_rol,ide_programa,id_distributivo_roles\n" +
                         "from srh_roles where ano=2013 and ide_periodo=6 and ide_columnas=40 and id_distributivo_roles=2";
         conectar();
