@@ -124,6 +124,7 @@ public class pre_solicitud_anticipo extends Pantalla{
         tab_garante.setIdCompleto("tab_tabulador:tab_garante");
         tab_garante.setConexion(con_postgres);
         tab_garante.setTabla("srh_garante_anticipo", "ide_garante_anticipo", 2);
+        tab_garante.getColumna("ci_garante").setMetodoChange("llenarGarante");
         tab_garante.setTipoFormulario(true);
         tab_garante.getGrid().setColumns(4);
         tab_garante.dibujar();
@@ -188,13 +189,33 @@ public class pre_solicitud_anticipo extends Pantalla{
                     }  
     }
     
+
+    public void llenarGarante(){//GARANTE
+        TablaGenerica tab_dato = iAnticipos.VerifGaranteid(tab_anticipo.getValor("ci_garante"));
+       if (!tab_dato.isEmpty()) {
+            utilitario.agregarMensajeInfo("Garante No Disponible", "");
+       }else {
+                   if (utilitario.validarCedula(tab_anticipo.getValor("ci_garante"))) {
+                        TablaGenerica tab_dato1 = iAnticipos.Garantemple(tab_anticipo.getValor("ci_garante"));
+                           if (!tab_dato1.isEmpty()) {
+                                   tab_anticipo.setValor("garante", tab_dato1.getValor("nombres"));
+                                   tab_anticipo.setValor("ide_empleado_garante", tab_dato1.getValor("COD_EMPLEADO"));
+                                   utilitario.addUpdate("tab_anticipo");
+                                }else {
+                                      utilitario.agregarMensajeInfo("No existen Datos", "");
+                                      }    
+                    } else {
+                            utilitario.agregarMensajeError("El Número de Cédula no es válido", "");
+                            }
+              }
+    }
     
     @Override
     public void insertar() {
-        
-        tab_anticipo.insertar();
-        llenarDatosE();
-        tab_garante.insertar();
+         if (tab_anticipo.guardar()) {
+                llenarDatosE();
+                tab_garante.insertar(); 
+             }
     }
 
     @Override
