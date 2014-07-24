@@ -13,7 +13,6 @@ import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
-import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
