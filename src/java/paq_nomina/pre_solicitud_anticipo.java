@@ -187,22 +187,25 @@ public class pre_solicitud_anticipo extends Pantalla{
                            } else {
                         utilitario.agregarMensajeError("El Número de Cédula no es válido", "");
                     }  
+                              tab_garante.insertar(); 
     }
     
 
     public void llenarGarante(){//GARANTE
-        TablaGenerica tab_dato = iAnticipos.VerifGaranteid(tab_anticipo.getValor("ci_garante"));
+        TablaGenerica tab_dato = iAnticipos.VerifGaranteid(tab_garante.getValor("ci_garante"));
        if (!tab_dato.isEmpty()) {
             utilitario.agregarMensajeInfo("Garante No Disponible", "");
        }else {
-                   if (utilitario.validarCedula(tab_anticipo.getValor("ci_garante"))) {
-                        TablaGenerica tab_dato1 = iAnticipos.Garantemple(tab_anticipo.getValor("ci_garante"));
+                   if (utilitario.validarCedula(tab_garante.getValor("ci_garante"))) {
+                        TablaGenerica tab_dato1 = iAnticipos.Garantemple(tab_garante.getValor("ci_garante"));
                            if (!tab_dato1.isEmpty()) {
-                                   tab_anticipo.setValor("garante", tab_dato1.getValor("nombres"));
-                                   tab_anticipo.setValor("ide_empleado_garante", tab_dato1.getValor("COD_EMPLEADO"));
-                                   utilitario.addUpdate("tab_anticipo");
+                                   tab_garante.setValor("garante", tab_dato1.getValor("nombres"));
+                                   tab_garante.setValor("ide_empleado_garante", tab_dato1.getValor("COD_EMPLEADO"));
+                                   tab_garante.setValor("cod_tipo", tab_dato1.getValor("COD_EMPLEADO"));
+                                   tab_garante.setValor("id_distributivo", tab_dato1.getValor("COD_EMPLEADO"));
+                                   utilitario.addUpdate("tab_garante");
                                 }else {
-                                      utilitario.agregarMensajeInfo("No existen Datos", "");
+                                      utilitario.agregarMensajeInfo("Garante No Disponible", "");
                                       }    
                     } else {
                             utilitario.agregarMensajeError("El Número de Cédula no es válido", "");
@@ -212,10 +215,8 @@ public class pre_solicitud_anticipo extends Pantalla{
     
     @Override
     public void insertar() {
-         if (tab_anticipo.guardar()) {
+        tab_anticipo.insertar();
                 llenarDatosE();
-                tab_garante.insertar(); 
-             }
     }
 
     @Override
