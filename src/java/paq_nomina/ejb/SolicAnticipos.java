@@ -283,6 +283,53 @@ public class SolicAnticipos {
         
  }
    
+ public TablaGenerica VerifGaranteid(String cedu ){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT\n" +
+                                "garante,\n" +
+                                "ci_garante,\n" +
+                                "ide_empleado_garante\n" +
+                                "FROM\n" +
+                                "srh_anticipo\n" +
+                                "where ci_garante like '"+cedu+"' and (ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO')OR\n" +
+                                "ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'AUTORIZADO')OR\n" +
+                                "ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'PAGANDO'))");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+    
+ public TablaGenerica Garantemple(String ci){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT\n" +
+                                "e.cod_empleado, e.cedula_pass,\n" +
+                                "e.nombres,e.fecha_ingreso,\n" +
+                                "e.fecha_nombramiento,e.id_distributivo,\n" +
+                                "e.cod_tipo,i.tipo\n" +
+                                "FROM\n" +
+                                "\"public\".srh_empleado e,\n" +
+                                "\"public\".srh_tipo_empleado i\n" +
+                                "WHERE\n" +
+                                "e.estado = 1 AND\n" +
+                                "e.cod_tipo = i.cod_tipo AND\n" +
+                                "e.cod_tipo in (4,10)\n" +
+                                "and e.cedula_pass like '"+ci+"'");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+ 
+    
      public TablaGenerica Datos(String usuario){
         conectarSQL();
         TablaGenerica tab_funcionario = new TablaGenerica();
