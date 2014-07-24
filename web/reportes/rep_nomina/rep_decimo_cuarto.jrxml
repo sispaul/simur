@@ -2,9 +2,9 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_gasto_rol_descuentos" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="f895bc07-deaa-488e-946e-4cc8229218d3">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
-	<property name="ireport.zoom" value="1.6105100000000017"/>
+	<property name="ireport.zoom" value="2.143588810000003"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="91"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
@@ -29,30 +29,30 @@
 	<parameter name="descripcion" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
-e.cedula_pass,
-e.nombres,
-r.valor,
+n.cedula_pass,
+n.nombres,
 n.fecha_contrato,
-i.tipo,
-e.id_distributivo
+r.valor,
+e.tipo,
+n.id_distributivo
 FROM
-srh_roles AS r
-INNER JOIN srh_empleado AS e ON r.ide_empleado = e.cod_empleado
-INNER JOIN srh_num_contratos n ON n.cod_empleado = e.cod_empleado
-INNER JOIN srh_tipo_empleado i ON e.cod_tipo = i.cod_tipo AND n.cod_tipo = i.cod_tipo
-WHERE R.ANO=$P{pide_ano} AND
-R.IDE_PERIODO=$P{periodo} AND
-R.ID_DISTRIBUTIVO_ROLES=$P{distributivo} AND
-R.IDE_COLUMNAS=$P{columnas} AND
-R.VALOR >0
-order by E.NOMBRES]]>
+nomv_decimo_cuarto n,
+srh_roles r,
+srh_tipo_empleado e
+where n.cod_empleado = r.ide_empleado and n.cod_tipo = e.cod_tipo
+AND r.ANO=$P{pide_ano} AND
+r.IDE_PERIODO=$P{periodo} AND
+r.ID_DISTRIBUTIVO_ROLES=$P{distributivo} AND
+r.IDE_COLUMNAS=$P{columnas} AND
+r.VALOR >0
+order by n.NOMBRES]]>
 	</queryString>
 	<field name="cedula_pass" class="java.lang.String"/>
 	<field name="nombres" class="java.lang.String"/>
+	<field name="fecha_contrato" class="java.sql.Date"/>
 	<field name="valor" class="java.math.BigDecimal">
 		<fieldDescription><![CDATA[VALOR]]></fieldDescription>
 	</field>
-	<field name="fecha_contrato" class="java.sql.Date"/>
 	<field name="tipo" class="java.lang.String"/>
 	<field name="id_distributivo" class="java.lang.Integer"/>
 	<variable name="sum_valor" class="java.math.BigDecimal" calculation="Sum">
@@ -99,7 +99,7 @@ order by E.NOMBRES]]>
 				<text><![CDATA[INCONSISTENCIAS DE DESCUENTOS A EMPLEADOS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="f2a6cd37-f54b-4c24-8504-6e92b71c9f9c" key="staticText-3" x="40" y="78" width="39" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="f2a6cd37-f54b-4c24-8504-6e92b71c9f9c" key="staticText-3" x="36" y="78" width="39" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -112,7 +112,7 @@ order by E.NOMBRES]]>
 				<text><![CDATA[CEDULA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="2fd316d5-d016-4e15-9eef-657cd1663591" key="staticText-8" x="86" y="79" width="190" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="2fd316d5-d016-4e15-9eef-657cd1663591" key="staticText-8" x="80" y="79" width="190" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -201,7 +201,7 @@ order by E.NOMBRES]]>
 				<textFieldExpression><![CDATA[$P{descrip}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="0f309a44-4408-4282-82e4-978a3ea566d2" key="staticText-3" x="5" y="78" width="30" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="0f309a44-4408-4282-82e4-978a3ea566d2" key="staticText-3" x="2" y="78" width="30" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -214,7 +214,7 @@ order by E.NOMBRES]]>
 				<text><![CDATA[#]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="4738dd13-317e-493e-a859-efb14a6a0f95" key="staticText-24" x="280" y="79" width="110" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="4738dd13-317e-493e-a859-efb14a6a0f95" key="staticText-24" x="274" y="79" width="115" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -227,7 +227,7 @@ order by E.NOMBRES]]>
 				<text><![CDATA[TIPO RELACION]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="57fcf080-6d5e-4a6b-bf59-f878e786d287" key="staticText-24" x="390" y="79" width="72" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="57fcf080-6d5e-4a6b-bf59-f878e786d287" key="staticText-24" x="391" y="79" width="72" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -247,7 +247,7 @@ order by E.NOMBRES]]>
 	<detail>
 		<band height="14" splitType="Stretch">
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement uuid="70a45ac2-655c-466b-81e6-ada1db0afdc0" key="textField" x="40" y="1" width="39" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="70a45ac2-655c-466b-81e6-ada1db0afdc0" key="textField" x="36" y="1" width="39" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -260,7 +260,7 @@ order by E.NOMBRES]]>
 				<textFieldExpression><![CDATA[$F{cedula_pass}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="ce13caa5-0c23-4f9a-8430-d7463a48568d" x="86" y="1" width="190" height="12"/>
+				<reportElement uuid="ce13caa5-0c23-4f9a-8430-d7463a48568d" x="80" y="1" width="190" height="12"/>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
@@ -274,21 +274,21 @@ order by E.NOMBRES]]>
 				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="7e263ecc-22cd-425b-b748-2c06d7a4e8e8" x="5" y="1" width="30" height="13"/>
+				<reportElement uuid="7e263ecc-22cd-425b-b748-2c06d7a4e8e8" x="2" y="1" width="30" height="13"/>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="5c76b9c8-a63f-44b8-896b-68a31fb7f38d" x="280" y="1" width="110" height="12"/>
+				<reportElement uuid="5c76b9c8-a63f-44b8-896b-68a31fb7f38d" x="274" y="1" width="115" height="12"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tipo}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="81cf6ac5-200f-4183-b375-8cc3d932c661" x="405" y="1" width="40" height="12"/>
+				<reportElement uuid="81cf6ac5-200f-4183-b375-8cc3d932c661" x="410" y="1" width="40" height="12"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
