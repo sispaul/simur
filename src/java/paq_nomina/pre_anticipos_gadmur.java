@@ -1159,8 +1159,8 @@ public class pre_anticipos_gadmur extends Pantalla{
             if(tab_anticipo.getValor("ci_solicitante").equals(tab_dato.getValor("ci_solicitante"))){
                 if(tab_dato.getValor("ide_estado_anticipo").equals("4")){
                     if (utilitario.validarCedula(tab_anticipo.getValor("ci_solicitante"))) {
-                                tab_anticipo.guardar();
-                                con_postgres.guardarPantalla();
+//                                tab_anticipo.guardar();
+//                                con_postgres.guardarPantalla();
                     } else {
                             utilitario.agregarMensajeError("El Número de Cedula no es válido", "");
                             }
@@ -1172,8 +1172,8 @@ public class pre_anticipos_gadmur extends Pantalla{
                 }
         }else{
             if (utilitario.validarCedula(tab_anticipo.getValor("ci_solicitante"))) {
-                                                    tab_anticipo.guardar();
-                                                    con_postgres.guardarPantalla();
+//                                                    tab_anticipo.guardar();
+//                                                    con_postgres.guardarPantalla();
                 } else {
                     utilitario.agregarMensajeError("El Número de Cedula no es válido", "");
                 }

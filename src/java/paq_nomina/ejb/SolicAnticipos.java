@@ -320,7 +320,7 @@ public class SolicAnticipos {
                                 "WHERE\n" +
                                 "e.estado = 1 AND\n" +
                                 "e.cod_tipo = i.cod_tipo AND\n" +
-                                "e.cod_tipo in (4,10)\n" +
+                                "e.cod_tipo in (4,7)\n" +
                                 "and e.cedula_pass like '"+ci+"'");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
@@ -329,8 +329,21 @@ public class SolicAnticipos {
         
  }
  
+  public TablaGenerica GaranteNom(Integer empleado){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT cod_empleado,cedula_pass,nombres,id_distributivo,cod_tipo\n" +
+                                "FROM srh_empleado WHERE estado = 1 AND cod_tipo IN (4, 7) AND cod_empleado = "+empleado);
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
     
-     public TablaGenerica Datos(String usuario){
+  public TablaGenerica Datos(String usuario){
         conectarSQL();
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectarSQL();
@@ -341,7 +354,89 @@ public class SolicAnticipos {
         conexion = null;
         return tab_funcionario;
  }
-    
+ 
+  public TablaGenerica empleado(String ci){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT\n" +
+                                "cod_empleado,\n" +
+                                "cedula_pass,\n" +
+                                "nombres,\n" +
+                                "fecha_ingreso,\n" +
+                                "fecha_nombramiento,\n" +
+                                "id_distributivo,\n" +
+                                "cod_tipo\n" +
+                                "FROM\n" +
+                                "\"public\".srh_empleado\n" +
+                                "WHERE\n" +
+                                "estado = 1 \n" +
+                                "and cedula_pass like '"+ci+"'");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+  
+  public TablaGenerica FechaContrato(Integer codigoE){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT fecha_contrato,cod_tipo,ide_num_contrato\n" +
+                                "FROM srh_num_contratos\n" +
+                                "where cod_empleado = "+codigoE+"\n" +
+                                "ORDER BY fecha_contrato DESC LIMIT 1");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+  
+  public TablaGenerica periodos(String mes, String anio ){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT ide_periodo_anticipo,periodo,mes,anio FROM srh_periodo_anticipo where mes like '"+mes+"' and anio like '"+anio+"'");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+  
+  public TablaGenerica periodos1(Integer id ){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT ide_periodo_anticipo,periodo,mes,anio FROM srh_periodo_anticipo where ide_periodo_anticipo ="+id);
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+  
+  public TablaGenerica validar(String id ){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT ide_anticipo,ide_empleado_garante,ci_garante,garante,ide_empleado_solicitante,ci_solicitante,solicitante,\n" +
+                                "fecha_actua_solicitante,ide_estado_anticipo,aprobado_solicitante\n" +
+                                "FROM srh_anticipo WHERE ci_solicitante like'"+id+"'");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+  
     private void conectar() {
         if (con_postgres == null) {
             con_postgres = new Conexion();
