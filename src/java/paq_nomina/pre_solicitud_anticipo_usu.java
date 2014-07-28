@@ -82,20 +82,7 @@ public class pre_solicitud_anticipo_usu extends Pantalla{
 
         aut_busca.setId("aut_busca");
         aut_busca.setConexion(con_postgres);
-        aut_busca.setAutoCompletar("SELECT  \n" +
-                                    "ide_anticipo,  \n" +
-                                    "ide_empleado_solicitante,  \n" +
-                                    "ci_solicitante,  \n" +
-                                    "solicitante,  \n" +
-                                    "ide_estado_anticipo  \n" +
-                                    "FROM srh_anticipo  \n" +
-                                    "where ide_estado_anticipo = (SELECT ide_estado_tipo  \n" +
-                                    "FROM srh_estado_anticipo   where estado LIKE 'INGRESADO')OR\n" +
-                                    "ide_estado_anticipo = (SELECT ide_estado_tipo  \n" +
-                                    "FROM srh_estado_anticipo   where estado LIKE 'AUTORIZADO')OR\n" +
-                                    "ide_estado_anticipo = (SELECT ide_estado_tipo  \n" +
-                                    "FROM srh_estado_anticipo   where estado LIKE 'COBRADO')\n" +
-                                    "order by fecha_anticipo");
+        aut_busca.setAutoCompletar("SELECT ide_solicitud_anticipo,ci_solicitante,solicitante,aprobado_solicitante FROM srh_solicitud_anticipo");
         aut_busca.setMetodoChange("buscarPersona");
         aut_busca.setSize(100);
         
@@ -118,12 +105,19 @@ public class pre_solicitud_anticipo_usu extends Pantalla{
         tab_anticipo.setTabla("srh_solicitud_anticipo", "ide_solicitud_anticipo", 1);
      
         tab_anticipo.getColumna("id_distributivo").setCombo("SELECT id_distributivo, descripcion FROM srh_tdistributivo");
-        tab_anticipo.getColumna("ide_estado_anticipo").setCombo("SELECT ide_estado_tipo,estado FROM srh_estado_anticipo");
         tab_anticipo.getColumna("cod_banco").setCombo("SELECT ban_codigo,ban_nombre FROM ocebanco");
         tab_anticipo.getColumna("cod_cuenta").setCombo("SELECT cod_cuenta,nombre FROM ocecuentas");
         tab_anticipo.getColumna("cod_cargo").setCombo("SELECT cod_cargo,nombre_cargo FROM srh_cargos");
         tab_anticipo.getColumna("cod_tipo").setCombo("SELECT cod_tipo,tipo FROM srh_tipo_empleado");
         tab_anticipo.getColumna("cod_grupo").setCombo("SELECT cod_grupo,nombre FROM srh_grupo_ocupacional");
+        tab_anticipo.getColumna("login_ingre_solicitud").setValorDefecto(utilitario.getVariable("NICK"));
+        tab_anticipo.getColumna("ip_ingre_solicitud").setValorDefecto(utilitario.getIp());
+        
+        tab_anticipo.getColumna("login_ingre_solicitud").setVisible(false);
+        tab_anticipo.getColumna("ip_ingre_solicitud").setVisible(false);
+        tab_anticipo.getColumna("login_aprob_solicitud").setVisible(false);
+        tab_anticipo.getColumna("ip_aprob_solicitud").setVisible(false);
+        tab_anticipo.getColumna("aprobado_solicitante").setVisible(false);
         tab_anticipo.setTipoFormulario(true);
         tab_anticipo.agregarRelacion(tab_garante);
         tab_anticipo.agregarRelacion(tab_parametros);
@@ -154,6 +148,7 @@ public class pre_solicitud_anticipo_usu extends Pantalla{
         tab_parametros.getColumna("ide_periodo_anticipo_inicial").setCombo("select ide_periodo_anticipo, (mes || '/' || anio) As Cliente from srh_periodo_anticipo order by ide_periodo_anticipo");
         tab_parametros.getColumna("ide_periodo_anticipo_final").setCombo("select ide_periodo_anticipo, (mes || '/' || anio) As Clientes from srh_periodo_anticipo order by ide_periodo_anticipo");
         tab_parametros.getColumna("porcentaje_descuento_diciembre").setLectura(true);
+//        tab_parametros.getColumna("ide_estado_anticipo").setCombo("SELECT ide_estado_tipo,estado FROM srh_estado_anticipo");
         tab_parametros.getColumna("valor_anticipo").setMetodoChange("remuneracion");
         tab_parametros.getColumna("numero_cuotas_anticipo").setMetodoChange("porcentaje");
         tab_parametros.getColumna("porcentaje_descuento_diciembre").setMetodoChange("servidor");
@@ -194,7 +189,7 @@ public class pre_solicitud_anticipo_usu extends Pantalla{
     public void llenarDatosE(){//SOLICITANTE
        TablaGenerica tab_dato = iAnticipos.Datos(tab_consulta.getValor("NICK_USUA"));
        if (!tab_dato.isEmpty()) {
-                    TablaGenerica tab_dato1 = iAnticipos.empleados(Integer.parseInt(tab_dato.getValor("NOM_USUA")+""));//empleados
+                    TablaGenerica tab_dato1 = iAnticipos.empleadosNom(tab_dato.getValor("NOM_USUA")+"");//empleados
                     if (!tab_dato1.isEmpty()) {
                         tab_anticipo.setValor("ide_empleado_solicitante", tab_dato1.getValor("COD_EMPLEADO"));
                         tab_anticipo.setValor("ci_solicitante", tab_dato1.getValor("cedula_pass"));
@@ -211,7 +206,7 @@ public class pre_solicitud_anticipo_usu extends Pantalla{
                         tab_anticipo.setValor("ide_estado_anticipo", "1");
                         utilitario.addUpdate("tab_anticipo");
                     }else {
-                       TablaGenerica tab_dato2 = iAnticipos.trabajadores(Integer.parseInt(tab_dato.getValor("NOM_USUA")+""));;//trabajadores
+                       TablaGenerica tab_dato2 = iAnticipos.trabajadoresNom(tab_dato.getValor("NOM_USUA")+"");//trabajadores
                             if (!tab_dato2.isEmpty()) {
                                 tab_anticipo.setValor("ide_empleado_solicitante", tab_dato2.getValor("COD_EMPLEADO"));
                                 tab_anticipo.setValor("ci_solicitante", tab_dato2.getValor("cedula_pass"));
