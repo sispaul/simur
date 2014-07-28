@@ -1445,7 +1445,7 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
                             if(Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))>=70 && Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))<100){
                                     calculo_valor();
                             }else{
-                                  utilitario.agregarMensaje("Al menos el 70% de Sueldo", "Para Cuota de Diciembre");
+                                  utilitario.agregarMensaje("Al menos el 70% de Sueldo", "Maximo el 100%, Para Cuota de Diciembre");
                             }
                        }else{
                            calculo_valor();
