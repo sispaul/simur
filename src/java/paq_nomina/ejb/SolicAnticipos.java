@@ -772,6 +772,19 @@ public TablaGenerica VerifEmpleCod(Integer codigo){
         
  }
   
+  public TablaGenerica estado(){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT ide_estado_tipo,estado FROM srh_estado_anticipo WHERE ide_estado_tipo = 1");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+  
     private void conectar() {
         if (con_postgres == null) {
             con_postgres = new Conexion();
