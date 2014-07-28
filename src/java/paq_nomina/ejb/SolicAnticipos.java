@@ -785,6 +785,47 @@ public TablaGenerica VerifEmpleCod(Integer codigo){
         
  }
   
+  public void actuaSolicitud(Integer anti,String cuota,Integer aprob,String usu){
+    String au_sql="update srh_solicitud_anticipo\n" +
+                    "set aprobado_solicitante ="+aprob+",\n" +
+                    "login_aprob_solicitud ='"+usu+"',\n" +
+                    "ip_aprob_solicitud ='"+utilitario.getIp()+"'\n" +
+                    "WHERE ide_solicitud_anticipo="+anti+" and ci_solicitante = '"+cuota+"'";
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+}
+  
+public void actualizSolicitud(Integer anti,String cedula){
+    String au_sql="update srh_calculo_anticipo\n" +
+                    "set ide_estado_anticipo =(SELECT ide_estado_tipo FROM srh_estado_anticipo WHERE estado like 'AUTORIZADO')\n" +
+                    "where ide_solicitud_anticipo = (SELECT\n" +
+                    "ide_solicitud_anticipo\n" +
+                    "FROM\n" +
+                    "srh_solicitud_anticipo\n" +
+                    "where ide_solicitud_anticipo = "+anti+" and ci_solicitante like '"+cedula+"' and aprobado_solicitante =1)";
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+}
+  
+
+public void negarSolicitud(Integer anti,String cedula){
+    String au_sql="update srh_calculo_anticipo\n" +
+                    "set ide_estado_anticipo =(SELECT ide_estado_tipo FROM srh_estado_anticipo WHERE estado like 'NEGADO')\n" +
+                    "where ide_solicitud_anticipo = (SELECT\n" +
+                    "ide_solicitud_anticipo\n" +
+                    "FROM\n" +
+                    "srh_solicitud_anticipo\n" +
+                    "where ide_solicitud_anticipo = "+anti+" and ci_solicitante like '"+cedula+"' and aprobado_solicitante =0)";
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+}
+
     private void conectar() {
         if (con_postgres == null) {
             con_postgres = new Conexion();

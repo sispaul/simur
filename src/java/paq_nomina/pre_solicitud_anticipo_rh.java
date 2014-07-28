@@ -8,18 +8,22 @@ import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Dialogo;
-import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
+import framework.componentes.Grupo;
+import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
+import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
+import framework.componentes.Texto;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
+import org.primefaces.event.SelectEvent;
 import paq_nomina.ejb.SolicAnticipos;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
@@ -46,6 +50,7 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
     private Tabla tab_consulta = new Tabla();
     private Tabla set_colaborador = new Tabla();
     private Tabla set_solicitante = new Tabla();
+    private SeleccionTabla set_solicitud = new SeleccionTabla();
     
     //PARA ASIGNACION DE MES
     String selec_mes = new String();
@@ -61,6 +66,10 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
     private Grid grid = new Grid();
     private Grid grids = new Grid();
     
+    //
+    private Panel pan_opcion = new Panel();
+    private Texto tex_busqueda = new Texto();
+    
     @EJB
     private SolicAnticipos iAnticipos = (SolicAnticipos) utilitario.instanciarEJB(SolicAnticipos.class);
     
@@ -72,6 +81,11 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
         tab_consulta.setCampoPrimaria("IDE_USUA");
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
+        
+        pan_opcion.setId("pan_opcion");
+        pan_opcion.setTransient(true);
+        pan_opcion.setHeader("SOLICITUD DE ANTICIPOS DE SUELDOS");
+        agregarComponente(pan_opcion);
         
         Boton bot_busca = new Boton();
         bot_busca.setValue("Busqueda Avanzada");
@@ -85,21 +99,8 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
 
         aut_busca.setId("aut_busca");
         aut_busca.setConexion(con_postgres);
-        aut_busca.setAutoCompletar("SELECT  \n" +
-                                    "ide_anticipo,  \n" +
-                                    "ide_empleado_solicitante,  \n" +
-                                    "ci_solicitante,  \n" +
-                                    "solicitante,  \n" +
-                                    "ide_estado_anticipo  \n" +
-                                    "FROM srh_anticipo  \n" +
-                                    "where ide_estado_anticipo = (SELECT ide_estado_tipo  \n" +
-                                    "FROM srh_estado_anticipo   where estado LIKE 'INGRESADO')OR\n" +
-                                    "ide_estado_anticipo = (SELECT ide_estado_tipo  \n" +
-                                    "FROM srh_estado_anticipo   where estado LIKE 'AUTORIZADO')OR\n" +
-                                    "ide_estado_anticipo = (SELECT ide_estado_tipo  \n" +
-                                    "FROM srh_estado_anticipo   where estado LIKE 'COBRADO')\n" +
-                                    "order by fecha_anticipo");
-        aut_busca.setMetodoChange("buscarPersona");
+        aut_busca.setAutoCompletar("SELECT ide_solicitud_anticipo,ci_solicitante,solicitante,aprobado_solicitante FROM srh_solicitud_anticipo");
+        aut_busca.setMetodoChange("filtrarSolicitud");
         aut_busca.setSize(100);
         
         bar_botones.agregarComponente(new Etiqueta("Buscar Solicitud:"));
@@ -110,16 +111,163 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
         bot_limpiar.setMetodo("limpiar");
         bar_botones.agregarBoton(bot_limpiar);
         
-        Boton bot_anular = new Boton();
-        bot_anular.setValue("Anular Soliciud");
-        bot_anular.setIcon("ui-icon-close");
-        bot_anular.setMetodo("limpiar");
-        bar_botones.agregarBoton(bot_anular);
+        Grid gri_busca = new Grid();
+        gri_busca.setColumns(2);
+        tex_busqueda.setSize(45);
+        gri_busca.getChildren().add(tex_busqueda);
+        Boton bot_buscar = new Boton();
+        bot_buscar.setValue("Buscar");
+        bot_buscar.setIcon("ui-icon-search");
+        bot_buscar.setMetodo("buscarSolicitud");
+        bar_botones.agregarBoton(bot_buscar);
+        gri_busca.getChildren().add(bot_buscar);
         
+        set_solicitud.setId("set_solicitud");
+        set_solicitud.getTab_seleccion().setConexion(con_postgres);
+        set_solicitud.setSeleccionTabla("SELECT ide_solicitud_anticipo,ci_solicitante,solicitante,aprobado_solicitante FROM srh_solicitud_anticipo where ide_solicitud_anticipo=-1", "ide_solicitud_anticipo");
+        set_solicitud.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
+        set_solicitud.getTab_seleccion().setRows(10);
+        set_solicitud.setRadio();
+        set_solicitud.getGri_cuerpo().setHeader(gri_busca);
+        set_solicitud.getBot_aceptar().setMetodo("aceptarBusqueda");
+        set_solicitud.setHeader("BUSCAR SOLICITUD POR CEDULA");
+        agregarComponente(set_solicitud);
+        
+//        tab_anticipo.setId("tab_anticipo");
+//        tab_anticipo.setConexion(con_postgres);
+//        tab_anticipo.setTabla("srh_solicitud_anticipo", "ide_solicitud_anticipo", 1);
+//     
+//        tab_anticipo.getColumna("ci_solicitante").setMetodoChange("llenarDatosE");
+//        tab_anticipo.getColumna("solicitante").setMetodoChange("buscaSolicitante");
+//        
+//        tab_anticipo.getColumna("id_distributivo").setCombo("SELECT id_distributivo, descripcion FROM srh_tdistributivo");
+//        tab_anticipo.getColumna("cod_banco").setCombo("SELECT ban_codigo,ban_nombre FROM ocebanco");
+//        tab_anticipo.getColumna("cod_cuenta").setCombo("SELECT cod_cuenta,nombre FROM ocecuentas");
+//        tab_anticipo.getColumna("cod_cargo").setCombo("SELECT cod_cargo,nombre_cargo FROM srh_cargos");
+//        tab_anticipo.getColumna("cod_tipo").setCombo("SELECT cod_tipo,tipo FROM srh_tipo_empleado");
+//        tab_anticipo.getColumna("cod_grupo").setCombo("SELECT cod_grupo,nombre FROM srh_grupo_ocupacional");
+//        
+//        tab_anticipo.getColumna("login_ingre_solicitud").setValorDefecto(utilitario.getVariable("NICK"));
+//        tab_anticipo.getColumna("ip_ingre_solicitud").setValorDefecto(utilitario.getIp());
+//        
+//        tab_anticipo.getColumna("login_ingre_solicitud").setVisible(false);
+//        tab_anticipo.getColumna("ip_ingre_solicitud").setVisible(false);
+//        tab_anticipo.getColumna("login_aprob_solicitud").setVisible(false);
+//        tab_anticipo.getColumna("ip_aprob_solicitud").setVisible(false);
+//        tab_anticipo.getColumna("aprobado_solicitante").setVisible(false);
+//        
+//        tab_anticipo.setTipoFormulario(true);
+//        tab_anticipo.agregarRelacion(tab_garante);
+//        tab_anticipo.agregarRelacion(tab_parametros);
+//        tab_anticipo.getGrid().setColumns(4);
+//        tab_anticipo.dibujar();
+//        PanelTabla tpa = new PanelTabla();
+//        tpa.setMensajeWarn("DATOS DE SOLICITANTE");
+//        tpa.setPanelTabla(tab_anticipo);
+//        
+//        tab_garante.setId("tab_garante");
+//        tab_garante.setConexion(con_postgres);
+//        tab_garante.setTabla("srh_garante_anticipo", "ide_garante_anticipo", 2);
+//        tab_garante.getColumna("IDE_GARANTE_ANTICIPO ").setVisible(false);
+//        tab_garante.getColumna("ci_garante").setMetodoChange("llenarGarante");
+//        tab_garante.getColumna("garante").setMetodoChange("buscaColaborador");
+//        tab_garante.getColumna("id_distributivo").setCombo("SELECT id_distributivo, descripcion FROM srh_tdistributivo");
+//        tab_garante.getColumna("cod_tipo").setCombo("SELECT cod_tipo,tipo FROM srh_tipo_empleado");
+//        tab_garante.setTipoFormulario(true);
+//        tab_garante.getGrid().setColumns(4);
+//        tab_garante.dibujar();
+//        PanelTabla tpd = new PanelTabla();
+//        tpd.setMensajeWarn("DATOS DE GARANTE");
+//        tpd.setPanelTabla(tab_garante);
+//        
+//        tab_parametros.setId("tab_parametros");
+//        tab_parametros.setConexion(con_postgres);
+//        tab_parametros.setTabla("srh_calculo_anticipo", "ide_calculo_anticipo", 3);
+//        tab_parametros.getColumna("IDE_CALCULO_ANTICIPO").setVisible(false);
+//        tab_parametros.getColumna("fecha_anticipo").setValorDefecto(utilitario.getFechaActual());
+//        tab_parametros.getColumna("ide_periodo_anticipo_inicial").setCombo("select ide_periodo_anticipo, (mes || '/' || anio) As Cliente from srh_periodo_anticipo order by ide_periodo_anticipo");
+//        tab_parametros.getColumna("ide_periodo_anticipo_final").setCombo("select ide_periodo_anticipo, (mes || '/' || anio) As Clientes from srh_periodo_anticipo order by ide_periodo_anticipo");
+//
+//        tab_parametros.getColumna("porcentaje_descuento_diciembre").setLectura(true);
+//        tab_parametros.getColumna("valor_anticipo").setMetodoChange("remuneracion");
+//        tab_parametros.getColumna("numero_cuotas_anticipo").setMetodoChange("porcentaje");
+//        tab_parametros.getColumna("porcentaje_descuento_diciembre").setMetodoChange("cuotas");
+//        tab_parametros.getColumna("ide_estado_anticipo").setCombo("SELECT ide_estado_tipo,estado FROM srh_estado_anticipo");
+//        tab_parametros.setTipoFormulario(true);
+//        tab_parametros.getGrid().setColumns(4);
+//        tab_parametros.dibujar();
+//        
+//        PanelTabla tpp = new PanelTabla();
+//        tpp.setMensajeWarn("DATOS DE ANTICIPO A SOLICITAR");
+//        tpp.setPanelTabla(tab_parametros);
+//        
+//        Division div_division = new Division();
+//        div_division.setId("div_division");
+//        div_division.dividir3(tpa, tpd, tpp, "40%", "38%", "H");
+//        agregarComponente(div_division);
+        
+        dia_dialogos.setId("dia_dialogos");
+        dia_dialogos.setTitle("BUSCAR SOLICITANTE"); //titulo
+        dia_dialogos.setWidth("35%"); //siempre en porcentajes  ancho
+        dia_dialogos.setHeight("50%");//siempre porcentaje   alto
+        dia_dialogos.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogos.getBot_aceptar().setMetodo("aceptoSolicitante");
+        grid_ds.setColumns(4);
+        agregarComponente(dia_dialogos);
+        
+        dia_dialogo.setId("dia_dialogo");
+        dia_dialogo.setTitle("BUSCAR COLABORADOR"); //titulo
+        dia_dialogo.setWidth("30%"); //siempre en porcentajes  ancho
+        dia_dialogo.setHeight("45%");//siempre porcentaje   alto
+        dia_dialogo.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogo.getBot_aceptar().setMetodo("aceptoColaborador");
+        grid_d.setColumns(4);
+        agregarComponente(dia_dialogo);
+        dibujarSolicitud();
+    }
+
+     public void buscarSolicitud() {
+        if (tex_busqueda.getValue() != null && tex_busqueda.getValue().toString().isEmpty() == false) {
+            set_solicitud.getTab_seleccion().setSql("SELECT ide_solicitud_anticipo,ci_solicitante,solicitante,aprobado_solicitante FROM srh_solicitud_anticipo WHERE ci_solicitante LIKE '" + tex_busqueda.getValue() + "'");
+            set_solicitud.getTab_seleccion().ejecutarSql();
+        } else {
+            utilitario.agregarMensajeInfo("Debe ingresar un valor en el texto", "");
+        }
+
+    }
+    
+    public void abrirBusqueda() {
+        set_solicitud.dibujar();
+        tex_busqueda.limpiar();
+        set_solicitud.getTab_seleccion().limpiar();
+    }
+
+    public void aceptarBusqueda() {
+        if (set_solicitud.getValorSeleccionado() != null) {
+            aut_busca.setValor(set_solicitud.getValorSeleccionado());
+            set_solicitud.cerrar();
+            dibujarSolicitud();
+            utilitario.addUpdate("aut_busca,pan_opcion");
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar una solicitud", "");
+        }
+
+    }
+     
+    public void dibujarSolicitud(){
+//        if (aut_busca.getValue() != null) {
+        limpiarPanel();
         tab_anticipo.setId("tab_anticipo");
         tab_anticipo.setConexion(con_postgres);
         tab_anticipo.setTabla("srh_solicitud_anticipo", "ide_solicitud_anticipo", 1);
      
+                /*Filtro estatico para los datos a mostrar*/
+            if (aut_busca.getValue() == null) {
+                tab_anticipo.setCondicion("ide_solicitud_anticipo=-1");
+            } else {
+                tab_anticipo.setCondicion("ide_solicitud_anticipo=" + aut_busca.getValor());
+            }
+        
         tab_anticipo.getColumna("ci_solicitante").setMetodoChange("llenarDatosE");
         tab_anticipo.getColumna("solicitante").setMetodoChange("buscaSolicitante");
         
@@ -135,6 +283,8 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
         
         tab_anticipo.getColumna("login_ingre_solicitud").setVisible(false);
         tab_anticipo.getColumna("ip_ingre_solicitud").setVisible(false);
+        tab_anticipo.getColumna("login_aprob_solicitud").setVisible(false);
+        tab_anticipo.getColumna("ip_aprob_solicitud").setVisible(false);
         tab_anticipo.getColumna("aprobado_solicitante").setVisible(false);
         
         tab_anticipo.setTipoFormulario(true);
@@ -181,42 +331,43 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
         PanelTabla tpp = new PanelTabla();
         tpp.setMensajeWarn("DATOS DE ANTICIPO A SOLICITAR");
         tpp.setPanelTabla(tab_parametros);
-            
-        Boton bot_save = new Boton();
-        bot_save.setValue("GUARDAR");
-        bot_save.setIcon("ui-icon-cancel");
-        bot_save.setMetodo("guardar");
         
-        Boton bot_delete = new Boton();
-        bot_delete.setValue("ELIMINAR");
-        bot_delete.setIcon("ui-icon-cancel");
-        bot_delete.setMetodo("eliminar");
+//        Division div_division = new Division();
+//        div_division.setId("div_division");
+//        div_division.dividir3(tpa, tpd, tpp, "40%", "38%", "H");
+//        agregarComponente(div_division);
+            Grupo gru = new Grupo();
+            gru.getChildren().add(tpa);
+            gru.getChildren().add(tpd);
+            gru.getChildren().add(tpp);
+            pan_opcion.getChildren().add(gru);    
         
-        Division div_division = new Division();
-        div_division.setId("div_division");
-        div_division.dividir3(tpa, tpd, tpp, "40%", "40%", "H");
-        agregarComponente(div_division);
-        
-        dia_dialogos.setId("dia_dialogos");
-        dia_dialogos.setTitle("BUSCAR SOLICITANTE"); //titulo
-        dia_dialogos.setWidth("35%"); //siempre en porcentajes  ancho
-        dia_dialogos.setHeight("50%");//siempre porcentaje   alto
-        dia_dialogos.setResizable(false); //para que no se pueda cambiar el tamaño
-        dia_dialogos.getBot_aceptar().setMetodo("aceptoSolicitante");
-        grid_ds.setColumns(4);
-        agregarComponente(dia_dialogos);
-        
-        dia_dialogo.setId("dia_dialogo");
-        dia_dialogo.setTitle("BUSCAR COLABORADOR"); //titulo
-        dia_dialogo.setWidth("30%"); //siempre en porcentajes  ancho
-        dia_dialogo.setHeight("45%");//siempre porcentaje   alto
-        dia_dialogo.setResizable(false); //para que no se pueda cambiar el tamaño
-        dia_dialogo.getBot_aceptar().setMetodo("aceptoColaborador");
-        grid_d.setColumns(4);
-        agregarComponente(dia_dialogo);
-            
+//           }else {
+//            utilitario.agregarMensajeInfo("No se puede abrir la opción", "Seleccione una Empresa en el autocompletar");
+////            limpiar();
+//        }
+    }
+    
+    private void limpiarPanel() {
+        //borra el contenido de la división central central
+        pan_opcion.getChildren().clear();
+        // pan_opcion.getChildren().add(efecto);
     }
 
+    public void limpiar() {
+        aut_busca.limpiar();
+        utilitario.addUpdate("aut_busca");
+        limpiarPanel();
+        utilitario.addUpdate("pan_opcion");
+    }
+    
+    public void filtrarSolicitud(SelectEvent evt) {
+        //Filtra el cliente seleccionado en el autocompletar
+        limpiar();
+        aut_busca.onSelect(evt);
+        dibujarSolicitud();
+    }
+    
     //BUSCAR SOLICITANTE POR CEDULA
     public void llenarDatosE(){//SOLICITANTE
       TablaGenerica tab_dato = iAnticipos.VerifEmpleid(tab_anticipo.getValor("ci_solicitante"));
@@ -414,8 +565,8 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
                 utilitario.addUpdate("tab_parametros");
                 utilitario.agregarMensajeInfo("Anticipo, Hasta una Remuneracion", "Plazo Maximo de Cobro, 2 Meses");
                         if(tab_parametros.getValor("numero_cuotas_anticipo").equals("2")){
-//                            llenarFecha();
-//                            cuotas();
+                            llenarFecha();
+                            cuotas();
                         }
              tab_parametros.getColumna("numero_cuotas_anticipo").setLectura(true);
             }else if((dato1/dato2)>1&&(dato1/dato2)<=3){//HASTA 3 REMUNERACIONES 
@@ -658,7 +809,6 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
     }
     
     public void servidor1(){
-        
         Integer anos=0, dias=0,meses=0,mesesf=0,aniosf=0,diasf=0,meses_a=0,anios_a=0,dias_a=0;
         TablaGenerica tab_dato = iAnticipos.empleado(tab_anticipo.getValor("ci_solicitante"));
         if (!tab_dato.isEmpty()) {
@@ -704,7 +854,7 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
                         }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=16 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28
                                         if(tab_datof.getValor("cod_tipo").equals("4")||tab_datof.getValor("cod_tipo").equals("10")){
                                                     if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=18){
-//                                                        llenarFecha();
+                                                        llenarFecha();
 //                                                        cuotas();
                                                         }else{
                                                                 utilitario.agregarMensaje("Tiempo Maximo de Pago", "18 MESES");
@@ -1262,7 +1412,34 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
     //CALCULO DE CUOTAS Y CUOTA ESPECIAL
     public void cuotas(){
         
-        Integer rango;
+      Integer periodo =0;
+           if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=15){
+                       periodo = utilitario.getMes(tab_parametros.getValor("FECHA_ANTICIPO"))-1+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
+                       if(periodo >= 12){
+                             if(Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))>=70 && Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))<100){
+                                 calculo_valor();
+                                }else{
+                                      utilitario.agregarMensaje("Al menos el 70% de Sueldo", "Para Cuota de Diciembre");
+                                }
+                       }else{
+                           calculo_valor();
+                       }
+              }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=16 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){
+                       periodo = utilitario.getMes(tab_parametros.getValor("FECHA_ANTICIPO"))+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
+                       if(periodo >= 12){
+                            if(Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))>=70 && Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))<100){
+                                    calculo_valor();
+                            }else{
+                                  utilitario.agregarMensaje("Al menos el 70% de Sueldo", "Para Cuota de Diciembre");
+                            }
+                       }else{
+                           calculo_valor();
+                       }
+                      }
+    }
+    
+    public void calculo_valor(){
+                Integer rango;
         double valora=0,valora1=0,valorm=0,media=0,rmu=0,valan=0,valorff=0;
         rmu =Double.parseDouble(tab_anticipo.getValor("rmu"));
         valan= Double.parseDouble(tab_parametros.getValor("valor_anticipo"));
@@ -1314,8 +1491,13 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
     @Override
     public void insertar() {
         if (tab_anticipo.isFocus()) {
+            aut_busca.limpiar();
+            utilitario.addUpdate("aut_busca");
+            tab_anticipo.limpiar();
             tab_anticipo.insertar();
+            tab_garante.limpiar();
             tab_garante.insertar();
+            tab_parametros.limpiar();
             tab_parametros.insertar();
         }
     }
@@ -1334,6 +1516,7 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
 
     @Override
     public void eliminar() {
+        
         if (tab_parametros.isFocus()) {
             if(tab_parametros.eliminar()){
                 if(tab_garante.eliminar()){
@@ -1341,6 +1524,7 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
                 }
             }
         }
+        
     }
 
     public void tramite(){
@@ -1515,6 +1699,14 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
 
     public void setAut_busca(AutoCompletar aut_busca) {
         this.aut_busca = aut_busca;
+    }
+
+    public SeleccionTabla getSet_solicitud() {
+        return set_solicitud;
+    }
+
+    public void setSet_solicitud(SeleccionTabla set_solicitud) {
+        this.set_solicitud = set_solicitud;
     }
     
 }
