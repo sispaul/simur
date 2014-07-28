@@ -1096,6 +1096,15 @@ public void negarSolicitud(Integer anti,String cedula){
     con_postgres = null;
 }
 
+public void llenarSolicitud(Integer anti,String cuota,Double valor,Integer perdes){
+    String au_sql="insert into srh_detalle_anticipo (ide_anticipo,cuota,valor,ide_periodo_descuento)\n" +
+                  "values ("+anti+",'"+cuota+"',"+valor+","+perdes+")";
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+}
+
     private void conectar() {
         if (con_postgres == null) {
             con_postgres = new Conexion();

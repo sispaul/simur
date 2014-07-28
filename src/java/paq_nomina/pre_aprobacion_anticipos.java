@@ -118,7 +118,6 @@ public class pre_aprobacion_anticipos extends Pantalla{
               }else{
                     iAnticipos.negarSolicitud(Integer.parseInt(tab_anticipo.getValor(i, "ide_solicitud_anticipo")), tab_anticipo.getValor(i, "ci_solicitante"));
               }
-              
         }
          tab_anticipo.actualizar();
     }
