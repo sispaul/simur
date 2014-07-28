@@ -1507,8 +1507,8 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
         if (tab_anticipo.guardar()) {
             if (tab_garante.guardar()) {
                 if (tab_parametros.guardar()) {
-                    tramite();
                     con_postgres.guardarPantalla();
+                                        tramite();
                     }
                 }
             }
@@ -1528,13 +1528,7 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
     }
 
     public void tramite(){
-      TablaGenerica tab_dato = iAnticipos.estado();
-        if (!tab_dato.isEmpty()) {
-            tab_parametros.setValor("ide_estado_anticipo", tab_dato.getValor("ide_estado_tipo"));
-            utilitario.addUpdate("tab_parametros");
-         }else {
-          utilitario.agregarMensajeInfo("No existen Datos", "");
-          }
+      iAnticipos.actuaEstSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")));
     }
         
     //CALCULAR MESES

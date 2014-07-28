@@ -153,20 +153,6 @@ public class pre_solicitud_anticipo_usu extends Pantalla{
         tab_parametros.getColumna("fecha_anticipo").setValorDefecto(utilitario.getFechaActual());
         tab_parametros.getColumna("ide_periodo_anticipo_inicial").setCombo("select ide_periodo_anticipo, (mes || '/' || anio) As Cliente from srh_periodo_anticipo order by ide_periodo_anticipo");
         tab_parametros.getColumna("ide_periodo_anticipo_final").setCombo("select ide_periodo_anticipo, (mes || '/' || anio) As Clientes from srh_periodo_anticipo order by ide_periodo_anticipo");
-                List lista = new ArrayList();
-        Object fila1[] = {
-            "70", "70%"
-        };
-        Object fila2[] = {
-            "80", "80%"
-        };
-        Object fila3[] = {
-            "90", "90%"
-        };
-        lista.add(fila1);;
-        lista.add(fila2);;
-        lista.add(fila3);;
-        tab_parametros.getColumna("porcentaje_descuento_diciembre").setRadio(lista,"");
         tab_parametros.getColumna("porcentaje_descuento_diciembre").setLectura(true);
         tab_parametros.getColumna("valor_anticipo").setMetodoChange("remuneracion");
         tab_parametros.getColumna("numero_cuotas_anticipo").setMetodoChange("porcentaje");
