@@ -80,6 +80,7 @@ public class pre_aprobacion_anticipos extends Pantalla{
         lista.add(fila1);;
         lista.add(fila2);;
         tab_anticipo.getColumna("aprobado_solicitante").setRadio(lista, "");
+//        tab_anticipo.getColumna("aprobado_solicitante").setCheck();
         tab_anticipo.getGrid().setColumns(4);
         tab_anticipo.dibujar();
 
@@ -112,11 +113,12 @@ public class pre_aprobacion_anticipos extends Pantalla{
               tab_anticipo.getValor(i, "aprobado_solicitante");
               iAnticipos.actuaSolicitud(Integer.parseInt(tab_anticipo.getValor(i, "ide_solicitud_anticipo")), tab_anticipo.getValor(i, "ci_solicitante"), Integer.parseInt(tab_anticipo.getValor(i, "aprobado_solicitante")),utilitario.getVariable("NICK"));
               utilitario.addUpdate("tab_anticipo");
-              if(tab_anticipo.getValor(i, "aprobado_solicitante").equals(1)){
+              if(tab_anticipo.getValor(i, "aprobado_solicitante").equals("1")){
               iAnticipos.actualizSolicitud(Integer.parseInt(tab_anticipo.getValor(i, "ide_solicitud_anticipo")), tab_anticipo.getValor(i, "ci_solicitante"));
               }else{
                     iAnticipos.negarSolicitud(Integer.parseInt(tab_anticipo.getValor(i, "ide_solicitud_anticipo")), tab_anticipo.getValor(i, "ci_solicitante"));
               }
+              
         }
          tab_anticipo.actualizar();
     }
