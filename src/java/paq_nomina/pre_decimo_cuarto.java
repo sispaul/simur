@@ -120,7 +120,6 @@ public class pre_decimo_cuarto extends Pantalla{
         cmb_descripcion.setId("cmb_descripcion");
         cmb_descripcion.setConexion(con_postgres);
         cmb_descripcion.setCombo("SELECT id_distributivo,descripcion FROM srh_tdistributivo ORDER BY id_distributivo");
-        cmb_descripcion.setMetodo("buscarColumna");
         gri_busca.getChildren().add(cmb_descripcion);
         
         //DIALOGO DE CONFIRMACIÓN DE ACCIÓN -DESCUENTOS  

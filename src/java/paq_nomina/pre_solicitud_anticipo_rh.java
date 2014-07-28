@@ -1524,6 +1524,7 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
                 if (tab_parametros.guardar()) {
                     con_postgres.guardarPantalla();
                                         tramite();
+                                        cuotas1();
                     }
                 }
             }
@@ -1621,6 +1622,77 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
     		return selec_mes;
     }
     
+    
+   public void cuotas1(){
+        Integer conta =Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
+        if(tab_parametros.getValor("valor_cuota_adicional")!= null ){
+            iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")),"1", Double.parseDouble(tab_anticipo.getValor("valor_cuota_mensual")), 
+                                Integer.parseInt(tab_anticipo.getValor("ide_periodo_anticipo_inicial")));
+            
+            TablaGenerica tab_dato1 = iAnticipos.periodos1(Integer.parseInt(tab_anticipo.getValor("ide_periodo_anticipo_final")));
+            if (!tab_dato1.isEmpty()) {
+                if(tab_dato1.getValor("mes").equals("Diciembre")){
+                    for (int i = 1; i < (conta); i++){
+                        TablaGenerica tab_dato = iAnticipos.periodos1(Integer.parseInt(tab_parametros.getValor("ide_periodo_anticipo_inicial"))+i);
+                         if (!tab_dato.isEmpty()) {
+
+                            if(tab_dato.getValor("mes").equals("Diciembre")){ 
+                                    iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), String.valueOf(i+1), Double.parseDouble(tab_parametros.getValor("valor_cuota_adicional")), 
+                                    Integer.parseInt(tab_parametros.getValor("ide_periodo_anticipo_inicial"))+i);
+
+                                }else{
+                                 iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), String.valueOf(i+1), Double.parseDouble(tab_parametros.getValor("valor_cuota_mensual")), 
+                                 Integer.parseInt(tab_parametros.getValor("ide_periodo_anticipo_inicial"))+i);
+                            }
+
+                            }else {
+                                    utilitario.agregarMensajeInfo("No se encuentra en roles", "");
+                            }
+                    }
+                } else{
+                       for (int i = 1; i < (conta-1); i++){
+                        TablaGenerica tab_dato = iAnticipos.periodos1(Integer.parseInt(tab_parametros.getValor("ide_periodo_anticipo_inicial"))+i);
+                         if (!tab_dato.isEmpty()) {
+                            if(tab_dato.getValor("mes").equals("Diciembre")){ 
+                                    iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), String.valueOf(i+1), Double.parseDouble(tab_parametros.getValor("valor_cuota_adicional")), 
+                                    Integer.parseInt(tab_parametros.getValor("ide_periodo_anticipo_inicial"))+i);
+
+                                }else{
+                                 iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), String.valueOf(i+1), Double.parseDouble(tab_parametros.getValor("valor_cuota_mensual")), 
+                                 Integer.parseInt(tab_parametros.getValor("ide_periodo_anticipo_inicial"))+i);
+                            }
+
+                            }else {
+                                    utilitario.agregarMensajeInfo("No se encuentra en roles", "");
+                            }
+                     
+                    }
+                        Double valorp=0.0,valors=0.0,totall=0.0;
+                        valorp = (conta-2)*Double.parseDouble(tab_parametros.getValor("valor_cuota_mensual"));
+                        valors= Double.parseDouble(tab_parametros.getValor("valor_cuota_adicional"))+valorp ;
+                        totall = Double.parseDouble(tab_parametros.getValor("valor_anticipo"))-valors ;
+                        iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), tab_anticipo.getValor("numero_cuotas_anticipo"), Double.parseDouble(String.valueOf(totall)), 
+                        Integer.parseInt(tab_anticipo.getValor("ide_periodo_anticipo_final")));
+                }
+                
+            }else {
+                   utilitario.agregarMensajeInfo("No se encuentra en roles", "");
+                   }
+                    
+        }else{
+            
+                for (int i = 0; i < conta-1; i++){
+                    iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), String.valueOf(1+i), Double.parseDouble(tab_anticipo.getValor("valor_cuota_mensual")), 
+                             Integer.parseInt(tab_anticipo.getValor("ide_periodo_anticipo_inicial"))+i);
+                    }
+                        Double valor1=0.0,total=0.0;
+                        valor1 = (conta-1)*Double.parseDouble(tab_anticipo.getValor("valor_cuota_mensual"));
+                        total = Double.parseDouble(tab_anticipo.getValor("valor_anticipo"))-valor1 ;
+                        iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_anticipo")), tab_anticipo.getValor("numero_cuotas_anticipo"), total, 
+                                 Integer.parseInt(tab_anticipo.getValor("ide_periodo_anticipo_final")));
+             }
+        tab_anticipo.actualizar();
+    }
     
     public Reporte getRep_reporte() {
         return rep_reporte;
