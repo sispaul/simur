@@ -23,12 +23,27 @@ public class decimoCuarto {
     private Conexion con_postgres;
     
     //Forma la nomina e insercion en la tabla srh_decimo_cuarto
-    public void Nomina(){
+    public void Nomina(Integer dis){
 
         String nomina ="insert into srh_decimo_cuarto (id_distributivo_roles,ano,ide_columna,ide_periodo,cod_tipo,cedula,nombres,ide_empleado)\n" +
-                        "select id_distributivo,anio,columna,mes,cod_tipo,cedula_pass,nombres,cod_empleado\n" +
-                        "from nomv_decimo_cuarto\n" +
-                        "order by id_distributivo, nombres";
+                        "SELECT DISTINCT on(e.cedula_pass,e.cod_empleado,e.nombres)\n" +
+                        "e.id_distributivo,\n" +
+                        "extract(year from CURRENT_TIMESTAMP) AS anio,\n" +
+                        "(SELECT ide_col FROM srh_columnas where codigo_col like 'D4TO') AS columna,\n" +
+                        "8 as periodo,\n" +
+                        "n.cod_tipo,\n" +
+                        "e.cedula_pass,\n" +
+                        "e.nombres,\n" +
+                        "e.cod_empleado\n" +
+                        "FROM\n" +
+                        "\"public\".srh_empleado AS e\n" +
+                        "INNER JOIN \"public\".srh_num_contratos AS n ON e.cod_empleado = n.cod_empleado\n" +
+                        "WHERE\n" +
+                        "e.estado = 1 and e.id_distributivo = "+dis+"\n" +
+                        "ORDER BY\n" +
+                        "e.cedula_pass ASC,\n" +
+                        "e.cod_empleado ASC,\n" +
+                        "e.nombres ASC";
         conectar();
         con_postgres.ejecutarSql(nomina);
         con_postgres.desconectar();
@@ -58,11 +73,12 @@ public class decimoCuarto {
         con_postgres = null;
     }
     
-    public void verificar(String iden){
+    public void verificar(String iden,Integer codigo){
         String decimo="update srh_decimo_cuarto\n" +
                         "set fecha_ingreso = (SELECT fecha_contrato FROM srh_num_contratos\n" +
-                        "where cod_empleado = (SELECT cod_empleado FROM srh_empleado where cedula_pass like '"+iden+"')\n" +
-                        "order by fecha_contrato desc LIMIT 1)\n" +
+                        "where cod_empleado = (SELECT cod_empleado FROM srh_empleado where cedula_pass like '"+iden+"' )\n" +
+                        "order by fecha_contrato desc LIMIT 1),\n" +
+                        "descripcion_periodo = (SELECT tipo FROM srh_tipo_empleado where cod_tipo = "+codigo+" )\n" +
                         "where cedula like '"+iden+"'";
         conectar();
         con_postgres.ejecutarSql(decimo);
@@ -73,6 +89,15 @@ public class decimoCuarto {
     public void decimo_cont(String iden,Double valor){
         String decimo="update srh_decimo_cuarto \n" +
                        "set valor_decimo = "+valor+" where cedula like '"+iden+"'";
+        conectar();
+        con_postgres.ejecutarSql(decimo);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+    
+    public void decimo_dias(String iden,Integer dias){
+        String decimo="update srh_decimo_cuarto \n" +
+                       "set dias = "+dias+" where cedula like '"+iden+"'";
         conectar();
         con_postgres.ejecutarSql(decimo);
         con_postgres.desconectar();
