@@ -135,14 +135,14 @@ public class pre_decimo_cuarto extends Pantalla{
     }
     
     public void completa(){
-        Dcuarto.Nomina();
+//        Dcuarto.Nomina();
         tab_decimo.actualizar();
         completar_nomina();
     }
     
     public void completar_nomina(){
         for (int i = 0; i < tab_decimo.getTotalFilas(); i++) {
-            Dcuarto.verificar(tab_decimo.getValor(i, "cedula"));
+//            Dcuarto.verificar(tab_decimo.getValor(i, "cedula"));
         }
       tab_decimo.actualizar();
     }
