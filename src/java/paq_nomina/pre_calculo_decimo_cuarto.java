@@ -66,10 +66,6 @@ public class pre_calculo_decimo_cuarto extends Pantalla{
         pan_opcion.setTransient(true);
         agregarComponente(pan_opcion);
         
-        pan_opcion1.setId("pan_opcion1");
-        pan_opcion1.setTransient(true);
-        agregarComponente(pan_opcion1);
-        
         Boton bot1 = new Boton();
         bot1.setValue("SUBIR NOMINA");
         bot1.setIcon("ui-icon-extlink"); //pone icono de jquery temeroller
@@ -95,7 +91,7 @@ public class pre_calculo_decimo_cuarto extends Pantalla{
         pan_opcion.getChildren().add(bot3);
         pan_opcion.getChildren().add(bot4);
         
-                //agregar usuario actual   
+        //agregar usuario actual   
         tab_consulta.setId("tab_consulta");
         tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
         tab_consulta.setCampoPrimaria("IDE_USUA");
@@ -117,19 +113,21 @@ public class pre_calculo_decimo_cuarto extends Pantalla{
         
         Grid gri_busca = new Grid();
         gri_busca.setColumns(2);
-        gri_busca.getChildren().add(new Etiqueta("AÑO: "));    
+//        gri_busca.getChildren().add(new Etiqueta("")); 
+        bar_botones.agregarComponente(new Etiqueta("AÑO: "));
         cmb_ano.setId("cmb_ano");
         cmb_ano.setConexion(con_postgres);
         cmb_ano.setCombo("select ano_curso, ano_curso from conc_ano where ano_curso ="+utilitario.getAnio(utilitario.getFechaActual())+" order by ano_curso ");
         cmb_ano.eliminarVacio();
-        gri_busca.getChildren().add(cmb_ano);
+        bar_botones.agregarComponente(cmb_ano);
+//        gri_busca.getChildren().add(cmb_ano);
 
-        gri_busca.getChildren().add(new Etiqueta("TIPO COLABORADOR: ")); 
+//        gri_busca.getChildren().add(new Etiqueta("TIPO COLABORADOR: ")); 
         cmb_descripcion.setId("cmb_descripcion");
         cmb_descripcion.setConexion(con_postgres);
         cmb_descripcion.setCombo("SELECT id_distributivo,descripcion FROM srh_tdistributivo order by descripcion");
-        gri_busca.getChildren().add(cmb_descripcion);
-        pan_opcion1.getChildren().add(gri_busca);
+//        gri_busca.getChildren().add(cmb_descripcion);
+//        pan_opcion1.getChildren().add(gri_busca);
 
         //declaracion de tabla
         tab_decimo.setId("tab_decimo");
@@ -142,6 +140,7 @@ public class pre_calculo_decimo_cuarto extends Pantalla{
         tab_decimo.getColumna("ide_periodo").setVisible(false);
         tab_decimo.getColumna("id_distributivo_roles").setVisible(false);
         tab_decimo.getColumna("ide_decimo_cuarto").setVisible(false);
+        tab_decimo.getColumna("nombres").setFiltro(true);
         tab_decimo.dibujar();
         PanelTabla tpd = new PanelTabla();
         tpd.setPanelTabla(tab_decimo);
@@ -301,6 +300,9 @@ public class pre_calculo_decimo_cuarto extends Pantalla{
                     dia_dialorol.setDialogo(grid_rol);
                     dia_dialorol.dibujar();
                 break;
+                    case "VERIFICAR NOMINA":
+                            aceptoDecimo4To();
+                    break;
         }
     }
     
@@ -335,6 +337,12 @@ public class pre_calculo_decimo_cuarto extends Pantalla{
                           } else {
                                   utilitario.agregarMensajeInfo("no existe en la base de datos", "");
                                   }
+               break;
+               case "VERIFICAR NOMINA":
+                     p_parametros = new HashMap();
+                     rep_reporte.cerrar();
+                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                     sef_formato.dibujar();
                break;
         }
     }
