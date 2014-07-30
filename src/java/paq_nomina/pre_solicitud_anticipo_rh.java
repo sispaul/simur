@@ -132,80 +132,7 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
         set_solicitud.getBot_aceptar().setMetodo("aceptarBusqueda");
         set_solicitud.setHeader("BUSCAR SOLICITUD POR CEDULA");
         agregarComponente(set_solicitud);
-        
-//        tab_anticipo.setId("tab_anticipo");
-//        tab_anticipo.setConexion(con_postgres);
-//        tab_anticipo.setTabla("srh_solicitud_anticipo", "ide_solicitud_anticipo", 1);
-//     
-//        tab_anticipo.getColumna("ci_solicitante").setMetodoChange("llenarDatosE");
-//        tab_anticipo.getColumna("solicitante").setMetodoChange("buscaSolicitante");
-//        
-//        tab_anticipo.getColumna("id_distributivo").setCombo("SELECT id_distributivo, descripcion FROM srh_tdistributivo");
-//        tab_anticipo.getColumna("cod_banco").setCombo("SELECT ban_codigo,ban_nombre FROM ocebanco");
-//        tab_anticipo.getColumna("cod_cuenta").setCombo("SELECT cod_cuenta,nombre FROM ocecuentas");
-//        tab_anticipo.getColumna("cod_cargo").setCombo("SELECT cod_cargo,nombre_cargo FROM srh_cargos");
-//        tab_anticipo.getColumna("cod_tipo").setCombo("SELECT cod_tipo,tipo FROM srh_tipo_empleado");
-//        tab_anticipo.getColumna("cod_grupo").setCombo("SELECT cod_grupo,nombre FROM srh_grupo_ocupacional");
-//        
-//        tab_anticipo.getColumna("login_ingre_solicitud").setValorDefecto(utilitario.getVariable("NICK"));
-//        tab_anticipo.getColumna("ip_ingre_solicitud").setValorDefecto(utilitario.getIp());
-//        
-//        tab_anticipo.getColumna("login_ingre_solicitud").setVisible(false);
-//        tab_anticipo.getColumna("ip_ingre_solicitud").setVisible(false);
-//        tab_anticipo.getColumna("login_aprob_solicitud").setVisible(false);
-//        tab_anticipo.getColumna("ip_aprob_solicitud").setVisible(false);
-//        tab_anticipo.getColumna("aprobado_solicitante").setVisible(false);
-//        
-//        tab_anticipo.setTipoFormulario(true);
-//        tab_anticipo.agregarRelacion(tab_garante);
-//        tab_anticipo.agregarRelacion(tab_parametros);
-//        tab_anticipo.getGrid().setColumns(4);
-//        tab_anticipo.dibujar();
-//        PanelTabla tpa = new PanelTabla();
-//        tpa.setMensajeWarn("DATOS DE SOLICITANTE");
-//        tpa.setPanelTabla(tab_anticipo);
-//        
-//        tab_garante.setId("tab_garante");
-//        tab_garante.setConexion(con_postgres);
-//        tab_garante.setTabla("srh_garante_anticipo", "ide_garante_anticipo", 2);
-//        tab_garante.getColumna("IDE_GARANTE_ANTICIPO ").setVisible(false);
-//        tab_garante.getColumna("ci_garante").setMetodoChange("llenarGarante");
-//        tab_garante.getColumna("garante").setMetodoChange("buscaColaborador");
-//        tab_garante.getColumna("id_distributivo").setCombo("SELECT id_distributivo, descripcion FROM srh_tdistributivo");
-//        tab_garante.getColumna("cod_tipo").setCombo("SELECT cod_tipo,tipo FROM srh_tipo_empleado");
-//        tab_garante.setTipoFormulario(true);
-//        tab_garante.getGrid().setColumns(4);
-//        tab_garante.dibujar();
-//        PanelTabla tpd = new PanelTabla();
-//        tpd.setMensajeWarn("DATOS DE GARANTE");
-//        tpd.setPanelTabla(tab_garante);
-//        
-//        tab_parametros.setId("tab_parametros");
-//        tab_parametros.setConexion(con_postgres);
-//        tab_parametros.setTabla("srh_calculo_anticipo", "ide_calculo_anticipo", 3);
-//        tab_parametros.getColumna("IDE_CALCULO_ANTICIPO").setVisible(false);
-//        tab_parametros.getColumna("fecha_anticipo").setValorDefecto(utilitario.getFechaActual());
-//        tab_parametros.getColumna("ide_periodo_anticipo_inicial").setCombo("select ide_periodo_anticipo, (mes || '/' || anio) As Cliente from srh_periodo_anticipo order by ide_periodo_anticipo");
-//        tab_parametros.getColumna("ide_periodo_anticipo_final").setCombo("select ide_periodo_anticipo, (mes || '/' || anio) As Clientes from srh_periodo_anticipo order by ide_periodo_anticipo");
-//
-//        tab_parametros.getColumna("porcentaje_descuento_diciembre").setLectura(true);
-//        tab_parametros.getColumna("valor_anticipo").setMetodoChange("remuneracion");
-//        tab_parametros.getColumna("numero_cuotas_anticipo").setMetodoChange("porcentaje");
-//        tab_parametros.getColumna("porcentaje_descuento_diciembre").setMetodoChange("cuotas");
-//        tab_parametros.getColumna("ide_estado_anticipo").setCombo("SELECT ide_estado_tipo,estado FROM srh_estado_anticipo");
-//        tab_parametros.setTipoFormulario(true);
-//        tab_parametros.getGrid().setColumns(4);
-//        tab_parametros.dibujar();
-//        
-//        PanelTabla tpp = new PanelTabla();
-//        tpp.setMensajeWarn("DATOS DE ANTICIPO A SOLICITAR");
-//        tpp.setPanelTabla(tab_parametros);
-//        
-//        Division div_division = new Division();
-//        div_division.setId("div_division");
-//        div_division.dividir3(tpa, tpd, tpp, "40%", "38%", "H");
-//        agregarComponente(div_division);
-        
+
         dia_dialogos.setId("dia_dialogos");
         dia_dialogos.setTitle("BUSCAR SOLICITANTE"); //titulo
         dia_dialogos.setWidth("35%"); //siempre en porcentajes  ancho
@@ -224,6 +151,14 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
         grid_d.setColumns(4);
         agregarComponente(dia_dialogo);
         dibujarSolicitud();
+        
+         /*         * CONFIGURACIÓN DE OBJETO REPORTE         */
+        bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
+        agregarComponente(rep_reporte); //2 agregar el listado de reportes
+        sef_formato.setId("sef_formato");
+        sef_formato.setConexion(con_postgres);
+        agregarComponente(sef_formato);
+        
     }
 
      public void buscarSolicitud() {
@@ -1431,7 +1366,7 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
            if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=15){
                        periodo = utilitario.getMes(tab_parametros.getValor("FECHA_ANTICIPO"))-1+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
                        if(periodo >= 12){
-                             if(Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))>=70 && Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))<100){
+                             if(Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))>=70 && Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))<=100){
                                  calculo_valor();
                                 }else{
                                       utilitario.agregarMensaje("Al menos el 70% de Sueldo", "Para Cuota de Diciembre");
@@ -1442,7 +1377,7 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
               }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=16 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){
                        periodo = utilitario.getMes(tab_parametros.getValor("FECHA_ANTICIPO"))+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
                        if(periodo >= 12){
-                            if(Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))>=70 && Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))<100){
+                            if(Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))>=70 && Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))<=100){
                                     calculo_valor();
                             }else{
                                   utilitario.agregarMensaje("Al menos el 70% de Sueldo", "Maximo el 100%, Para Cuota de Diciembre");
@@ -1524,7 +1459,7 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
                 if (tab_parametros.guardar()) {
                     con_postgres.guardarPantalla();
                                         tramite();
-                                        cuotas1();
+//                                        cuotas1();
                     }
                 }
             }
