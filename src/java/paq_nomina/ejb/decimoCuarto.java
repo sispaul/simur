@@ -23,27 +23,27 @@ public class decimoCuarto {
     private Conexion con_postgres;
     
     //Forma la nomina e insercion en la tabla srh_decimo_cuarto
-    public void Nomina(Integer dis){
+    public void Nomina(){
 
         String nomina ="insert into srh_decimo_cuarto (id_distributivo_roles,ano,ide_columna,ide_periodo,cod_tipo,cedula,nombres,ide_empleado)\n" +
-                        "SELECT DISTINCT on(e.cedula_pass,e.cod_empleado,e.nombres)\n" +
-                        "e.id_distributivo,\n" +
-                        "extract(year from CURRENT_TIMESTAMP) AS anio,\n" +
-                        "(SELECT ide_col FROM srh_columnas where codigo_col like 'D4TO') AS columna,\n" +
-                        "8 as periodo,\n" +
-                        "n.cod_tipo,\n" +
-                        "e.cedula_pass,\n" +
-                        "e.nombres,\n" +
-                        "e.cod_empleado\n" +
-                        "FROM\n" +
-                        "\"public\".srh_empleado AS e\n" +
-                        "INNER JOIN \"public\".srh_num_contratos AS n ON e.cod_empleado = n.cod_empleado\n" +
-                        "WHERE\n" +
-                        "e.estado = 1 and e.id_distributivo = "+dis+"\n" +
-                        "ORDER BY\n" +
-                        "e.cedula_pass ASC,\n" +
-                        "e.cod_empleado ASC,\n" +
-                        "e.nombres ASC";
+                        "SELECT DISTINCT on(e.nombres,e.cedula_pass,e.cod_empleado) \n" +
+                        "e.id_distributivo, \n" +
+                        "extract(year from CURRENT_TIMESTAMP) AS anio, \n" +
+                        "(SELECT ide_col FROM srh_columnas where codigo_col like 'D4TO') AS columna, \n" +
+                        "extract(month from CURRENT_TIMESTAMP) AS mes, \n" +
+                        "n.cod_tipo, \n" +
+                        "e.cedula_pass, \n" +
+                        "e.nombres, \n" +
+                        "e.cod_empleado \n" +
+                        "FROM \n" +
+                        "srh_empleado AS e \n" +
+                        "INNER JOIN  srh_num_contratos AS n ON e.cod_empleado = n.cod_empleado \n" +
+                        "WHERE \n" +
+                        "e.estado = 1 \n" +
+                        "ORDER BY \n" +
+                        "e.nombres ASC,\n" +
+                        "e.cedula_pass ASC, \n" +
+                        "e.cod_empleado ASC";
         conectar();
         con_postgres.ejecutarSql(nomina);
         con_postgres.desconectar();
@@ -130,6 +130,7 @@ public class decimoCuarto {
                             "srh_roles.ide_empleado ="+ide_emple;
         conectar();
         con_postgres.ejecutarSql(str_sql4);
+         System.err.println(str_sql4);
         con_postgres.desconectar();
         con_postgres = null;
      }

@@ -168,7 +168,7 @@ public class pre_calculo_decimo_cuarto extends Pantalla{
     
     public void completa(){
 
-        Dcuarto.Nomina(Integer.parseInt(cmb_descripcion.getValue()+""));
+        Dcuarto.Nomina();
         tab_decimo.actualizar();
         completar_nomina();
     }
@@ -276,12 +276,8 @@ public class pre_calculo_decimo_cuarto extends Pantalla{
     }
     
     public void newColum(){
-        if(cmb_descripcion1.getValue()!=1){        
-                     
-                     Dcuarto.InsertTra();
-        }else{
                      Dcuarto.InsertEm();
-        } 
+                     Dcuarto.InsertTra();
     }
     
     /*CREACION DE REPORTES */
