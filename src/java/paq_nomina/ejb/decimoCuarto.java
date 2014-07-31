@@ -27,23 +27,23 @@ public class decimoCuarto {
 
         String nomina ="insert into srh_decimo_cuarto (id_distributivo_roles,ano,ide_columna,ide_periodo,cod_tipo,cedula,nombres,ide_empleado)\n" +
                         "SELECT DISTINCT on(e.nombres,e.cedula_pass,e.cod_empleado) \n" +
-                        "e.id_distributivo, \n" +
-                        "extract(year from CURRENT_TIMESTAMP) AS anio, \n" +
-                        "(SELECT ide_col FROM srh_columnas where codigo_col like 'D4TO') AS columna, \n" +
-                        "extract(month from CURRENT_TIMESTAMP) AS mes, \n" +
-                        "n.cod_tipo, \n" +
-                        "e.cedula_pass, \n" +
-                        "e.nombres, \n" +
-                        "e.cod_empleado \n" +
-                        "FROM \n" +
-                        "srh_empleado AS e \n" +
-                        "INNER JOIN  srh_num_contratos AS n ON e.cod_empleado = n.cod_empleado \n" +
-                        "WHERE \n" +
-                        "e.estado = 1 \n" +
-                        "ORDER BY \n" +
-                        "e.nombres ASC,\n" +
-                        "e.cedula_pass ASC, \n" +
-                        "e.cod_empleado ASC";
+                        " e.id_distributivo, \n" +
+                        " extract(year from CURRENT_TIMESTAMP) AS anio, \n" +
+                        " (SELECT ide_col FROM srh_columnas where codigo_col like 'D4TO') AS columna, \n" +
+                        " extract(month from CURRENT_TIMESTAMP) AS mes, \n" +
+                        " n.cod_tipo, \n" +
+                        " e.cedula_pass, \n" +
+                        " e.nombres, \n" +
+                        " e.cod_empleado \n" +
+                        " FROM \n" +
+                        " srh_empleado AS e \n" +
+                        " INNER JOIN  srh_num_contratos AS n ON e.cod_empleado = n.cod_empleado \n" +
+                        " WHERE \n" +
+                        " e.estado = 1 \n" +
+                        " ORDER BY \n" +
+                        " e.nombres ASC, \n" +
+                        " e.cedula_pass ASC, \n" +
+                        " e.cod_empleado ASC";
         conectar();
         con_postgres.ejecutarSql(nomina);
         con_postgres.desconectar();
@@ -134,7 +134,34 @@ public class decimoCuarto {
         con_postgres.desconectar();
         con_postgres = null;
      }
+  
+    public void HistoricoDecimo(String usu) {
+        // Forma el sql para el ingreso
     
+        String str_sql3 = "insert into srh_decimo_cuarto_historico(id_distributivo_roles,ano,ide_columna,ide_periodo,cod_tipo,fecha_ingreso,valor_decimo,cedula,nombres,ide_decimo_cuarto,ide_empleado,descripcion_periodo,dias,usu_calculo) \n" +
+                            " SELECT \n" +
+                            " id_distributivo_roles, \n" +
+                            " ano, \n" +
+                            " ide_columna, \n" +
+                            " ide_periodo, \n" +
+                            " cod_tipo, \n" +
+                            " fecha_ingreso, \n" +
+                            " valor_decimo, \n" +
+                            " cedula, \n" +
+                            " nombres, \n" +
+                            " ide_decimo_cuarto, \n" +
+                            " ide_empleado, \n" +
+                            " descripcion_periodo, \n" +
+                            " dias,\n" +
+                            " '"+usu+"' as usu\n" +
+                            " FROM srh_decimo_cuarto \n" +
+                            " order by nombres asc";
+        conectar();
+        con_postgres.ejecutarSql(str_sql3);
+        con_postgres.desconectar();
+        con_postgres = null;
+     }
+     
      public TablaGenerica periodo(Integer periodo){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
