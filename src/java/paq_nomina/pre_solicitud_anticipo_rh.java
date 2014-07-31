@@ -111,6 +111,12 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
         bot_limpiar.setMetodo("limpiar");
         bar_botones.agregarBoton(bot_limpiar);
         
+        Boton bot_abort = new Boton();
+        bot_abort.setValue("Anular Solictud");
+        bot_abort.setIcon("ui-icon-closethick");
+        bot_abort.setMetodo("Anular");
+        bar_botones.agregarBoton(bot_abort);
+        
         Grid gri_busca = new Grid();
         gri_busca.setColumns(2);
         tex_busqueda.setSize(45);
@@ -124,7 +130,7 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
         
         set_solicitud.setId("set_solicitud");
         set_solicitud.getTab_seleccion().setConexion(con_postgres);
-        set_solicitud.setSeleccionTabla("SELECT ide_solicitud_anticipo,ci_solicitante,solicitante,aprobado_solicitante FROM srh_solicitud_anticipo where ide_solicitud_anticipo=-1", "ide_solicitud_anticipo");
+        set_solicitud.setSeleccionTabla("SELECT ide_solicitud_anticipo,ci_solicitante,solicitante,(case when aprobado_solicitante = 1 then 'SI' ELSE 'NO' end ) AS aprobado FROM srh_solicitud_anticipo where ide_solicitud_anticipo=-1", "ide_solicitud_anticipo");
         set_solicitud.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
         set_solicitud.getTab_seleccion().setRows(10);
         set_solicitud.setRadio();
@@ -161,9 +167,13 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
         
     }
 
+    public void Anular(){
+        
+    }
+    
      public void buscarSolicitud() {
         if (tex_busqueda.getValue() != null && tex_busqueda.getValue().toString().isEmpty() == false) {
-            set_solicitud.getTab_seleccion().setSql("SELECT ide_solicitud_anticipo,ci_solicitante,solicitante,aprobado_solicitante FROM srh_solicitud_anticipo WHERE ci_solicitante LIKE '" + tex_busqueda.getValue() + "'");
+            set_solicitud.getTab_seleccion().setSql("SELECT ide_solicitud_anticipo,ci_solicitante,solicitante,(case when aprobado_solicitante = 1 then 'SI' ELSE 'NO' end ) AS aprobado FROM srh_solicitud_anticipo WHERE ci_solicitante LIKE '" + tex_busqueda.getValue() + "'");
             set_solicitud.getTab_seleccion().ejecutarSql();
         } else {
             utilitario.agregarMensajeInfo("Debe ingresar un valor en el texto", "");
@@ -267,26 +277,17 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
         tpp.setMensajeWarn("DATOS DE ANTICIPO A SOLICITAR");
         tpp.setPanelTabla(tab_parametros);
         
-//        Division div_division = new Division();
-//        div_division.setId("div_division");
-//        div_division.dividir3(tpa, tpd, tpp, "40%", "38%", "H");
-//        agregarComponente(div_division);
             Grupo gru = new Grupo();
             gru.getChildren().add(tpa);
             gru.getChildren().add(tpd);
             gru.getChildren().add(tpp);
             pan_opcion.getChildren().add(gru);    
-        
-//           }else {
-//            utilitario.agregarMensajeInfo("No se puede abrir la opción", "Seleccione una Empresa en el autocompletar");
-////            limpiar();
-//        }
+
     }
     
     private void limpiarPanel() {
         //borra el contenido de la división central central
         pan_opcion.getChildren().clear();
-        // pan_opcion.getChildren().add(efecto);
     }
 
     public void limpiar() {
@@ -592,7 +593,6 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
                       }
     }
     
-    
     /*VALIDACION DE PERSONA QUE SOLICITA ANTICIPO*/    
     public void servidor(){
         
@@ -884,8 +884,8 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
                                         }
                         }
                         }else {
-               utilitario.agregarMensajeError("Solicitante de anticipo", "No posee historia laboral");
-               }
+                                utilitario.agregarMensajeError("Solicitante de anticipo", "No posee historia laboral");
+                                }
             }else {
                utilitario.agregarMensajeInfo("No existen Datos", "");
                }
@@ -1457,9 +1457,8 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
         if (tab_anticipo.guardar()) {
             if (tab_garante.guardar()) {
                 if (tab_parametros.guardar()) {
+                    tramite();
                     con_postgres.guardarPantalla();
-                                        tramite();
-//                                        cuotas1();
                     }
                 }
             }
@@ -1480,6 +1479,7 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
 
     public void tramite(){
       iAnticipos.actuaEstSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")));
+       iAnticipos.actuaEstSolici(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")));
     }
         
     //CALCULAR MESES
