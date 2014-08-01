@@ -130,7 +130,6 @@ public class decimoCuarto {
                             "srh_roles.ide_empleado ="+ide_emple;
         conectar();
         con_postgres.ejecutarSql(str_sql4);
-         System.err.println(str_sql4);
         con_postgres.desconectar();
         con_postgres = null;
      }
