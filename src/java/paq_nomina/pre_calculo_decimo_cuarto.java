@@ -337,7 +337,6 @@ public class pre_calculo_decimo_cuarto extends Pantalla{
                     }
            }
        }
-        newColum();
         dias();
     }    
     
@@ -493,6 +492,7 @@ public class pre_calculo_decimo_cuarto extends Pantalla{
              utilitario.agregarMensaje("Decimo 4to Sueldo", "Calculado :) ;)");
  }
     public void migrar(){ 
+        newColum();
         for (int i = 0; i < tab_decimo.getTotalFilas(); i++) {
             tab_decimo.getValor(i, "ide_empleado");
             tab_decimo.getValor(i, "ide_columna");
