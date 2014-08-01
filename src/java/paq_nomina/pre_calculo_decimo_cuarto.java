@@ -337,7 +337,7 @@ public class pre_calculo_decimo_cuarto extends Pantalla{
                     }
            }
        }
-//        newColum();
+        newColum();
         dias();
     }    
     
