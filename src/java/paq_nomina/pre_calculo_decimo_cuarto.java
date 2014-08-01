@@ -49,6 +49,9 @@ public class pre_calculo_decimo_cuarto extends Pantalla{
     private Dialogo dia_dialorol = new Dialogo();
     private Dialogo dia_dialogo = new Dialogo();
     private Grid grid_rol = new Grid();
+    
+    private Dialogo dia_dialorol1 = new Dialogo();
+    private Grid grid_rol1 = new Grid();
 
         //
     @EJB
@@ -73,7 +76,7 @@ public class pre_calculo_decimo_cuarto extends Pantalla{
         Boton bot2 = new Boton();
         bot2.setValue("CALCULO DECIMO 4to");
         bot2.setIcon("ui-icon-extlink"); //pone icono de jquery temeroller
-        bot2.setMetodo("dias");
+        bot2.setMetodo("decimo_4to_Nom");
 
         Boton bot3 = new Boton();
         bot3.setValue("MIGRAR DECIMO 4TO A ROLES");
@@ -155,6 +158,15 @@ public class pre_calculo_decimo_cuarto extends Pantalla{
         grid_rol.setColumns(4);
         agregarComponente(dia_dialorol);
         
+        dia_dialorol1.setId("dia_dialorol1");
+        dia_dialorol1.setTitle("REPORTES DE ROLES - VERIFICACIÓN"); //titulo
+        dia_dialorol1.setWidth("30%"); //siempre en porcentajes  ancho
+        dia_dialorol1.setHeight("20%");//siempre porcentaje   alto 
+        dia_dialorol1.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialorol1.getBot_aceptar().setMetodo("aceptoDecimo4To");
+        grid_rol1.setColumns(4);
+        agregarComponente(dia_dialorol1);
+        
         /*         * CONFIGURACIÓN DE OBJETO REPORTE         */
         bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
         agregarComponente(rep_reporte); //2 agregar el listado de reportes
@@ -190,27 +202,138 @@ public class pre_calculo_decimo_cuarto extends Pantalla{
                 meses=utilitario.getMes(tab_decimo.getValor(i, "fecha_ingreso"));
                 dias=utilitario.getDia(tab_decimo.getValor(i, "fecha_ingreso"));
                 dia=utilitario.getDia(tab_decimo.getValor(i, "fecha_ingreso"));
-           if(calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31))>=12){
-                     Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble("340"));
+           if(calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31))>12){
+//                            if(dias!=1){
+                                    Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble("340"));
+//                               }
                 }else{
-                    double valor=0,totdia=0,calculo=0;
-                    if(dia!=1){
-                        if(dia<=15){
+                        double valor=0,totdia=0,calculo=0;
+                     if(meses == 1 || meses == 2){
+                        if(dias!=1){
+                            if(dias>1 && dias<=16){
                                 totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
                                 calculo = (((totdia-1)*30)+(30-dia));
                                 valor= (calculo*340)/360;
                                 Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)));
-                                }else{
+                            }else{
                                     totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
                                     calculo = (totdia*30)+(30-dia);
                                     valor= (calculo*340)/360;
                                     Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)));
-                        }
-                    }else{
+                            }
+                        }else{
                             totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
                             calculo = (totdia*30);
                             valor= (calculo*340)/360;
                             Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)));
+                        }
+                    }else if(meses == 3){
+                                 if(dias!=1){
+                                            if(dias>1 && dias<=13){
+                                                totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
+                                                calculo = (((totdia-1)*30)+(30-dia));
+                                                valor= (calculo*340)/360;
+                                                Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)));
+                                            }else{
+                                                totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
+                                                calculo = (totdia*30)+(30-dia);
+                                                valor= (calculo*340)/360;
+                                                Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)));
+                                                }
+                                }else{
+                                    totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
+                                    calculo = (totdia*30);
+                                    valor= (calculo*340)/360;
+                                    Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)));
+                                }
+                    }else if(meses == 4){
+                              if(dias!=1){
+                                            if(dias>1 && dias<=11){
+                                                totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
+                                                calculo = (((totdia-1)*30)+(30-dia));
+                                                valor= (calculo*340)/360;
+                                                Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)));
+                                            }else{
+                                                totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
+                                                calculo = (totdia*30)+(30-dia);
+                                                valor= (calculo*340)/360;
+                                                Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)));
+                                                }
+                                }else{
+                                    totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
+                                    calculo = (totdia*30);
+                                    valor= (calculo*340)/360;
+                                    Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)));
+                                }
+                    } else if(meses == 5){
+                              if(dias!=1){
+                                            if(dias>1 && dias<=8){
+                                                totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
+                                                calculo = (((totdia-1)*30)+(30-dia));
+                                                valor= (calculo*340)/360;
+                                                Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)));
+                                            }else{
+                                                totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
+                                                calculo = (totdia*30)+(30-dia);
+                                                valor= (calculo*340)/360;
+                                                Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)));
+                                                }
+                                }else{
+                                    totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
+                                    calculo = (totdia*30);
+                                    valor= (calculo*340)/360;
+                                    Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)));
+                                }
+                    }else if(meses == 6){
+                               if(dias!=1){
+                                            if(dias>1 && dias<=6){
+                                                totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
+                                                calculo = (((totdia-1)*30)+(30-dia));
+                                                valor= (calculo*340)/360;
+                                                Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)));
+                                            }else{
+                                                totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
+                                                calculo = (totdia*30)+(30-dia);
+                                                valor= (calculo*340)/360;
+                                                Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)));
+                                                }
+                                }else{
+                                        totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
+                                        calculo = (totdia*30);
+                                        valor= (calculo*340)/360;
+                                        Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)));
+                                }
+                    }else if(meses == 7){
+                              if(dias!=1){
+                                   if(dias>1 && dias<=3){
+                                        totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
+                                        calculo = (((totdia-1)*30)+(30-dia));
+                                        valor= (calculo*340)/360;
+                                        Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)));
+                                            }else{
+                                                totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
+                                                calculo = (totdia*30)+(30-dia);
+                                                valor= (calculo*340)/360;
+                                                Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)));
+                                                }
+                                }else{
+                                    totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
+                                    calculo = (totdia*30);
+                                    valor= (calculo*340)/360;
+                                    Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)));
+                                }
+                    }else {
+                            if(dias!=1){
+                                        totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
+                                        calculo = (((totdia-1)*30)+(30-dia));
+                                        valor= (calculo*340)/360;
+                                        Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)));
+                            }else{
+                                    totdia=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
+                                    calculo = (totdia*30);
+                                    valor= (calculo*340)/360;
+                                    Dcuarto.decimo_cont(tab_decimo.getValor(i, "cedula"),Double.parseDouble(String.valueOf(Math.rint(valor*100)/100)));
+                                }
                     }
            }
        }
@@ -343,8 +466,27 @@ public class pre_calculo_decimo_cuarto extends Pantalla{
                                         Dcuarto.decimo_dias(tab_decimo.getValor(i, "cedula"), d);
                                 }
                     }else {
-                        
+                            if(dias!=1){
+                                                    total=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
+                                                    calculo = ((total-1)*30)+(30-dias);
+                                                    int d = (int) Math.floor(calculo);
+                                                    Dcuarto.decimo_dias(tab_decimo.getValor(i, "cedula"), d);
+                            }else{
+                                        total=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
+                                        calculo = (total*30);
+                                        int d = (int) Math.floor(calculo);
+                                        Dcuarto.decimo_dias(tab_decimo.getValor(i, "cedula"), d);
+                                }
                     }
+                }else{
+                      if(calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31))<13){
+                            if(dias!=1){
+                                        total=calcularDias(new GregorianCalendar(anos,meses,dias),new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()),7,31));
+                                        calculo = ((total-1)*30)+(30-dias);
+                                        int d = (int) Math.floor(calculo);
+                                        Dcuarto.decimo_dias(tab_decimo.getValor(i, "cedula"), d);
+                               }
+                       }
                 }
          }
              tab_decimo.actualizar();
@@ -394,9 +536,16 @@ public class pre_calculo_decimo_cuarto extends Pantalla{
                     dia_dialorol.setDialogo(grid_rol);
                     dia_dialorol.dibujar();
                 break;
-                    case "VERIFICAR NOMINA":
+                case "VERIFICAR NOMINA":
+                    dia_dialorol1.Limpiar();
+                    grid_rol1.getChildren().add(new Etiqueta("DISTRIBUTIVO :"));
+                    grid_rol1.getChildren().add(cmb_descripcion1);
+                    dia_dialorol1.setDialogo(grid_rol1);
+                    dia_dialorol1.dibujar();
+                break;
+                case "VERIFICAR FECHAS VACIAS":
                             aceptoDecimo4To();
-                    break;
+                break;
         }
     }
     
@@ -433,6 +582,20 @@ public class pre_calculo_decimo_cuarto extends Pantalla{
                                   }
                break;
                case "VERIFICAR NOMINA":
+                    TablaGenerica tab_dato1 = Dcuarto.distibutivo(Integer.parseInt(cmb_descripcion1.getValue()+""));
+                        if (!tab_dato1.isEmpty()) {
+                                            p_parametros = new HashMap();
+                                            p_parametros.put("distributivo",Integer.parseInt(cmb_descripcion1.getValue()+""));
+                                            p_parametros.put("descripcion",tab_dato1.getValor("descripcion")+"");
+                                            p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
+                                            rep_reporte.cerrar();
+                                            sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                                            sef_formato.dibujar();
+                          } else {
+                                  utilitario.agregarMensajeInfo("no existe en la base de datos", "");
+                                  }
+               break;
+               case "VERIFICAR FECHAS VACIAS":
                      p_parametros = new HashMap();
                      rep_reporte.cerrar();
                      sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
