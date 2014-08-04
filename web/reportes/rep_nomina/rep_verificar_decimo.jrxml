@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_verificar_decimo" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9ee3c74d-d001-4e7d-b5d7-ff257c4ccaa2">
-	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.zoom" value="2.2000000000000006"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="distributivo" class="java.lang.Integer" isForPrompting="false">
@@ -38,6 +38,9 @@ order by nombres]]>
 	<field name="descripcion_periodo" class="java.lang.String"/>
 	<field name="dias_c" class="java.lang.Integer"/>
 	<field name="id_distributivo_roles" class="java.lang.Integer"/>
+	<variable name="sum_valor" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_decimo}]]></variableExpression>
+	</variable>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -104,7 +107,7 @@ order by nombres]]>
 	<columnHeader>
 		<band height="29" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="db29c0d7-7062-48b1-a1f0-582b4900d505" key="staticText-24" x="393" y="3" width="72" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="db29c0d7-7062-48b1-a1f0-582b4900d505" key="staticText-24" x="403" y="3" width="72" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -120,7 +123,7 @@ order by nombres]]>
 				<reportElement uuid="444eb800-5952-439d-8869-76df8dfab595" key="line" x="3" y="2" width="550" height="1"/>
 			</line>
 			<staticText>
-				<reportElement uuid="a83456a6-9f12-4686-86df-9dedad664648" key="staticText-24" x="468" y="3" width="48" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="a83456a6-9f12-4686-86df-9dedad664648" key="staticText-24" x="476" y="3" width="48" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -133,14 +136,14 @@ order by nombres]]>
 				<text><![CDATA[DECIMO 4to]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="b4b6fa18-e876-4549-adf5-91b3ca735f12" x="519" y="3" width="30" height="13"/>
+				<reportElement uuid="b4b6fa18-e876-4549-adf5-91b3ca735f12" x="525" y="3" width="30" height="13"/>
 				<textElement textAlignment="Right">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[DIAS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="c9485101-fbbd-44c4-893f-0e8be08b9e5f" key="staticText-24" x="289" y="3" width="115" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="c9485101-fbbd-44c4-893f-0e8be08b9e5f" key="staticText-24" x="298" y="3" width="115" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -153,7 +156,7 @@ order by nombres]]>
 				<text><![CDATA[TIPO RELACION]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="517c01d1-94ec-4292-905c-e48bb804ae0d" key="staticText-8" x="97" y="3" width="190" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="517c01d1-94ec-4292-905c-e48bb804ae0d" key="staticText-8" x="109" y="3" width="190" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -166,7 +169,7 @@ order by nombres]]>
 				<text><![CDATA[APELLIDOS Y NOMBRES]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="3add2a28-b7f5-4329-9872-ae6a5da6058a" key="staticText-3" x="46" y="3" width="45" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="3add2a28-b7f5-4329-9872-ae6a5da6058a" key="staticText-3" x="61" y="3" width="45" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -182,7 +185,7 @@ order by nombres]]>
 				<reportElement uuid="70b032d2-d2ec-4460-9dfb-04cba33c55a0" key="line" x="3" y="18" width="550" height="1"/>
 			</line>
 			<staticText>
-				<reportElement uuid="e1600e0f-1ae7-4b2f-bf24-ae2afcda2e6e" key="staticText-3" x="3" y="3" width="38" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="e1600e0f-1ae7-4b2f-bf24-ae2afcda2e6e" key="staticText-3" x="21" y="3" width="38" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -194,44 +197,62 @@ order by nombres]]>
 				</textElement>
 				<text><![CDATA[CODIGO]]></text>
 			</staticText>
+			<staticText>
+				<reportElement uuid="ba4f3d5c-22b2-4310-9bdd-fd8f1db317fe" key="staticText-3" x="0" y="3" width="20" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[#]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="14" splitType="Stretch">
 			<textField>
-				<reportElement uuid="f1591a8a-00ac-4f5b-9cb5-643fb431808e" x="3" y="0" width="38" height="13"/>
-				<textElement/>
+				<reportElement uuid="f1591a8a-00ac-4f5b-9cb5-643fb431808e" x="21" y="0" width="38" height="13"/>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{ide_empleado}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="93749696-51c8-4e1f-be5b-dd5c1c1ebe77" x="46" y="0" width="45" height="13"/>
+				<reportElement uuid="93749696-51c8-4e1f-be5b-dd5c1c1ebe77" x="61" y="0" width="45" height="13"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{cedula}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="372a6a9a-a113-4349-95bb-4e782a198ba2" x="468" y="0" width="48" height="13"/>
-				<textElement/>
+				<reportElement uuid="372a6a9a-a113-4349-95bb-4e782a198ba2" x="476" y="0" width="48" height="13"/>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{valor_decimo}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="f2f56ad6-ec24-429d-9c6f-ee99253ba366" x="519" y="0" width="30" height="13"/>
-				<textElement/>
+				<reportElement uuid="f2f56ad6-ec24-429d-9c6f-ee99253ba366" x="525" y="0" width="30" height="13"/>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{dias_c}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="43034674-3f97-4897-8e0a-805c92a6d9c4" x="97" y="0" width="190" height="13"/>
+				<reportElement uuid="43034674-3f97-4897-8e0a-805c92a6d9c4" x="109" y="0" width="190" height="13"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{nombres}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="06a6bbe1-6cec-49f1-93d2-ff60e37cfb8d" x="289" y="0" width="115" height="13"/>
+				<reportElement uuid="06a6bbe1-6cec-49f1-93d2-ff60e37cfb8d" x="298" y="0" width="115" height="13"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{descripcion_periodo}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="19d00b10-ac29-4e75-97f9-9630f9dd146e" x="393" y="0" width="72" height="13"/>
-				<textElement/>
+				<reportElement uuid="19d00b10-ac29-4e75-97f9-9630f9dd146e" x="417" y="0" width="45" height="13"/>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{fecha_ingreso}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="10c0bdc5-4bae-42e7-be7f-dc3cb16af58f" x="0" y="0" width="20" height="13"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -298,6 +319,19 @@ order by nombres]]>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="4" splitType="Stretch"/>
+		<band height="38" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="ccdff789-157e-49f6-86f8-800dcecacf59" x="218" y="11" width="157" height="15"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL GENERAL DECIMO 4TO.]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="d1733bef-8907-4c02-a79d-662073ebd866" x="375" y="11" width="100" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{sum_valor}]]></textFieldExpression>
+			</textField>
+		</band>
 	</summary>
 </jasperReport>
