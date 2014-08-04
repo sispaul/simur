@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_solicitud_anticipo" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9b3ef524-c1e2-4cf4-be9f-b5c04e634e17">
+	<property name="ireport.zoom" value="2.357947691000003"/>
+	<property name="ireport.x" value="55"/>
+	<property name="ireport.y" value="248"/>
+	<queryString>
+		<![CDATA[SELECT
+c.fecha_anticipo,
+s.ide_solicitud_anticipo,
+s.ide_empleado_solicitante,
+s.ci_solicitante,
+s.solicitante,
+s.rmu,
+s.rmu_liquido_anterior,
+s.cod_banco,
+s.cod_cuenta,
+s.numero_cuenta,
+g.ci_garante,
+g.garante,
+c.valor_anticipo,
+c.numero_cuotas_anticipo,
+c.valor_cuota_mensual,
+c.valor_cuota_adicional,
+c.porcentaje_descuento_diciembre,
+c.ide_periodo_anticipo_inicial,
+c.ide_periodo_anticipo_final,
+c.valor_pagado,
+c.numero_cuotas_pagadas
+FROM
+srh_solicitud_anticipo s
+INNER JOIN srh_garante_anticipo g ON g.ide_solicitud_anticipo = s.ide_solicitud_anticipo
+INNER JOIN srh_calculo_anticipo c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo]]>
+	</queryString>
+	<field name="fecha_anticipo" class="java.sql.Date"/>
+	<field name="ide_solicitud_anticipo" class="java.lang.Integer"/>
+	<field name="ide_empleado_solicitante" class="java.lang.Integer"/>
+	<field name="ci_solicitante" class="java.lang.String"/>
+	<field name="solicitante" class="java.lang.String"/>
+	<field name="rmu" class="java.math.BigDecimal"/>
+	<field name="rmu_liquido_anterior" class="java.math.BigDecimal"/>
+	<field name="cod_banco" class="java.lang.Integer"/>
+	<field name="cod_cuenta" class="java.lang.Integer"/>
+	<field name="numero_cuenta" class="java.lang.String"/>
+	<field name="ci_garante" class="java.lang.String"/>
+	<field name="garante" class="java.lang.String"/>
+	<field name="valor_anticipo" class="java.math.BigDecimal"/>
+	<field name="numero_cuotas_anticipo" class="java.lang.Integer"/>
+	<field name="valor_cuota_mensual" class="java.math.BigDecimal"/>
+	<field name="valor_cuota_adicional" class="java.math.BigDecimal"/>
+	<field name="porcentaje_descuento_diciembre" class="java.lang.Integer"/>
+	<field name="ide_periodo_anticipo_inicial" class="java.lang.Integer"/>
+	<field name="ide_periodo_anticipo_final" class="java.lang.Integer"/>
+	<field name="valor_pagado" class="java.math.BigDecimal"/>
+	<field name="numero_cuotas_pagadas" class="java.lang.Integer"/>
+	<group name="fecha_anticipo">
+		<groupExpression><![CDATA[$F{fecha_anticipo}]]></groupExpression>
+		<groupHeader>
+			<band height="21">
+				<textField>
+					<reportElement uuid="bdb58060-f0e8-4749-ac8e-d6a80a032cfc" x="133" y="0" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{fecha_anticipo}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="2257a45e-f009-4882-a798-e1a403116a0b" x="3" y="0" width="130" height="20"/>
+					<textElement/>
+					<text><![CDATA[FECHA DE SOLICTUD:]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="50"/>
+		</groupFooter>
+	</group>
+	<group name="solictud_anticipo">
+		<groupExpression><![CDATA[$F{ide_solicitud_anticipo}]]></groupExpression>
+		<groupHeader>
+			<band height="128">
+				<staticText>
+					<reportElement uuid="aa3b490d-9a6b-4c80-844f-99cf1e1507a9" x="3" y="0" width="77" height="20"/>
+					<textElement/>
+					<text><![CDATA[# SOLICITUD:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="99dfdbcf-aa7a-4428-84d2-75943db654ab" x="3" y="38" width="143" height="20"/>
+					<textElement/>
+					<text><![CDATA[CEDULA SOLICITANTE:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="642f5ae3-28be-42af-a072-67f5cf8e58d3" x="3" y="57" width="143" height="20"/>
+					<textElement/>
+					<text><![CDATA[NOMBRE SOLICITANTE:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="a62bec4c-02e2-4fb9-af12-e8c66eebb20b" x="146" y="38" width="87" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{ci_solicitante}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="f092fea8-bb2e-4830-88e6-fcc3f77cc14f" x="146" y="57" width="216" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{solicitante}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="2c293b2a-4e7e-4e3d-be1b-07d2b1641bcc" x="379" y="38" width="100" height="20"/>
+					<textElement/>
+					<text><![CDATA[SUELDO:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="dc620001-329c-41eb-8662-d8151895dcb2" x="379" y="57" width="100" height="20"/>
+					<textElement/>
+					<text><![CDATA[SUELDO ANTERIOR:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="c7729d2b-68c0-4fc7-b92e-7096ab4c8079" x="463" y="38" width="76" height="20"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$F{rmu}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="f4cbea7a-3961-4b58-986d-a31bccf4f668" x="463" y="57" width="76" height="20"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$F{rmu_liquido_anterior}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="5a6dcd6d-05d1-4c33-8271-505d8d777e40" x="7" y="0" width="100" height="20"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$F{ide_solicitud_anticipo}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="ff652eff-13df-476e-8c77-d3e80584480b" x="179" y="0" width="134" height="20"/>
+					<textElement/>
+					<text><![CDATA[MONTO DE ANTICIPO:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="b613408d-79b0-4949-9569-61935bd750c2" x="410" y="0" width="141" height="20"/>
+					<textElement/>
+					<text><![CDATA[# CUOTAS DE ANTICIPO:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="2c023d64-a388-4731-9953-88a18a2ba7cd" x="236" y="0" width="100" height="20"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$F{valor_anticipo}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="d1bf27f2-4b26-4057-a314-12f37eaa9db5" x="451" y="0" width="100" height="20"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$F{numero_cuotas_anticipo}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="50"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="86" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="eda12db1-52e2-451c-a1b8-ab281b97e8f0" x="3" y="2" width="488" height="22"/>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GOBIERNO AUTONOMO DESCENTRALIZADO DEL CANTON RUMIÑAHUI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="20a019b0-82e8-412d-b5ad-f91fbba6e777" x="3" y="19" width="332" height="22"/>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SOLICITUD DE ANTICIPO DE SOLICITANTE]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="4" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="4" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

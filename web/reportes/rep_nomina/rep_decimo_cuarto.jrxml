@@ -43,11 +43,12 @@ d.fecha_ingreso,
 d.id_distributivo_roles,
 d.cod_tipo,
 (case when d.dias is null then '0' ELSE d.dias end ) AS dias_c,
-p.cod_programa
+"p".cod_programa,
+"p".nom_programa
 FROM
 srh_roles AS r ,
 srh_tipo_empleado AS e ,
-srh_decimo_cuarto AS d ,
+srh_decimo_cuarto_historico AS d ,
 prec_programas AS p
 WHERE
 r.ide_empleado = d.ide_empleado AND
@@ -67,6 +68,7 @@ GROUP BY p.cod_programa
 ,d.fecha_ingreso
 ,d.cod_tipo
 ,d.dias
+,"p".nom_programa
 ORDER BY p.cod_programa,d.nombres asc]]>
 	</queryString>
 	<field name="valor" class="java.math.BigDecimal">
@@ -82,6 +84,7 @@ ORDER BY p.cod_programa,d.nombres asc]]>
 	<field name="cod_tipo" class="java.lang.Integer"/>
 	<field name="dias_c" class="java.lang.Integer"/>
 	<field name="cod_programa" class="java.lang.String"/>
+	<field name="nom_programa" class="java.lang.String"/>
 	<variable name="sum_valor" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
 	</variable>
@@ -188,6 +191,11 @@ ORDER BY p.cod_programa,d.nombres asc]]>
 				<line direction="BottomUp">
 					<reportElement uuid="7616bc33-d14d-46ce-ad69-2c9a7a766b3b" key="line-1" x="0" y="36" width="535" height="1"/>
 				</line>
+				<textField>
+					<reportElement uuid="3a19fb36-d87f-4f51-9d47-45c0f5f8e44e" x="329" y="0" width="178" height="14"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{nom_programa}]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupHeader>
 		<groupFooter>
