@@ -4,7 +4,6 @@
  */
 package paq_nomina;
 
-import framework.componentes.Boton;
 import framework.componentes.Grupo;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
@@ -12,7 +11,6 @@ import framework.componentes.Tabla;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
-import org.primefaces.event.SelectEvent;
 import paq_nomina.ejb.SolicAnticipos;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;

@@ -1044,27 +1044,6 @@ public TablaGenerica VerifEmpleCod(Integer codigo){
         
  }
   
-  
-public void actuaEstSolicitud(Integer anti){
-    String au_sql="UPDATE srh_calculo_anticipo\n" +
-                    "set ide_estado_anticipo =1\n" +
-                    "WHERE ide_solicitud_anticipo ="+anti;
-    conectar();
-    con_postgres.ejecutarSql(au_sql);
-    con_postgres.desconectar();
-    con_postgres = null;
-}
-  
-public void actuaEstSolici(Integer anti){
-    String au_sql="update srh_solicitud_anticipo\n" +
-                    "set aprobado_solicitante = null\n" +
-                    "WHERE ide_solicitud_anticipo ="+anti;
-    conectar();
-    con_postgres.ejecutarSql(au_sql);
-    con_postgres.desconectar();
-    con_postgres = null;
-}
-
   public void actuaSolicitud(Integer anti,String cuota,Integer aprob,String usu){
     String au_sql="update srh_solicitud_anticipo\n" +
                     "set aprobado_solicitante ="+aprob+",\n" +
@@ -1109,6 +1088,30 @@ public void negarSolicitud(Integer anti,String cedula){
 public void llenarSolicitud(Integer anti,String cuota,Double valor,Integer perdes){
     String au_sql="insert into srh_detalle_anticipo (ide_anticipo,cuota,valor,ide_periodo_descuento)\n" +
                   "values ("+anti+",'"+cuota+"',"+valor+","+perdes+")";
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+}
+
+public void deleteCalculo(Integer anti){
+    String au_sql="delete from srh_calculo_anticipo where ide_solicitud_anticipo ="+anti;
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+}
+
+public void deleteGarante(Integer anti){
+    String au_sql="delete from srh_garante_anticipo where ide_solicitud_anticipo ="+anti;
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+}
+
+public void deleteSolicitud(Integer anti){
+    String au_sql="delete from srh_solicitud_anticipo where ide_solicitud_anticipo ="+anti;
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();

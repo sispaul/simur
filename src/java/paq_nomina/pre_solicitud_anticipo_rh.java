@@ -7,6 +7,7 @@ package paq_nomina;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
+import framework.componentes.Combo;
 import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
@@ -18,9 +19,11 @@ import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
@@ -50,6 +53,7 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
     private Tabla tab_consulta = new Tabla();
     private Tabla set_colaborador = new Tabla();
     private Tabla set_solicitante = new Tabla();
+    private Tabla set_solicitu = new Tabla();
     private SeleccionTabla set_solicitud = new SeleccionTabla();
     
     //PARA ASIGNACION DE MES
@@ -61,14 +65,20 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
     //Dialogo Busca 
     private Dialogo dia_dialogo = new Dialogo();
     private Dialogo dia_dialogos = new Dialogo();
+    private Dialogo dia_dialogoca = new Dialogo();
+    private Dialogo dia_dialogoso = new Dialogo();
     private Grid grid_d = new Grid();
+    private Grid grid_ca = new Grid();
+    private Grid grid_so = new Grid();
     private Grid grid_ds = new Grid();
     private Grid grid = new Grid();
     private Grid grids = new Grid();
+    private Grid gridso = new Grid();
     
     //
     private Panel pan_opcion = new Panel();
     private Texto tex_busqueda = new Texto();
+    private Combo cmb_seleccion = new Combo();
     
     @EJB
     private SolicAnticipos iAnticipos = (SolicAnticipos) utilitario.instanciarEJB(SolicAnticipos.class);
@@ -91,7 +101,8 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
         bot_busca.setValue("Busqueda Avanzada");
         bot_busca.setExcluirLectura(true);
         bot_busca.setIcon("ui-icon-search");
-        bot_busca.setMetodo("abrirBusqueda");
+//        bot_busca.setMetodo("abrirBusqueda");
+        bot_busca.setMetodo("Busca_tipo");
         bar_botones.agregarBoton(bot_busca);
         
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
@@ -149,13 +160,44 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
         agregarComponente(dia_dialogos);
         
         dia_dialogo.setId("dia_dialogo");
-        dia_dialogo.setTitle("BUSCAR COLABORADOR"); //titulo
+        dia_dialogo.setTitle("BUSCAR SERVIDOR"); //titulo
         dia_dialogo.setWidth("30%"); //siempre en porcentajes  ancho
         dia_dialogo.setHeight("45%");//siempre porcentaje   alto
         dia_dialogo.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_dialogo.getBot_aceptar().setMetodo("aceptoColaborador");
         grid_d.setColumns(4);
         agregarComponente(dia_dialogo);
+        
+        cmb_seleccion.setId("cmb_seleccion");
+        List lista1 = new ArrayList();
+        Object fila1[] = {
+            "1", "CEDULA"
+        };
+        Object fila2[] = {
+            "2", "APELLIDO"
+        };
+        lista1.add(fila1);;
+        lista1.add(fila2);;
+        cmb_seleccion.setCombo(lista1);
+        
+        dia_dialogoca.setId("dia_dialogoca");
+        dia_dialogoca.setTitle("SELECCIONAR TIPO DE BUSQUEDA"); //titulo
+        dia_dialogoca.setWidth("30%"); //siempre en porcentajes  ancho
+        dia_dialogoca.setHeight("15%");//siempre porcentaje   alto
+        dia_dialogoca.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogoca.getBot_aceptar().setMetodo("abrirBusqueda");
+        grid_ca.setColumns(4);
+        agregarComponente(dia_dialogoca);
+        
+        dia_dialogoso.setId("dia_dialogoso");
+        dia_dialogoso.setTitle("BUSQUEDA DE SOLICITUD POR APELLIDO"); //titulo
+        dia_dialogoso.setWidth("50%"); //siempre en porcentajes  ancho
+        dia_dialogoso.setHeight("45%");//siempre porcentaje   alto
+        dia_dialogoso.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogoso.getBot_aceptar().setMetodo("aceptarBusqueda");
+        grid_so.setColumns(4);
+        agregarComponente(dia_dialogoso);
+        
         dibujarSolicitud();
         
          /*         * CONFIGURACIÓN DE OBJETO REPORTE         */
@@ -169,34 +211,76 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
 
     public void Anular(){
         
+        iAnticipos.deleteCalculo(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")));
+        iAnticipos.deleteGarante(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")));
+        iAnticipos.deleteSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")));
+        utilitario.agregarMensaje("Solicitud Anulada", "Con Exito");
+        utilitario.addUpdate("pan_opcion");
+    }
+    
+    public void Busca_tipo(){
+        dia_dialogoca.Limpiar();
+        grid_ca.getChildren().add(new Etiqueta("ELEGIR PARAMETRO DE BUSQUEDA:"));
+        grid_ca.getChildren().add(cmb_seleccion);
+        dia_dialogoca.setDialogo(grid_ca);
+        dia_dialogoca.dibujar();
     }
     
      public void buscarSolicitud() {
-        if (tex_busqueda.getValue() != null && tex_busqueda.getValue().toString().isEmpty() == false) {
-            set_solicitud.getTab_seleccion().setSql("SELECT ide_solicitud_anticipo,ci_solicitante,solicitante,(case when aprobado_solicitante = 1 then 'SI' ELSE 'NO' end ) AS aprobado FROM srh_solicitud_anticipo WHERE ci_solicitante LIKE '" + tex_busqueda.getValue() + "'");
-            set_solicitud.getTab_seleccion().ejecutarSql();
-        } else {
-            utilitario.agregarMensajeInfo("Debe ingresar un valor en el texto", "");
-        }
-
+            if (tex_busqueda.getValue() != null && tex_busqueda.getValue().toString().isEmpty() == false) {
+                set_solicitud.getTab_seleccion().setSql("SELECT ide_solicitud_anticipo,ci_solicitante,solicitante,(case when aprobado_solicitante = 1 then 'SI' ELSE 'NO' end ) AS aprobado FROM srh_solicitud_anticipo WHERE ci_solicitante LIKE '" + tex_busqueda.getValue() + "'");
+                set_solicitud.getTab_seleccion().ejecutarSql();
+            } else {
+                utilitario.agregarMensajeInfo("Debe ingresar un valor en el texto", "");
+            }
     }
     
+     public void buscarSolicitud1(){
+          dia_dialogoso.Limpiar();
+          dia_dialogoso.setDialogo(gridso);
+          grid_so.getChildren().add(set_solicitu);
+          set_solicitu.setId("set_solicitu");
+          set_solicitu.setConexion(con_postgres);
+          set_solicitu.setHeader("LISTADO DE SERVIDORES");
+          set_solicitu.setSql("SELECT ide_solicitud_anticipo,ci_solicitante,solicitante,(case when aprobado_solicitante = 1 then 'SI' ELSE 'NO' end ) AS aprobado FROM srh_solicitud_anticipo");
+          set_solicitu.getColumna("solicitante").setFiltro(true);
+          set_solicitu.setRows(10);
+          set_solicitu.setTipoSeleccion(false);
+          dia_dialogoso.setDialogo(grid_so);
+          set_solicitu.dibujar();
+          dia_dialogoso.dibujar();
+     }
+     
     public void abrirBusqueda() {
-        set_solicitud.dibujar();
-        tex_busqueda.limpiar();
-        set_solicitud.getTab_seleccion().limpiar();
+        if(cmb_seleccion.getValue().equals("1")){
+            set_solicitud.dibujar();
+            tex_busqueda.limpiar();
+            set_solicitud.getTab_seleccion().limpiar();
+        }else{
+                buscarSolicitud1();
+        }
     }
 
     public void aceptarBusqueda() {
-        if (set_solicitud.getValorSeleccionado() != null) {
-            aut_busca.setValor(set_solicitud.getValorSeleccionado());
-            set_solicitud.cerrar();
-            dibujarSolicitud();
-            utilitario.addUpdate("aut_busca,pan_opcion");
-        } else {
-            utilitario.agregarMensajeInfo("Debe seleccionar una solicitud", "");
-        }
-
+        if(cmb_seleccion.getValue().equals("1")){
+            if (set_solicitud.getValorSeleccionado() != null) {
+                aut_busca.setValor(set_solicitud.getValorSeleccionado());
+                set_solicitud.cerrar();
+                dibujarSolicitud();
+                utilitario.addUpdate("aut_busca,pan_opcion");
+            } else {
+                utilitario.agregarMensajeInfo("Debe seleccionar una solicitud", "");
+            }
+        }else{
+                if (set_solicitu.getValorSeleccionado() != null) {
+                aut_busca.setValor(set_solicitu.getValorSeleccionado());
+                dia_dialogoso.cerrar();
+                dibujarSolicitud();
+                utilitario.addUpdate("aut_busca,pan_opcion");
+                    } else {
+                        utilitario.agregarMensajeInfo("Debe seleccionar una Solicitud", "");
+                    }      
+                }
     }
      
     public void dibujarSolicitud(){
@@ -270,7 +354,7 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
         tab_parametros.getColumna("porcentaje_descuento_diciembre").setMetodoChange("cuotas");
         tab_parametros.getColumna("ide_estado_anticipo").setCombo("SELECT ide_estado_tipo,estado FROM srh_estado_anticipo");
         tab_parametros.setTipoFormulario(true);
-        tab_parametros.getGrid().setColumns(4);
+        tab_parametros.getGrid().setColumns(6);
         tab_parametros.dibujar();
         
         PanelTabla tpp = new PanelTabla();
@@ -546,51 +630,37 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
     
     public void porcentaje(){
         Integer porcentaje =0;
-           if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=15){
-                       porcentaje = utilitario.getMes(tab_parametros.getValor("FECHA_ANTICIPO"))-1+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
-                       if(porcentaje >= 12){
-                           utilitario.agregarMensajeInfo("Seleccione Porcentaje de Descuento", "Para Cuota de Diciembre");
-                           tab_parametros.getColumna("porcentaje_descuento_diciembre").setLectura(false);
-                           tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
-                           tab_parametros.setValor("valor_cuota_mensual", "NULL");
-                           tab_parametros.setValor("valor_cuota_adicional", "NULL");
-                           tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
-                           tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
-                           utilitario.addUpdate("tab_parametros");
-                           servidor1();
-                       }else{
-                           tab_parametros.getColumna("porcentaje_descuento_diciembre").setLectura(true);
-                           tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
-                           tab_parametros.setValor("valor_cuota_mensual", "NULL");
-                           tab_parametros.setValor("valor_cuota_adicional", "NULL");
-                           tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
-                           tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
-                           utilitario.addUpdate("tab_parametros");
-                           servidor();
-                       }
-              }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=16 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){
-                       porcentaje = utilitario.getMes(tab_parametros.getValor("FECHA_ANTICIPO"))+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
-                       if(porcentaje >= 12){
-                           utilitario.agregarMensajeInfo("Seleccione Porcentaje de Descuento", "Para Cuota de Diciembre");
-                           tab_parametros.getColumna("porcentaje_descuento_diciembre").setLectura(false);
-                           tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
-                           tab_parametros.setValor("valor_cuota_mensual", "NULL");
-                           tab_parametros.setValor("valor_cuota_adicional", "NULL");
-                           tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
-                           tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
-                           utilitario.addUpdate("tab_parametros");
-                           servidor1();
-                       }else{
-                           tab_parametros.getColumna("porcentaje_descuento_diciembre").setLectura(true);
-                           tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
-                           tab_parametros.setValor("valor_cuota_mensual", "NULL");
-                           tab_parametros.setValor("valor_cuota_adicional", "NULL");
-                           tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
-                           tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
-                           utilitario.addUpdate("tab_parametros");
-                            servidor();
-                       }
-                      }
+        if(tab_anticipo.getValor("id_distributivo").equals("1")){
+            porcentaje= utilitario.getMes(utilitario.getFechaActual())+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
+              if(porcentaje >= 12){
+                tab_parametros.getColumna("porcentaje_descuento_diciembre").setLectura(false);
+                tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
+                tab_parametros.setValor("valor_cuota_mensual", "NULL");
+                tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
+                tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
+                utilitario.addUpdate("tab_parametros");
+                servidor1();
+             }else{
+                   tab_parametros.getColumna("porcentaje_descuento_diciembre").setLectura(true);
+                   tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
+                   tab_parametros.setValor("valor_cuota_mensual", "NULL");
+                   tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                   tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
+                   tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
+                   utilitario.addUpdate("tab_parametros");
+                   servidor();
+                   }
+        }else{
+              tab_parametros.getColumna("porcentaje_descuento_diciembre").setLectura(true);
+              tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
+              tab_parametros.setValor("valor_cuota_mensual", "NULL");
+              tab_parametros.setValor("valor_cuota_adicional", "NULL");
+              tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
+              tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
+              utilitario.addUpdate("tab_parametros");
+              servidor();
+        }
     }
     
     /*VALIDACION DE PERSONA QUE SOLICITA ANTICIPO*/    
@@ -605,131 +675,131 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
             TablaGenerica tab_datof = iAnticipos.FechaContrato(Integer.parseInt(tab_anticipo.getValor("ide_empleado_solicitante")));
             if (!tab_datof.isEmpty()) {
             if(tab_dato.getValor("id_distributivo").equals("1")){//VALIDACION DE EMPLEADOS
-                    if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=15){//VALIDACION POR DIA HASTA 10
+                    if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=10){//VALIDACION POR DIA HASTA 10
                                             anos=utilitario.getAnio(tab_datof.getValor("fecha_contrato"));
                                             dias=utilitario.getDia(tab_datof.getValor("fecha_contrato"));
                                             meses=utilitario.getMes(tab_datof.getValor("fecha_contrato"));
                                 if(tab_datof.getValor("cod_tipo").equals("4")||tab_datof.getValor("cod_tipo").equals("10")){
-                                        if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=18){
+                                        if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=12){
                                         llenarFecha();
                                         cuotas();
                                         }else{
-                                                utilitario.agregarMensaje("Tiempo Maximo de Pago", "18 MESES");
+                                                utilitario.agregarMensaje("Tiempo Maximo de Pago", "12 MESES");
                                             }
                                                 }else{
                                                         mesesf=utilitario.getMes(tab_datof.getValor("fecha_contrato"));
                                                         aniosf=utilitario.getAnio(tab_datof.getValor("fecha_contrato"))+1;
                                                         diasf=utilitario.getDia(tab_datof.getValor("fecha_contrato"));
                                                           if(mesesf!=1){//si el ingreso es diferente de enero
-                                                                    if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))){
+                                                                    if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1){
                                                                         llenarFecha();
                                                                         cuotas();
                                                                         }else{
-                                                                            tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));
+                                                                            tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));
                                                                             utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));  
                                                                         }
                                                               }else{
-                                                                    if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))){
+                                                                    if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1){
                                                                         llenarFecha();
                                                                         cuotas();
                                                                     }else{
-                                                                        tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));
-                                                                        utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));  
+                                                                        tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));
+                                                                        utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));  
                                                                     } 
                                                                    }
                                                     }
-                        }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=16 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28
+                        }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28
                                         if(tab_datof.getValor("cod_tipo").equals("4")||tab_datof.getValor("cod_tipo").equals("10")){
-                                                    if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=18){
+                                                    if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=12){
                                                         llenarFecha();
                                                         cuotas();
                                                         }else{
-                                                                utilitario.agregarMensaje("Tiempo Maximo de Pago", "18 MESES");
+                                                                utilitario.agregarMensaje("Tiempo Maximo de Pago", "12 MESES");
                                                             }
                                                         }else{
                                                                 mesesf=utilitario.getMes(tab_datof.getValor("fecha_contrato"));
                                                                 aniosf=utilitario.getAnio(tab_datof.getValor("fecha_contrato"))+1;
                                                                 diasf=utilitario.getDia(tab_datof.getValor("fecha_contrato"));
                                                                   if(mesesf!=1){//si el ingreso es diferente de enero
-                                                                                if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))){
+                                                                                if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1){
                                                                                     llenarFecha();
                                                                                     cuotas();
                                                                                 }else{
-                                                                                    tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));
-                                                                                    utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));  
+                                                                                    tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));
+                                                                                    utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));  
                                                                                 } 
                                                                       }else{
-                                                                            if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))){
+                                                                            if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1){
                                                                                 llenarFecha();
                                                                                 cuotas();
                                                                             }else{
-                                                                                tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));
-                                                                                utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));  
+                                                                                tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));
+                                                                                utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));  
                                                                             }  
                                                                            }
                                                             }
                                 }
                 }else if(tab_dato.getValor("id_distributivo").equals("2")){//VALIDACION DE TRABAJADORES
-                            if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=15){//VALIDACION POR DIA HASTA 10
+                            if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=10){//VALIDACION POR DIA HASTA 10
                                                     anos=utilitario.getAnio(tab_datof.getValor("fecha_contrato"));
                                                     dias=utilitario.getDia(tab_datof.getValor("fecha_contrato"));
                                                     meses=utilitario.getMes(tab_datof.getValor("fecha_contrato"));
                                         if(tab_datof.getValor("cod_tipo").equals("7")||tab_datof.getValor("cod_tipo").equals("10")){
-                                                if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=18){
+                                                if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=12){
                                                     llenarFecha();
                                                     cuotas();
                                                     }else{
-                                                            utilitario.agregarMensaje("Tiempo Maximo de Pago", "18 MESES");
+                                                            utilitario.agregarMensaje("Tiempo Maximo de Pago", "12 MESES");
                                                         }                                              
                                                         }else{
                                                                 mesesf=utilitario.getMes(tab_datof.getValor("fecha_contrato"));
                                                                 aniosf=utilitario.getAnio(tab_datof.getValor("fecha_contrato"))+1;
                                                                 diasf=utilitario.getDia(tab_datof.getValor("fecha_contrato"));
                                                                   if(mesesf!=1){//si el ingreso es diferente de enero
-                                                                                 if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))){
+                                                                                 if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1){
                                                                                      llenarFecha();
                                                                                      cuotas();
                                                                                     }else{
-                                                                                        tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));
+                                                                                        tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));
                                                                                         utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));  
                                                                                     }
                                                                       }else{
-                                                                            if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))){ 
+                                                                            if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1){ 
                                                                                 llenarFecha();
                                                                                 cuotas();
                                                                                 }else{
-                                                                                    tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));
-                                                                                    utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));  
+                                                                                    tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));
+                                                                                    utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));  
                                                                                 }  
                                                                            }
                                                             }
-                                }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=16 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28
+                                }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28
                                             if(tab_datof.getValor("cod_tipo").equals("7")||tab_datof.getValor("cod_tipo").equals("10")){
-                                                    if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=18){
+                                                    if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=12){
                                                             llenarFecha();
                                                             cuotas();
                                                         }else{
-                                                                utilitario.agregarMensaje("Tiempo Maximo de Pago", "18 MESES");
+                                                                utilitario.agregarMensaje("Tiempo Maximo de Pago", "12 MESES");
                                                             }
                                                             }else{
                                                                     mesesf=utilitario.getMes(tab_datof.getValor("fecha_contrato"));
                                                                     aniosf=utilitario.getAnio(tab_datof.getValor("fecha_contrato"))+1;
                                                                     diasf=utilitario.getDia(tab_datof.getValor("fecha_contrato"));
                                                                       if(mesesf!=1){//si el ingreso es diferente de enero
-                                                                                if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))){
+                                                                                if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1){
                                                                                     llenarFecha();
                                                                                     cuotas();
                                                                                     }else{
-                                                                                        tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));
-                                                                                        utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));  
+                                                                                        tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));
+                                                                                        utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));  
                                                                                     }
                                                                           }else{
-                                                                               if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))){
+                                                                               if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1){
                                                                                     llenarFecha();
                                                                                     cuotas();
                                                                                     }else{
-                                                                                        tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));
-                                                                                        utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));  
+                                                                                        tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));
+                                                                                        utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));  
                                                                                     }
                                                                                }
                                                                 }
@@ -753,136 +823,137 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
             TablaGenerica tab_datof = iAnticipos.FechaContrato(Integer.parseInt(tab_anticipo.getValor("ide_empleado_solicitante")));
             if (!tab_datof.isEmpty()) {
             if(tab_dato.getValor("id_distributivo").equals("1")){//VALIDACION DE EMPLEADOS
-                    if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=15){//VALIDACION POR DIA HASTA 10
+                    if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=10){//VALIDACION POR DIA HASTA 10
                                             anos=utilitario.getAnio(tab_datof.getValor("fecha_contrato"));
                                             dias=utilitario.getDia(tab_datof.getValor("fecha_contrato"));
                                             meses=utilitario.getMes(tab_datof.getValor("fecha_contrato"));
                                 if(tab_datof.getValor("cod_tipo").equals("4")||tab_datof.getValor("cod_tipo").equals("10")){
-                                        if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=18){
+                                        if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=12){
                                         llenarFecha();
 //                                        cuotas();
                                         }else{
-                                                utilitario.agregarMensaje("Tiempo Maximo de Pago", "18 MESES");
+                                                utilitario.agregarMensaje("Tiempo Maximo de Pago", "12 MESES");
                                             }
                                                 }else{
                                                         mesesf=utilitario.getMes(tab_datof.getValor("fecha_contrato"));
                                                         aniosf=utilitario.getAnio(tab_datof.getValor("fecha_contrato"))+1;
                                                         diasf=utilitario.getDia(tab_datof.getValor("fecha_contrato"));
                                                           if(mesesf!=1){//si el ingreso es diferente de enero
-                                                                    if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))){
+                                                                    if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1){
                                                                         llenarFecha();
 //                                                                        cuotas();
                                                                         }else{
-                                                                            tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));
-                                                                            utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));  
+                                                                            tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));
+                                                                            utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));  
                                                                         }
                                                               }else{
-                                                                    if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))){
+                                                                    if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1){
                                                                         llenarFecha();
 //                                                                        cuotas();
                                                                     }else{
-                                                                        tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));
-                                                                        utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));  
+                                                                        tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));
+                                                                        utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));  
                                                                     } 
                                                                    }
                                                     }
-                        }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=16 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28
+                        }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28
                                         if(tab_datof.getValor("cod_tipo").equals("4")||tab_datof.getValor("cod_tipo").equals("10")){
-                                                    if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=18){
+                                                    if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=12){
                                                         llenarFecha();
 //                                                        cuotas();
                                                         }else{
-                                                                utilitario.agregarMensaje("Tiempo Maximo de Pago", "18 MESES");
+                                                                utilitario.agregarMensaje("Tiempo Maximo de Pago", "12 MESES");
                                                             }
                                                         }else{
                                                                 mesesf=utilitario.getMes(tab_datof.getValor("fecha_contrato"));
                                                                 aniosf=utilitario.getAnio(tab_datof.getValor("fecha_contrato"))+1;
                                                                 diasf=utilitario.getDia(tab_datof.getValor("fecha_contrato"));
                                                                   if(mesesf!=1){//si el ingreso es diferente de enero
-                                                                                if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))){
+                                                                                if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1){
                                                                                     llenarFecha();
 //                                                                                    cuotas();
                                                                                 }else{
-                                                                                    tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));
-                                                                                    utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));  
+                                                                                    tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));
+                                                                                    utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));  
                                                                                 } 
                                                                       }else{
-                                                                            if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))){
+                                                                            if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1){
                                                                                 llenarFecha();
 //                                                                                cuotas();
                                                                             }else{
-                                                                                tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));
-                                                                                utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));  
+                                                                                tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));
+                                                                                utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));  
                                                                             }  
                                                                            }
                                                             }
                                 }
                 }else if(tab_dato.getValor("id_distributivo").equals("2")){//VALIDACION DE TRABAJADORES
-                            if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=15){//VALIDACION POR DIA HASTA 10
+                            if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=10){//VALIDACION POR DIA HASTA 10
                                                     anos=utilitario.getAnio(tab_datof.getValor("fecha_contrato"));
                                                     dias=utilitario.getDia(tab_datof.getValor("fecha_contrato"));
                                                     meses=utilitario.getMes(tab_datof.getValor("fecha_contrato"));
                                         if(tab_datof.getValor("cod_tipo").equals("7")||tab_datof.getValor("cod_tipo").equals("10")){
-                                                if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=18){
+                                                if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=12){
                                                     llenarFecha();
 //                                                    cuotas();
                                                     }else{
-                                                            utilitario.agregarMensaje("Tiempo Maximo de Pago", "18 MESES");
+                                                            utilitario.agregarMensaje("Tiempo Maximo de Pago", "12 MESES");
                                                         }                                              
                                                         }else{
                                                                 mesesf=utilitario.getMes(tab_datof.getValor("fecha_contrato"));
                                                                 aniosf=utilitario.getAnio(tab_datof.getValor("fecha_contrato"))+1;
                                                                 diasf=utilitario.getDia(tab_datof.getValor("fecha_contrato"));
                                                                   if(mesesf!=1){//si el ingreso es diferente de enero
-                                                                                 if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))){
+                                                                                 if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1){
                                                                                      llenarFecha();
 //                                                                                     cuotas();
                                                                                     }else{
-                                                                                        tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));
-                                                                                        utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));  
+                                                                                        tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));
+                                                                                        utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));  
                                                                                     }
                                                                       }else{
-                                                                            if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))){ 
+                                                                            if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1){ 
                                                                                 llenarFecha();
 //                                                                                cuotas();
                                                                                 }else{
-                                                                                    tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));
-                                                                                    utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));  
+                                                                                    tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));
+                                                                                    utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));  
                                                                                 }  
                                                                            }
                                                             }
-                                }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=16 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28
+                                }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28
                                             if(tab_datof.getValor("cod_tipo").equals("7")||tab_datof.getValor("cod_tipo").equals("10")){
-                                                    if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=18){
+                                                    if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=12){
                                                             llenarFecha();
 //                                                            cuotas();
                                                         }else{
-                                                                utilitario.agregarMensaje("Tiempo Maximo de Pago", "18 MESES");
+                                                                utilitario.agregarMensaje("Tiempo Maximo de Pago", "12 MESES");
                                                             }
                                                             }else{
                                                                     mesesf=utilitario.getMes(tab_datof.getValor("fecha_contrato"));
                                                                     aniosf=utilitario.getAnio(tab_datof.getValor("fecha_contrato"))+1;
                                                                     diasf=utilitario.getDia(tab_datof.getValor("fecha_contrato"));
                                                                       if(mesesf!=1){//si el ingreso es diferente de enero
-                                                                                if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))){
+                                                                                if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1){
                                                                                     llenarFecha();
 //                                                                                    cuotas();
                                                                                     }else{
-                                                                                        tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));
-                                                                                        utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));  
+                                                                                        tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));
+                                                                                        utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));  
                                                                                     }
                                                                           }else{
-                                                                               if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))){
+                                                                               if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1){
                                                                                     llenarFecha();
 //                                                                                    cuotas();
                                                                                     }else{
-                                                                                        tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));
-                                                                                        utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));  
+                                                                                        tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));
+                                                                                        utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,(meses_a+1),dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));  
                                                                                     }
                                                                                }
                                                                 }
                                         }
                         }
+                        utilitario.agregarMensajeInfo("Seleccione Porcentaje de Descuento", "Para Cuota de Diciembre");
                         }else {
                                 utilitario.agregarMensajeError("Solicitante de anticipo", "No posee historia laboral");
                                 }
@@ -904,7 +975,7 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
         dia = String.valueOf(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO")));
         
         mess = utilitario.getMes(tab_parametros.getValor("FECHA_ANTICIPO"));
-        if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=15){
+        if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=10){
              if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))==12){
                 calculo = 12 - Integer.parseInt(mes);
                 calculo1 = calculo - Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
@@ -1229,7 +1300,7 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
                                                }
                                             }
                     }
-            }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=16 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31 ){
+            }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31 ){
                         if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))==12){
                         calculo = 12 - Integer.parseInt(mes);
                         calculo1 = calculo - Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
@@ -1363,7 +1434,8 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
     public void cuotas(){
         
       Integer periodo =0;
-           if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=15){
+      if(tab_anticipo.getValor("id_distributivo").equals("1")){
+           if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=10){
                        periodo = utilitario.getMes(tab_parametros.getValor("FECHA_ANTICIPO"))-1+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
                        if(periodo >= 12){
                              if(Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))>=70 && Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))<=100){
@@ -1374,7 +1446,7 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
                        }else{
                            calculo_valor();
                        }
-              }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=16 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){
+              }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){
                        periodo = utilitario.getMes(tab_parametros.getValor("FECHA_ANTICIPO"))+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
                        if(periodo >= 12){
                             if(Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))>=70 && Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))<=100){
@@ -1386,56 +1458,78 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
                            calculo_valor();
                        }
                       }
+      }else{
+            calculo_valor();
+      }     
     }
     
     public void calculo_valor(){
-                Integer rango;
+        Integer rango;
         double valora=0,valora1=0,valorm=0,media=0,rmu=0,valan=0,valorff=0;
         rmu =Double.parseDouble(tab_anticipo.getValor("rmu"));
         valan= Double.parseDouble(tab_parametros.getValor("valor_anticipo"));
         media = Double.parseDouble(tab_anticipo.getValor("rmu_liquido_anterior"))/2;
-        TablaGenerica tab_dato = iAnticipos.periodos1(Integer.parseInt(tab_parametros.getValor("ide_periodo_anticipo_inicial")));
-        if (!tab_dato.isEmpty()) {
-            rango = Integer.parseInt(tab_dato.getValor("periodo"))+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
-            
-            if(rango > 12){
-                valora= ((rmu*(Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))))/100);
-                if(valora>=Double.parseDouble(tab_parametros.getValor("valor_anticipo"))){
-                                   utilitario.agregarMensajeError("Cuota Diciembre Excede Sueldo Anterior", "");
-                }else{
-                        valorm = (valan-valora)/(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))-1);
-                        if(media>=(Math.rint(valorm*100)/100)){
-                            tab_parametros.setValor("valor_cuota_adicional", String.valueOf(valora));
-                            tab_parametros.setValor("valor_cuota_mensual", String.valueOf(Math.rint(valorm*100)/100));
-                            utilitario.addUpdate("tab_parametros");
-                            }else{
-                                   tab_parametros.setValor("valor_cuota_mensual", "NULL");
-                                   tab_parametros.setValor("valor_cuota_adicional", "NULL");
-                                   tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
-                                   tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
-                                   utilitario.addUpdate("tab_parametros");
-                                   utilitario.agregarMensajeError("Cuota Mensual Excede 50% Sueldo Anterior", "");
-                                }
-                }
-            }else if(rango <= 12){
-                    
-                    valora1 = Double.parseDouble(tab_parametros.getValor("valor_anticipo")) / Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
-                    if(media>=(Math.rint(valora1*100)/100)){
-                        tab_parametros.setValor("valor_cuota_adicional", "NULL");
-                        tab_parametros.setValor("valor_cuota_mensual", String.valueOf(Math.rint(valora1*100)/100));
-                        utilitario.addUpdate("tab_parametros");
+        if(tab_anticipo.getValor("id_distributivo").equals("1")){
+            TablaGenerica tab_dato = iAnticipos.periodos1(Integer.parseInt(tab_parametros.getValor("ide_periodo_anticipo_inicial")));
+            if (!tab_dato.isEmpty()) {
+                rango = Integer.parseInt(tab_dato.getValor("periodo"))+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
+                if(rango > 12){
+                    valora= ((rmu*(Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))))/100);
+                    if(valora>=Double.parseDouble(tab_parametros.getValor("valor_anticipo"))){
+                                       utilitario.agregarMensajeError("Cuota Diciembre Excede Sueldo Anterior", "");
                     }else{
-                           tab_parametros.setValor("valor_cuota_mensual", "NULL");
-                           tab_parametros.setValor("valor_cuota_adicional", "NULL");
-                           tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
-                           tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
-                           utilitario.addUpdate("tab_parametros");
-                           utilitario.agregarMensajeError("Cuota Mensual Excede 50% Sueldo Anterior", "");
+                            valorm = (valan-valora)/(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))-1);
+                            if(media>=(Math.rint(valorm*100)/100)){
+                                tab_parametros.setValor("valor_cuota_adicional", String.valueOf(valora));
+                                tab_parametros.setValor("valor_cuota_mensual", String.valueOf(Math.rint(valorm*100)/100));
+                                utilitario.addUpdate("tab_parametros");
+                                }else{
+                                       tab_parametros.setValor("valor_cuota_mensual", "NULL");
+                                       tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                                       tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
+                                       tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
+                                       utilitario.addUpdate("tab_parametros");
+                                       utilitario.agregarMensajeError("Cuota Mensual Excede 50% Sueldo Anterior", "");
+                                    }
                     }
-                }
-        }else {
-               utilitario.agregarMensajeInfo("No existen Datos", "");
-               }
+                }else if(rango <= 12){
+
+                        valora1 = Double.parseDouble(tab_parametros.getValor("valor_anticipo")) / Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
+                        if(media>=(Math.rint(valora1*100)/100)){
+                            tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                            tab_parametros.setValor("valor_cuota_mensual", String.valueOf(Math.rint(valora1*100)/100));
+                            utilitario.addUpdate("tab_parametros");
+                        }else{
+                               tab_parametros.setValor("valor_cuota_mensual", "NULL");
+                               tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                               tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
+                               tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
+                               utilitario.addUpdate("tab_parametros");
+                               utilitario.agregarMensajeError("Cuota Mensual Excede 50% Sueldo Anterior", "");
+                        }
+                    }
+            }else {
+                   utilitario.agregarMensajeInfo("No existen Datos", "");
+                   }
+        }else{
+            TablaGenerica tab_dato = iAnticipos.periodos1(Integer.parseInt(tab_parametros.getValor("ide_periodo_anticipo_inicial")));
+            if (!tab_dato.isEmpty()) {
+                            valorm = (valan)/(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo")));
+                            if(media>=(Math.rint(valorm*100)/100)){
+                                tab_parametros.setValor("valor_cuota_mensual", String.valueOf(Math.rint(valorm*100)/100));
+                                utilitario.addUpdate("tab_parametros");
+                                }else{
+                                       tab_parametros.setValor("valor_cuota_mensual", "NULL");
+                                       tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                                       tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
+                                       tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
+                                       utilitario.addUpdate("tab_parametros");
+                                       utilitario.agregarMensajeError("Cuota Mensual Excede 50% Sueldo Anterior", "");
+                                    }
+            }else {
+                   utilitario.agregarMensajeInfo("No existen Datos", "");
+                   }
+        }
     }
     
     @Override
@@ -1456,8 +1550,8 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
     public void guardar() {
         if (tab_anticipo.guardar()) {
             if (tab_garante.guardar()) {
+                   tab_parametros.setValor("ide_estado_anticipo","1");
                 if (tab_parametros.guardar()) {
-                    tramite();
                     con_postgres.guardarPantalla();
                     }
                 }
@@ -1477,14 +1571,10 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
         
     }
 
-    public void tramite(){
-      iAnticipos.actuaEstSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")));
-       iAnticipos.actuaEstSolici(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")));
-    }
-        
     //CALCULAR MESES
     public static int calcularMes(Calendar cal1,Calendar cal2) {
-    // conseguir la representacion de la fecha en milisegundos
+
+        // conseguir la representacion de la fecha en milisegundos
      long milis1 = cal1.getTimeInMillis();//fecha actual
      long milis2 = cal2.getTimeInMillis();//fecha futura
      long diff = milis2 - milis1;	 // calcular la diferencia en milisengundos
@@ -1723,6 +1813,14 @@ public class pre_solicitud_anticipo_rh extends Pantalla{
 
     public void setSet_solicitud(SeleccionTabla set_solicitud) {
         this.set_solicitud = set_solicitud;
+    }
+
+    public Tabla getSet_solicitu() {
+        return set_solicitu;
+    }
+
+    public void setSet_solicitu(Tabla set_solicitu) {
+        this.set_solicitu = set_solicitu;
     }
     
 }
