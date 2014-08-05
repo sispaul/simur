@@ -575,7 +575,6 @@ public class pre_anticipos_gadmur extends Pantalla{
         dato2 = Double.parseDouble(tab_anticipo.getValor("rmu"));
         dato1 = Double.parseDouble(tab_parametros.getValor("valor_anticipo"));
         compara = Double.parseDouble(tab_anticipo.getValor("rmu_liquido_anterior"));
-       
      if(compara>0){
         if((dato1/dato2)<=1){
              tab_parametros.setValor("numero_cuotas_anticipo", "2");
@@ -597,7 +596,6 @@ public class pre_anticipos_gadmur extends Pantalla{
                     tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
                     utilitario.addUpdate("tab_parametros");
                     utilitario.agregarMensajeInfo("Ingresar Plazo de Cobro", "");
-
                 }else{
                     utilitario.agregarMensajeInfo("Monto Excede Remuneracion Unificada", "");
                     tab_parametros.setValor("valor_cuota_mensual", "NULL");
