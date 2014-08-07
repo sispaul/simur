@@ -20,14 +20,13 @@ import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
 import paq_nomina.ejb.SolicAnticipos;
-import static paq_nomina.pre_solicitud_anticipo_rh.calcularMes;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
@@ -721,12 +720,13 @@ public class pre_anticipos_gadmur extends Pantalla{
         TablaGenerica tab_datof = iAnticipos.FechaContrato(Integer.parseInt(tab_anticipo.getValor("ide_empleado_solicitante")));
         if (!tab_datof.isEmpty()) {
             if(tab_anticipo.getValor("id_distributivo").equals("1")){
-                if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=10){//VALIDACION POR DIA HASTA 10
+                  if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=10){//VALIDACION POR DIA HASTA 10
                       anos=utilitario.getAnio(tab_datof.getValor("fecha_contrato"));
                       dias=utilitario.getDia(tab_datof.getValor("fecha_contrato"));
                       meses=utilitario.getMes(tab_datof.getValor("fecha_contrato"));
-                    if(tab_datof.getValor("cod_tipo").equals("4")||tab_datof.getValor("cod_tipo").equals("10")){
-                          if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=12){
+                      
+                       if(tab_datof.getValor("cod_tipo").equals("4")||tab_datof.getValor("cod_tipo").equals("10")){
+                            if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=12){
                               Integer porcentaje =0;  
                               porcentaje= utilitario.getMes(utilitario.getFechaActual())+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))-1;
                               if(porcentaje == 12){
@@ -744,44 +744,15 @@ public class pre_anticipos_gadmur extends Pantalla{
                             }else{
                                   utilitario.agregarMensaje("Tiempo Maximo de Pago", "12 MESES");
                                  }
-                    }else{
-                            mesesf=utilitario.getMes(tab_datof.getValor("fecha_contrato"));
-                            aniosf=utilitario.getAnio(tab_datof.getValor("fecha_contrato"))+1;
-                            diasf=utilitario.getDia(tab_datof.getValor("fecha_contrato"));
-                            if(mesesf!=1){
-                               System.err.println("Holas12FG");
-                                 if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1){       
-                                    if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=12){
-                                        Integer porcentaje =0;  
-                                        porcentaje= utilitario.getMes(utilitario.getFechaActual())+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))-1;
-                                        if(porcentaje == 12){
-          //                               llenarFecha();
-          //                               cuotas();
-                                            System.err.println("Holas12");
-                                        }else if(porcentaje > 12){
-          //                               llenarFecha();
-                                           utilitario.agregarMensajeInfo("Seleccione Porcentaje de Descuento", "Para Cuota de Diciembre");
-                                        }else{
-          //                               llenarFecha();
-          //                               cuotas();
-                                            System.err.println("Holas111");
-                                        }
-                                      }else{
-                                            utilitario.agregarMensaje("Tiempo Maximo de Pago", "12 MESES");
-                                           }
-
-                                              }else{
-                                                    tab_parametros.setValor("numero_cuotas_anticipo", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))-1));
-                                                    utilitario.agregarMensajeInfo("Su plazo maximo de meses de pago es: ", String.valueOf(calcularMes(new GregorianCalendar(anios_a,meses_a,dias_a),new GregorianCalendar(aniosf,mesesf,diasf))));  
-                                                    }
+                       }else{
+                            if(Integer.parseInt(String.valueOf(calcularAnios(tab_datof.getValor("fecha_contrato"))))=>1){
+                                
                             }
-                            
-                    }
-                }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28
-                    if(tab_datof.getValor("cod_tipo").equals("4")||tab_datof.getValor("cod_tipo").equals("10")){
-                        
-                    }
-                }
+                           
+                       }
+                     }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28
+                         
+                     }
             }else if(tab_anticipo.getValor("id_distributivo").equals("2")){
                 
             }
@@ -812,6 +783,82 @@ public class pre_anticipos_gadmur extends Pantalla{
     public void eliminar() {
     }
 
+        //CALCULAR MESES
+    public static int calcularMes(Calendar cal1,Calendar cal2) {
+
+        // conseguir la representacion de la fecha en milisegundos
+     long milis1 = cal1.getTimeInMillis();//fecha actual
+     long milis2 = cal2.getTimeInMillis();//fecha futura
+     long diff = milis2 - milis1;	 // calcular la diferencia en milisengundos
+     long diffSeconds = diff / 1000; // calcular la diferencia en segundos
+     long diffMinutes = diffSeconds / 60; // calcular la diferencia en minutos
+     long diffHours = diffMinutes / 60 ; // calcular la diferencia en horas a
+     long diffDays = diffHours / 24 ; // calcular la diferencia en dias
+     long diffWeek = diffDays / 7 ; // calcular la diferencia en semanas
+     long diffMounth = diffWeek / 4 ; // calcular la diferencia en meses
+
+     return Integer.parseInt(String.valueOf(diffMounth));
+    }
+    
+    //CALCULAR ANIOS
+    public static int calcularAnios(Calendar AnioLab) {
+    Calendar fechaActual = Calendar.getInstance();
+    // Cálculo de las diferencias.
+    int anios = fechaActual.get(Calendar.YEAR) - AnioLab.get(Calendar.YEAR);
+    int meses = fechaActual.get(Calendar.MONTH) - AnioLab.get(Calendar.MONTH);
+    int dias = fechaActual.get(Calendar.DAY_OF_MONTH) - AnioLab.get(Calendar.DAY_OF_MONTH);
+  
+    if(meses < 0 // Aún no es el mes 
+       || (meses==0 && dias < 0)) { // o es el mes pero no ha llegado el día.
+        anios--;
+    }
+    return anios;
+    }
+    
+    //BUSQUEDA DE MES PARA LA AISGNACION DEL PERIODO
+    public String meses(Integer numero){
+     
+    		switch (numero){
+    		case 12:
+    				selec_mes = "Diciembre";
+    				break;
+                case 11:
+    				selec_mes = "Noviembre";
+    				break;
+    		case 10:
+    				selec_mes = "Octubre";
+    				break;
+                case 9:
+    				selec_mes = "Septiembre";
+    				break;
+    		case 8:
+    				selec_mes = "Agosto";
+    				break;
+    		case 7:
+    				selec_mes = "Julio";
+    				break;
+                case 6:
+    				selec_mes = "Junio";
+    				break;
+    		case 5:
+    				selec_mes = "Mayo";
+    				break;
+                case 4:
+    				selec_mes = "Abril";
+    				break;
+    		case 3:
+    				selec_mes = "Marzo";
+    				break;
+    		case 2:
+    				selec_mes = "Febrero";
+    				break;
+    		case 1:
+    				selec_mes = "Enero";
+    				break;
+    		}
+    		return selec_mes;
+    }
+    
     public Reporte getRep_reporte() {
         return rep_reporte;
     }
