@@ -210,7 +210,7 @@ public class pre_anticipos_gadmur extends Pantalla{
         gridr.setColumns(4);
         agregarComponente(dia_dialogosr);
         
-        dibujarSolicitud();
+//        dibujarSolicitud();
         
          /*         * CONFIGURACIÓN DE OBJETO REPORTE         */
         bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
