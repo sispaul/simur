@@ -1048,7 +1048,7 @@ public TablaGenerica VerifEmpleCod(Integer codigo){
     String au_sql="update srh_solicitud_anticipo\n" +
                     "set aprobado_solicitante ="+aprob+",\n" +
                     "login_aprob_solicitud ='"+usu+"',\n" +
-                    "ip_aprob_solicitud ='"+utilitario.getIp()+"'\n" +
+                    "ip_aprob_solicitud ='"+utilitario.getIp()+"',\n" +
                     "fecha_aprobacion ='"+utilitario.getFechaActual()+"'\n" +
                     "WHERE ide_solicitud_anticipo="+anti+" and ci_solicitante = '"+cuota+"'";
     conectar();
@@ -1079,7 +1079,7 @@ public void negarSolicitud(Integer anti,String cedula){
                     "ide_solicitud_anticipo\n" +
                     "FROM\n" +
                     "srh_solicitud_anticipo\n" +
-                    "where ide_solicitud_anticipo = "+anti+" and ci_solicitante like '"+cedula+"' and aprobado_solicitante =0)";
+                    "where ide_solicitud_anticipo = "+anti+" and ci_solicitante like '"+cedula+"')";
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
