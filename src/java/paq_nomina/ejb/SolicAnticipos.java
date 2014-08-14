@@ -1049,6 +1049,7 @@ public TablaGenerica VerifEmpleCod(Integer codigo){
                     "set aprobado_solicitante ="+aprob+",\n" +
                     "login_aprob_solicitud ='"+usu+"',\n" +
                     "ip_aprob_solicitud ='"+utilitario.getIp()+"'\n" +
+                    "fecha_aprobacion ='"+utilitario.getFechaActual()+"'\n" +
                     "WHERE ide_solicitud_anticipo="+anti+" and ci_solicitante = '"+cuota+"'";
     conectar();
     con_postgres.ejecutarSql(au_sql);

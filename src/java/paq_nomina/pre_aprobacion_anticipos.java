@@ -113,6 +113,10 @@ public class pre_aprobacion_anticipos extends Pantalla{
     }
 
     /* FUNCION QUE PERMITE RECORRER LA TABLA RECUPERANDO EVENTOS ACTUALES     */
+    public void seleccionar_tabla1(SelectEvent evt) {
+        tab_anticipo.seleccionarFila(evt);
+    }
+    
     public void requisito(){
          for (int i = 0; i < tab_anticipo.getTotalFilas(); i++) {
               tab_anticipo.getValor(i, "ide_solicitud_anticipo");
@@ -121,66 +125,65 @@ public class pre_aprobacion_anticipos extends Pantalla{
               tab_anticipo.getValor(i, "numero_cuotas_anticipo");
               tab_anticipo.getValor(i, "valor_cuota_adicional");
               tab_anticipo.getValor(i, "id_distributivo");
-              iAnticipos.actuaSolicitud(Integer.parseInt(tab_anticipo.getValor(i, "ide_solicitud_anticipo")), tab_anticipo.getValor(i, "ci_solicitante"), Integer.parseInt(tab_anticipo.getValor(i, "aprobado_solicitante")),utilitario.getVariable("NICK"));
-              utilitario.addUpdate("tab_anticipo");
-              if(tab_anticipo.getValor(i, "aprobado_solicitante").equals("1")){
-              iAnticipos.actualizSolicitud(Integer.parseInt(tab_anticipo.getValor(i, "ide_solicitud_anticipo")), tab_anticipo.getValor(i, "ci_solicitante"));
-              if(tab_anticipo.getValor(i, "id_distributivo").equals("1")){//empleados
-                if(tab_anticipo.getValor(i, "valor_cuota_adicional")!= null ){//Hasta y Antes de Diciembre
-                     for (int j = 1; j < (Integer.parseInt(tab_anticipo.getValor(i, "numero_cuotas_anticipo"))-1); j++){
-                            iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor(i,"ide_solicitud_anticipo")), String.valueOf(1+j), Double.parseDouble(tab_anticipo.getValor(i,"valor_cuota_mensual")), 
-                                        Integer.parseInt(tab_anticipo.getValor(i,"ide_periodo_anticipo_inicial"))+j);
-                     }
-                        Double valor1=0.0,total=0.0;
-                        valor1 = (Integer.parseInt(tab_anticipo.getValor(i, "numero_cuotas_anticipo"))-1)*Double.parseDouble(tab_anticipo.getValor(i,"valor_cuota_mensual"));
-                        total = Double.parseDouble(tab_anticipo.getValor(i,"valor_anticipo"))-valor1 ;
-                        iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor(i,"ide_solicitud_anticipo")), tab_anticipo.getValor(i,"numero_cuotas_anticipo"), total, 
-                        Integer.parseInt(tab_anticipo.getValor(i,"ide_periodo_anticipo_final")));
-                }else{//Despues Diciembre
-                        iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor(i,"ide_solicitud_anticipo")),"1", Double.parseDouble(tab_anticipo.getValor(i,"valor_cuota_mensual")), 
-                                    Integer.parseInt(tab_anticipo.getValor(i,"ide_periodo_anticipo_inicial")));
-                     for (int j = 1; j < (Integer.parseInt(tab_anticipo.getValor(i, "numero_cuotas_anticipo"))-1); j++){
-                         TablaGenerica tab_dato = iAnticipos.periodos1(Integer.parseInt(tab_anticipo.getValor(i,"ide_periodo_anticipo_inicial"))+j);
-                         if (!tab_dato.isEmpty()) {
-                                if(tab_dato.getValor("mes").equals("Diciembre")){ 
-                                    iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor(i,"ide_solicitud_anticipo")), String.valueOf(j+1), Double.parseDouble(tab_anticipo.getValor(i,"valor_cuota_adicional")), 
-                                    Integer.parseInt(tab_anticipo.getValor(i,"ide_periodo_anticipo_inicial"))+j);
-
-                                }else{
-                                        iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor(i,"ide_solicitud_anticipo")), String.valueOf(j+1), Double.parseDouble(tab_anticipo.getValor(i,"valor_cuota_mensual")), 
-                                        Integer.parseInt(tab_anticipo.getValor(i,"ide_periodo_anticipo_inicial"))+j);
-                                    }
-                         }else {
-                                utilitario.agregarMensajeInfo("No se encuentra en roles", "");
-                            }
-                     }
-                        Double valorp=0.0,valors=0.0,totall=0.0;
-                        valorp = (Integer.parseInt(tab_anticipo.getValor(i, "numero_cuotas_anticipo"))-2)*Double.parseDouble(tab_anticipo.getValor(i,"valor_cuota_mensual"));
-                        valors= Double.parseDouble(tab_anticipo.getValor(i,"valor_cuota_adicional"))+valorp ;
-                        totall = Double.parseDouble(tab_anticipo.getValor(i,"valor_anticipo"))-valors ;
-                        iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor(i,"ide_solicitud_anticipo")), tab_anticipo.getValor(i,"numero_cuotas_anticipo"), Double.parseDouble(String.valueOf(totall)), 
-                        Integer.parseInt(tab_anticipo.getValor(i,"ide_periodo_anticipo_final")));
-                }
-              }else{//trabajadores
-                      for (int j = 1; j < (Integer.parseInt(tab_anticipo.getValor(i, "numero_cuotas_anticipo"))-1); j++){
-                          iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor(i,"ide_solicitud_anticipo")), String.valueOf(1+j), Double.parseDouble(tab_anticipo.getValor(i,"valor_cuota_mensual")), 
-                                    Integer.parseInt(tab_anticipo.getValor(i,"ide_periodo_anticipo_inicial"))+j);
-                     } 
-                        Double valor1=0.0,total=0.0;
-                        valor1 = (Integer.parseInt(tab_anticipo.getValor(i, "numero_cuotas_anticipo"))-1)*Double.parseDouble(tab_anticipo.getValor(i,"valor_cuota_mensual"));
-                        total = Double.parseDouble(tab_anticipo.getValor(i,"valor_anticipo"))-valor1 ;
-                        iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor(i,"ide_solicitud_anticipo")), tab_anticipo.getValor(i,"numero_cuotas_anticipo"), total, 
-                                    Integer.parseInt(tab_anticipo.getValor(i,"ide_periodo_anticipo_final")));                      
-              }
               
-              }else{
-                    iAnticipos.negarSolicitud(Integer.parseInt(tab_anticipo.getValor(i, "ide_solicitud_anticipo")), tab_anticipo.getValor(i, "ci_solicitante"));
-              }
-        }
+              if(tab_anticipo.getValor(i, "aprobado_solicitante")!=null){
+                         if(tab_anticipo.getValor(i, "aprobado_solicitante").equals("1")){
+                             if(tab_anticipo.getValor(i, "id_distributivo").equals("1")){//detalle solicitud de empleados
+                                 if(tab_anticipo.getValor(i, "valor_cuota_adicional")!= null ){//plazo de anticipo Hasta y Antes de Diciembre                                  
+                                        for (int j = 0; j < (Integer.parseInt(tab_anticipo.getValor(i, "numero_cuotas_anticipo"))-1); j++){
+                                            TablaGenerica tab_dato = iAnticipos.periodos1(Integer.parseInt(tab_anticipo.getValor(i,"ide_periodo_anticipo_inicial"))+j);
+                                            if (!tab_dato.isEmpty()) {
+                                                   if(tab_dato.getValor("mes").equals("Diciembre")){ 
+                                                       iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor(i,"ide_solicitud_anticipo")), String.valueOf(j+1), Double.parseDouble(tab_anticipo.getValor(i,"valor_cuota_adicional")), 
+                                                       Integer.parseInt(tab_anticipo.getValor(i,"ide_periodo_anticipo_inicial"))+j);
+
+                                                   }else{
+                                                           iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor(i,"ide_solicitud_anticipo")), String.valueOf(j+1), Double.parseDouble(tab_anticipo.getValor(i,"valor_cuota_mensual")), 
+                                                           Integer.parseInt(tab_anticipo.getValor(i,"ide_periodo_anticipo_inicial"))+j);
+                                                       }
+                                            }else {
+                                                   utilitario.agregarMensajeInfo("No se encuentra en roles", "");
+                                               }
+                                        }
+                                           Double valorp=0.0,valors=0.0,totall=0.0;
+                                           valorp = (Integer.parseInt(tab_anticipo.getValor(i, "numero_cuotas_anticipo"))-2)*Double.parseDouble(tab_anticipo.getValor(i,"valor_cuota_mensual"));
+                                           valors= Double.parseDouble(tab_anticipo.getValor(i,"valor_cuota_adicional"))+valorp ;
+                                           totall = Double.parseDouble(tab_anticipo.getValor(i,"valor_anticipo"))-valors ;
+                                           iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor(i,"ide_solicitud_anticipo")), tab_anticipo.getValor(i,"numero_cuotas_anticipo"), Double.parseDouble(String.valueOf(totall)), 
+                                           Integer.parseInt(tab_anticipo.getValor(i,"ide_periodo_anticipo_final")));
+
+                                 }else{//plazo de anticipo Despues Diciembre
+                                      for (int j = 0; j < (Integer.parseInt(tab_anticipo.getValor(i, "numero_cuotas_anticipo"))-1); j++){
+                                            iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor(i,"ide_solicitud_anticipo")), String.valueOf(1+j), Double.parseDouble(tab_anticipo.getValor(i,"valor_cuota_mensual")), 
+                                                        Integer.parseInt(tab_anticipo.getValor(i,"ide_periodo_anticipo_inicial"))+j);
+                                     }
+                                        Double valor1=0.0,total=0.0;
+                                        valor1 = (Integer.parseInt(tab_anticipo.getValor(i, "numero_cuotas_anticipo"))-1)*Double.parseDouble(tab_anticipo.getValor(i,"valor_cuota_mensual"));
+                                        total = Double.parseDouble(tab_anticipo.getValor(i,"valor_anticipo"))-valor1 ;
+                                        iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor(i,"ide_solicitud_anticipo")), tab_anticipo.getValor(i,"numero_cuotas_anticipo"), total, 
+                                        Integer.parseInt(tab_anticipo.getValor(i,"ide_periodo_anticipo_final")));
+                                 }
+                                 
+                             }else{//detalle para solicitud de trabajadores
+                                    for (int j = 0; j < (Integer.parseInt(tab_anticipo.getValor(i, "numero_cuotas_anticipo"))-1); j++){
+                                        iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor(i,"ide_solicitud_anticipo")), String.valueOf(1+j), Double.parseDouble(tab_anticipo.getValor(i,"valor_cuota_mensual")), 
+                                                  Integer.parseInt(tab_anticipo.getValor(i,"ide_periodo_anticipo_inicial"))+j);
+                                   } 
+                                      Double valor1=0.0,total=0.0;
+                                      valor1 = (Integer.parseInt(tab_anticipo.getValor(i, "numero_cuotas_anticipo"))-1)*Double.parseDouble(tab_anticipo.getValor(i,"valor_cuota_mensual"));
+                                      total = Double.parseDouble(tab_anticipo.getValor(i,"valor_anticipo"))-valor1 ;
+                                      iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor(i,"ide_solicitud_anticipo")), tab_anticipo.getValor(i,"numero_cuotas_anticipo"), total, 
+                                                  Integer.parseInt(tab_anticipo.getValor(i,"ide_periodo_anticipo_final")));   
+                                   
+                             }
+                         }else if(tab_anticipo.getValor(i, "aprobado_solicitante").equals("0")){//Solicitud Denegada
+                                    iAnticipos.negarSolicitud(Integer.parseInt(tab_anticipo.getValor(i, "ide_solicitud_anticipo")), tab_anticipo.getValor(i, "ci_solicitante"));
+                         }
+                 }
+         }
          tab_anticipo.actualizar();
+         utilitario.agregarMensaje("Formularios Aprobados", "");
     }
-    
-    //PERMITE GENERAL EL DETALLE DE LA SOLICITUD  
     
     public Tabla getTab_anticipo() {
         return tab_anticipo;
