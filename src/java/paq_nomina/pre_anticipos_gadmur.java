@@ -51,7 +51,6 @@ public class pre_anticipos_gadmur extends Pantalla{
     private Tabla tab_anticipo = new Tabla();
     private Tabla tab_garante = new Tabla();
     private Tabla tab_parametros = new Tabla();
-    private Tabla tab_detalle = new Tabla();
     private Tabla tab_consulta = new Tabla();
     private Tabla set_colaborador = new Tabla();
     private Tabla set_solicitante = new Tabla();
@@ -61,6 +60,7 @@ public class pre_anticipos_gadmur extends Pantalla{
     //PARA ASIGNACION DE MES
     String selec_mes = new String();
     
+    private Texto txt_cedula = new Texto();
     //buscar solicitud
     private AutoCompletar aut_busca = new AutoCompletar();
     
@@ -69,6 +69,7 @@ public class pre_anticipos_gadmur extends Pantalla{
     private Dialogo dia_dialogos = new Dialogo();
     private Dialogo dia_dialogoca = new Dialogo();
     private Dialogo dia_dialogoso = new Dialogo();
+    private Dialogo dia_dialogosr = new Dialogo();
     private Grid grid_d = new Grid();
     private Grid grid_ca = new Grid();
     private Grid grid_so = new Grid();
@@ -76,6 +77,7 @@ public class pre_anticipos_gadmur extends Pantalla{
     private Grid grid = new Grid();
     private Grid grids = new Grid();
     private Grid gridso = new Grid();
+    private Grid gridr = new Grid();
     
     //
     private Panel pan_opcion = new Panel();
@@ -198,6 +200,15 @@ public class pre_anticipos_gadmur extends Pantalla{
         dia_dialogoso.getBot_aceptar().setMetodo("aceptarBusqueda");
         grid_so.setColumns(4);
         agregarComponente(dia_dialogoso);
+        
+        dia_dialogosr.setId("dia_dialogosr");
+        dia_dialogosr.setTitle("BUSQUEDA DE CEDULA"); //titulo
+        dia_dialogosr.setWidth("20%"); //siempre en porcentajes  ancho
+        dia_dialogosr.setHeight("15%");//siempre porcentaje   alto
+        dia_dialogosr.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogosr.getBot_aceptar().setMetodo("aceptoAnticipo");
+        gridr.setColumns(4);
+        agregarComponente(dia_dialogosr);
         
         dibujarSolicitud();
         
@@ -1668,6 +1679,39 @@ public class pre_anticipos_gadmur extends Pantalla{
     		return selec_mes;
     }
     
+    /*CREACION DE REPORTES */
+    //llamada a reporte
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+
+    }
+    
+    @Override
+    public void aceptarReporte() {
+        rep_reporte.cerrar();
+        switch (rep_reporte.getNombre()) {
+           case "DETALLE DE ANTICIPO":
+                dia_dialogosr.Limpiar();
+                gridr.getChildren().add(new Etiqueta("Ingrese Cedula :"));
+                gridr.getChildren().add(txt_cedula);
+                dia_dialogosr.setDialogo(gridr);
+                dia_dialogosr.dibujar();
+               break;
+        }
+    } 
+    
+      public void aceptoAnticipo(){
+        switch (rep_reporte.getNombre()) {
+               case "DETALLE DE ANTICIPO":
+                    p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
+                    p_parametros.put("identificacion", txt_cedula.getValue()+"");
+                    rep_reporte.cerrar();
+                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_formato.dibujar();
+               break;  
+        }
+    }
     public Reporte getRep_reporte() {
         return rep_reporte;
     }
