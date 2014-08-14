@@ -858,8 +858,7 @@ public TablaGenerica VerifEmpleCod(Integer codigo){
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
                                 "garante,\n" +
-                                "ci_garante,\n" +
-                                "ide_empleado_garante\n" +
+                                "ci_garante\n" +
                                 "FROM\n" +
                                 "srh_anticipo\n" +
                                 "where ci_garante like '"+cedu+"' and (ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO')OR\n" +
