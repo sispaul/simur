@@ -818,7 +818,7 @@ public TablaGenerica VerifEmpleid(String cedu ){
                                 "WHERE\n" +
                                 "s.ci_solicitante LIKE '"+cedu+"' \n" +
                                 "and (c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO')OR\n" +
-                                "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'AUTORIZADO')OR\n" +
+                                "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'APROBADO')OR\n" +
                                 "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'PAGANDO'))");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
@@ -842,7 +842,7 @@ public TablaGenerica VerifEmpleCod(Integer codigo){
                                 "WHERE\n" +
                                 "s.ide_empleado_solicitante = "+codigo+"\n" +
                                 "and (c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO')OR\n" +
-                                "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'AUTORIZADO')OR\n" +
+                                "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'APROBADO')OR\n" +
                                 "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'PAGANDO'))");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
@@ -862,7 +862,7 @@ public TablaGenerica VerifEmpleCod(Integer codigo){
                                 "FROM\n" +
                                 "srh_anticipo\n" +
                                 "where ci_garante like '"+cedu+"' and (ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO')OR\n" +
-                                "ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'AUTORIZADO')OR\n" +
+                                "ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'APROBADO')OR\n" +
                                 "ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'PAGANDO'))");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
@@ -888,7 +888,7 @@ public TablaGenerica VerifEmpleCod(Integer codigo){
                                 "WHERE\n" +
                                 "g.ide_empleado_garante = "+codigo+" AND\n" +
                                 "(c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO') OR\n" +
-                                "c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'AUTORIZADO') OR\n" +
+                                "c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'APROBADO') OR\n" +
                                 "c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'PAGANDO'))");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
@@ -1043,6 +1043,19 @@ public TablaGenerica VerifEmpleCod(Integer codigo){
         
  }
   
+  public String listaMax() {
+         conectar();
+
+         String ValorMax;
+         TablaGenerica tab_consulta = new TablaGenerica();
+         conectar();
+         tab_consulta.setConexion(con_postgres);
+         tab_consulta.setSql("select 0 as id, max(ide_listado) as maximo from srh_solicitud_anticipo");
+         tab_consulta.ejecutarSql();
+         ValorMax = tab_consulta.getValor("maximo");
+         return ValorMax;
+  }
+ 
   public void actuaSolicitud(Integer anti,String cuota,Integer aprob,String usu){
     String au_sql="update srh_solicitud_anticipo\n" +
                     "set aprobado_solicitante ="+aprob+",\n" +
@@ -1058,7 +1071,7 @@ public TablaGenerica VerifEmpleCod(Integer codigo){
   
 public void actualizSolicitud(Integer anti,String cedula){
     String au_sql="update srh_calculo_anticipo\n" +
-                    "set ide_estado_anticipo =(SELECT ide_estado_tipo FROM srh_estado_anticipo WHERE estado like 'AUTORIZADO')\n" +
+                    "set ide_estado_anticipo =(SELECT ide_estado_tipo FROM srh_estado_anticipo WHERE estado like 'APROBADO')\n" +
                     "where ide_solicitud_anticipo = (SELECT\n" +
                     "ide_solicitud_anticipo\n" +
                     "FROM\n" +

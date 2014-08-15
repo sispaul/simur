@@ -9,9 +9,11 @@ import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Combo;
 import framework.componentes.Dialogo;
+import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
+import framework.componentes.Imagen;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
@@ -94,6 +96,10 @@ public class pre_anticipos_gadmur extends Pantalla{
         tab_consulta.setCampoPrimaria("IDE_USUA");
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
+        
+        Imagen quinde = new Imagen();
+        quinde.setValue("imagenes/logo_talento.png");
+        agregarComponente(quinde);
         
         pan_opcion.setId("pan_opcion");
         pan_opcion.setTransient(true);
@@ -210,7 +216,7 @@ public class pre_anticipos_gadmur extends Pantalla{
         gridr.setColumns(4);
         agregarComponente(dia_dialogosr);
         
-//        dibujarSolicitud();
+        dibujarSolicitud();
         
          /*         * CONFIGURACIÓN DE OBJETO REPORTE         */
         bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
@@ -324,10 +330,14 @@ public class pre_anticipos_gadmur extends Pantalla{
         tab_anticipo.getColumna("ip_ingre_solicitud").setValorDefecto(utilitario.getIp());
         
         tab_anticipo.getColumna("login_ingre_solicitud").setVisible(false);
+        tab_anticipo.getColumna("IDE_EMPLEADO_SOLICITANTE").setVisible(false);
         tab_anticipo.getColumna("ip_ingre_solicitud").setVisible(false);
         tab_anticipo.getColumna("login_aprob_solicitud").setVisible(false);
         tab_anticipo.getColumna("ip_aprob_solicitud").setVisible(false);
         tab_anticipo.getColumna("aprobado_solicitante").setVisible(false);
+        tab_anticipo.getColumna("fecha_aprobacion").setVisible(false);
+        tab_anticipo.getColumna("ide_listado").setVisible(false);
+        tab_anticipo.getColumna("fecha_listado").setVisible(false);
         
         tab_anticipo.setTipoFormulario(true);
         tab_anticipo.agregarRelacion(tab_garante);
@@ -346,6 +356,7 @@ public class pre_anticipos_gadmur extends Pantalla{
         tab_garante.getColumna("garante").setMetodoChange("buscaColaborador");
         tab_garante.getColumna("id_distributivo").setCombo("SELECT id_distributivo, descripcion FROM srh_tdistributivo");
         tab_garante.getColumna("cod_tipo").setCombo("SELECT cod_tipo,tipo FROM srh_tipo_empleado");
+        tab_garante.getColumna("IDE_EMPLEADO_GARANTE").setVisible(false);
         tab_garante.setTipoFormulario(true);
         tab_garante.getGrid().setColumns(6);
         tab_garante.dibujar();
@@ -360,7 +371,7 @@ public class pre_anticipos_gadmur extends Pantalla{
         tab_parametros.getColumna("fecha_anticipo").setValorDefecto(utilitario.getFechaActual());
         tab_parametros.getColumna("ide_periodo_anticipo_inicial").setCombo("select ide_periodo_anticipo, (mes || '/' || anio) As Cliente from srh_periodo_anticipo order by ide_periodo_anticipo");
         tab_parametros.getColumna("ide_periodo_anticipo_final").setCombo("select ide_periodo_anticipo, (mes || '/' || anio) As Clientes from srh_periodo_anticipo order by ide_periodo_anticipo");
-
+        tab_parametros.getColumna("val_cuo_adi").setLongitud(1);
         tab_parametros.getColumna("porcentaje_descuento_diciembre").setLectura(true);
         tab_parametros.getColumna("valor_anticipo").setMetodoChange("remuneracion");
         tab_parametros.getColumna("numero_cuotas_anticipo").setMetodoChange("porcentaje");
@@ -374,10 +385,13 @@ public class pre_anticipos_gadmur extends Pantalla{
         tpp.setMensajeWarn("DATOS DE ANTICIPO A SOLICITAR");
         tpp.setPanelTabla(tab_parametros);
         
+        Division div_division = new Division();
+        div_division.setId("div_division");
+        div_division.dividir3(tpa, tpd, tpp, "36%", "45%", "H");
+        agregarComponente(div_division);
+        
             Grupo gru = new Grupo();
-            gru.getChildren().add(tpa);
-            gru.getChildren().add(tpd);
-            gru.getChildren().add(tpp);
+            gru.getChildren().add(div_division);
             pan_opcion.getChildren().add(gru);    
     }
     
@@ -602,10 +616,10 @@ public class pre_anticipos_gadmur extends Pantalla{
           }else if((dato1/dato2)>1&&(dato1/dato2)<=3){//HASTA 3 REMUNERACIONES 
                     tab_parametros.getColumna("numero_cuotas_anticipo").setLectura(false);
                     tab_parametros.setValor("numero_cuotas_anticipo", "NULL");
-                    tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                    tab_parametros.setValor("val_cuo_adi", "NULL");
                     tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
                     tab_parametros.setValor("valor_cuota_mensual", "NULL");
-                    tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                    tab_parametros.setValor("val_cuo_adi", "NULL");
                     tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
                     tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
                     utilitario.addUpdate("tab_parametros");
@@ -614,10 +628,10 @@ public class pre_anticipos_gadmur extends Pantalla{
                     utilitario.agregarMensajeInfo("Monto Excede Remuneracion Unificada", "");
                     tab_parametros.setValor("valor_cuota_mensual", "NULL");
                     tab_parametros.setValor("numero_cuotas_anticipo", "NULL");
-                    tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                    tab_parametros.setValor("val_cuo_adi", "NULL");
                     tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
                     tab_parametros.setValor("valor_cuota_mensual", "NULL");
-                    tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                    tab_parametros.setValor("val_cuo_adi", "NULL");
                     tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
                     tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
                     utilitario.addUpdate("tab_parametros");
@@ -627,10 +641,10 @@ public class pre_anticipos_gadmur extends Pantalla{
           tab_parametros.getColumna("valor_anticipo").setLectura(true);
           tab_parametros.getColumna("numero_cuotas_anticipo").setLectura(true);
           tab_parametros.setValor("valor_anticipo", "NULL");
-          tab_parametros.setValor("valor_cuota_adicional", "NULL");
+          tab_parametros.setValor("val_cuo_adi", "NULL");
           tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
           tab_parametros.setValor("valor_cuota_mensual", "NULL");
-          tab_parametros.setValor("valor_cuota_adicional", "NULL");
+          tab_parametros.setValor("val_cuo_adi", "NULL");
           tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
           tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
           utilitario.addUpdate("tab_parametros");
@@ -646,7 +660,7 @@ public class pre_anticipos_gadmur extends Pantalla{
                    tab_parametros.getColumna("porcentaje_descuento_diciembre").setLectura(true);
                    tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
                    tab_parametros.setValor("valor_cuota_mensual", "NULL");
-                   tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                   tab_parametros.setValor("val_cuo_adi", "NULL");
                    tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
                    tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
                    utilitario.addUpdate("tab_parametros");
@@ -655,7 +669,7 @@ public class pre_anticipos_gadmur extends Pantalla{
                         tab_parametros.getColumna("porcentaje_descuento_diciembre").setLectura(false);
                         tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
                         tab_parametros.setValor("valor_cuota_mensual", "NULL");
-                        tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                        tab_parametros.setValor("val_cuo_adi", "NULL");
                         tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
                         tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
                         utilitario.addUpdate("tab_parametros");
@@ -664,7 +678,7 @@ public class pre_anticipos_gadmur extends Pantalla{
                    tab_parametros.getColumna("porcentaje_descuento_diciembre").setLectura(true);
                    tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
                    tab_parametros.setValor("valor_cuota_mensual", "NULL");
-                   tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                   tab_parametros.setValor("val_cuo_adi", "NULL");
                    tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
                    tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
                    utilitario.addUpdate("tab_parametros");
@@ -674,7 +688,7 @@ public class pre_anticipos_gadmur extends Pantalla{
               tab_parametros.getColumna("porcentaje_descuento_diciembre").setLectura(true);
               tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
               tab_parametros.setValor("valor_cuota_mensual", "NULL");
-              tab_parametros.setValor("valor_cuota_adicional", "NULL");
+              tab_parametros.setValor("val_cuo_adi", "NULL");
               tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
               tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
               utilitario.addUpdate("tab_parametros");
@@ -687,7 +701,7 @@ public class pre_anticipos_gadmur extends Pantalla{
                         tab_parametros.getColumna("porcentaje_descuento_diciembre").setLectura(true);
                         tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
                         tab_parametros.setValor("valor_cuota_mensual", "NULL");
-                        tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                        tab_parametros.setValor("val_cuo_adi", "NULL");
                         tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
                         tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
                         utilitario.addUpdate("tab_parametros");
@@ -696,7 +710,7 @@ public class pre_anticipos_gadmur extends Pantalla{
                              tab_parametros.getColumna("porcentaje_descuento_diciembre").setLectura(false);
                              tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
                              tab_parametros.setValor("valor_cuota_mensual", "NULL");
-                             tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                             tab_parametros.setValor("val_cuo_adi", "NULL");
                              tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
                              tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
                              utilitario.addUpdate("tab_parametros");
@@ -705,7 +719,7 @@ public class pre_anticipos_gadmur extends Pantalla{
                         tab_parametros.getColumna("porcentaje_descuento_diciembre").setLectura(true);
                         tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
                         tab_parametros.setValor("valor_cuota_mensual", "NULL");
-                        tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                        tab_parametros.setValor("val_cuo_adi", "NULL");
                         tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
                         tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
                         utilitario.addUpdate("tab_parametros");
@@ -715,7 +729,7 @@ public class pre_anticipos_gadmur extends Pantalla{
                    tab_parametros.getColumna("porcentaje_descuento_diciembre").setLectura(true);
                    tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
                    tab_parametros.setValor("valor_cuota_mensual", "NULL");
-                   tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                   tab_parametros.setValor("val_cuo_adi", "NULL");
                    tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
                    tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
                    utilitario.addUpdate("tab_parametros");
@@ -1473,12 +1487,12 @@ public class pre_anticipos_gadmur extends Pantalla{
                     }else{
                             valorm = (valan-valora)/(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))-1);
                             if(media>=(Math.rint(valorm*100)/100)){
-                                tab_parametros.setValor("valor_cuota_adicional", String.valueOf(valora));
+                                tab_parametros.setValor("val_cuo_adi", String.valueOf(valora));
                                 tab_parametros.setValor("valor_cuota_mensual", String.valueOf(Math.rint(valorm*100)/100));
                                 utilitario.addUpdate("tab_parametros");
                                 }else{
                                        tab_parametros.setValor("valor_cuota_mensual", "NULL");
-                                       tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                                       tab_parametros.setValor("val_cuo_adi", "NULL");
                                        tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
                                        tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
                                        utilitario.addUpdate("tab_parametros");
@@ -1488,12 +1502,12 @@ public class pre_anticipos_gadmur extends Pantalla{
                 }else if(rango <= 12){
                         valora1 = Double.parseDouble(tab_parametros.getValor("valor_anticipo")) / Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
                         if(media>=(Math.rint(valora1*100)/100)){
-                            tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                            tab_parametros.setValor("val_cuo_adi", "NULL");
                             tab_parametros.setValor("valor_cuota_mensual", String.valueOf(Math.rint(valora1*100)/100));
                             utilitario.addUpdate("tab_parametros");
                         }else{
                                tab_parametros.setValor("valor_cuota_mensual", "NULL");
-                               tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                               tab_parametros.setValor("val_cuo_adi", "NULL");
                                tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
                                tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
                                utilitario.addUpdate("tab_parametros");
@@ -1514,12 +1528,12 @@ public class pre_anticipos_gadmur extends Pantalla{
                     }else{
                             valorm = (valan-valora)/(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo")));
                             if(media>=(Math.rint(valorm*100)/100)){
-                                tab_parametros.setValor("valor_cuota_adicional", String.valueOf(valora));
+                                tab_parametros.setValor("val_cuo_adi", String.valueOf(valora));
                                 tab_parametros.setValor("valor_cuota_mensual", String.valueOf(Math.rint(valorm*100)/100));
                                 utilitario.addUpdate("tab_parametros");
                                 }else{
                                        tab_parametros.setValor("valor_cuota_mensual", "NULL");
-                                       tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                                       tab_parametros.setValor("val_cuo_adi", "NULL");
                                        tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
                                        tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
                                        utilitario.addUpdate("tab_parametros");
@@ -1529,12 +1543,12 @@ public class pre_anticipos_gadmur extends Pantalla{
                 }else if(rango <= 12){
                         valora1 = Double.parseDouble(tab_parametros.getValor("valor_anticipo")) / Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
                         if(media>=(Math.rint(valora1*100)/100)){
-                            tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                            tab_parametros.setValor("val_cuo_adi", "NULL");
                             tab_parametros.setValor("valor_cuota_mensual", String.valueOf(Math.rint(valora1*100)/100));
                             utilitario.addUpdate("tab_parametros");
                         }else{
                                tab_parametros.setValor("valor_cuota_mensual", "NULL");
-                               tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                               tab_parametros.setValor("val_cuo_adi", "NULL");
                                tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
                                tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
                                utilitario.addUpdate("tab_parametros");
@@ -1554,7 +1568,7 @@ public class pre_anticipos_gadmur extends Pantalla{
                                 utilitario.addUpdate("tab_parametros");
                                 }else{
                                        tab_parametros.setValor("valor_cuota_mensual", "NULL");
-                                       tab_parametros.setValor("valor_cuota_adicional", "NULL");
+                                       tab_parametros.setValor("val_cuo_adi", "NULL");
                                        tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
                                        tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
                                        utilitario.addUpdate("tab_parametros");
@@ -1582,14 +1596,18 @@ public class pre_anticipos_gadmur extends Pantalla{
 
     @Override
     public void guardar() {
-       if (tab_anticipo.guardar()) {
-            if (tab_garante.guardar()) {
-                   tab_parametros.setValor("ide_estado_anticipo","1");
-                if (tab_parametros.guardar()) {
-                    con_postgres.guardarPantalla();
-                    }
-                }
-            }
+        if(tab_anticipo.getValor("ide_solicitud_anticipo")!=null){
+                utilitario.agregarMensaje("Regiistro No Puede Ser Guardado", "");
+        }else {
+              if (tab_anticipo.guardar()) {
+                   if (tab_garante.guardar()) {
+                          tab_parametros.setValor("ide_estado_anticipo","1");
+                         if (tab_parametros.guardar()) {
+                             con_postgres.guardarPantalla();
+                             }
+                         }
+                     }
+        }
     }
 
     @Override

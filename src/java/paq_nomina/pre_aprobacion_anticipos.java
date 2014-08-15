@@ -5,10 +5,16 @@
 package paq_nomina;
 
 import framework.aplicacion.TablaGenerica;
+import framework.componentes.Boton;
+import framework.componentes.Division;
+import framework.componentes.Etiqueta;
+import framework.componentes.Grid;
 import framework.componentes.Grupo;
+import framework.componentes.Imagen;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
+import framework.componentes.Texto;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
@@ -23,7 +29,8 @@ import persistencia.Conexion;
  */
 public class pre_aprobacion_anticipos extends Pantalla{
     
-    private Tabla tab_anticipo = new Tabla();    
+    private Tabla tab_anticipo = new Tabla();
+    private Tabla tab_listado = new Tabla();
     private Tabla tab_consulta = new Tabla();
     
     //Conexion a base
@@ -31,7 +38,9 @@ public class pre_aprobacion_anticipos extends Pantalla{
 
      //dibujar cuadros de panel
     private Panel pan_opcion = new Panel();
+    private Panel pan_opcion2 = new Panel();
     
+    private Texto txt_num_listado = new Texto();
     @EJB
     private SolicAnticipos iAnticipos = (SolicAnticipos) utilitario.instanciarEJB(SolicAnticipos.class);
     
@@ -43,9 +52,13 @@ public class pre_aprobacion_anticipos extends Pantalla{
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
         
+        Imagen quinde = new Imagen();
+        quinde.setValue("imagenes/logo_talento.png");
+        agregarComponente(quinde);
+        
         pan_opcion.setId("pan_opcion");
         pan_opcion.setTransient(true);
-        pan_opcion.setHeader("APROBAR SOLICITUD DE ANTICIPOS DE SUELDOS INGRESADOS");
+        pan_opcion.setHeader("SOLICITUD DE ANTICIPOS DE SUELDOS INGRESADOS PARA APROBAR");
         agregarComponente(pan_opcion);
         
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
@@ -61,7 +74,7 @@ public class pre_aprobacion_anticipos extends Pantalla{
                             "c.valor_anticipo,\n" +
                             "c.numero_cuotas_anticipo,\n" +
                             "c.valor_cuota_mensual,\n" +
-                            "c.valor_cuota_adicional,\n" +
+                            "c.val_cuo_adi,\n" +
                             "p.mes AS mes_descuento,\n" +
                             "s.aprobado_solicitante,\n" +
                             "s.id_distributivo,\n" +
@@ -89,14 +102,74 @@ public class pre_aprobacion_anticipos extends Pantalla{
         tab_anticipo.getColumna("ide_periodo_anticipo_inicial").setVisible(false);
         tab_anticipo.getColumna("ide_periodo_anticipo_final").setVisible(false);
         tab_anticipo.getGrid().setColumns(4);
+        tab_anticipo.setRows(8);
         tab_anticipo.dibujar();
 
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_anticipo);
         
+        tab_listado.setId("tab_listado");
+        tab_listado.setConexion(con_postgres);
+        tab_listado.setSql("SELECT \n" +
+                            " s.ide_solicitud_anticipo, \n" +
+                            " s.ide_empleado_solicitante, \n" +
+                            " s.ci_solicitante, \n" +
+                            " s.solicitante, \n" +
+                            " c.valor_anticipo, \n" +
+                            " c.numero_cuotas_anticipo, \n" +
+                            " c.valor_cuota_mensual, \n" +
+                            " c.val_cuo_adi, \n" +
+                            " p.mes AS mes_descuento, \n" +
+                            " s.aprobado_solicitante, \n" +
+                            " s.id_distributivo, \n" +
+                            " c.ide_periodo_anticipo_inicial, \n" +
+                            " c.ide_periodo_anticipo_final \n" +
+                            " FROM   \n" +
+                            " srh_solicitud_anticipo AS s   \n" +
+                            " INNER JOIN srh_calculo_anticipo AS c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo    \n" +
+                            " INNER JOIN srh_periodo_anticipo AS p ON p.ide_periodo_anticipo = c.ide_periodo_anticipo_inicial \n" +
+                            " WHERE c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'APROBADO') and s.ide_listado is null\n" +
+                            " order by s.ide_solicitud_anticipo");
+        tab_listado.setCampoPrimaria("ide_solicitud_anticipo");
+        tab_listado.setCampoOrden("ide_solicitud_anticipo");
+        tab_listado.getColumna("id_distributivo").setVisible(false);
+        tab_listado.getColumna("ide_periodo_anticipo_inicial").setVisible(false);
+        tab_listado.getColumna("ide_periodo_anticipo_final").setVisible(false);
+        tab_listado.getColumna("aprobado_solicitante").setVisible(false);
+        tab_listado.getGrid().setColumns(4);
+        tab_listado.setRows(7);
+        tab_listado.dibujar();
+
+        PanelTabla pat_lista = new PanelTabla();
+        pat_lista.setPanelTabla(tab_listado);
+        pan_opcion2.getChildren().add(pat_lista);
+        
         Grupo gru = new Grupo();
         gru.getChildren().add(pat_panel);
         pan_opcion.getChildren().add(gru);
+        Grid gri_busca = new Grid();
+        gri_busca.setColumns(6);
+        gri_busca.getChildren().add(new Etiqueta("# Listado: "));    
+        gri_busca.getChildren().add(txt_num_listado);
+        
+        Boton bot_save = new Boton();
+        bot_save.setValue("Guardar Listado");
+        bot_save.setExcluirLectura(true);
+        bot_save.setIcon("ui-icon-disk");
+        bot_save.setMetodo("save_lista");
+        
+        gri_busca.getChildren().add(bot_save);
+        agregarComponente(gri_busca);
+        
+        pan_opcion2.setId("pan_opcion2");
+        pan_opcion2.setTransient(true);
+        pan_opcion2.setHeader("LISTADO DE SOLICITUD DE ANTICIPOS APROBADOS");
+        agregarComponente(pan_opcion2);
+        
+        Division div_division = new Division();
+        div_division.setId("div_division");
+        div_division.dividir3(pan_opcion, gri_busca, pan_opcion2, "44%", "50%", "H");
+        agregarComponente(div_division);
     }   
     
     @Override
@@ -123,18 +196,18 @@ public class pre_aprobacion_anticipos extends Pantalla{
               tab_anticipo.getValor(i, "ci_solicitante");
               tab_anticipo.getValor(i, "aprobado_solicitante");
               tab_anticipo.getValor(i, "numero_cuotas_anticipo");
-              tab_anticipo.getValor(i, "valor_cuota_adicional");
+              tab_anticipo.getValor(i, "val_cuo_adi");
               tab_anticipo.getValor(i, "id_distributivo");
               
               if(tab_anticipo.getValor(i, "aprobado_solicitante")!=null){
                          if(tab_anticipo.getValor(i, "aprobado_solicitante").equals("1")){
                              if(tab_anticipo.getValor(i, "id_distributivo").equals("1")){//detalle solicitud de empleados
-                                 if(tab_anticipo.getValor(i, "valor_cuota_adicional")!= null ){//plazo de anticipo Hasta y Antes de Diciembre                                  
+                                 if(tab_anticipo.getValor(i, "val_cuo_adi")!= null ){//plazo de anticipo Hasta y Antes de Diciembre                                  
                                         for (int j = 0; j < (Integer.parseInt(tab_anticipo.getValor(i, "numero_cuotas_anticipo"))-1); j++){
                                             TablaGenerica tab_dato = iAnticipos.periodos1(Integer.parseInt(tab_anticipo.getValor(i,"ide_periodo_anticipo_inicial"))+j);
                                             if (!tab_dato.isEmpty()) {
                                                    if(tab_dato.getValor("mes").equals("Diciembre")){ 
-                                                       iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor(i,"ide_solicitud_anticipo")), String.valueOf(j+1), Double.parseDouble(tab_anticipo.getValor(i,"valor_cuota_adicional")), 
+                                                       iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor(i,"ide_solicitud_anticipo")), String.valueOf(j+1), Double.parseDouble(tab_anticipo.getValor(i,"val_cuo_adi")), 
                                                        Integer.parseInt(tab_anticipo.getValor(i,"ide_periodo_anticipo_inicial"))+j);
 
                                                    }else{
@@ -147,7 +220,7 @@ public class pre_aprobacion_anticipos extends Pantalla{
                                         }
                                            Double valorp=0.0,valors=0.0,totall=0.0;
                                            valorp = (Integer.parseInt(tab_anticipo.getValor(i, "numero_cuotas_anticipo"))-2)*Double.parseDouble(tab_anticipo.getValor(i,"valor_cuota_mensual"));
-                                           valors= Double.parseDouble(tab_anticipo.getValor(i,"valor_cuota_adicional"))+valorp ;
+                                           valors= Double.parseDouble(tab_anticipo.getValor(i,"val_cuo_adi"))+valorp ;
                                            totall = Double.parseDouble(tab_anticipo.getValor(i,"valor_anticipo"))-valors ;
                                            iAnticipos.llenarSolicitud(Integer.parseInt(tab_anticipo.getValor(i,"ide_solicitud_anticipo")), tab_anticipo.getValor(i,"numero_cuotas_anticipo"), Double.parseDouble(String.valueOf(totall)), 
                                            Integer.parseInt(tab_anticipo.getValor(i,"ide_periodo_anticipo_final")));
@@ -185,6 +258,25 @@ public class pre_aprobacion_anticipos extends Pantalla{
          }
          tab_anticipo.actualizar();
          utilitario.agregarMensaje("Formularios Aprobados", "");
+         tab_listado.actualizar();
+    }
+    
+    public void save_lista(){
+        String numero = iAnticipos.listaMax(),valor,anio;
+        if(numero!=null){
+            Integer cantidad=0;
+            anio=String.valueOf(utilitario.getAnio(utilitario.getFechaActual()));
+            valor=numero.substring(10,15);
+            cantidad = Integer.parseInt(valor)+1;
+            String cadena = "list"+"-"+"anio"+"-"+String.valueOf(cantidad);
+            System.err.println(valor);
+            System.out.println(cadena);
+        }else
+        {
+            txt_num_listado.getValue().equals("1");
+            utilitario.addUpdate(txt_num_listado);
+            
+        }
     }
     
     public Tabla getTab_anticipo() {
@@ -201,6 +293,14 @@ public class pre_aprobacion_anticipos extends Pantalla{
 
     public void setCon_postgres(Conexion con_postgres) {
         this.con_postgres = con_postgres;
+    }
+
+    public Tabla getTab_listado() {
+        return tab_listado;
+    }
+
+    public void setTab_listado(Tabla tab_listado) {
+        this.tab_listado = tab_listado;
     }
     
 }
