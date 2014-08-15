@@ -295,7 +295,7 @@ public class pre_aprobacion_anticipos extends Pantalla{
                                                     System.err.println(valor);
                                                     System.out.println(cadena);
                                                     }
-        }else {
+        }else{
             System.out.println("Holas");
             String cadena = "list"+"-"+"anio"+"-"+"00001";
             System.out.println(cadena);
