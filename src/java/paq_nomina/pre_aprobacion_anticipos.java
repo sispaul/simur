@@ -262,20 +262,43 @@ public class pre_aprobacion_anticipos extends Pantalla{
     }
     
     public void save_lista(){
-        String numero = iAnticipos.listaMax(),valor,anio;
+        String numero = iAnticipos.listaMax();
+        String valor,anio,num;
+        Integer cantidad=0;
+        anio=String.valueOf(utilitario.getAnio(utilitario.getFechaActual()));
+        valor=numero.substring(10,15);
+        cantidad = Integer.parseInt(valor)+1;
         if(numero!=null){
-            Integer cantidad=0;
-            anio=String.valueOf(utilitario.getAnio(utilitario.getFechaActual()));
-            valor=numero.substring(10,15);
-            cantidad = Integer.parseInt(valor)+1;
-            String cadena = "list"+"-"+"anio"+"-"+String.valueOf(cantidad);
-            System.err.println(valor);
+            if(cantidad>=0 && cantidad<=9){
+                num = "0000"+String.valueOf(cantidad);
+                String cadena = "list"+"-"+anio+"-"+num;
+                System.err.println(valor);
+                System.out.println(cadena);
+               } else if(cantidad>=10 && cantidad<=99){
+                          num = "000"+String.valueOf(cantidad);
+                          String cadena = "list"+"-"+anio+"-"+num;
+                          System.err.println(valor);
+                          System.out.println(cadena);
+                         }else if(cantidad>=100 && cantidad<=999){
+                                   num = "00"+String.valueOf(cantidad);
+                                   String cadena = "list"+"-"+anio+"-"+num;
+                                    System.err.println(valor);
+                                    System.out.println(cadena);
+                                  }else if(cantidad>=1000 && cantidad<=9999){
+                                            num = "0"+String.valueOf(cantidad);
+                                            String cadena = "list"+"-"+anio+"-"+num;
+                                            System.err.println(valor);
+                                            System.out.println(cadena);
+                                           }else if(cantidad>=10000 && cantidad<=99999){
+                                                     num = String.valueOf(cantidad);
+                                                     String cadena = "list"+"-"+anio+"-"+num;
+                                                    System.err.println(valor);
+                                                    System.out.println(cadena);
+                                                    }
+        }else {
+            System.out.println("Holas");
+            String cadena = "list"+"-"+"anio"+"-"+"00001";
             System.out.println(cadena);
-        }else
-        {
-            txt_num_listado.getValue().equals("1");
-            utilitario.addUpdate(txt_num_listado);
-            
         }
     }
     
