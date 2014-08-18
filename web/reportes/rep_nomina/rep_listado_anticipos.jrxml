@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_listado_anticipos" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1470ffb0-f535-4e40-a834-52013ec026e8">
+	<property name="ireport.zoom" value="1.7715610000000017"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="nom_resp" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["el que imprimio"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="listado" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+s.ide_solicitud_anticipo,
+s.ci_solicitante,
+s.solicitante,
+c.valor_anticipo,
+p.mes AS mes_descuento,
+s.ide_listado,
+s.fecha_listado,
+s.numero_cuenta,
+b.ban_nombre,
+t.nombre
+FROM
+srh_solicitud_anticipo AS s
+INNER JOIN srh_calculo_anticipo AS "c" ON "c".ide_solicitud_anticipo = s.ide_solicitud_anticipo
+INNER JOIN srh_periodo_anticipo AS "p" ON "p".ide_periodo_anticipo = "c".ide_periodo_anticipo_inicial
+INNER JOIN ocebanco AS b ON b.ban_codigo = s.cod_banco
+INNER JOIN ocecuentas AS t ON t.cod_cuenta = s.cod_cuenta
+WHERE
+c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'APROBADO')
+and s.ide_listado = $P{listado}
+ORDER BY
+s.ide_solicitud_anticipo ASC]]>
+	</queryString>
+	<field name="ide_solicitud_anticipo" class="java.lang.Integer"/>
+	<field name="ci_solicitante" class="java.lang.String"/>
+	<field name="solicitante" class="java.lang.String"/>
+	<field name="valor_anticipo" class="java.math.BigDecimal"/>
+	<field name="mes_descuento" class="java.lang.String"/>
+	<field name="ide_listado" class="java.lang.String"/>
+	<field name="fecha_listado" class="java.sql.Date"/>
+	<field name="numero_cuenta" class="java.lang.String"/>
+	<field name="ban_nombre" class="java.lang.String"/>
+	<field name="nombre" class="java.lang.String">
+		<fieldDescription><![CDATA[nombre]]></fieldDescription>
+	</field>
+	<variable name="sum_lista" class="java.math.BigDecimal" resetType="Group" resetGroup="listado" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_anticipo}]]></variableExpression>
+	</variable>
+	<group name="listado">
+		<groupExpression><![CDATA[$F{ide_listado}]]></groupExpression>
+		<groupHeader>
+			<band height="58">
+				<rectangle>
+					<reportElement uuid="96ca90f1-993b-4a91-9485-673e5ce00916" x="1" y="2" width="553" height="55" backcolor="#999999"/>
+				</rectangle>
+				<staticText>
+					<reportElement uuid="cb88eb97-17d4-4b74-915f-6d6143a10752" x="2" y="5" width="100" height="20" forecolor="#FFFFFF"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[FECHA DE LISTA:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="6c7b6e63-326b-4193-bf08-f1a752440afe" x="286" y="5" width="100" height="20" forecolor="#FFFFFF"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[# DE LISTA:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="4ee63ebe-3a94-4f9e-ae13-6e4d09d7cacc" x="96" y="5" width="43" height="20" forecolor="#FFFFFF"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{fecha_listado}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="13c27a5e-6c88-4e56-8875-a409d285353b" x="353" y="5" width="100" height="20" forecolor="#FFFFFF"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{ide_listado}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="597c173e-722d-465d-96ec-b642868574d8" x="34" y="37" width="50" height="20" forecolor="#FFFFFF"/>
+					<textElement>
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CEDULA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="d36a11e3-b868-4672-86e9-e579b23bfbb4" x="85" y="37" width="140" height="20" forecolor="#FFFFFF"/>
+					<textElement>
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[APELLIDOS Y NOMBRES]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="2c487fb1-552d-48de-a7fa-481b5c262713" x="228" y="37" width="40" height="20" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[VALOR]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="dfcb43b0-cec2-400a-bd6f-588e0812a274" x="274" y="37" width="100" height="20" forecolor="#FFFFFF"/>
+					<textElement>
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[BANCO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="bee0b41e-38a6-4ebc-a58d-8e16301a6704" x="377" y="37" width="55" height="20" forecolor="#FFFFFF"/>
+					<textElement>
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TIPO CUENTA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="eb3f6d5a-866b-41ae-a6c2-1d0217f780bd" x="433" y="37" width="55" height="20" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[# CUENTA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="266cbc49-78d8-41bc-82b2-7f6ca4af2d55" x="3" y="37" width="28" height="20" forecolor="#FFFFFF"/>
+					<textElement>
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[#]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="25">
+				<staticText>
+					<reportElement uuid="75a35f2a-49e3-4d47-b0b7-f48d1023b6a3" x="219" y="3" width="58" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TOTAL LISTA:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="00f5917c-6724-463b-98c0-73dd1a9f8922" x="277" y="3" width="66" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{sum_lista}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="66" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="d1d3429c-822d-485f-820f-95a82ab1df95" key="staticText" x="2" y="2" width="352" height="25" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Gobierno Autónomo Descentralizado del Cantón Rumiñahui]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8b55b71c-597b-420e-9893-d147f414eaf1" key="staticText-1" x="2" y="18" width="272" height="18" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[LISTADO DE SOLICITUDES APROBADAS]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="15a79270-ffca-414d-b9e9-fd9c9a599b4d" x="405" y="2" width="124" height="61"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="6" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="5" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="17" splitType="Stretch">
+			<textField>
+				<reportElement uuid="7b633005-74a5-4238-b734-11eef9d86b0f" x="34" y="1" width="50" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ci_solicitante}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="45850929-6ccf-4ddf-97c0-247bcb8edac6" x="85" y="1" width="140" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{solicitante}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="56152834-d5ac-4276-b2fd-5d15b3529d1a" x="228" y="2" width="40" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_anticipo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5fd036cd-c0d3-4ce1-823e-ac0d5495e068" x="275" y="2" width="100" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ban_nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="58b7cad0-5032-4a8f-9bfa-aae16922411d" x="377" y="2" width="55" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ccaef94d-8c24-43f9-8963-2c9b035fb817" x="433" y="2" width="55" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numero_cuenta}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8302432e-6c99-4921-b1f5-64e03f1b4d7f" x="3" y="2" width="28" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{listado_COUNT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="5" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="19" splitType="Stretch">
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="971f8268-4741-4830-b83c-0a2b3fe167e7" key="textField-5" x="2" y="2" width="92" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="76b4fe9d-d1ef-41f4-8c13-4ca0d7001047" key="textField" x="340" y="2" width="170" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
+				<reportElement uuid="9efcfb5e-4a89-4dd1-8ffe-42414f2a307d" key="textField" x="514" y="2" width="36" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="c876bb4c-35f6-4bd7-bc99-7a355dc56eb5" key="textField-1" x="205" y="2" width="90" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nom_resp}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="5" splitType="Stretch"/>
+	</summary>
+</jasperReport>
