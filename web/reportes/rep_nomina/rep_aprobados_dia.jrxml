@@ -39,7 +39,8 @@ INNER JOIN "public".srh_detalle_anticipo AS d ON d.ide_anticipo = s.ide_solicitu
 where s.ci_solicitante ilike $P{identificacion}
 ORDER BY
 s.solicitante ASC,
-d.ide_periodo_descuento ASC]]>
+d.ide_periodo_descuento ASC,
+c.fecha_anticipo]]>
 	</queryString>
 	<field name="ide_solicitud_anticipo" class="java.lang.Integer"/>
 	<field name="ci_solicitante" class="java.lang.String"/>
@@ -193,7 +194,32 @@ d.ide_periodo_descuento ASC]]>
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="2"/>
+			<band height="22">
+				<staticText>
+					<reportElement uuid="4dd9c86c-72d8-4213-b119-c74bf5ef81ec" x="88" y="2" width="100" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Cuotas Pagadas:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="6c207af6-982a-4d96-ac67-3d590baad770" x="320" y="0" width="100" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Valor Pagado:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="a760f3c6-7822-4bbb-a795-d0af2bd741bb" x="348" y="0" width="100" height="20"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$F{val_pagado}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="5bc03eb0-ac8b-4e2a-833e-e62d366e96d7" x="125" y="2" width="100" height="20"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$F{num_paga}]]></textFieldExpression>
+				</textField>
+			</band>
 		</groupFooter>
 	</group>
 	<background>
@@ -216,7 +242,7 @@ d.ide_periodo_descuento ASC]]>
 				<text><![CDATA[Gobierno Autónomo Descentralizado del Cantón Rumiñahui]]></text>
 			</staticText>
 			<image>
-				<reportElement uuid="b44a2d8f-295b-4ade-a109-3c66350f262f" x="372" y="0" width="182" height="79"/>
+				<reportElement uuid="e6822168-da5a-451c-a585-ba4e64a25928" x="394" y="2" width="148" height="75"/>
 				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
 			</image>
 		</band>
@@ -257,7 +283,7 @@ d.ide_periodo_descuento ASC]]>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="3" splitType="Stretch"/>
+		<band height="4" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
 		<band height="15" splitType="Stretch">
@@ -316,31 +342,6 @@ d.ide_periodo_descuento ASC]]>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="21" splitType="Stretch">
-			<staticText>
-				<reportElement uuid="4dd9c86c-72d8-4213-b119-c74bf5ef81ec" x="120" y="0" width="100" height="20"/>
-				<textElement>
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Cuotas Pagadas:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="6c207af6-982a-4d96-ac67-3d590baad770" x="352" y="0" width="100" height="20"/>
-				<textElement>
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Valor Pagado:]]></text>
-			</staticText>
-			<textField>
-				<reportElement uuid="a760f3c6-7822-4bbb-a795-d0af2bd741bb" x="380" y="0" width="100" height="20"/>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{val_pagado}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="5bc03eb0-ac8b-4e2a-833e-e62d366e96d7" x="157" y="0" width="100" height="20"/>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{num_paga}]]></textFieldExpression>
-			</textField>
-		</band>
+		<band height="3" splitType="Stretch"/>
 	</summary>
 </jasperReport>
