@@ -6,6 +6,7 @@ package paq_nomina;
 
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
+import framework.componentes.Calendario;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
@@ -13,10 +14,15 @@ import framework.componentes.Grupo;
 import framework.componentes.Imagen;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
+import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
 import paq_nomina.ejb.SolicAnticipos;
@@ -32,6 +38,7 @@ public class pre_aprobacion_anticipos extends Pantalla{
     private Tabla tab_anticipo = new Tabla();
     private Tabla tab_listado = new Tabla();
     private Tabla tab_consulta = new Tabla();
+    private SeleccionTabla set_lista = new SeleccionTabla();
     
     //Conexion a base
     private Conexion con_postgres= new Conexion();
@@ -41,8 +48,16 @@ public class pre_aprobacion_anticipos extends Pantalla{
     private Panel pan_opcion2 = new Panel();
     
     private Texto txt_num_listado = new Texto();
+    
+    private Calendario cal_fecha = new Calendario();
+    
     @EJB
     private SolicAnticipos iAnticipos = (SolicAnticipos) utilitario.instanciarEJB(SolicAnticipos.class);
+    
+    ///REPORTES
+    private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
+    private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
+    private Map p_parametros = new HashMap();
     
     public pre_aprobacion_anticipos() {
         //Mostrar el usuario 
@@ -147,6 +162,7 @@ public class pre_aprobacion_anticipos extends Pantalla{
         Grupo gru = new Grupo();
         gru.getChildren().add(pat_panel);
         pan_opcion.getChildren().add(gru);
+        txt_num_listado.setId("txt_num_listado");
         Grid gri_busca = new Grid();
         gri_busca.setColumns(6);
         gri_busca.getChildren().add(new Etiqueta("# Listado: "));    
@@ -170,7 +186,48 @@ public class pre_aprobacion_anticipos extends Pantalla{
         div_division.setId("div_division");
         div_division.dividir3(pan_opcion, gri_busca, pan_opcion2, "44%", "50%", "H");
         agregarComponente(div_division);
+        
+                 /*         * CONFIGURACIÓN DE OBJETO REPORTE         */
+        bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
+        agregarComponente(rep_reporte); //2 agregar el listado de reportes
+        sef_formato.setId("sef_formato");
+        sef_formato.setConexion(con_postgres);
+        agregarComponente(sef_formato);
+        ////Para reportes
+        
+        Grupo gru_lis = new Grupo();
+        gru_lis.getChildren().add(new Etiqueta("FECHA: "));
+        gru_lis.getChildren().add(cal_fecha);
+        Boton bot_lista = new Boton();
+        bot_lista.setValue("Buscar");
+        bot_lista.setIcon("ui-icon-search");
+        bot_lista.setMetodo("buscarColumna");
+        bar_botones.agregarBoton(bot_lista);
+        gru_lis.getChildren().add(bot_lista);
+        
+        set_lista.setId("set_lista");
+        set_lista.getTab_seleccion().setConexion(con_postgres);//conexion para seleccion con otra base
+        set_lista.setSeleccionTabla("SELECT ide_solicitud_anticipo,ide_listado FROM srh_solicitud_anticipo WHERE ide_solicitud_anticipo=-1", "ide_solicitud_anticipo");
+        set_lista.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
+        set_lista.getTab_seleccion().setRows(10);
+        set_lista.setRadio();
+        set_lista.setWidth("20%");
+        set_lista.setHeight("40%");
+        set_lista.getGri_cuerpo().setHeader(gru_lis);
+        set_lista.getBot_aceptar().setMetodo("aceptoAprobacion");
+        set_lista.setHeader("SELECCIONE LISTADO");
+        agregarComponente(set_lista);
+        
     }   
+    
+    public void buscarColumna() {
+        if (cal_fecha.getValue() != null && cal_fecha.getValue().toString().isEmpty() == false ) {
+            set_lista.getTab_seleccion().setSql("SELECT DISTINCT on (ide_listado ) ide_solicitud_anticipo,ide_listado FROM srh_solicitud_anticipo where fecha_listado='"+cal_fecha.getFecha()+"' ORDER BY ide_listado ");
+            set_lista.getTab_seleccion().ejecutarSql();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar una fecha", "");
+        }
+    }
     
     @Override
     public void insertar() {
@@ -258,10 +315,13 @@ public class pre_aprobacion_anticipos extends Pantalla{
          }
          tab_anticipo.actualizar();
          utilitario.agregarMensaje("Formularios Aprobados", "");
+         txt_num_listado.limpiar();
+         utilitario.addUpdate("txt_num_listado");
          tab_listado.actualizar();
     }
     
     public void save_lista(){
+        txt_num_listado.setDisabled(true); //Desactiva el cuadro de texto
         String numero = iAnticipos.listaMax();
         String valor,anio,num;
         Integer cantidad=0;
@@ -271,32 +331,86 @@ public class pre_aprobacion_anticipos extends Pantalla{
         if(numero!=null){
             if(cantidad>=0 && cantidad<=9){
                 num = "0000"+String.valueOf(cantidad);
-                String cadena = "list"+"-"+anio+"-"+num;
-                System.err.println(valor);
-                System.out.println(cadena);
+                String cadena = "LIST"+"-"+anio+"-"+num;
+                txt_num_listado.setValue(cadena + "");
+                utilitario.addUpdate("txt_num_listado");
                } else if(cantidad>=10 && cantidad<=99){
                           num = "000"+String.valueOf(cantidad);
-                          String cadena = "list"+"-"+anio+"-"+num;
-                          System.err.println(valor);
-                          System.out.println(cadena);
+                          String cadena = "LIST"+"-"+anio+"-"+num;
+                        txt_num_listado.setValue(cadena + "");
+                        utilitario.addUpdate("txt_num_listado");
                          }else if(cantidad>=100 && cantidad<=999){
                                    num = "00"+String.valueOf(cantidad);
-                                   String cadena = "list"+"-"+anio+"-"+num;
-                                    System.err.println(valor);
-                                    System.out.println(cadena);
+                                   String cadena = "LIST"+"-"+anio+"-"+num;
+                                    txt_num_listado.setValue(cadena + "");
+                                    utilitario.addUpdate("txt_num_listado");
                                   }else if(cantidad>=1000 && cantidad<=9999){
                                             num = "0"+String.valueOf(cantidad);
-                                            String cadena = "list"+"-"+anio+"-"+num;
-                                            System.err.println(valor);
-                                            System.out.println(cadena);
+                                            String cadena = "LIST"+"-"+anio+"-"+num;
+                                            txt_num_listado.setValue(cadena + "");
+                                            utilitario.addUpdate("txt_num_listado");
                                            }else if(cantidad>=10000 && cantidad<=99999){
                                                      num = String.valueOf(cantidad);
-                                                     String cadena = "list"+"-"+anio+"-"+num;
-                                                    System.err.println(valor);
-                                                    System.out.println(cadena);
+                                                     String cadena = "LIST"+"-"+anio+"-"+num;
+                                                    txt_num_listado.setValue(cadena + "");
+                                                    utilitario.addUpdate("txt_num_listado");
                                                     }
         }
+        save_listado();
     }
+    
+    public void save_listado(){
+         for (int i = 0; i < tab_listado.getTotalFilas(); i++) {
+             
+              tab_listado.getValor(i, "ide_solicitud_anticipo");
+              tab_listado.getValor(i, "ide_empleado_solicitante");
+              tab_listado.getValor(i, "ci_solicitante");
+              
+              iAnticipos.llenarListado(Integer.parseInt(tab_listado.getValor(i, "ide_solicitud_anticipo")), Integer.parseInt(tab_listado.getValor(i, "ide_empleado_solicitante")),tab_listado.getValor(i, "ci_solicitante"), txt_num_listado.getValue()+"");
+         }
+         utilitario.agregarMensaje("Listado Guardado", "");
+         utilitario.addUpdate("txt_num_listado");
+    }
+    
+    /*CREACION DE REPORTES */
+    //llamada a reporte
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+
+    }
+    
+    @Override
+    public void aceptarReporte() {
+        rep_reporte.cerrar();
+        cal_fecha.setFechaActual();
+        switch (rep_reporte.getNombre()) {
+           case "LISTA DE PAGO":
+                set_lista.dibujar();
+                set_lista.getTab_seleccion().limpiar();
+           break;
+        }
+    }
+    
+    public void aceptoAprobacion() {
+        rep_reporte.cerrar();
+        switch (rep_reporte.getNombre()) {
+           case "LISTA DE PAGO":
+               TablaGenerica tab_dato = iAnticipos.ide_listado(Integer.parseInt(set_lista.getValorSeleccionado()));
+               if (!tab_dato.isEmpty()) {   
+                    p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
+                    p_parametros.put("listado", tab_dato.getValor("ide_listado")+"");
+                    rep_reporte.cerrar();
+                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_formato.dibujar();
+                    } else {
+                        utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
+                    }
+           break;
+        }
+    }
+    
+    
     
     public Tabla getTab_anticipo() {
         return tab_anticipo;
@@ -320,6 +434,38 @@ public class pre_aprobacion_anticipos extends Pantalla{
 
     public void setTab_listado(Tabla tab_listado) {
         this.tab_listado = tab_listado;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSef_formato() {
+        return sef_formato;
+    }
+
+    public void setSef_formato(SeleccionFormatoReporte sef_formato) {
+        this.sef_formato = sef_formato;
+    }
+
+    public Map getP_parametros() {
+        return p_parametros;
+    }
+
+    public void setP_parametros(Map p_parametros) {
+        this.p_parametros = p_parametros;
+    }
+
+    public SeleccionTabla getSet_lista() {
+        return set_lista;
+    }
+
+    public void setSet_lista(SeleccionTabla set_lista) {
+        this.set_lista = set_lista;
     }
     
 }

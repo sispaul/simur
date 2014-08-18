@@ -1043,6 +1043,19 @@ public TablaGenerica VerifEmpleCod(Integer codigo){
         
  }
   
+ public TablaGenerica ide_listado(Integer lista){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT ide_solicitud_anticipo,ide_listado FROM srh_solicitud_anticipo where ide_solicitud_anticipo ="+lista);
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+  
   public String listaMax() {
          conectar();
 
@@ -1092,6 +1105,17 @@ public void negarSolicitud(Integer anti,String cedula){
                     "FROM\n" +
                     "srh_solicitud_anticipo\n" +
                     "where ide_solicitud_anticipo = "+anti+" and ci_solicitante like '"+cedula+"')";
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+}
+
+public void llenarListado(Integer solic,Integer ide,String cedula,String lista){
+    String au_sql="UPDATE srh_solicitud_anticipo\n" +
+                    "set ide_listado ='"+lista+"',\n" +
+                    "fecha_listado ='"+utilitario.getFechaActual()+"'\n" +
+                    "where ide_solicitud_anticipo = "+solic+" and ide_empleado_solicitante = "+ide+" and ci_solicitante ilike '"+cedula+"'";
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
