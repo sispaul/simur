@@ -228,11 +228,16 @@ public class pre_anticipos_gadmur extends Pantalla{
 
     //Permite Anular la solictud qeu esta ingresada siempre y cuando no este cobrandose.
     public void Anular(){
+        if(tab_parametros.getValor("ide_estado_anticipo").equals("3")){//se encuentra pangandose
+              utilitario.agregarMensajeError("Actualmente se Encuentra Descontandose", "");
+        }else{
+        iAnticipos.deleteDetalle(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")));
         iAnticipos.deleteCalculo(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")));
         iAnticipos.deleteGarante(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")));
         iAnticipos.deleteSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")));
         utilitario.agregarMensaje("Solicitud Anulada", "Con Exito");
-        utilitario.addUpdate("pan_opcion");
+        limpiarPanel();
+        }
     }
     
     //Permite Seleccionar porque tipo de parametro de busqueda se desea hacerlo, cedula o nombres
