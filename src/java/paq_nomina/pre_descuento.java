@@ -19,7 +19,6 @@ import framework.componentes.Tabla;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
-import org.primefaces.event.SelectEvent;
 import paq_nomina.ejb.mergeDescuento;
 
 import paq_sistema.aplicacion.Pantalla;
