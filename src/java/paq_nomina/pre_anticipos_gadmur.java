@@ -286,6 +286,7 @@ public class pre_anticipos_gadmur extends Pantalla{
                 aut_busca.setValor(set_solicitud.getValorSeleccionado());
                 set_solicitud.cerrar();
                 dibujarSolicitud();
+                dia_dialogoca.cerrar();
                 utilitario.addUpdate("aut_busca,pan_opcion");
             } else {
                 utilitario.agregarMensajeInfo("Debe seleccionar una solicitud", "");
@@ -295,6 +296,7 @@ public class pre_anticipos_gadmur extends Pantalla{
                 aut_busca.setValor(set_solicitu.getValorSeleccionado());
                 dia_dialogoso.cerrar();
                 dibujarSolicitud();
+                dia_dialogoca.cerrar();
                 utilitario.addUpdate("aut_busca,pan_opcion");
                     } else {
                         utilitario.agregarMensajeInfo("Debe seleccionar una Solicitud", "");
@@ -371,8 +373,12 @@ public class pre_anticipos_gadmur extends Pantalla{
         tab_parametros.getColumna("fecha_anticipo").setValorDefecto(utilitario.getFechaActual());
         tab_parametros.getColumna("ide_periodo_anticipo_inicial").setCombo("select ide_periodo_anticipo, (mes || '/' || anio) As Cliente from srh_periodo_anticipo order by ide_periodo_anticipo");
         tab_parametros.getColumna("ide_periodo_anticipo_final").setCombo("select ide_periodo_anticipo, (mes || '/' || anio) As Clientes from srh_periodo_anticipo order by ide_periodo_anticipo");
+        tab_parametros.getColumna("porcentaje_descuento_diciembre").setLongitud(1);
         tab_parametros.getColumna("val_cuo_adi").setLongitud(1);
         tab_parametros.getColumna("porcentaje_descuento_diciembre").setLectura(true);
+        tab_parametros.getColumna("val_cuo_adi").setLectura(true);
+        tab_parametros.getColumna("numero_cuotas_pagadas").setVisible(false);
+        tab_parametros.getColumna("valor_pagado").setVisible(false);
         tab_parametros.getColumna("valor_anticipo").setMetodoChange("remuneracion");
         tab_parametros.getColumna("numero_cuotas_anticipo").setMetodoChange("porcentaje");
         tab_parametros.getColumna("porcentaje_descuento_diciembre").setMetodoChange("cuotas");
