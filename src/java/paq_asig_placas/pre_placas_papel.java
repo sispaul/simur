@@ -247,7 +247,6 @@ public class pre_placas_papel extends Pantalla{
                     if (!tab_dato.isEmpty()) {
                             TablaGenerica tab_dato1 = serviciobusqueda.getGestor(Integer.parseInt(tab_dato.getValor("IDE_DETALLE_SOLICITUD")));
                             if (!tab_dato1.isEmpty()) { 
-                                System.out.println(tab_dato1.getValor("CEDULA_GESTOR"));
                                 tab_detalle.setValor("CEDULA_PERSONA_RETIRA ", tab_dato1.getValor("CEDULA_GESTOR"));
                                 tab_detalle.setValor("NOMBRE_PERSONA_RETIRA", tab_dato1.getValor("NOMBRE_GESTOR"));
                                 utilitario.addUpdate("tab_detalle");
