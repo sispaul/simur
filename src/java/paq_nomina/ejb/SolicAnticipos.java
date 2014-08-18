@@ -1131,6 +1131,14 @@ public void llenarSolicitud(Integer anti,String cuota,Double valor,Integer perde
     con_postgres = null;
 }
 
+public void deleteDetalle(Integer anti){
+    String au_sql="delete from srh_detalle_anticipo where ide_solicitud_anticipo ="+anti;
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+}
+
 public void deleteCalculo(Integer anti){
     String au_sql="delete from srh_calculo_anticipo where ide_solicitud_anticipo ="+anti;
     conectar();
