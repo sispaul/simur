@@ -209,14 +209,14 @@ d.ide_periodo_descuento ASC]]>
 				<text><![CDATA[DETALLE DE ANTICIPO DE SOLICITANTE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="9ce61403-0756-4e2d-a8a6-e09b1834488e" x="6" y="4" width="332" height="22"/>
+				<reportElement uuid="9ce61403-0756-4e2d-a8a6-e09b1834488e" x="6" y="4" width="366" height="22"/>
 				<textElement verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[ILUSTRE MUNICIPIO DE CANTON RUMIÑAHUI]]></text>
+				<text><![CDATA[Gobierno Autónomo Descentralizado del Cantón Rumiñahui]]></text>
 			</staticText>
 			<image>
-				<reportElement uuid="b44a2d8f-295b-4ade-a109-3c66350f262f" x="360" y="0" width="182" height="79"/>
+				<reportElement uuid="b44a2d8f-295b-4ade-a109-3c66350f262f" x="372" y="0" width="182" height="79"/>
 				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
 			</image>
 		</band>
@@ -319,12 +319,16 @@ d.ide_periodo_descuento ASC]]>
 		<band height="21" splitType="Stretch">
 			<staticText>
 				<reportElement uuid="4dd9c86c-72d8-4213-b119-c74bf5ef81ec" x="120" y="0" width="100" height="20"/>
-				<textElement/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[Cuotas Pagadas:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="6c207af6-982a-4d96-ac67-3d590baad770" x="352" y="0" width="100" height="20"/>
-				<textElement/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[Valor Pagado:]]></text>
 			</staticText>
 			<textField>
