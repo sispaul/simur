@@ -12,6 +12,7 @@ import framework.componentes.Grupo;
 import framework.componentes.ImportarTabla;
 import framework.componentes.Notificacion;
 import framework.componentes.TerminalTabla;
+import framework.componentes.Texto;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -953,5 +954,9 @@ public class Utilitario extends Framework {
         Integer i;
         i= Boolean.parseBoolean(s) ? 1 : 0;
         return Byte.parseByte(i+"");
+    }
+
+    public void addUpdate(Texto txt_num_listado) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
