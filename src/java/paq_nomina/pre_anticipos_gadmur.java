@@ -259,14 +259,14 @@ public class pre_anticipos_gadmur extends Pantalla{
             }
     }
     
-     public void buscarSolicitud1(){
+    public void buscarSolicitud1(){
           dia_dialogoso.Limpiar();
           dia_dialogoso.setDialogo(gridso);
           grid_so.getChildren().add(set_solicitu);
           set_solicitu.setId("set_solicitu");
           set_solicitu.setConexion(con_postgres);
           set_solicitu.setHeader("LISTADO DE SERVIDORES");
-          set_solicitu.setSql("SELECT ide_solicitud_anticipo,ci_solicitante,solicitante,(case when aprobado_solicitante = 1 then 'SI' ELSE 'NO' end ) AS aprobado FROM srh_solicitud_anticipo");
+          set_solicitu.setSql("SELECT ide_solicitud_anticipo,ci_solicitante,solicitante,(case when aprobado_solicitante = 1 then 'SI' ELSE 'NO' end ) AS aprobado FROM srh_solicitud_anticipo where ci_solicitante is not null");
           set_solicitu.getColumna("solicitante").setFiltro(true);
           set_solicitu.setRows(10);
           set_solicitu.setTipoSeleccion(false);
