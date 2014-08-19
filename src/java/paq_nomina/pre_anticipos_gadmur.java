@@ -1726,7 +1726,7 @@ public class pre_anticipos_gadmur extends Pantalla{
                 gridr.getChildren().add(txt_cedula);
                 dia_dialogosr.setDialogo(gridr);
                 dia_dialogosr.dibujar();
-               break;
+          break;
         }
     } 
     
@@ -1738,7 +1738,7 @@ public class pre_anticipos_gadmur extends Pantalla{
                     rep_reporte.cerrar();
                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                     sef_formato.dibujar();
-               break;  
+               break;
         }
     }
     public Reporte getRep_reporte() {
