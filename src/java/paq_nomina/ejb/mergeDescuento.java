@@ -81,8 +81,8 @@ public class mergeDescuento {
     public void migrarAnticipo(){
         // Forma el sql para el ingreso
         String str_sql4 = "update srh_detalle_anticipo\n" +
-                            "set ide_periodo_descontado = ide_periodo,\n" +
-                            "ide_estado_cuota = 't'\n" +
+                            "set ide_periodo_descontado = d.ide_periodo,\n" +
+                            "ide_estado_cuota = 1\n" +
                             "from \n" +
                             "(select\n" +
                             "ide_descuento,\n" +
@@ -101,14 +101,15 @@ public class mergeDescuento {
      }
        
     public void ActualizaAnticipo(){
-        String str_sql4 = "update srh_anticipo\n" +
-                            "set valor_pagado =pagado,\n" +
-                            "numero_cuotas_pagadas=cuota,ide_estado_anticipo = 3\n" +
-                            "from (SELECT \"sum\"(valor) as pagado,(\"sum\"(valor)/valor) as cuota,ide_anticipo\n" +
-                            "FROM \"public\".srh_detalle_anticipo\n" +
-                            "where ide_estado_cuota = 't'\n" +
+        String str_sql4 = "update srh_calculo_anticipo\n" +
+                            "set valor_pagado =h.pagado,\n" +
+                            "numero_cuotas_pagadas=cuota,\n" +
+                            "ide_estado_anticipo = 3\n" +
+                            "from (SELECT sum(valor) as pagado,(sum(valor)/valor) as cuota,ide_anticipo\n" +
+                            "FROM srh_detalle_anticipo\n" +
+                            "where ide_estado_cuota = 1\n" +
                             "GROUP BY valor,ide_anticipo) h\n" +
-                            "where srh_anticipo.ide_anticipo = h.ide_anticipo";
+                            "where srh_calculo_anticipo.ide_solicitud_anticipo = h.ide_anticipo";
         conectar();
         con_postgres.ejecutarSql(str_sql4);
         con_postgres.desconectar();
@@ -120,9 +121,9 @@ public class mergeDescuento {
                             "SET ide_estado_anticipo = 4\n" +
                             "from (\n" +
                             "SELECT n1.pagado,n2.ide_anticipo\n" +
-                            "from (SELECT \"count\"(ide_anticipo) as pagado,ide_anticipo FROM \"public\".srh_detalle_anticipo where ide_estado_cuota = 't' \n" +
+                            "from (SELECT count(ide_anticipo) as pagado,ide_anticipo FROM srh_detalle_anticipo where ide_estado_cuota = 1 \n" +
                             "GROUP BY ide_anticipo) n1\n" +
-                            "inner join (SELECT \"count\"(ide_anticipo) as pagando,ide_anticipo FROM \"public\".srh_detalle_anticipo GROUP BY ide_anticipo) n2\n" +
+                            "inner join (SELECT count(ide_anticipo) as pagando,ide_anticipo FROM srh_detalle_anticipo GROUP BY ide_anticipo) n2\n" +
                             "on n1.ide_anticipo = n2.ide_anticipo and n1.pagado = n2.pagando ) d1\n" +
                             "WHERE d1.ide_anticipo = srh_anticipo.ide_anticipo";
         conectar();
@@ -150,8 +151,8 @@ public class mergeDescuento {
                             "WHERE \n" +
                             "d.ide_periodo_descuento = q.ide_periodo_anticipo AND \n" +
                             "d.ide_anticipo = a.ide_solicitud_anticipo AND \n" +
-                            "d.ide_periodo_descuento  = \"+utilitario.getMes(utilitario.getFechaActual())+\" and  \n" +
-                            "q.anio like '\"+utilitario.getAnio(utilitario.getFechaActual())+\"'\n" +
+                            "d.ide_periodo_descuento  = "+utilitario.getMes(utilitario.getFechaActual())+" and  \n" +
+                            "q.anio like '"+utilitario.getAnio(utilitario.getFechaActual())+"'\n" +
                             "order by a.id_distributivo,a.solicitante";
         conectar();
         con_postgres.ejecutarSql(str_sql3);

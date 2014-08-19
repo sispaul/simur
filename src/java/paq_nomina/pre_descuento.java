@@ -264,11 +264,9 @@ private Conexion con_postgres= new Conexion();
          ide_columna=Integer.parseInt(tab_consulta.getValor("ide_columna")) ;  
          mDescuento.migrarDescuento(ano,ide_periodo,id_distributivo_roles,ide_columna,tab_usuario.getValor("NICK_USUA")+"");
          utilitario.agregarMensaje("PROCESO REALIZADO CON EXITO", " ");
-                if(tab_tabla.getValor("ide_columna").equals("1")){
-                             mDescuento.migrarAnticipo();
-                             utilitario.agregarMensaje("Anticipos ", "Sueldos Subidos ");
-                             actu();
-                }
+         
+         actuAnticipo();
+         
          dia_dialogoe.cerrar();
          }
                     
@@ -277,7 +275,19 @@ private Conexion con_postgres= new Conexion();
          mDescuento.borrarDescuento();
          tab_tabla.actualizar();
          }
-          //subida de anticcipos de sueldo a rol   
+          //subida de anticcipos de sueldo a rol
+         
+         public void actuAnticipo(){
+             for (int i = 0; i < tab_tabla.getTotalFilas(); i++) {
+                 tab_tabla.getValor(i, "ide_columna");
+                    if(tab_tabla.getValor(i, "ide_columna").equals("1")||tab_tabla.getValor(i, "ide_columna").equals("46")){
+                       mDescuento.migrarAnticipo();
+                      actu();
+                }
+             }
+             utilitario.agregarMensaje("Anticipos ", "Sueldos Subidos ");
+         }
+         
          public void anticipo(){
              mDescuento.InsertarAnticipo();
              tab_tabla.actualizar();
