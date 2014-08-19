@@ -270,37 +270,35 @@ private Conexion con_postgres= new Conexion();
          dia_dialogoe.cerrar();
          }
                     
-         public void borrar()
-         {
-         mDescuento.borrarDescuento();
-         tab_tabla.actualizar();
-         }
+    public void borrar(){
+      mDescuento.borrarDescuento();
+      tab_tabla.actualizar();
+    }
           //subida de anticcipos de sueldo a rol
          
-         public void actuAnticipo(){
-             for (int i = 0; i < tab_tabla.getTotalFilas(); i++) {
-                 tab_tabla.getValor(i, "ide_columna");
-                    if(tab_tabla.getValor(i, "ide_columna").equals("1")||tab_tabla.getValor(i, "ide_columna").equals("46")){
-                       mDescuento.migrarAnticipo();
-                      actu();
+    public void actuAnticipo(){
+       for (int i = 0; i < tab_tabla.getTotalFilas(); i++) {
+             tab_tabla.getValor(i, "ide_columna");
+               if(tab_tabla.getValor(i, "ide_columna").equals("1")||tab_tabla.getValor(i, "ide_columna").equals("46")){
+                   mDescuento.migrarAnticipo();
+                  actu();
                 }
-             }
-             utilitario.agregarMensaje("Anticipos ", "Sueldos Subidos ");
-         }
+            }
+    }
          
-         public void anticipo(){
-             mDescuento.InsertarAnticipo();
-             tab_tabla.actualizar();
-         }
-         public void actu(){
-             mDescuento.ActualizaAnticipo();
-             tab_tabla.actualizar();
-             ide();
-         }
+    public void anticipo(){
+       mDescuento.InsertarAnticipo();
+       tab_tabla.actualizar();
+    }
+    public void actu(){
+       mDescuento.ActualizaAnticipo();
+       tab_tabla.actualizar();
+       ide();
+    }
          
-         public void ide(){
-             mDescuento. CamAnticipoF();
-         }
+    public void ide(){
+       mDescuento. CamAnticipoF();
+    }
 /*CREACION DE REPORTES */
     //llamada a reporte
     @Override
