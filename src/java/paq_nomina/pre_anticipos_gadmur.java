@@ -106,11 +106,17 @@ public class pre_anticipos_gadmur extends Pantalla{
         pan_opcion.setHeader("SOLICITUD DE ANTICIPOS DE SUELDOS");
         agregarComponente(pan_opcion);
         
+        Boton bot_limpiar = new Boton();
+        bot_limpiar.setValue("Limpiar");
+        bot_limpiar.setExcluirLectura(true);
+        bot_limpiar.setIcon("ui-icon-person");
+        bot_limpiar.setMetodo("limpia_pa");
+        bar_botones.agregarBoton(bot_limpiar);
+        
         Boton bot_busca = new Boton();
         bot_busca.setValue("Busqueda Avanzada");
         bot_busca.setExcluirLectura(true);
         bot_busca.setIcon("ui-icon-search");
-//        bot_busca.setMetodo("abrirBusqueda");
         bot_busca.setMetodo("Busca_tipo");
         bar_botones.agregarBoton(bot_busca);
         
@@ -125,11 +131,6 @@ public class pre_anticipos_gadmur extends Pantalla{
         
         bar_botones.agregarComponente(new Etiqueta("Buscar Solicitud:"));
         bar_botones.agregarComponente(aut_busca);
-        
-        Boton bot_limpiar = new Boton();
-        bot_limpiar.setIcon("ui-icon-cancel");
-        bot_limpiar.setMetodo("limpiar");
-        bar_botones.agregarBoton(bot_limpiar);
         
         Boton bot_abort = new Boton();
         bot_abort.setValue("Anular Solictud");
@@ -423,6 +424,15 @@ public class pre_anticipos_gadmur extends Pantalla{
         limpiar();
         aut_busca.onSelect(evt);
         dibujarSolicitud();
+    }
+    
+    public void limpia_pa(){
+      if(tab_anticipo.getValor("ide_solicitud_anticipo")!=null){
+                utilitario.agregarMensaje("Limpia Formulario", "No Guardado");
+        }else{
+        eliminar();
+        insertar();
+        }
     }
     
     //BUSCAR SOLICITANTE POR CEDULA
