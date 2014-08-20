@@ -28,7 +28,7 @@ d.cuota,
 (select (mes || '/' || anio) from srh_periodo_anticipo where ide_periodo_anticipo = d.ide_periodo_descuento) AS periodo_descuen,
 d.valor,
 (select (mes || '/' || anio) from srh_periodo_anticipo where ide_periodo_anticipo = d.ide_periodo_descontado) AS periodo_descon,
-d.ide_estado_cuota,
+(case when d.ide_estado_cuota =1 then 'COBRADO' end )AS estad,
 "c".valor_pagado,
 "c".numero_cuotas_pagadas
 FROM
@@ -61,7 +61,7 @@ c.fecha_anticipo]]>
 		<fieldDescription><![CDATA[VALOR]]></fieldDescription>
 	</field>
 	<field name="periodo_descon" class="java.lang.String"/>
-	<field name="ide_estado_cuota" class="java.lang.Integer"/>
+	<field name="estad" class="java.lang.String"/>
 	<field name="valor_pagado" class="java.math.BigDecimal"/>
 	<field name="numero_cuotas_pagadas" class="java.lang.Integer"/>
 	<group name="solicitud_fecha">
@@ -277,7 +277,7 @@ c.fecha_anticipo]]>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="272bd43e-a0cd-4247-af85-a7cbb0196f91" x="425" y="1" width="100" height="20"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{ide_estado_cuota}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{estad}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
