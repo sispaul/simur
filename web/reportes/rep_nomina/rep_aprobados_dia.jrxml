@@ -28,10 +28,9 @@ d.cuota,
 (select (mes || '/' || anio) from srh_periodo_anticipo where ide_periodo_anticipo = d.ide_periodo_descuento) AS periodo_descuen,
 d.valor,
 (select (mes || '/' || anio) from srh_periodo_anticipo where ide_periodo_anticipo = d.ide_periodo_descontado) AS periodo_descon,
-(case when d.ide_estado_cuota is NOT NULL  then d.ide_estado_cuota when d.ide_estado_cuota is NULL then '0' end )AS estad
-,
-(case when "c".valor_pagado is NOT NULL  then "c".valor_pagado when "c".valor_pagado is NULL then '0' end ) AS val_pagado,
-(case when "c".numero_cuotas_pagadas is NOT NULL  then "c".numero_cuotas_pagadas when "c".numero_cuotas_pagadas is NULL then '0' end ) AS num_paga
+d.ide_estado_cuota,
+"c".valor_pagado,
+"c".numero_cuotas_pagadas
 FROM
 "public".srh_solicitud_anticipo AS s
 INNER JOIN "public".srh_calculo_anticipo AS "c" ON "c".ide_solicitud_anticipo = s.ide_solicitud_anticipo
@@ -62,9 +61,9 @@ c.fecha_anticipo]]>
 		<fieldDescription><![CDATA[VALOR]]></fieldDescription>
 	</field>
 	<field name="periodo_descon" class="java.lang.String"/>
-	<field name="estad" class="java.lang.Integer"/>
-	<field name="val_pagado" class="java.math.BigDecimal"/>
-	<field name="num_paga" class="java.lang.Integer"/>
+	<field name="ide_estado_cuota" class="java.lang.Integer"/>
+	<field name="valor_pagado" class="java.math.BigDecimal"/>
+	<field name="numero_cuotas_pagadas" class="java.lang.Integer"/>
 	<group name="solicitud_fecha">
 		<groupExpression><![CDATA[$F{ide_solicitud_anticipo}]]></groupExpression>
 		<groupHeader>
@@ -209,15 +208,15 @@ c.fecha_anticipo]]>
 					</textElement>
 					<text><![CDATA[Valor Pagado:]]></text>
 				</staticText>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement uuid="a760f3c6-7822-4bbb-a795-d0af2bd741bb" x="348" y="0" width="100" height="20"/>
 					<textElement textAlignment="Right"/>
-					<textFieldExpression><![CDATA[$F{val_pagado}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{valor_pagado}]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement uuid="5bc03eb0-ac8b-4e2a-833e-e62d366e96d7" x="125" y="2" width="100" height="20"/>
 					<textElement textAlignment="Right"/>
-					<textFieldExpression><![CDATA[$F{num_paga}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{numero_cuotas_pagadas}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -270,15 +269,15 @@ c.fecha_anticipo]]>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{periodo_descuen}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement uuid="12a1650a-8c76-45b3-88d8-ad96227a5158" x="299" y="1" width="100" height="20"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{periodo_descon}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement uuid="272bd43e-a0cd-4247-af85-a7cbb0196f91" x="425" y="1" width="100" height="20"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{estad}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{ide_estado_cuota}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
