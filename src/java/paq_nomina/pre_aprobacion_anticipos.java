@@ -137,6 +137,7 @@ public class pre_aprobacion_anticipos extends Pantalla{
                             " c.val_cuo_adi, \n" +
                             " p.mes AS mes_descuento, \n" +
                             " s.aprobado_solicitante, \n" +
+                            " null as quitar_lista, \n" +
                             " s.id_distributivo, \n" +
                             " c.ide_periodo_anticipo_inicial, \n" +
                             " c.ide_periodo_anticipo_final \n" +
@@ -152,6 +153,13 @@ public class pre_aprobacion_anticipos extends Pantalla{
         tab_listado.getColumna("ide_periodo_anticipo_inicial").setVisible(false);
         tab_listado.getColumna("ide_periodo_anticipo_final").setVisible(false);
         tab_listado.getColumna("aprobado_solicitante").setVisible(false);
+        List list = new ArrayList();
+        Object fila[] = {
+            "1", "Devolver"
+        };
+        list.add(fila);;
+        tab_listado.getColumna("quitar_lista").setRadio(list, "");
+        tab_listado.getColumna("quitar_lista").setLongitud(1);
         tab_listado.getGrid().setColumns(4);
         tab_listado.setRows(7);
         tab_listado.dibujar();
@@ -175,7 +183,14 @@ public class pre_aprobacion_anticipos extends Pantalla{
         bot_save.setIcon("ui-icon-disk");
         bot_save.setMetodo("save_lista");
         
+        Boton bot_delete = new Boton();
+        bot_delete.setValue("Quitar de Listado");
+        bot_delete.setExcluirLectura(true);
+        bot_delete.setIcon("ui-icon-extlink");
+        bot_delete.setMetodo("devolver");
+        
         gri_busca.getChildren().add(bot_save);
+        gri_busca.getChildren().add(bot_delete);
         agregarComponente(gri_busca);
         
         pan_opcion2.setId("pan_opcion2");
@@ -188,7 +203,7 @@ public class pre_aprobacion_anticipos extends Pantalla{
         div_division.dividir3(pan_opcion, gri_busca, pan_opcion2, "44%", "50%", "H");
         agregarComponente(div_division);
         
-                 /*         * CONFIGURACIÓN DE OBJETO REPORTE         */
+        /*         * CONFIGURACIÓN DE OBJETO REPORTE         */
         bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
         agregarComponente(rep_reporte); //2 agregar el listado de reportes
         sef_formato.setId("sef_formato");
@@ -228,6 +243,21 @@ public class pre_aprobacion_anticipos extends Pantalla{
         } else {
             utilitario.agregarMensajeInfo("Debe seleccionar una fecha", "");
         }
+    }
+    
+    public void devolver(){
+        for (int i = 0; i < tab_listado.getTotalFilas(); i++) {
+            tab_listado.getValor(i, "quitar_lista");
+            tab_listado.getValor(i, "ide_solicitud_anticipo");
+            if(tab_listado.getValor(i, "quitar_lista")!=null){
+                iAnticipos.deleteDevolver(Integer.parseInt(tab_listado.getValor(i, "ide_solicitud_anticipo")));
+                iAnticipos.actuaDevolucion(Integer.parseInt(tab_listado.getValor(i, "ide_solicitud_anticipo")));
+                iAnticipos.actuaSoliDevolucion(Integer.parseInt(tab_listado.getValor(i, "ide_solicitud_anticipo")));
+            }
+        }
+         tab_anticipo.actualizar();
+         utilitario.agregarMensaje("Formularios Devueltos", "");
+         tab_listado.actualizar();
     }
     
     @Override

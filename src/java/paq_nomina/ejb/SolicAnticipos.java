@@ -1122,6 +1122,25 @@ public void llenarListado(Integer solic,Integer ide,String cedula,String lista){
     con_postgres = null;
 }
 
+public void actuaDevolucion(Integer solic){
+    String au_sql="UPDATE srh_calculo_anticipo set ide_estado_anticipo = 1\n" +
+                    "where ide_solicitud_anticipo ="+solic;
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+}
+
+public void actuaSoliDevolucion(Integer solic){
+    String au_sql="UPDATE srh_solicitud_anticipo set login_aprob_solicitud = null,\n" +
+                "ip_aprob_solicitud = null,fecha_aprobacion = null,aprobado_solicitante = null\n" +
+                "where ide_solicitud_anticipo ="+solic;
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+}
+
 public void llenarSolicitud(Integer anti,String cuota,Double valor,Integer perdes){
     String au_sql="insert into srh_detalle_anticipo (ide_anticipo,cuota,valor,ide_periodo_descuento)\n" +
                   "values ("+anti+",'"+cuota+"',"+valor+","+perdes+")";
@@ -1157,6 +1176,14 @@ public void deleteGarante(Integer anti){
 
 public void deleteSolicitud(Integer anti){
     String au_sql="delete from srh_solicitud_anticipo where ide_solicitud_anticipo ="+anti;
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+}
+
+public void deleteDevolver(Integer anti){
+    String au_sql="delete from srh_detalle_anticipo where ide_anticipo ="+anti;
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
