@@ -1541,13 +1541,15 @@ public class pre_anticipos_gadmur extends Pantalla{
             }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){
                 TablaGenerica tab_dato = iAnticipos.periodos1(Integer.parseInt(tab_parametros.getValor("ide_periodo_anticipo_inicial")));
             if (!tab_dato.isEmpty()) {
-                rango = Integer.parseInt(tab_dato.getValor("periodo"))-1+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
+                rango = Integer.parseInt(tab_dato.getValor("periodo"))+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
                 if(rango > 12){
+                    System.err.println("Holas");
                     valora= ((rmu*(Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))))/100);
                     if(valora>=Double.parseDouble(tab_parametros.getValor("valor_anticipo"))){
                     utilitario.agregarMensajeError("Cuota Diciembre Excede Sueldo Anterior", "");
                     }else{
-                            valorm = (valan-valora)/(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo")));
+                        System.out.println((valan-valora));
+                            valorm = (valan-valora)/(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))-1);
                             if(media>=(Math.rint(valorm*100)/100)){
                                 tab_parametros.setValor("val_cuo_adi", String.valueOf(valora));
                                 tab_parametros.setValor("valor_cuota_mensual", String.valueOf(Math.rint(valorm*100)/100));
