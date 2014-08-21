@@ -336,6 +336,8 @@ public class pre_anticipos_gadmur extends Pantalla{
         
         tab_anticipo.getColumna("login_ingre_solicitud").setValorDefecto(utilitario.getVariable("NICK"));
         tab_anticipo.getColumna("ip_ingre_solicitud").setValorDefecto(utilitario.getIp());
+        tab_anticipo.getColumna("anio").setValorDefecto(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())));
+        tab_anticipo.getColumna("periodo").setValorDefecto(String.valueOf(utilitario.getMes(utilitario.getFechaActual())));
         
         tab_anticipo.getColumna("login_ingre_solicitud").setVisible(false);
         tab_anticipo.getColumna("IDE_EMPLEADO_SOLICITANTE").setVisible(false);
@@ -346,6 +348,8 @@ public class pre_anticipos_gadmur extends Pantalla{
         tab_anticipo.getColumna("fecha_aprobacion").setVisible(false);
         tab_anticipo.getColumna("ide_listado").setVisible(false);
         tab_anticipo.getColumna("fecha_listado").setVisible(false);
+        tab_anticipo.getColumna("anio").setVisible(false);
+        tab_anticipo.getColumna("periodo").setVisible(false);
         
         tab_anticipo.setTipoFormulario(true);
         tab_anticipo.agregarRelacion(tab_garante);
