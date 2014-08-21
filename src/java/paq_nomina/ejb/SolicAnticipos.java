@@ -1106,14 +1106,37 @@ public TablaGenerica VerifEmpleCod(Integer codigo){
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
         tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT ide_solicitud_anticipo FROM srh_solicitud_anticipo where ci_solicitante  like '"+cedula+"' and  ide_listado like 'LIST-2014-00000'");
+        tab_funcionario.setSql("SELECT ide_solicitud_anticipo,ci_solicitante FROM srh_solicitud_anticipo where ci_solicitante  like '"+cedula+"' and  ide_listado like 'LIST-2014-00000'");
         tab_funcionario.ejecutarSql();
-        System.out.println("Holas1235");
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
         
  }  
+  
+  public TablaGenerica cod_detalle(Integer ide){
+       conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT\n" +
+                                "ide_calculo_anticipo,\n" +
+                                "fecha_anticipo,\n" +
+                                "valor_anticipo,\n" +
+                                "numero_cuotas_anticipo,\n" +
+                                "valor_cuota_mensual,\n" +
+                                "val_cuo_adi,\n" +
+                                "ide_periodo_anticipo_inicial,\n" +
+                                "ide_periodo_anticipo_final\n" +
+                                "FROM\n" +
+                                "srh_calculo_anticipo\n" +
+                                "where ide_solicitud_anticipo ="+ide);
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
     
   public String listaMax() {
          conectar();
