@@ -1055,7 +1055,66 @@ public TablaGenerica VerifEmpleCod(Integer codigo){
         return tab_funcionario;
         
  }
+ public void migra_lista(String cedula,String usu){
+        String nomina ="insert into srh_solicitud_anticipo (ci_solicitante,solicitante,rmu,id_distributivo,cod_cargo,login_ingre_solicitud,ip_ingre_solicitud,login_aprob_solicitud, \n" +
+                    "ip_aprob_solicitud,aprobado_solicitante,fecha_aprobacion,ide_listado,fecha_listado,anio,periodo) \n" +
+                    "SELECT cedula, solicitante,rmu,id_distributivo,cod_cargo, \n" +
+                    "'"+usu+"' as login_ingreso, \n" +
+                    "'"+utilitario.getIp()+"' as ip_ingreso, \n" +
+                    "'"+usu+"' as login_aprobacion, \n" +
+                    "'"+utilitario.getIp()+"' as ip_aprobacion, \n" +
+                    "1 as aprobacion, \n" +
+                    "'"+utilitario.getFechaActual()+"' as fecha_aprobacion, \n" +
+                    "'LIST-2014-00000' as id_listado, \n" +
+                    "'"+utilitario.getFechaActual()+"' as fecha_listado, \n" +
+                    ""+utilitario.getAnio(utilitario.getFechaActual())+" as anio, \n" +
+                    ""+utilitario.getMes(utilitario.getFechaActual())+" as periodo \n" +
+                    "FROM srh_migrar_anticipo \n" +
+                    "WHERE cedula ilike '"+cedula+"'";
+        conectar();
+        con_postgres.ejecutarSql(nomina);
+        con_postgres.desconectar();
+        con_postgres = null;
+        
+    }
   
+    public void migra_calculo(String cedula,Integer ide){
+        String nomina ="insert into srh_calculo_anticipo(fecha_anticipo,valor_anticipo,numero_cuotas_anticipo,valor_cuota_mensual,val_cuo_adi,ide_periodo_anticipo_inicial,\n" +
+                        "ide_periodo_anticipo_final,ide_solicitud_anticipo,ide_estado_anticipo)\n" +
+                        "SELECT\n" +
+                        "'2014-09-02' as fecha,\n" +
+                        "saldo,\n" +
+                        "cuotas_pedientes,\n" +
+                        "cast((saldo/cuotas_pedientes) as numeric(6,2)) as cuotas,\n" +
+                        "cast(cuota_adicional as numeric) as cuota_adi,\n" +
+                        "9 as periodo,\n" +
+                        "(9+cuotas_pedientes) as fin,\n" +
+                        ""+ide+" as ide,\n" +
+                        "1 as aprobado\n" +
+                        "FROM\n" +
+                        "srh_migrar_anticipo\n" +
+                        "where cedula like '"+cedula+"'";
+        conectar();
+        con_postgres.ejecutarSql(nomina);
+        con_postgres.desconectar();
+        con_postgres = null;
+        
+    }
+    
+    public TablaGenerica cod_listado(String cedula){
+       conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT ide_solicitud_anticipo FROM srh_solicitud_anticipo where ci_solicitante  like '"+cedula+"' and  ide_listado like 'LIST-2014-00000'");
+        tab_funcionario.ejecutarSql();
+        System.out.println("Holas1235");
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }  
+    
   public String listaMax() {
          conectar();
 

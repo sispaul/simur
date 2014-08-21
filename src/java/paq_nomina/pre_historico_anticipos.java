@@ -22,33 +22,29 @@ public class pre_historico_anticipos extends Pantalla{
     //Conexion a base
     private Conexion con_postgres= new Conexion();
     
-    //Dibujar Panel
-    private Panel pan_opcion = new Panel();
-    
     //Creacion de Arbol
     private Arbol arb_arbol = new Arbol();
     
     //Tabla
     private Tabla tab_anio= new Tabla();
     public pre_historico_anticipos() {
-        
+        bar_botones.quitarBotonInsertar();
+	bar_botones.quitarBotonEliminar();
+        bar_botones.quitarBotonGuardar();
+	bar_botones.quitarBotonsNavegacion();
         //Encabezado
         Imagen quinde = new Imagen();
-        quinde.setValue("imagenes/logo_talento.png");
-        agregarComponente(quinde);
-        
-        //Area de Historial
-        pan_opcion.setId("pan_opcion");
-        pan_opcion.setTransient(true);
-        pan_opcion.setHeader("HISTORIAL DE ANTICIPOS");
-        agregarComponente(pan_opcion);
+        quinde.setValue("imagenes/logo_talento1.png");
+        bar_botones.agregarComponente(quinde);
         
         //Dibujar Tabla
         tab_anio.setId("tab_anio");
-        tab_anio.setConexion(con_postgres);
+//        tab_anio.setConexion(con_postgres);
+        tab_anio.setNumeroTabla(1);
         tab_anio.agregarArbol(arb_arbol);
         tab_anio.dibujar();
         PanelTabla pat_panel = new PanelTabla();
+        pat_panel.setMensajeWarn("HISTORIAL DE ANTICIPOS");
         pat_panel.setPanelTabla(tab_anio);
         
         //Dibujar Arbol
@@ -57,7 +53,7 @@ public class pre_historico_anticipos extends Pantalla{
         
         Division div_division = new Division();
         div_division.setId("div_division");
-        div_division.dividir2(arb_arbol, pat_panel, "21%", "V");
+        div_division.dividir2(arb_arbol, pat_panel, "15%", "V");
         agregarComponente(div_division);  
     }
 
