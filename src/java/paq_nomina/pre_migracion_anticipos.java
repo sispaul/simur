@@ -68,91 +68,6 @@ public class pre_migracion_anticipos extends Pantalla{
         for (int i = 0; i < tab_migracion.getTotalFilas(); i++) {
             tab_migracion.getValor(i, "cedula");
             iAnticipos.migra_lista(tab_migracion.getValor(i, "cedula"),utilitario.getVariable("NICK"));
-            
-
-                  
-//                           if(tab_migracion.getValor(i, "id_distributivo").equals("1")){//detalle solicitud de empleados
-//                                 if((utilitario.getDia(tab_migracion.getValor(i, "fecha_anticipo")))>10){
-//                                     if((Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))+(utilitario.getMes(tab_migracion.getValor(i, "fecha_anticipo"))))>12){
-//                                            for (int j = 0; j < (Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))-1); j++){
-//                                            TablaGenerica tab_dato = iAnticipos.periodos1(Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_inicial"))+j);
-//                                            if (!tab_dato.isEmpty()) {
-//                                                   if(tab_dato.getValor("mes").equals("Diciembre")){ 
-//                                                       iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), String.valueOf(j+1), Double.parseDouble(tab_migracion.getValor(i,"val_cuo_adi")), 
-//                                                       Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_inicial"))+j);
-//
-//                                                   }else{
-//                                                           iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), String.valueOf(j+1), Double.parseDouble(tab_migracion.getValor(i,"valor_cuota_mensual")), 
-//                                                           Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_inicial"))+j);
-//                                                       }
-//                                            }else {
-//                                                   utilitario.agregarMensajeInfo("No se encuentra en roles", "");
-//                                               }
-//                                        }
-//                                           Double valorp=0.0,valors=0.0,totall=0.0;
-//                                           valorp = (Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))-2)*Double.parseDouble(tab_migracion.getValor(i,"valor_cuota_mensual"));
-//                                           valors= Double.parseDouble(tab_migracion.getValor(i,"val_cuo_adi"))+valorp ;
-//                                           totall = Double.parseDouble(tab_migracion.getValor(i,"valor_anticipo"))-valors ;
-//                                           iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), tab_migracion.getValor(i,"numero_cuotas_anticipo"), Double.parseDouble(String.valueOf(totall)), 
-//                                           Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_final")));
-//                                     }else{
-//                                      for (int j = 0; j < (Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))-1); j++){
-//                                            iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), String.valueOf(1+j), Double.parseDouble(tab_migracion.getValor(i,"valor_cuota_mensual")), 
-//                                                        Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_inicial"))+j);
-//                                     }
-//                                        Double valor1=0.0,total=0.0;
-//                                        valor1 = (Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))-1)*Double.parseDouble(tab_migracion.getValor(i,"valor_cuota_mensual"));
-//                                        total = Double.parseDouble(tab_migracion.getValor(i,"valor_anticipo"))-valor1 ;
-//                                        iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), tab_migracion.getValor(i,"numero_cuotas_anticipo"), total, 
-//                                        Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_final")));
-//                                          }
-//                                 }else {
-//                                       if((Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))+(utilitario.getMes(tab_migracion.getValor(i, "fecha_anticipo"))))-1>12){
-//                                           for (int j = 0; j < (Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))-1); j++){
-//                                            TablaGenerica tab_dato = iAnticipos.periodos1(Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_inicial"))+j);
-//                                            if (!tab_dato.isEmpty()) {
-//                                                   if(tab_dato.getValor("mes").equals("Diciembre")){ 
-//                                                       iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), String.valueOf(j+1), Double.parseDouble(tab_migracion.getValor(i,"val_cuo_adi")), 
-//                                                       Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_inicial"))+j);
-//
-//                                                   }else{
-//                                                           iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), String.valueOf(j+1), Double.parseDouble(tab_migracion.getValor(i,"valor_cuota_mensual")), 
-//                                                           Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_inicial"))+j);
-//                                                       }
-//                                            }else {
-//                                                   utilitario.agregarMensajeInfo("No se encuentra en roles", "");
-//                                               }
-//                                        }
-//                                           Double valorp=0.0,valors=0.0,totall=0.0;
-//                                           valorp = (Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))-2)*Double.parseDouble(tab_migracion.getValor(i,"valor_cuota_mensual"));
-//                                           valors= Double.parseDouble(tab_migracion.getValor(i,"val_cuo_adi"))+valorp ;
-//                                           totall = Double.parseDouble(tab_migracion.getValor(i,"valor_anticipo"))-valors ;
-//                                           iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), tab_migracion.getValor(i,"numero_cuotas_anticipo"), Double.parseDouble(String.valueOf(totall)), 
-//                                           Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_final")));
-//                                         }else{
-//                                      for (int j = 0; j < (Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))-1); j++){
-//                                            iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), String.valueOf(1+j), Double.parseDouble(tab_migracion.getValor(i,"valor_cuota_mensual")), 
-//                                                        Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_inicial"))+j);
-//                                     }
-//                                        Double valor1=0.0,total=0.0;
-//                                        valor1 = (Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))-1)*Double.parseDouble(tab_migracion.getValor(i,"valor_cuota_mensual"));
-//                                        total = Double.parseDouble(tab_migracion.getValor(i,"valor_anticipo"))-valor1 ;
-//                                        iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), tab_migracion.getValor(i,"numero_cuotas_anticipo"), total, 
-//                                        Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_final")));
-//                                              }
-//                                 }
-//                             }else{//detalle para solicitud de trabajadores
-//                                    for (int j = 0; j < (Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))-1); j++){
-//                                        iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), String.valueOf(1+j), Double.parseDouble(tab_migracion.getValor(i,"valor_cuota_mensual")), 
-//                                                  Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_inicial"))+j);
-//                                   } 
-//                                      Double valor1=0.0,total=0.0;
-//                                      valor1 = (Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))-1)*Double.parseDouble(tab_migracion.getValor(i,"valor_cuota_mensual"));
-//                                      total = Double.parseDouble(tab_migracion.getValor(i,"valor_anticipo"))-valor1 ;
-//                                      iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), tab_migracion.getValor(i,"numero_cuotas_anticipo"), total, 
-//                                                  Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_final")));   
-//                                   
-//                             }
         }
         migra_calculo();
     }
@@ -161,16 +76,113 @@ public class pre_migracion_anticipos extends Pantalla{
          for (int i = 0; i < tab_migracion.getTotalFilas(); i++) {
             tab_migracion.getValor(i, "cedula");
             TablaGenerica tab_datos = iAnticipos.cod_listado(tab_migracion.getValor(i, "cedula"));
-            System.err.println("holas21");
              if (!tab_datos.isEmpty()) {
-                 System.err.println("holas2");
                   iAnticipos.migra_calculo(tab_migracion.getValor(i, "cedula"), Integer.parseInt(tab_datos.getValor("ide_solicitud_anticipo")));
              }else{
-                 System.err.println("holas3");
                  utilitario.agregarMensaje("No se encuentra en base", tab_migracion.getValor(i, "cedula"));
              }
          }
 
+    }
+    
+    public void migrar_detalle(){
+        for (int i = 0; i < tab_migracion.getTotalFilas(); i++) {
+            tab_migracion.getValor(i, "cedula");
+            tab_migracion.getValor(i, "id_distributivo");
+            tab_migracion.getValor(i, "numero_cuotas_anticipo");
+              TablaGenerica tab_datos = iAnticipos.cod_listado(tab_migracion.getValor(i, "cedula"));
+                if (!tab_datos.isEmpty()) {
+                   TablaGenerica tab_datoss = iAnticipos.cod_detalle( Integer.parseInt(tab_datos.getValor("ide_solicitud_anticipo")));
+                    if (!tab_datoss.isEmpty()) {
+                            if(tab_migracion.getValor(i, "id_distributivo").equals("1")){//detalle solicitud de empleados
+                                 if((utilitario.getDia(tab_migracion.getValor(i, "fecha_anticipo")))>10){
+                                     if((Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))+(utilitario.getMes(tab_migracion.getValor(i, "fecha_anticipo"))))>12){
+                                            for (int j = 0; j < (Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))-1); j++){
+                                            TablaGenerica tab_dato = iAnticipos.periodos1(Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_inicial"))+j);
+                                            if (!tab_dato.isEmpty()) {
+                                                   if(tab_dato.getValor("mes").equals("Diciembre")){ 
+                                                       iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), String.valueOf(j+1), Double.parseDouble(tab_migracion.getValor(i,"val_cuo_adi")), 
+                                                       Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_inicial"))+j);
+
+                                                   }else{
+                                                           iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), String.valueOf(j+1), Double.parseDouble(tab_migracion.getValor(i,"valor_cuota_mensual")), 
+                                                           Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_inicial"))+j);
+                                                       }
+                                            }else {
+                                                   utilitario.agregarMensajeInfo("No se encuentra en roles", "");
+                                               }
+                                        }
+                                           Double valorp=0.0,valors=0.0,totall=0.0;
+                                           valorp = (Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))-2)*Double.parseDouble(tab_migracion.getValor(i,"valor_cuota_mensual"));
+                                           valors= Double.parseDouble(tab_migracion.getValor(i,"val_cuo_adi"))+valorp ;
+                                           totall = Double.parseDouble(tab_migracion.getValor(i,"valor_anticipo"))-valors ;
+                                           iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), tab_migracion.getValor(i,"numero_cuotas_anticipo"), Double.parseDouble(String.valueOf(totall)), 
+                                           Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_final")));
+                                     }else{
+                                      for (int j = 0; j < (Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))-1); j++){
+                                            iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), String.valueOf(1+j), Double.parseDouble(tab_migracion.getValor(i,"valor_cuota_mensual")), 
+                                                        Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_inicial"))+j);
+                                     }
+                                        Double valor1=0.0,total=0.0;
+                                        valor1 = (Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))-1)*Double.parseDouble(tab_migracion.getValor(i,"valor_cuota_mensual"));
+                                        total = Double.parseDouble(tab_migracion.getValor(i,"valor_anticipo"))-valor1 ;
+                                        iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), tab_migracion.getValor(i,"numero_cuotas_anticipo"), total, 
+                                        Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_final")));
+                                          }
+                                 }else {
+                                       if((Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))+(utilitario.getMes(tab_migracion.getValor(i, "fecha_anticipo"))))-1>12){
+                                           for (int j = 0; j < (Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))-1); j++){
+                                            TablaGenerica tab_dato = iAnticipos.periodos1(Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_inicial"))+j);
+                                            if (!tab_dato.isEmpty()) {
+                                                   if(tab_dato.getValor("mes").equals("Diciembre")){ 
+                                                       iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), String.valueOf(j+1), Double.parseDouble(tab_migracion.getValor(i,"val_cuo_adi")), 
+                                                       Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_inicial"))+j);
+
+                                                   }else{
+                                                           iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), String.valueOf(j+1), Double.parseDouble(tab_migracion.getValor(i,"valor_cuota_mensual")), 
+                                                           Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_inicial"))+j);
+                                                       }
+                                            }else {
+                                                   utilitario.agregarMensajeInfo("No se encuentra en roles", "");
+                                               }
+                                        }
+                                           Double valorp=0.0,valors=0.0,totall=0.0;
+                                           valorp = (Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))-2)*Double.parseDouble(tab_migracion.getValor(i,"valor_cuota_mensual"));
+                                           valors= Double.parseDouble(tab_migracion.getValor(i,"val_cuo_adi"))+valorp ;
+                                           totall = Double.parseDouble(tab_migracion.getValor(i,"valor_anticipo"))-valors ;
+                                           iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), tab_migracion.getValor(i,"numero_cuotas_anticipo"), Double.parseDouble(String.valueOf(totall)), 
+                                           Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_final")));
+                                         }else{
+                                      for (int j = 0; j < (Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))-1); j++){
+                                            iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), String.valueOf(1+j), Double.parseDouble(tab_migracion.getValor(i,"valor_cuota_mensual")), 
+                                                        Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_inicial"))+j);
+                                     }
+                                        Double valor1=0.0,total=0.0;
+                                        valor1 = (Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))-1)*Double.parseDouble(tab_migracion.getValor(i,"valor_cuota_mensual"));
+                                        total = Double.parseDouble(tab_migracion.getValor(i,"valor_anticipo"))-valor1 ;
+                                        iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), tab_migracion.getValor(i,"numero_cuotas_anticipo"), total, 
+                                        Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_final")));
+                                              }
+                                 }
+                             }else{//detalle para solicitud de trabajadores
+                                    for (int j = 0; j < (Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))-1); j++){
+                                        iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), String.valueOf(1+j), Double.parseDouble(tab_migracion.getValor(i,"valor_cuota_mensual")), 
+                                                  Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_inicial"))+j);
+                                   } 
+                                      Double valor1=0.0,total=0.0;
+                                      valor1 = (Integer.parseInt(tab_migracion.getValor(i, "numero_cuotas_anticipo"))-1)*Double.parseDouble(tab_migracion.getValor(i,"valor_cuota_mensual"));
+                                      total = Double.parseDouble(tab_migracion.getValor(i,"valor_anticipo"))-valor1 ;
+                                      iAnticipos.llenarSolicitud(Integer.parseInt(tab_migracion.getValor(i,"ide_solicitud_anticipo")), tab_migracion.getValor(i,"numero_cuotas_anticipo"), total, 
+                                                  Integer.parseInt(tab_migracion.getValor(i,"ide_periodo_anticipo_final")));   
+                             }
+                    }else{
+                        utilitario.agregarMensaje("No se encuentra en base", tab_migracion.getValor(i, "cedula"));
+                    }
+                     
+                }else{
+                    utilitario.agregarMensaje("No se encuentra en base", tab_migracion.getValor(i, "cedula"));
+                }
+                                  }
     }
     @Override
     public void insertar() {
