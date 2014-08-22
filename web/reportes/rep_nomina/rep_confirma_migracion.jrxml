@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_confirma_migracion" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8c763666-28c7-4e0e-a262-5ace3a002ea7">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="nom_resp" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["el que imprimio"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+ide_migrar,
+cedula,
+solicitante,
+rmu,
+id_distributivo,
+cod_cargo,
+cuotas_pedientes,
+saldo,
+cuota_adicional,
+(case when cuota_adicional is NOT NULL  then (saldo+cuota_adicional) when cuota_adicional is NULL then saldo end ) AS total,
+(case when cuota_adicional is NOT NULL  then cast((saldo/(cuotas_pedientes-1))as numeric(6,2)) when cuota_adicional is NULL then cast((saldo/cuotas_pedientes)as numeric(6,2)) end ) AS cuota_mensual
+FROM
+srh_migrar_anticipo]]>
+	</queryString>
+	<field name="ide_migrar" class="java.lang.Integer"/>
+	<field name="cedula" class="java.lang.String"/>
+	<field name="solicitante" class="java.lang.String"/>
+	<field name="rmu" class="java.math.BigDecimal"/>
+	<field name="id_distributivo" class="java.lang.Integer"/>
+	<field name="cod_cargo" class="java.lang.Integer"/>
+	<field name="cuotas_pedientes" class="java.lang.Integer"/>
+	<field name="saldo" class="java.math.BigDecimal"/>
+	<field name="cuota_adicional" class="java.math.BigDecimal"/>
+	<field name="total" class="java.math.BigDecimal"/>
+	<field name="cuota_mensual" class="java.math.BigDecimal"/>
+	<variable name="sum_valor" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{total}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="cc4a5cdd-25c7-4d02-aee3-6d9aae2cacbb" x="5" y="21" width="332" height="22"/>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REPORTE DE MIGRACIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e36c7a8b-ee1d-4d90-b2bb-36ee686c26fe" x="5" y="4" width="366" height="22"/>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Gobierno Autónomo Descentralizado del Cantón Rumiñahui]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="bc621d22-3450-4962-a4fc-1f6bc5316c58" x="547" y="4" width="148" height="75"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="8" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="23" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="2d410872-9653-4881-8f66-afaa39a682a6" x="0" y="0" width="26" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[#]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c0bf7d53-5366-44e6-9bf8-0f1158298665" x="28" y="0" width="56" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CEDULA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="943238eb-849e-426a-9316-fae3071908a7" x="87" y="0" width="200" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[APELLIDOS Y NOMBRES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f49b406a-b9e1-4907-ae15-cf89413c3f11" x="302" y="0" width="84" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[REMUNERACION]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fa155082-7628-4703-bc11-f7d30dfa47b3" x="402" y="0" width="49" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CUOTAS PENDIENTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0fce95d7-3db2-42c4-bc71-427fbe3b39ee" x="502" y="0" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CUOTA MENSUAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3217e324-cb44-455d-99de-a5d3e384666e" x="602" y="0" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CUOTA ADICIONAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3ca0d2b0-0d93-4a9c-9abc-6db1e4b33057" x="710" y="0" width="44" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement uuid="c2e70f54-d40e-4659-9e48-31761edf42f4" x="0" y="0" width="26" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{COLUMN_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="439452dc-8642-4674-84d6-7b18ff4c25d6" x="28" y="0" width="56" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cedula}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a8c52eba-a1a0-4972-bca2-00eb2bc3faf7" x="87" y="0" width="200" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{solicitante}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a6710ce5-eccf-4535-bb5a-630d2a98bd61" x="287" y="0" width="84" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{rmu}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7f0596f7-0ca6-4313-9b91-9778446b1ad1" x="387" y="0" width="49" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{cuotas_pedientes}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d9c6cbd5-9b50-45f2-9dd2-f306d39eb0c9" x="487" y="0" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{cuota_mensual}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="864b0d4b-08dd-47cf-88ee-9803cdd29b96" x="589" y="0" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{cuota_adicional}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="66e817f3-7f3d-450d-8f9c-667db8aac7f2" x="699" y="0" width="44" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="5" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17" splitType="Stretch">
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
+				<reportElement uuid="3000b8ae-f38e-411f-af0f-0e5cb103a436" key="textField" x="757" y="2" width="36" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="aecc810c-55e7-4c65-a5ae-ee927c3e852c" key="textField-5" x="10" y="2" width="92" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="d2ed696c-5319-4ff1-bc31-5511cc44d2ba" key="textField-1" x="307" y="2" width="90" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nom_resp}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="d05bc427-63b4-4884-aafe-32cc0c107c23" key="textField" x="583" y="2" width="170" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="27" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="92177a8e-f1f1-4a72-878b-0bc39938ff40" x="436" y="5" width="51" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="83c144ce-ff49-4325-afc6-2fd2bf394fcf" x="489" y="5" width="58" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{sum_valor}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
