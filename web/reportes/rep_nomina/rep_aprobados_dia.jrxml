@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_aprobados_dia" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="feb6ca06-6e0f-4262-b8ea-e03fe4fd6351">
-	<property name="ireport.zoom" value="1.6105100000000017"/>
+	<property name="ireport.zoom" value="1.9487171000000025"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="nom_resp" class="java.lang.String" isForPrompting="false">
@@ -18,22 +18,23 @@ s.rmu_liquido_anterior,
 s.cod_banco,
 s.cod_cuenta,
 s.numero_cuenta,
-"c".fecha_anticipo,
-"c".valor_anticipo,
-"c".numero_cuotas_anticipo,
-"c".porcentaje_descuento_diciembre,
-(select (mes || '/' || anio) from srh_periodo_anticipo where ide_periodo_anticipo = "c".ide_periodo_anticipo_inicial) AS periodo_inicio,
-(select (mes || '/' || anio) from srh_periodo_anticipo where ide_periodo_anticipo = "c".ide_periodo_anticipo_final) AS periodo_fin,
+c.fecha_anticipo,
+c.valor_anticipo,
+c.numero_cuotas_anticipo,
+c.porcentaje_descuento_diciembre,
+(select (mes || '/' || anio) from srh_periodo_anticipo where ide_periodo_anticipo = c.ide_periodo_anticipo_inicial) AS periodo_inicio,
+(select (mes || '/' || anio) from srh_periodo_anticipo where ide_periodo_anticipo = c.ide_periodo_anticipo_final) AS periodo_fin,
 d.cuota,
 (select (mes || '/' || anio) from srh_periodo_anticipo where ide_periodo_anticipo = d.ide_periodo_descuento) AS periodo_descuen,
 d.valor,
 (select (mes || '/' || anio) from srh_periodo_anticipo where ide_periodo_anticipo = d.ide_periodo_descontado) AS periodo_descon,
-(case when d.ide_estado_cuota =1 then 'COBRADO' end )AS estad,
-"c".valor_pagado,
-"c".numero_cuotas_pagadas
+(case when d.ide_estado_cuota =1 then 'COBRADO' end ) AS estad,
+c.valor_pagado,
+c.numero_cuotas_pagadas,
+(case when c.val_cuo_adi is NOT NULL  then cast(((c.valor_anticipo+c.val_cuo_adi)-c.valor_pagado)as numeric(6,2)) when c.val_cuo_adi is NULL then cast((c.valor_anticipo-c.valor_pagado)as numeric(6,2)) end ) AS saldo
 FROM
 "public".srh_solicitud_anticipo AS s
-INNER JOIN "public".srh_calculo_anticipo AS "c" ON "c".ide_solicitud_anticipo = s.ide_solicitud_anticipo
+INNER JOIN "public".srh_calculo_anticipo AS c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo
 INNER JOIN "public".srh_detalle_anticipo AS d ON d.ide_anticipo = s.ide_solicitud_anticipo
 where s.ci_solicitante ilike $P{identificacion}
 ORDER BY
@@ -64,6 +65,7 @@ c.fecha_anticipo]]>
 	<field name="estad" class="java.lang.String"/>
 	<field name="valor_pagado" class="java.math.BigDecimal"/>
 	<field name="numero_cuotas_pagadas" class="java.lang.Integer"/>
+	<field name="saldo" class="java.math.BigDecimal"/>
 	<group name="solicitud_fecha">
 		<groupExpression><![CDATA[$F{ide_solicitud_anticipo}]]></groupExpression>
 		<groupHeader>
@@ -193,30 +195,51 @@ c.fecha_anticipo]]>
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="22">
+			<band height="31">
+				<rectangle>
+					<reportElement uuid="fe2b3cef-f8ab-490c-9bd2-e28634ecdcef" x="381" y="4" width="100" height="20"/>
+				</rectangle>
+				<rectangle>
+					<reportElement uuid="826041a9-f597-4f7b-a18c-db924a38c15e" x="208" y="4" width="119" height="20"/>
+				</rectangle>
+				<rectangle>
+					<reportElement uuid="a6d5c28c-3cc2-450e-8113-fa672a94a5cf" x="49" y="4" width="113" height="20"/>
+				</rectangle>
 				<staticText>
-					<reportElement uuid="4dd9c86c-72d8-4213-b119-c74bf5ef81ec" x="88" y="2" width="100" height="20"/>
-					<textElement>
+					<reportElement uuid="4dd9c86c-72d8-4213-b119-c74bf5ef81ec" x="50" y="4" width="100" height="20"/>
+					<textElement verticalAlignment="Middle">
 						<font isBold="true"/>
 					</textElement>
 					<text><![CDATA[Cuotas Pagadas:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="6c207af6-982a-4d96-ac67-3d590baad770" x="320" y="0" width="100" height="20"/>
-					<textElement>
+					<reportElement uuid="6c207af6-982a-4d96-ac67-3d590baad770" x="215" y="4" width="100" height="20"/>
+					<textElement verticalAlignment="Middle">
 						<font isBold="true"/>
 					</textElement>
 					<text><![CDATA[Valor Pagado:]]></text>
 				</staticText>
 				<textField isBlankWhenNull="true">
-					<reportElement uuid="a760f3c6-7822-4bbb-a795-d0af2bd741bb" x="348" y="0" width="100" height="20"/>
-					<textElement textAlignment="Right"/>
+					<reportElement uuid="a760f3c6-7822-4bbb-a795-d0af2bd741bb" x="227" y="4" width="100" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$F{valor_pagado}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement uuid="5bc03eb0-ac8b-4e2a-833e-e62d366e96d7" x="125" y="2" width="100" height="20"/>
-					<textElement textAlignment="Right"/>
+					<reportElement uuid="5bc03eb0-ac8b-4e2a-833e-e62d366e96d7" x="62" y="4" width="100" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$F{numero_cuotas_pagadas}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="eb75acc7-63e6-464c-8d8f-9cb4cadd67a4" x="381" y="4" width="100" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[SALDO:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="3445515d-22bf-4b99-af73-f19d48641acc" x="422" y="4" width="59" height="20"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{saldo}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
