@@ -147,7 +147,7 @@ migrar_detalle();
                                         valor1 = (Integer.parseInt(tab_datoss.getValor("numero_cuotas_anticipo"))-1)*Double.parseDouble(tab_datoss.getValor("valor_cuota_mensual"));
                                         total = Double.parseDouble(tab_datoss.getValor("valor_anticipo"))-valor1 ;
                                         iAnticipos.llenarSolicitud(Integer.parseInt(tab_datos.getValor("ide_solicitud_anticipo")),tab_datoss.getValor("numero_cuotas_anticipo"), total, 
-                                        Integer.parseInt(tab_datoss.getValor("ide_periodo_anticipo_final")));
+                                        Integer.parseInt(tab_datoss.getValor("ide_periodo_anticipo_final"))-1);
                                           }
                                  }else {
                                        if((Integer.parseInt(tab_datoss.getValor("numero_cuotas_anticipo"))+(utilitario.getMes(tab_datoss.getValor("fecha_anticipo"))))>12){
@@ -171,7 +171,7 @@ migrar_detalle();
                                            valors= Double.parseDouble(tab_datoss.getValor("val_cuo_adi"))+valorp ;
                                            totall = Double.parseDouble(tab_datoss.getValor("valor_anticipo"))-valors ;
                                            iAnticipos.llenarSolicitud(Integer.parseInt(tab_datos.getValor("ide_solicitud_anticipo")), tab_datoss.getValor("numero_cuotas_anticipo"), Double.parseDouble(String.valueOf(totall)), 
-                                           Integer.parseInt(tab_datoss.getValor("ide_periodo_anticipo_final")));
+                                           Integer.parseInt(tab_datoss.getValor("ide_periodo_anticipo_final"))-1);
                                          }else{
                                       for (int j = 0; j < (Integer.parseInt(tab_datoss.getValor("numero_cuotas_anticipo"))-1); j++){
                                             iAnticipos.llenarSolicitud(Integer.parseInt(tab_datos.getValor("ide_solicitud_anticipo")), String.valueOf(1+j), Double.parseDouble(tab_datoss.getValor("valor_cuota_mensual")), 
@@ -210,6 +210,9 @@ migrar_detalle();
 
     @Override
     public void guardar() {
+        if (tab_migracion.guardar()) {
+               con_postgres.guardarPantalla();
+           }
     }
 
     @Override
