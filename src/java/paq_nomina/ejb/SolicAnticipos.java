@@ -1100,6 +1100,29 @@ public TablaGenerica VerifEmpleCod(Integer codigo){
         con_postgres = null;
         
     }
+  
+        public void migra_calculo1(String cedula,Integer ide){
+        String nomina ="insert into srh_calculo_anticipo(fecha_anticipo,valor_anticipo,numero_cuotas_anticipo,valor_cuota_mensual,val_cuo_adi,ide_periodo_anticipo_inicial,\n" +
+                        "ide_periodo_anticipo_final,ide_solicitud_anticipo,ide_estado_anticipo)\n" +
+                        "SELECT\n" +
+                        "'2014-09-02' as fecha,\n" +
+                        "(saldo+cuota_adicional) as anticipo,\n" +
+                        "cuotas_pedientes,\n" +
+                        "cast((saldo/(cuotas_pedientes-1)) as numeric(6,2)) as cuotas,\n" +
+                        "cast(cuota_adicional as numeric) as cuota_adi,\n" +
+                        "9 as periodo,\n" +
+                        "(9+cuotas_pedientes) as fin,\n" +
+                        ""+ide+" as ide,\n" +
+                        "1 as aprobado\n" +
+                        "FROM\n" +
+                        "srh_migrar_anticipo\n" +
+                        "where cedula like '"+cedula+"'";
+        conectar();
+        con_postgres.ejecutarSql(nomina);
+        con_postgres.desconectar();
+        con_postgres = null;
+        
+    }
     
     public TablaGenerica cod_listado(String cedula){
        conectar();
