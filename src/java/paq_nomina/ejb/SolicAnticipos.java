@@ -1160,7 +1160,41 @@ public TablaGenerica VerifEmpleCod(Integer codigo){
         return tab_funcionario;
         
  }
-    
+  
+ public TablaGenerica login_solicitud(String ide){
+       conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT\n" +
+                                "ide_solicitud_anticipo,\n" +
+                                "ide_listado,\n" +
+                                "login_aprob_solicitud,\n" +
+                                "login_ingre_solicitud\n" +
+                                "FROM\n" +
+                                "srh_solicitud_anticipo\n" +
+                                "where ide_listado like '"+ide+"'");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+  
+  public TablaGenerica director(){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT cod_empleado,cedula_pass,nombres,estado,cod_cargo\n" +
+                                "FROM srh_empleado where cod_cargo = 391 and estado = 1");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+ 
   public String listaMax() {
          conectar();
 
@@ -1295,6 +1329,14 @@ public void deleteDevolver(Integer anti){
     con_postgres = null;
 }
 
+public void deleteMigrar(){
+    String au_sql="delete from srh_migrar_anticipo";
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+}
+
 public void llenarSolicitud(Integer anti,String cuota,Double valor,String obser,Integer perdes){
     String au_sql="insert into srh_detalle_anticipo (ide_anticipo,cuota,valor,ide_periodo_descuento)\n" +
                   "values ("+anti+",'"+cuota+"',"+valor+","+perdes+")";
@@ -1311,7 +1353,20 @@ private void conectar() {
             con_postgres.NOMBRE_MARCA_BASE = "postgres";
         }
 }
-    
+
+public TablaGenerica getUsuario(String iden) {
+        //Busca a una empresa en la tabla maestra_ruc por ruc
+        conectarSQL();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT IDE_USUA,NOM_USUA FROM SIS_USUARIO where NICK_USUA like '" + iden+ "'");
+        tab_persona.ejecutarSql();
+        conexion.desconectar();
+        conexion = null;
+        return tab_persona;
+}
+
+
 private void conectarSQL() {
         if (conexion == null) {
             conexion = new Conexion();

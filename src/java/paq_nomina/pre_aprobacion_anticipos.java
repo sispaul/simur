@@ -462,12 +462,35 @@ public class pre_aprobacion_anticipos extends Pantalla{
         switch (rep_reporte.getNombre()) {
            case "LISTA DE PAGO":
                TablaGenerica tab_dato = iAnticipos.ide_listado(Integer.parseInt(set_lista.getValorSeleccionado()));
-               if (!tab_dato.isEmpty()) {   
-                    p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
-                    p_parametros.put("listado", tab_dato.getValor("ide_listado")+"");
-                    rep_reporte.cerrar();
-                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                    sef_formato.dibujar();
+               if (!tab_dato.isEmpty()) {
+                        TablaGenerica tab_dato1 = iAnticipos.login_solicitud(tab_dato.getValor("ide_listado"));
+                        if (!tab_dato1.isEmpty()) {
+                            TablaGenerica tab_dato2 = iAnticipos.director();
+                        if (!tab_dato2.isEmpty()) {
+                             TablaGenerica tab_dato3 = iAnticipos.getUsuario(tab_dato1.getValor("login_ingre_solicitud"));
+                        if (!tab_dato3.isEmpty()) {
+                            TablaGenerica tab_dato4 = iAnticipos.getUsuario(tab_dato1.getValor("login_aprob_solicitud"));
+                        if (!tab_dato4.isEmpty()) {
+                            p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
+                            p_parametros.put("listado", tab_dato.getValor("ide_listado")+"");
+                            p_parametros.put("quien_elabora", tab_dato3.getValor("NOM_USUA")+"");
+                            p_parametros.put("quien_aprueba", tab_dato4.getValor("NOM_USUA")+"");
+                            p_parametros.put("director", tab_dato2.getValor("nombres")+"");
+                            rep_reporte.cerrar();
+                            sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                            sef_formato.dibujar();
+                                                                                   } else {
+                            utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
+                        }
+                                                       } else {
+                            utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
+                        }
+                           } else {
+                            utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
+                        } 
+                        } else {
+                            utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
+                        }
                     } else {
                         utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
                     }

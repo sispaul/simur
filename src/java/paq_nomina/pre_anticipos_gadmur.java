@@ -30,7 +30,6 @@ import java.util.Map;
 import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
 import paq_nomina.ejb.SolicAnticipos;
-import static paq_nomina.pre_solicitud_anticipo_rh.calcularMes;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
@@ -485,6 +484,7 @@ public class pre_anticipos_gadmur extends Pantalla{
                         utilitario.agregarMensajeError("El Número de Cédula no es válido", "");
                     }
               }
+               utilitario.agregarNotificacionInfo("MONTO MAXIMO DE ANTICIPO HASTA 3 REMUNERACIONES", "CUOTAS DE ANTICIPO NO DEBEN SOBRE PASAR EL 50% DE REMUNERACION LIQUIDA");
     }
  
     //BUSCAR SOLICITANTE POR APELLIDO Y NOMBRES
@@ -648,7 +648,7 @@ public class pre_anticipos_gadmur extends Pantalla{
                     tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
                     tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
                     utilitario.addUpdate("tab_parametros");
-                    utilitario.agregarMensajeInfo("Ingresar Plazo de Cobro", "");
+                    utilitario.agregarMensaje("Ingresar Plazo de Cobro", "");
                 }else{
                     utilitario.agregarMensajeInfo("Monto Excede Remuneracion Unificada", "");
                     tab_parametros.setValor("valor_cuota_mensual", "NULL");
