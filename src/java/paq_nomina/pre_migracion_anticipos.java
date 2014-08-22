@@ -57,6 +57,13 @@ public class pre_migracion_anticipos extends Pantalla{
         bot_save.setMetodo("migrar");
         bar_botones.agregarBoton(bot_save);
         
+        Boton bot_delete = new Boton();
+        bot_delete.setValue("Borrar Listado");
+        bot_delete.setExcluirLectura(true);
+        bot_delete.setIcon("ui-icon-extlink");
+        bot_delete.setMetodo("borrar");
+        bar_botones.agregarBoton(bot_delete);
+        
         //Encabezado
         Imagen quinde = new Imagen();
         quinde.setValue("imagenes/logo_talento1.png");
@@ -81,6 +88,11 @@ public class pre_migracion_anticipos extends Pantalla{
         
     }
 
+    public void borrar(){
+        iAnticipos.deleteMigrar();
+        tab_migracion.actualizar();
+    }
+    
     public void migrar(){
         for (int i = 0; i < tab_migracion.getTotalFilas(); i++) {
             tab_migracion.getValor(i, "cedula");
@@ -171,7 +183,7 @@ migrar_detalle();
                                            valors= Double.parseDouble(tab_datoss.getValor("val_cuo_adi"))+valorp ;
                                            totall = Double.parseDouble(tab_datoss.getValor("valor_anticipo"))-valors ;
                                            iAnticipos.llenarSolicitud(Integer.parseInt(tab_datos.getValor("ide_solicitud_anticipo")), tab_datoss.getValor("numero_cuotas_anticipo"), Double.parseDouble(String.valueOf(totall)), 
-                                           Integer.parseInt(tab_datoss.getValor("ide_periodo_anticipo_final"))-1);
+                                           Integer.parseInt(tab_datoss.getValor("ide_periodo_anticipo_final"))-1);//
                                          }else{
                                       for (int j = 0; j < (Integer.parseInt(tab_datoss.getValor("numero_cuotas_anticipo"))-1); j++){
                                             iAnticipos.llenarSolicitud(Integer.parseInt(tab_datos.getValor("ide_solicitud_anticipo")), String.valueOf(1+j), Double.parseDouble(tab_datoss.getValor("valor_cuota_mensual")), 
