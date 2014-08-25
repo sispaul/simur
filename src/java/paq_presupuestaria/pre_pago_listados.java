@@ -10,11 +10,9 @@ import framework.componentes.Boton;
 import framework.componentes.Calendario;
 import framework.componentes.Combo;
 import framework.componentes.Dialogo;
-import framework.componentes.Efecto;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
-import framework.componentes.ItemMenu;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
@@ -52,7 +50,6 @@ public class pre_pago_listados extends Pantalla{
      //dibujar cuadros de panel
     private Panel pan_opcion = new Panel();
     private Panel pan_opcion1 = new Panel();
-    private Efecto efecto1 = new Efecto();
     
     //para busqueda
     private Texto txt_buscar = new Texto();
@@ -87,7 +84,7 @@ public class pre_pago_listados extends Pantalla{
         //bloquedo
         bar_botones.quitarBotonInsertar();
 	bar_botones.quitarBotonEliminar();
-        bar_botones.quitarBotonGuardar();
+//        bar_botones.quitarBotonGuardar();
         
         //Consulta de usuario conectado
         tab_consulta.setId("tab_consulta");
@@ -131,11 +128,6 @@ public class pre_pago_listados extends Pantalla{
         pan_opcion.setId("pan_opcion");
         pan_opcion.setTransient(true);
         pan_opcion.setHeader(" COMPROBATE DE PAGOS POR LISTADOS ");
-        efecto1.setType("drop");
-	efecto1.setSpeed(150);
-	efecto1.setPropiedad("mode", "'show'");
-	efecto1.setEvent("load");
-        pan_opcion.getChildren().add(efecto1);
         agregarComponente(pan_opcion);
         
         //Busqueda de comprobantes
@@ -187,6 +179,7 @@ public class pre_pago_listados extends Pantalla{
         sef_formato.setId("sef_formato");
         sef_formato.setConexion(con_postgres);
         agregarComponente(sef_formato);
+        dibujarLista();
     }
 
     //limpieza paneles y abrir busqueda
@@ -211,7 +204,7 @@ public class pre_pago_listados extends Pantalla{
     public void buscarEntrega() {
       if (txt_buscar.getValue() != null && txt_buscar.getValue().toString().isEmpty() == false) {
                  set_comprobante.getTab_seleccion().setSql("SELECT ide_listado,fecha_listado,ci_envia,responsable_envia,devolucion,estado \n" +
-                                                            "FROM tes_comprobante_pago_listado WHERE ide_listado =" + txt_buscar.getValue());
+                                                            "FROM tes_comprobante_pago_listado WHERE item =" + txt_buscar.getValue());
                  set_comprobante.getTab_seleccion().ejecutarSql();
                  limpiar();
           } else {
@@ -269,18 +262,9 @@ public class pre_pago_listados extends Pantalla{
         
         tab_comprobante.agregarRelacion(tab_detalle);
         tab_comprobante.setTipoFormulario(true);
-        tab_comprobante.getGrid().setColumns(4);
+        tab_comprobante.getGrid().setColumns(6);
         tab_comprobante.dibujar();
         PanelTabla tcp = new PanelTabla();
-        tcp.getMenuTabla().getItem_actualizar().setRendered(false);//nucontextual().setrendered(false);
-        tcp.getMenuTabla().getItem_buscar().setRendered(false);//nucontextual().setrendered(false);
-        
-        ItemMenu itm_guardar = new ItemMenu();
-        itm_guardar.setValue("Guardar");
-        itm_guardar.setIcon("ui-icon-disk");
-        itm_guardar.setMetodo("guardarComp");
-        
-        tcp.getMenuTabla().getChildren().add(itm_guardar);
         tcp.setPanelTabla(tab_comprobante);
         
         //detalle comprobante pago listado
@@ -298,6 +282,8 @@ public class pre_pago_listados extends Pantalla{
         tab_detalle.getColumna("ITEM").setLectura(true);
         tab_detalle.getColumna("COMPROBANTE").setLectura(true);
         tab_detalle.getColumna("VALOR").setLectura(true);
+        tab_detalle.getColumna("ITEM").setVisible(false);
+        tab_detalle.getColumna("ide_detalle_listado").setVisible(false);
         tab_detalle.getColumna("USUARIO_ACTUA_ENVIA").setVisible(false);
         tab_detalle.getColumna("IP_ACTUA_ENVIA").setVisible(false);
         tab_detalle.getColumna("IP_INGRE_ENVIA").setVisible(false);
@@ -308,40 +294,19 @@ public class pre_pago_listados extends Pantalla{
         tab_detalle.getColumna("IP_ACTUA_PAGADO").setVisible(false);
         
         List lista = new ArrayList();
-        Object fila1[] = {
-            "1", "ENVIADO"
-        };
         Object fila2[] = {
             "2", "PAGAR"
         };
         Object fila3[] = {
             "3", "DEVOLVER"
         };
-        lista.add(fila1);;
         lista.add(fila2);;
         lista.add(fila3);;
-        tab_detalle.getColumna("ide_estado_detalle_listado").setRadio(lista, "1");
+        tab_detalle.getColumna("ide_estado_listado").setRadio(lista, " ");
         tab_detalle.getColumna("BAN_CODIGO").setCombo("SELECT ban_codigo,ban_nombre FROM ocebanco");
                 
-        tab_detalle.setTipoFormulario(true);
-        tab_detalle.getGrid().setColumns(4);
         tab_detalle.dibujar(); 
-        PanelTabla tdp = new PanelTabla();
-        tdp.getMenuTabla().getItem_actualizar().setRendered(false);//nucontextual().setrendered(false);
-        tdp.getMenuTabla().getItem_buscar().setRendered(false);//nucontextual().setrendered(false);
-        
-        ItemMenu itm_actualizar = new ItemMenu();
-        itm_actualizar.setValue("Guardar");
-        itm_actualizar.setIcon("ui-icon-disk");
-        itm_actualizar.setMetodo("guardarDetal");
-         
-        ItemMenu itm_cuenta = new ItemMenu();
-        itm_cuenta.setValue("Confirmar Cuenta");
-        itm_cuenta.setIcon("ui-icon-refresh");
-        itm_cuenta.setMetodo("tipoCuenta");
-        
-        tdp.getMenuTabla().getChildren().add(itm_actualizar);
-        tdp.getMenuTabla().getChildren().add(itm_cuenta);      
+        PanelTabla tdp = new PanelTabla(); 
         tdp.setPanelTabla(tab_detalle);
         
         pan_opcion1.getChildren().add(tcp);
@@ -393,18 +358,9 @@ public class pre_pago_listados extends Pantalla{
                        utilitario.agregarMensajeError("El Número de Identificación no es válido", "");
                        }
     }
-    
-    
-     //Metodo Para Guardar Pago
-    public void guardarComp(){
-       programas.actuListado(tab_comprobante.getValor("CI_PAGA"), tab_comprobante.getValor("RESPONSABLE_PAGA"), tab_consulta.getValor("NICK_USUA"), 
-       Integer.parseInt(tab_comprobante.getValor("IDE_LISTADO")));
-       utilitario.agregarMensaje("Datos Guardados Satisfactoriamente", "");
-       utilitario.addUpdate("tab_comprobante");
-    }
   
     public void guardarDetal(){
-      TablaGenerica tab_dato = programas.busEstado(Integer.parseInt(tab_detalle.getValor("ide_detalle_listado")));
+      TablaGenerica tab_dato = programas.busEstado(tab_detalle.getValor("ide_detalle_listado"));
       if (!tab_dato.isEmpty()) {
            if(Integer.parseInt(tab_dato.getValor("ide_estado_detalle_listado"))!=2 && Integer.parseInt(tab_dato.getValor("ide_estado_detalle_listado"))!=3 ){
                   //Pago de comprobantes
@@ -478,7 +434,7 @@ public class pre_pago_listados extends Pantalla{
   }
   
   public void Pago(){
-      tab_detalle.setValor("ide_estado_detalle_listado", "2");
+      tab_detalle.setValor("ide_estado_listado", "2");
       utilitario.addUpdate("tab_detalle");
   }
   //Llamado a reportes
@@ -546,10 +502,20 @@ public class pre_pago_listados extends Pantalla{
 
     @Override
     public void guardar() {
-     if (tab_comprobante.guardar()) {
-          if (tab_detalle.guardar()) {
-              con_postgres.guardarPantalla();
+        //Metodo Para Guardar Pago
+        programas.actuListado(tab_comprobante.getValor("CI_PAGA"), tab_comprobante.getValor("RESPONSABLE_PAGA"), tab_consulta.getValor("NICK_USUA"), 
+       Integer.parseInt(tab_comprobante.getValor("IDE_LISTADO")));
+        utilitario.addUpdate("tab_comprobante");
+        for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
+            
+            if(tab_detalle.getValor(i, "num_transferencia")!=null && tab_detalle.getValor(i, "ide_estado_listado")!=null){
+                  System.err.println(tab_detalle.getValor(i, "comprobante"));
+                  
+                  
+            }else{
+                utilitario.agregarNotificacionInfo("DEBE SELECCIONAR AL MENOS UN ESTADO PARA CADA COMPROBANTE","");
             }
+            
         }
     }
 
