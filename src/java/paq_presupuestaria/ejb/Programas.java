@@ -368,7 +368,30 @@ public class Programas {
         return tab_funcionario;
         
  }
-    
+ 
+ public TablaGenerica item(Integer banco){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT\n" +
+                                "ide_listado,\n" +
+                                "item,\n" +
+                                "fecha_listado,\n" +
+                                "ci_envia,\n" +
+                                "ci_paga,\n" +
+                                "responsable_paga,\n" +
+                                "estado\n" +
+                                "FROM\n" +
+                                "tes_comprobante_pago_listado\n" +
+                                "where ide_listado ="+banco);
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+  
  public TablaGenerica empleado(){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
@@ -412,13 +435,14 @@ public class Programas {
         
  }
    
- public TablaGenerica busEstado(Integer estado){
+ public TablaGenerica busEstado(String estado){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
         tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT ide_detalle_listado,ide_listado,ide_estado_detalle_listado\n" +
-                                "FROM tes_detalle_comprobante_pago_listado WHERE ide_detalle_listado ="+estado);
+        tab_funcionario.setSql("SELECT ide_detalle_listado,ide_listado,item,ide_estado_listado\n" +
+                                "FROM tes_detalle_comprobante_pago_listado\n" +
+                                "where comprobante like '"+estado+"'");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
