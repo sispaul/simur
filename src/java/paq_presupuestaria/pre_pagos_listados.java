@@ -70,7 +70,7 @@ public class pre_pagos_listados extends Pantalla{
         tab_consulta.dibujar();
         
         Imagen quinde = new Imagen();
-        quinde.setValue("imagenes/logo_talento1.png");
+        quinde.setValue("imagenes/logo_financiero.png");
         agregarComponente(quinde);
         
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
@@ -108,7 +108,7 @@ public class pre_pagos_listados extends Pantalla{
         Grid gri_busca1 = new Grid();
         gri_busca1.setColumns(2);
         txt_buscar.setSize(20);
-        gri_busca1.getChildren().add(new Etiqueta("LISTADO # :"));
+        gri_busca1.getChildren().add(new Etiqueta("# ITEM :"));
         gri_busca1.getChildren().add(txt_buscar);
         Boton bot_buscar = new Boton();
         bot_buscar.setValue("Buscar");
@@ -218,41 +218,40 @@ public class pre_pagos_listados extends Pantalla{
         tab_detalle.setId("tab_detalle");
         tab_detalle.setConexion(con_postgres);
         tab_detalle.setSql("SELECT\n" +
-                            "ide_detalle_listado,\n" +
-                            "ide_listado,\n" +
-                            "item,\n" +
-                            "comprobante,\n" +
-                            "cedula_pass_beneficiario,\n" +
-                            "nombre_beneficiario,\n" +
-                            "valor,\n" +
-                            "usuario_ingre_envia,\n" +
-                            "usuario_actua_envia,\n" +
-                            "ip_ingre_envia,\n" +
-                            "ip_actua_envia,\n" +
-                            "numero_cuenta,\n" +
-                            "ban_codigo,\n" +
-                            "ban_nombre,\n" +
-                            "tipo_cuenta,\n" +
-                            "usuario_actua_pagado,\n" +
-                            "ip_actua_pagado,\n" +
-                            "usuario_actua_devolucion,\n" +
-                            "ip_actua_devolucion,\n" +
-                            "ide_estado_listado\n" +
+                            "d.ide_detalle_listado,\n" +
+                            "d.ide_listado,\n" +
+                            "d.item,\n" +
+                            "d.comprobante,\n" +
+                            "d.cedula_pass_beneficiario,\n" +
+                            "d.nombre_beneficiario,\n" +
+                            "d.valor,\n" +
+                            "d.usuario_ingre_envia,\n" +
+                            "d.usuario_actua_envia,\n" +
+                            "d.ip_ingre_envia,\n" +
+                            "d.ip_actua_envia,\n" +
+                            "d.numero_cuenta,\n" +
+                            "d.ban_nombre,\n" +
+                            "d.tipo_cuenta,\n" +
+                            "d.usuario_actua_pagado,\n" +
+                            "d.ip_actua_pagado,\n" +
+                            "d.usuario_actua_devolucion,\n" +
+                            "d.ip_actua_devolucion,\n" +
+                            "null as proceso\n" +
                             "FROM\n" +
-                            "tes_detalle_comprobante_pago_listado");
+                            "tes_detalle_comprobante_pago_listado AS d\n" +
+                            "where ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'ENVIADO')");
         tab_detalle.setCampoPrimaria("ide_detalle_listado");
         tab_detalle.setCampoOrden("ide_listado");
         List lista = new ArrayList();
         Object fila2[] = {
-            "2", "PAGAR"
+            "2", "ACREDITAR"
         };
         Object fila3[] = {
             "3", "DEVOLVER"
         };
         lista.add(fila2);;
         lista.add(fila3);;
-        tab_detalle.getColumna("ide_estado_listado").setRadio(lista, " ");
-        
+        tab_detalle.getColumna("proceso").setRadio(lista, " ");
         tab_detalle.getColumna("ide_detalle_listado").setVisible(false);
         tab_detalle.getColumna("item").setVisible(false);
         tab_detalle.getColumna("USUARIO_ACTUA_ENVIA").setVisible(false);
@@ -272,31 +271,37 @@ public class pre_pagos_listados extends Pantalla{
         //tabla de detalle comprobantes a pagar
         tab_detalle1.setId("tab_detalle1");
         tab_detalle1.setConexion(con_postgres);
-        tab_detalle1.setSql("SELECT\n" +
-                            "ide_detalle_listado,\n" +
-                            "ide_listado,\n" +
-                            "item,\n" +
-                            "comprobante,\n" +
-                            "cedula_pass_beneficiario,\n" +
-                            "nombre_beneficiario,\n" +
-                            "valor,\n" +
-                            "usuario_ingre_envia,\n" +
-                            "usuario_actua_envia,\n" +
-                            "ip_ingre_envia,\n" +
-                            "ip_actua_envia,\n" +
-                            "numero_cuenta,\n" +
-                            "ban_codigo,\n" +
-                            "ban_nombre,\n" +
-                            "tipo_cuenta,\n" +
-                            "usuario_actua_pagado,\n" +
-                            "ip_actua_pagado,\n" +
-                            "usuario_actua_devolucion,\n" +
-                            "ip_actua_devolucion,\n" +
-                            "ide_estado_listado\n" +
-                            "FROM\n" +
-                            "tes_detalle_comprobante_pago_listado");
+        tab_detalle1.setSql("SELECT \n" +
+                            "d.ide_detalle_listado, \n" +
+                            "d.ide_listado, \n" +
+                            "d.item, \n" +
+                            "d.comprobante, \n" +
+                            "d.cedula_pass_beneficiario, \n" +
+                            "d.nombre_beneficiario, \n" +
+                            "d.valor, \n" +
+                            "d.usuario_ingre_envia, \n" +
+                            "d.usuario_actua_envia, \n" +
+                            "d.ip_ingre_envia, \n" +
+                            "d.ip_actua_envia, \n" +
+                            "d.numero_cuenta, \n" +
+                            "d.ban_nombre, \n" +
+                            "d.tipo_cuenta, \n" +
+                            "d.usuario_actua_pagado, \n" +
+                            "d.ip_actua_pagado, \n" +
+                            "d.usuario_actua_devolucion, \n" +
+                            "d.ip_actua_devolucion, \n" +
+                            "null as regresar \n" +
+                            "FROM \n" +
+                            "tes_detalle_comprobante_pago_listado AS d \n" +
+                            "where ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'PAGADO') and num_transferencia is null");
         tab_detalle1.setCampoPrimaria("ide_detalle_listado");
         tab_detalle1.setCampoOrden("ide_listado");
+        List list = new ArrayList();
+        Object fil1[] = {
+            "1", " "
+        };
+        list.add(fil1);;
+        tab_detalle1.getColumna("regresar").setRadio(list, " ");
         tab_detalle1.getColumna("ide_detalle_listado").setVisible(false);
         tab_detalle1.getColumna("ide_listado").setVisible(false);
         tab_detalle1.getColumna("item").setVisible(false);
@@ -317,6 +322,7 @@ public class pre_pagos_listados extends Pantalla{
         Division div = new Division();
         div.dividir2(tcp, tdd, "42%", "h");
         
+        cal_fecha.setDisabled(true); //Desactiva el cuadro de texto
         Grupo gru = new Grupo();
         pan_opcion.getChildren().add(gru);
         txt_num_listado.setId("txt_num_listado");
@@ -338,7 +344,7 @@ public class pre_pagos_listados extends Pantalla{
         bot_delete.setValue("Quitar de Listado");
         bot_delete.setExcluirLectura(true);
         bot_delete.setIcon("ui-icon-extlink");
-        bot_delete.setMetodo("devolver");
+        bot_delete.setMetodo("regresa");
         
         gri_busca.getChildren().add(bot_save);
         gri_busca.getChildren().add(bot_delete);
@@ -356,9 +362,8 @@ public class pre_pagos_listados extends Pantalla{
     }
     
     public void usuario(Integer valor){
-      TablaGenerica tab_dato1 = programas.item(Integer.parseInt(tab_detalle.getValor("cedula_pass_beneficiario")));
+      TablaGenerica tab_dato1 = programas.item(Integer.parseInt(set_comprobante.getValorSeleccionado()));
           if (!tab_dato1.isEmpty()) {
-                    System.err.println("Holas");
       }else{
            TablaGenerica tab_dato = programas.empleado();
              if (!tab_dato.isEmpty()) {
@@ -371,18 +376,62 @@ public class pre_pagos_listados extends Pantalla{
           }
     }
     
+    
     @Override
     public void insertar() {
     }
 
     @Override
     public void guardar() {
+        TablaGenerica tab_dato1 = programas.item(Integer.parseInt(tab_comprobante.getValor("ide_listado")));
+        if (!tab_dato1.isEmpty()) {
+            for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
+                if(tab_detalle.getValor(i, "proceso")!=null){
+                    programas.actuaComprobante(tab_detalle.getValor(i, "numero_cuenta"),tab_detalle.getValor(i, "ban_nombre"),
+                        tab_detalle.getValor(i, "tipo_cuenta"),  utilitario.getVariable("NICK"),tab_detalle.getValor(i, "comprobante"),Integer.parseInt(tab_detalle.getValor(i, "ide_listado")),Integer.parseInt(tab_detalle.getValor(i, "ide_detalle_listado")));
+                }
+            }
+        }else{
+            programas.actuListado(tab_comprobante.getValor("CI_PAGA"), tab_comprobante.getValor("RESPONSABLE_PAGA"), tab_consulta.getValor("NICK_USUA"), 
+            Integer.parseInt(tab_comprobante.getValor("IDE_LISTADO")));
+            for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
+                if(tab_detalle.getValor(i, "proceso")!=null){
+                    programas.actuaComprobante(tab_detalle.getValor(i, "numero_cuenta"),tab_detalle.getValor(i, "ban_nombre"),
+                        tab_detalle.getValor(i, "tipo_cuenta"),  utilitario.getVariable("NICK"),tab_detalle.getValor(i, "comprobante"),Integer.parseInt(tab_detalle.getValor(i, "ide_listado")),Integer.parseInt(tab_detalle.getValor(i, "ide_detalle_listado")));
+                }
+            }
+        }
+                tab_detalle.actualizar();
+                utilitario.agregarMensaje("Comprobantes", "Listo Para Pago");
+                tab_detalle1.actualizar();
     }
 
     @Override
     public void eliminar() {
     }
 
+    
+    public void regresa(){
+        for (int i = 0; i < tab_detalle1.getTotalFilas(); i++) {
+            if(tab_detalle1.getValor(i, "regresar")!=null){
+                programas.regreComprobante(tab_detalle1.getValor(i, "numero_cuenta"),utilitario.getVariable("NICK"),tab_detalle1.getValor(i, "comprobante"),
+                        Integer.parseInt(tab_detalle1.getValor(i, "ide_listado")),Integer.parseInt(tab_detalle1.getValor(i, "ide_detalle_listado")));
+            }
+        }
+        tab_detalle1.actualizar();
+        utilitario.agregarMensaje("Comprobante", "Regreso a Listado");
+        tab_detalle.actualizar();
+    }
+    
+    public void save_lista(){
+        for (int i = 0; i < tab_detalle1.getTotalFilas(); i++) {
+            programas.numTransComprobante(txt_num_listado.getValue()+"", cal_fecha.getFecha(), tab_detalle1.getValor(i, "comprobante"),Integer.parseInt(tab_detalle1.getValor(i, "ide_listado"))
+                    ,Integer.parseInt(tab_detalle1.getValor(i, "ide_detalle_listado")));
+        }
+        utilitario.agregarMensaje("Comprobante", "Generado");
+        tab_detalle1.actualizar();
+    }
+    
     public Conexion getCon_postgres() {
         return con_postgres;
     }

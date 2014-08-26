@@ -291,10 +291,52 @@ public class Programas {
     con_postgres = null;
     }
     
-    public void actualizarComprobante (String cuenta,Integer codigo,String tipo,Integer detalle,Integer listado,String usu,String registro,Integer estado){
+    public void actuaComprobante(String cuenta,String nombre,String tipo,String usu,String comprobante,Integer lista,Integer detalle){
+
+        String str_sqlg="UPDATE tes_detalle_comprobante_pago_listado\n" +
+                        "set numero_cuenta='"+cuenta+"',\n" +
+                        "ban_nombre ='"+nombre+"' ,\n" +
+                        "tipo_cuenta='"+tipo+"',\n" +
+                        "usuario_ingre_envia='"+usu+"',\n" +
+                        "ip_ingre_envia='"+utilitario.getIp()+"',\n" +
+                        "ide_estado_listado=(SELECT ide_estado_listado FROM tes_estado_listado WHERE estado like 'PAGADO')\n" +
+                        "WHERE comprobante like '"+comprobante+"' and ide_listado ="+lista+" and ide_detalle_listado ="+detalle;  
+    conectar();
+    con_postgres.ejecutarSql(str_sqlg);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+    
+   public void regreComprobante(String cuenta,String usu,String comprobante,Integer lista,Integer detalle){
+
+        String str_sqlg="UPDATE tes_detalle_comprobante_pago_listado\n" +
+                        "set numero_cuenta='"+cuenta+"',\n" +
+                        "usuario_ingre_envia='"+usu+"',\n" +
+                        "ip_ingre_envia='"+utilitario.getIp()+"',\n" +
+                        "ide_estado_listado=(SELECT ide_estado_listado FROM tes_estado_listado WHERE estado like 'ENVIADO')\n" +
+                        "WHERE comprobante like '"+comprobante+"' and ide_listado ="+lista+" and ide_detalle_listado ="+detalle;  
+    conectar();
+    con_postgres.ejecutarSql(str_sqlg);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+    
+    public void numTransComprobante(String numero,String fecha,String comprobante,Integer lista,Integer detalle){
+
+        String str_sqlg="UPDATE tes_detalle_comprobante_pago_listado\n" +
+                        "set num_transferencia='"+numero+"',\n" +
+                        "fecha_transferencia='"+fecha+"'\n" +
+                        "WHERE comprobante like '"+comprobante+"' and ide_listado ="+lista+" and ide_detalle_listado ="+detalle;  
+    conectar();
+    con_postgres.ejecutarSql(str_sqlg);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+   
+    public void actualizarComprobante (Integer codigo,String tipo,Integer detalle,Integer listado,String usu,String registro,Integer estado){
 
         String str_sqlg="UPDATE tes_detalle_comprobante_pago_listado \n" +
-                        "set numero_cuenta ='"+cuenta+"',ban_codigo="+codigo+",\n" +
+                        "set ban_codigo="+codigo+",\n" +
                         "tipo_cuenta='"+tipo+"',usuario_actua_pagado='"+usu+"',ide_estado_detalle_listado ="+estado+" ,ban_nombre = (SELECT o.ban_nombre FROM ocebanco o WHERE o.ban_codigo ="+codigo+"),num_transferencia = '"+registro+"',ip_actua_pagado='"+utilitario.getIp()+"'\n" +
                         "WHERE ide_detalle_listado="+detalle+" and ide_listado ="+listado;  
     conectar();
