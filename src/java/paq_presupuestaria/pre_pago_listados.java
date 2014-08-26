@@ -365,8 +365,8 @@ public class pre_pago_listados extends Pantalla{
            if(Integer.parseInt(tab_dato.getValor("ide_estado_detalle_listado"))!=2 && Integer.parseInt(tab_dato.getValor("ide_estado_detalle_listado"))!=3 ){
                   //Pago de comprobantes
                   if(Integer.parseInt(tab_detalle.getValor("ide_estado_detalle_listado"))!=1 && Integer.parseInt(tab_detalle.getValor("ide_estado_detalle_listado"))!=3 ){
-                     programas.actualizarComprobante(tab_detalle.getValor("NUMERO_CUENTA"), Integer.parseInt(tab_detalle.getValor("BAN_CODIGO")), tab_detalle.getValor("TIPO_CUENTA"),
-                     Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_LISTADO")), Integer.parseInt(tab_comprobante.getValor("IDE_LISTADO")), tab_consulta.getValor("NICK_USUA"),tab_detalle.getValor("num_transferencia"),Integer.parseInt(tab_detalle.getValor("ide_estado_detalle_listado")));
+//                     programas.actualizarComprobante(tab_detalle.getValor("NUMERO_CUENTA"), Integer.parseInt(tab_detalle.getValor("BAN_CODIGO")), tab_detalle.getValor("TIPO_CUENTA"),
+//                     Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_LISTADO")), Integer.parseInt(tab_comprobante.getValor("IDE_LISTADO")), tab_consulta.getValor("NICK_USUA"),tab_detalle.getValor("num_transferencia"),Integer.parseInt(tab_detalle.getValor("ide_estado_detalle_listado")));
                      pagado();
                      utilitario.addUpdate("tab_comprobante");
                      utilitario.addUpdate("tab_detalle");
