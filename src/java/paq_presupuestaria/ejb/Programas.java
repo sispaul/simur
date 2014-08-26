@@ -416,17 +416,17 @@ public class Programas {
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
         tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT\n" +
-                                "ide_listado,\n" +
-                                "item,\n" +
-                                "fecha_listado,\n" +
-                                "ci_envia,\n" +
-                                "ci_paga,\n" +
-                                "responsable_paga,\n" +
-                                "estado\n" +
-                                "FROM\n" +
-                                "tes_comprobante_pago_listado\n" +
-                                "where ide_listado ="+banco);
+        tab_funcionario.setSql("SELECT \n" +
+                                " ide_listado, \n" +
+                                " item, \n" +
+                                " fecha_listado, \n" +
+                                " ci_envia, \n" +
+                                " ci_paga, \n" +
+                                " responsable_paga, \n" +
+                                " estado \n" +
+                                " FROM \n" +
+                                " tes_comprobante_pago_listado \n" +
+                                " where ci_paga is null and responsable_paga is null and ide_listado ="+banco);
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;

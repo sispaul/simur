@@ -364,15 +364,14 @@ public class pre_pagos_listados extends Pantalla{
     public void usuario(Integer valor){
       TablaGenerica tab_dato1 = programas.item(Integer.parseInt(set_comprobante.getValorSeleccionado()));
           if (!tab_dato1.isEmpty()) {
-      }else{
-           TablaGenerica tab_dato = programas.empleado();
-             if (!tab_dato.isEmpty()) {
+              TablaGenerica tab_dato = programas.empleado();
+              if (!tab_dato.isEmpty()) {
                    tab_comprobante.setValor("responsable_paga", tab_dato.getValor("nombres"));
                    tab_comprobante.setValor("ci_paga", tab_dato.getValor("cedula_pass"));
                    utilitario.addUpdate("tab_comprobante");
-                   } else {
-                          utilitario.agregarMensajeInfo("El Número de RUC O C.I. ingresado no existe en la base de datos del municipio", "");
-                          }
+              } else {
+                  utilitario.agregarMensajeInfo("El Número de RUC O C.I. ingresado no existe en la base de datos del municipio", "");
+              }
           }
     }
     
