@@ -15,11 +15,15 @@ import framework.componentes.Grupo;
 import framework.componentes.Imagen;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import paq_presupuestaria.ejb.Programas;
 import paq_sistema.aplicacion.Pantalla;
@@ -40,6 +44,7 @@ public class pre_pagos_listados extends Pantalla{
     private Tabla tab_detalle = new Tabla();
     private Tabla tab_detalle1 = new Tabla();
     private SeleccionTabla set_comprobante = new SeleccionTabla();
+    private SeleccionTabla set_lista = new SeleccionTabla();
     
     //dibujar cuadros de panel
     private Panel pan_opcion = new Panel();//cabecera
@@ -53,9 +58,14 @@ public class pre_pagos_listados extends Pantalla{
     private Texto txt_num_listado = new Texto();
     
     private Calendario cal_fecha = new Calendario();
-    
+    private Calendario cal_fecha1 = new Calendario();
         //Auto completar
     private AutoCompletar aut_busca = new AutoCompletar();
+    
+    ///REPORTES
+    private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
+    private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
+    private Map p_parametros = new HashMap();
     
     @EJB
     private Programas programas = (Programas) utilitario.instanciarEJB(Programas.class);
@@ -129,8 +139,47 @@ public class pre_pagos_listados extends Pantalla{
         set_comprobante.getBot_aceptar().setMetodo("aceptarBusqueda");
         set_comprobante.setHeader("BUSCAR LISTADO O ITEM  A PAGAR");
         agregarComponente(set_comprobante);
+        
+        /*         * CONFIGURACIÓN DE OBJETO REPORTE         */
+        bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
+        agregarComponente(rep_reporte); //2 agregar el listado de reportes
+        sef_formato.setId("sef_formato");
+        sef_formato.setConexion(con_postgres);
+        agregarComponente(sef_formato);
+        
+        Grupo gru_lis = new Grupo();
+        gru_lis.getChildren().add(new Etiqueta("FECHA: "));
+        gru_lis.getChildren().add(cal_fecha1);
+        Boton bot_lista = new Boton();
+        bot_lista.setValue("Buscar");
+        bot_lista.setIcon("ui-icon-search");
+        bot_lista.setMetodo("buscarColumna");
+        bar_botones.agregarBoton(bot_lista);
+        gru_lis.getChildren().add(bot_lista);
+        
+        set_lista.setId("set_lista");
+        set_lista.getTab_seleccion().setConexion(con_postgres);//conexion para seleccion con otra base
+        set_lista.setSeleccionTabla("SELECT DISTINCT on (num_transferencia)ide_detalle_listado,num_transferencia FROM tes_detalle_comprobante_pago_listado WHERE ide_detalle_listado=-1  order by num_transferencia", "ide_detalle_listado");
+        set_lista.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
+        set_lista.getTab_seleccion().setRows(10);
+        set_lista.setRadio();
+        set_lista.setWidth("20%");
+        set_lista.setHeight("40%");
+        set_lista.getGri_cuerpo().setHeader(gru_lis);
+        set_lista.getBot_aceptar().setMetodo("aceptoAnticipo");
+        set_lista.setHeader("SELECCIONE LISTADO");
+        agregarComponente(set_lista);
     }
 
+     public void buscarColumna() {
+        if (cal_fecha1.getValue() != null && cal_fecha1.getValue().toString().isEmpty() == false ) {
+            set_lista.getTab_seleccion().setSql("SELECT DISTINCT on (num_transferencia)ide_detalle_listado,num_transferencia FROM tes_detalle_comprobante_pago_listado where fecha_transferencia='"+cal_fecha1.getFecha()+"' order by num_transferencia");
+            set_lista.getTab_seleccion().ejecutarSql();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar una fecha", "");
+        }
+    }
+    
     public void abrirBusqueda(){
       set_comprobante.dibujar();
       txt_buscar.limpiar();
@@ -375,6 +424,34 @@ public class pre_pagos_listados extends Pantalla{
           }
     }
     
+     //Actualizacion tipo de cuenta
+  public void tipoCuenta(){
+       
+    if (utilitario.validarCedula(tab_detalle1.getValor("cedula_pass_beneficiario"))) {
+       TablaGenerica tab_dato = programas.empleado1(tab_detalle1.getValor("cedula_pass_beneficiario"));
+         if (!tab_dato.isEmpty()) {
+             tab_detalle1.setValor("numero_cuenta", tab_dato.getValor("numero_cuenta"));
+             tab_detalle1.setValor("ban_codigo", tab_dato.getValor("cod_banco"));
+             tab_detalle1.setValor("tipo_cuenta", tab_dato.getValor("tipo_cuenta"));
+             utilitario.addUpdate("tab_detalle1");
+         }else {
+                utilitario.agregarMensajeInfo("Datos no disponibles", "");
+            }
+     } else if (utilitario.validarRUC(tab_detalle1.getValor("cedula_pass_beneficiario"))) {
+         TablaGenerica tab_dato = programas.proveedor(tab_detalle1.getValor("cedula_pass_beneficiario"));
+         if (!tab_dato.isEmpty()) {
+             tab_detalle1.setValor("numero_cuenta", tab_dato.getValor("numero_cuenta"));
+             tab_detalle1.setValor("ban_codigo", tab_dato.getValor("ban_codigo"));
+             tab_detalle1.setValor("tipo_cuenta", tab_dato.getValor("tipo_cuenta"));
+             utilitario.addUpdate("tab_detalle1");
+         }else {
+                utilitario.agregarMensajeInfo("Datos no disponibles", "");
+            }
+     } else  {
+            utilitario.agregarMensajeError("El Número de Identificación no es válido", "");
+            }
+  }
+    
     
     @Override
     public void insertar() {
@@ -382,15 +459,6 @@ public class pre_pagos_listados extends Pantalla{
 
     @Override
     public void guardar() {
-        TablaGenerica tab_dato1 = programas.item(Integer.parseInt(tab_comprobante.getValor("ide_listado")));
-        if (!tab_dato1.isEmpty()) {
-            for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
-                if(tab_detalle.getValor(i, "proceso")!=null){
-                    programas.actuaComprobante(tab_detalle.getValor(i, "numero_cuenta"),tab_detalle.getValor(i, "ban_nombre"),
-                        tab_detalle.getValor(i, "tipo_cuenta"),  utilitario.getVariable("NICK"),tab_detalle.getValor(i, "comprobante"),Integer.parseInt(tab_detalle.getValor(i, "ide_listado")),Integer.parseInt(tab_detalle.getValor(i, "ide_detalle_listado")));
-                }
-            }
-        }else{
             programas.actuListado(tab_comprobante.getValor("CI_PAGA"), tab_comprobante.getValor("RESPONSABLE_PAGA"), tab_consulta.getValor("NICK_USUA"), 
             Integer.parseInt(tab_comprobante.getValor("IDE_LISTADO")));
             for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
@@ -399,7 +467,6 @@ public class pre_pagos_listados extends Pantalla{
                         tab_detalle.getValor(i, "tipo_cuenta"),  utilitario.getVariable("NICK"),tab_detalle.getValor(i, "comprobante"),Integer.parseInt(tab_detalle.getValor(i, "ide_listado")),Integer.parseInt(tab_detalle.getValor(i, "ide_detalle_listado")));
                 }
             }
-        }
                 tab_detalle.actualizar();
                 utilitario.agregarMensaje("Comprobantes", "Listo Para Pago");
                 tab_detalle1.actualizar();
@@ -431,6 +498,44 @@ public class pre_pagos_listados extends Pantalla{
         tab_detalle1.actualizar();
     }
     
+        /*CREACION DE REPORTES */
+    //llamada a reporte
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+
+    }
+    
+        @Override
+    public void aceptarReporte() {
+        rep_reporte.cerrar();
+        cal_fecha1.setFechaActual();
+        switch (rep_reporte.getNombre()) {
+           case "LISTA DE ACREDITACION":
+                 set_lista.dibujar();
+                set_lista.getTab_seleccion().limpiar();
+          break;
+        }
+    } 
+    
+      public void aceptoAnticipo(){
+        switch (rep_reporte.getNombre()) {
+               case "LISTA DE ACREDITACION":
+                    TablaGenerica tab_dato = programas.getTranferencia(Integer.parseInt(set_lista.getValorSeleccionado()));
+               if (!tab_dato.isEmpty()) {
+                    p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
+                    p_parametros.put("fecha_acre", cal_fecha1.getFecha()+"");
+                    p_parametros.put("num_tran", tab_dato.getValor("num_transferencia")+"");
+                    rep_reporte.cerrar();
+                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_formato.dibujar();
+                    } else {
+                        utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
+                    }
+               break;
+        }
+    }
+      
     public Conexion getCon_postgres() {
         return con_postgres;
     }
@@ -477,6 +582,38 @@ public class pre_pagos_listados extends Pantalla{
 
     public void setSet_comprobante(SeleccionTabla set_comprobante) {
         this.set_comprobante = set_comprobante;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSef_formato() {
+        return sef_formato;
+    }
+
+    public void setSef_formato(SeleccionFormatoReporte sef_formato) {
+        this.sef_formato = sef_formato;
+    }
+
+    public Map getP_parametros() {
+        return p_parametros;
+    }
+
+    public void setP_parametros(Map p_parametros) {
+        this.p_parametros = p_parametros;
+    }
+
+    public SeleccionTabla getSet_lista() {
+        return set_lista;
+    }
+
+    public void setSet_lista(SeleccionTabla set_lista) {
+        this.set_lista = set_lista;
     }
     
 }

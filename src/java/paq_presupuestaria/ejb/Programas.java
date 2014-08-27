@@ -307,6 +307,7 @@ public class Programas {
     con_postgres = null;
     }
     
+    
    public void regreComprobante(String cuenta,String usu,String comprobante,Integer lista,Integer detalle){
 
         String str_sqlg="UPDATE tes_detalle_comprobante_pago_listado\n" +
@@ -320,7 +321,19 @@ public class Programas {
     con_postgres.desconectar();
     con_postgres = null;
     }
-    
+   
+      public void rechazoComprobante(String cuenta,String comprobante,Integer lista){
+          
+          String str_sqlg="UPDATE tes_detalle_comprobante_pago_listado  \n" +
+                    "set num_transferencia=null,  \n" +
+                    "ide_estado_listado=(SELECT ide_estado_listado FROM tes_estado_listado WHERE estado like 'RECHAZADO')  \n" +
+                    "WHERE comprobante like'"+comprobante+"'  and ide_listado ="+lista+" and num_transferencia like'"+cuenta+"'";  
+    conectar();
+    con_postgres.ejecutarSql(str_sqlg);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+   
     public void numTransComprobante(String numero,String fecha,String comprobante,Integer lista,Integer detalle){
 
         String str_sqlg="UPDATE tes_detalle_comprobante_pago_listado\n" +
@@ -411,6 +424,19 @@ public class Programas {
         
  }
  
+  public TablaGenerica getTranferencia(Integer iden) {
+        //Busca a una empresa en la tabla maestra_ruc por ruc
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        conectar();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT ide_detalle_listado,num_transferencia FROM tes_detalle_comprobante_pago_listado where ide_detalle_listado ="+iden);
+        tab_persona.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_persona;
+}
+  
  public TablaGenerica item(Integer banco){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
