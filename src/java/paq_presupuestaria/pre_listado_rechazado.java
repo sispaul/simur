@@ -12,6 +12,8 @@ import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
+import java.util.ArrayList;
+import java.util.List;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
@@ -99,6 +101,7 @@ public class pre_listado_rechazado extends Pantalla{
                                 " d.numero_cuenta,  \n" +
                                 " d.ban_nombre,  \n" +
                                 " d.tipo_cuenta,  \n" +
+                                " null as rechazo,  \n" +
                                 " d.usuario_actua_pagado,  \n" +
                                 " d.ip_actua_pagado,  \n" +
                                 " d.usuario_actua_devolucion,  \n" +
@@ -107,6 +110,17 @@ public class pre_listado_rechazado extends Pantalla{
                                 " tes_detalle_comprobante_pago_listado AS d  \n" +
                                 " where ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'PAGADO')");
         tab_comprobante.getColumna("ide_detalle_listado").setVisible(false);
+        List list = new ArrayList();
+        Object fil1[] = {
+            "1", "SI"
+        };
+        Object fil2[] = {
+            "2", "NO"
+        };
+        list.add(fil1);;
+        list.add(fil2);;
+        tab_comprobante.getColumna("rechazo").setRadio(list, "");
+        tab_comprobante.getColumna("rechazo").setMetodoChange("rechazado");
         tab_comprobante.getColumna("item").setVisible(false);
         tab_comprobante.getColumna("ide_listado").setVisible(false);
         tab_comprobante.getColumna("USUARIO_ACTUA_ENVIA").setVisible(false);
@@ -125,6 +139,10 @@ public class pre_listado_rechazado extends Pantalla{
         pan_opcion.getChildren().add(tdd);
     }
 
+    public void rechazado(){
+        
+    }
+    
     @Override
     public void insertar() {
     }
