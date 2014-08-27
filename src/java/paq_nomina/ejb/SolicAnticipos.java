@@ -1366,6 +1366,17 @@ public TablaGenerica getUsuario(String iden) {
         return tab_persona;
 }
 
+public TablaGenerica getTranferencia(Integer iden) {
+        //Busca a una empresa en la tabla maestra_ruc por ruc
+        conectarSQL();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT ide_detalle_listado,num_transferencia FROM tes_detalle_comprobante_pago_listado where ide_detalle_listado ="+iden);
+        tab_persona.ejecutarSql();
+        conexion.desconectar();
+        conexion = null;
+        return tab_persona;
+}
 
 private void conectarSQL() {
         if (conexion == null) {
