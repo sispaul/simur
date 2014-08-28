@@ -122,10 +122,10 @@ public class pre_listado_rechazado extends Pantalla{
                                             "FROM tes_comprobante_pago_listado t,tes_detalle_comprobante_pago_listado d\n" +
                                             "where d.ide_listado = t.ide_listado and t.IDE_LISTADO=-1 order by d.num_documento", "IDE_LISTADO");
         set_comprobante.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
-        set_comprobante.getTab_seleccion().setRows(5);
+        set_comprobante.getTab_seleccion().setRows(10);
         set_comprobante.setRadio();
         set_comprobante.setWidth("40%");
-        set_comprobante.setHeight("30%");
+        set_comprobante.setHeight("50%");
         set_comprobante.getGri_cuerpo().setHeader(gri_busca1);
         set_comprobante.getBot_aceptar().setMetodo("aceptarBusqueda");
         set_comprobante.setHeader("BUSCAR LISTADO O ITEM  A PAGAR");
