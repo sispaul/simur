@@ -8,10 +8,12 @@ import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
+import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
 import framework.componentes.Imagen;
+import framework.componentes.ItemMenu;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
@@ -19,7 +21,9 @@ import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import paq_presupuestaria.ejb.Programas;
@@ -39,6 +43,7 @@ public class pre_pago_comprobantes extends Pantalla{
     private Tabla tab_consulta =  new Tabla();
     private Tabla tab_comprobante = new Tabla();
     private Tabla tab_detalle = new Tabla();
+    private Tabla tab_detalle1 = new Tabla();
     private SeleccionTabla set_comprobante = new SeleccionTabla();
     private SeleccionTabla set_lista = new SeleccionTabla();
     
@@ -66,6 +71,10 @@ public class pre_pago_comprobantes extends Pantalla{
     private Programas programas = (Programas) utilitario.instanciarEJB(Programas.class);
     
     public pre_pago_comprobantes() {
+        
+        bar_botones.quitarBotonInsertar();
+        bar_botones.quitarBotonEliminar();
+        bar_botones.quitarBotonsNavegacion();
         
         //Mostrar el usuario 
         tab_consulta.setId("tab_consulta");
@@ -190,7 +199,7 @@ public class pre_pago_comprobantes extends Pantalla{
       if (set_comprobante.getValorSeleccionado() != null) {
              aut_busca.setValor(set_comprobante.getValorSeleccionado());
              set_comprobante.cerrar();
-//             dibujarLista();
+             dibujarLista();
              utilitario.addUpdate("aut_busca,pan_opcion");
          } else {
                 utilitario.agregarMensajeInfo("Debe seleccionar un listado", "");
@@ -259,8 +268,123 @@ public class pre_pago_comprobantes extends Pantalla{
         tab_comprobante.getGrid().setColumns(6);
         tab_comprobante.dibujar();
         PanelTabla tcp = new PanelTabla();
+        tcp.getMenuTabla().getItem_actualizar().setRendered(false);//nucontextual().setrendered(false);
         tcp.setPanelTabla(tab_comprobante);
-        pan_opcion.getChildren().add(tcp);
+        
+        //tabla detalle
+        tab_detalle.setId("tab_detalle");
+        tab_detalle.setConexion(con_postgres);
+        tab_detalle.setSql("SELECT \n" +
+                            "d.ide_detalle_listado,\n" +
+                            "d.ide_listado,  \n" +
+                            "d.comprobante, \n" +
+                            "d.cedula_pass_beneficiario, \n" +
+                            "d.nombre_beneficiario, \n" +
+                            "d.valor,  \n" +
+                            "d.numero_cuenta, \n" +
+                            "d.codigo_banco, \n" +
+                            "d.ban_nombre, \n" +
+                            "d.tipo_cuenta, \n" +
+                            "null as proceso \n" +
+                            "FROM \n" +
+                            "tes_detalle_comprobante_pago_listado AS d \n" +
+                            "where ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'ENVIADO')");
+        tab_detalle.setCampoPrimaria("ide_detalle_listado");
+        tab_detalle.setCampoOrden("ide_listado");
+        List lista = new ArrayList();
+        Object fila2[] = {
+            "2", "ACREDITAR"
+        };
+        Object fila3[] = {
+            "3", "DEVOLVER"
+        };
+        lista.add(fila2);;
+        lista.add(fila3);;
+        tab_detalle.getColumna("proceso").setRadio(lista, " ");
+        tab_detalle.getColumna("ide_detalle_listado").setVisible(false);
+        tab_detalle.setRows(5);
+        tab_detalle.dibujar();
+        PanelTabla tdd = new PanelTabla();
+        tdd.setPanelTabla(tab_detalle);
+        
+        ItemMenu itm_actualizar = new ItemMenu();
+        itm_actualizar.setValue("Actualizar Banco");
+        itm_actualizar.setIcon("ui-icon-arrow-4-diag");
+        itm_actualizar.setMetodo("tipoCuenta");
+        tdd.getMenuTabla().getChildren().add(itm_actualizar);
+        
+        tdd.getMenuTabla().getItem_buscar().setRendered(false);//nucontextual().setrendered(false);
+        tdd.getMenuTabla().getItem_actualizar().setRendered(false);//nucontextual().setrendered(false);
+        Division div = new Division();
+        div.dividir2(tcp, tdd, "42%", "h");
+        
+        //lista de con comprobantes que van hacer pagados
+        tab_detalle1.setId("tab_detalle1");
+        tab_detalle1.setConexion(con_postgres);
+        tab_detalle1.setSql("SELECT  \n" +
+                        " d.ide_detalle_listado,  \n" +
+                        " d.ide_listado,  \n" +
+                        " d.item,  \n" +
+                        " d.comprobante,  \n" +
+                        " d.cedula_pass_beneficiario,  \n" +
+                        " d.nombre_beneficiario,  \n" +
+                        " d.valor,  \n" +
+                        " d.numero_cuenta,  \n" +
+                        " d.ban_nombre,  \n" +
+                        " d.tipo_cuenta,  \n" +
+                        " null as regresar  \n" +
+                        " FROM  \n" +
+                        " tes_detalle_comprobante_pago_listado AS d  \n" +
+                        " where ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'PAGADO') and num_documento is null");
+        tab_detalle1.setCampoPrimaria("ide_detalle_listado");
+        tab_detalle1.setCampoOrden("ide_listado");
+        List list = new ArrayList();
+        Object fil1[] = {
+            "1", " "
+        };
+        list.add(fil1);;
+        tab_detalle1.getColumna("regresar").setRadio(list, " ");
+        tab_detalle1.getColumna("ide_detalle_listado").setVisible(false);
+        tab_detalle1.getColumna("ide_listado").setVisible(false);
+        tab_detalle1.getColumna("item").setVisible(false);
+        
+        tab_detalle1.setRows(5);
+        tab_detalle1.dibujar();
+        PanelTabla tda = new PanelTabla();
+        tda.setPanelTabla(tab_detalle1);
+        
+        cal_fecha.setDisabled(true); //Desactiva el cuadro de texto
+        Grupo gru = new Grupo();
+        pan_opcion.getChildren().add(gru);
+        txt_num_listado.setId("txt_num_listado");
+        Grid gri_busca = new Grid();
+        gri_busca.setColumns(6);
+        gri_busca.getChildren().add(new Etiqueta("Fecha : ")); 
+        cal_fecha.setFechaActual();
+        gri_busca.getChildren().add(cal_fecha);
+        gri_busca.getChildren().add(new Etiqueta("# Documento : "));    
+        gri_busca.getChildren().add(txt_num_listado);
+        
+        Boton bot_save = new Boton();
+        bot_save.setValue("Guardar Listado");
+        bot_save.setExcluirLectura(true);
+        bot_save.setIcon("ui-icon-disk");
+        bot_save.setMetodo("save_lista");
+        
+        Boton bot_delete = new Boton();
+        bot_delete.setValue("Quitar de Listado");
+        bot_delete.setExcluirLectura(true);
+        bot_delete.setIcon("ui-icon-extlink");
+        bot_delete.setMetodo("regresa");
+        
+        gri_busca.getChildren().add(bot_save);
+        gri_busca.getChildren().add(bot_delete);
+        agregarComponente(gri_busca);
+        
+        Division div_division = new Division();
+        div_division.setId("div_division");
+        div_division.dividir3(div, gri_busca, tda, "48%", "45%", "H");
+        pan_opcion.getChildren().add(div_division);
         usuario();
              } else {
             utilitario.agregarMensajeInfo("No se puede abrir la opción", "Seleccione Listado en el autocompletar");
@@ -268,6 +392,7 @@ public class pre_pago_comprobantes extends Pantalla{
         }
     }
     
+    //Carga el usuario que acredita el pago
     public void usuario(){
       TablaGenerica tab_dato1 = programas.item(Integer.parseInt(set_comprobante.getValorSeleccionado()));
           if (!tab_dato1.isEmpty()) {
@@ -282,22 +407,211 @@ public class pre_pago_comprobantes extends Pantalla{
           }
     }
     
+    //Verifica los datos de la cuenta y Actualiza
+    public void tipoCuenta(){
+        if (utilitario.validarCedula(tab_detalle.getValor("cedula_pass_beneficiario"))) {
+            TablaGenerica tab_dato = programas.empleado1(tab_detalle.getValor("cedula_pass_beneficiario"));
+            if (!tab_dato.isEmpty()) {
+                tab_detalle.setValor("numero_cuenta", tab_dato.getValor("numero_cuenta"));
+                tab_detalle.setValor("codigo_banco", tab_dato.getValor("cod_banco"));
+                tab_detalle.setValor("tipo_cuenta", tab_dato.getValor("tipo_cuenta"));
+                tab_detalle.setValor("ban_nombre", tab_dato.getValor("ban_nombre"));
+                utilitario.addUpdate("tab_detalle");
+            }else {
+                utilitario.agregarMensajeInfo("Datos no disponibles", "");
+            }
+        } else if (utilitario.validarRUC(tab_detalle.getValor("cedula_pass_beneficiario"))) {
+            TablaGenerica tab_dato = programas.proveedor(tab_detalle.getValor("cedula_pass_beneficiario"));
+            if (!tab_dato.isEmpty()) {
+                tab_detalle.setValor("numero_cuenta", tab_dato.getValor("numero_cuenta"));
+                tab_detalle.setValor("codigo_banco", tab_dato.getValor("ban_codigo"));
+                tab_detalle.setValor("tipo_cuenta", tab_dato.getValor("tipo_cuenta"));
+                tab_detalle.setValor("ban_nombre", tab_dato.getValor("ban_nombre"));
+                utilitario.addUpdate("tab_detalle");
+            }else {
+                utilitario.agregarMensajeInfo("Datos no disponibles", "");
+            }
+        } else  {
+            utilitario.agregarMensajeError("El Número de Identificación no es válido", "");
+        }
+    }
+    
+    //permite devolver comprobnate en caso de no acrditar con esa lista..
+    public void regresa(){
+        for (int i = 0; i < tab_detalle1.getTotalFilas(); i++) {
+            if(tab_detalle1.getValor(i, "regresar")!=null){
+                programas.regreComprobante(tab_detalle1.getValor(i, "numero_cuenta"),utilitario.getVariable("NICK"),tab_detalle1.getValor(i, "comprobante"),
+                        Integer.parseInt(tab_detalle1.getValor(i, "ide_listado")),Integer.parseInt(tab_detalle1.getValor(i, "ide_detalle_listado")));
+            }
+        }
+        tab_detalle1.actualizar();
+        utilitario.agregarMensaje("Comprobante", "Regreso a Listado");
+        tab_detalle.actualizar();
+    }
+    
+    //Genera numero aleatorio
+    public void save_lista(){
+        txt_num_listado.setDisabled(true); //Desactiva el cuadro de texto
+        String numero = programas.listaMax();
+        String valor,anio,num;
+        Integer cantidad=0;
+        anio=String.valueOf(utilitario.getAnio(utilitario.getFechaActual()));
+        valor=numero.substring(10,15);
+        cantidad = Integer.parseInt(valor)+1;
+        if(numero!=null){
+            if(cantidad>=0 && cantidad<=9){
+                num = "0000"+String.valueOf(cantidad);
+                String cadena = "LIST"+"-"+anio+"-"+num;
+                txt_num_listado.setValue(cadena + "");
+                utilitario.addUpdate("txt_num_listado");
+               } else if(cantidad>=10 && cantidad<=99){
+                          num = "000"+String.valueOf(cantidad);
+                          String cadena = "LIST"+"-"+anio+"-"+num;
+                        txt_num_listado.setValue(cadena + "");
+                        utilitario.addUpdate("txt_num_listado");
+                         }else if(cantidad>=100 && cantidad<=999){
+                                   num = "00"+String.valueOf(cantidad);
+                                   String cadena = "LIST"+"-"+anio+"-"+num;
+                                    txt_num_listado.setValue(cadena + "");
+                                    utilitario.addUpdate("txt_num_listado");
+                                  }else if(cantidad>=1000 && cantidad<=9999){
+                                            num = "0"+String.valueOf(cantidad);
+                                            String cadena = "LIST"+"-"+anio+"-"+num;
+                                            txt_num_listado.setValue(cadena + "");
+                                            utilitario.addUpdate("txt_num_listado");
+                                           }else if(cantidad>=10000 && cantidad<=99999){
+                                                     num = String.valueOf(cantidad);
+                                                     String cadena = "LIST"+"-"+anio+"-"+num;
+                                                    txt_num_listado.setValue(cadena + "");
+                                                    utilitario.addUpdate("txt_num_listado");
+                                                    }
+        }
+        save_listado();
+    }
+    
+    //cuarda documento con el cual se acreditara los comprobantes
+    public void save_listado(){
+        for (int i = 0; i < tab_detalle1.getTotalFilas(); i++) {
+            programas.numTransComprobante(txt_num_listado.getValue()+"", cal_fecha.getFecha(), tab_detalle1.getValor(i, "comprobante"),Integer.parseInt(tab_detalle1.getValor(i, "ide_listado"))
+                    ,Integer.parseInt(tab_detalle1.getValor(i, "ide_detalle_listado")));
+        }
+        utilitario.agregarMensaje("Comprobante", "Generado");
+        tab_detalle1.actualizar();
+    }
+    
     @Override
     public void insertar() {
     }
 
     @Override
     public void guardar() {
-        TablaGenerica tab_dato1 = programas.item(Integer.parseInt(set_comprobante.getValorSeleccionado()));
+        TablaGenerica tab_dato1 = programas.item(Integer.parseInt(tab_comprobante.getValor("ide_listado")));
           if (!tab_dato1.isEmpty()) {
               programas.actuListado(tab_comprobante.getValor("CI_PAGA"), tab_comprobante.getValor("RESPONSABLE_PAGA"), tab_consulta.getValor("NICK_USUA"), 
             Integer.parseInt(tab_comprobante.getValor("IDE_LISTADO")));
+//              programas.actuCuentasBanco(null, null, null, null, Integer.SIZE, Integer.SIZE, null, null);
+              for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
+                  if(tab_detalle.getValor(i, "proceso")!=null){
+                      programas.actuaComprobante(tab_detalle.getValor(i, "numero_cuenta"),tab_detalle.getValor(i, "ban_nombre"),
+                        tab_detalle.getValor(i, "tipo_cuenta"),  utilitario.getVariable("NICK"),tab_detalle.getValor(i, "comprobante"),Integer.parseInt(tab_detalle.getValor(i, "ide_listado")),Integer.parseInt(tab_detalle.getValor(i, "ide_detalle_listado")));
+                }
+            }
+          }else{
+//              programas.actuCuentasBanco(null, null, null, null, Integer.SIZE, Integer.SIZE, null, null);
+              for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
+                  if(tab_detalle.getValor(i, "proceso")!=null){
+                    programas.actuaComprobante(tab_detalle.getValor(i, "numero_cuenta"),tab_detalle.getValor(i, "ban_nombre"),
+                        tab_detalle.getValor(i, "tipo_cuenta"),  utilitario.getVariable("NICK"),tab_detalle.getValor(i, "comprobante"),Integer.parseInt(tab_detalle.getValor(i, "ide_listado")),Integer.parseInt(tab_detalle.getValor(i, "ide_detalle_listado")));
+                }
+            }
           }
-          
+                tab_detalle.actualizar();
+                utilitario.agregarMensaje("Comprobantes", "Listo Para Pago");
+                tab_detalle1.actualizar();
     }
 
     @Override
     public void eliminar() {
+    }
+
+    public Conexion getCon_postgres() {
+        return con_postgres;
+    }
+
+    public void setCon_postgres(Conexion con_postgres) {
+        this.con_postgres = con_postgres;
+    }
+
+    public Tabla getTab_comprobante() {
+        return tab_comprobante;
+    }
+
+    public void setTab_comprobante(Tabla tab_comprobante) {
+        this.tab_comprobante = tab_comprobante;
+    }
+
+    public SeleccionTabla getSet_comprobante() {
+        return set_comprobante;
+    }
+
+    public void setSet_comprobante(SeleccionTabla set_comprobante) {
+        this.set_comprobante = set_comprobante;
+    }
+
+    public SeleccionTabla getSet_lista() {
+        return set_lista;
+    }
+
+    public void setSet_lista(SeleccionTabla set_lista) {
+        this.set_lista = set_lista;
+    }
+
+    public AutoCompletar getAut_busca() {
+        return aut_busca;
+    }
+
+    public void setAut_busca(AutoCompletar aut_busca) {
+        this.aut_busca = aut_busca;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSef_formato() {
+        return sef_formato;
+    }
+
+    public void setSef_formato(SeleccionFormatoReporte sef_formato) {
+        this.sef_formato = sef_formato;
+    }
+
+    public Map getP_parametros() {
+        return p_parametros;
+    }
+
+    public void setP_parametros(Map p_parametros) {
+        this.p_parametros = p_parametros;
+    }
+
+    public Tabla getTab_detalle() {
+        return tab_detalle;
+    }
+
+    public void setTab_detalle(Tabla tab_detalle) {
+        this.tab_detalle = tab_detalle;
+    }
+
+    public Tabla getTab_detalle1() {
+        return tab_detalle1;
+    }
+
+    public void setTab_detalle1(Tabla tab_detalle1) {
+        this.tab_detalle1 = tab_detalle1;
     }
     
 }

@@ -337,7 +337,7 @@ public class Programas {
     public void numTransComprobante(String numero,String fecha,String comprobante,Integer lista,Integer detalle){
 
         String str_sqlg="UPDATE tes_detalle_comprobante_pago_listado\n" +
-                        "set num_transferencia='"+numero+"',\n" +
+                        "set num_documento='"+numero+"',\n" +
                         "fecha_transferencia='"+fecha+"'\n" +
                         "WHERE comprobante like '"+comprobante+"' and ide_listado ="+lista+" and ide_detalle_listado ="+detalle;  
     conectar();
@@ -387,6 +387,23 @@ public class Programas {
     con_postgres = null;
     }
       
+    public void actuCuentasBanco(String numero,String nombre,String tipo,String codigo,Integer ide,Integer lis,String compro,String cedula){
+    String str_sqlg="update tes_detalle_comprobante_pago_listado\n" +
+                    "set numero_cuenta ='"+numero+"',\n" +
+                    "ban_nombre ='"+nombre+"',\n" +
+                    "tipo_cuenta ='"+tipo+"',\n" +
+                    "codigo_banco ='"+codigo+"'\n" +
+                    "WHERE\n" +
+                    "ide_detalle_listado ="+ide+" and\n" +
+                    "ide_listado ="+lis+" and\n" +
+                    "comprobante like '"+compro+"' and\n" +
+                    "cedula_pass_beneficiario like '"+cedula+"'";
+    conectar();
+    con_postgres.ejecutarSql(str_sqlg);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+    
     public void actuComponente(String cuenta,Integer codigo,String tipo,Integer detalle,Integer listado,String usu,String registro,Integer estado){
     String str_sqlg="UPDATE tes_detalle_comprobante_pago_listado\n" +
                     "set numero_cuenta ='"+cuenta+"',ban_codigo="+codigo+",ban_nombre=(SELECT ban_nombre FROM ocebanco WHERE ban_codigo ="+codigo+"),"
@@ -478,10 +495,19 @@ public class Programas {
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
         tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT cod_empleado,cedula_pass,nombres,cod_empleado,estado,cod_banco,\n" +
-                                "(case when cod_cuenta = 1 then 'A' when cod_cuenta = 2 then 'C' when cod_cuenta = 3 then 'O' end ) as tipo_cuenta\n" +
-                                ",numero_cuenta\n" +
-                                "FROM srh_empleado  WHERE cedula_pass like '"+cedula+"'");
+        tab_funcionario.setSql("SELECT\n" +
+                                "e.cod_empleado,\n" +
+                                "e.cedula_pass,\n" +
+                                "e.nombres,\n" +
+                                "e.estado,\n" +
+                                "e.cod_banco,\n" +
+                                "(case when e.cod_cuenta = 1 then 'A' when e.cod_cuenta = 2 then 'C' when e.cod_cuenta = 3 then 'O' end ) AS tipo_cuenta,\n" +
+                                "e.numero_cuenta,\n" +
+                                "o.ban_nombre\n" +
+                                "FROM\n" +
+                                "srh_empleado e,\n" +
+                                "ocebanco o\n" +
+                                "where e.cod_banco = o.ban_codigo and cedula_pass like '"+cedula+"'");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
@@ -494,8 +520,20 @@ public class Programas {
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
         tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT ide_proveedor,ruc,titular,ban_codigo,numero_cuenta,tipo_cuenta,ide_tipo_proveedor,codigo_banco\n" +
-                                "FROM tes_proveedores where ruc like '"+ruc+"'");
+        tab_funcionario.setSql("SELECT\n" +
+                                "p.ide_proveedor,\n" +
+                                "p.ruc,\n" +
+                                "p.titular,\n" +
+                                "p.ban_codigo,\n" +
+                                "p.numero_cuenta,\n" +
+                                "p.tipo_cuenta,\n" +
+                                "p.ide_tipo_proveedor,\n" +
+                                "p.codigo_banco,\n" +
+                                "o.ban_nombre\n" +
+                                "FROM\n" +
+                                "tes_proveedores p ,\n" +
+                                "ocebanco o\n" +
+                                "where p.ban_codigo = o.ban_codigo and ruc like '"+ruc+"'");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
@@ -518,6 +556,21 @@ public class Programas {
         
  }
   
+   public String listaMax() {
+         conectar();
+
+         String ValorMax;
+         TablaGenerica tab_consulta = new TablaGenerica();
+         conectar();
+         tab_consulta.setConexion(con_postgres);
+         tab_consulta.setSql("select 0 as id ,\n" +
+                            "(case when max(num_documento) is null then 'LIST-2014-00000' when max(num_documento)is not null then max(num_documento) end) AS maximo\n" +
+                            "from tes_detalle_comprobante_pago_listado");
+         tab_consulta.ejecutarSql();
+         ValorMax = tab_consulta.getValor("maximo");
+         return ValorMax;
+  }
+ 
      private void conectar() {
         if (con_postgres == null) {
             con_postgres = new Conexion();
