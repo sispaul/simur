@@ -50,6 +50,9 @@ order BY num_documento]]>
 	<field name="comentario" class="java.lang.String"/>
 	<field name="codigo_banco" class="java.lang.String"/>
 	<field name="num_documento" class="java.lang.String"/>
+	<variable name="sum_valor" class="java.math.BigDecimal" resetType="Group" resetGroup="num_listado" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
+	</variable>
 	<group name="lista_envio">
 		<groupExpression><![CDATA[$F{ide_listado}]]></groupExpression>
 	</group>
@@ -118,7 +121,20 @@ order BY num_documento]]>
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="7"/>
+			<band height="34">
+				<staticText>
+					<reportElement uuid="d24c5e5b-6474-4ca4-8a82-d3c239d158c2" x="637" y="10" width="100" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[TOTAL. :]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="72b05a37-473d-4bef-ae37-efe3bf327747" x="698" y="10" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$V{sum_valor}]]></textFieldExpression>
+				</textField>
+			</band>
 		</groupFooter>
 	</group>
 	<background>
@@ -222,7 +238,7 @@ order BY num_documento]]>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="10" splitType="Stretch"/>
+		<band height="8" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
 		<band height="18" splitType="Stretch">
@@ -281,6 +297,6 @@ order BY num_documento]]>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="52" splitType="Stretch"/>
+		<band height="11" splitType="Stretch"/>
 	</summary>
 </jasperReport>
