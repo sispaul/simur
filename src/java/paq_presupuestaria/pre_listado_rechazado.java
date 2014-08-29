@@ -44,6 +44,7 @@ public class pre_listado_rechazado extends Pantalla{
     private Tabla detalle = new Tabla();
     private Tabla detalle1 = new Tabla();//rechazadas
     private SeleccionTabla set_comprobante = new SeleccionTabla();
+    private SeleccionTabla set_lista = new SeleccionTabla();
     
     String num_listado;
     //dibujar cuadros de panel
@@ -57,6 +58,7 @@ public class pre_listado_rechazado extends Pantalla{
     
     //Calendario
     private Calendario cal_fecha = new Calendario();
+    private Calendario cal_fecha1 = new Calendario();
     
     @EJB
     private Programas programas = (Programas) utilitario.instanciarEJB(Programas.class);
@@ -145,6 +147,39 @@ public class pre_listado_rechazado extends Pantalla{
         sef_formato.setId("sef_formato");
         sef_formato.setConexion(con_postgres);
         agregarComponente(sef_formato);
+        
+        Grupo gru_lis = new Grupo();
+        gru_lis.getChildren().add(new Etiqueta("FECHA: "));
+        gru_lis.getChildren().add(cal_fecha1);
+        Boton bot_lista = new Boton();
+        bot_lista.setValue("Buscar");
+        bot_lista.setIcon("ui-icon-search");
+        bot_lista.setMetodo("buscarColumna");
+        bar_botones.agregarBoton(bot_lista);
+        gru_lis.getChildren().add(bot_lista);
+        
+        set_lista.setId("set_lista");
+        set_lista.getTab_seleccion().setConexion(con_postgres);//conexion para seleccion con otra base
+        set_lista.setSeleccionTabla("SELECT DISTINCT on (num_documento)ide_detalle_listado,num_documento FROM tes_detalle_comprobante_pago_listado WHERE ide_detalle_listado=-1  order by num_documento", "ide_detalle_listado");
+        set_lista.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
+        set_lista.getTab_seleccion().setRows(10);
+        set_lista.setRadio();
+        set_lista.setWidth("20%");
+        set_lista.setHeight("40%");
+        set_lista.getGri_cuerpo().setHeader(gru_lis);
+        set_lista.getBot_aceptar().setMetodo("aceptoAnticipo");
+        set_lista.setHeader("SELECCIONE LISTADO");
+        agregarComponente(set_lista);
+    }
+    
+        //busqueda de documento creado para pago de comprobantes
+    public void buscarColumna() {
+        if (cal_fecha1.getValue() != null && cal_fecha1.getValue().toString().isEmpty() == false ) {
+            set_lista.getTab_seleccion().setSql("SELECT DISTINCT on (num_documento)ide_detalle_listado,num_documento FROM tes_detalle_comprobante_pago_listado where fecha_transferencia='"+cal_fecha1.getFecha()+"' order by num_documento");
+            set_lista.getTab_seleccion().ejecutarSql();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar una fecha", "");
+        }
     }
     
     public void abrirBusqueda(){
@@ -352,6 +387,42 @@ public class pre_listado_rechazado extends Pantalla{
     }
 
     
+        /*CREACION DE REPORTES */
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+
+    }
+    
+        @Override
+    public void aceptarReporte() {
+        rep_reporte.cerrar();
+        cal_fecha1.setFechaActual();
+        switch (rep_reporte.getNombre()) {
+           case "CONFIRMACION DE ACREDITACION":
+                 set_lista.dibujar();
+                set_lista.getTab_seleccion().limpiar();
+          break;
+        }
+    } 
+    
+      public void aceptoAnticipo(){
+        switch (rep_reporte.getNombre()) {
+               case "CONFIRMACION DE ACREDITACION":
+                    TablaGenerica tab_dato = programas.getTranferencia(Integer.parseInt(set_lista.getValorSeleccionado()));
+               if (!tab_dato.isEmpty()) {
+                    p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
+                    p_parametros.put("fecha_acre", cal_fecha1.getFecha()+"");
+                    p_parametros.put("num_tran", tab_dato.getValor("num_documento")+"");
+                    rep_reporte.cerrar();
+                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_formato.dibujar();
+                    } else {
+                        utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
+                    }
+               break;
+        }
+    }
     
     public Conexion getCon_postgres() {
         return con_postgres;
@@ -423,6 +494,14 @@ public class pre_listado_rechazado extends Pantalla{
 
     public void setP_parametros(Map p_parametros) {
         this.p_parametros = p_parametros;
+    }
+
+    public SeleccionTabla getSet_lista() {
+        return set_lista;
+    }
+
+    public void setSet_lista(SeleccionTabla set_lista) {
+        this.set_lista = set_lista;
     }
     
 }
