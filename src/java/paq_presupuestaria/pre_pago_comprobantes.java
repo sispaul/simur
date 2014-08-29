@@ -163,7 +163,7 @@ public class pre_pago_comprobantes extends Pantalla{
         
         set_lista.setId("set_lista");
         set_lista.getTab_seleccion().setConexion(con_postgres);//conexion para seleccion con otra base
-        set_lista.setSeleccionTabla("SELECT DISTINCT on (num_transferencia)ide_detalle_listado,num_transferencia FROM tes_detalle_comprobante_pago_listado WHERE ide_detalle_listado=-1  order by num_transferencia", "ide_detalle_listado");
+        set_lista.setSeleccionTabla("SELECT DISTINCT on (num_documento)ide_detalle_listado,num_documento FROM tes_detalle_comprobante_pago_listado WHERE ide_detalle_listado=-1  order by num_documento", "ide_detalle_listado");
         set_lista.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
         set_lista.getTab_seleccion().setRows(10);
         set_lista.setRadio();
@@ -221,7 +221,7 @@ public class pre_pago_comprobantes extends Pantalla{
     //busqueda de documento creado para pago de comprobantes
     public void buscarColumna() {
         if (cal_fecha1.getValue() != null && cal_fecha1.getValue().toString().isEmpty() == false ) {
-            set_lista.getTab_seleccion().setSql("SELECT DISTINCT on (num_transferencia)ide_detalle_listado,num_transferencia FROM tes_detalle_comprobante_pago_listado where fecha_transferencia='"+cal_fecha1.getFecha()+"' order by num_transferencia");
+            set_lista.getTab_seleccion().setSql("SELECT DISTINCT on (num_documento)ide_detalle_listado,num_documento FROM tes_detalle_comprobante_pago_listado where fecha_transferencia='"+cal_fecha1.getFecha()+"' order by num_documento");
             set_lista.getTab_seleccion().ejecutarSql();
         } else {
             utilitario.agregarMensajeInfo("Debe seleccionar una fecha", "");
@@ -534,6 +534,43 @@ public class pre_pago_comprobantes extends Pantalla{
     public void eliminar() {
     }
 
+    /*CREACION DE REPORTES */
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+
+    }
+    
+        @Override
+    public void aceptarReporte() {
+        rep_reporte.cerrar();
+        cal_fecha1.setFechaActual();
+        switch (rep_reporte.getNombre()) {
+           case "LISTA DE ACREDITACION":
+                 set_lista.dibujar();
+                set_lista.getTab_seleccion().limpiar();
+          break;
+        }
+    } 
+    
+      public void aceptoAnticipo(){
+        switch (rep_reporte.getNombre()) {
+               case "LISTA DE ACREDITACION":
+                    TablaGenerica tab_dato = programas.getTranferencia(Integer.parseInt(set_lista.getValorSeleccionado()));
+               if (!tab_dato.isEmpty()) {
+                    p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
+                    p_parametros.put("fecha_acre", cal_fecha1.getFecha()+"");
+                    p_parametros.put("num_tran", tab_dato.getValor("num_documento")+"");
+                    rep_reporte.cerrar();
+                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_formato.dibujar();
+                    } else {
+                        utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
+                    }
+               break;
+        }
+    }
+    
     public Conexion getCon_postgres() {
         return con_postgres;
     }

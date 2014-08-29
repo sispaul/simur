@@ -4,6 +4,7 @@
  */
 package paq_presupuestaria;
 
+import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
@@ -12,14 +13,17 @@ import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
 import framework.componentes.Imagen;
-import framework.componentes.ItemMenu;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import paq_presupuestaria.ejb.Programas;
 import paq_sistema.aplicacion.Pantalla;
@@ -38,11 +42,12 @@ public class pre_listado_rechazado extends Pantalla{
     private Tabla tab_consulta =  new Tabla();
     private Tabla tab_comprobante = new Tabla();
     private Tabla detalle = new Tabla();
+    private Tabla detalle1 = new Tabla();//rechazadas
     private SeleccionTabla set_comprobante = new SeleccionTabla();
     
     String num_listado;
     //dibujar cuadros de panel
-    private Panel pan_opcion = new Panel();//cabecera
+    private Panel pan_opcion = new Panel();//numero de tranferencia
     
     //Auto completar
     private AutoCompletar aut_busca = new AutoCompletar();
@@ -55,6 +60,11 @@ public class pre_listado_rechazado extends Pantalla{
     
     @EJB
     private Programas programas = (Programas) utilitario.instanciarEJB(Programas.class);
+    
+    ///REPORTES
+    private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
+    private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
+    private Map p_parametros = new HashMap();
     
     public pre_listado_rechazado() {
         
@@ -84,10 +94,10 @@ public class pre_listado_rechazado extends Pantalla{
         aut_busca.setId("aut_busca");
         aut_busca.setConexion(con_postgres);
         aut_busca.setAutoCompletar("SELECT DISTINCT on (d.num_documento) t.ide_listado,d.num_documento\n" +
-"FROM tes_comprobante_pago_listado t,tes_detalle_comprobante_pago_listado d\n" +
-"where d.ide_listado = t.ide_listado and\n" +
-"d.ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'PAGADO')\n" +
-"order by d.num_documento");
+                                    "FROM tes_comprobante_pago_listado t,tes_detalle_comprobante_pago_listado d\n" +
+                                    "where d.ide_listado = t.ide_listado and\n" +
+                                    "d.ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'PAGADO')\n" +
+                                    "order by d.num_documento");
         aut_busca.setSize(100);
         bar_botones.agregarComponente(new Etiqueta("Busca Listado:"));
         bar_botones.agregarComponente(aut_busca);
@@ -100,7 +110,6 @@ public class pre_listado_rechazado extends Pantalla{
         //Creación de Divisiones
         pan_opcion.setId("pan_opcion");
         pan_opcion.setTransient(true);
-        pan_opcion.setHeader(" LISTA PARA RECHAZADOS ");
         agregarComponente(pan_opcion);
         
         //Busqueda de comprobantes
@@ -118,9 +127,8 @@ public class pre_listado_rechazado extends Pantalla{
         
         set_comprobante.setId("set_comprobante");
         set_comprobante.getTab_seleccion().setConexion(con_postgres);//conexion para seleccion con otra base
-        set_comprobante.setSeleccionTabla("SELECT DISTINCT on (d.num_documento) t.ide_listado,d.num_documento\n" +
-                                            "FROM tes_comprobante_pago_listado t,tes_detalle_comprobante_pago_listado d\n" +
-                                            "where d.ide_listado = t.ide_listado and t.IDE_LISTADO=-1 order by d.num_documento", "IDE_LISTADO");
+        set_comprobante.setSeleccionTabla("SELECT DISTINCT on (num_documento) ide_detalle_listado,num_documento\n" +
+                                            "FROM tes_detalle_comprobante_pago_listado where ide_detalle_listado=-1 order by num_documento", "ide_detalle_listado");
         set_comprobante.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
         set_comprobante.getTab_seleccion().setRows(10);
         set_comprobante.setRadio();
@@ -131,6 +139,12 @@ public class pre_listado_rechazado extends Pantalla{
         set_comprobante.setHeader("BUSCAR LISTADO O ITEM  A PAGAR");
         agregarComponente(set_comprobante);
         
+        //CONFIGURACIÓN DE OBJETO REPORTE
+        bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
+        agregarComponente(rep_reporte); //2 agregar el listado de reportes
+        sef_formato.setId("sef_formato");
+        sef_formato.setConexion(con_postgres);
+        agregarComponente(sef_formato);
     }
     
     public void abrirBusqueda(){
@@ -138,14 +152,15 @@ public class pre_listado_rechazado extends Pantalla{
       txt_buscar.limpiar();
       set_comprobante.getTab_seleccion().limpiar();
       limpiarPanel();
+      detalle.limpiar();
+      detalle1.limpiar();
     }
     
     public void buscarEntrega() {
       if (cal_fecha.getValue() != null && cal_fecha.getValue().toString().isEmpty() == false) {
-                 set_comprobante.getTab_seleccion().setSql("SELECT DISTINCT on (d.num_documento) t.ide_listado,d.num_documento\n" +
-"FROM tes_comprobante_pago_listado t,tes_detalle_comprobante_pago_listado d\n" +
-"where d.ide_listado = t.ide_listado and\n" +
-"d.ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'PAGADO') AND d.fecha_transferencia ='"+ cal_fecha.getFecha()+"' order by d.num_documento");
+                 set_comprobante.getTab_seleccion().setSql("SELECT DISTINCT on (num_documento) ide_detalle_listado,num_documento\n" +
+                                                            "FROM tes_detalle_comprobante_pago_listado\n" +
+                                                            "where ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'PAGADO') AND fecha_transferencia ='"+ cal_fecha.getFecha()+"' order by num_documento");
                  set_comprobante.getTab_seleccion().ejecutarSql();
                  limpiar();
           } else {
@@ -155,34 +170,40 @@ public class pre_listado_rechazado extends Pantalla{
     
     public void aceptarBusqueda() {
         limpiarPanel();
-      if (set_comprobante.getValorSeleccionado() != null) {
-             aut_busca.setValor(set_comprobante.getValorSeleccionado());
-             set_comprobante.cerrar();
-             dibujarLista();
-             utilitario.addUpdate("aut_busca,pan_opcion");
-         } else {
-                utilitario.agregarMensajeInfo("Debe seleccionar un listado", "");
-                }
+        if (set_comprobante.getValorSeleccionado() != null) {
+            TablaGenerica tab_dato = programas.getTranferencia(Integer.parseInt(set_comprobante.getValorSeleccionado()));
+            if (!tab_dato.isEmpty()) {
+                aut_busca.setValor(tab_dato.getValor("ide_listado"));
+                set_comprobante.cerrar();
+                num_listado = tab_dato.getValor("num_documento");
+                dibujarLista();
+                utilitario.addUpdate("aut_busca,pan_opcion");
+            } else {
+                utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
+            }
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar un listado", "");
+        }
     }
     
-        //limpieza paneles y abrir busqueda
+    //limpieza paneles y abrir busqueda
     public void limpiar() {
-      aut_busca.limpiar();
-      utilitario.addUpdate("aut_busca");
+        aut_busca.limpiar();
+        utilitario.addUpdate("aut_busca");
     }  
 
     private void limpiarPanel() {
         //borra el contenido de la división central
-//      pan_opcion1.getChildren().clear();
-      pan_opcion.getChildren().clear();
+//        pan_opcion1.getChildren().clear();
+        pan_opcion.getChildren().clear();
     }
     
         //Para Pagos de Comprobantes    
     public void dibujarLista(){
         if (aut_busca.getValue() != null) {
-         limpiarPanel();
-        //comprobante pago listado
-        tab_comprobante.setId("tab_comprobante");
+            limpiarPanel();
+            //comprobante pago listado
+            tab_comprobante.setId("tab_comprobante");
         tab_comprobante.setConexion(con_postgres);
         tab_comprobante.setTabla("tes_comprobante_pago_listado", "ide_listado", 1);
         /*Filtro estatico para los datos a mostrar*/
@@ -197,7 +218,6 @@ public class pre_listado_rechazado extends Pantalla{
         tab_comprobante.dibujar();
         PanelTabla tcp = new PanelTabla();
         tcp.setPanelTabla(tab_comprobante);
-        
         //tabla detalle
         detalle.setId("detalle");
         detalle.setConexion(con_postgres);
@@ -206,34 +226,87 @@ public class pre_listado_rechazado extends Pantalla{
                         "d.ide_listado,  \n" +
                         "d.item,  \n" +
                         "d.comprobante,  \n" +
-                        "d.num_transferencia,  \n" +
                         "d.cedula_pass_beneficiario,  \n" +
                         "d.nombre_beneficiario,  \n" +
                         "d.valor,  \n" +
                         "d.num_documento,  \n" +
-                        "null AS rechazo \n" +
+                        "null AS observacion ,\n" +
+                        "null as comentario_transaccion \n" +
                         "FROM     \n" +
                         "tes_detalle_comprobante_pago_listado AS d  \n" +
-                        "where ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'PAGADO') and d.num_documento like 'LIST-2014-00004'");
+                        "where ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'PAGADO') and num_transferencia is null and d.num_documento like '"+num_listado+"'");
         detalle.getColumna("ide_detalle_listado").setVisible(false);
         List list = new ArrayList();
         Object fil1[] = {
-            "1", "SI"
+            "1", "Rechazado"
         };
         Object fil2[] = {
-            "2", "NO"
+            "2", "Aceptado"
         };
         list.add(fil1);;
         list.add(fil2);;
-        detalle.getColumna("rechazo").setRadio(list, "");
+        detalle.getColumna("observacion").setRadio(list, "");
         detalle.getColumna("item").setVisible(false);
         detalle.getColumna("ide_listado").setVisible(false);
-        
         detalle.setRows(5);
         detalle.dibujar();
         PanelTabla tdd = new PanelTabla();
+        tdd.setMensajeWarn("LISTADO DE TRANSACCIONES PAGADAS SIN COMPROBANTE");
         tdd.setPanelTabla(detalle);
-        pan_opcion.getChildren().add(tdd);
+        
+        //tabla rechazadas
+        detalle1.setId("detalle1");
+        detalle1.setConexion(con_postgres);
+        detalle1.setSql("SELECT    \n" +
+                " d.ide_detalle_listado,    \n" +
+                " d.ide_listado,    \n" +
+                " d.item,    \n" +
+                " d.comprobante,    \n" +
+                " d.cedula_pass_beneficiario,    \n" +
+                " d.nombre_beneficiario,    \n" +
+                " d.valor,    \n" +
+                " d.num_documento,    \n" +
+                " d.comentario,    \n" +
+                " null AS pagar   \n" +
+                " FROM       \n" +
+                " tes_detalle_comprobante_pago_listado AS d    \n" +
+                " where ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'RECHAZADO') and num_documento = '"+num_listado+"'");
+        detalle1.getColumna("ide_detalle_listado").setVisible(false);
+        List lista = new ArrayList();
+        Object fila1[] = {
+            "1", "SI"
+        };
+
+        lista.add(fila1);;
+        detalle1.getColumna("pagar").setRadio(lista, "");
+        detalle1.getColumna("item").setVisible(false);
+        detalle1.getColumna("ide_listado").setVisible(false);
+        
+        detalle1.setRows(5);
+        detalle1.dibujar();
+        PanelTabla tdr = new PanelTabla();
+        tdr.setMensajeWarn("LISTADO DE TRANSACCIONES RECHAZADAS");
+        tdr.setPanelTabla(detalle1);
+        cal_fecha.setDisabled(true); //Desactiva el cuadro de texto
+        Grupo gru = new Grupo();
+        pan_opcion.getChildren().add(gru);
+        Grid gri_busca = new Grid();
+        gri_busca.setColumns(6);
+        
+        Boton bot_delete = new Boton();
+        bot_delete.setValue("Pagar Pedientes");
+        bot_delete.setExcluirLectura(true);
+        bot_delete.setIcon("ui-icon-extlink");
+        bot_delete.setMetodo("regresa");
+        
+        gri_busca.getChildren().add(bot_delete);
+        agregarComponente(gri_busca);
+        
+        Division div_division = new Division();
+        div_division.setId("div_division");
+        div_division.dividir3(tdd, gri_busca, tdr, "35%", "58%", "H");
+        
+        pan_opcion.getChildren().add(div_division);
              } else {
             utilitario.agregarMensajeInfo("No se puede abrir la opción", "Seleccione Listado en el autocompletar");
             limpiar();
@@ -247,20 +320,39 @@ public class pre_listado_rechazado extends Pantalla{
     @Override
     public void guardar() {
         for (int i = 0; i < detalle.getTotalFilas(); i++) { 
-            if(detalle.getValor(i, "rechazo")!=null){
-                if(detalle.getValor(i, "rechazo").equals("1")){
-                    programas.rechazoComprobante(detalle.getValor(i, "num_transferencia"), detalle.getValor(i, "comprobante"), Integer.parseInt(detalle.getValor(i, "ide_listado")));
+            if(detalle.getValor(i, "observacion")!=null){
+                if(detalle.getValor(i, "observacion").equals("1")){
+                    programas.rechazoComprobante(detalle.getValor(i, "num_documento"), detalle.getValor(i, "comprobante"), Integer.parseInt(detalle.getValor(i, "ide_listado")),detalle.getValor(i, "comentario_transaccion"));
+                }else {
+                    if(detalle.getValor(i, "comentario_transaccion")!=null && detalle.getValor(i, "comentario_transaccion").toString().isEmpty() == false){
+                        programas.numTransferencia(detalle.getValor(i, "num_documento"), detalle.getValor(i, "comprobante"), Integer.parseInt(detalle.getValor(i, "ide_listado")),detalle.getValor(i, "comentario_transaccion"));
+                    }
                 }
             }
         }
-         detalle.actualizar();
-        utilitario.agregarMensaje("Comprobantes", "Rechazados");
+        detalle.actualizar();
+        detalle1.actualizar();
     }
 
+    public void regresa(){
+        for (int i = 0; i < detalle1.getTotalFilas(); i++) { 
+            if(detalle1.getValor(i, "pagar")!=null){
+                if(detalle1.getValor(i, "pagar").equals("1")){
+                    programas.regresoRechazo(detalle1.getValor(i, "num_documento"), detalle1.getValor(i, "comprobante"), Integer.parseInt(detalle1.getValor(i, "ide_listado")));
+                }
+            }
+        }
+        detalle1.actualizar();
+        utilitario.agregarMensaje("Comprobante", "Listo para Registrase");
+        detalle.actualizar();
+    }
+    
     @Override
     public void eliminar() {
     }
 
+    
+    
     public Conexion getCon_postgres() {
         return con_postgres;
     }
@@ -299,6 +391,38 @@ public class pre_listado_rechazado extends Pantalla{
 
     public void setDetalle(Tabla detalle) {
         this.detalle = detalle;
+    }
+
+    public Tabla getDetalle1() {
+        return detalle1;
+    }
+
+    public void setDetalle1(Tabla detalle1) {
+        this.detalle1 = detalle1;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSef_formato() {
+        return sef_formato;
+    }
+
+    public void setSef_formato(SeleccionFormatoReporte sef_formato) {
+        this.sef_formato = sef_formato;
+    }
+
+    public Map getP_parametros() {
+        return p_parametros;
+    }
+
+    public void setP_parametros(Map p_parametros) {
+        this.p_parametros = p_parametros;
     }
     
 }
