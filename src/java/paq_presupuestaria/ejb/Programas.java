@@ -322,12 +322,33 @@ public class Programas {
     con_postgres = null;
     }
    
-      public void rechazoComprobante(String cuenta,String comprobante,Integer lista){
+   public void rechazoComprobante(String cuenta,String comprobante,Integer lista,String comentario){
           
-          String str_sqlg="UPDATE tes_detalle_comprobante_pago_listado  \n" +
-                    "set num_transferencia=null,  \n" +
-                    "ide_estado_listado=(SELECT ide_estado_listado FROM tes_estado_listado WHERE estado like 'RECHAZADO')  \n" +
-                    "WHERE comprobante like'"+comprobante+"'  and ide_listado ="+lista+" and num_transferencia like'"+cuenta+"'";  
+          String str_sqlg="UPDATE tes_detalle_comprobante_pago_listado \n" +
+                            "set ide_estado_listado=(SELECT ide_estado_listado FROM tes_estado_listado WHERE estado like 'RECHAZADO'),comentario = '"+comentario+"'\n" +
+                            "WHERE comprobante like'"+comprobante+"'  and ide_listado ="+lista+" and num_documento like'"+cuenta+"'";  
+    conectar();
+    con_postgres.ejecutarSql(str_sqlg);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+  
+   public void regresoRechazo(String cuenta,String comprobante,Integer lista){
+          
+          String str_sqlg="UPDATE tes_detalle_comprobante_pago_listado \n" +
+                            "set ide_estado_listado=(SELECT ide_estado_listado FROM tes_estado_listado WHERE estado like 'PAGADO')\n" +
+                            "WHERE comprobante like'"+comprobante+"'  and ide_listado ="+lista+" and num_documento like'"+cuenta+"'";  
+    conectar();
+    con_postgres.ejecutarSql(str_sqlg);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+   
+   public void numTransferencia(String cuenta,String comprobante,Integer lista,String trans){
+          
+          String str_sqlg="UPDATE tes_detalle_comprobante_pago_listado \n" +
+                            "set num_transferencia='"+trans+"'\n" +
+                            "WHERE comprobante like'"+comprobante+"' and ide_listado ="+lista+" and num_documento like'"+cuenta+"'";  
     conectar();
     con_postgres.ejecutarSql(str_sqlg);
     con_postgres.desconectar();
@@ -447,7 +468,7 @@ public class Programas {
         TablaGenerica tab_persona = new TablaGenerica();
         conectar();
         tab_persona.setConexion(con_postgres);
-        tab_persona.setSql("SELECT ide_detalle_listado,num_transferencia FROM tes_detalle_comprobante_pago_listado where ide_detalle_listado ="+iden);
+        tab_persona.setSql("SELECT ide_detalle_listado,ide_listado,num_documento FROM tes_detalle_comprobante_pago_listado where ide_detalle_listado ="+iden);
         tab_persona.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
