@@ -7,6 +7,8 @@
 	<parameter name="nom_resp" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["el que imprimio"]]></defaultValueExpression>
 	</parameter>
+	<parameter name="num_tran" class="java.lang.String"/>
+	<parameter name="fecha_acre" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
 ide_detalle_listado,
@@ -27,6 +29,7 @@ codigo_banco,
 num_documento
 FROM
 tes_detalle_comprobante_pago_listado
+WHERE num_documento like $P{num_tran} and fecha_transferencia = cast ($P{fecha_acre} as date)
 order BY num_documento]]>
 	</queryString>
 	<field name="ide_detalle_listado" class="java.lang.Integer"/>
