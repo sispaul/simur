@@ -508,7 +508,6 @@ public class pre_ingreso_salicitantes extends Pantalla{
     }
    
   public void ingresaD(){
-      System.err.println("hola");
         if (set_activadas.getValorSeleccionado() != null) {
             TablaGenerica tab_dato = ser_Placa.getNuevoReg(Integer.parseInt(set_activadas.getValorSeleccionado()));
             if (!tab_dato.isEmpty()) {
