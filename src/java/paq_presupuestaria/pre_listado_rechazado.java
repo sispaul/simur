@@ -8,6 +8,8 @@ import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
+import framework.componentes.Combo;
+import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
@@ -60,6 +62,14 @@ public class pre_listado_rechazado extends Pantalla{
     private Calendario cal_fecha = new Calendario();
     private Calendario cal_fecha1 = new Calendario();
     
+    //Combo
+    private Combo cmb_estado = new Combo();
+    
+    //dialogo para reporte
+    private Dialogo dia_dialogo = new Dialogo();
+    private Grid grid = new Grid();
+    private Grid grid_d = new Grid();
+    
     @EJB
     private Programas programas = (Programas) utilitario.instanciarEJB(Programas.class);
     
@@ -83,6 +93,10 @@ public class pre_listado_rechazado extends Pantalla{
         
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         con_postgres.NOMBRE_MARCA_BASE = "postgres";
+        
+        cmb_estado.setId("cmb_esatdo");
+        cmb_estado.setConexion(con_postgres);
+        cmb_estado.setCombo("SELECT ide_estado_listado,estado FROM tes_estado_listado where ide_estado_listado BETWEEN 2 and 3");
         
         //Creación de Botones; Busqueda,Limpieza
         Boton bot_busca = new Boton();
@@ -170,6 +184,15 @@ public class pre_listado_rechazado extends Pantalla{
         set_lista.getBot_aceptar().setMetodo("aceptoAnticipo");
         set_lista.setHeader("SELECCIONE LISTADO");
         agregarComponente(set_lista);
+        
+        dia_dialogo.setId("dia_dialogo");
+        dia_dialogo.setTitle("SELECCIONES PARAMETROS PARA REPORTE"); //titulo
+        dia_dialogo.setWidth("20%"); //siempre en porcentajes  ancho
+        dia_dialogo.setHeight("25%");//siempre porcentaje   alto
+        dia_dialogo.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogo.getBot_aceptar().setMetodo("aceptoAnticipo");
+        grid_d.setColumns(4);
+        agregarComponente(dia_dialogo);
     }
     
         //busqueda de documento creado para pago de comprobantes
@@ -403,28 +426,44 @@ public class pre_listado_rechazado extends Pantalla{
         rep_reporte.cerrar();
         cal_fecha1.setFechaActual();
         switch (rep_reporte.getNombre()) {
-           case "CONFIRMACION DE ACREDITACION":
+            case "CONFIRMACION DE ACREDITACION":
                  set_lista.dibujar();
                 set_lista.getTab_seleccion().limpiar();
-          break;
+                break;
+           case "COMPROBANTES POR ESTADO":
+                dia_dialogo.Limpiar();
+                grid.getChildren().add(new Etiqueta("Seleccione Fecha :"));
+                grid.getChildren().add(cal_fecha1);
+                grid.getChildren().add(new Etiqueta("Seleccione Estado :"));
+                grid.getChildren().add(cmb_estado);
+                dia_dialogo.setDialogo(grid);
+                dia_dialogo.dibujar();
+                break;
         }
-    } 
-    
-      public void aceptoAnticipo(){
-        switch (rep_reporte.getNombre()) {
-               case "CONFIRMACION DE ACREDITACION":
+    }
+        public void aceptoAnticipo(){
+            switch (rep_reporte.getNombre()) {
+                case "CONFIRMACION DE ACREDITACION":
                     TablaGenerica tab_dato = programas.getTranferencia(Integer.parseInt(set_lista.getValorSeleccionado()));
-               if (!tab_dato.isEmpty()) {
-                    p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
-                    p_parametros.put("fecha_acre", cal_fecha1.getFecha()+"");
-                    p_parametros.put("num_tran", tab_dato.getValor("num_documento")+"");
-                    rep_reporte.cerrar();
-                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                    sef_formato.dibujar();
+                    if (!tab_dato.isEmpty()) {
+                        p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
+                        p_parametros.put("fecha_acre", cal_fecha1.getFecha()+"");
+                        p_parametros.put("num_tran", tab_dato.getValor("num_documento")+"");
+                        rep_reporte.cerrar();
+                        sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                        sef_formato.dibujar();
                     } else {
                         utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
                     }
-               break;
+                    break;
+                case"COMPROBANTES POR ESTADO":
+                    p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
+                        p_parametros.put("fecha_acre", cal_fecha1.getFecha()+"");
+                        p_parametros.put("estado", Integer.parseInt(cmb_estado.getValue()+""));
+                        rep_reporte.cerrar();
+                        sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                        sef_formato.dibujar();
+                    break;
         }
     }
     
