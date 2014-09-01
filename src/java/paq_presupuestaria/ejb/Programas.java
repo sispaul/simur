@@ -6,7 +6,6 @@ package paq_presupuestaria.ejb;
 
 import framework.aplicacion.TablaGenerica;
 import javax.ejb.Stateless;
-import org.hsqldb.types.Binary;
 import paq_sistema.aplicacion.Utilitario;
 import persistencia.Conexion;
 
@@ -134,6 +133,22 @@ public class Programas {
                                     "from conc_clasificador,pre_funcion_programa\n" +
                                     "where tipo = "+ti+"" +
                                     "order by ide_funcion,pre_codigo";
+        conectar();
+        con_postgres.ejecutarSql(str_sql1);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+    
+    public void insertRegistro(Integer lista, Integer item, Integer detalle,String comprobar) { 
+            // Forma el sql para insertar
+        String str_sql1 ="insert into tes_registro_pagos_listado( ide_listado,item,comprobante,cedula_pass_beneficiario,\n" +
+                        "nombre_beneficiario,valor,numero_cuenta,ban_nombre,tipo_cuenta,comentario,codigo_banco,\n" +
+                        "num_documento,ide_estado_listado,ide_detalle_listado,fecha_accion,num_transferencia)\n" +
+                        "SELECT ide_listado ,item ,comprobante ,cedula_pass_beneficiario ,nombre_beneficiario ,\n" +
+                        "valor ,numero_cuenta ,ban_nombre ,tipo_cuenta ,comentario ,codigo_banco ,num_documento ,\n" +
+                        "ide_estado_listado,ide_detalle_listado,'"+utilitario.getFechaActual()+"',num_transferencia\n" +
+                        "FROM tes_detalle_comprobante_pago_listado\n" +
+                        "where ide_listado="+lista+" and item ="+item+" and comprobante like '"+comprobar+"' and ide_detalle_listado ="+detalle;
         conectar();
         con_postgres.ejecutarSql(str_sql1);
         con_postgres.desconectar();
@@ -307,6 +322,29 @@ public class Programas {
     con_postgres = null;
     }
     
+    public void devolverComprobante(String usua,String comprobante,Integer lista,Integer detalle,Integer item){
+
+        String str_sqlg="UPDATE tes_detalle_comprobante_pago_listado \n" +
+                        "set usuario_actua_devolucion ='"+usua+"',\n" +
+                        "ip_actua_devolucion='"+utilitario.getIp()+"',\n" +
+                        "ide_estado_listado=(SELECT ide_estado_listado FROM tes_estado_listado WHERE estado like 'DEVUELTO') \n" +
+                        "WHERE comprobante like '"+comprobante+"' and ide_listado = "+lista+" and ide_detalle_listado ="+detalle+" and item="+item;  
+    conectar();
+    con_postgres.ejecutarSql(str_sqlg);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+    
+    public void devolverLista(String cedula,Integer lista,Integer item){
+
+        String str_sqlg="UPDATE tes_comprobante_pago_listado \n" +
+                        "set devolucion = (SELECT ide_estado_listado FROM tes_estado_listado WHERE estado like 'DEVUELTO')\n" +
+                        "WHERE ci_envia like '"+cedula+"' and ide_listado = "+lista+"and item="+item;  
+    conectar();
+    con_postgres.ejecutarSql(str_sqlg);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
     
    public void regreComprobante(String cuenta,String usu,String comprobante,Integer lista,Integer detalle){
 
@@ -336,7 +374,7 @@ public class Programas {
    public void regresoRechazo(String cuenta,String comprobante,Integer lista){
           
           String str_sqlg="UPDATE tes_detalle_comprobante_pago_listado \n" +
-                            "set ide_estado_listado=(SELECT ide_estado_listado FROM tes_estado_listado WHERE estado like 'PAGADO')\n" +
+                            "set ide_estado_listado=(SELECT ide_estado_listado FROM tes_estado_listado WHERE estado like 'PAGADO'),comentario = null\n" +
                             "WHERE comprobante like'"+comprobante+"'  and ide_listado ="+lista+" and num_documento like'"+cuenta+"'";  
     conectar();
     con_postgres.ejecutarSql(str_sqlg);
@@ -399,9 +437,9 @@ public class Programas {
     con_postgres = null;
     }
     
-    public void actuLisDevolver(Integer ide){
+    public void actuLisDevolver(Integer ide,Integer item){
     String str_sqlg="UPDATE tes_comprobante_pago_listado\n" +
-                    "set estado='2' where ide_listado = "+ide;
+                    "set estado=(SELECT ide_estado_listado FROM tes_estado_listado WHERE estado like 'CERRADO') where item="+item+" and ide_listado = "+ide;
     conectar();
     con_postgres.ejecutarSql(str_sqlg);
     con_postgres.desconectar();
@@ -508,9 +546,36 @@ public class Programas {
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
-        return tab_funcionario;
-        
+        return tab_funcionario;   
  }
+
+  public TablaGenerica Pagos_lista(Integer item,Integer lista){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT\n" +
+"ide_detalle_listado,\n" +
+"ide_listado,\n" +
+"comprobante,\n" +
+"cedula_pass_beneficiario,\n" +
+"nombre_beneficiario,\n" +
+"valor,\n" +
+"numero_cuenta,\n" +
+"codigo_banco,\n" +
+"ban_nombre,\n" +
+"tipo_cuenta,\n" +
+"null as proceso\n" +
+"FROM\n" +
+"tes_detalle_comprobante_pago_listado AS d\n" +
+"where ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'ENVIADO') and item ="+item+" and ide_listado ="+lista);
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;   
+ }
+ 
+ 
   public TablaGenerica empleado1(String cedula){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
