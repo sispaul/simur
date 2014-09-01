@@ -76,6 +76,7 @@ public class pre_pago_comprobantes extends Pantalla{
         bar_botones.quitarBotonEliminar();
         bar_botones.quitarBotonsNavegacion();
         
+        
         //Mostrar el usuario 
         tab_consulta.setId("tab_consulta");
         tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
@@ -177,6 +178,7 @@ public class pre_pago_comprobantes extends Pantalla{
 
     //Buscar Listado de Comprobantes mediante # de listado "ITEM"
     public void abrirBusqueda(){
+        
       set_comprobante.dibujar();
       txt_buscar.limpiar();
       set_comprobante.getTab_seleccion().limpiar();
@@ -216,6 +218,7 @@ public class pre_pago_comprobantes extends Pantalla{
         //borra el contenido de la división central
       pan_opcion1.getChildren().clear();
       pan_opcion.getChildren().clear();
+      
     }
     
     //busqueda de documento creado para pago de comprobantes
@@ -233,6 +236,7 @@ public class pre_pago_comprobantes extends Pantalla{
         txt_num_listado.setDisabled(true); //Desactiva el cuadro de texto
              if (aut_busca.getValue() != null) {
          limpiarPanel();
+         
         //comprobante pago listado
         tab_comprobante.setId("tab_comprobante");
         tab_comprobante.setConexion(con_postgres);
@@ -263,6 +267,7 @@ public class pre_pago_comprobantes extends Pantalla{
         tab_comprobante.getColumna("USUARIO_ACTUA_DEVOLUCION").setVisible(false);
         tab_comprobante.getColumna("IP_ACTUA_DEVOLUCION").setVisible(false);
         tab_comprobante.getColumna("ESTADO").setCombo("SELECT ide_estado_listado,estado FROM tes_estado_listado");
+        tab_comprobante.getColumna("devolucion").setCombo("SELECT ide_estado_listado,estado FROM tes_estado_listado");
         tab_comprobante.setTipoFormulario(true);
         tab_comprobante.agregarRelacion(tab_detalle);
         tab_comprobante.getGrid().setColumns(6);
@@ -288,7 +293,7 @@ public class pre_pago_comprobantes extends Pantalla{
                             "null as proceso \n" +
                             "FROM \n" +
                             "tes_detalle_comprobante_pago_listado AS d \n" +
-                            "where ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'ENVIADO')");
+                            "where ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'ENVIADO') and item =" + txt_buscar.getValue());
         tab_detalle.setCampoPrimaria("ide_detalle_listado");
         tab_detalle.setCampoOrden("ide_listado");
         List lista = new ArrayList();
@@ -335,7 +340,7 @@ public class pre_pago_comprobantes extends Pantalla{
                         " null as regresar  \n" +
                         " FROM  \n" +
                         " tes_detalle_comprobante_pago_listado AS d  \n" +
-                        " where ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'PAGADO') and num_documento is null");
+                        " where ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'PAGADO') and num_documento is null and item ="+tab_comprobante.getValor("item"));
         tab_detalle1.setCampoPrimaria("ide_detalle_listado");
         tab_detalle1.setCampoOrden("ide_listado");
         List list = new ArrayList();
@@ -354,8 +359,6 @@ public class pre_pago_comprobantes extends Pantalla{
         tda.setPanelTabla(tab_detalle1);
         
         cal_fecha.setDisabled(true); //Desactiva el cuadro de texto
-        Grupo gru = new Grupo();
-        pan_opcion.getChildren().add(gru);
         txt_num_listado.setId("txt_num_listado");
         Grid gri_busca = new Grid();
         gri_busca.setColumns(6);
@@ -497,6 +500,12 @@ public class pre_pago_comprobantes extends Pantalla{
         }
         utilitario.agregarMensaje("Comprobante", "Generado");
         tab_detalle1.actualizar();
+        TablaGenerica tab_dato1 = programas.Pagos_lista(Integer.parseInt(tab_comprobante.getValor("ide_listado")), Integer.parseInt(tab_comprobante.getValor("item")));
+        if (!tab_dato1.isEmpty()) {
+        }else{
+            programas.actuLisDevolver(Integer.parseInt(tab_comprobante.getValor("ide_listado")), Integer.parseInt(tab_comprobante.getValor("item")));
+            utilitario.addUpdate("tab_comprobante");
+        }
     }
     
     @Override
@@ -509,24 +518,33 @@ public class pre_pago_comprobantes extends Pantalla{
           if (!tab_dato1.isEmpty()) {
               programas.actuListado(tab_comprobante.getValor("CI_PAGA"), tab_comprobante.getValor("RESPONSABLE_PAGA"), tab_consulta.getValor("NICK_USUA"), 
             Integer.parseInt(tab_comprobante.getValor("IDE_LISTADO")));
-//              programas.actuCuentasBanco(null, null, null, null, Integer.SIZE, Integer.SIZE, null, null);
               for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
                   if(tab_detalle.getValor(i, "proceso")!=null){
-                      programas.actuaComprobante(tab_detalle.getValor(i, "numero_cuenta"),tab_detalle.getValor(i, "ban_nombre"),
+                      if(tab_detalle.getValor(i, "proceso").equals("2")){
+                          programas.actuaComprobante(tab_detalle.getValor(i, "numero_cuenta"),tab_detalle.getValor(i, "ban_nombre"),
                         tab_detalle.getValor(i, "tipo_cuenta"),  utilitario.getVariable("NICK"),tab_detalle.getValor(i, "comprobante"),Integer.parseInt(tab_detalle.getValor(i, "ide_listado")),Integer.parseInt(tab_detalle.getValor(i, "ide_detalle_listado")));
-                }
+                      }else{
+                          programas.devolverComprobante(utilitario.getVariable("NICK"), tab_detalle.getValor(i, "comprobante"), Integer.parseInt(tab_detalle.getValor(i, "ide_listado")), Integer.parseInt(tab_detalle.getValor(i, "ide_detalle_listado")), Integer.parseInt(tab_comprobante.getValor("item")));
+                          programas.devolverLista(tab_comprobante.getValor("ci_envia"), Integer.parseInt(tab_detalle.getValor(i, "ide_listado")),Integer.parseInt(tab_comprobante.getValor("item")));
+                          utilitario.addUpdate("tab_comprobante");
+                      }
+                  }
             }
           }else{
-//              programas.actuCuentasBanco(null, null, null, null, Integer.SIZE, Integer.SIZE, null, null);
               for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
                   if(tab_detalle.getValor(i, "proceso")!=null){
-                    programas.actuaComprobante(tab_detalle.getValor(i, "numero_cuenta"),tab_detalle.getValor(i, "ban_nombre"),
+                      if(tab_detalle.getValor(i, "proceso").equals("2")){
+                          programas.actuaComprobante(tab_detalle.getValor(i, "numero_cuenta"),tab_detalle.getValor(i, "ban_nombre"),
                         tab_detalle.getValor(i, "tipo_cuenta"),  utilitario.getVariable("NICK"),tab_detalle.getValor(i, "comprobante"),Integer.parseInt(tab_detalle.getValor(i, "ide_listado")),Integer.parseInt(tab_detalle.getValor(i, "ide_detalle_listado")));
-                }
-            }
+                      }else{
+                          programas.devolverComprobante(utilitario.getVariable("NICK"), tab_detalle.getValor(i, "comprobante"), Integer.parseInt(tab_detalle.getValor(i, "ide_listado")), Integer.parseInt(tab_detalle.getValor(i, "ide_detalle_listado")), Integer.parseInt(tab_comprobante.getValor("item")));
+                          programas.devolverLista(tab_comprobante.getValor("ci_envia"), Integer.parseInt(tab_detalle.getValor(i, "ide_listado")),Integer.parseInt(tab_comprobante.getValor("item")));
+                          utilitario.addUpdate("tab_comprobante");
+                      }
+                  }
+              }
           }
                 tab_detalle.actualizar();
-                utilitario.agregarMensaje("Comprobantes", "Listo Para Pago");
                 tab_detalle1.actualizar();
     }
 

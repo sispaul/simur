@@ -238,7 +238,7 @@ public class pre_listado_rechazado extends Pantalla{
         if (aut_busca.getValue() != null) {
             limpiarPanel();
             //comprobante pago listado
-            tab_comprobante.setId("tab_comprobante");
+        tab_comprobante.setId("tab_comprobante");
         tab_comprobante.setConexion(con_postgres);
         tab_comprobante.setTabla("tes_comprobante_pago_listado", "ide_listado", 1);
         /*Filtro estatico para los datos a mostrar*/
