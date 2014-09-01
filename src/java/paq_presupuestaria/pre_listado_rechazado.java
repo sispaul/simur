@@ -101,13 +101,13 @@ public class pre_listado_rechazado extends Pantalla{
                                     "d.ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'PAGADO')\n" +
                                     "order by d.num_documento");
         aut_busca.setSize(100);
-        bar_botones.agregarComponente(new Etiqueta("Busca Listado:"));
-        bar_botones.agregarComponente(aut_busca);
+//        bar_botones.agregarComponente(new Etiqueta("Busca Listado:"));
+//        bar_botones.agregarComponente(aut_busca);
         
         Boton bot_limpiar = new Boton();
         bot_limpiar.setIcon("ui-icon-cancel");
         bot_limpiar.setMetodo("limpiar");
-        bar_botones.agregarBoton(bot_limpiar);
+//        bar_botones.agregarBoton(bot_limpiar);
         
         //Creación de Divisiones
         pan_opcion.setId("pan_opcion");
@@ -357,10 +357,14 @@ public class pre_listado_rechazado extends Pantalla{
         for (int i = 0; i < detalle.getTotalFilas(); i++) { 
             if(detalle.getValor(i, "observacion")!=null){
                 if(detalle.getValor(i, "observacion").equals("1")){
-                    programas.rechazoComprobante(detalle.getValor(i, "num_documento"), detalle.getValor(i, "comprobante"), Integer.parseInt(detalle.getValor(i, "ide_listado")),detalle.getValor(i, "comentario_transaccion"));
+                    programas.rechazoComprobante(detalle.getValor(i, "num_documento"), detalle.getValor(i, "comprobante"), Integer.parseInt(detalle.getValor(i, "ide_listado")),detalle.getValor(i, "comentario_transaccion"))
+                            ;
+                    programas.insertRegistro(Integer.parseInt(detalle.getValor(i, "ide_listado")), Integer.parseInt(detalle.getValor(i, "item")), Integer.parseInt(detalle.getValor(i, "ide_detalle_listado")), detalle.getValor(i, "comprobante"));
                 }else {
                     if(detalle.getValor(i, "comentario_transaccion")!=null && detalle.getValor(i, "comentario_transaccion").toString().isEmpty() == false){
                         programas.numTransferencia(detalle.getValor(i, "num_documento"), detalle.getValor(i, "comprobante"), Integer.parseInt(detalle.getValor(i, "ide_listado")),detalle.getValor(i, "comentario_transaccion"));
+                        
+                        programas.insertRegistro(Integer.parseInt(detalle.getValor(i, "ide_listado")), Integer.parseInt(detalle.getValor("item")), Integer.parseInt(detalle.getValor(i, "ide_detalle_listado")), detalle.getValor(i, "comprobante"));
                     }
                 }
             }
