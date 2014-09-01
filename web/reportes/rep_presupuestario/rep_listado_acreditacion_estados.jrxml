@@ -7,30 +7,33 @@
 	<parameter name="nom_resp" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["el que imprimio"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="num_tran" class="java.lang.String"/>
+	<parameter name="estado" class="java.lang.Integer"/>
 	<parameter name="fecha_acre" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
-ide_detalle_listado,
-ide_listado,
-item,
-comprobante,
-cedula_pass_beneficiario,
-nombre_beneficiario,
-valor,
-numero_cuenta,
-ban_nombre,
-tipo_cuenta,
-ide_estado_listado,
-num_transferencia,
-fecha_transferencia,
-comentario,
-codigo_banco,
-num_documento
+d.ide_detalle_listado,
+d.ide_listado,
+d.item,
+d.comprobante,
+d.cedula_pass_beneficiario,
+d.nombre_beneficiario,
+d.valor,
+d.numero_cuenta,
+d.ban_nombre,
+d.tipo_cuenta,
+d.ide_estado_listado,
+d.num_transferencia,
+d.fecha_transferencia,
+d.comentario,
+d.codigo_banco,
+d.num_documento,
+e.estado
 FROM
-tes_detalle_comprobante_pago_listado
-WHERE num_documento like $P{num_tran} and fecha_transferencia = cast ($P{fecha_acre} as date)
-order BY num_documento]]>
+tes_detalle_comprobante_pago_listado d,
+tes_estado_listado e
+where d.ide_estado_listado = e.ide_estado_listado and d.ide_estado_listado = $P{estado} and d.fecha_transferencia = cast ($P{fecha_acre} as date)
+ORDER BY
+d.num_documento ASC]]>
 	</queryString>
 	<field name="ide_detalle_listado" class="java.lang.Integer"/>
 	<field name="ide_listado" class="java.lang.Integer"/>
@@ -50,6 +53,7 @@ order BY num_documento]]>
 	<field name="comentario" class="java.lang.String"/>
 	<field name="codigo_banco" class="java.lang.String"/>
 	<field name="num_documento" class="java.lang.String"/>
+	<field name="estado" class="java.lang.String"/>
 	<variable name="sum_valor" class="java.math.BigDecimal" resetType="Group" resetGroup="num_listado" calculation="Sum">
 		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
 	</variable>
@@ -81,63 +85,63 @@ order BY num_documento]]>
 				<staticText>
 					<reportElement uuid="633c0378-8173-44d2-8540-9ea4bed6557c" x="3" y="35" width="27" height="20" forecolor="#FFFFFF"/>
 					<textElement>
-						<font size="8" isBold="true"/>
+						<font size="7" isBold="true"/>
 					</textElement>
 					<text><![CDATA[#]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="b92a5245-9082-4d82-854f-3b56ed46a50b" x="33" y="35" width="68" height="20" forecolor="#FFFFFF"/>
+					<reportElement uuid="b92a5245-9082-4d82-854f-3b56ed46a50b" x="33" y="35" width="58" height="20" forecolor="#FFFFFF"/>
 					<textElement>
-						<font size="8" isBold="true"/>
+						<font size="7" isBold="true"/>
 					</textElement>
 					<text><![CDATA[C.I. / RUC]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="396b3571-5999-4e08-bfe5-4c6b944419b7" x="104" y="35" width="181" height="20" forecolor="#FFFFFF"/>
+					<reportElement uuid="396b3571-5999-4e08-bfe5-4c6b944419b7" x="93" y="35" width="177" height="20" forecolor="#FFFFFF"/>
 					<textElement>
-						<font size="8" isBold="true"/>
+						<font size="7" isBold="true"/>
 					</textElement>
 					<text><![CDATA[BENEFICIARIO]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="6b8c573f-76b4-4615-837a-78ae329483a7" x="283" y="35" width="67" height="20" forecolor="#FFFFFF"/>
+					<reportElement uuid="6b8c573f-76b4-4615-837a-78ae329483a7" x="273" y="35" width="67" height="20" forecolor="#FFFFFF"/>
 					<textElement>
-						<font size="8" isBold="true"/>
+						<font size="7" isBold="true"/>
 					</textElement>
 					<text><![CDATA[COMPROBANTE]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="ea62c43e-fe14-48f8-a447-df3d1ff110fc" x="517" y="35" width="71" height="20" forecolor="#FFFFFF"/>
-					<textElement>
-						<font size="8" isBold="true"/>
+					<reportElement uuid="ea62c43e-fe14-48f8-a447-df3d1ff110fc" x="498" y="35" width="71" height="20" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Center">
+						<font size="7" isBold="true"/>
 					</textElement>
 					<text><![CDATA[TIP. CUENTA]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="ef22e16b-1bb0-4429-9b41-3b4be994b0b5" x="352" y="35" width="161" height="20" forecolor="#FFFFFF"/>
+					<reportElement uuid="ef22e16b-1bb0-4429-9b41-3b4be994b0b5" x="344" y="35" width="161" height="20" forecolor="#FFFFFF"/>
 					<textElement>
-						<font size="8" isBold="true"/>
+						<font size="7" isBold="true"/>
 					</textElement>
 					<text><![CDATA[BANCO]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="23482962-a949-43c7-ac98-dfa592b6c72f" x="594" y="35" width="66" height="20" forecolor="#FFFFFF"/>
+					<reportElement uuid="23482962-a949-43c7-ac98-dfa592b6c72f" x="569" y="35" width="66" height="20" forecolor="#FFFFFF"/>
 					<textElement>
-						<font size="8" isBold="true"/>
+						<font size="7" isBold="true"/>
 					</textElement>
 					<text><![CDATA[# CUENTA]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="d56b095e-f811-452d-9792-75c5842319c1" x="664" y="35" width="44" height="20" forecolor="#FFFFFF"/>
+					<reportElement uuid="d56b095e-f811-452d-9792-75c5842319c1" x="640" y="35" width="44" height="20" forecolor="#FFFFFF"/>
 					<textElement>
-						<font size="8" isBold="true"/>
+						<font size="7" isBold="true"/>
 					</textElement>
 					<text><![CDATA[VALOR]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="c28c7294-60a9-448e-a543-51363ca60da7" x="713" y="35" width="80" height="20" forecolor="#FFFFFF"/>
+					<reportElement uuid="c28c7294-60a9-448e-a543-51363ca60da7" x="688" y="35" width="80" height="20" forecolor="#FFFFFF"/>
 					<textElement>
-						<font size="8" isBold="true"/>
+						<font size="7" isBold="true"/>
 					</textElement>
 					<text><![CDATA[# TRANSFERENCIA]]></text>
 				</staticText>
@@ -192,16 +196,21 @@ order BY num_documento]]>
 				<text><![CDATA[Gobierno Autónomo Descentralizado del Cantón Rumiñahui]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="5a331248-11f8-4048-88c0-3fbee924c02a" x="10" y="47" width="246" height="22"/>
+				<reportElement uuid="5a331248-11f8-4048-88c0-3fbee924c02a" x="10" y="47" width="231" height="22"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Listado de Acreditaciones Validas]]></text>
+				<text><![CDATA[Listado de Comprobantes Por Estado]]></text>
 			</staticText>
 			<image>
 				<reportElement uuid="e3b058cf-1e38-4fa1-a52e-1036179eda3e" x="545" y="0" width="169" height="79"/>
 				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
 			</image>
+			<textField>
+				<reportElement uuid="4f0b27a9-4655-4cef-a0f2-e21a02747f5b" x="241" y="47" width="100" height="22"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{estado}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
@@ -213,37 +222,37 @@ order BY num_documento]]>
 	<detail>
 		<band height="26" splitType="Stretch">
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="968bcc11-2844-43e3-a00b-a8c4a5c19220" x="283" y="2" width="67" height="20"/>
+				<reportElement uuid="968bcc11-2844-43e3-a00b-a8c4a5c19220" x="273" y="2" width="67" height="20"/>
 				<textElement>
-					<font size="8"/>
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{comprobante}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="6ad5611d-3f20-4a25-aa52-d1e16f85737a" x="352" y="2" width="161" height="20"/>
+				<reportElement uuid="6ad5611d-3f20-4a25-aa52-d1e16f85737a" x="344" y="2" width="161" height="20"/>
 				<textElement>
-					<font size="8"/>
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ban_nombre}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="a905e9e2-74b8-45bd-bf5c-890afbd09435" x="517" y="2" width="71" height="20"/>
+				<reportElement uuid="a905e9e2-74b8-45bd-bf5c-890afbd09435" x="498" y="2" width="71" height="20"/>
 				<textElement textAlignment="Center">
-					<font size="8"/>
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tipo_cuenta}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="e33bd56e-19d6-4c14-9e01-3d84ab86ded3" x="594" y="2" width="66" height="20"/>
+				<reportElement uuid="e33bd56e-19d6-4c14-9e01-3d84ab86ded3" x="569" y="2" width="66" height="20"/>
 				<textElement>
-					<font size="8"/>
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{numero_cuenta}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="3872adf0-8b0f-4fca-a125-6b569bf04b74" x="664" y="2" width="44" height="20"/>
+				<reportElement uuid="3872adf0-8b0f-4fca-a125-6b569bf04b74" x="637" y="2" width="44" height="20"/>
 				<textElement textAlignment="Center">
-					<font size="8"/>
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
 			</textField>
@@ -254,30 +263,30 @@ order BY num_documento]]>
 				</graphicElement>
 			</line>
 			<textField>
-				<reportElement uuid="79e83a45-8771-485a-a85b-f7b8d22d144b" x="33" y="2" width="68" height="20"/>
+				<reportElement uuid="79e83a45-8771-485a-a85b-f7b8d22d144b" x="33" y="2" width="58" height="20"/>
 				<textElement>
-					<font size="8"/>
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cedula_pass_beneficiario}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="c9b90509-e03e-4685-ba40-b169a143aec6" x="104" y="2" width="181" height="20"/>
+				<reportElement uuid="c9b90509-e03e-4685-ba40-b169a143aec6" x="93" y="2" width="177" height="20"/>
 				<textElement>
-					<font size="8"/>
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombre_beneficiario}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="d441cbb0-b447-43b0-bac1-347ae4fac0b0" x="3" y="2" width="27" height="20"/>
 				<textElement>
-					<font size="8"/>
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{num_lista_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="f63a5bdb-1e59-4244-a46a-8aed5da7aa4a" x="720" y="0" width="78" height="20"/>
+				<reportElement uuid="f63a5bdb-1e59-4244-a46a-8aed5da7aa4a" x="695" y="0" width="78" height="20"/>
 				<textElement textAlignment="Justified">
-					<font size="8"/>
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{num_transferencia}]]></textFieldExpression>
 			</textField>
