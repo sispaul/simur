@@ -491,7 +491,7 @@ public class pre_anticipos_gadmur extends Pantalla{
                         utilitario.agregarMensajeError("El Número de Cédula no es válido", "");
                     }
               }
-//               utilitario.agregarNotificacionInfo("MONTO MAXIMO DE ANTICIPO HASTA 3 REMUNERACIONES", "CUOTAS DE ANTICIPO NO DEBEN SOBRE PASAR EL 50% DE REMUNERACION LIQUIDA");
+               utilitario.agregarNotificacionInfo("MONTO MAXIMO DE ANTICIPO HASTA 3 REMUNERACIONES", "CUOTAS DE ANTICIPO NO DEBEN SOBRE PASAR EL 50% DE REMUNERACION LIQUIDA");
     }
  
     //BUSCAR SOLICITANTE POR APELLIDO Y NOMBRES
