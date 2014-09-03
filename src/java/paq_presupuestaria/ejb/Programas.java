@@ -553,6 +553,24 @@ public class Programas {
     con_postgres.desconectar();
     con_postgres = null;    
     }
+
+    public void actualizarDetalleC(String tipo,String numero,String banco,Integer detalle,Integer lista,Integer item,String comprobante,String cedula) {
+        // Forma el sql para actualizacion
+        String str_sql2 = "update tes_detalle_comprobante_pago_listado\n" +
+                            "set tipo_cuenta ='"+tipo+"',\n" +
+                            "numero_cuenta='"+numero+"',\n" +
+                            "codigo_banco='"+banco+"'\n" +
+                            "where \n" +
+                            "ide_detalle_listado="+detalle+" and\n" +
+                            "ide_listado="+lista+" and\n" +
+                            "item="+item+" and\n" +
+                            "comprobante= '"+comprobante+"'and\n" +
+                            "cedula_pass_beneficiario='"+cedula+"'";
+        conectar();
+    con_postgres.ejecutarSql(str_sql2);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
     
      public TablaGenerica periodo(Integer periodo){
         conectar();
