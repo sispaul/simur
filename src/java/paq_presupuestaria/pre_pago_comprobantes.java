@@ -183,7 +183,6 @@ public class pre_pago_comprobantes extends Pantalla{
 
     //Buscar Listado de Comprobantes mediante # de listado "ITEM"
     public void abrirBusqueda(){
-        
       set_comprobante.dibujar();
       txt_buscar.limpiar();
       set_comprobante.getTab_seleccion().limpiar();
@@ -273,7 +272,8 @@ public class pre_pago_comprobantes extends Pantalla{
         tab_comprobante.getColumna("USUARIO_ACTUA_DEVOLUCION").setVisible(false);
         tab_comprobante.getColumna("IP_ACTUA_DEVOLUCION").setVisible(false);
         tab_comprobante.getColumna("ESTADO").setCombo("SELECT ide_estado_listado,estado FROM tes_estado_listado");
-        tab_comprobante.getColumna("devolucion").setCombo("SELECT ide_estado_listado,estado FROM tes_estado_listado");
+//        tab_comprobante.getColumna("devolucion").setCombo("SELECT ide_estado_listado,estado FROM tes_estado_listado");
+        tab_comprobante.getColumna("devolucion").setVisible(true);
         tab_comprobante.setTipoFormulario(true);
         tab_comprobante.agregarRelacion(tab_detalle);
         tab_comprobante.getGrid().setColumns(6);
@@ -318,14 +318,14 @@ public class pre_pago_comprobantes extends Pantalla{
         PanelTabla tdd = new PanelTabla();
         tdd.setPanelTabla(tab_detalle);
         
-        ItemMenu itm_actualizar = new ItemMenu();
-        itm_actualizar.setValue("Actualizar Banco");
-        itm_actualizar.setIcon("ui-icon-arrow-4-diag");
-        itm_actualizar.setMetodo("tipoCuenta");
-        tdd.getMenuTabla().getChildren().add(itm_actualizar);
-        
-        tdd.getMenuTabla().getItem_buscar().setRendered(false);//nucontextual().setrendered(false);
-        tdd.getMenuTabla().getItem_actualizar().setRendered(false);//nucontextual().setrendered(false);
+//        ItemMenu itm_actualizar = new ItemMenu();
+//        itm_actualizar.setValue("Actualizar Banco");
+//        itm_actualizar.setIcon("ui-icon-arrow-4-diag");
+//        itm_actualizar.setMetodo("tipoCuenta");
+//        tdd.getMenuTabla().getChildren().add(itm_actualizar);
+//        
+//        tdd.getMenuTabla().getItem_buscar().setRendered(false);//nucontextual().setrendered(false);
+//        tdd.getMenuTabla().getItem_actualizar().setRendered(false);//nucontextual().setrendered(false);
         Division div = new Division();
         div.dividir2(tcp, tdd, "42%", "h");
         

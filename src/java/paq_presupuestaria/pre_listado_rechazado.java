@@ -306,6 +306,7 @@ public class pre_listado_rechazado extends Pantalla{
         detalle.getColumna("observacion").setRadio(list, "");
         detalle.getColumna("item").setVisible(false);
         detalle.getColumna("ide_listado").setVisible(false);
+        detalle.getColumna("comentario_transaccion").setLongitud(150);
         detalle.setRows(5);
         detalle.dibujar();
         PanelTabla tdd = new PanelTabla();
@@ -343,7 +344,7 @@ public class pre_listado_rechazado extends Pantalla{
         detalle1.getColumna("item").setVisible(false);
         detalle1.getColumna("ide_listado").setVisible(false);
         detalle1.getColumna("comprobante").setVisible(false);
-        detalle1.getColumna("comentario").setLongitud(5);
+        detalle1.getColumna("comentario").setLongitud(50);
         
         
         detalle1.setRows(5);
