@@ -434,35 +434,6 @@ public class pre_pago_comprobantes extends Pantalla{
           }
     }
     
-    //Verifica los datos de la cuenta y Actualiza
-    public void tipoCuenta(){
-        if (utilitario.validarCedula(tab_detalle.getValor("cedula_pass_beneficiario"))) {
-            TablaGenerica tab_dato = programas.empleado1(tab_detalle.getValor("cedula_pass_beneficiario"));
-            if (!tab_dato.isEmpty()) {
-                tab_detalle.setValor("numero_cuenta", tab_dato.getValor("numero_cuenta"));
-                tab_detalle.setValor("codigo_banco", tab_dato.getValor("cod_banco"));
-                tab_detalle.setValor("tipo_cuenta", tab_dato.getValor("tipo_cuenta"));
-                tab_detalle.setValor("ban_nombre", tab_dato.getValor("ban_nombre"));
-                utilitario.addUpdate("tab_detalle");
-            }else {
-                utilitario.agregarMensajeInfo("Datos no disponibles", "");
-            }
-        } else if (utilitario.validarRUC(tab_detalle.getValor("cedula_pass_beneficiario"))) {
-            TablaGenerica tab_dato = programas.proveedor(tab_detalle.getValor("cedula_pass_beneficiario"));
-            if (!tab_dato.isEmpty()) {
-                tab_detalle.setValor("numero_cuenta", tab_dato.getValor("numero_cuenta"));
-                tab_detalle.setValor("codigo_banco", tab_dato.getValor("ban_codigo"));
-                tab_detalle.setValor("tipo_cuenta", tab_dato.getValor("tipo_cuenta"));
-                tab_detalle.setValor("ban_nombre", tab_dato.getValor("ban_nombre"));
-                utilitario.addUpdate("tab_detalle");
-            }else {
-                utilitario.agregarMensajeInfo("Datos no disponibles", "");
-            }
-        } else  {
-            utilitario.agregarMensajeError("El Número de Identificación no es válido", "");
-        }
-    }
-    
     //permite devolver comprobnate en caso de no acrditar con esa lista..
     public void regresa(){
         for (int i = 0; i < tab_detalle1.getTotalFilas(); i++) {
@@ -524,12 +495,12 @@ public class pre_pago_comprobantes extends Pantalla{
         }
         utilitario.agregarMensaje("Comprobante", "Generado");
         tab_detalle1.actualizar();
-        TablaGenerica tab_dato1 = programas.Pagos_lista(Integer.parseInt(tab_comprobante.getValor("ide_listado")), Integer.parseInt(tab_comprobante.getValor("item")));
-        if (!tab_dato1.isEmpty()) {
-        }else{
-            programas.actuLisDevolver(Integer.parseInt(tab_comprobante.getValor("ide_listado")), Integer.parseInt(tab_comprobante.getValor("item")));
-            utilitario.addUpdate("tab_comprobante");
-        }
+//        TablaGenerica tab_dato1 = programas.Pagos_lista(Integer.parseInt(tab_comprobante.getValor("ide_listado")), Integer.parseInt(tab_comprobante.getValor("item")));
+//        if (!tab_dato1.isEmpty()) {
+//        }else{
+//            programas.actuLisDevolver(Integer.parseInt(tab_comprobante.getValor("ide_listado")), Integer.parseInt(tab_comprobante.getValor("item")));
+//            utilitario.addUpdate("tab_comprobante");
+//        }
     }
     
     @Override
