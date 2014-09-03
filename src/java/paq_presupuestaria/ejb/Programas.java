@@ -443,7 +443,7 @@ public class Programas {
    public void rechazoComprobante(String cuenta,String comprobante,Integer lista,String comentario){
           
           String str_sqlg="UPDATE tes_detalle_comprobante_pago_listado \n" +
-                            "set ide_estado_listado=(SELECT ide_estado_listado FROM tes_estado_listado WHERE estado like 'DEVUELTO''),comentario = '"+comentario+"'\n" +
+                            "set ide_estado_listado=(SELECT ide_estado_listado FROM tes_estado_listado WHERE estado like 'DEVUELTO'),comentario = '"+comentario+"'\n" +
                             "WHERE comprobante like'"+comprobante+"'  and ide_listado ="+lista+" and num_documento like'"+cuenta+"'";  
     conectar();
     con_postgres.ejecutarSql(str_sqlg);
