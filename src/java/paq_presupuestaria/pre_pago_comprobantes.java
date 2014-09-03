@@ -76,6 +76,17 @@ public class pre_pago_comprobantes extends Pantalla{
         bar_botones.quitarBotonEliminar();
         bar_botones.quitarBotonsNavegacion();
         
+        Boton bot_select = new Boton();
+        bot_select.setValue("seleccion");
+        bot_select.setIcon("ui-icon-cancel");
+        bot_select.setMetodo("seleccion");
+        bar_botones.agregarBoton(bot_select);
+        
+        Boton bot_clear = new Boton();
+        bot_clear.setValue("quitar");
+        bot_clear.setIcon("ui-icon-cancel");
+        bot_clear.setMetodo("quitar");
+        bar_botones.agregarBoton(bot_clear);
         
         //Mostrar el usuario 
         tab_consulta.setId("tab_consulta");
@@ -176,6 +187,18 @@ public class pre_pago_comprobantes extends Pantalla{
         agregarComponente(set_lista);
     }
 
+    public void seleccion(){
+        for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
+            tab_detalle.setValor("proceso", "2");
+        }
+    }
+    
+    public void quitar(){
+        for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
+            tab_detalle.setValor("proceso", " ");
+        }
+    }
+    
     //Buscar Listado de Comprobantes mediante # de listado "ITEM"
     public void abrirBusqueda(){
         
@@ -199,6 +222,7 @@ public class pre_pago_comprobantes extends Pantalla{
     public void aceptarBusqueda() {
         limpiarPanel();
       if (set_comprobante.getValorSeleccionado() != null) {
+          programas.actualizarComprobante(Integer.parseInt(set_comprobante.getValorSeleccionado()));
              aut_busca.setValor(set_comprobante.getValorSeleccionado());
              set_comprobante.cerrar();
              dibujarLista();
