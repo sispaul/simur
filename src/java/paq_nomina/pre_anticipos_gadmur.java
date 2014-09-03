@@ -224,8 +224,15 @@ public class pre_anticipos_gadmur extends Pantalla{
         sef_formato.setId("sef_formato");
         sef_formato.setConexion(con_postgres);
         agregarComponente(sef_formato);
+        crear_periodo();
     }
 
+    public void crear_periodo(){
+        if(utilitario.getMes(utilitario.getFechaActual())!=1){
+        }else{
+            
+        }
+    }
     //Permite Anular la solictud qeu esta ingresada siempre y cuando no este cobrandose.
     public void Anular(){
         if(tab_parametros.getValor("ide_estado_anticipo").equals("3")){//se encuentra pangandose
@@ -484,7 +491,7 @@ public class pre_anticipos_gadmur extends Pantalla{
                         utilitario.agregarMensajeError("El Número de Cédula no es válido", "");
                     }
               }
-               utilitario.agregarNotificacionInfo("MONTO MAXIMO DE ANTICIPO HASTA 3 REMUNERACIONES", "CUOTAS DE ANTICIPO NO DEBEN SOBRE PASAR EL 50% DE REMUNERACION LIQUIDA");
+//               utilitario.agregarNotificacionInfo("MONTO MAXIMO DE ANTICIPO HASTA 3 REMUNERACIONES", "CUOTAS DE ANTICIPO NO DEBEN SOBRE PASAR EL 50% DE REMUNERACION LIQUIDA");
     }
  
     //BUSCAR SOLICITANTE POR APELLIDO Y NOMBRES
