@@ -68,6 +68,86 @@ public class Programas {
     con_postgres.desconectar();
     con_postgres = null;
     } 
+ 
+    public void actualizarComprobante(Integer combo) {
+        // Forma el sql para actualizacion
+        String str_sql2 = "UPDATE tes_detalle_comprobante_pago_listado \n" +
+"set numero_cuenta=link.numero_cuenta,  \n" +
+"tipo_cuenta=link.cod_cuenta,  \n" +
+"codigo_banco=link.codigo_banco,\n" +
+"ban_nombre=link.ban_nombre\n" +
+"from ((select ide_detalle_listado,ide_listado, \n" +
+"item, \n" +
+"comprobante, \n" +
+"cedula_pass_beneficiario, \n" +
+"nombre_beneficiario,numero_cuenta, \n" +
+"cod_cuenta, valor,\n" +
+"ban_nombre,codigo_banco from(\n" +
+"(SELECT ide_detalle_listado, \n" +
+"ide_listado, \n" +
+"item, \n" +
+"comprobante, \n" +
+"cedula_pass_beneficiario, \n" +
+"nombre_beneficiario,valor\n" +
+"FROM \n" +
+"tes_detalle_comprobante_pago_listado \n" +
+"where ide_listado = "+combo+") as aa\n" +
+"inner join\n" +
+"(SELECT  \n" +
+"e.cedula_pass, \n" +
+"e.numero_cuenta, \n" +
+"e.cod_cuenta, \n" +
+"b.codigo_banco,\n" +
+"b.ban_nombre\n" +
+"FROM \n" +
+"srh_empleado e , \n" +
+"ocebanco b  \n" +
+"where e.cod_banco = b.ban_codigo) as bb\n" +
+"on aa.cedula_pass_beneficiario = bb.cedula_pass))\n" +
+"union\n" +
+"(select ide_detalle_listado,ide_listado, \n" +
+"item, \n" +
+"comprobante, \n" +
+"cedula_pass_beneficiario, \n" +
+"nombre_beneficiario, \n" +
+"numero_cuenta, \n" +
+"cod_cuenta, valor,ban_nombre ,\n" +
+"codigo_banco from(\n" +
+"(SELECT ide_detalle_listado, \n" +
+"ide_listado, \n" +
+"item, \n" +
+"comprobante, \n" +
+"cedula_pass_beneficiario, \n" +
+"nombre_beneficiario,valor\n" +
+"FROM \n" +
+"tes_detalle_comprobante_pago_listado \n" +
+"where ide_listado = 5478) as aa\n" +
+"inner join\n" +
+"(SELECT \n" +
+"p.ide_proveedor, \n" +
+"p.ruc, \n" +
+"p.titular, \n" +
+"p.ban_codigo, \n" +
+"p.numero_cuenta,\n" +
+"(case when p.tipo_cuenta = 'C' then 1  when p.tipo_cuenta = 'A' then 2 end) \n" +
+"as cod_cuenta, \n" +
+"p.codigo_banco, \n" +
+"o.ban_nombre \n" +
+"FROM \n" +
+"tes_proveedores p , \n" +
+"ocebanco o \n" +
+"where p.ban_codigo = o.ban_codigo) as cc\n" +
+"on aa.cedula_pass_beneficiario= cc.ruc) \n" +
+"where cedula_pass_beneficiario!='0')) as link\n" +
+"where tes_detalle_comprobante_pago_listado.ide_detalle_listado =link.ide_detalle_listado  and \n" +
+"tes_detalle_comprobante_pago_listado.ide_listado =link.ide_listado and tes_detalle_comprobante_pago_listado.item =link.item and \n" +
+"tes_detalle_comprobante_pago_listado.cedula_pass_beneficiario=link.cedula_pass_beneficiario and \n" +
+"tes_detalle_comprobante_pago_listado.comprobante =link.comprobante and tes_detalle_comprobante_pago_listado.ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado WHERE estado like 'ENVIADO')";
+        conectar();
+    con_postgres.ejecutarSql(str_sql2);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
     
         public void actualizarDatosIngresos(String ini,String fin, Integer anio, Integer lice) {
         // Forma1 el sql para actualizacion
