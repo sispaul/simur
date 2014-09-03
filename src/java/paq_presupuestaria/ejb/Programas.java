@@ -121,7 +121,7 @@ public class Programas {
 "nombre_beneficiario,valor\n" +
 "FROM \n" +
 "tes_detalle_comprobante_pago_listado \n" +
-"where ide_listado = 5478) as aa\n" +
+"where ide_listado = "+combo+") as aa\n" +
 "inner join\n" +
 "(SELECT \n" +
 "p.ide_proveedor, \n" +
