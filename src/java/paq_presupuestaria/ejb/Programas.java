@@ -656,6 +656,7 @@ public class Programas {
  }
  
  
+ 
   public TablaGenerica empleado1(String cedula){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
@@ -665,15 +666,13 @@ public class Programas {
                                 "e.cod_empleado,\n" +
                                 "e.cedula_pass,\n" +
                                 "e.nombres,\n" +
-                                "e.estado,\n" +
-                                "e.cod_banco,\n" +
-                                "(case when e.cod_cuenta = 1 then 'A' when e.cod_cuenta = 2 then 'C' when e.cod_cuenta = 3 then 'O' end ) AS tipo_cuenta,\n" +
                                 "e.numero_cuenta,\n" +
-                                "o.ban_nombre\n" +
+                                "e.cod_cuenta,\n" +
+                                "b.codigo_banco\n" +
                                 "FROM\n" +
-                                "srh_empleado e,\n" +
-                                "ocebanco o\n" +
-                                "where e.cod_banco = o.ban_codigo and cedula_pass like '"+cedula+"'");
+                                "srh_empleado e ,\n" +
+                                "ocebanco b \n" +
+                                "where e.cod_banco = b.ban_codigo and e.cedula_pass like '"+cedula+"'");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
@@ -722,6 +721,32 @@ public class Programas {
         
  }
   
+   public TablaGenerica Beneficiarios(Integer item){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT\n" +
+                                "ide_detalle_listado,\n" +
+                                "ide_listado,\n" +
+                                "item,\n" +
+                                "comprobante,\n" +
+                                "cedula_pass_beneficiario,\n" +
+                                "nombre_beneficiario,\n" +
+                                "valor,\n" +
+                                "numero_cuenta,\n" +
+                                "tipo_cuenta,\n" +
+                                "codigo_banco\n" +
+                                "FROM\n" +
+                                "tes_detalle_comprobante_pago_listado\n" +
+                                "where ide_listado ="+item);
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+ 
    public String listaMax() {
          conectar();
 
