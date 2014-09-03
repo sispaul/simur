@@ -80,13 +80,13 @@ public class pre_pago_comprobantes extends Pantalla{
         bot_select.setValue("seleccion");
         bot_select.setIcon("ui-icon-cancel");
         bot_select.setMetodo("seleccion");
-        bar_botones.agregarBoton(bot_select);
+//        bar_botones.agregarBoton(bot_select);
         
         Boton bot_clear = new Boton();
         bot_clear.setValue("quitar");
         bot_clear.setIcon("ui-icon-cancel");
         bot_clear.setMetodo("quitar");
-        bar_botones.agregarBoton(bot_clear);
+//        bar_botones.agregarBoton(bot_clear);
         
         //Mostrar el usuario 
         tab_consulta.setId("tab_consulta");
