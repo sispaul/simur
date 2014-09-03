@@ -131,7 +131,7 @@ public class Programas {
 "p.numero_cuenta,\n" +
 "(case when p.tipo_cuenta = 'C' then 1  when p.tipo_cuenta = 'A' then 2 end) \n" +
 "as cod_cuenta, \n" +
-"p.codigo_banco, \n" +
+"o.codigo_banco, \n" +
 "o.ban_nombre \n" +
 "FROM \n" +
 "tes_proveedores p , \n" +
