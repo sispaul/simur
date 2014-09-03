@@ -324,11 +324,14 @@ public class pre_listado_rechazado extends Pantalla{
                 " d.nombre_beneficiario,    \n" +
                 " d.valor,    \n" +
                 " d.num_documento,    \n" +
+                " d.tipo_cuenta,    \n" +
+                " d.numero_cuenta,    \n" +
+                " d.codigo_banco,    \n" +
                 " d.comentario,    \n" +
                 " null AS pagar   \n" +
                 " FROM       \n" +
                 " tes_detalle_comprobante_pago_listado AS d    \n" +
-                " where ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'RECHAZADO') and num_documento = '"+num_listado+"'");
+                " where ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'DEVUELTO') and num_documento = '"+num_listado+"'");
         detalle1.getColumna("ide_detalle_listado").setVisible(false);
         List lista = new ArrayList();
         Object fila1[] = {
@@ -339,6 +342,9 @@ public class pre_listado_rechazado extends Pantalla{
         detalle1.getColumna("pagar").setRadio(lista, "");
         detalle1.getColumna("item").setVisible(false);
         detalle1.getColumna("ide_listado").setVisible(false);
+        detalle1.getColumna("comprobante").setVisible(false);
+        detalle1.getColumna("comentario").setLongitud(5);
+        
         
         detalle1.setRows(5);
         detalle1.dibujar();
@@ -401,6 +407,8 @@ public class pre_listado_rechazado extends Pantalla{
             if(detalle1.getValor(i, "pagar")!=null){
                 if(detalle1.getValor(i, "pagar").equals("1")){
                     programas.regresoRechazo(detalle1.getValor(i, "num_documento"), detalle1.getValor(i, "comprobante"), Integer.parseInt(detalle1.getValor(i, "ide_listado")));
+                    programas.actualizarDetalleC(detalle1.getValor(i, "tipo_cuenta"), detalle1.getValor(i, "numero_cuenta"), detalle1.getValor(i, "codigo_banco"), Integer.parseInt(detalle1.getValor(i, "ide_detalle_listado")), 
+                            Integer.parseInt(detalle1.getValor(i, "ide_listado")), Integer.parseInt(detalle1.getValor(i, "item")), detalle1.getValor(i, "comprobante"), detalle1.getValor(i, "cedula_pass_beneficiario"));
                 }
             }
         }
