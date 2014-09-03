@@ -96,7 +96,7 @@ public class pre_listado_rechazado extends Pantalla{
         
         cmb_estado.setId("cmb_esatdo");
         cmb_estado.setConexion(con_postgres);
-        cmb_estado.setCombo("SELECT ide_estado_listado,estado FROM tes_estado_listado where ide_estado_listado BETWEEN 2 and 3");
+        cmb_estado.setCombo("SELECT ide_estado_listado,estado FROM tes_estado_listado where ide_estado_listado BETWEEN 3 and 4");
         
         //Creación de Botones; Busqueda,Limpieza
         Boton bot_busca = new Boton();
