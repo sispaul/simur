@@ -75,19 +75,7 @@ public class pre_pago_comprobantes extends Pantalla{
         bar_botones.quitarBotonInsertar();
         bar_botones.quitarBotonEliminar();
         bar_botones.quitarBotonsNavegacion();
-        
-        Boton bot_select = new Boton();
-        bot_select.setValue("seleccion");
-        bot_select.setIcon("ui-icon-cancel");
-        bot_select.setMetodo("seleccion");
-//        bar_botones.agregarBoton(bot_select);
-        
-        Boton bot_clear = new Boton();
-        bot_clear.setValue("quitar");
-        bot_clear.setIcon("ui-icon-cancel");
-        bot_clear.setMetodo("quitar");
-//        bar_botones.agregarBoton(bot_clear);
-        
+
         //Mostrar el usuario 
         tab_consulta.setId("tab_consulta");
         tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
@@ -109,6 +97,12 @@ public class pre_pago_comprobantes extends Pantalla{
         bot_busca.setIcon("ui-icon-search");
         bot_busca.setMetodo("abrirBusqueda");
         bar_botones.agregarBoton(bot_busca);
+        
+        Boton bot_select = new Boton();
+        bot_select.setValue("seleccion");
+        bot_select.setIcon("ui-icon-check");
+        bot_select.setMetodo("seleccion");
+        bar_botones.agregarBoton(bot_select);
         
         //Auto complentar en el formulario
         aut_busca.setId("aut_busca");
@@ -187,18 +181,6 @@ public class pre_pago_comprobantes extends Pantalla{
         agregarComponente(set_lista);
     }
 
-    public void seleccion(){
-        for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
-            tab_detalle.setValor("proceso", "2");
-        }
-    }
-    
-    public void quitar(){
-        for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
-            tab_detalle.setValor("proceso", " ");
-        }
-    }
-    
     //Buscar Listado de Comprobantes mediante # de listado "ITEM"
     public void abrirBusqueda(){
         
@@ -416,6 +398,19 @@ public class pre_pago_comprobantes extends Pantalla{
              } else {
             utilitario.agregarMensajeInfo("No se puede abrir la opción", "Seleccione Listado en el autocompletar");
             limpiar();
+        }
+    }
+    
+    //selecciona todo.
+    public void seleccion(){
+        for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
+            if(tab_detalle.getValor(i, "proceso")!=null){
+                tab_detalle.setValor(i, "proceso", " ");
+                utilitario.addUpdate("tab_detalle");
+            }else{
+                tab_detalle.setValor(i, "proceso", "2");
+                utilitario.addUpdate("tab_detalle");
+            }
         }
     }
     
