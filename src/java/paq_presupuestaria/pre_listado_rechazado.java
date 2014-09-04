@@ -61,6 +61,7 @@ public class pre_listado_rechazado extends Pantalla{
     //Calendario
     private Calendario cal_fecha = new Calendario();
     private Calendario cal_fecha1 = new Calendario();
+    private Calendario cal_fecha2 = new Calendario();
     
     //Combo
     private Combo cmb_estado = new Combo();
@@ -307,6 +308,8 @@ public class pre_listado_rechazado extends Pantalla{
         detalle.getColumna("item").setVisible(false);
         detalle.getColumna("ide_listado").setVisible(false);
         detalle.getColumna("comentario_transaccion").setLongitud(150);
+        detalle.getColumna("nombre_beneficiario").setLongitud(20);
+        detalle.getColumna("cedula_pass_beneficiario").setLongitud(20);
         detalle.setRows(5);
         detalle.dibujar();
         PanelTabla tdd = new PanelTabla();
@@ -345,7 +348,9 @@ public class pre_listado_rechazado extends Pantalla{
         detalle1.getColumna("ide_listado").setVisible(false);
         detalle1.getColumna("comprobante").setVisible(false);
         detalle1.getColumna("comentario").setLongitud(50);
-        
+        detalle1.getColumna("cedula_pass_beneficiario").setLongitud(20);
+        detalle1.getColumna("nombre_beneficiario").setLongitud(20);
+        detalle1.getColumna("numero_cuenta").setLongitud(5);
         
         detalle1.setRows(5);
         detalle1.dibujar();
@@ -434,6 +439,7 @@ public class pre_listado_rechazado extends Pantalla{
     public void aceptarReporte() {
         rep_reporte.cerrar();
         cal_fecha1.setFechaActual();
+        cal_fecha2.setFechaActual();
         switch (rep_reporte.getNombre()) {
             case "CONFIRMACION DE ACREDITACION":
                  set_lista.dibujar();
@@ -442,7 +448,7 @@ public class pre_listado_rechazado extends Pantalla{
            case "COMPROBANTES POR ESTADO":
                 dia_dialogo.Limpiar();
                 grid.getChildren().add(new Etiqueta("Seleccione Fecha :"));
-                grid.getChildren().add(cal_fecha1);
+                grid.getChildren().add(cal_fecha2);
                 grid.getChildren().add(new Etiqueta("Seleccione Estado :"));
                 grid.getChildren().add(cmb_estado);
                 dia_dialogo.setDialogo(grid);
@@ -467,7 +473,7 @@ public class pre_listado_rechazado extends Pantalla{
                     break;
                 case"COMPROBANTES POR ESTADO":
                     p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
-                        p_parametros.put("fecha_acre", cal_fecha1.getFecha()+"");
+                        p_parametros.put("fecha_acre", cal_fecha2.getFecha()+"");
                         p_parametros.put("estado", Integer.parseInt(cmb_estado.getValue()+""));
                         rep_reporte.cerrar();
                         sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
