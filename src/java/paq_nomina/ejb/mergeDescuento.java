@@ -134,32 +134,56 @@ public class mergeDescuento {
     
      public void InsertarAnticipo(){
         // Forma el sql para el ingreso
-        String str_sql3 = "insert into srh_descuento (id_distributivo_roles,ano,ide_columna,ide_periodo,num_descuento,descuento,cedula,nombres)\n" +
-                            "SELECT \n" +
-                            "a.id_distributivo, \n" +
+        String str_sql3 = "insert into srh_descuento (id_distributivo_roles,ano,ide_columna,ide_periodo,num_descuento,descuento,cedula,nombres,ide_empleado,ide_empleado_rol)\n" +
+                            "SELECT\n" +
+                            "\"a\".id_distributivo,\n" +
                             "CAST(q.anio AS int),\n" +
-                            "(case when a.id_distributivo = 1  then 1 when a.id_distributivo = 2 then 46 end ) AS dist, \n" +
-                            "CAST(q.periodo AS int), \n" +
-                            "CAST(d.ide_detalle_anticipo AS int), \n" +
-                            "d.valor, \n" +
-                            "a.ci_solicitante, \n" +
-                            "a.solicitante \n" +
-                            "FROM \n" +
-                            "srh_detalle_anticipo d, \n" +
-                            "srh_periodo_anticipo q, \n" +
-                            "srh_solicitud_anticipo a \n" +
-                            "WHERE \n" +
-                            "d.ide_periodo_descuento = q.ide_periodo_anticipo AND \n" +
-                            "d.ide_anticipo = a.ide_solicitud_anticipo AND \n" +
-                            "d.ide_periodo_descuento  = "+utilitario.getMes(utilitario.getFechaActual())+" and  \n" +
-                            "q.anio like '"+utilitario.getAnio(utilitario.getFechaActual())+"'\n" +
+                            "(case when a.id_distributivo = 1  then 1 when a.id_distributivo = 2 then 46 end ) AS dist,\n" +
+                            "CAST(q.periodo AS int),\n" +
+                            "CAST(d.ide_detalle_anticipo AS int),\n" +
+                            "d.valor,\n" +
+                            "\"a\".ci_solicitante,\n" +
+                            "\"a\".solicitante,\n" +
+                            "\"a\".ide_empleado_solicitante,\n" +
+                            "\"a\".ide_empleado_solicitante\n" +
+                            "FROM  \n" +
+                            " srh_detalle_anticipo d,  \n" +
+                            " srh_periodo_anticipo q,  \n" +
+                            " srh_solicitud_anticipo a\n" +
+                            "WHERE  \n" +
+                            " d.ide_periodo_descuento = q.ide_periodo_anticipo AND  \n" +
+                            " d.ide_anticipo = a.ide_solicitud_anticipo AND  \n" +
+                            " d.ide_periodo_descuento  = "+utilitario.getMes(utilitario.getFechaActual())+" and   \n" +
+                            " q.anio like '"+utilitario.getAnio(utilitario.getFechaActual())+"'\n" +
                             "order by a.id_distributivo,a.solicitante";
         conectar();
         con_postgres.ejecutarSql(str_sql3);
         con_postgres.desconectar();
         con_postgres = null;
      }
-       
+     
+     public TablaGenerica sumaPeriodo(){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT sum(d.valor) as total\n" +
+                            "FROM  \n" +
+                            "srh_detalle_anticipo d,  \n" +
+                            "srh_periodo_anticipo q,  \n" +
+                            "srh_solicitud_anticipo a\n" +
+                            "WHERE  \n" +
+                            "d.ide_periodo_descuento = q.ide_periodo_anticipo AND  \n" +
+                            "d.ide_anticipo = a.ide_solicitud_anticipo AND  \n" +
+                            "d.ide_periodo_descuento  = "+utilitario.getMes(utilitario.getFechaActual())+" and   \n" +
+                            "q.anio like '"+utilitario.getAnio(utilitario.getFechaActual())+"'\n" +
+                            "GROUP BY q.periodo");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;   
+ }
+     
 public TablaGenerica periodo(Integer periodo){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();

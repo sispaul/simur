@@ -16,6 +16,7 @@ import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
+import framework.componentes.Texto;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
@@ -53,6 +54,9 @@ public class pre_descuento extends Pantalla{
     private Grid grid_de = new Grid();
     private Grid grid_rol = new Grid();
     private Grid grid_hor = new Grid();
+    
+    //
+    private Texto txt_total = new Texto();
   
 //1.-
  @EJB
@@ -102,6 +106,9 @@ private Conexion con_postgres= new Conexion();
         bot5.setMetodo("borrar");
         bar_botones.agregarBoton(bot5);
        
+        bar_botones.agregarComponente(new Etiqueta("Total a Subir :"));
+//        bar_botones.agregarComponente(txt_total);
+
        
        /*CONFIGURACIÓN DE COMBOS*/
        
@@ -289,6 +296,18 @@ private Conexion con_postgres= new Conexion();
     public void anticipo(){
        mDescuento.InsertarAnticipo();
        tab_tabla.actualizar();
+//       suma();
+    }
+    
+    public void suma(){
+        TablaGenerica tab_dato1 = mDescuento.sumaPeriodo();
+        if (!tab_dato1.isEmpty()) {
+            System.err.println(tab_dato1.getValor("total"));
+        }else{
+            
+        }
+//        txt_total.setValue(mDescuento.sumaPeriodo()+"");
+//        utilitario.addUpdate("txt_total");
     }
     public void actu(){
        mDescuento.ActualizaAnticipo();

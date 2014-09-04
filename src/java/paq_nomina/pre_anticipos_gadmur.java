@@ -376,7 +376,7 @@ public class pre_anticipos_gadmur extends Pantalla{
         tab_garante.getColumna("cod_tipo").setCombo("SELECT cod_tipo,tipo FROM srh_tipo_empleado");
         tab_garante.getColumna("IDE_EMPLEADO_GARANTE").setVisible(false);
         tab_garante.setTipoFormulario(true);
-        tab_garante.getGrid().setColumns(6);
+        tab_garante.getGrid().setColumns(8);
         tab_garante.dibujar();
         PanelTabla tpd = new PanelTabla();
         tpd.setMensajeWarn("DATOS DE GARANTE");
@@ -399,22 +399,28 @@ public class pre_anticipos_gadmur extends Pantalla{
         tab_parametros.getColumna("numero_cuotas_anticipo").setMetodoChange("porcentaje");
         tab_parametros.getColumna("porcentaje_descuento_diciembre").setMetodoChange("cuotas");
         tab_parametros.getColumna("ide_estado_anticipo").setCombo("SELECT ide_estado_tipo,estado FROM srh_estado_anticipo");
+        tab_parametros.getColumna("ide_tipo_anticipo").setCombo("SELECT ide_tipo_anticipo,tipo FROM srh_tipo_anticipo");
         tab_parametros.setTipoFormulario(true);
-        tab_parametros.getGrid().setColumns(8);
+        tab_parametros.getGrid().setColumns(6);
         tab_parametros.dibujar();
         
         PanelTabla tpp = new PanelTabla();
         tpp.setMensajeWarn("DATOS DE ANTICIPO A SOLICITAR");
         tpp.setPanelTabla(tab_parametros);
         
+        PanelTabla t = new PanelTabla();
+        Division div= new Division();
+        div.setId("div");
+        div.dividir2(tpp,t, "63%", "H");
+        
         Division div_division = new Division();
         div_division.setId("div_division");
-        div_division.dividir3(tpa, tpd, tpp, "36%", "45%", "H");
+        div_division.dividir3(tpa, tpd, div, "36%", "49%", "H");
         agregarComponente(div_division);
         
-            Grupo gru = new Grupo();
-            gru.getChildren().add(div_division);
-            pan_opcion.getChildren().add(gru);    
+        Grupo gru = new Grupo();
+        gru.getChildren().add(div_division);
+        pan_opcion.getChildren().add(gru);    
     }
     
     private void limpiarPanel() {
@@ -454,6 +460,8 @@ public class pre_anticipos_gadmur extends Pantalla{
               if (utilitario.validarCedula(tab_anticipo.getValor("ci_solicitante"))) { 
                     TablaGenerica tab_dato1 = iAnticipos.empleadosCed(tab_anticipo.getValor("ci_solicitante"));//empleados
                     if (!tab_dato1.isEmpty()) {
+//                        Double rmu =Double.valueOf(tab_dato1.getValor("liquido_recibir"));
+//                        if(rmu<= Double.parseDouble("1")){
                         tab_anticipo.setValor("ide_empleado_solicitante", tab_dato1.getValor("COD_EMPLEADO"));
                         tab_anticipo.setValor("ci_solicitante", tab_dato1.getValor("cedula_pass"));
                         tab_anticipo.setValor("solicitante", tab_dato1.getValor("nombres"));
@@ -466,10 +474,18 @@ public class pre_anticipos_gadmur extends Pantalla{
                         tab_anticipo.setValor("cod_banco", tab_dato1.getValor("cod_banco"));
                         tab_anticipo.setValor("cod_cuenta", tab_dato1.getValor("cod_cuenta"));
                         tab_anticipo.setValor("numero_cuenta", tab_dato1.getValor("numero_cuenta"));
+                        
                         utilitario.addUpdate("tab_anticipo");
+//                        }else{
+//                            utilitario.agregarNotificacionInfo("SU REMUNERACION ANTERIOR NO LE PERMITE REALIZAR ANTICIPO", tab_dato1.getValor("liquido_recibir"));
+//                        }
+                        
                     }else {
                        TablaGenerica tab_dato2 = iAnticipos.trabajadoresCed(tab_anticipo.getValor("ci_solicitante"));//trabajadores
                             if (!tab_dato2.isEmpty()) {
+                                Double rmut =Double.valueOf(tab_dato2.getValor("liquido_recibir"));
+//                                System.err.println(rmut);
+//                                if(rmut<=0.0){
                                 tab_anticipo.setValor("ide_empleado_solicitante", tab_dato2.getValor("COD_EMPLEADO"));
                                 tab_anticipo.setValor("ci_solicitante", tab_dato2.getValor("cedula_pass"));
                                 tab_anticipo.setValor("solicitante", tab_dato2.getValor("nombres"));
@@ -483,6 +499,9 @@ public class pre_anticipos_gadmur extends Pantalla{
                                 tab_anticipo.setValor("cod_cuenta", tab_dato2.getValor("cod_cuenta"));
                                 tab_anticipo.setValor("numero_cuenta", tab_dato2.getValor("numero_cuenta"));
                                 utilitario.addUpdate("tab_anticipo");
+//                                }else{
+//                                    utilitario.agregarNotificacionInfo("SU REMUNERACION ANTERIOR NO LE PERMITE REALIZAR ANTICIPO",tab_dato2.getValor("liquido_recibir"));
+//                                }
                             }else {
                                 utilitario.agregarMensajeInfo("No existen Datos", "");
                                 }
@@ -491,7 +510,6 @@ public class pre_anticipos_gadmur extends Pantalla{
                         utilitario.agregarMensajeError("El Número de Cédula no es válido", "");
                     }
               }
-               utilitario.agregarNotificacionInfo("MONTO MAXIMO DE ANTICIPO HASTA 3 REMUNERACIONES", "CUOTAS DE ANTICIPO NO DEBEN SOBRE PASAR EL 50% DE REMUNERACION LIQUIDA");
     }
  
     //BUSCAR SOLICITANTE POR APELLIDO Y NOMBRES
@@ -520,6 +538,10 @@ public class pre_anticipos_gadmur extends Pantalla{
                     }else {
                     TablaGenerica tab_dato1 = iAnticipos.empleados(Integer.parseInt(set_solicitante.getValorSeleccionado()));//empleados
                     if (!tab_dato1.isEmpty()) {
+                        if (!tab_dato1.isEmpty()) {
+//                        Double rmu =Double.valueOf(tab_dato1.getValor("liquido_recibir"));
+//                        System.err.println(rmu);
+//                        if(rmu<=0.0){
                         tab_anticipo.setValor("ide_empleado_solicitante", tab_dato1.getValor("COD_EMPLEADO"));
                         tab_anticipo.setValor("ci_solicitante", tab_dato1.getValor("cedula_pass"));
                         tab_anticipo.setValor("solicitante", tab_dato1.getValor("nombres"));
@@ -534,9 +556,16 @@ public class pre_anticipos_gadmur extends Pantalla{
                         tab_anticipo.setValor("numero_cuenta", tab_dato1.getValor("numero_cuenta"));
                         utilitario.addUpdate("tab_anticipo");
                         dia_dialogos.cerrar();
+//                        }else{
+//                            utilitario.agregarNotificacionInfo("SU REMUNERACION ANTERIOR NO LE PERMITE REALIZAR ANTICIPO",tab_dato1.getValor("liquido_recibir"));
+//                        }
+                                }
                     }else {
                        TablaGenerica tab_dato2 = iAnticipos.trabajadores(Integer.parseInt(set_solicitante.getValorSeleccionado()));//trabajadores
                             if (!tab_dato2.isEmpty()) {
+//                                Double rmut =Double.valueOf(tab_dato2.getValor("liquido_recibir"));
+//                                System.err.println(rmut);
+//                                if(rmut<=0.0){
                                 tab_anticipo.setValor("ide_empleado_solicitante", tab_dato2.getValor("COD_EMPLEADO"));
                                 tab_anticipo.setValor("ci_solicitante", tab_dato2.getValor("cedula_pass"));
                                 tab_anticipo.setValor("solicitante", tab_dato2.getValor("nombres"));
@@ -551,13 +580,15 @@ public class pre_anticipos_gadmur extends Pantalla{
                                 tab_anticipo.setValor("numero_cuenta", tab_dato2.getValor("numero_cuenta"));
                                 utilitario.addUpdate("tab_anticipo");
                                 dia_dialogos.cerrar();
-                            }else {
-                                utilitario.agregarMensajeInfo("No existen Datos", "");
-                                }
+                                }else{
+                                    utilitario.agregarNotificacionInfo("SU REMUNERACION ANTERIOR NO LE PERMITE REALIZAR ANTICIPO",tab_dato2.getValor("liquido_recibir"));}
+//                            }else {
+//                                utilitario.agregarMensajeInfo("No existen Datos", "");
+//                                }
                       }
                             }
        }else {
-       utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
+       utilitario.agregarMensajeInfo("Seleccionar registro ", "");
        }
     }
     
@@ -593,7 +624,7 @@ public class pre_anticipos_gadmur extends Pantalla{
         set_colaborador.setConexion(con_postgres);
         set_colaborador.setHeader("LISTA DE COLABORADORES");
         set_colaborador.setSql("SELECT cod_empleado,cedula_pass,nombres,id_distributivo,cod_tipo\n" +
-                                "FROM srh_empleado WHERE estado = 1 AND cod_tipo IN (4, 7) and nombres LIKE '%"+tab_garante.getValor("garante")+"%'");
+                                "FROM srh_empleado WHERE estado = 1 AND cod_tipo IN (4,7,8) and nombres LIKE '%"+tab_garante.getValor("garante")+"%'");
         set_colaborador.getColumna("nombres").setFiltro(true);
         set_colaborador.setRows(10);
         set_colaborador.setTipoSeleccion(false);
@@ -631,55 +662,52 @@ public class pre_anticipos_gadmur extends Pantalla{
     //VALIDACION DE VALOR A PERCIBIR EN EL ANTICIPO DE ACUERDO A REMUNERACION LIQUIDA ANTERIOR PERCIBIDA
     
     public void remuneracion(){
-        double  dato1 = 0,dato2=0,compara=0; 
+        double  dato1 = 0,dato2=0,dato3=0; 
         dato2 = Double.parseDouble(tab_anticipo.getValor("rmu"));
         dato1 = Double.parseDouble(tab_parametros.getValor("valor_anticipo"));
-        compara = Double.parseDouble(tab_anticipo.getValor("rmu_liquido_anterior"));
-     if(compara>0){
-        if((dato1/dato2)<=1){
-             tab_parametros.setValor("numero_cuotas_anticipo", "2");
-             utilitario.addUpdate("tab_parametros");
-             utilitario.agregarMensajeInfo("Anticipo, Hasta una Remuneracion", "Plazo Maximo de Cobro, 2 Meses");
-                     if(tab_parametros.getValor("numero_cuotas_anticipo").equals("2")){
-                         llenarFecha();
-                         cuotas();
-                        }
-            tab_parametros.getColumna("numero_cuotas_anticipo").setLectura(true);
-          }else if((dato1/dato2)>1&&(dato1/dato2)<=3){//HASTA 3 REMUNERACIONES 
-                    tab_parametros.getColumna("numero_cuotas_anticipo").setLectura(false);
-                    tab_parametros.setValor("numero_cuotas_anticipo", "NULL");
-                    tab_parametros.setValor("val_cuo_adi", "NULL");
-                    tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
-                    tab_parametros.setValor("valor_cuota_mensual", "NULL");
-                    tab_parametros.setValor("val_cuo_adi", "NULL");
-                    tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
-                    tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
-                    utilitario.addUpdate("tab_parametros");
-                    utilitario.agregarMensaje("Ingresar Plazo de Cobro", "");
-                }else{
-                    utilitario.agregarMensajeInfo("Monto Excede Remuneracion Unificada", "");
-                    tab_parametros.setValor("valor_cuota_mensual", "NULL");
-                    tab_parametros.setValor("numero_cuotas_anticipo", "NULL");
-                    tab_parametros.setValor("val_cuo_adi", "NULL");
-                    tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
-                    tab_parametros.setValor("valor_cuota_mensual", "NULL");
-                    tab_parametros.setValor("val_cuo_adi", "NULL");
-                    tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
-                    tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
-                    utilitario.addUpdate("tab_parametros");
+        dato3 = (Double.parseDouble(tab_anticipo.getValor("rmu"))/2);
+        if(Integer.parseInt(tab_parametros.getValor("ide_tipo_anticipo"))!=1){
+            if((dato1/dato2)<=1){
+                tab_parametros.setValor("numero_cuotas_anticipo", "2");
+                utilitario.addUpdate("tab_parametros");
+                utilitario.agregarMensajeInfo("Anticipo, Hasta una Remuneracion", "Plazo Maximo de Cobro, 2 Meses");
+                if(tab_parametros.getValor("numero_cuotas_anticipo").equals("2")){
+                    llenarFecha();
+                    cuotas();
                 }
-    }else{
-          utilitario.agregarMensajeError("Remuneracion Anterior", "Saldo Negativo");
-          tab_parametros.getColumna("valor_anticipo").setLectura(true);
-          tab_parametros.getColumna("numero_cuotas_anticipo").setLectura(true);
-          tab_parametros.setValor("valor_anticipo", "NULL");
-          tab_parametros.setValor("val_cuo_adi", "NULL");
-          tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
-          tab_parametros.setValor("valor_cuota_mensual", "NULL");
-          tab_parametros.setValor("val_cuo_adi", "NULL");
-          tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
-          tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
-          utilitario.addUpdate("tab_parametros");
+                tab_parametros.getColumna("numero_cuotas_anticipo").setLectura(true);
+            }else if((dato1/dato2)>1&&(dato1/dato2)<=3){//HASTA 3 REMUNERACIONES 
+                tab_parametros.getColumna("numero_cuotas_anticipo").setLectura(false);
+                tab_parametros.setValor("numero_cuotas_anticipo", "NULL");
+                tab_parametros.setValor("val_cuo_adi", "NULL");
+                tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
+                tab_parametros.setValor("valor_cuota_mensual", "NULL");
+                tab_parametros.setValor("val_cuo_adi", "NULL");
+                tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
+                tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
+                utilitario.addUpdate("tab_parametros");
+                utilitario.agregarMensaje("Ingrese Cuotas Para Cobro", "Por Mes");
+            }else{
+                utilitario.agregarMensajeInfo("Monto Excede Remuneración", "");
+                tab_parametros.setValor("valor_cuota_mensual", "NULL");
+                tab_parametros.setValor("numero_cuotas_anticipo", "NULL");
+                tab_parametros.setValor("val_cuo_adi", "NULL");
+                tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
+                tab_parametros.setValor("valor_cuota_mensual", "NULL");
+                tab_parametros.setValor("val_cuo_adi", "NULL");
+                tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
+                tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
+                utilitario.addUpdate("tab_parametros");
+            }
+        }else{
+            if(Double.parseDouble(tab_parametros.getValor("valor_anticipo"))<=dato3){
+                tab_parametros.setValor("numero_cuotas_anticipo", "1");
+                utilitario.addUpdate("tab_parametros");
+                utilitario.agregarMensajeInfo("Anticipo Ordinario", "Plazo Maximo de Cobro, 1 Meses");
+                llenarFecha();
+//                cuotas();
+                tab_parametros.getColumna("numero_cuotas_anticipo").setLectura(true);
+            }
         }
     }
     
@@ -1058,7 +1086,7 @@ public class pre_anticipos_gadmur extends Pantalla{
                         }
             }
         }else {
-               utilitario.agregarMensajeError("Historia Laboral","Sin Fechas");
+               utilitario.agregarMensajeError("Falta de Ingreso","Movimientos de Empleadoas");
                }
     }
     

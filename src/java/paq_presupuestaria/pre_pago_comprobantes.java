@@ -313,6 +313,10 @@ public class pre_pago_comprobantes extends Pantalla{
         lista.add(fila3);;
         tab_detalle.getColumna("proceso").setRadio(lista, " ");
         tab_detalle.getColumna("ide_detalle_listado").setVisible(false);
+        tab_detalle.getColumna("cedula_pass_beneficiario").setLongitud(20);
+        tab_detalle.getColumna("nombre_beneficiario").setLongitud(20);
+        tab_detalle.getColumna("numero_cuenta").setLongitud(5);
+        tab_detalle.getColumna("ban_nombre").setLongitud(5);
         tab_detalle.setRows(5);
         tab_detalle.dibujar();
         PanelTabla tdd = new PanelTabla();
@@ -358,6 +362,10 @@ public class pre_pago_comprobantes extends Pantalla{
         tab_detalle1.getColumna("ide_detalle_listado").setVisible(false);
         tab_detalle1.getColumna("ide_listado").setVisible(false);
         tab_detalle1.getColumna("item").setVisible(false);
+        tab_detalle1.getColumna("cedula_pass_beneficiario").setLongitud(20);
+        tab_detalle1.getColumna("nombre_beneficiario").setLongitud(20);
+        tab_detalle1.getColumna("numero_cuenta").setLongitud(5);
+        tab_detalle1.getColumna("ban_nombre").setLongitud(5);
         
         tab_detalle1.setRows(5);
         tab_detalle1.dibujar();
