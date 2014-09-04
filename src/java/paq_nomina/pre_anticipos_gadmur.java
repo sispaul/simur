@@ -804,6 +804,36 @@ public class pre_anticipos_gadmur extends Pantalla{
         anios_a = utilitario.getAnio(utilitario.getFechaActual());
         meses_a = utilitario.getMes(utilitario.getFechaActual());
         dias_a = utilitario.getDia(utilitario.getFechaActual());
+        
+        if(tab_anticipo.getValor("id_distributivo").equals("1")){
+            if(tab_anticipo.getValor("cod_tipo").equals("4")){
+                if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=10){//VALIDACION POR DIA HASTA 10
+                
+                }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28  
+                
+                }
+            }else{
+                if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=10){//VALIDACION POR DIA HASTA 10
+                
+                }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28  
+                
+                }
+            }
+        }else if(tab_anticipo.getValor("id_distributivo").equals("2")){
+            if(tab_anticipo.getValor("cod_tipo").equals("7")||tab_anticipo.getValor("cod_tipo").equals("10")){
+                if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=10){//VALIDACION POR DIA HASTA 10
+                
+                }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28  
+                }
+            }else{
+                if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=10){//VALIDACION POR DIA HASTA 10
+                
+                }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28  
+                
+                }
+            }
+        }
+        
         TablaGenerica tab_datof = iAnticipos.FechaContrato(Integer.parseInt(tab_anticipo.getValor("ide_empleado_solicitante")));
         if (!tab_datof.isEmpty()) {
             if(tab_anticipo.getValor("id_distributivo").equals("1")){
@@ -944,7 +974,7 @@ public class pre_anticipos_gadmur extends Pantalla{
                                                        porcentaje= utilitario.getMes(utilitario.getFechaActual())+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
                                                        if(porcentaje == 12){
                                                         llenarFecha();
-//                                                        cuotas();
+                                                        cuotas();
                                                        }else if(porcentaje > 12){
                                                         llenarFecha();
                                                           utilitario.agregarMensajeInfo("Seleccione Porcentaje de Descuento", "Para Cuota de Diciembre");
