@@ -828,7 +828,7 @@ public TablaGenerica VerifEmpleid(String cedu,Integer tipo ){
         
  }
   
-public TablaGenerica VerifEmpleCod(Integer codigo){
+public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
@@ -841,7 +841,7 @@ public TablaGenerica VerifEmpleCod(Integer codigo){
                                 "srh_solicitud_anticipo s\n" +
                                 "INNER JOIN srh_calculo_anticipo c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
                                 "WHERE\n" +
-                                "s.ide_empleado_solicitante = "+codigo+"\n" +
+                                "s.ide_empleado_solicitante = "+codigo+" and s.ide_tipo_anticipo = "+tipo+"\n" +
                                 "and (c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO')OR\n" +
                                 "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'APROBADO')OR\n" +
                                 "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'PAGANDO'))");
