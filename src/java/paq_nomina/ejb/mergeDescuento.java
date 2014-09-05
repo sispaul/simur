@@ -136,16 +136,16 @@ public class mergeDescuento {
         // Forma el sql para el ingreso
         String str_sql3 = "insert into srh_descuento (id_distributivo_roles,ano,ide_columna,ide_periodo,num_descuento,descuento,cedula,nombres,ide_empleado,ide_empleado_rol)\n" +
                             "SELECT\n" +
-                            "\"a\".id_distributivo,\n" +
+                            "a.id_distributivo,\n" +
                             "CAST(q.anio AS int),\n" +
                             "(case when a.id_distributivo = 1  then 1 when a.id_distributivo = 2 then 46 end ) AS dist,\n" +
                             "CAST(q.periodo AS int),\n" +
                             "CAST(d.ide_detalle_anticipo AS int),\n" +
                             "d.valor,\n" +
-                            "\"a\".ci_solicitante,\n" +
-                            "\"a\".solicitante,\n" +
-                            "\"a\".ide_empleado_solicitante,\n" +
-                            "\"a\".ide_empleado_solicitante\n" +
+                            "a.ci_solicitante,\n" +
+                            "a.solicitante,\n" +
+                            "a.ide_empleado_solicitante,\n" +
+                            "a.ide_empleado_solicitante\n" +
                             "FROM  \n" +
                             " srh_detalle_anticipo d,  \n" +
                             " srh_periodo_anticipo q,  \n" +
