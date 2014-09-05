@@ -982,7 +982,7 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
         tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT fecha_contrato,cod_tipo,ide_num_contrato\n" +
+        tab_funcionario.setSql("SELECT fecha_contrato,cod_tipo,ide_num_contrato,fecha_fin\n" +
                                 "FROM srh_num_contratos\n" +
                                 "where cod_empleado = "+codigoE+"\n" +
                                 "ORDER BY fecha_contrato DESC LIMIT 1");
@@ -1284,9 +1284,28 @@ public void actuaSoliDevolucion(Integer solic){
     con_postgres = null;
 }
 
+public void actuaCalculo(Integer solic,Double valor){
+    String au_sql="UPDATE srh_calculo_anticipo\n" +
+                    "set valor_cuota_mensual ="+valor+"\n" +
+                    "where ide_solicitud_anticipo ="+solic;
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+}
+
 public void llenarSolicitud(Integer anti,String cuota,Double valor,Integer perdes){
     String au_sql="insert into srh_detalle_anticipo (ide_anticipo,cuota,valor,ide_periodo_descuento)\n" +
                   "values ("+anti+",'"+cuota+"',"+valor+","+perdes+")";
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+}
+
+public void llenarSolicitud1(Integer anti,String cuota,Double valor,Integer perdes,Double valor1){
+    String au_sql="insert into srh_detalle_anticipo (ide_anticipo,cuota,valor,ide_periodo_descuento,valor_cuota_mensual)\n" +
+                  "values ("+anti+",'"+cuota+"',"+valor+","+perdes+","+valor1+")";
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
