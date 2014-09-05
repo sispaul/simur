@@ -533,15 +533,19 @@ public class pre_anticipos_gadmur extends Pantalla{
     
     public void aceptoSolicitante(){
      if (set_solicitante.getValorSeleccionado()!= null) {
-            TablaGenerica tab_dato = iAnticipos.VerifEmpleCod(Integer.parseInt(set_solicitante.getValorSeleccionado()));
+            TablaGenerica tab_dato = iAnticipos.VerifEmpleCod(Integer.parseInt(set_solicitante.getValorSeleccionado()),Integer.parseInt(tab_anticipo.getValor("ide_tipo_anticipo")));
                  if (!tab_dato.isEmpty()) {
-                        utilitario.agregarMensajeInfo("Solicitante Posee", "Anticipo Ingresado/Pendiente");
-                    }else {
-                    TablaGenerica tab_dato1 = iAnticipos.empleados(Integer.parseInt(set_solicitante.getValorSeleccionado()));//empleados
-                    if (!tab_dato1.isEmpty()) {
-                        if (!tab_dato1.isEmpty()) {
-                        double rmu =0;
-                                rmu=Double.valueOf(tab_dato1.getValor("liquido_recibir"));
+                     if(tab_dato.getValor("ide_tipo_anticipo").equals("1")){
+                         utilitario.agregarMensajeInfo("Solicitante Posee", "Anticipo Ordinario Pendiente");
+                     }else{
+                         utilitario.agregarMensajeInfo("Solicitante Posee", "Anticipo ExtraOrdinario Pendiente");
+                     }
+                 }else {
+                     TablaGenerica tab_dato1 = iAnticipos.empleados(Integer.parseInt(set_solicitante.getValorSeleccionado()));//empleados
+                     if (!tab_dato1.isEmpty()) {
+                         if (!tab_dato1.isEmpty()) {
+                             double rmu =0;
+                             rmu=Double.valueOf(tab_dato1.getValor("liquido_recibir"));
                         if(rmu>1){
                         tab_anticipo.setValor("ide_empleado_solicitante", tab_dato1.getValor("COD_EMPLEADO"));
                         tab_anticipo.setValor("ci_solicitante", tab_dato1.getValor("cedula_pass"));
