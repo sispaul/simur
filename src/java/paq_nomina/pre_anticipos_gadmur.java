@@ -817,7 +817,7 @@ public class pre_anticipos_gadmur extends Pantalla{
         dias_a = utilitario.getDia(utilitario.getFechaActual());
         
         if(tab_anticipo.getValor("id_distributivo").equals("1")){
-            if(tab_anticipo.getValor("cod_tipo").equals("4")){
+            if(tab_anticipo.getValor("cod_tipo").equals("4") ||tab_anticipo.getValor("cod_tipo").equals("8")){
                 if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=10){//VALIDACION POR DIA HASTA 10
                     if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=12){
                         Integer porcentaje =0;  
