@@ -657,7 +657,7 @@ public class pre_anticipo_sueldo extends Pantalla{
     //Verifica si se debe ingresar, el 70% para cobro
     public void porcentaje(){
         Integer porcentaje =0;
-        if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=10){//VALIDACION POR DIA HASTA 10
+        if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=15){//VALIDACION POR DIA HASTA 10
             if(tab_anticipo.getValor("id_distributivo").equals("1")){
                 porcentaje= utilitario.getMes(utilitario.getFechaActual())+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))-1;
                 if(porcentaje == 12){
@@ -698,7 +698,7 @@ public class pre_anticipo_sueldo extends Pantalla{
                 utilitario.addUpdate("tab_parametros");
                 servidor();
             }
-        }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28
+        }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=16 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28
             if(tab_anticipo.getValor("id_distributivo").equals("1")){
                 porcentaje= utilitario.getMes(utilitario.getFechaActual())+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
                 if(porcentaje == 12){
@@ -750,7 +750,7 @@ public class pre_anticipo_sueldo extends Pantalla{
         dias_a = utilitario.getDia(utilitario.getFechaActual());
         if(tab_anticipo.getValor("id_distributivo").equals("1")){
             if(tab_anticipo.getValor("cod_tipo").equals("4") ||tab_anticipo.getValor("cod_tipo").equals("8")){
-                if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=10){//VALIDACION POR DIA HASTA 10
+                if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=15){//VALIDACION POR DIA HASTA 10
                     if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>=1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=12){
                         Integer porcentaje =0;  
                         porcentaje= utilitario.getMes(utilitario.getFechaActual())+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))-1;
@@ -767,7 +767,7 @@ public class pre_anticipo_sueldo extends Pantalla{
                     }else{
                         utilitario.agregarMensaje("Tiempo Maximo de Pago", "12 MESES");
                     }
-                }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28  
+                }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=16 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28  
                     if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>=1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=12){
                         Integer porcentaje =0;  
                         porcentaje= utilitario.getMes(utilitario.getFechaActual())+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
@@ -786,7 +786,7 @@ public class pre_anticipo_sueldo extends Pantalla{
                     }
                 }
             }else{
-                if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=10){//VALIDACION POR DIA HASTA 10
+                if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=15){//VALIDACION POR DIA HASTA 10
                     TablaGenerica tab_datof = iAnticipos.FechaContrato(Integer.parseInt(tab_anticipo.getValor("ide_empleado_solicitante")));
                     if (!tab_datof.isEmpty()) {
                         anos=utilitario.getAnio(tab_datof.getValor("fecha_contrato"));
@@ -886,7 +886,7 @@ public class pre_anticipo_sueldo extends Pantalla{
                     }else {
                         utilitario.agregarMensajeError("Falta de Información","Movimientos de Empleadoas");
                     }
-                }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28  
+                }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=16 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28  
                     TablaGenerica tab_datof = iAnticipos.FechaContrato(Integer.parseInt(tab_anticipo.getValor("ide_empleado_solicitante")));
                     if (!tab_datof.isEmpty()) {
                         anos=utilitario.getAnio(tab_datof.getValor("fecha_contrato"));
@@ -992,14 +992,14 @@ public class pre_anticipo_sueldo extends Pantalla{
             }
         }else if(tab_anticipo.getValor("id_distributivo").equals("2")){
             if(tab_anticipo.getValor("cod_tipo").equals("7")||tab_anticipo.getValor("cod_tipo").equals("10")){
-                if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=10){//VALIDACION POR DIA HASTA 10
+                if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=15){//VALIDACION POR DIA HASTA 10
                     if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>=1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=12){
                         llenarFecha();
                         cuotas();
                     }else{
                         utilitario.agregarMensaje("Tiempo Maximo de Pago", "12 MESES");
                     }
-                }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28  
+                }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=16 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28  
                     if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>=1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=12){
                         llenarFecha();
                         cuotas();
@@ -1008,7 +1008,7 @@ public class pre_anticipo_sueldo extends Pantalla{
                     }
                 }
             }else{
-                if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=10){//VALIDACION POR DIA HASTA 10
+                if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=15){//VALIDACION POR DIA HASTA 10
                     TablaGenerica tab_datof = iAnticipos.FechaContrato(Integer.parseInt(tab_anticipo.getValor("ide_empleado_solicitante")));
                     if (!tab_datof.isEmpty()) {
                         anos=utilitario.getAnio(tab_datof.getValor("fecha_contrato"));
@@ -1082,7 +1082,7 @@ public class pre_anticipo_sueldo extends Pantalla{
                     }else {
                         utilitario.agregarMensajeError("Falta de Ingreso","Movimientos de Empleadoas");
                     }
-                }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28  
+                }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=16 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){//VALIDACION POR DIAS DEL 11 AL 28  
                     TablaGenerica tab_datof = iAnticipos.FechaContrato(Integer.parseInt(tab_anticipo.getValor("ide_empleado_solicitante")));
                     if (!tab_datof.isEmpty()) {
                         anos=utilitario.getAnio(tab_datof.getValor("fecha_contrato"));
@@ -1169,7 +1169,7 @@ public class pre_anticipo_sueldo extends Pantalla{
         mes = String.valueOf(utilitario.getMes(tab_parametros.getValor("FECHA_ANTICIPO")));
         dia = String.valueOf(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO")));
         mess = utilitario.getMes(tab_parametros.getValor("FECHA_ANTICIPO"));
-        if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=10){
+        if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=15){
              if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))==12){
                 calculo = 12 - Integer.parseInt(mes);
                 calculo1 = calculo - Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
@@ -1471,7 +1471,7 @@ public class pre_anticipo_sueldo extends Pantalla{
                                                }
                                 }
                     }
-            }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31 ){
+            }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=16 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31 ){
                     if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))==12){
                         calculo = 12 - Integer.parseInt(mes);
                         calculo1 = calculo - Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
@@ -1568,7 +1568,7 @@ public class pre_anticipo_sueldo extends Pantalla{
         
       Integer periodo =0;
       if(tab_anticipo.getValor("id_distributivo").equals("1")){
-           if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=10){
+           if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=15){
                   periodo = utilitario.getMes(tab_parametros.getValor("FECHA_ANTICIPO"))-1+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
                        if(periodo > 12){
                              if(Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))>=70 && Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))<=100){
@@ -1579,7 +1579,7 @@ public class pre_anticipo_sueldo extends Pantalla{
                        }else{
                            calculo_valor();
                        }
-              }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){
+              }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=16 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){
                        periodo = utilitario.getMes(tab_parametros.getValor("FECHA_ANTICIPO"))+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"));
                        if(periodo > 12){
                             if(Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))>=70 && Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre"))<=100){
@@ -1606,7 +1606,7 @@ public class pre_anticipo_sueldo extends Pantalla{
 
         }else{
             if(tab_anticipo.getValor("id_distributivo").equals("1")){
-            if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=10){
+            if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=15){
             TablaGenerica tab_dato = iAnticipos.periodos1(Integer.parseInt(tab_parametros.getValor("ide_periodo_anticipo_inicial")));
             if (!tab_dato.isEmpty()) {
                 rango = Integer.parseInt(tab_dato.getValor("periodo"))+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))-1;
@@ -1647,7 +1647,7 @@ public class pre_anticipo_sueldo extends Pantalla{
             }else {
                    utilitario.agregarMensajeInfo("No existen Datos", "");
                    }
-            }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=11 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){
+            }else if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))>=16 && utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=31){
                 TablaGenerica tab_dato = iAnticipos.periodos1(Integer.parseInt(tab_parametros.getValor("ide_periodo_anticipo_inicial")));
             if (!tab_dato.isEmpty()) {
                 rango = (Integer.parseInt(tab_dato.getValor("periodo"))-1+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo")));
