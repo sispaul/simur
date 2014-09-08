@@ -6,7 +6,6 @@ package paq_nomina;
 
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
-import framework.componentes.Etiqueta;
 import framework.componentes.Imagen;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
@@ -16,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
 import paq_nomina.ejb.SolicAnticipos;
+import paq_nomina.ejb.mergeDescuento;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
@@ -37,7 +37,7 @@ public class pre_migracion_anticipos extends Pantalla{
     
         @EJB
     private SolicAnticipos iAnticipos = (SolicAnticipos) utilitario.instanciarEJB(SolicAnticipos.class);
-    
+private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(mergeDescuento.class);
     public pre_migracion_anticipos() {
         
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
@@ -96,14 +96,27 @@ public class pre_migracion_anticipos extends Pantalla{
     public void migrar(){
         for (int i = 0; i < tab_migracion.getTotalFilas(); i++) {
             tab_migracion.getValor(i, "cedula");
-            iAnticipos.migra_lista(tab_migracion.getValor(i, "cedula"),utilitario.getVariable("NICK"));
+            TablaGenerica tab_dato = iAnticipos.empleadosCed(tab_migracion.getValor(i,"cedula"));//empleados
+                if (!tab_dato.isEmpty()) {
+                    iAnticipos.actuaMigrar(Double.parseDouble(tab_dato.getValor("ru")), Integer.parseInt(tab_dato.getValor("id_distributivo_roles")), 
+                            Integer.parseInt(tab_dato.getValor("cod_cargo")), tab_migracion.getValor(i,"cedula"), Integer.parseInt(tab_migracion.getValor(i,"ide_migrar")));
+                }else {
+                    TablaGenerica tab_dato1 = iAnticipos.trabajadoresCed(tab_migracion.getValor(i,"cedula"));//trabajadores
+                    if (!tab_dato1.isEmpty()) {
+                        iAnticipos.actuaMigrar(Double.parseDouble(tab_dato1.getValor("su")), Integer.parseInt(tab_dato1.getValor("id_distributivo_roles")), 
+                            Integer.parseInt(tab_dato.getValor("cod_cargo")), tab_migracion.getValor(i,"cedula"), Integer.parseInt(tab_migracion.getValor(i,"ide_migrar")));
+                    }
         }
+    }
+        tab_migracion.actualizar();
         migra_calculo();
     }
-    
     public void migra_calculo(){
+        TablaGenerica tab_datoo = mDescuento.VerificarRol();
+        if (!tab_datoo.isEmpty()) {
          for (int i = 0; i < tab_migracion.getTotalFilas(); i++) {
             tab_migracion.getValor(i, "cedula");
+            iAnticipos.migra_lista(tab_migracion.getValor(i, "cedula"),utilitario.getVariable("NICK"));
             TablaGenerica tab_datos = iAnticipos.cod_listado(tab_migracion.getValor(i, "cedula"));
              if (!tab_datos.isEmpty()) {
                   if((Integer.parseInt(tab_migracion.getValor(i,"cuotas_pedientes"))+(utilitario.getMes("2014-09-02")))>12){
@@ -115,7 +128,10 @@ public class pre_migracion_anticipos extends Pantalla{
                  utilitario.agregarMensaje("No se encuentra en base", tab_migracion.getValor(i, "cedula"));
              }
          }
-migrar_detalle();
+         migrar_detalle();
+        }else{
+               utilitario.agregarMensaje("Descuento No Puede Ser Subido a Rol", "Rol Perteneciente a Periodo Aun No Esta Creado");
+           }
     }
     
     public void migrar_detalle(){

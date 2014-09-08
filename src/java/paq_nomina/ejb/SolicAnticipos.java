@@ -1206,7 +1206,9 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
          TablaGenerica tab_consulta = new TablaGenerica();
          conectar();
          tab_consulta.setConexion(con_postgres);
-         tab_consulta.setSql("select 0 as id, max(ide_listado) as maximo from srh_solicitud_anticipo");
+         tab_consulta.setSql("select 0 as id, \n" +
+"(case when max(ide_listado) is null then 'LIST-2014-00000' when max(ide_listado)is not null then max(ide_listado) end) AS maximo\n" +
+" from srh_solicitud_anticipo");
          tab_consulta.ejecutarSql();
          ValorMax = tab_consulta.getValor("maximo");
          return ValorMax;
@@ -1219,6 +1221,18 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
                     "ip_aprob_solicitud ='"+utilitario.getIp()+"',\n" +
                     "fecha_aprobacion ='"+utilitario.getFechaActual()+"'\n" +
                     "WHERE ide_solicitud_anticipo="+anti+" and ci_solicitante = '"+cuota+"'";
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+}
+
+    public void actuaMigrar(Double rmu,Integer anti,Integer aprob,String cedula,Integer migrar){
+    String au_sql="UPDATE srh_migrar_anticipo\n" +
+                    "set rmu="+rmu+",\n" +
+                    "id_distributivo="+anti+",\n" +
+                    "cod_cargo="+aprob+"\n" +
+                    "where cedula like'"+cedula+"' and ide_migrar="+migrar;
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
