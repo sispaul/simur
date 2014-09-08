@@ -257,25 +257,30 @@ private Conexion con_postgres= new Conexion();
         tab_tabla.actualizar();
         }
       
-       public void migrar(){ 
-         Integer ano;
-         Integer ide_periodo;
-         Integer id_distributivo_roles;
-         Integer ide_columna;
-         tab_consulta.setConexion(con_postgres);
-         tab_consulta.setSql("select ano,ide_periodo,id_distributivo_roles,ide_columna from srh_descuento");
-         tab_consulta.ejecutarSql();
-         ano = Integer.parseInt(tab_consulta.getValor("ano"));
-         ide_periodo=Integer.parseInt(tab_consulta.getValor("ide_columna"));
-         id_distributivo_roles=Integer.parseInt(tab_consulta.getValor("id_distributivo_roles"));
-         ide_columna=Integer.parseInt(tab_consulta.getValor("ide_columna")) ;  
-         mDescuento.migrarDescuento(ano,ide_periodo,id_distributivo_roles,ide_columna,tab_usuario.getValor("NICK_USUA")+"");
-         utilitario.agregarMensaje("PROCESO REALIZADO CON EXITO", " ");
-         
-         actuAnticipo();
-         
-         dia_dialogoe.cerrar();
-         }
+      public void migrar(){
+           TablaGenerica tab_dato = mDescuento.VerificarRol();
+           if (!tab_dato.isEmpty()) {
+               Integer ano;
+               Integer ide_periodo;
+               Integer id_distributivo_roles;
+               Integer ide_columna;
+               tab_consulta.setConexion(con_postgres);
+               tab_consulta.setSql("select ano,ide_periodo,id_distributivo_roles,ide_columna from srh_descuento");
+               tab_consulta.ejecutarSql();
+               ano = Integer.parseInt(tab_consulta.getValor("ano"));
+               ide_periodo=Integer.parseInt(tab_consulta.getValor("ide_columna"));
+               id_distributivo_roles=Integer.parseInt(tab_consulta.getValor("id_distributivo_roles"));
+               ide_columna=Integer.parseInt(tab_consulta.getValor("ide_columna")) ;  
+               mDescuento.migrarDescuento(ano,ide_periodo,id_distributivo_roles,ide_columna,tab_usuario.getValor("NICK_USUA")+"");
+               utilitario.agregarMensaje("PROCESO REALIZADO CON EXITO", " ");
+               
+               actuAnticipo();
+               
+               dia_dialogoe.cerrar();
+           }else{
+               utilitario.agregarMensaje("Descuento No Puede Ser Subido a Rol", "Rol Perteneciente a Periodo Aun No Esta Creado");
+           }
+      }
                     
     public void borrar(){
       mDescuento.borrarDescuento();

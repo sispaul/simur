@@ -222,6 +222,20 @@ public TablaGenerica periodo(Integer periodo){
         return tab_funcionario;
         
  }
+ 
+  public TablaGenerica VerificarRol(){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT ide_roles,ide_columnas FROM srh_roles where ano = "+utilitario.getAnio(utilitario.getFechaActual())+" and ide_periodo = "+utilitario.getMes(utilitario.getFechaActual()));
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+ 
         private void conectar() {
         if (con_postgres == null) {
             con_postgres = new Conexion();
