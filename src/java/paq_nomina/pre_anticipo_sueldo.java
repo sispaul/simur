@@ -135,7 +135,7 @@ public class pre_anticipo_sueldo extends Pantalla{
         aut_busca.setConexion(con_postgres);
         aut_busca.setAutoCompletar("SELECT ide_solicitud_anticipo,ci_solicitante,solicitante,aprobado_solicitante FROM srh_solicitud_anticipo");
         aut_busca.setMetodoChange("filtrarSolicitud");
-        aut_busca.setSize(100);
+        aut_busca.setSize(80);
         
         bar_botones.agregarComponente(new Etiqueta("Buscar Solicitud:"));
         bar_botones.agregarComponente(aut_busca);
