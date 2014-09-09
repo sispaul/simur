@@ -1711,6 +1711,89 @@ public class pre_anticipo_sueldo extends Pantalla{
         }
     }
     
+    //Permite Buscar solicitud que se encuentra Ingresada o Pendiente
+        public void Busca_tipo(){
+        dia_dialogoca.Limpiar();
+        grid_ca.getChildren().add(new Etiqueta("ELEGIR PARAMETRO DE BUSQUEDA:"));
+        grid_ca.getChildren().add(cmb_seleccion);
+        dia_dialogoca.setDialogo(grid_ca);
+        dia_dialogoca.dibujar();
+    }
+    
+     public void buscarSolicitud() {
+            if (tex_busqueda.getValue() != null && tex_busqueda.getValue().toString().isEmpty() == false) {
+                set_solicitud.getTab_seleccion().setSql("SELECT ide_solicitud_anticipo,ci_solicitante,solicitante,(case when aprobado_solicitante = 1 then 'SI' ELSE 'NO' end ) AS aprobado FROM srh_solicitud_anticipo WHERE ci_solicitante LIKE '" + tex_busqueda.getValue() + "'");
+                set_solicitud.getTab_seleccion().ejecutarSql();
+            } else {
+                utilitario.agregarMensajeInfo("Debe ingresar un valor en el texto", "");
+            }
+    }
+    
+    public void buscarSolicitud1(){
+          dia_dialogoso.Limpiar();
+          dia_dialogoso.setDialogo(gridso);
+          grid_so.getChildren().add(set_solicitu);
+          set_solicitu.setId("set_solicitu");
+          set_solicitu.setConexion(con_postgres);
+          set_solicitu.setHeader("LISTADO DE SERVIDORES");
+          set_solicitu.setSql("SELECT ide_solicitud_anticipo,ci_solicitante,solicitante,(case when aprobado_solicitante = 1 then 'SI' ELSE 'NO' end ) AS aprobado FROM srh_solicitud_anticipo where ci_solicitante is not null");
+          set_solicitu.getColumna("solicitante").setFiltro(true);
+          set_solicitu.setRows(10);
+          set_solicitu.setTipoSeleccion(false);
+          dia_dialogoso.setDialogo(grid_so);
+          set_solicitu.dibujar();
+          dia_dialogoso.dibujar();
+     }
+     
+    public void abrirBusqueda() {
+        if(cmb_seleccion.getValue().equals("1")){
+            set_solicitud.dibujar();
+            tex_busqueda.limpiar();
+            set_solicitud.getTab_seleccion().limpiar();
+        }else{
+                buscarSolicitud1();
+        }
+    }
+
+    //Dibuja la Pantalla
+    public void aceptarBusqueda() {
+        if(cmb_seleccion.getValue().equals("1")){
+            if (set_solicitud.getValorSeleccionado() != null) {
+                aut_busca.setValor(set_solicitud.getValorSeleccionado());
+                set_solicitud.cerrar();
+                dibujarSolicitud();
+                dia_dialogoca.cerrar();
+                utilitario.addUpdate("aut_busca,pan_opcion");
+            } else {
+                utilitario.agregarMensajeInfo("Debe seleccionar una solicitud", "");
+            }
+        }else{
+                if (set_solicitu.getValorSeleccionado() != null) {
+                aut_busca.setValor(set_solicitu.getValorSeleccionado());
+                dia_dialogoso.cerrar();
+                dibujarSolicitud();
+                dia_dialogoca.cerrar();
+                utilitario.addUpdate("aut_busca,pan_opcion");
+                    } else {
+                        utilitario.agregarMensajeInfo("Debe seleccionar una Solicitud", "");
+                    }      
+                }
+    }
+    
+        //Permite Anular la solictud qeu esta ingresada siempre y cuando no este cobrandose.
+    public void Anular(){
+        if(tab_parametros.getValor("ide_estado_anticipo").equals("3")){//se encuentra pangandose
+              utilitario.agregarMensajeError("Actualmente se Encuentra Descontandose", "");
+        }else{
+        iAnticipos.deleteDetalle(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")));
+        iAnticipos.deleteCalculo(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")));
+        iAnticipos.deleteGarante(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")));
+        iAnticipos.deleteSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")));
+        utilitario.agregarMensaje("Solicitud Anulada", "Con Exito");
+        limpiarPanel();
+        }
+    }
+    
     @Override
     public void insertar() {
         if (tab_anticipo.isFocus()) {
