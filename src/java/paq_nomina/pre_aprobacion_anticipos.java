@@ -181,7 +181,7 @@ public class pre_aprobacion_anticipos extends Pantalla{
         bot_save.setValue("Guardar Listado");
         bot_save.setExcluirLectura(true);
         bot_save.setIcon("ui-icon-disk");
-        bot_save.setMetodo("save_lista");
+        bot_save.setMetodo("actuPerAnio");
         
         Boton bot_delete = new Boton();
         bot_delete.setValue("Quitar de Listado");
@@ -398,6 +398,13 @@ public class pre_aprobacion_anticipos extends Pantalla{
          tab_listado.actualizar();
     }
     
+    public void actuPerAnio(){
+        for (int i = 0; i < tab_listado.getTotalFilas(); i++) {
+            tab_listado.getValor(i, "ide_solicitud_anticipo");
+            iAnticipos.actuaPerAnio(Integer.parseInt(tab_listado.getValor(i, "ide_solicitud_anticipo")));
+        }
+        save_lista();
+    }
     public void save_lista(){
         txt_num_listado.setDisabled(true); //Desactiva el cuadro de texto
         String numero = iAnticipos.listaMax();
@@ -455,7 +462,6 @@ public class pre_aprobacion_anticipos extends Pantalla{
     @Override
     public void abrirListaReportes() {
         rep_reporte.dibujar();
-
     }
     
     @Override
