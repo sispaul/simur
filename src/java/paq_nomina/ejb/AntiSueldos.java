@@ -249,7 +249,7 @@ public class AntiSueldos {
                         "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
                         "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
                         "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in\n" +
-                        "(40,89,75,76,90,41,45,115)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY\n" +
+                        "(40,125,45,75,76,89,98,99,100,102,101,107,115)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY\n" +
                         "E.COD_EMPLEADO) as g\n" +
                         "on aa.COD_EMPLEADO=g.COD_EMPLEADO\n" +
                         "\n" +
@@ -296,7 +296,7 @@ public class AntiSueldos {
                         "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
                         "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
                         "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in\n" +
-                        "(71,59,46,80,91,53,50,73,84,49,5,51,74,85,48,72,108)\n" +
+                        "(71,59,53,46,72,56,84,74,57,73,47,80,85,48,50,108,55,51,52,106,112,91,110)\n" +
                         "and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as l\n" +
                         "on aa.COD_EMPLEADO=l.COD_EMPLEADO\n" +
                         ") as m\n" +
@@ -532,7 +532,7 @@ public class AntiSueldos {
                         "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
                         "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
                         "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in\n" +
-                        "(40,89,75,76,90,41,45,115)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY\n" +
+                        "(40,125,45,75,76,89,98,99,100,102,101,107,115)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY\n" +
                         "E.COD_EMPLEADO) as g\n" +
                         "on aa.COD_EMPLEADO=g.COD_EMPLEADO\n" +
                         "\n" +
@@ -579,7 +579,7 @@ public class AntiSueldos {
                         "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
                         "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
                         "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in\n" +
-                        "(71,59,46,80,91,53,50,73,84,49,5,51,74,85,48,72,108)\n" +
+                        "(71,59,53,46,72,56,84,74,57,73,47,80,85,48,50,108,55,51,52,106,112,91,110)\n" +
                         "and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as l\n" +
                         "on aa.COD_EMPLEADO=l.COD_EMPLEADO\n" +
                         ") as m\n" +

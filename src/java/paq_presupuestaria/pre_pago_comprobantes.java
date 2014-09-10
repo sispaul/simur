@@ -574,7 +574,7 @@ public class pre_pago_comprobantes extends Pantalla{
                case "LISTA DE ACREDITACION":
                     TablaGenerica tab_dato = programas.getTranferencia(Integer.parseInt(set_lista.getValorSeleccionado()));
                if (!tab_dato.isEmpty()) {
-                    p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
+//                    p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
                     p_parametros.put("fecha_acre", cal_fecha1.getFecha()+"");
                     p_parametros.put("num_tran", tab_dato.getValor("num_documento")+"");
                     rep_reporte.cerrar();

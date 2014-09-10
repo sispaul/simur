@@ -280,20 +280,21 @@ public class pre_listado_rechazado extends Pantalla{
         //tabla detalle
         detalle.setId("detalle");
         detalle.setConexion(con_postgres);
-        detalle.setSql("SELECT  \n" +
-                        "d.ide_detalle_listado,  \n" +
-                        "d.ide_listado,  \n" +
-                        "d.item,  \n" +
-                        "d.comprobante,  \n" +
-                        "d.cedula_pass_beneficiario,  \n" +
-                        "d.nombre_beneficiario,  \n" +
-                        "d.valor,  \n" +
-                        "d.num_documento,  \n" +
-                        "null AS observacion ,\n" +
-                        "null as comentario_transaccion \n" +
-                        "FROM     \n" +
-                        "tes_detalle_comprobante_pago_listado AS d  \n" +
-                        "where ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'PAGADO') and num_transferencia is null and d.num_documento like '"+num_listado+"'");
+        detalle.setSql("SELECT   \n" +
+                "d.ide_detalle_listado,   \n" +
+                "d.ide_listado,   \n" +
+                "d.item,   \n" +
+                "d.comprobante,   \n" +
+                "d.cedula_pass_beneficiario,   \n" +
+                "d.nombre_beneficiario,   \n" +
+                "d.valor,   \n" +
+                "d.num_documento,   \n" +
+                "null AS observacion , \n" +
+                "d.comentario,\n" +
+                "d.num_transferencia\n" +
+                "FROM      \n" +
+                "tes_detalle_comprobante_pago_listado AS d   \n" +
+                "where ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'PAGADO') and num_transferencia is null and d.num_documento like '"+num_listado+"'");
         detalle.getColumna("ide_detalle_listado").setVisible(false);
         List list = new ArrayList();
         Object fil1[] = {
@@ -307,7 +308,7 @@ public class pre_listado_rechazado extends Pantalla{
         detalle.getColumna("observacion").setRadio(list, "");
         detalle.getColumna("item").setVisible(false);
         detalle.getColumna("ide_listado").setVisible(false);
-        detalle.getColumna("comentario_transaccion").setLongitud(150);
+        detalle.getColumna("comentario").setLongitud(150);
         detalle.getColumna("nombre_beneficiario").setLongitud(20);
         detalle.getColumna("cedula_pass_beneficiario").setLongitud(20);
         detalle.setRows(5);
@@ -392,14 +393,14 @@ public class pre_listado_rechazado extends Pantalla{
         for (int i = 0; i < detalle.getTotalFilas(); i++) { 
             if(detalle.getValor(i, "observacion")!=null){
                 if(detalle.getValor(i, "observacion").equals("1")){
-                    programas.rechazoComprobante(detalle.getValor(i, "num_documento"), detalle.getValor(i, "comprobante"), Integer.parseInt(detalle.getValor(i, "ide_listado")),detalle.getValor(i, "comentario_transaccion"))
+                    programas.rechazoComprobante(detalle.getValor(i, "num_documento"), detalle.getValor(i, "comprobante"), Integer.parseInt(detalle.getValor(i, "ide_listado")),detalle.getValor(i, "comentario"))
                             ;
-                    programas.insertRegistro(Integer.parseInt(detalle.getValor(i, "ide_listado")), Integer.parseInt(detalle.getValor(i, "item")), Integer.parseInt(detalle.getValor(i, "ide_detalle_listado")), detalle.getValor(i, "comprobante"));
+//                    programas.insertRegistro(Integer.parseInt(detalle.getValor(i, "ide_listado")), Integer.parseInt(detalle.getValor(i, "item")), Integer.parseInt(detalle.getValor(i, "ide_detalle_listado")), detalle.getValor(i, "comprobante"));
                 }else {
-                    if(detalle.getValor(i, "comentario_transaccion")!=null && detalle.getValor(i, "comentario_transaccion").toString().isEmpty() == false){
-                        programas.numTransferencia(detalle.getValor(i, "num_documento"), detalle.getValor(i, "comprobante"), Integer.parseInt(detalle.getValor(i, "ide_listado")),detalle.getValor(i, "comentario_transaccion"));
+                    if(detalle.getValor(i, "num_transferencia")!=null && detalle.getValor(i, "num_transferencia").toString().isEmpty() == false){
+                        programas.numTransferencia(detalle.getValor(i, "num_documento"), detalle.getValor(i, "comprobante"), Integer.parseInt(detalle.getValor(i, "ide_listado")),detalle.getValor(i, "num_transferencia"));
                         
-                        programas.insertRegistro(Integer.parseInt(detalle.getValor(i, "ide_listado")), Integer.parseInt(detalle.getValor("item")), Integer.parseInt(detalle.getValor(i, "ide_detalle_listado")), detalle.getValor(i, "comprobante"));
+//                        programas.insertRegistro(Integer.parseInt(detalle.getValor(i, "ide_listado")), Integer.parseInt(detalle.getValor("item")), Integer.parseInt(detalle.getValor(i, "ide_detalle_listado")), detalle.getValor(i, "comprobante"));
                     }
                 }
             }

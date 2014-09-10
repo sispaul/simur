@@ -1288,6 +1288,49 @@ public void actuaDevolucion(Integer solic){
     con_postgres = null;
 }
 
+public TablaGenerica getPeriodoA(Integer ide) {
+        //Busca a una empresa en la tabla maestra_ruc por ruc
+    System.err.println("Holas");
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        conectar();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT ide_anticipo,\n" +
+                            "ide_detalle_anticipo,\n" +
+                            "ide_periodo_descuento,\n" +
+                            "periodo,\n" +
+                            "anio\n" +
+                            "FROM\n" +
+                            "srh_detalle_anticipo\n" +
+                            "where periodo is null and anio is null and ide_anticipo ="+ide);
+        tab_persona.ejecutarSql();
+        conexion.desconectar();
+        conexion = null;
+        return tab_persona;
+}
+
+
+    public void actuaPerAnio(Integer anti){
+    String au_sql="update srh_detalle_anticipo\n" +
+"set periodo =d.periodo, \n" +
+"anio =d.anio\n" +
+"from (SELECT\n" +
+"ide_periodo_anticipo,\n" +
+"periodo,\n" +
+"anio\n" +
+"FROM\n" +
+"srh_periodo_anticipo ) as d\n" +
+"where \n" +
+"srh_detalle_anticipo.periodo is null and\n" +
+"srh_detalle_anticipo.anio is null and \n" +
+"d.ide_periodo_anticipo = srh_detalle_anticipo.ide_periodo_descuento  and \n" +
+"srh_detalle_anticipo.ide_anticipo = "+anti;
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+
 public void actuaSoliDevolucion(Integer solic){
     String au_sql="UPDATE srh_solicitud_anticipo set login_aprob_solicitud = null,\n" +
                 "ip_aprob_solicitud = null,fecha_aprobacion = null,aprobado_solicitante = null\n" +
