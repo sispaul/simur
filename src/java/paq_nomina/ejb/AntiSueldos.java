@@ -631,7 +631,7 @@ public class AntiSueldos {
                 "WHERE\n" +
                 "e.estado = 1 AND\n" +
                 "e.cod_tipo = i.cod_tipo AND\n" +
-                "e.cod_tipo in (4,7,8)\n" +
+                "e.cod_tipo in (4,7,8,10)\n" +
                 "and e.cedula_pass like '"+ci+"'");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();

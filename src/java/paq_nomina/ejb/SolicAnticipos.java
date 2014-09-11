@@ -1052,7 +1052,7 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
         tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT ide_solicitud_anticipo,ide_listado FROM srh_solicitud_anticipo where ide_solicitud_anticipo ="+lista);
+        tab_funcionario.setSql("SELECT ide_solicitud_anticipo,ide_listado,periodo,anio FROM srh_solicitud_anticipo where ide_solicitud_anticipo ="+lista);
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
