@@ -35,6 +35,9 @@ import persistencia.Conexion;
  */
 public class pre_aprobacion_anticipos extends Pantalla{
     
+    //PARA ASIGNACION DE MES
+    String selec_mes = new String();
+    
     private Tabla tab_anticipo = new Tabla();
     private Tabla tab_listado = new Tabla();
     private Tabla tab_consulta = new Tabla();
@@ -477,6 +480,10 @@ public class pre_aprobacion_anticipos extends Pantalla{
     }
     
     public void aceptoAprobacion() {
+        System.err.println("Holas4");
+        Integer mes1=0,mes2=0,mes3=0,mess3=0,mes4=0,mes5=0,mes6=0,mes7=0,mes8=0,mes9=0,mes10=0,mes11=0,mes12=0;
+        String anio1,anio2,encab1,encab2,encab3,encab4,encab5,encab6,encab7,encab8,encab9,encab10,encab11,encab12;
+       
         rep_reporte.cerrar();
         switch (rep_reporte.getNombre()) {
             case "LISTA DE PAGO":
@@ -490,6 +497,320 @@ public class pre_aprobacion_anticipos extends Pantalla{
                             if (!tab_dato3.isEmpty()) {
                                 TablaGenerica tab_dato4 = iAnticipos.getUsuario(tab_dato1.getValor("login_aprob_solicitud"));
                                 if (!tab_dato4.isEmpty()) {
+                                    mes1 = Integer.parseInt(tab_dato.getValor("periodo"));
+                                    mes2 = mes1+1;
+                                    mess3 = mes2+1;
+                                    mes4 = mess3+1;
+                                    mes5 = mes4+1;
+                                    mes6 = mes5+1;
+                                    mes7 = mes6+1;
+                                    mes8 = mes7+1;
+                                    mes9 = mes8+1;
+                                    mes10 = mes9+1;
+                                    mes11 = mes10+1;
+                                    mes12 = mes11+1;
+                                    if(mes1<=12){//primer mes
+                                        p_parametros.put("mes1", String.valueOf(mes1)+"");
+                                        p_parametros.put("an1", String.valueOf(utilitario.getAnio(utilitario.getFechaActual()))+"");
+                                        encab1=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes1).substring(0,4);
+                                        p_parametros.put("encab1", encab1+"");
+                                        if(mes2<=12){//segundo mes
+                                            p_parametros.put("mes2", String.valueOf(mes2)+"");
+                                            p_parametros.put("an2", String.valueOf(utilitario.getAnio(utilitario.getFechaActual()))+"");
+                                            encab2=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes2).substring(0,4);
+                                            p_parametros.put("encab2", encab2+"");
+                                            if(mess3<=12){
+                                                p_parametros.put("mes3", String.valueOf(mess3)+"");
+                                                p_parametros.put("an3", String.valueOf(utilitario.getAnio(utilitario.getFechaActual()))+"");
+                                                encab3=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mess3).substring(0,4);
+                                                p_parametros.put("encab3", encab3+"");
+                                                if(mes4<=12){
+                                                    p_parametros.put("mes4", String.valueOf(mes4)+"");
+                                                    p_parametros.put("an4", String.valueOf(utilitario.getAnio(utilitario.getFechaActual()))+"");
+                                                    encab4=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes4).substring(0,4);
+                                                    p_parametros.put("encab4", encab4+"");
+                                                    if(mes5<=12){
+                                                        p_parametros.put("mes5", String.valueOf(mes5)+"");
+                                                        p_parametros.put("an5", String.valueOf(utilitario.getAnio(utilitario.getFechaActual()))+"");
+                                                        encab5=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes5).substring(0,4);
+                                                        p_parametros.put("encab5", encab5+"");
+                                                        if(mes6<=12){
+                                                            p_parametros.put("mes6", String.valueOf(mes6)+"");
+                                                            p_parametros.put("an6", String.valueOf(utilitario.getAnio(utilitario.getFechaActual()))+"");
+                                                            encab6=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes6).substring(0,4);
+                                                            p_parametros.put("encab6", encab6+"");
+                                                            if(mes7<=12){
+                                                                p_parametros.put("mes7", String.valueOf(mes7)+"");
+                                                                p_parametros.put("an7", String.valueOf(utilitario.getAnio(utilitario.getFechaActual()))+"");
+                                                                encab7=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes7).substring(0,4);
+                                                                p_parametros.put("encab7", encab7+"");
+                                                                if(mes8<=12){
+                                                                    p_parametros.put("mes8", String.valueOf(mes8)+"");
+                                                                    p_parametros.put("an8", String.valueOf(utilitario.getAnio(utilitario.getFechaActual()))+"");
+                                                                    encab8=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes8).substring(0,4);
+                                                                    p_parametros.put("encab8", encab8+"");
+                                                                    if(mes9<=12){
+                                                                        p_parametros.put("mes9", String.valueOf(mes9)+"");
+                                                                        p_parametros.put("an9", String.valueOf(utilitario.getAnio(utilitario.getFechaActual()))+"");
+                                                                        encab9=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes9).substring(0,4);
+                                                                        p_parametros.put("encab9", encab9+"");
+                                                                        if(mes10<=12){
+                                                                            p_parametros.put("mes10", String.valueOf(mes10)+"");
+                                                                            p_parametros.put("an10", String.valueOf(utilitario.getAnio(utilitario.getFechaActual()))+"");
+                                                                            encab10=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes10).substring(0,4);
+                                                                            p_parametros.put("encab10", encab10+"");
+                                                                            if(mes11<=12){
+                                                                                p_parametros.put("mes11", String.valueOf(mes11)+"");
+                                                                                p_parametros.put("an11", String.valueOf(utilitario.getAnio(utilitario.getFechaActual()))+"");
+                                                                                encab11=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes11).substring(0,4);
+                                                                                p_parametros.put("encab11", encab1+"");
+                                                                                if(mes12<=12){
+                                                                                    p_parametros.put("mes12", String.valueOf(mes12)+"");
+                                                                                    p_parametros.put("an12", String.valueOf(utilitario.getAnio(utilitario.getFechaActual()))+"");
+                                                                                    encab12=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes12).substring(0,4);
+                                                                                    p_parametros.put("encab12", encab12+"");
+                                                                                }else{
+                                                                                     p_parametros.put("mes12", String.valueOf(mes12-12)+"");
+                                                p_parametros.put("an12", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab12=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes12-12).substring(0,4);
+                                                p_parametros.put("encab12", encab12+"");
+                                                                                }
+                                                                            }else{
+                                                                                p_parametros.put("mes11", String.valueOf(mes11-12)+"");
+                                                p_parametros.put("an11", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab11=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes11-12).substring(0,4);
+                                                p_parametros.put("encab11", encab11+"");
+                                                p_parametros.put("mes12", String.valueOf(mes12-12)+"");
+                                                p_parametros.put("an12", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab12=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes12-12).substring(0,4);
+                                                p_parametros.put("encab12", encab12+"");
+                                                                            }
+                                                                        }else{
+                                                                            p_parametros.put("mes10", String.valueOf(mes10-12)+"");
+                                                p_parametros.put("an10", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab10=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes10-12).substring(0,4);
+                                                p_parametros.put("encab10", encab10+"");
+                                                p_parametros.put("mes11", String.valueOf(mes11-12)+"");
+                                                p_parametros.put("an11", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab11=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes11-12).substring(0,4);
+                                                p_parametros.put("encab11", encab11+"");
+                                                p_parametros.put("mes12", String.valueOf(mes12-12)+"");
+                                                p_parametros.put("an12", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab12=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes12-12).substring(0,4);
+                                                p_parametros.put("encab12", encab12+"");
+                                                                        }
+                                                                    }else{
+                                                                        p_parametros.put("mes9", String.valueOf(mes9-12)+"");
+                                                p_parametros.put("an9", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab9=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes9-12).substring(0,4);
+                                                p_parametros.put("encab9", encab9+"");
+                                                p_parametros.put("mes10", String.valueOf(mes10-12)+"");
+                                                p_parametros.put("an10", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab10=String.valueOf(utilitario.getAnio(utilitario.getFechaActual()))+"/"+meses(mes10-12);
+                                                p_parametros.put("encab10", encab10+"");
+                                                p_parametros.put("mes11", String.valueOf(mes11-12)+"");
+                                                p_parametros.put("an11", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab11=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes11-12).substring(0,4);
+                                                p_parametros.put("encab11", encab11+"");
+                                                p_parametros.put("mes12", String.valueOf(mes12-12)+"");
+                                                p_parametros.put("an12", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab12=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes12-12).substring(0,4);
+                                                p_parametros.put("encab12", encab12+"");
+                                                                    }
+                                                                }else{
+                                                                    p_parametros.put("mes8", String.valueOf(mes8-12)+"");
+                                                p_parametros.put("an8", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab8=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes8-12).substring(0,4);
+                                                p_parametros.put("encab8", encab8+"");
+                                                p_parametros.put("mes9", String.valueOf(mes9-12)+"");
+                                                p_parametros.put("an9", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab9=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes9-12).substring(0,4);
+                                                p_parametros.put("encab9", encab9+"");
+                                                p_parametros.put("mes10", String.valueOf(mes10-12)+"");
+                                                p_parametros.put("an10", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab10=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes10-12).substring(0,4);
+                                                p_parametros.put("encab10", encab10+"");
+                                                p_parametros.put("mes11", String.valueOf(mes11-12)+"");
+                                                p_parametros.put("an11", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab11=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes11-12).substring(0,4);
+                                                p_parametros.put("encab11", encab11+"");
+                                                p_parametros.put("mes12", String.valueOf(mes12-12)+"");
+                                                p_parametros.put("an12", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab12=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes12-12).substring(0,4);
+                                                p_parametros.put("encab12", encab12+"");
+                                                                }
+                                                            }else{
+                                                       p_parametros.put("mes7", String.valueOf(mes7-12)+"");
+                                                p_parametros.put("an7", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab7=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes7-12).substring(0,4);
+                                                p_parametros.put("encab7", encab7+"");
+                                                p_parametros.put("mes8", String.valueOf(mes8-12)+"");
+                                                p_parametros.put("an8", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab8=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes8-12).substring(0,4);
+                                                p_parametros.put("encab8", encab8+"");
+                                                p_parametros.put("mes9", String.valueOf(mes9-12)+"");
+                                                p_parametros.put("an9", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab9=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes9-12).substring(0,4);
+                                                p_parametros.put("encab9", encab9+"");
+                                                p_parametros.put("mes10", String.valueOf(mes10-12)+"");
+                                                p_parametros.put("an10", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab10=String.valueOf(utilitario.getAnio(utilitario.getFechaActual()))+"/"+meses(mes10-12);
+                                                p_parametros.put("encab10", encab10+"");
+                                                p_parametros.put("mes11", String.valueOf(mes11-12)+"");
+                                                p_parametros.put("an11", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab11=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes11-12).substring(0,4);
+                                                p_parametros.put("encab11", encab11+"");
+                                                p_parametros.put("mes12", String.valueOf(mes12-12)+"");
+                                                p_parametros.put("an12", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab12=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes12-12).substring(0,4);
+                                                p_parametros.put("encab12", encab12+"");
+                                                            }
+                                                        }else{
+                                                p_parametros.put("mes6", String.valueOf(mes6-12)+"");
+                                                p_parametros.put("an6", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab6=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes6-12).substring(0,4);
+                                                p_parametros.put("encab6", encab6+"");
+                                                p_parametros.put("mes7", String.valueOf(mes7-12)+"");
+                                                p_parametros.put("an7", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab7=String.valueOf(utilitario.getAnio(utilitario.getFechaActual()))+"/"+meses(mes7-12);
+                                                p_parametros.put("encab7", encab7+"");
+                                                p_parametros.put("mes8", String.valueOf(mes8-12)+"");
+                                                p_parametros.put("an8", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab8=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes8-12).substring(0,4);
+                                                p_parametros.put("encab8", encab8+"");
+                                                p_parametros.put("mes9", String.valueOf(mes9-12)+"");
+                                                p_parametros.put("an9", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab9=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes9-12).substring(0,4);
+                                                p_parametros.put("encab9", encab9+"");
+                                                p_parametros.put("mes10", String.valueOf(mes10-12)+"");
+                                                p_parametros.put("an10", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab10=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes10-12).substring(0,4);
+                                                p_parametros.put("encab10", encab10+"");
+                                                p_parametros.put("mes11", String.valueOf(mes11-12)+"");
+                                                p_parametros.put("an11", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab11=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes11-12).substring(0,4);
+                                                p_parametros.put("encab11", encab11+"");
+                                                p_parametros.put("mes12", String.valueOf(mes12-12)+"");
+                                                p_parametros.put("an12", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab12=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes12-12).substring(0,4);
+                                                p_parametros.put("encab12", encab12+"");
+                                                        }
+                                                    }else{
+                                                p_parametros.put("mes5", String.valueOf(mes5-12)+"");
+                                                p_parametros.put("an5", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab5=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes5-12).substring(0,4);
+                                                p_parametros.put("encab5", encab5+"");
+                                                p_parametros.put("mes6", String.valueOf(mes6-12)+"");
+                                                p_parametros.put("an6", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab6=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes6-12).substring(0,4);
+                                                p_parametros.put("encab6", encab6+"");
+                                                p_parametros.put("mes7", String.valueOf(mes7-12)+"");
+                                                p_parametros.put("an7", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab7=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes7-12).substring(0,4);
+                                                p_parametros.put("encab7", encab7+"");
+                                                p_parametros.put("mes8", String.valueOf(mes8-12)+"");
+                                                p_parametros.put("an8", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab8=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes8-12).substring(0,4);
+                                                p_parametros.put("encab8", encab8+"");
+                                                p_parametros.put("mes9", String.valueOf(mes9-12)+"");
+                                                p_parametros.put("an9", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab9=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes9-12).substring(0,4);
+                                                p_parametros.put("encab9", encab9+"");
+                                                p_parametros.put("mes10", String.valueOf(mes10-12)+"");
+                                                p_parametros.put("an10", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab10=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes10-12).substring(0,4);
+                                                p_parametros.put("encab10", encab10+"");
+                                                p_parametros.put("mes11", String.valueOf(mes11-12)+"");
+                                                p_parametros.put("an11", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab11=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes11-12).substring(0,4);
+                                                p_parametros.put("encab11", encab11+"");
+                                                p_parametros.put("mes12", String.valueOf(mes12-12)+"");
+                                                p_parametros.put("an12", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab12=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes12-12).substring(0,4);
+                                                p_parametros.put("encab12", encab12+"");
+                                                    }
+                                                }else{
+                                                p_parametros.put("mes4", String.valueOf(mes4-12)+"");
+                                                p_parametros.put("an4", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab4=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes4-12).substring(0,4);
+                                                p_parametros.put("encab4", encab4+"");
+                                                p_parametros.put("mes5", String.valueOf(mes5-12)+"");
+                                                p_parametros.put("an5", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab5=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes5-12).substring(0,4);
+                                                p_parametros.put("encab5", encab5+"");
+                                                p_parametros.put("mes6", String.valueOf(mes6-12)+"");
+                                                p_parametros.put("an6", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab6=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes6-12).substring(0,4);
+                                                p_parametros.put("encab6", encab6+"");
+                                                p_parametros.put("mes7", String.valueOf(mes7-12)+"");
+                                                p_parametros.put("an7", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab7=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes7-12).substring(0,4);
+                                                p_parametros.put("encab7", encab7+"");
+                                                p_parametros.put("mes8", String.valueOf(mes8-12)+"");
+                                                p_parametros.put("an8", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab8=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes8-12).substring(0,4);
+                                                p_parametros.put("encab8", encab8+"");
+                                                p_parametros.put("mes9", String.valueOf(mes9-12)+"");
+                                                p_parametros.put("an9", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab9=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes9-12).substring(0,4);
+                                                p_parametros.put("encab9", encab9+"");
+                                                p_parametros.put("mes10", String.valueOf(mes10-12)+"");
+                                                p_parametros.put("an10", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab10=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes10-12).substring(0,4);
+                                                p_parametros.put("encab10", encab10+"");
+                                                p_parametros.put("mes11", String.valueOf(mes11-12)+"");
+                                                p_parametros.put("an11", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab11=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes11-12).substring(0,4);
+                                                p_parametros.put("encab11", encab11+"");
+                                                p_parametros.put("mes12", String.valueOf(mes12-12)+"");
+                                                p_parametros.put("an12", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab12=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes12-12).substring(0,4);
+                                                p_parametros.put("encab12", encab12+"");
+                                            }
+                                            }else{
+                                                p_parametros.put("mes3", String.valueOf(mess3-12)+"");
+                                                p_parametros.put("an3", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab3=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes3-12).substring(0,4);
+                                                p_parametros.put("encab3", encab3+"");
+                                                p_parametros.put("mes4", String.valueOf(mes4-12)+"");
+                                                p_parametros.put("an4", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab4=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes4-12).substring(0,4);
+                                                p_parametros.put("encab4", encab4+"");
+                                                p_parametros.put("mes5", String.valueOf(mes5-12)+"");
+                                                p_parametros.put("an5", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab5=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes5-12).substring(0,4);
+                                                p_parametros.put("encab5", encab5+"");
+                                                p_parametros.put("mes6", String.valueOf(mes6-12)+"");
+                                                p_parametros.put("an6", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab6=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes6-12).substring(0,4);
+                                                p_parametros.put("encab6", encab6+"");
+                                                p_parametros.put("mes7", String.valueOf(mes7-12)+"");
+                                                p_parametros.put("an7", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab7=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes7-12).substring(0,4);
+                                                p_parametros.put("encab7", encab7+"");
+                                                p_parametros.put("mes8", String.valueOf(mes8-12)+"");
+                                                p_parametros.put("an8", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab8=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes8-12).substring(0,4);
+                                                p_parametros.put("encab8", encab8+"");
+                                                p_parametros.put("mes9", String.valueOf(mes9-12)+"");
+                                                p_parametros.put("an9", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab9=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes9-12).substring(0,4);
+                                                p_parametros.put("encab9", encab9+"");
+                                                p_parametros.put("mes10", String.valueOf(mes10-12)+"");
+                                                p_parametros.put("an10", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab10=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes10-12).substring(0,4);
+                                                p_parametros.put("encab10", encab10+"");
+                                                p_parametros.put("mes11", String.valueOf(mes11-12)+"");
+                                                p_parametros.put("an11", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab11=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes11-12).substring(0,4);
+                                                p_parametros.put("encab11", encab11+"");
+                                                p_parametros.put("mes12", String.valueOf(mes12-12)+"");
+                                                p_parametros.put("an12", String.valueOf(utilitario.getAnio(utilitario.getFechaActual())+1)+"");
+                                                encab12=String.valueOf(utilitario.getAnio(utilitario.getFechaActual())).substring(2,4)+"/"+meses(mes12-12).substring(0,4);
+                                                p_parametros.put("encab12", encab12+"");
+                                            }
+                                        }
+                                    }
                                     p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
                                     p_parametros.put("listado", tab_dato.getValor("ide_listado")+"");
                                     p_parametros.put("quien_elabora", tab_dato3.getValor("NOM_USUA")+"");
@@ -518,6 +839,48 @@ public class pre_aprobacion_anticipos extends Pantalla{
     }
     
     
+        //BUSQUEDA DE MES PARA LA AISGNACION DEL PERIODO
+    public String meses(Integer numero){
+        switch (numero){
+            case 12:
+                selec_mes = "Diciembre";
+                break;
+            case 11:
+                selec_mes = "Noviembre";
+                break;
+            case 10:
+                selec_mes = "Octubre";
+                break;
+            case 9:
+                selec_mes = "Septiembre";
+                break;
+            case 8:
+                selec_mes = "Agosto";
+                break;
+            case 7:
+                selec_mes = "Julio";
+                break;
+            case 6:
+                selec_mes = "Junio";
+                break;
+            case 5:
+                selec_mes = "Mayo";
+                break;
+            case 4:
+                selec_mes = "Abril";
+                break;
+            case 3:
+                selec_mes = "Marzo";
+                break;
+            case 2:
+                selec_mes = "Febrero";
+                break;
+            case 1:
+                selec_mes = "Enero";
+                break;
+        }
+        return selec_mes;
+    }
     
     public Tabla getTab_anticipo() {
         return tab_anticipo;

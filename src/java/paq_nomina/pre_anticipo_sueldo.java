@@ -730,6 +730,7 @@ public class pre_anticipo_sueldo extends Pantalla{
                     servidor();
                 }
             }else{
+                System.err.println("Holas");
                 tab_parametros.getColumna("porcentaje_descuento_diciembre").setLectura(true);
                 tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
                 tab_parametros.setValor("valor_cuota_mensual", "NULL");
@@ -1048,7 +1049,6 @@ public class pre_anticipo_sueldo extends Pantalla{
                                         llenarFecha();
                                         cuotas();
                                     }else{
-                                        System.err.println("bien");
                                         utilitario.agregarMensaje("Tiempo Maximo de Pago", "12 MESES");
                                     }
                                 }else{
@@ -1067,7 +1067,7 @@ public class pre_anticipo_sueldo extends Pantalla{
                                     cuotas();
                                 }else if(porcentaje > 12){
                                     llenarFecha();
-                                    utilitario.agregarMensajeInfo("Seleccione Porcentaje de Descuento", "Para Cuota de Diciembre");
+                                    cuotas();
                                 }else{
                                     llenarFecha();
                                     cuotas();
@@ -1441,7 +1441,7 @@ public class pre_anticipo_sueldo extends Pantalla{
                                             tab_parametros.setValor("ide_periodo_anticipo_inicial", fecha);
                                             utilitario.addUpdate("tab_anticipo");
                                             //fecha final
-                                            TablaGenerica tab_dato1 = iAnticipos.periodos(meses(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))+mess),String.valueOf(Integer.parseInt(anio)));
+                                            TablaGenerica tab_dato1 = iAnticipos.periodos(meses(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))+mess-1),String.valueOf(Integer.parseInt(anio)));
                                              if (!tab_dato1.isEmpty()) {
                                                   fecha= tab_dato1.getValor("ide_periodo_anticipo");
                                                   tab_parametros.setValor("ide_periodo_anticipo_final", fecha);
