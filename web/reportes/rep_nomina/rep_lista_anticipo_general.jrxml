@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_lista_anticipo_general" language="groovy" pageWidth="1684" pageHeight="1190" orientation="Landscape" columnWidth="1644" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0c981b17-44e2-4f7c-8a72-faf1eb32b8b0">
+	<property name="ireport.zoom" value="0.7513148009015781"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT
+s.ide_solicitud_anticipo,
+s.ci_solicitante,
+s.solicitante,
+"c".valor_anticipo,
+"p".mes AS mes_descuento,
+s.ide_listado,
+s.fecha_listado,
+s.numero_cuenta,
+b.ban_nombre,
+"t".nombre,
+b.codigo_banco,
+"public".srh_detalle_anticipo.ide_anticipo,
+"public".srh_detalle_anticipo.ide_detalle_anticipo,
+"public".srh_detalle_anticipo.valor,
+"public".srh_detalle_anticipo.ide_periodo_descuento,
+"public".srh_detalle_anticipo.ide_periodo_descontado,
+"public".srh_detalle_anticipo.ide_estado_cuota,
+"public".srh_detalle_anticipo.observacion,
+"public".srh_detalle_anticipo.cuota,
+s.anio
+FROM
+"public".srh_solicitud_anticipo AS s
+INNER JOIN "public".srh_calculo_anticipo AS "c" ON "c".ide_solicitud_anticipo = s.ide_solicitud_anticipo
+INNER JOIN "public".srh_periodo_anticipo AS "p" ON "p".ide_periodo_anticipo = "c".ide_periodo_anticipo_inicial
+INNER JOIN "public".ocebanco AS b ON b.ban_codigo = s.cod_banco
+INNER JOIN "public".ocecuentas AS "t" ON "t".cod_cuenta = s.cod_cuenta
+INNER JOIN "public".srh_detalle_anticipo ON "public".srh_detalle_anticipo.ide_anticipo = s.ide_solicitud_anticipo
+WHERE
+"c".ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'APROBADO')
+ORDER BY
+s.ide_solicitud_anticipo ASC
+]]>
+	</queryString>
+	<field name="ide_solicitud_anticipo" class="java.lang.Integer"/>
+	<field name="ci_solicitante" class="java.lang.String"/>
+	<field name="solicitante" class="java.lang.String"/>
+	<field name="valor_anticipo" class="java.math.BigDecimal"/>
+	<field name="mes_descuento" class="java.lang.String"/>
+	<field name="ide_listado" class="java.lang.String"/>
+	<field name="fecha_listado" class="java.sql.Date"/>
+	<field name="numero_cuenta" class="java.lang.String"/>
+	<field name="ban_nombre" class="java.lang.String"/>
+	<field name="nombre" class="java.lang.String">
+		<fieldDescription><![CDATA[nombre]]></fieldDescription>
+	</field>
+	<field name="codigo_banco" class="java.lang.String"/>
+	<field name="ide_anticipo" class="java.lang.Integer"/>
+	<field name="ide_detalle_anticipo" class="java.lang.Integer"/>
+	<field name="valor" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[VALOR]]></fieldDescription>
+	</field>
+	<field name="ide_periodo_descuento" class="java.lang.Integer"/>
+	<field name="ide_periodo_descontado" class="java.lang.Integer"/>
+	<field name="ide_estado_cuota" class="java.lang.Integer"/>
+	<field name="observacion" class="java.lang.String"/>
+	<field name="cuota" class="java.lang.String"/>
+	<field name="anio" class="java.lang.String"/>
+	<group name="AÑO">
+		<groupExpression><![CDATA[$F{anio}]]></groupExpression>
+		<groupHeader>
+			<band height="44">
+				<textField>
+					<reportElement uuid="e26e1884-14b5-4eb4-abc2-d87841f432dc" x="104" y="0" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{field}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="50"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="32" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
