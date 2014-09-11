@@ -249,7 +249,7 @@ order by tipo_ser,solicitante]]>
 					<text><![CDATA[COD. BANCO]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="3723e1d8-3e2a-4beb-862c-60a6e5d0e44c" x="259" y="24" width="51" height="13"/>
+					<reportElement uuid="3723e1d8-3e2a-4beb-862c-60a6e5d0e44c" x="257" y="24" width="58" height="13"/>
 					<textElement>
 						<font size="7" isBold="true"/>
 					</textElement>
@@ -563,7 +563,7 @@ order by tipo_ser,solicitante]]>
 				<textFieldExpression><![CDATA[$F{codigo_banco}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="60fa3788-aa36-47c9-a10c-4d278982fcd0" x="262" y="2" width="48" height="13"/>
+				<reportElement uuid="60fa3788-aa36-47c9-a10c-4d278982fcd0" x="257" y="2" width="58" height="13"/>
 				<textElement textAlignment="Justified">
 					<font size="7"/>
 				</textElement>
