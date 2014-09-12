@@ -639,6 +639,20 @@ public class AntiSueldos {
         return tab_funcionario;
     }
     
+        public TablaGenerica GarNumConat(Integer ci){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT cod_empleado,cod_tipo \n" +
+                                "FROM srh_num_contratos\n" +
+                                "where cod_tipo in (4,7,8,10) and cod_empleado ="+ci);
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+    }
+    
     //buscar garante por apellido
     public TablaGenerica VerifGaranteCod(Integer codigo){
         conectar();
