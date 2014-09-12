@@ -1052,7 +1052,15 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
         tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT ide_solicitud_anticipo,ide_listado,periodo,anio FROM srh_solicitud_anticipo where ide_solicitud_anticipo ="+lista);
+        tab_funcionario.setSql("SELECT\n" +
+"s.ide_solicitud_anticipo,\n" +
+"s.ide_listado,\n" +
+"s.anio,\n" +
+"d.periodo\n" +
+"FROM\n" +
+"srh_solicitud_anticipo s\n" +
+"INNER JOIN srh_detalle_anticipo d ON d.ide_anticipo = s.ide_solicitud_anticipo\n" +
+"where s.ide_solicitud_anticipo ="+lista);
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
@@ -1190,13 +1198,39 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
         tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT cod_empleado,cedula_pass,nombres,estado,cod_cargo\n" +
-                                "FROM srh_empleado where cod_cargo = 391 and estado = 1");
+        tab_funcionario.setSql("SELECT e.cod_empleado,\n" +
+                            "e.cedula_pass,\n" +
+                            "e.nombres,\n" +
+                            "e.estado,\n" +
+                            "e.cod_cargo,\n" +
+                            "c.nombre_cargo\n" +
+                            "FROM srh_empleado e\n" +
+                            "INNER JOIN srh_cargos c ON e.cod_cargo = c.cod_cargo\n" +
+                            "WHERE e.cod_cargo = 391 AND e.estado = 1");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
-        return tab_funcionario;
-        
+        return tab_funcionario;   
+ }
+  
+    public TablaGenerica cargoSolic(String nombre){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT e.cod_empleado,\n" +
+                        "e.cedula_pass,\n" +
+                        "e.nombres,\n" +
+                        "e.estado,\n" +
+                        "e.cod_cargo,\n" +
+                        "c.nombre_cargo\n" +
+                        "FROM srh_empleado e\n" +
+                        "INNER JOIN srh_cargos c ON e.cod_cargo = c.cod_cargo\n" +
+                        "WHERE e.nombres like '"+nombre+"'");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;   
  }
  
   public String listaMax() {
@@ -1310,27 +1344,47 @@ public TablaGenerica getPeriodoA(Integer ide) {
 }
 
 
-    public void actuaPerAnio(Integer anti){
+    public void actuaPerAnio15(Integer anti){
     String au_sql="update srh_detalle_anticipo\n" +
-"set periodo =d.periodo, \n" +
-"anio =d.anio\n" +
-"from (SELECT\n" +
-"ide_periodo_anticipo,\n" +
-"periodo,\n" +
-"anio\n" +
-"FROM\n" +
-"srh_periodo_anticipo ) as d\n" +
-"where \n" +
-"srh_detalle_anticipo.periodo is null and\n" +
-"srh_detalle_anticipo.anio is null and \n" +
-"d.ide_periodo_anticipo = srh_detalle_anticipo.ide_periodo_descuento  and \n" +
-"srh_detalle_anticipo.ide_anticipo = "+anti;
+            "set periodo =d.periodo, \n" +
+            "anio =d.anio\n" +
+            "from (SELECT\n" +
+            "ide_periodo_anticipo,\n" +
+            "periodo,\n" +
+            "anio\n" +
+            "FROM\n" +
+            "srh_periodo_anticipo ) as d\n" +
+            "where \n" +
+            "srh_detalle_anticipo.periodo is null and\n" +
+            "srh_detalle_anticipo.anio is null and \n" +
+            "d.ide_periodo_anticipo = srh_detalle_anticipo.ide_periodo_descuento  and \n" +
+            "srh_detalle_anticipo.ide_anticipo = "+anti;
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
     }
 
+    public void actuaPerAnio16(Integer anti){
+    String au_sql="update srh_detalle_anticipo\n" +
+            "set periodo =d.periodo, \n" +
+            "anio =d.anio\n" +
+            "from (SELECT\n" +
+            "ide_periodo_anticipo,\n" +
+            "periodo,\n" +
+            "anio\n" +
+            "FROM\n" +
+            "srh_periodo_anticipo ) as d\n" +
+            "where \n" +
+            "srh_detalle_anticipo.periodo is null and\n" +
+            "srh_detalle_anticipo.anio is null and \n" +
+            "d.ide_periodo_anticipo = srh_detalle_anticipo.ide_periodo_descuento  and \n" +
+            "srh_detalle_anticipo.ide_anticipo = "+anti;
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
 public void actuaSoliDevolucion(Integer solic){
     String au_sql="UPDATE srh_solicitud_anticipo set login_aprob_solicitud = null,\n" +
                 "ip_aprob_solicitud = null,fecha_aprobacion = null,aprobado_solicitante = null\n" +

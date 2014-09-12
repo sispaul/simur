@@ -399,7 +399,7 @@ public class pre_listado_rechazado extends Pantalla{
                 }else {
                     if(detalle.getValor(i, "num_transferencia")!=null && detalle.getValor(i, "num_transferencia").toString().isEmpty() == false){
                         programas.numTransferencia(detalle.getValor(i, "num_documento"), detalle.getValor(i, "comprobante"), Integer.parseInt(detalle.getValor(i, "ide_listado")),detalle.getValor(i, "num_transferencia"));
-                        
+                        programas.estadoLisCom(detalle.getValor(i, "comprobante"));
 //                        programas.insertRegistro(Integer.parseInt(detalle.getValor(i, "ide_listado")), Integer.parseInt(detalle.getValor("item")), Integer.parseInt(detalle.getValor(i, "ide_detalle_listado")), detalle.getValor(i, "comprobante"));
                     }
                 }

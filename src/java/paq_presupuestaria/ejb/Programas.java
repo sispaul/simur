@@ -238,7 +238,7 @@ public class Programas {
     public void actualizarGastos(Integer cen) { 
             // Forma el sql para actualizar
         String str_sql2 ="update conc_cedula_presupuestaria_fechas \n" +
-                                         "set reforma1= 0, devengado1=0, pagado1=0, cobrado1=0, compromiso1=0, cobradoc1=0,val_inicial=0 where tipo= "+cen+"";
+                "set reforma1= 0, devengado1=0, pagado1=0, cobrado1=0, compromiso1=0, cobradoc1=0,val_inicial=0 where tipo= "+cen+"";
         conectar();
         con_postgres.ejecutarSql(str_sql2);
         con_postgres.desconectar();
@@ -426,6 +426,17 @@ public class Programas {
     con_postgres = null;
     }
     
+    public void ActuaListaComp(String comprobante){
+
+        String str_sqlg="UPDATE tes_comprobante_pago\n" +
+                "set estado_comprobante = (SELECT ide_estado_listado FROM tes_estado_listado WHERE estado LIKE 'PENDIENTE')\n" +
+                "where comprobante = '"+comprobante+"'";  
+    conectar();
+    con_postgres.ejecutarSql(str_sqlg);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+    
    public void regreComprobante(String cuenta,String usu,String comprobante,Integer lista,Integer detalle){
 
         String str_sqlg="UPDATE tes_detalle_comprobante_pago_listado\n" +
@@ -467,6 +478,17 @@ public class Programas {
           String str_sqlg="UPDATE tes_detalle_comprobante_pago_listado \n" +
                             "set num_transferencia='"+trans+"'\n" +
                             "WHERE comprobante like'"+comprobante+"' and ide_listado ="+lista+" and num_documento like'"+cuenta+"'";  
+    conectar();
+    con_postgres.ejecutarSql(str_sqlg);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+   
+      public void estadoLisCom(String cuenta){
+          
+          String str_sqlg="UPDATE tes_comprobante_pago\n" +
+                  "SET estado_comprobante = (SELECT ide_estado_listado FROM tes_estado_listado where estado ='PAGADO')\n" +
+                  "WHERE comprobante = '"+cuenta+"'";  
     conectar();
     con_postgres.ejecutarSql(str_sqlg);
     con_postgres.desconectar();
@@ -653,20 +675,20 @@ public class Programas {
         conectar();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
-"ide_detalle_listado,\n" +
-"ide_listado,\n" +
-"comprobante,\n" +
-"cedula_pass_beneficiario,\n" +
-"nombre_beneficiario,\n" +
-"valor,\n" +
-"numero_cuenta,\n" +
-"codigo_banco,\n" +
-"ban_nombre,\n" +
-"tipo_cuenta,\n" +
-"null as proceso\n" +
-"FROM\n" +
-"tes_detalle_comprobante_pago_listado AS d\n" +
-"where ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'ENVIADO') and item ="+item+" and ide_listado ="+lista);
+                "ide_detalle_listado,\n" +
+                "ide_listado,\n" +
+                "comprobante,\n" +
+                "cedula_pass_beneficiario,\n" +
+                "nombre_beneficiario,\n" +
+                "valor,\n" +
+                "numero_cuenta,\n" +
+                "codigo_banco,\n" +
+                "ban_nombre,\n" +
+                "tipo_cuenta,\n" +
+                "null as proceso\n" +
+                "FROM\n" +
+                "tes_detalle_comprobante_pago_listado AS d\n" +
+                "where ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'ENVIADO') and item ="+item+" and ide_listado ="+lista);
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;

@@ -386,7 +386,7 @@ public class pre_pago_comprobantes extends Pantalla{
         bot_save.setValue("Guardar Listado");
         bot_save.setExcluirLectura(true);
         bot_save.setIcon("ui-icon-disk");
-        bot_save.setMetodo("save_lista");
+        bot_save.setMetodo("estadoComp");
         
         Boton bot_delete = new Boton();
         bot_delete.setValue("Quitar de Listado");
@@ -448,6 +448,13 @@ public class pre_pago_comprobantes extends Pantalla{
         tab_detalle1.actualizar();
         utilitario.agregarMensaje("Comprobante", "Regreso a Listado");
         tab_detalle.actualizar();
+    }
+    
+    public void estadoComp(){
+        for (int i = 0; i < tab_detalle1.getTotalFilas(); i++) {
+            programas.ActuaListaComp(tab_detalle1.getValor(i, "comprobante"));
+        }
+        save_lista();
     }
     
     //Genera numero aleatorio

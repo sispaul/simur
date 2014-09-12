@@ -546,7 +546,16 @@ public class pre_anticipo_sueldo extends Pantalla{
                     tab_garante.setValor("id_distributivo", tab_dato1.getValor("id_distributivo"));
                     utilitario.addUpdate("tab_garante");
                 }else {
+                    TablaGenerica tab_dato2 = iAnticipos.GarNumConat(Integer.parseInt(tab_dato1.getValor("cod_empleado")));
+                    if (!tab_dato2.isEmpty()) {
+                    tab_garante.setValor("garante", tab_dato1.getValor("nombres"));
+                    tab_garante.setValor("ide_empleado_garante", tab_dato2.getValor("cod_empleado"));
+                    tab_garante.setValor("cod_tipo", tab_dato1.getValor("cod_tipo"));
+                    tab_garante.setValor("id_distributivo", tab_dato1.getValor("id_distributivo"));
+                    utilitario.addUpdate("tab_garante");
+                    }else {
                     utilitario.agregarMensajeInfo("Garante No Cumple Requisitos","");
+                    }
                 }    
             } else {
                 utilitario.agregarMensajeError("El Número de Cédula no es válido", "");
@@ -588,7 +597,16 @@ public class pre_anticipo_sueldo extends Pantalla{
                     utilitario.addUpdate("tab_garante");
                     dia_dialogo.cerrar();
                 } else {
-                    utilitario.agregarMensajeInfo("Garante No Disponible", "");
+                    TablaGenerica tab_dato2 = iAnticipos.GarNumConat(Integer.parseInt(tab_dato.getValor("cod_empleado")));
+                    if (!tab_dato2.isEmpty()) {
+                    tab_garante.setValor("garante", tab_dato.getValor("nombres"));
+                    tab_garante.setValor("ide_empleado_garante", tab_dato2.getValor("cod_empleado"));
+                    tab_garante.setValor("cod_tipo", tab_dato.getValor("cod_tipo"));
+                    tab_garante.setValor("id_distributivo", tab_dato.getValor("id_distributivo"));
+                    utilitario.addUpdate("tab_garante");
+                    }else {
+                    utilitario.agregarMensajeInfo("Garante No Cumple Requisitos","");
+                    }
                 }
             }
         }else {
