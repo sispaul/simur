@@ -13,7 +13,6 @@ import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
 import framework.componentes.Imagen;
-import framework.componentes.ItemMenu;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
@@ -65,7 +64,8 @@ public class pre_pago_comprobantes extends Pantalla{
     
     //Calendario
     private Calendario cal_fecha = new Calendario();
-    private Calendario cal_fecha1 = new Calendario();
+    private Calendario cal_fecha1= new Calendario();
+    private Calendario cal_fecha2 = new Calendario();
     
     @EJB
     private Programas programas = (Programas) utilitario.instanciarEJB(Programas.class);

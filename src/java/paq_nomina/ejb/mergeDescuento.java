@@ -132,6 +132,31 @@ public class mergeDescuento {
         con_postgres = null;
     }
     
+    public void ActualizaDatos(String cedula, Integer colum){
+        String str_sql4 = "update srh_descuento\n" +
+                "set id_distributivo_roles =d1.id_distributivo ,\n" +
+                "ano = "+utilitario.getAnio(utilitario.getFechaActual())+" ,\n" +
+                "ide_columna = "+colum+",\n" +
+                "ide_periodo = "+utilitario.getMes(utilitario.getFechaActual())+",\n" +
+                "ide_empleado = d1.cod_empleado,\n" +
+                "ide_empleado_rol =cast(d1.indentificacion_empleado as numeric) \n" +
+                "from (SELECT\n" +
+                "id_distributivo,\n" +
+                "cedula_pass,\n" +
+                "nombres,\n" +
+                "cod_empleado,\n" +
+                "indentificacion_empleado\n" +
+                "FROM\n" +
+                "srh_empleado\n" +
+                "WHERE\n" +
+                "srh_empleado.cedula_pass = '"+cedula+"') d1\n" +
+                "where srh_descuento.cedula = d1.cedula_pass";
+        conectar();
+        con_postgres.ejecutarSql(str_sql4);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+    
      public void InsertarAnticipo(){
         // Forma el sql para el ingreso
         String str_sql3 = "insert into srh_descuento (id_distributivo_roles,ano,ide_columna,ide_periodo,num_descuento,descuento,cedula,nombres,ide_empleado,ide_empleado_rol)\n" +
@@ -190,6 +215,20 @@ public TablaGenerica periodo(Integer periodo){
         conectar();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT ide_periodo,per_descripcion FROM cont_periodo_actual where ide_periodo="+periodo );
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+
+public TablaGenerica Suma(){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT sum(descuento) as total \n" +
+                "FROM srh_descuento where ano = '"+utilitario.getAnio(utilitario.getFechaActual())+"' and ide_periodo ="+utilitario.getMes(utilitario.getFechaActual()));
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;

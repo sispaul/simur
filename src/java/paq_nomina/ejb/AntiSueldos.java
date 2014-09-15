@@ -735,6 +735,31 @@ public class AntiSueldos {
         
  }
  
+    public TablaGenerica pagosAndelantados(String cedula){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT\n" +
+                "s.ide_solicitud_anticipo,\n" +
+                "s.ci_solicitante,\n" +
+                "s.solicitante,\n" +
+                "s.rmu,\n" +
+                "c.valor_anticipo,\n" +
+                "c.numero_cuotas_anticipo,\n" +
+                "c.valor_pagado,\n" +"c.numero_cuotas_pagadas,\n" +
+                "(c.valor_anticipo-c.valor_pagado)as saldo\n" +
+                "FROM\n" +
+                "srh_solicitud_anticipo AS s\n" +
+                "INNER JOIN srh_calculo_anticipo c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
+                "where ci_solicitante = '"+cedula+"'");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+    
     public void deleteDetalle(Integer anti){
         String au_sql="delete from srh_detalle_anticipo where ide_solicitud_anticipo ="+anti;
         conectar();

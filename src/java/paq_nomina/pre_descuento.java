@@ -11,6 +11,7 @@ import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
+import framework.componentes.Imagen;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
@@ -42,11 +43,14 @@ public class pre_descuento extends Pantalla{
     private Tabla tab_consulta = new Tabla();
     private Tabla tab_usuario = new Tabla();
     private SeleccionTabla set_rol = new SeleccionTabla();
+    private SeleccionTabla set_roles = new SeleccionTabla();
 
 //COMBOS DE SELECICON
     private Combo cmb_anio = new Combo();
     private Combo cmb_periodo = new Combo();
     private Combo cmb_descripcion = new Combo();
+    private Combo cmb_distributivo = new Combo();
+    
 // DIALOGO DE ACCIÓN
     private Dialogo dia_dialogoe = new Dialogo();
     private Dialogo dia_dialorol = new Dialogo();
@@ -55,9 +59,6 @@ public class pre_descuento extends Pantalla{
     private Grid grid_rol = new Grid();
     private Grid grid_hor = new Grid();
     
-    //
-    private Texto txt_total = new Texto();
-  
 //1.-
  @EJB
 private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(mergeDescuento.class);
@@ -79,39 +80,40 @@ private Conexion con_postgres= new Conexion();
         Division div_division = new Division();
         div_division.setId("div_division");
         div_division.dividir1(pat_panel);
-        
         agregarComponente(div_division);
-        
+     
         Boton bot2 = new Boton();
-        bot2.setValue("MIGRAR ANTICIPO");
+        bot2.setValue("EXTRAER ANTICIPOS");
         bot2.setIcon("ui-icon-extlink"); //pone icono de jquery temeroller
         bot2.setMetodo("anticipo");
         bar_botones.agregarBoton(bot2);
         
+        cmb_distributivo.setId("cmb_distributivo");
+        cmb_distributivo.setConexion(con_postgres);
+        cmb_distributivo.setCombo("SELECT id_distributivo,descripcion FROM srh_tdistributivo ORDER BY id_distributivo");
+        cmb_distributivo.setMetodo("buscaColumna");
+        bar_botones.agregarComponente(new Etiqueta("Distributivo : "));
+        bar_botones.agregarComponente(cmb_distributivo);
+        
         Boton bot3 = new Boton();
-        bot3.setValue("DEPURAR DESCUENTO");
+        bot3.setValue("DEPURAR");
         bot3.setIcon("ui-icon-document"); //pone icono de jquery temeroller
         bot3.setMetodo("completar");
-        bar_botones.agregarBoton(bot3); 
+//        bar_botones.agregarBoton(bot3); 
      
         Boton bot4 = new Boton();
-        bot4.setValue("MIGRAR DESCUENTO");
+        bot4.setValue("MIGRAR ROL");
         bot4.setIcon("ui-icon-document"); //pone icono de jquery temeroller
         bot4.setMetodo("abrirDialogo");
         bar_botones.agregarBoton(bot4); 
        
         Boton bot5 = new Boton();
-        bot5.setValue("BORRAR DESCUENTO");
+        bot5.setValue("BORRAR");
         bot5.setIcon("ui-icon-closethick"); //pone icono de jquery temeroller
         bot5.setMetodo("borrar");
         bar_botones.agregarBoton(bot5);
-       
-        bar_botones.agregarComponente(new Etiqueta("Total a Subir :"));
-//        bar_botones.agregarComponente(txt_total);
-
-       
+        
        /*CONFIGURACIÓN DE COMBOS*/
-       
         Grid gri_busca = new Grid();
         gri_busca.setColumns(2);
         
@@ -119,14 +121,12 @@ private Conexion con_postgres= new Conexion();
         cmb_anio.setId("cmb_anio");
         cmb_anio.setConexion(con_postgres);
         cmb_anio.setCombo("select ano_curso, ano_curso from conc_ano order by ano_curso");
-//        cmb_anio.eliminarVacio();
         gri_busca.getChildren().add(cmb_anio);
         
         gri_busca.getChildren().add(new Etiqueta("PERIODO:"));
         cmb_periodo.setId("cmb_periodo");
         cmb_periodo.setConexion(con_postgres);
         cmb_periodo.setCombo("SELECT ide_periodo,per_descripcion FROM cont_periodo_actual ORDER BY ide_periodo");
-//        cmb_periodo.eliminarVacio();
         gri_busca.getChildren().add(cmb_periodo);
         
         gri_busca.getChildren().add(new Etiqueta("DESCRIPCIÓN:"));
@@ -149,6 +149,16 @@ private Conexion con_postgres= new Conexion();
         set_rol.getBot_aceptar().setMetodo("aceptoDescuentos");
         set_rol.setHeader("REPORTES DE DESCUENTOS - SELECCIONE PARAMETROS");
         agregarComponente(set_rol);
+        
+        set_roles.setId("set_roles");
+        set_roles.getTab_seleccion().setConexion(con_postgres);//conexion para seleccion con otra base
+        set_roles.setSeleccionTabla("SELECT ide_col,descripcion_col FROM SRH_COLUMNAS WHERE ide_col=-1", "ide_col");
+        set_roles.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
+        set_roles.getTab_seleccion().setRows(16);
+        set_roles.setRadio();
+        set_roles.getBot_aceptar().setMetodo("aceptoDesc");
+        set_roles.setHeader("SELECCIONE PARAMETROS PARA DESCUENTO");
+        agregarComponente(set_roles);
                
          /*         * CONFIGURACIÓN DE OBJETO REPORTE         */
         bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
@@ -224,6 +234,7 @@ private Conexion con_postgres= new Conexion();
         
     }
     
+    
     public void cancelarValores(){
         utilitario.agregarMensajeInfo("NINGUN REGISTRO FUE AFECTADO", "");
         dia_dialogoe.cerrar();
@@ -237,7 +248,25 @@ private Conexion con_postgres= new Conexion();
             utilitario.agregarMensajeInfo("Debe seleccionar una fecha", "");
         }
     }
-      public void completar() {
+        public void buscaColumna() {
+            if (cmb_distributivo.getValue() != null && cmb_distributivo.getValue().toString().isEmpty() == false ) {
+                set_roles.getTab_seleccion().setSql("SELECT ide_col,descripcion_col FROM SRH_COLUMNAS WHERE DISTRIBUTIVO="+cmb_distributivo.getValue());
+                set_roles.getTab_seleccion().ejecutarSql();
+                set_roles.dibujar();
+            } else {
+                utilitario.agregarMensajeInfo("Debe seleccionar una elemento", "");
+            }
+        }
+        
+        public void aceptoDesc(){
+            for (int i = 0; i < tab_tabla.getTotalFilas(); i++) {
+            mDescuento.ActualizaDatos(tab_tabla.getValor(i, "cedula"), Integer.parseInt(set_roles.getValorSeleccionado()));
+            }
+            set_roles.cerrar();
+            tab_tabla.actualizar();
+        }
+        
+        public void completar() {
   
          Integer ano;
          Integer ide_periodo;
@@ -255,6 +284,7 @@ private Conexion con_postgres= new Conexion();
         mDescuento.actualizarDescuento(ano, ide_periodo, id_distributivo_roles, ide_columna);
         mDescuento.actualizarDescuento1(ano, ide_periodo, id_distributivo_roles, ide_columna);
         tab_tabla.actualizar();
+        
         }
       
       public void migrar(){
@@ -301,19 +331,8 @@ private Conexion con_postgres= new Conexion();
     public void anticipo(){
        mDescuento.InsertarAnticipo();
        tab_tabla.actualizar();
-//       suma();
     }
     
-    public void suma(){
-        TablaGenerica tab_dato1 = mDescuento.sumaPeriodo();
-        if (!tab_dato1.isEmpty()) {
-            System.err.println(tab_dato1.getValor("total"));
-        }else{
-            
-        }
-//        txt_total.setValue(mDescuento.sumaPeriodo()+"");
-//        utilitario.addUpdate("txt_total");
-    }
     public void actu(){
        mDescuento.ActualizaAnticipo();
        tab_tabla.actualizar();
@@ -513,6 +532,12 @@ private Conexion con_postgres= new Conexion();
     public void setDia_dialogoe(Dialogo dia_dialogoe) {
         this.dia_dialogoe = dia_dialogoe;
     }
-   
-    
+
+    public SeleccionTabla getSet_roles() {
+        return set_roles;
+    }
+
+    public void setSet_roles(SeleccionTabla set_roles) {
+        this.set_roles = set_roles;
+    }
 }
