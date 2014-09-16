@@ -373,16 +373,8 @@ private Conexion con_postgres= new Conexion();
                 dia_dialorol.setDialogo(grid_rol);
                 dia_dialorol.dibujar();
                break;
-           case "ROL TRABAJADORES":
-                dia_dialohor.Limpiar();
-                grid_hor.getChildren().add(new Etiqueta("AÑO :"));
-                grid_hor.getChildren().add(cmb_anio);
-                grid_hor.getChildren().add(new Etiqueta("PERIODO :"));
-                grid_hor.getChildren().add(cmb_periodo);
-                grid_hor.getChildren().add(new Etiqueta("DISTRIBUTIVO :"));
-                grid_hor.getChildren().add(cmb_descripcion);
-                dia_dialohor.setDialogo(grid_hor);
-                dia_dialohor.dibujar();
+           case "VERIFICAR SUBIDA A ROL":
+                aceptoDescuentos();
                break;
                 
         }
@@ -446,21 +438,11 @@ private Conexion con_postgres= new Conexion();
                             utilitario.agregarMensajeInfo("no existe en la base de datos", "");
                             }
                break;
-               case "ROL TRABAJADORES":
-                   TablaGenerica tab_dato2 = mDescuento.distibutivo(Integer.parseInt(cmb_descripcion.getValue()+""));
-                    if (!tab_dato2.isEmpty()) {
-                    p_parametros = new HashMap();
-                    p_parametros.put("anio",Integer.parseInt(cmb_anio.getValue()+"")); 
-                    p_parametros.put("periodo",Integer.parseInt(cmb_periodo.getValue()+""));
-                    p_parametros.put("distributivo",Integer.parseInt(cmb_descripcion.getValue()+""));
-                    p_parametros.put("nom_distri",tab_dato2.getValor("descripcion")+"");
-                    p_parametros.put("nom_resp", tab_usuario.getValor("NICK_USUA")+"");
+               case "VERIFICAR SUBIDA A ROL":
+                   p_parametros.put("nom_resp", tab_usuario.getValor("NICK_USUA")+"");
                     rep_reporte.cerrar();
                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                     sef_formato.dibujar();
-                    } else {
-                            utilitario.agregarMensajeInfo("no existe en la base de datos", "");
-                            }
                break;     
         }
     }
