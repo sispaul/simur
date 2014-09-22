@@ -258,7 +258,9 @@ private Conexion con_postgres= new Conexion();
         
         public void aceptoDesc(){
             for (int i = 0; i < tab_tabla.getTotalFilas(); i++) {
-            mDescuento.ActualizaDatos(tab_tabla.getValor(i, "cedula"), Integer.parseInt(set_roles.getValorSeleccionado()));
+                
+            mDescuento.ActualizaDatos(tab_tabla.getValor(i, "cedula"), Integer.parseInt(set_roles.getValorSeleccionado()),Integer.parseInt(cmb_distributivo.getValue()+""));
+            
             }
             set_roles.cerrar();
             tab_tabla.actualizar();
@@ -302,7 +304,7 @@ private Conexion con_postgres= new Conexion();
                mDescuento.migrarDescuento(ano,ide_periodo,id_distributivo_roles,ide_columna,tab_usuario.getValor("NICK_USUA")+"");
                utilitario.agregarMensaje("PROCESO REALIZADO CON EXITO", " ");
                
-               actuAnticipo();
+//               actuAnticipo();
                
                dia_dialogoe.cerrar();
            }else{

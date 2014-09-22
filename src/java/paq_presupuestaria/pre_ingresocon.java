@@ -296,7 +296,7 @@ public class pre_ingresocon extends Pantalla{
                 set_distribu.setId("set_distribu");
                 set_distribu.setConexion(con_postgres);
                 set_distribu.setSql("select DISTINCT cod_funcion,cod_funcion as Codigo,des_funcion from  conc_cedula_presupuestaria_fechas  WHERE tipo ="+cmb_licenti.getValue()+" ORDER BY cod_funcion");
-                set_distribu.setRows(13);
+                set_distribu.setRows(11);
                 set_distribu.setTipoSeleccion(false);
                 
                 grid_de.getChildren().add(set_distribu);
