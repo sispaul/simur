@@ -132,7 +132,7 @@ public class mergeDescuento {
         con_postgres = null;
     }
     
-    public void ActualizaDatos(String cedula, Integer colum){
+    public void ActualizaDatos(String cedula, Integer colum,Integer dis){
         String str_sql4 = "update srh_descuento\n" +
                 "set id_distributivo_roles =d1.id_distributivo ,\n" +
                 "ano = "+utilitario.getAnio(utilitario.getFechaActual())+" ,\n" +
@@ -150,7 +150,7 @@ public class mergeDescuento {
                 "srh_empleado\n" +
                 "WHERE\n" +
                 "srh_empleado.cedula_pass = '"+cedula+"') d1\n" +
-                "where srh_descuento.cedula = d1.cedula_pass";
+                "where srh_descuento.cedula = d1.cedula_pass and d1.id_distributivo ="+dis;
         conectar();
         con_postgres.ejecutarSql(str_sql4);
         con_postgres.desconectar();
