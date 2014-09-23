@@ -45,15 +45,15 @@ public class pre_arriendo extends Pantalla {
         agregarComponente(sec_rango);
 
         aut_busca.setId("aut_busca");
-        aut_busca.setAutoCompletar("SELECT\n" +
-                "a.IDE_CMARE,\n" +
-                "a.NOMBRE_INHUMADO_CMARE,\n" +
-                "a.NICHO_SITIO_CMARE,\n" +
-                "r.NOMBRES_APELLIDOS_CMREP,\n" +
-                "r.DOCUMENTO_IDENTIDAD_CMREP\n" +
-                "FROM\n" +
-                "dbo.CMT_ARRENDAMIENTO a\n" +
-                "LEFT JOIN dbo.CMT_REPRESENTANTE r ON r.IDE_CMARE = a.IDE_CMARE");
+        aut_busca.setAutoCompletar("SELECT \n" +
+"a.IDE_CMARE, \n" +
+"a.NOMBRE_INHUMADO_CMARE,\n" +
+"(case when a.NICHO_SITIO_CMARE =1  then 'nicho' when a.NICHO_SITIO_CMARE = 2 then 'suelo' end ) AS sitio, \n" +
+"r.NOMBRES_APELLIDOS_CMREP, \n" +
+"r.DOCUMENTO_IDENTIDAD_CMREP \n" +
+"FROM \n" +
+"dbo.CMT_ARRENDAMIENTO a \n" +
+"LEFT JOIN dbo.CMT_REPRESENTANTE r ON r.IDE_CMARE = a.IDE_CMARE");
         aut_busca.setMetodoChange("buscarPersona");
         aut_busca.setSize(70);
         rep_reporte.setId("rep_reporte");
