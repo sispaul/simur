@@ -157,7 +157,7 @@ public class mergeDescuento {
         con_postgres = null;
     }
     
-     public void InsertarAnticipo(){
+     public void InsertarAnticipo(Integer tipo){
         // Forma el sql para el ingreso
         String str_sql3 = "insert into srh_descuento (id_distributivo_roles,ano,ide_columna,ide_periodo,num_descuento,descuento,cedula,nombres,ide_empleado,ide_empleado_rol)\n" +
                             "SELECT\n" +
@@ -179,6 +179,7 @@ public class mergeDescuento {
                             " d.ide_periodo_descuento = q.ide_periodo_anticipo AND  \n" +
                             " d.ide_anticipo = a.ide_solicitud_anticipo AND  \n" +
                             " d.ide_periodo_descuento  = "+utilitario.getMes(utilitario.getFechaActual())+" and   \n" +
+                " a.id_distributivo = "+tipo+" and   \n" +
                             " q.anio like '"+utilitario.getAnio(utilitario.getFechaActual())+"'\n" +
                             "order by a.id_distributivo,a.solicitante";
         conectar();
@@ -275,11 +276,11 @@ public TablaGenerica Suma(){
         
  }
  
-        private void conectar() {
-        if (con_postgres == null) {
-            con_postgres = new Conexion();
-            con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
-            con_postgres.NOMBRE_MARCA_BASE = "postgres";
+  private void conectar() {
+      if (con_postgres == null) {
+          con_postgres = new Conexion();
+          con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
+          con_postgres.NOMBRE_MARCA_BASE = "postgres";
         }
      }
 }      
