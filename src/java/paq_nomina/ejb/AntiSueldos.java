@@ -21,7 +21,6 @@ public class AntiSueldos {
 
     private Utilitario utilitario = new Utilitario();
     private Conexion con_postgres;
-    private Conexion conexion;
     
     //Saca información de los servidores que tiens solicitudes pendientes
     public TablaGenerica VerifEmpleid(String cedu,Integer tipo ){
@@ -792,6 +791,85 @@ public class AntiSueldos {
         con_postgres = null;
     }
     
+        public void ActualizaAnticipo(){
+        String str_sql4 = "update srh_calculo_anticipo\n" +
+                            "set valor_pagado =h.pagado,\n" +
+                            "numero_cuotas_pagadas=cuota,\n" +
+                            "ide_estado_anticipo = 3\n" +
+                            "from (SELECT sum(valor) as pagado,(sum(valor)/valor) as cuota,ide_anticipo\n" +
+                            "FROM srh_detalle_anticipo\n" +
+                            "where ide_estado_cuota = 1\n" +
+                            "GROUP BY valor,ide_anticipo) h\n" +
+                            "where srh_calculo_anticipo.ide_solicitud_anticipo = h.ide_anticipo";
+        conectar();
+        con_postgres.ejecutarSql(str_sql4);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+        
+        public void migrarAnticipo(){
+        // Forma el sql para el ingreso
+        String str_sql4 = "update srh_detalle_anticipo\n" +
+                            "set ide_periodo_descontado = d.ide_periodo,\n" +
+                            "ide_estado_cuota = 1\n" +
+                            "from \n" +
+                            "(select\n" +
+                            "ide_descuento,\n" +
+                            "ano,\n" +
+                            "ide_periodo,\n" +
+                            "descuento,\n" +
+                            "num_descuento\n" +
+                            "from srh_descuento) d\n" +
+                            "WHERE srh_detalle_anticipo.ide_detalle_anticipo = d.num_descuento and \n" +
+                            "srh_detalle_anticipo.valor = d.descuento and \n" +
+                            "srh_detalle_anticipo.ide_periodo_descuento = d.ide_periodo";
+        conectar();
+        con_postgres.ejecutarSql(str_sql4);
+        con_postgres.desconectar();
+        con_postgres = null;
+     }    
+        
+        public void ActualizarDetalleAnticipo(Integer anio,Integer periodo){
+        // Forma el sql para el ingreso
+        String str_sql4 = "update srh_detalle_anticipo \n" +
+                "set ide_periodo_descontado = srh_detalle_anticipo.ide_periodo_descuento, \n" +
+                "ide_estado_cuota = 1 \n" +
+                "from  (\n" +
+                "SELECT\n" +
+                "s.ide_solicitud_anticipo,\n" +
+                "s.ide_empleado_solicitante,\n" +
+                "s.solicitante,\n" +
+                "r.ide_roles,\n" +
+                "r.ide_empleado,\n" +
+                "r.valor,\n" +
+                "r.ide_periodo,\n" +
+                "r.ano,\n" +
+                "r.id_distributivo_roles\n" +
+                "FROM\n" +
+                "\"public\".srh_solicitud_anticipo AS s ,\n" +
+                "\"public\".srh_roles AS r,\n" +
+                "\"public\".srh_calculo_anticipo c\n" +
+                "WHERE\n" +
+                "s.ide_empleado_solicitante = r.ide_empleado AND\n" +
+                "c.ide_solicitud_anticipo = s.ide_solicitud_anticipo and\n" +
+                "r.ano = "+anio+" AND\n" +
+                "r.ide_periodo = "+periodo+" AND\n" +
+                "r.ide_columnas IN (1, 46)AND\n" +
+                "c.ide_estado_anticipo in (2,3)\n" +
+                "ORDER BY\n" +
+                "r.id_distributivo_roles\n" +
+                ") d \n" +
+                "WHERE \n" +
+                "srh_detalle_anticipo.ide_anticipo = d.ide_solicitud_anticipo and\n" +
+                "srh_detalle_anticipo.valor = d.valor and \n" +
+                "srh_detalle_anticipo.periodo = cast (d.ide_periodo as varchar) and \n" +
+                "srh_detalle_anticipo.anio = cast (d.ano as varchar)";
+        conectar();
+        con_postgres.ejecutarSql(str_sql4);
+        con_postgres.desconectar();
+        con_postgres = null;
+     }
+
     //metodo que posee la cadena de conexion a base de datos
     private void conectar() {
         if (con_postgres == null) {
