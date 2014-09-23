@@ -236,10 +236,22 @@ public class pre_anticipo_sueldo extends Pantalla{
         sef_formato.setId("sef_formato");
         sef_formato.setConexion(con_postgres);
         agregarComponente(sef_formato);
+        descontar();// permite el descuento en el detalle de la solictud
 //        crear_periodo();
+        
     }
 
-    //limpia y borrar el contenido de la pantall
+    //proceso automatico que permita llenar los detalles de anticipos
+    public void descontar(){
+        if(utilitario.getDia(utilitario.getFechaActual())==1){
+            if(utilitario.getMes(utilitario.getFechaActual())!=1){
+                iAnticipos.ActualizarDetalleAnticipo(utilitario.getAnio(utilitario.getFechaActual()),(utilitario.getMes(utilitario.getFechaActual())-1));
+            }else{
+                iAnticipos.ActualizarDetalleAnticipo((utilitario.getAnio(utilitario.getFechaActual())-1),(utilitario.getMes(utilitario.getFechaActual())+11));
+            }
+        }
+    }
+    //limpia y borrar el contenido de la pantalla
     private void limpiarPanel() {
         //borra el contenido de la división central central
         pan_opcion.getChildren().clear();
