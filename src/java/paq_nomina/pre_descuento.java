@@ -48,14 +48,15 @@ public class pre_descuento extends Pantalla{
     private Combo cmb_periodo = new Combo();
     private Combo cmb_descripcion = new Combo();
     private Combo cmb_distributivo = new Combo();
+    private Combo cmb_distributivo1 = new Combo();
     
 // DIALOGO DE ACCIÓN
     private Dialogo dia_dialogoe = new Dialogo();
     private Dialogo dia_dialorol = new Dialogo();
-    private Dialogo dia_dialohor = new Dialogo();
+    private Dialogo dia_dialogoti = new Dialogo();
     private Grid grid_de = new Grid();
     private Grid grid_rol = new Grid();
-    private Grid grid_hor = new Grid();
+    private Grid grid_ti = new Grid();
     
 //1.-
  @EJB
@@ -92,6 +93,10 @@ private Conexion con_postgres= new Conexion();
         cmb_distributivo.setMetodo("buscaColumna");
         bar_botones.agregarComponente(new Etiqueta("Distributivo : "));
         bar_botones.agregarComponente(cmb_distributivo);
+        
+        cmb_distributivo1.setId("cmb_distributivo1");
+        cmb_distributivo1.setConexion(con_postgres);
+        cmb_distributivo1.setCombo("SELECT id_distributivo,descripcion FROM srh_tdistributivo ORDER BY id_distributivo");
         
         Boton bot3 = new Boton();
         bot3.setValue("DEPURAR");
@@ -221,17 +226,24 @@ private Conexion con_postgres= new Conexion();
         grid_rol.setColumns(4);
         agregarComponente(dia_dialorol);
         
-        dia_dialohor.setId("dia_dialohor");
-        dia_dialohor.setTitle("REPORTE DE TRABAJADORES"); //titulo
-        dia_dialohor.setWidth("35%"); //siempre en porcentajes  ancho
-        dia_dialohor.setHeight("20%");//siempre porcentaje   alto 
-        dia_dialohor.setResizable(false); //para que no se pueda cambiar el tamaño
-        dia_dialohor.getBot_aceptar().setMetodo("aceptoDescuentos");
-        grid_hor.setColumns(4);
-        agregarComponente(dia_dialohor);
+        dia_dialogoti.setId("dia_dialogoti");
+        dia_dialogoti.setTitle("SELECICONE SERVIDOR"); //titulo
+        dia_dialogoti.setWidth("25%"); //siempre en porcentajes  ancho
+        dia_dialogoti.setHeight("15%");//siempre porcentaje   alto 
+        dia_dialogoti.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogoti.getBot_aceptar().setMetodo("anticipo1");
+        grid_ti.setColumns(4);
+        agregarComponente(dia_dialogoti);
         
     }
     
+    public void anticipo(){
+        dia_dialogoti.Limpiar();
+        grid_ti.getChildren().add(new Etiqueta("TIPO SERVIDOR :"));
+        grid_ti.getChildren().add(cmb_distributivo1);
+        dia_dialogoti.setDialogo(grid_ti);
+        dia_dialogoti.dibujar();
+    }
     
     public void cancelarValores(){
         utilitario.agregarMensajeInfo("NINGUN REGISTRO FUE AFECTADO", "");
@@ -243,7 +255,7 @@ private Conexion con_postgres= new Conexion();
             set_rol.getTab_seleccion().setSql("SELECT ide_col,descripcion_col FROM SRH_COLUMNAS WHERE DISTRIBUTIVO="+cmb_descripcion.getValue());
             set_rol.getTab_seleccion().ejecutarSql();
         } else {
-            utilitario.agregarMensajeInfo("Debe seleccionar una fecha", "");
+            utilitario.agregarMensajeInfo("Debe seleccionar un tipo", "");
         }
     }
         public void buscaColumna() {
@@ -260,10 +272,10 @@ private Conexion con_postgres= new Conexion();
             for (int i = 0; i < tab_tabla.getTotalFilas(); i++) {
                 
             mDescuento.ActualizaDatos(tab_tabla.getValor(i, "cedula"), Integer.parseInt(set_roles.getValorSeleccionado()),Integer.parseInt(cmb_distributivo.getValue()+""));
-            
             }
             set_roles.cerrar();
             tab_tabla.actualizar();
+            cmb_distributivo.getConexion().desconectar();
         }
         
         public void completar() {
@@ -303,9 +315,6 @@ private Conexion con_postgres= new Conexion();
                ide_columna=Integer.parseInt(tab_consulta.getValor("ide_columna")) ;  
                mDescuento.migrarDescuento(ano,ide_periodo,id_distributivo_roles,ide_columna,tab_usuario.getValor("NICK_USUA")+"");
                utilitario.agregarMensaje("PROCESO REALIZADO CON EXITO", " ");
-               
-//               actuAnticipo();
-               
                dia_dialogoe.cerrar();
            }else{
                utilitario.agregarMensaje("Descuento No Puede Ser Subido a Rol", "Rol Perteneciente a Periodo Aun No Esta Creado");
@@ -317,7 +326,20 @@ private Conexion con_postgres= new Conexion();
       tab_tabla.actualizar();
     }
           //subida de anticcipos de sueldo a rol
-         
+   
+    public void anticipo1(){
+
+        if (cmb_distributivo1.getValue() != null && cmb_distributivo1.getValue().toString().isEmpty() == false ) {
+            mDescuento.InsertarAnticipo(Integer.parseInt(cmb_distributivo1.getValue()+""));
+            tab_tabla.actualizar();
+            dia_dialogoti.cerrar();
+        }else {
+            utilitario.agregarMensajeInfo("Debe seleccionar una tipo", "");
+        }
+    }
+     
+    
+    
     public void actuAnticipo(){
        for (int i = 0; i < tab_tabla.getTotalFilas(); i++) {
              tab_tabla.getValor(i, "ide_columna");
@@ -328,11 +350,6 @@ private Conexion con_postgres= new Conexion();
             }
     }
          
-    public void anticipo(){
-       mDescuento.InsertarAnticipo();
-       tab_tabla.actualizar();
-    }
-    
     public void actu(){
        mDescuento.ActualizaAnticipo();
        tab_tabla.actualizar();
@@ -342,6 +359,8 @@ private Conexion con_postgres= new Conexion();
     public void ide(){
        mDescuento. CamAnticipoF();
     }
+    
+    
 /*CREACION DE REPORTES */
     //llamada a reporte
     @Override
@@ -409,6 +428,7 @@ private Conexion con_postgres= new Conexion();
                                     rep_reporte.cerrar();
                                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                                     sef_formato.dibujar();
+                                    set_rol.cerrar();
                                     } else {
                                         utilitario.agregarMensajeInfo("no existe en la base de datos", "");
                                         }
