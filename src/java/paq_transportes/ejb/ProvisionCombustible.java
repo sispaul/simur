@@ -92,7 +92,27 @@ private Utilitario utilitario = new Utilitario();
          return ValorMax;
   }
  
-
+    public void ActualizaAnticipo(){
+        String str_sql4 = "UPDATE TRANS_VALE_CONSUMO\n" +
+                "SET IDE_TIPO_COMBUSTIBLE =,\n" +
+                "FECHA_VALE =,\n" +
+                "PLACA_VEHICULO =,\n" +
+                "DESCRIPCION_VEHICULO=,\n" +
+                "CONDUCTOR=,\n" +
+                "KILOMETROS=,\n" +
+                "GALONES=,\n" +
+                "TOTAL=,\n" +
+                "CI_CONDUCTOR=,\n" +
+                "FECHA_FECHA_MODIFICACION = '',\n" +
+                "MODIFICA = ''\n" +
+                "WHERE IDE_VALE_CONSUMO = AND NUMERO_VALE =";
+        con_sql();
+        con_sql.ejecutarSql(str_sql4);
+        con_sql.desconectar();
+        con_sql = null;
+    }
+    
+    
 private void conectar() {
     if (conexion == null) {
         conexion = new Conexion();
