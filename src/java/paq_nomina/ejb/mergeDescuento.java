@@ -77,60 +77,6 @@ public class mergeDescuento {
         con_postgres.desconectar();
         con_postgres = null;
      }
-       
-    public void migrarAnticipo(){
-        // Forma el sql para el ingreso
-        String str_sql4 = "update srh_detalle_anticipo\n" +
-                            "set ide_periodo_descontado = d.ide_periodo,\n" +
-                            "ide_estado_cuota = 1\n" +
-                            "from \n" +
-                            "(select\n" +
-                            "ide_descuento,\n" +
-                            "ano,\n" +
-                            "ide_periodo,\n" +
-                            "descuento,\n" +
-                            "num_descuento\n" +
-                            "from srh_descuento) d\n" +
-                            "WHERE srh_detalle_anticipo.ide_detalle_anticipo = d.num_descuento and \n" +
-                            "srh_detalle_anticipo.valor = d.descuento and \n" +
-                            "srh_detalle_anticipo.ide_periodo_descuento = d.ide_periodo";
-        conectar();
-        con_postgres.ejecutarSql(str_sql4);
-        con_postgres.desconectar();
-        con_postgres = null;
-     }
-       
-    public void ActualizaAnticipo(){
-        String str_sql4 = "update srh_calculo_anticipo\n" +
-                            "set valor_pagado =h.pagado,\n" +
-                            "numero_cuotas_pagadas=cuota,\n" +
-                            "ide_estado_anticipo = 3\n" +
-                            "from (SELECT sum(valor) as pagado,(sum(valor)/valor) as cuota,ide_anticipo\n" +
-                            "FROM srh_detalle_anticipo\n" +
-                            "where ide_estado_cuota = 1\n" +
-                            "GROUP BY valor,ide_anticipo) h\n" +
-                            "where srh_calculo_anticipo.ide_solicitud_anticipo = h.ide_anticipo";
-        conectar();
-        con_postgres.ejecutarSql(str_sql4);
-        con_postgres.desconectar();
-        con_postgres = null;
-    }
-    
-    public void CamAnticipoF(){
-        String str_sql4 = "update srh_anticipo\n" +
-                            "SET ide_estado_anticipo = 4\n" +
-                            "from (\n" +
-                            "SELECT n1.pagado,n2.ide_anticipo\n" +
-                            "from (SELECT count(ide_anticipo) as pagado,ide_anticipo FROM srh_detalle_anticipo where ide_estado_cuota = 1 \n" +
-                            "GROUP BY ide_anticipo) n1\n" +
-                            "inner join (SELECT count(ide_anticipo) as pagando,ide_anticipo FROM srh_detalle_anticipo GROUP BY ide_anticipo) n2\n" +
-                            "on n1.ide_anticipo = n2.ide_anticipo and n1.pagado = n2.pagando ) d1\n" +
-                            "WHERE d1.ide_anticipo = srh_anticipo.ide_anticipo";
-        conectar();
-        con_postgres.ejecutarSql(str_sql4);
-        con_postgres.desconectar();
-        con_postgres = null;
-    }
     
     public void ActualizaDatos(String cedula, Integer colum,Integer dis){
         String str_sql4 = "update srh_descuento\n" +
