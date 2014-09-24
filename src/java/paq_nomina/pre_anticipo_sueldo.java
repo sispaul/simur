@@ -146,6 +146,12 @@ public class pre_anticipo_sueldo extends Pantalla{
         bot_abort.setMetodo("Anular");
         bar_botones.agregarBoton(bot_abort);
         
+        Boton bot_des = new Boton();
+        bot_des.setValue("Descargo");
+        bot_des.setIcon("ui-icon-closethick");
+        bot_des.setMetodo("descontar");
+        bar_botones.agregarBoton(bot_des);
+        
         //Ingreso y busqueda de solicitudes 
         Grid gri_busca = new Grid();
         gri_busca.setColumns(2);
@@ -236,20 +242,17 @@ public class pre_anticipo_sueldo extends Pantalla{
         sef_formato.setId("sef_formato");
         sef_formato.setConexion(con_postgres);
         agregarComponente(sef_formato);
-        descontar();// permite el descuento en el detalle de la solictud
 //        crear_periodo();
         
     }
 
     //proceso automatico que permita llenar los detalles de anticipos
     public void descontar(){
-        if(utilitario.getDia(utilitario.getFechaActual())==1){
             if(utilitario.getMes(utilitario.getFechaActual())!=1){
                 iAnticipos.ActualizarDetalleAnticipo(utilitario.getAnio(utilitario.getFechaActual()),(utilitario.getMes(utilitario.getFechaActual())-1));
             }else{
                 iAnticipos.ActualizarDetalleAnticipo((utilitario.getAnio(utilitario.getFechaActual())-1),(utilitario.getMes(utilitario.getFechaActual())+11));
             }
-        }
         actuPago();
     }
     
