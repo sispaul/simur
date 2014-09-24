@@ -164,12 +164,12 @@ public class pre_placas_pendientes extends Pantalla{
         gri_placa.getChildren().add(bot_placa);
         
         set_placa.setId("set_placa");
-        set_placa.setSeleccionTabla("SELECT IDE_ENTREGA_PLACA,FECHA_RETIRO,CEDULA_QUIEN_RETIRA,NOMBRE_QUIEN_RETIRA,CEDULA_PROPIETARIO,\n" +
+        set_placa.setSeleccionTabla("SELECT IDE_ENTREGA_PLACA,FECHA_RETIRO,CEDULA_QUIEN_RETIRA,NOMBRE_QUIEN_RETIRA,\n" +
                 "NOMBRE_PROPIETARIO,USU_ENTREGA FROM TRANS_ENTREGAR_PLACA where IDE_ENTREGA_PLACA=-1", "IDE_ENTREGA_PLACA");
         set_placa.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
         set_placa.getTab_seleccion().setRows(10);
         set_placa.setHeight("30%");
-        set_placa.setWidth("80%");
+        set_placa.setWidth("100%");
         set_placa.setRadio();
         set_placa.getGri_cuerpo().setHeader(gri_placa);
         set_placa.getBot_aceptar().setMetodo("listo");
@@ -179,7 +179,7 @@ public class pre_placas_pendientes extends Pantalla{
     
     public void buscarPlaca(){
         if (txt_placa.getValue() != null && txt_placa.getValue().toString().isEmpty() == false ) {
-                            set_placa.getTab_seleccion().setSql("SELECT IDE_ENTREGA_PLACA,FECHA_RETIRO,CEDULA_QUIEN_RETIRA,NOMBRE_QUIEN_RETIRA,CEDULA_PROPIETARIO,\n" +
+                            set_placa.getTab_seleccion().setSql("SELECT IDE_ENTREGA_PLACA,FECHA_RETIRO,CEDULA_QUIEN_RETIRA,NOMBRE_QUIEN_RETIRA,\n" +
                                     "NOMBRE_PROPIETARIO,USU_ENTREGA \n" +
                                     "FROM TRANS_ENTREGAR_PLACA\n" +
                                     "where placa = '"+txt_placa.getValue()+"'");
