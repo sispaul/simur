@@ -60,6 +60,7 @@ public class pre_vale_consumo extends Pantalla{
         tab_tabla.getColumna("ide_tipo_combustible").setMetodoChange("clean");
         tab_tabla.getColumna("galones").setMetodoChange("valor");
         tab_tabla.getColumna("fecha_vale").setValorDefecto(utilitario.getFechaHoraActual());
+        tab_tabla.getColumna("AUTORIZA").setValorDefecto(tab_consulta.getValor("NICK_USUA")); 
         tab_tabla.getColumna("IDE_VALE_CONSUMO").setVisible(false);
         tab_tabla.getColumna("CI_CONDUCTOR").setVisible(false);
         tab_tabla.getColumna("CI_AUTORIZA").setVisible(false);
@@ -132,14 +133,18 @@ public class pre_vale_consumo extends Pantalla{
 
     @Override
     public void guardar() {
-        
-        if(Integer.parseInt(tab_consulta.getValor("PERM_UTIL_PERF"))!=1){
-            
+        if(tab_tabla.getValor("ide_vale_consumo")!=null){
+            if(Integer.parseInt(tab_consulta.getValor("PERM_UTIL_PERF"))!=1){
+                
+                
+                
+            }else{
+                utilitario.agregarMensajeInfo("Registro No Puede Ser Modificado","No Posee Permisos");
+            }
         }else{
             tab_tabla.guardar();
             guardarPantalla();
-        }
-        
+        }  
     }
 
     @Override
