@@ -13,6 +13,7 @@ import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
+import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class pre_placas_pendientes extends Pantalla{
     private Tabla tab_cabecera = new Tabla();
     private Tabla tab_entrega = new Tabla();
     private Tabla tab_consulta = new Tabla();
+    private SeleccionTabla set_placa = new SeleccionTabla();
     
     //PANEL DE BUSQUEDA
     private Panel pan_opcion = new Panel();
@@ -48,6 +50,7 @@ public class pre_placas_pendientes extends Pantalla{
     
         //PARA CANTIDAD QUE SE RETIRA
     private Texto  txt_numero = new Texto();
+    private Texto  txt_placa = new Texto();
     
     @EJB
     private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servicioPlaca.class);
@@ -148,8 +151,47 @@ public class pre_placas_pendientes extends Pantalla{
         sef_formato.setId("sef_formato");
         agregarComponente(sef_formato);
         
+        Grid gri_placa = new Grid();
+        gri_placa.setColumns(2);
+        txt_placa.setSize(50);
+        gri_placa.getChildren().add(new Etiqueta("# PLACA  :"));
+        gri_placa.getChildren().add(txt_placa);
+        Boton bot_placa = new Boton();
+        bot_placa.setValue("Buscar");
+        bot_placa.setIcon("ui-icon-search");
+        bot_placa.setMetodo("buscarPlaca");
+        bar_botones.agregarBoton(bot_placa);
+        gri_placa.getChildren().add(bot_placa);
+        
+        set_placa.setId("set_placa");
+        set_placa.setSeleccionTabla("SELECT IDE_ENTREGA_PLACA,FECHA_RETIRO,CEDULA_QUIEN_RETIRA,NOMBRE_QUIEN_RETIRA,CEDULA_PROPIETARIO,\n" +
+                "NOMBRE_PROPIETARIO,USU_ENTREGA FROM TRANS_ENTREGAR_PLACA where IDE_ENTREGA_PLACA=-1", "IDE_ENTREGA_PLACA");
+        set_placa.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
+        set_placa.getTab_seleccion().setRows(10);
+        set_placa.setHeight("30%");
+        set_placa.setWidth("80%");
+        set_placa.setRadio();
+        set_placa.getGri_cuerpo().setHeader(gri_placa);
+        set_placa.getBot_aceptar().setMetodo("listo");
+        set_placa.setHeader("BUSCAR PLACA - ENTREGADAS");
+        agregarComponente(set_placa);
     }
     
+    public void buscarPlaca(){
+        if (txt_placa.getValue() != null && txt_placa.getValue().toString().isEmpty() == false ) {
+                            set_placa.getTab_seleccion().setSql("SELECT IDE_ENTREGA_PLACA,FECHA_RETIRO,CEDULA_QUIEN_RETIRA,NOMBRE_QUIEN_RETIRA,CEDULA_PROPIETARIO,\n" +
+                                    "NOMBRE_PROPIETARIO,USU_ENTREGA \n" +
+                                    "FROM TRANS_ENTREGAR_PLACA\n" +
+                                    "where placa = '"+txt_placa.getValue()+"'");
+                            set_placa.getTab_seleccion().ejecutarSql();
+                        } else {
+                               utilitario.agregarMensajeInfo("Debe Ingresar Placa a Buscar", "");
+                               }
+    }
+    
+    public void listo(){
+        set_placa.cerrar();
+    }
         public void quienEs(){
         if(tab_cabecera.getValor("tipo").equals("PARTICULAR")){ //PARTICULAR
                 IDquien();
@@ -246,29 +288,6 @@ public class pre_placas_pendientes extends Pantalla{
                                       }
                     }
             }
-//      TablaGenerica tab_dato = ser_Placa.getPlacaBus(tab_entrega.getValor("placa"));
-//        if(!tab_dato.isEmpty()) {
-//            utilitario.agregarMensaje("Placa Entregada", tab_dato.getValor("placa"));
-//            utilitario.agregarMensaje("Propietario", tab_dato.getValor("NOMBRE_PROPIETARIO"));
-//            utilitario.addUpdate("tab_entrega");
-//            }else {
-//                    TablaGenerica tab_dato1 = ser_Placa.getPlacaBusc(tab_entrega.getValor("placa"));
-//                        if(!tab_dato1.isEmpty()) {
-//                            utilitario.agregarMensaje("Placa Entregada", tab_dato1.getValor("placa"));
-//                            utilitario.addUpdate("tab_entrega");
-//                            }else {
-//                                   TablaGenerica tab_dato2 = ser_Placa.getPlacaEntrega(tab_entrega.getValor("placa"));
-//                                    if(!tab_dato2.isEmpty()) {
-//                                        tab_entrega.setValor("cedula_propietario", tab_dato2.getValor("CEDULA_RUC_PROPIETARIO"));
-//                                        tab_entrega.setValor("nombre_propietario", tab_dato2.getValor("NOMBRE_PROPIETARIO"));
-//                                        tab_entrega.setValor("ide_detalle_solicitud", tab_dato2.getValor("IDE_DETALLE_SOLICITUD"));
-//                                        utilitario.addUpdate("tab_entrega");
-//                                        }else {
-//                                               utilitario.agregarMensajeInfo("Placa No Entregada", "");
-//                                                }
-//                                    }
-//                    }
-        
     }
     
     public void ejeGuardar(){
@@ -349,6 +368,10 @@ public class pre_placas_pendientes extends Pantalla{
            case "IMPRESION COMPROBANTE":
                 aceptoInventario();
                break;
+           case "PLACA ENTREGADAS":
+                set_placa.dibujar();
+                set_placa.getTab_seleccion().limpiar();
+                break;
         }
     }     
        
@@ -404,6 +427,14 @@ public class pre_placas_pendientes extends Pantalla{
 
     public void setP_parametros(Map p_parametros) {
         this.p_parametros = p_parametros;
+    }
+
+    public SeleccionTabla getSet_placa() {
+        return set_placa;
+    }
+
+    public void setSet_placa(SeleccionTabla set_placa) {
+        this.set_placa = set_placa;
     }
     
 }
