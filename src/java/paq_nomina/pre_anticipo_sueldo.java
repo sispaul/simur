@@ -250,7 +250,18 @@ public class pre_anticipo_sueldo extends Pantalla{
                 iAnticipos.ActualizarDetalleAnticipo((utilitario.getAnio(utilitario.getFechaActual())-1),(utilitario.getMes(utilitario.getFechaActual())+11));
             }
         }
+        actuPago();
     }
+    
+    public void actuPago(){
+        iAnticipos.ActualizaAnticipo();
+        verificaDetalle();
+    }
+    
+    public void verificaDetalle(){
+        iAnticipos.CamAnticipoF();
+    }
+    
     //limpia y borrar el contenido de la pantalla
     private void limpiarPanel() {
         //borra el contenido de la división central central
