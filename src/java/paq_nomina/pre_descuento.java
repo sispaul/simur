@@ -336,30 +336,7 @@ private Conexion con_postgres= new Conexion();
         }else {
             utilitario.agregarMensajeInfo("Debe seleccionar una tipo", "");
         }
-    }
-     
-    
-    
-    public void actuAnticipo(){
-       for (int i = 0; i < tab_tabla.getTotalFilas(); i++) {
-             tab_tabla.getValor(i, "ide_columna");
-               if(tab_tabla.getValor(i, "ide_columna").equals("1")||tab_tabla.getValor(i, "ide_columna").equals("46")){
-                   mDescuento.migrarAnticipo();
-                  actu();
-                }
-            }
-    }
-         
-    public void actu(){
-       mDescuento.ActualizaAnticipo();
-       tab_tabla.actualizar();
-       ide();
-    }
-         
-    public void ide(){
-       mDescuento. CamAnticipoF();
-    }
-    
+    }    
     
 /*CREACION DE REPORTES */
     //llamada a reporte
