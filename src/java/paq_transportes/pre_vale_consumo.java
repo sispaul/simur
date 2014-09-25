@@ -190,12 +190,22 @@ public class pre_vale_consumo extends Pantalla{
       public void aceptoAnticipo(){
         switch (rep_reporte.getNombre()) {
                case "VALE DE CONSUMO":
+                   TablaGenerica tab_datoi = pCombustible.getNick(Integer.parseInt(tab_tabla.getValor("ide_vale_consumo")), Integer.parseInt(tab_tabla.getValor("numero_vale")));
+                    if (!tab_datoi.isEmpty()) {
+                   TablaGenerica tab_dato = pCombustible.getUsuario(tab_datoi.getValor("autoriza"));
+                    if (!tab_dato.isEmpty()) {
                     p_parametros.put("vale", Integer.parseInt(tab_tabla.getValor("numero_vale")));
                     p_parametros.put("id", Integer.parseInt(tab_tabla.getValor("ide_vale_consumo")));
-                    p_parametros.put("autoriza", tab_consulta.getValor("NOM_USUA")+"");
+                    p_parametros.put("autoriza", tab_dato.getValor("NOM_USUA")+"");
                     rep_reporte.cerrar();
                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                     sef_formato.dibujar();
+                    } else {
+                        utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
+                    }
+                    } else {
+                        utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
+                    }
                break;
         }
     }
