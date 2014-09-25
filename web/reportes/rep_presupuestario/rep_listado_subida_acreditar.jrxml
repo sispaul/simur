@@ -3,6 +3,9 @@
 	<property name="ireport.zoom" value="1.5000000000000004"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<parameter name="nom_resp" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["el que imprimio"]]></defaultValueExpression>
+	</parameter>
 	<parameter name="fecha_acre" class="java.lang.String"/>
 	<parameter name="num_tran" class="java.lang.String"/>
 	<queryString>
@@ -15,15 +18,14 @@ d.numero_cuenta,
 d.tipo_cuenta,
 d.valor,
 d.num_transferencia,
-"p".descripcion,
+p.descripcion,
 d.fecha_transferencia,
 d.comentario,
 d.ide_listado,
 d.item,
 d.num_documento,
 l.responsable_envia,
-l.responsable_paga,
-d.ban_nombre
+l.responsable_paga
 FROM
 tes_comprobante_pago AS p ,
 tes_detalle_comprobante_pago_listado AS d
@@ -51,7 +53,6 @@ and d.num_documento = $P{num_tran} and d.fecha_transferencia = cast ($P{fecha_ac
 	<field name="num_documento" class="java.lang.String"/>
 	<field name="responsable_envia" class="java.lang.String"/>
 	<field name="responsable_paga" class="java.lang.String"/>
-	<field name="ban_nombre" class="java.lang.String"/>
 	<variable name="SUM_TOTAL" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
 	</variable>
@@ -68,49 +69,49 @@ and d.num_documento = $P{num_tran} and d.fecha_transferencia = cast ($P{fecha_ac
 				<text><![CDATA[#]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e7db77b6-b64c-42bf-b474-7ccd3a04d5e0" x="68" y="2" width="61" height="20"/>
+				<reportElement uuid="e7db77b6-b64c-42bf-b474-7ccd3a04d5e0" x="78" y="2" width="61" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[# COMPROBANTE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="c18a2307-dc92-4e31-bc42-9bf3f41ac123" x="21" y="2" width="45" height="20"/>
+				<reportElement uuid="c18a2307-dc92-4e31-bc42-9bf3f41ac123" x="21" y="2" width="55" height="20"/>
 				<textElement>
 					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[RUC O C.I.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="1d3d84ed-fdb9-4ef3-aa15-fe84adf038d6" x="131" y="2" width="153" height="20"/>
+				<reportElement uuid="1d3d84ed-fdb9-4ef3-aa15-fe84adf038d6" x="143" y="2" width="196" height="20"/>
 				<textElement>
 					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[PROVEEDOR]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="de56105c-4456-423a-9a08-4297a6a7412f" x="479" y="2" width="23" height="20"/>
+				<reportElement uuid="de56105c-4456-423a-9a08-4297a6a7412f" x="444" y="2" width="23" height="20"/>
 				<textElement>
 					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TIPO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="1f337245-9cfb-48ed-a767-4e970e6b7356" x="428" y="2" width="46" height="20"/>
+				<reportElement uuid="1f337245-9cfb-48ed-a767-4e970e6b7356" x="384" y="2" width="51" height="20"/>
 				<textElement>
 					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[# CUENTA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="9d9e4d79-f27e-499d-b937-3f3df0fbbf1d" x="502" y="2" width="45" height="20"/>
+				<reportElement uuid="9d9e4d79-f27e-499d-b937-3f3df0fbbf1d" x="470" y="2" width="50" height="20"/>
 				<textElement textAlignment="Center">
 					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[VALOR]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="a43ea6d0-161b-4d49-8208-3fa3d5136e62" x="379" y="2" width="47" height="20"/>
+				<reportElement uuid="a43ea6d0-161b-4d49-8208-3fa3d5136e62" x="330" y="2" width="52" height="20"/>
 				<textElement>
 					<font size="7" isBold="true"/>
 				</textElement>
@@ -120,32 +121,25 @@ and d.num_documento = $P{num_tran} and d.fecha_transferencia = cast ($P{fecha_ac
 				<reportElement uuid="f2f4bd69-b460-4282-95ca-e988c371445d" x="3" y="22" width="789" height="1"/>
 			</line>
 			<staticText>
-				<reportElement uuid="01fe3aba-0495-4dc5-951a-4804cf0e9a34" x="549" y="2" width="45" height="20"/>
+				<reportElement uuid="01fe3aba-0495-4dc5-951a-4804cf0e9a34" x="522" y="2" width="48" height="20"/>
 				<textElement>
 					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[REFERENCIA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="61d3b9a0-1c8e-47eb-a49d-908a4e482dc2" x="596" y="2" width="150" height="20"/>
+				<reportElement uuid="61d3b9a0-1c8e-47eb-a49d-908a4e482dc2" x="572" y="2" width="153" height="20"/>
 				<textElement>
 					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[DETALLE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="ecc43698-fd72-48e4-bbc7-9b0d1b0cefdd" x="747" y="2" width="56" height="20"/>
+				<reportElement uuid="ecc43698-fd72-48e4-bbc7-9b0d1b0cefdd" x="728" y="2" width="56" height="20"/>
 				<textElement>
 					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[FECHA ACREDITACIÓN]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="43195b61-1074-41be-8319-675709c68706" x="286" y="2" width="91" height="20"/>
-				<textElement>
-					<font size="7" isBold="true"/>
-				</textElement>
-				<text><![CDATA[BANCO]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -154,106 +148,155 @@ and d.num_documento = $P{num_tran} and d.fecha_transferencia = cast ($P{fecha_ac
 			<textField>
 				<reportElement uuid="99b66e3b-b435-4aab-af95-a23cd9b51fe5" x="1" y="0" width="20" height="14"/>
 				<textElement>
-					<font size="7"/>
+					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="de958896-b5d1-4310-9967-434a99da3807" x="21" y="0" width="45" height="14"/>
+				<reportElement uuid="de958896-b5d1-4310-9967-434a99da3807" x="21" y="0" width="55" height="14"/>
 				<textElement>
-					<font size="7"/>
+					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cedula_pass_beneficiario}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="22bd325e-0f38-4a0e-bdff-749323d1ecaf" x="68" y="0" width="61" height="14"/>
+				<reportElement uuid="22bd325e-0f38-4a0e-bdff-749323d1ecaf" x="78" y="0" width="61" height="14"/>
 				<textElement textAlignment="Center">
-					<font size="7"/>
+					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{comprobante}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="76f1f2be-d84c-4448-b97e-123907d6de7c" x="131" y="0" width="153" height="14"/>
+				<reportElement uuid="76f1f2be-d84c-4448-b97e-123907d6de7c" x="143" y="0" width="196" height="14"/>
 				<textElement>
-					<font size="7"/>
+					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombre_beneficiario}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="0a857056-8348-4bbc-84e9-ebe46271ba48" x="379" y="0" width="42" height="14"/>
+				<reportElement uuid="0a857056-8348-4bbc-84e9-ebe46271ba48" x="330" y="0" width="47" height="14"/>
 				<textElement>
-					<font size="7"/>
+					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{codigo_banco}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="e07c655e-93fb-4a6d-8c02-983112d5af55" x="433" y="0" width="46" height="14"/>
+				<reportElement uuid="e07c655e-93fb-4a6d-8c02-983112d5af55" x="389" y="0" width="51" height="14"/>
 				<textElement>
-					<font size="7"/>
+					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{numero_cuenta}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="7d489959-3b3f-4d6d-a65b-33a3c6e4eef0" x="479" y="0" width="23" height="14"/>
+				<reportElement uuid="7d489959-3b3f-4d6d-a65b-33a3c6e4eef0" x="444" y="0" width="23" height="14"/>
 				<textElement textAlignment="Center">
-					<font size="7"/>
+					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tipo_cuenta}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="de888760-6321-4da9-86d2-9db887c38542" x="549" y="0" width="45" height="14"/>
+				<reportElement uuid="de888760-6321-4da9-86d2-9db887c38542" x="522" y="0" width="48" height="14"/>
 				<textElement>
-					<font size="7"/>
+					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{num_transferencia}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="d6de78f2-d57d-4f54-a210-86574dcc5449" x="502" y="0" width="43" height="14"/>
+				<reportElement uuid="d6de78f2-d57d-4f54-a210-86574dcc5449" x="470" y="0" width="48" height="14"/>
 				<textElement textAlignment="Right">
-					<font size="7"/>
+					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="69a03962-059f-41aa-8a79-a52afa22303f" x="596" y="0" width="150" height="14"/>
+				<reportElement uuid="69a03962-059f-41aa-8a79-a52afa22303f" x="572" y="0" width="153" height="14"/>
 				<textElement>
-					<font size="7"/>
+					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="f2406bd9-9174-4af1-bdbf-1cbd8741d2aa" x="747" y="0" width="45" height="14"/>
+				<reportElement uuid="f2406bd9-9174-4af1-bdbf-1cbd8741d2aa" x="728" y="0" width="30" height="14"/>
 				<textElement>
-					<font size="7"/>
+					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{fecha_transferencia}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement uuid="f2d4591d-74c9-45b5-839c-0a5932da3cb0" x="286" y="0" width="91" height="14"/>
-				<textElement>
-					<font size="7"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{ban_nombre}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<columnFooter>
 		<band height="5" splitType="Stretch"/>
 	</columnFooter>
+	<pageFooter>
+		<band height="22" splitType="Stretch">
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="3fdbee01-396b-4b67-b3b8-1d9783dd02ff" key="textField" x="562" y="3" width="170" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="fac35993-2fd4-4da1-ad62-a144e06dd93b" key="textField-5" x="16" y="3" width="209" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="c47531d6-5387-40f2-b45a-9f40b49690c2" key="textField-1" x="306" y="3" width="152" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nom_resp}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
+				<reportElement uuid="4290a3e0-64a0-4fbe-a06b-0c4645bb8548" key="textField" x="736" y="3" width="36" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="c8f47ac0-7e60-4fb4-8182-ca50fb2b06e4" x="3" y="1" width="789" height="1"/>
+			</line>
+		</band>
+	</pageFooter>
 	<summary>
-		<band height="32" splitType="Stretch">
-			<rectangle>
-				<reportElement uuid="6d69bc8e-9102-426a-8bb8-6d40060ce470" x="536" y="2" width="176" height="28" backcolor="#999999"/>
-			</rectangle>
+		<band height="26" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="aff1906a-9064-444a-a424-eca27cb2aaeb" x="536" y="4" width="64" height="20" forecolor="#FFFFFF"/>
+				<reportElement uuid="aff1906a-9064-444a-a424-eca27cb2aaeb" x="536" y="4" width="64" height="20" forecolor="#000000"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[TOTAL :]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="7e1924d0-b5b3-42fa-8d80-712cafea038b" x="600" y="4" width="100" height="20" forecolor="#FFFFFF"/>
+				<reportElement uuid="7e1924d0-b5b3-42fa-8d80-712cafea038b" x="600" y="4" width="100" height="20" forecolor="#000000"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$V{SUM_TOTAL}]]></textFieldExpression>
 			</textField>
