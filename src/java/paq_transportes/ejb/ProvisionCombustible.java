@@ -92,20 +92,15 @@ private Utilitario utilitario = new Utilitario();
          return ValorMax;
   }
  
-    public void ActualizaAnticipo(){
+    public void ActualizaAnticipo(Integer tipo,String conduc,Double gal,Double valor,String usu,Integer vale,Integer numero){
         String str_sql4 = "UPDATE TRANS_VALE_CONSUMO\n" +
-                "SET IDE_TIPO_COMBUSTIBLE =,\n" +
-                "FECHA_VALE =,\n" +
-                "PLACA_VEHICULO =,\n" +
-                "DESCRIPCION_VEHICULO=,\n" +
-                "CONDUCTOR=,\n" +
-                "KILOMETROS=,\n" +
-                "GALONES=,\n" +
-                "TOTAL=,\n" +
-                "CI_CONDUCTOR=,\n" +
-                "FECHA_FECHA_MODIFICACION = '',\n" +
-                "MODIFICA = ''\n" +
-                "WHERE IDE_VALE_CONSUMO = AND NUMERO_VALE =";
+                "SET IDE_TIPO_COMBUSTIBLE ="+tipo+",\n" +
+                "CONDUCTOR='"+conduc+"',\n" +
+                "GALONES="+gal+",\n" +
+                "TOTAL="+valor+",\n" +
+                "FECHA_MODIFICACION = '"+utilitario.getFechaHoraActual()+"',\n" +
+                "MODIFICA = '"+usu+"'\n" +
+                "WHERE IDE_VALE_CONSUMO ="+vale+" AND NUMERO_VALE ="+numero;
         con_sql();
         con_sql.ejecutarSql(str_sql4);
         con_sql.desconectar();
