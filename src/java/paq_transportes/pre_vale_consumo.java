@@ -6,9 +6,14 @@ package paq_transportes;
 
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Division;
+import framework.componentes.Etiqueta;
 import framework.componentes.Imagen;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
+import java.util.HashMap;
+import java.util.Map;
 import javax.ejb.EJB;
 import paq_sistema.aplicacion.Pantalla;
 import paq_transportes.ejb.ProvisionCombustible;
@@ -26,6 +31,11 @@ public class pre_vale_consumo extends Pantalla{
     
     private Tabla tab_tabla = new Tabla();
     private Tabla tab_consulta = new Tabla();
+    
+    //REPORTES
+    private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
+    private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
+    private Map p_parametros = new HashMap();
     
     //Extrae datos adicionales, que se necesita, de una clase logica
     @EJB
@@ -76,6 +86,12 @@ public class pre_vale_consumo extends Pantalla{
         Division div = new Division();
         div.dividir2(quinde, ptt, "15%", "h");
         agregarComponente(div);
+        
+         /*         * CONFIGURACIÓN DE OBJETO REPORTE         */
+        bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
+        agregarComponente(rep_reporte); //2 agregar el listado de reportes
+        sef_formato.setId("sef_formato");
+        agregarComponente(sef_formato);
     }
 
     
@@ -136,7 +152,6 @@ public class pre_vale_consumo extends Pantalla{
     public void guardar() {
         if(tab_tabla.getValor("ide_vale_consumo")!=null && tab_tabla.getValor("ide_vale_consumo").toString().isEmpty() == false){
             if(Boolean.parseBoolean(tab_consulta.getValor("PERM_UTIL_PERF"))!=false){
-                System.err.println("hi");
                 pCombustible.ActualizaAnticipo(Integer.parseInt(tab_tabla.getValor("ide_tipo_combustible")), tab_tabla.getValor("conductor"), Double.valueOf(tab_tabla.getValor("galones")), 
                         Double.valueOf(tab_tabla.getValor("total")), tab_consulta.getValor("NICK_USUA"), Integer.parseInt(tab_tabla.getValor("ide_vale_consumo")), Integer.parseInt(tab_tabla.getValor("numero_vale")));
                 utilitario.agregarMensaje("Registro Guardado","");
@@ -154,12 +169,67 @@ public class pre_vale_consumo extends Pantalla{
         tab_tabla.eliminar();
     }
 
+    /*CREACION DE REPORTES */
+    //llamada a reporte
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+
+    }
+    
+        @Override
+    public void aceptarReporte() {
+        rep_reporte.cerrar();
+        switch (rep_reporte.getNombre()) {
+           case "VALE DE CONSUMO":
+                aceptoAnticipo();
+          break;
+        }
+    } 
+    
+      public void aceptoAnticipo(){
+        switch (rep_reporte.getNombre()) {
+               case "VALE DE CONSUMO":
+                    p_parametros.put("vale", Integer.parseInt(tab_tabla.getValor("numero_vale")));
+                    p_parametros.put("id", Integer.parseInt(tab_tabla.getValor("ide_vale_consumo")));
+                    p_parametros.put("autoriza", tab_consulta.getValor("NOM_USUA")+"");
+                    rep_reporte.cerrar();
+                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_formato.dibujar();
+               break;
+        }
+    }
+    
     public Tabla getTab_tabla() {
         return tab_tabla;
     }
 
     public void setTab_tabla(Tabla tab_tabla) {
         this.tab_tabla = tab_tabla;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSef_formato() {
+        return sef_formato;
+    }
+
+    public void setSef_formato(SeleccionFormatoReporte sef_formato) {
+        this.sef_formato = sef_formato;
+    }
+
+    public Map getP_parametros() {
+        return p_parametros;
+    }
+
+    public void setP_parametros(Map p_parametros) {
+        this.p_parametros = p_parametros;
     }
     
 }
