@@ -78,6 +78,36 @@ private Utilitario utilitario = new Utilitario();
         return tab_persona;
     }
     
+    public TablaGenerica getNick(Integer ide,Integer tipo) {
+        con_sql();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_sql);
+        tab_persona.setSql("SELECT\n" +
+"IDE_VALE_CONSUMO,\n" +
+"AUTORIZA,\n" +
+"NUMERO_VALE\n" +
+"FROM\n" +
+"TRANS_VALE_CONSUMO\n" +
+"where IDE_VALE_CONSUMO = "+ide+" and NUMERO_VALE="+tipo);
+        tab_persona.ejecutarSql();
+       con_sql.desconectar();
+       con_sql = null;
+        return tab_persona;
+    }
+    
+    public TablaGenerica getUsuario(String nick) {
+        con_sql();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_sql);
+        tab_persona.setSql("SELECT u.IDE_USUA,u.NOM_USUA,u.NICK_USUA,u.IDE_PERF,p.NOM_PERF,p.PERM_UTIL_PERF\n" +
+                "FROM SIS_USUARIO u,SIS_PERFIL p where u.IDE_PERF = p.IDE_PERF\n" +
+                "and NICK_USUA = '"+nick+"'");
+        tab_persona.ejecutarSql();
+       con_sql.desconectar();
+       con_sql = null;
+        return tab_persona;
+    }
+    
     public String listaMax() {
          con_sql();
          String ValorMax;
