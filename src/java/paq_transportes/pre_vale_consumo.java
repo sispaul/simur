@@ -63,8 +63,9 @@ public class pre_vale_consumo extends Pantalla{
         tab_tabla.getColumna("AUTORIZA").setValorDefecto(tab_consulta.getValor("NICK_USUA")); 
         tab_tabla.getColumna("IDE_VALE_CONSUMO").setVisible(false);
         tab_tabla.getColumna("CI_CONDUCTOR").setVisible(false);
-        tab_tabla.getColumna("CI_AUTORIZA").setVisible(false);
         tab_tabla.getColumna("AUTORIZA").setVisible(false);
+        tab_tabla.getColumna("MODIFICA").setVisible(false);
+        tab_tabla.getColumna("FECHA_MODIFICACION").setVisible(false);
         tab_tabla.setTipoFormulario(true);
         tab_tabla.getGrid().setColumns(4);
         tab_tabla.dibujar();
@@ -133,11 +134,12 @@ public class pre_vale_consumo extends Pantalla{
 
     @Override
     public void guardar() {
-        if(tab_tabla.getValor("ide_vale_consumo")!=null){
-            if(Integer.parseInt(tab_consulta.getValor("PERM_UTIL_PERF"))!=1){
-                
-                
-                
+        if(tab_tabla.getValor("ide_vale_consumo")!=null && tab_tabla.getValor("ide_vale_consumo").toString().isEmpty() == false){
+            if(Boolean.parseBoolean(tab_consulta.getValor("PERM_UTIL_PERF"))!=false){
+                System.err.println("hi");
+                pCombustible.ActualizaAnticipo(Integer.parseInt(tab_tabla.getValor("ide_tipo_combustible")), tab_tabla.getValor("conductor"), Double.valueOf(tab_tabla.getValor("galones")), 
+                        Double.valueOf(tab_tabla.getValor("total")), tab_consulta.getValor("NICK_USUA"), Integer.parseInt(tab_tabla.getValor("ide_vale_consumo")), Integer.parseInt(tab_tabla.getValor("numero_vale")));
+                utilitario.agregarMensaje("Registro Guardado","");
             }else{
                 utilitario.agregarMensajeInfo("Registro No Puede Ser Modificado","No Posee Permisos");
             }
