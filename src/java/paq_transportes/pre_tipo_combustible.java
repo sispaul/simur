@@ -9,6 +9,7 @@ import framework.componentes.Imagen;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import paq_sistema.aplicacion.Pantalla;
+import persistencia.Conexion;
 
 /**
  *
@@ -17,15 +18,21 @@ import paq_sistema.aplicacion.Pantalla;
 public class pre_tipo_combustible extends Pantalla{
 
     private Tabla  tab_tabla = new Tabla();
+    private Conexion con_sql = new Conexion();
     
     public pre_tipo_combustible() {
+        
+        //cadena de conexión para base de datos en sql/manauto
+        con_sql.setUnidad_persistencia(utilitario.getPropiedad("poolSqlmanAuto"));
+        con_sql.NOMBRE_MARCA_BASE = "sqlserver";
         
         // Imagen de encabezado
         Imagen quinde = new Imagen();
         quinde.setValue("imagenes/logo_transporte.png");
         
         tab_tabla.setId("tab_tabla");
-        tab_tabla.setTabla("trans_tipo_combustible", "ide_tipo_combustible", 1);
+        tab_tabla.setConexion(con_sql);
+        tab_tabla.setTabla("mvtipo_combustible", "ide_tipo_combustible", 1);
         tab_tabla.setHeader("TIPO DE COMBUSTIBLE / VALOR");
         tab_tabla.setTipoFormulario(true);
         tab_tabla.dibujar();
@@ -46,7 +53,7 @@ public class pre_tipo_combustible extends Pantalla{
     @Override
     public void guardar() {
         tab_tabla.guardar();
-        guardarPantalla();
+        con_sql.guardarPantalla();
     }
 
     @Override
