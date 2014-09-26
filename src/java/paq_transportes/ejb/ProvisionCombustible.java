@@ -98,8 +98,8 @@ private Utilitario utilitario = new Utilitario();
                 "MVE_SECUENCIAL,\n" +
                 "MVE_PLACA,\n" +
                 "MVE_KILOMETRAJE,\n" +
-                "MVE_TIPO_COMBUSTIBLE\n" +
-                "MVE_CAPACIDAD_TANQUE_COMBUSTIBLE,\n" +
+                "MVE_TIPO_COMBUSTIBLE,\n" +
+                "MVE_CAPACIDAD_TANQUE_COMBUSTIBLE\n" +
                 "FROM MVVEHICULO\n" +
                 "WHERE MVE_PLACA = '"+placa+"'");
         tab_persona.ejecutarSql();

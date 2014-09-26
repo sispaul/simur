@@ -38,6 +38,7 @@ public class pre_orden_consumo extends Pantalla{
     private Tabla tab_tabla = new Tabla();
     private Tabla tab_calculo = new Tabla();
     private Tabla tab_consulta = new Tabla();
+    private Tabla tab_tipo = new Tabla();
     private Tabla set_colaborador = new Tabla();
     
     //Dialogo Busca 
@@ -91,7 +92,7 @@ public class pre_orden_consumo extends Pantalla{
         bot_limpiar.setIcon("ui-icon-cancel");
         bot_limpiar.setMetodo("limpiar");
         bar_botones.agregarBoton(bot_limpiar);
-
+        
         // Imagen de encabezado
         Imagen quinde = new Imagen();
         quinde.setValue("imagenes/logo_transporte.png");
@@ -118,6 +119,16 @@ public class pre_orden_consumo extends Pantalla{
         tab_calculo.setConexion(con_sql);
         tab_calculo.setTabla("mvcalculo_consumo", "ide_calculo_consumo", 2);
         tab_calculo.setHeader("DATOS DE PROVISIÓN DE COMBUSTIBLE");
+        
+        tab_tipo.setId("tab_tipo");
+        tab_tipo.setConexion(con_sql);
+        tab_tipo.setSql("SELECT MVE_SECUENCIAL,MVE_PLACA,MVE_KILOMETRAJE,MVE_TIPO_COMBUSTIBLE,MVE_CAPACIDAD_TANQUE_COMBUSTIBLE \n" +
+                "FROM MVVEHICULO WHERE MVE_PLACA = '"+tab_tabla.getValor("placa_vehiculo")+"'");
+        tab_tipo.setCampoPrimaria("MVE_SECUENCIAL");
+        tab_tipo.setLectura(true);
+        tab_tipo.dibujar();
+        
+        tab_calculo.getColumna("ide_tipo_combustible").setValorDefecto(tab_tipo.getValor("MVE_TIPO_COMBUSTIBLE"));
         tab_calculo.getColumna("ide_tipo_combustible").setCombo("SELECT IDE_TIPO_COMBUSTIBLE,(DESCRIPCION_COMBUSTIBLE+'/'+cast(VALOR_GALON as varchar)) as valor FROM mvTIPO_COMBUSTIBLE");
         tab_calculo.getColumna("fecha_digitacion").setValorDefecto(utilitario.getFechaActual());
         tab_calculo.getColumna("hora_digitacion").setValorDefecto(utilitario.getFechaHoraActual());
@@ -127,15 +138,15 @@ public class pre_orden_consumo extends Pantalla{
         tab_calculo.getColumna("usu_digitacion").setVisible(false);
         tab_calculo.getColumna("ide_calculo_consumo").setVisible(false);
         tab_calculo.getColumna("ide_tipo_combustible").setMetodoChange("clean");
-        tab_calculo.getColumna("galones").setMetodoChange("valor");
+//        tab_calculo.getColumna("galones").setMetodoChange("valor");
         tab_calculo.getColumna("kilometraje").setMetodoChange("kilometraje");
         tab_calculo.getColumna("galones").setMetodoChange("galones");
-        tab_calculo.setTipoFormulario(true);
-        tab_calculo.getGrid().setColumns(4);
+//        tab_calculo.setTipoFormulario(true);
+//        tab_calculo.getGrid().setColumns(4);
+        
         tab_calculo.dibujar();
         PanelTabla ptc = new PanelTabla();
         ptc.setPanelTabla(tab_calculo);
-        
         Division div = new Division();
         div.dividir3(quinde,ptt,ptc, "17%","55%", "h");
         agregarComponente(div);
@@ -258,7 +269,7 @@ public class pre_orden_consumo extends Pantalla{
             if(valor2>valor1){
                 tab_calculo.getColumna("galones").setLectura(false);
                 tab_calculo.getColumna("total").setLectura(false);
-                tab_calculo.setValor("ide_tipo_combustible", tab_dato.getValor("MVE_TIPO_COMBUSTIBLE"));
+//                tab_calculo.setValor("ide_tipo_combustible", tab_dato.getValor("MVE_TIPO_COMBUSTIBLE"));
                 utilitario.addUpdate("tab_calculo");
             }else{
                 utilitario.agregarMensajeError("Kilometraje","Por Debajo del Anterior");
@@ -278,9 +289,10 @@ public class pre_orden_consumo extends Pantalla{
         if (!tab_dato.isEmpty()) {
             Double valor1 = Double.valueOf(tab_dato.getValor("MVE_CAPACIDAD_TANQUE_COMBUSTIBLE"));
             Double valor2 = Double.valueOf(tab_calculo.getValor("galones"));
-            if(valor2>valor1){
+            if(valor2<valor1){
                 tab_calculo.getColumna("total").setLectura(false);
                 utilitario.addUpdate("tab_calculo");
+                        valor();
             }else{
                 utilitario.agregarMensajeError("Kilometraje","Por Debajo del Anterior");
                 tab_calculo.setValor("galones", null);
