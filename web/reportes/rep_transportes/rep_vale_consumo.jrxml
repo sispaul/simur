@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_vale_consumo" language="groovy" pageWidth="421" pageHeight="297" orientation="Landscape" columnWidth="381" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fd5c3e03-831c-4619-a15e-5eba595d071e">
-	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.zoom" value="3.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="autoriza" class="java.lang.String"/>
@@ -9,36 +9,26 @@
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
-c.IDE_VALE_CONSUMO,
-c.FECHA_VALE,
-c.PLACA_VEHICULO,
-c.DESCRIPCION_VEHICULO,
-c.CONDUCTOR,
-c.KILOMETROS,
-c.GALONES,
-c.TOTAL,
-c.AUTORIZA,
-c.CI_CONDUCTOR,
-c.NUMERO_VALE,
-t.DESCRIPCION_COMBUSTIBLE
+IDE_ORDEN_CONSUMO,
+FECHA_ORDEN,
+PLACA_VEHICULO,
+DESCRIPCION_VEHICULO,
+CONDUCTOR,
+CI_CONDUCTOR,
+AUTORIZA,
+NUMERO_ORDEN
 FROM
-TRANS_VALE_CONSUMO c ,
-TRANS_TIPO_COMBUSTIBLE t
-where c.IDE_TIPO_COMBUSTIBLE = t.IDE_TIPO_COMBUSTIBLE
-and c.IDE_VALE_CONSUMO =$P{id} and c.NUMERO_VALE =$P{vale}]]>
+MVORDEN_CONSUMO
+where NUMERO_ORDEN =$P{vale} and IDE_ORDEN_CONSUMO =$P{id}]]>
 	</queryString>
-	<field name="IDE_VALE_CONSUMO" class="java.lang.Integer"/>
-	<field name="FECHA_VALE" class="java.sql.Timestamp"/>
+	<field name="IDE_ORDEN_CONSUMO" class="java.lang.Integer"/>
+	<field name="FECHA_ORDEN" class="java.sql.Timestamp"/>
 	<field name="PLACA_VEHICULO" class="java.lang.String"/>
 	<field name="DESCRIPCION_VEHICULO" class="java.lang.String"/>
 	<field name="CONDUCTOR" class="java.lang.String"/>
-	<field name="KILOMETROS" class="java.lang.Integer"/>
-	<field name="GALONES" class="java.lang.Float"/>
-	<field name="TOTAL" class="java.lang.Float"/>
-	<field name="AUTORIZA" class="java.lang.String"/>
 	<field name="CI_CONDUCTOR" class="java.lang.String"/>
-	<field name="NUMERO_VALE" class="java.lang.Integer"/>
-	<field name="DESCRIPCION_COMBUSTIBLE" class="java.lang.String"/>
+	<field name="AUTORIZA" class="java.lang.String"/>
+	<field name="NUMERO_ORDEN" class="java.lang.Integer"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -52,14 +42,11 @@ and c.IDE_VALE_CONSUMO =$P{id} and c.NUMERO_VALE =$P{vale}]]>
 				<text><![CDATA[ORDEN DE PROVISIÓN DE COMBUSTIBLE]]></text>
 			</staticText>
 			<image>
-				<reportElement uuid="390390b8-19b6-4abb-8e95-9b64dff1307f" x="258" y="2" width="78" height="36"/>
-				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
+				<reportElement uuid="ec1c96cf-9d13-46ae-89b9-d27255773890" x="251" y="-4" width="130" height="45"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_transporte.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>
-	<pageHeader>
-		<band splitType="Stretch"/>
-	</pageHeader>
 	<columnHeader>
 		<band height="146" splitType="Stretch">
 			<rectangle>
@@ -73,21 +60,21 @@ and c.IDE_VALE_CONSUMO =$P{id} and c.NUMERO_VALE =$P{vale}]]>
 				<textElement>
 					<font size="7" isBold="true"/>
 				</textElement>
-				<text><![CDATA[# VALE :]]></text>
+				<text><![CDATA[N° ORDEN :]]></text>
 			</staticText>
 			<textField>
 				<reportElement uuid="c1198ab7-f889-40bf-904e-d3e0e80dde05" x="324" y="3" width="55" height="20"/>
 				<textElement>
 					<font size="7" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{NUMERO_VALE}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{NUMERO_ORDEN}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="9c5d9c30-4713-4d9d-a997-6555f1d87024" x="19" y="3" width="34" height="20"/>
+				<reportElement uuid="9c5d9c30-4713-4d9d-a997-6555f1d87024" x="19" y="3" width="66" height="20"/>
 				<textElement>
 					<font size="7" isBold="true"/>
 				</textElement>
-				<text><![CDATA[FECHA : ]]></text>
+				<text><![CDATA[FECHA  DE ORDEN: ]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="ca0dcd34-e7e2-46b3-8c96-f93d6089e519" x="8" y="34" width="47" height="20"/>
@@ -104,25 +91,18 @@ and c.IDE_VALE_CONSUMO =$P{id} and c.NUMERO_VALE =$P{vale}]]>
 				<text><![CDATA[DESCRIPCIÓN :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="97a976b3-9b74-4167-b51a-99d8a04c2a5f" x="8" y="56" width="61" height="20"/>
-				<textElement>
-					<font size="7" isBold="true"/>
-				</textElement>
-				<text><![CDATA[KILOMETROS :]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="c2ba111c-0958-469e-8f5f-982f3270a215" x="144" y="56" width="57" height="20"/>
+				<reportElement uuid="c2ba111c-0958-469e-8f5f-982f3270a215" x="9" y="56" width="57" height="20"/>
 				<textElement>
 					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[CONDUCTOR :]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="0f594163-36f8-46d3-b8ef-69241a8cf9be" x="51" y="3" width="63" height="20"/>
+				<reportElement uuid="0f594163-36f8-46d3-b8ef-69241a8cf9be" x="82" y="3" width="63" height="20"/>
 				<textElement>
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{FECHA_VALE}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{FECHA_ORDEN}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="16f630ca-b432-4b75-be74-6ca81344a2b8" x="201" y="34" width="167" height="20"/>
@@ -139,66 +119,54 @@ and c.IDE_VALE_CONSUMO =$P{id} and c.NUMERO_VALE =$P{vale}]]>
 				<textFieldExpression><![CDATA[$F{PLACA_VEHICULO}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="d375cc42-e048-4037-8f08-a41a5005e6c9" x="200" y="56" width="179" height="20"/>
+				<reportElement uuid="d375cc42-e048-4037-8f08-a41a5005e6c9" x="65" y="56" width="179" height="20"/>
 				<textElement>
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{CONDUCTOR}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="3b336d1b-01ce-4197-8625-f0cb3cabe0b8" x="25" y="56" width="60" height="20"/>
-				<textElement textAlignment="Right">
-					<font size="7"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{KILOMETROS}]]></textFieldExpression>
-			</textField>
 			<staticText>
-				<reportElement uuid="2e7d4c98-95d5-478d-bf48-4ef205e57dfb" x="8" y="86" width="77" height="20"/>
+				<reportElement uuid="2e7d4c98-95d5-478d-bf48-4ef205e57dfb" x="8" y="102" width="77" height="20"/>
 				<textElement>
 					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TIPO COMBUSTIBLE :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="6f098f9d-4b78-49e2-b0dc-875007a474b3" x="234" y="86" width="68" height="20"/>
+				<reportElement uuid="6f098f9d-4b78-49e2-b0dc-875007a474b3" x="8" y="115" width="68" height="20"/>
 				<textElement>
 					<font size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[# GALONES :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="c4631c09-cab2-4f69-b166-ee25621ec43c" x="234" y="118" width="52" height="20"/>
+				<reportElement uuid="c4631c09-cab2-4f69-b166-ee25621ec43c" x="224" y="123" width="52" height="20"/>
 				<textElement>
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TOTAL :]]></text>
 			</staticText>
-			<textField>
-				<reportElement uuid="2e51a5e4-1573-40ee-b9cc-555768c92bbe" x="85" y="86" width="100" height="20"/>
+			<staticText>
+				<reportElement uuid="a59d701b-c9f3-475c-8942-34b85e2af13f" x="9" y="84" width="57" height="20"/>
 				<textElement>
-					<font size="7"/>
+					<font size="7" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{DESCRIPCION_COMBUSTIBLE}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="b19a18c9-f4f3-4634-8090-a9ce55626815" x="257" y="86" width="47" height="20"/>
-				<textElement textAlignment="Right">
-					<font size="7"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{GALONES}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="112f4a5d-3a3f-43d3-9280-4775cf7f71eb" x="245" y="118" width="50" height="20"/>
-				<textElement textAlignment="Right">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{TOTAL}]]></textFieldExpression>
-			</textField>
+				<text><![CDATA[KILOMETRAJE:]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="b3b4c91a-a4cd-468c-89da-0307d7a57dde" x="65" y="97" width="100" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="6b7e37e5-795d-4885-80cb-120786d014d0" x="85" y="115" width="100" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="e30c1118-c37e-4b85-9e12-51053afd3109" x="72" y="130" width="100" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="787aeb3d-7890-4732-85c6-9c7dfee72fc8" x="258" y="137" width="100" height="1"/>
+			</line>
 		</band>
 	</columnHeader>
-	<detail>
-		<band height="3" splitType="Stretch"/>
-	</detail>
 	<columnFooter>
 		<band height="64" splitType="Stretch">
 			<staticText>
@@ -244,10 +212,4 @@ and c.IDE_VALE_CONSUMO =$P{id} and c.NUMERO_VALE =$P{vale}]]>
 			</textField>
 		</band>
 	</columnFooter>
-	<pageFooter>
-		<band height="6" splitType="Stretch"/>
-	</pageFooter>
-	<summary>
-		<band height="5" splitType="Stretch"/>
-	</summary>
 </jasperReport>
