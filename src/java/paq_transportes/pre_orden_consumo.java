@@ -60,6 +60,7 @@ public class pre_orden_consumo extends Pantalla{
     private ProvisionCombustible pCombustible = (ProvisionCombustible) utilitario.instanciarEJB(ProvisionCombustible.class);
     
     public pre_orden_consumo() {
+        
         //usuario actual del sistema
         tab_consulta.setId("tab_consulta");
         tab_consulta.setSql("SELECT u.IDE_USUA,u.NOM_USUA,u.NICK_USUA,u.IDE_PERF,p.NOM_PERF,p.PERM_UTIL_PERF\n" +
@@ -67,6 +68,14 @@ public class pre_orden_consumo extends Pantalla{
         tab_consulta.setCampoPrimaria("IDE_USUA");
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
+        
+        //cadena de conexión para base de datos en postgres/produccion2014
+        con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
+        con_postgres.NOMBRE_MARCA_BASE = "postgres";
+        
+        //cadena de conexión para base de datos en sql/manauto
+        con_sql.setUnidad_persistencia(utilitario.getPropiedad("poolSqlmanAuto"));
+        con_sql.NOMBRE_MARCA_BASE = "sqlserver";
         
         aut_busca.setId("aut_busca");
         aut_busca.setConexion(con_sql);
@@ -82,15 +91,7 @@ public class pre_orden_consumo extends Pantalla{
         bot_limpiar.setIcon("ui-icon-cancel");
         bot_limpiar.setMetodo("limpiar");
         bar_botones.agregarBoton(bot_limpiar);
-        
-        //cadena de conexión para base de datos en postgres/produccion2014
-        con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
-        con_postgres.NOMBRE_MARCA_BASE = "postgres";
-        
-        //cadena de conexión para base de datos en sql/manauto
-        con_sql.setUnidad_persistencia(utilitario.getPropiedad("poolSqlmanAuto"));
-        con_sql.NOMBRE_MARCA_BASE = "sqlserver";
-        
+
         // Imagen de encabezado
         Imagen quinde = new Imagen();
         quinde.setValue("imagenes/logo_transporte.png");
@@ -118,6 +119,9 @@ public class pre_orden_consumo extends Pantalla{
         tab_calculo.setTabla("mvcalculo_consumo", "ide_calculo_consumo", 2);
         tab_calculo.setHeader("DATOS DE PROVISIÓN DE COMBUSTIBLE");
         tab_calculo.getColumna("ide_tipo_combustible").setCombo("SELECT IDE_TIPO_COMBUSTIBLE,(DESCRIPCION_COMBUSTIBLE+'/'+cast(VALOR_GALON as varchar)) as valor FROM mvTIPO_COMBUSTIBLE");
+        tab_calculo.getColumna("fecha_digitacion").setValorDefecto(utilitario.getFechaActual());
+        tab_calculo.getColumna("hora_digitacion").setValorDefecto(utilitario.getFechaHoraActual());
+        tab_calculo.getColumna("usu_digitacion").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         tab_calculo.getColumna("fecha_digitacion").setVisible(false);
         tab_calculo.getColumna("hora_digitacion").setVisible(false);
         tab_calculo.getColumna("usu_digitacion").setVisible(false);
@@ -125,6 +129,7 @@ public class pre_orden_consumo extends Pantalla{
         tab_calculo.getColumna("ide_tipo_combustible").setMetodoChange("clean");
         tab_calculo.getColumna("galones").setMetodoChange("valor");
         tab_calculo.getColumna("kilometraje").setMetodoChange("kilometraje");
+        tab_calculo.getColumna("galones").setMetodoChange("galones");
         tab_calculo.setTipoFormulario(true);
         tab_calculo.getGrid().setColumns(4);
         tab_calculo.dibujar();
@@ -240,9 +245,9 @@ public class pre_orden_consumo extends Pantalla{
     }
     
     public void clean(){
-        tab_tabla.setValor("galones", "");
-        tab_tabla.setValor("total", "");
-        utilitario.addUpdate("tab_tabla");
+        tab_calculo.setValor("galones", "");
+        tab_calculo.setValor("total", "");
+        utilitario.addUpdate("tab_calculo");
     }
     
     public void kilometraje(){
@@ -253,12 +258,13 @@ public class pre_orden_consumo extends Pantalla{
             if(valor2>valor1){
                 tab_calculo.getColumna("galones").setLectura(false);
                 tab_calculo.getColumna("total").setLectura(false);
-                tab_calculo.getColumna("ide_tipo_combustible").setLectura(false);
+                tab_calculo.setValor("ide_tipo_combustible", tab_dato.getValor("MVE_TIPO_COMBUSTIBLE"));
                 utilitario.addUpdate("tab_calculo");
             }else{
                 utilitario.agregarMensajeError("Kilometraje","Por Debajo del Anterior");
                 tab_calculo.getColumna("galones").setLectura(true);
                 tab_calculo.getColumna("total").setLectura(true);
+                tab_calculo.setValor("ide_tipo_combustible", null);
                 tab_calculo.getColumna("ide_tipo_combustible").setLectura(true);
                 utilitario.addUpdate("tab_calculo");
             }
@@ -267,13 +273,32 @@ public class pre_orden_consumo extends Pantalla{
         }
     }
     
+    public void galones(){
+        TablaGenerica tab_dato =pCombustible.getKilometraje(tab_tabla.getValor("placa_vehiculo"));
+        if (!tab_dato.isEmpty()) {
+            Double valor1 = Double.valueOf(tab_dato.getValor("MVE_CAPACIDAD_TANQUE_COMBUSTIBLE"));
+            Double valor2 = Double.valueOf(tab_calculo.getValor("galones"));
+            if(valor2>valor1){
+                tab_calculo.getColumna("total").setLectura(false);
+                utilitario.addUpdate("tab_calculo");
+            }else{
+                utilitario.agregarMensajeError("Kilometraje","Por Debajo del Anterior");
+                tab_calculo.setValor("galones", null);
+                tab_calculo.getColumna("total").setLectura(true);
+                utilitario.addUpdate("tab_calculo");
+            }
+        }else{
+            utilitario.agregarMensajeError("Valor","No Se Encuentra Registrado");
+        }
+    }
+    
     public void valor(){
-        TablaGenerica tab_dato =pCombustible.getCombustible(Integer.parseInt(tab_tabla.getValor("ide_tipo_combustible")));
+        TablaGenerica tab_dato =pCombustible.getCombustible(Integer.parseInt(tab_calculo.getValor("ide_tipo_combustible")));
         if (!tab_dato.isEmpty()) {
             Double valor;
-            valor = (Double.parseDouble(tab_dato.getValor("valor_galon"))*Double.parseDouble(tab_tabla.getValor("galones")));
-            tab_tabla.setValor("total", String.valueOf(Math.rint(valor*100)/100));
-            utilitario.addUpdate("tab_tabla");
+            valor = (Double.parseDouble(tab_dato.getValor("valor_galon"))*Double.parseDouble(tab_calculo.getValor("galones")));
+            tab_calculo.setValor("total", String.valueOf(Math.rint(valor*100)/100));
+            utilitario.addUpdate("tab_calculo");
         }else{
             utilitario.agregarMensajeError("Valor","No Se Encuentra Registrado");
         }
@@ -286,11 +311,20 @@ public class pre_orden_consumo extends Pantalla{
 
     @Override
     public void guardar() {
-        tab_tabla.guardar();
-        con_sql.guardarPantalla();
-        
+        if(tab_tabla.guardar()){
+            if(tab_calculo.guardar()){
+                con_sql.guardarPantalla();
+            }
+        }
+        actuKilometrajes();
     }
 
+    public void actuKilometrajes(){
+        if(tab_calculo.getValor("ide_calculo_consumo")!=null && tab_calculo.getValor("ide_calculo_consumo").toString().isEmpty() == false){
+        pCombustible.ActKilometraje(tab_tabla.getValor("placa_vehiculo"), Double.parseDouble(tab_calculo.getValor("kilometraje")));
+        }
+    }
+    
     @Override
     public void eliminar() {
          utilitario.getTablaisFocus().eliminar();

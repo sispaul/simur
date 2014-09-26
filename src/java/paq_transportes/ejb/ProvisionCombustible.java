@@ -97,7 +97,9 @@ private Utilitario utilitario = new Utilitario();
         tab_persona.setSql("SELECT\n" +
                 "MVE_SECUENCIAL,\n" +
                 "MVE_PLACA,\n" +
-                "MVE_KILOMETRAJE\n" +
+                "MVE_KILOMETRAJE,\n" +
+                "MVE_TIPO_COMBUSTIBLE\n" +
+                "MVE_CAPACIDAD_TANQUE_COMBUSTIBLE,\n" +
                 "FROM MVVEHICULO\n" +
                 "WHERE MVE_PLACA = '"+placa+"'");
         tab_persona.ejecutarSql();
@@ -165,6 +167,15 @@ private Utilitario utilitario = new Utilitario();
         conexion = null;
     }
     
+    public void ActKilometraje(String conduc,Double kilom){
+        String str_sql4 = "update MVVEHICULO\n" +
+                "set MVE_KILOMETRAJE = "+kilom+"\n" +
+                "where MVE_PLACA = '"+conduc+"'";
+        conectar();
+        conexion.ejecutarSql(str_sql4);
+        conexion.desconectar();
+        conexion = null;
+    }
     
 private void conectar() {
     if (conexion == null) {
