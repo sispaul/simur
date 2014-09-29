@@ -4,7 +4,7 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
-	<queryString language="SQL">
+	<queryString>
 		<![CDATA[select * from
 (select s.*,f.galon,g.valor from
 (SELECT DISTINCT
@@ -46,10 +46,6 @@ order by placa_vehiculo]]>
 					</textElement>
 					<text><![CDATA[CONSUMO DE COMBUSTIBLE]]></text>
 				</staticText>
-				<image>
-					<reportElement uuid="ab59f3d2-6057-4789-aad8-d8f91d4aabbf" x="502" y="5" width="222" height="83"/>
-					<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_transporte.png"]]></imageExpression>
-				</image>
 			</frame>
 		</band>
 	</title>
@@ -148,6 +144,7 @@ order by placa_vehiculo]]>
 						<seriesExpression><![CDATA[""]]></seriesExpression>
 						<categoryExpression><![CDATA[$F{PLACA_VEHICULO}]]></categoryExpression>
 						<valueExpression><![CDATA[$F{valor}]]></valueExpression>
+						<labelExpression><![CDATA[CONSUMO PROMEDIO DE COMBUSTIBLE]]></labelExpression>
 					</categorySeries>
 				</categoryDataset>
 				<linePlot>
