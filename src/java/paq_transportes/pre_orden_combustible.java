@@ -256,6 +256,10 @@ public class pre_orden_combustible extends Pantalla{
         tab_tabla.getColumna("ci_conductor").setVisible(false);
         tab_tabla.getColumna("autoriza").setVisible(false);
         tab_tabla.getColumna("ide_orden_consumo").setVisible(false);
+        tab_tabla.getColumna("anio").setVisible(false);
+        tab_tabla.getColumna("periodo").setVisible(false);
+        tab_tabla.getColumna("anio").setValorDefecto(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())));
+        tab_tabla.getColumna("periodo").setValorDefecto(String.valueOf(utilitario.getMes(utilitario.getFechaActual())));
         tab_tabla.agregarRelacion(tab_calculo);
         tab_tabla.setTipoFormulario(true);
         tab_tabla.getGrid().setColumns(4);
@@ -364,10 +368,8 @@ public class pre_orden_combustible extends Pantalla{
         tab_tabla1.getColumna("ci_conductor").setVisible(false);
         tab_tabla1.getColumna("autoriza").setVisible(false);
         tab_tabla1.getColumna("ide_orden_consumo").setVisible(false);
-        tab_tabla.getColumna("anio").setVisible(false);
-        tab_tabla.getColumna("periodo").setVisible(false);
-        tab_tabla.getColumna("anio").setValorDefecto(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())));
-        tab_tabla.getColumna("periodo").setValorDefecto(String.valueOf(utilitario.getMes(utilitario.getFechaActual())));
+        tab_tabla1.getColumna("anio").setVisible(false);
+        tab_tabla1.getColumna("periodo").setVisible(false);
         tab_tabla1.agregarRelacion(tab_calculo);
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(4);
@@ -546,6 +548,7 @@ public class pre_orden_combustible extends Pantalla{
       public void aceptoOrden(){
         switch (rep_reporte.getNombre()) {
                case "ORDEN DE CONSUMO":
+                   
                    TablaGenerica tab_dato =pCombustible.getUsuario(tab_tabla.getValor("autoriza"));
                    if (!tab_dato.isEmpty()) {
                     p_parametros.put("autoriza", tab_dato.getValor("NOM_USUA")+"");
@@ -557,6 +560,7 @@ public class pre_orden_combustible extends Pantalla{
                    }else{
                        utilitario.agregarMensajeError("Usuario","No Disponible");
                    }
+                   
                break;
                case "CONSUMO PROMEDIO COMBUSTIBLE":
                     TablaGenerica tab_dato1 =pCombustible.getMes(Integer.parseInt(cmb_periodo.getValue()+""));
