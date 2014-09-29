@@ -7,6 +7,7 @@ package paq_transportes;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
+import framework.componentes.Combo;
 import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
@@ -45,6 +46,9 @@ public class pre_orden_consumo extends Pantalla{
     private Dialogo dia_dialogo = new Dialogo();
     private Grid grid_d = new Grid();
     private Grid grid = new Grid();
+   private Dialogo dia_dialogor = new Dialogo();
+    private Grid grid_dr = new Grid();
+    private Grid gridr = new Grid();
     
     //REPORTES
     private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
@@ -56,6 +60,10 @@ public class pre_orden_consumo extends Pantalla{
     
     //Busca de comprobante
     private AutoCompletar aut_busca = new AutoCompletar();
+    
+    //Combos de Selección
+    private Combo cmb_anio = new Combo();
+    private Combo cmb_periodo = new Combo();
     
     @EJB
     private ProvisionCombustible pCombustible = (ProvisionCombustible) utilitario.instanciarEJB(ProvisionCombustible.class);
@@ -107,6 +115,10 @@ public class pre_orden_consumo extends Pantalla{
         tab_tabla.getColumna("AUTORIZA").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         tab_tabla.getColumna("ci_conductor").setVisible(false);
         tab_tabla.getColumna("autoriza").setVisible(false);
+        tab_tabla.getColumna("anio").setVisible(false);
+        tab_tabla.getColumna("periodo").setVisible(false);
+        tab_tabla.getColumna("anio").setValorDefecto(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())));
+        tab_tabla.getColumna("periodo").setValorDefecto(String.valueOf(utilitario.getMes(utilitario.getFechaActual())));
         tab_tabla.getColumna("ide_orden_consumo").setVisible(false);
         tab_tabla.agregarRelacion(tab_calculo);
         tab_tabla.setTipoFormulario(true);
@@ -137,6 +149,7 @@ public class pre_orden_consumo extends Pantalla{
         tab_calculo.getColumna("hora_digitacion").setVisible(false);
         tab_calculo.getColumna("usu_digitacion").setVisible(false);
         tab_calculo.getColumna("ide_calculo_consumo").setVisible(false);
+        tab_calculo.getColumna("placa_vehiculo").setVisible(false);
         tab_calculo.getColumna("ide_tipo_combustible").setMetodoChange("clean");
 //        tab_calculo.getColumna("galones").setMetodoChange("valor");
         tab_calculo.getColumna("kilometraje").setMetodoChange("kilometraje");
@@ -169,6 +182,34 @@ public class pre_orden_consumo extends Pantalla{
         dia_dialogo.getBot_aceptar().setMetodo("aceptoConductor");
         grid_d.setColumns(4);
         agregarComponente(dia_dialogo);
+        
+        /*CONFIGURACIÓN DE COMBOS*/
+        Grid gri_busca = new Grid();
+        gri_busca.setColumns(2);
+        
+        gri_busca.getChildren().add(new Etiqueta("AÑO:"));
+        cmb_anio.setId("cmb_anio");
+        cmb_anio.setConexion(con_postgres);
+        cmb_anio.setCombo("select ano_curso, ano_curso from conc_ano order by ano_curso");
+        gri_busca.getChildren().add(cmb_anio);
+        
+        gri_busca.getChildren().add(new Etiqueta("PERIODO:"));
+        cmb_periodo.setId("cmb_periodo");
+        cmb_periodo.setConexion(con_postgres);
+        cmb_periodo.setCombo("SELECT ide_periodo,per_descripcion FROM cont_periodo_actual ORDER BY ide_periodo");
+        gri_busca.getChildren().add(cmb_periodo);
+        
+         //para poder busca por apelllido el garante
+        dia_dialogor.setId("dia_dialogor");
+        dia_dialogor.setTitle("SELECCIONAR PARAMETROS PARA REPORTE"); //titulo
+        dia_dialogor.setWidth("30%"); //siempre en porcentajes  ancho
+        dia_dialogor.setHeight("25%");//siempre porcentaje   alto
+        dia_dialogor.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogor.getGri_cuerpo().setHeader(gri_busca);
+        dia_dialogor.getBot_aceptar().setMetodo("aceptoOrden");
+        grid_dr.setColumns(4);
+        agregarComponente(dia_dialogor);
+        
     }
     
          //BUSQUEDA POR NOMBRE DE GARANTE
@@ -359,8 +400,12 @@ public class pre_orden_consumo extends Pantalla{
     public void aceptarReporte() {
         rep_reporte.cerrar();
         switch (rep_reporte.getNombre()) {
-           case "ORDEN DE CONSUMO":
+            case "ORDEN DE CONSUMO":
                 aceptoOrden();
+          break;
+           case "CONSUMO PROMEDIO COMBUSTIBLE":
+                dia_dialogor.Limpiar();
+                dia_dialogor.dibujar();
           break;
         }
     } 
@@ -380,6 +425,19 @@ public class pre_orden_consumo extends Pantalla{
                        utilitario.agregarMensajeError("Usuario","No Disponible");
                    }
                break;
+               case "CONSUMO PROMEDIO COMBUSTIBLE":
+                    TablaGenerica tab_dato1 =pCombustible.getMes(Integer.parseInt(cmb_periodo.getValue()+""));
+                   if (!tab_dato1.isEmpty()) {
+                    p_parametros.put("anio", cmb_anio.getValue()+"");
+                    p_parametros.put("mes", tab_dato1.getValor("per_descripcion")+"");
+                    p_parametros.put("periodo", cmb_periodo.getValue()+"");
+                    rep_reporte.cerrar();
+                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_formato.dibujar();
+                    }else{
+                       utilitario.agregarMensajeError("Usuario","No Disponible");
+                   }
+                   break;
         }
     }
     

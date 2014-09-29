@@ -72,6 +72,17 @@ private Utilitario utilitario = new Utilitario();
         return tab_persona;
     }
     
+    public TablaGenerica getMes(Integer periodo) {
+        conect();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT ide_periodo,per_descripcion FROM cont_periodo_actual where ide_periodo = "+periodo);
+        tab_persona.ejecutarSql();
+       con_postgres.desconectar();
+       con_postgres = null;
+        return tab_persona;
+    }
+    
     //extrae datos de catalogo de combustibles SIGAG/trans_tipo_combustible
     public TablaGenerica getCombustible(Integer tipo) {
         conectar();

@@ -235,6 +235,10 @@ public class pre_orden_combustible extends Pantalla{
         tab_tabla1.getColumna("ci_conductor").setVisible(false);
         tab_tabla1.getColumna("autoriza").setVisible(false);
         tab_tabla1.getColumna("ide_orden_consumo").setVisible(false);
+        tab_tabla.getColumna("anio").setVisible(false);
+        tab_tabla.getColumna("periodo").setVisible(false);
+        tab_tabla.getColumna("anio").setValorDefecto(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())));
+        tab_tabla.getColumna("periodo").setValorDefecto(String.valueOf(utilitario.getMes(utilitario.getFechaActual())));
         tab_tabla1.agregarRelacion(tab_calculo);
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(4);
@@ -264,6 +268,7 @@ public class pre_orden_combustible extends Pantalla{
         tab_calculo.getColumna("usu_digitacion").setVisible(false);
         tab_calculo.getColumna("ide_calculo_consumo").setVisible(false);
         tab_calculo.getColumna("ide_tipo_combustible").setMetodoChange("clean");
+        tab_calculo.getColumna("placa_vehiculo").setVisible(false);
 //        tab_calculo.getColumna("galones").setMetodoChange("valor");
         tab_calculo.getColumna("kilometraje").setMetodoChange("kilometraje");
         tab_calculo.getColumna("galones").setMetodoChange("galones");
