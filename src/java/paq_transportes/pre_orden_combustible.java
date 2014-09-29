@@ -4,8 +4,11 @@
  */
 package paq_transportes;
 
+import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
+import framework.componentes.Combo;
+import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
@@ -40,8 +43,9 @@ public class pre_orden_combustible extends Pantalla{
     private Tabla tab_tabla = new Tabla();
     private Tabla tab_tabla1 = new Tabla();
     private Tabla tab_calculo = new Tabla();
+    private Tabla tab_tipo = new Tabla();
     private SeleccionTabla set_orden = new SeleccionTabla();
-    
+    private Tabla set_colaborador = new Tabla();
     //Contiene todos los elementos de la plantilla
     private Panel pan_opcion = new Panel();
     
@@ -51,10 +55,21 @@ public class pre_orden_combustible extends Pantalla{
     //Cuadros para texto, busqueda reportes
     private Texto tex_busqueda = new Texto();
     
+    //Dialogo Busca 
+    private Dialogo dia_dialogo = new Dialogo();
+    private Grid grid_d = new Grid();
+    private Grid grid = new Grid();
+   private Dialogo dia_dialogor = new Dialogo();
+    private Grid grid_dr = new Grid();
+    
     //Declaración para reportes
     private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
     private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
     private Map p_parametros = new HashMap();
+    
+    //Combos de Selección
+    private Combo cmb_anio = new Combo();
+    private Combo cmb_periodo = new Combo();
     
     @EJB
     private ProvisionCombustible pCombustible = (ProvisionCombustible) utilitario.instanciarEJB(ProvisionCombustible.class);
@@ -133,8 +148,51 @@ public class pre_orden_combustible extends Pantalla{
         set_orden.getBot_aceptar().setMetodo("aceptarBusqueda");
         set_orden.setHeader("BUSCAR N°. ORDEN PROVISIÓN DE COMBUSTIBLE");
         agregarComponente(set_orden);
+        
+        //para poder busca por apelllido el garante
+        dia_dialogo.setId("dia_dialogo");
+        dia_dialogo.setTitle("BUSCAR CONDUCTOR"); //titulo
+        dia_dialogo.setWidth("30%"); //siempre en porcentajes  ancho
+        dia_dialogo.setHeight("45%");//siempre porcentaje   alto
+        dia_dialogo.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogo.getBot_aceptar().setMetodo("aceptoConductor");
+        grid_d.setColumns(4);
+        agregarComponente(dia_dialogo);
+        
+        /*CONFIGURACIÓN DE COMBOS*/
+        Grid gri_busca1 = new Grid();
+        gri_busca1.setColumns(2);
+        
+        gri_busca1.getChildren().add(new Etiqueta("AÑO:"));
+        cmb_anio.setId("cmb_anio");
+        cmb_anio.setConexion(con_postgres);
+        cmb_anio.setCombo("select ano_curso, ano_curso from conc_ano order by ano_curso");
+        gri_busca1.getChildren().add(cmb_anio);
+        
+        gri_busca1.getChildren().add(new Etiqueta("PERIODO:"));
+        cmb_periodo.setId("cmb_periodo");
+        cmb_periodo.setConexion(con_postgres);
+        cmb_periodo.setCombo("SELECT ide_periodo,per_descripcion FROM cont_periodo_actual ORDER BY ide_periodo");
+        gri_busca1.getChildren().add(cmb_periodo);
+        
+         //para poder busca por apelllido el garante
+        dia_dialogor.setId("dia_dialogor");
+        dia_dialogor.setTitle("SELECCIONAR PARAMETROS PARA REPORTE"); //titulo
+        dia_dialogor.setWidth("30%"); //siempre en porcentajes  ancho
+        dia_dialogor.setHeight("25%");//siempre porcentaje   alto
+        dia_dialogor.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogor.getGri_cuerpo().setHeader(gri_busca1);
+        dia_dialogor.getBot_aceptar().setMetodo("aceptoOrden");
+        grid_dr.setColumns(4);
+        agregarComponente(dia_dialogor);
+        
+        //Configuración de Objeto Reporte
+        bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
+        agregarComponente(rep_reporte); //2 agregar el listado de reportes
+        sef_formato.setId("sef_formato");
+        sef_formato.setConexion(con_sql);
+        agregarComponente(sef_formato);
     }
-    
     
     public void BusOrdenC() {
         limpiarPanel();
@@ -216,6 +274,77 @@ public class pre_orden_combustible extends Pantalla{
         pan_opcion.getChildren().add(gru);
     }
     
+    //Busqueda por nombre de conductor
+    public void buscaConductor(){
+        dia_dialogo.Limpiar();
+        dia_dialogo.setDialogo(grid);
+        grid_d.getChildren().add(set_colaborador);
+        set_colaborador.setId("set_colaborador");
+        set_colaborador.setConexion(con_sql);
+        set_colaborador.setHeader("LISTA DE CONDUCTORES");
+        set_colaborador.setSql("SELECT MVE_SECUENCIAL,MVE_CONDUCTOR\n" +
+                "FROM MVVEHICULO\n" +
+                "WHERE MVE_CONDUCTOR LIKE '%"+tab_tabla.getValor("conductor")+"%'");
+        set_colaborador.getColumna("MVE_CONDUCTOR").setFiltro(true);
+        set_colaborador.setRows(10);
+        set_colaborador.setTipoSeleccion(false);
+        dia_dialogo.setDialogo(grid_d);
+        set_colaborador.dibujar();
+        dia_dialogo.dibujar();
+    }
+    
+
+    //Busquedad de conductor por apellido
+    public void aceptoConductor(){
+        if (set_colaborador.getValorSeleccionado()!= null) {
+            TablaGenerica tab_dato = pCombustible.getConductor(Integer.parseInt(set_colaborador.getValorSeleccionado()));
+            if (!tab_dato.isEmpty()) {
+                TablaGenerica tab_dato1 =pCombustible.getConductores(tab_dato.getValor("MVE_CONDUCTOR"));
+                if (!tab_dato1.isEmpty()) {
+                    tab_tabla.setValor("conductor", tab_dato1.getValor("nombres"));
+                    tab_tabla.setValor("ci_conductor", tab_dato1.getValor("cedula_pass"));
+                    utilitario.addUpdate("tab_tabla");
+                }else{
+                utilitario.agregarMensajeInfo("Conductor, Disponible", "");
+            }
+            }else{
+                utilitario.agregarMensajeInfo("Conductor, No Seleccionado", "");
+            }
+        }else {
+            utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
+        }
+        dia_dialogo.cerrar();
+    }
+    
+    public void busVehiculo(){
+        TablaGenerica tab_dato =pCombustible.getVehiculo(tab_tabla.getValor("placa_vehiculo"));
+        if (!tab_dato.isEmpty()) {
+            TablaGenerica tab_datoc = pCombustible.getConductores(tab_dato.getValor("mve_conductor"));
+            if (!tab_datoc.isEmpty()) {
+                tab_tabla.setValor("descripcion_vehiculo", tab_dato.getValor("descripcion"));
+                tab_tabla.setValor("conductor", tab_datoc.getValor("nombres"));
+                tab_tabla.setValor("ci_conductor", tab_datoc.getValor("cedula_pass"));
+                utilitario.addUpdate("tab_tabla");
+            }else{
+                utilitario.agregarMensajeError("Conductor","No Disponible");
+            }
+        }else{
+            utilitario.agregarMensajeError("Vehiculo","No Se Encuentra Registrado");
+        }
+                secuencial();
+    }
+
+    public void secuencial(){
+        if(tab_tabla.getValor("numero_orden")!=null && tab_tabla.getValor("numero_orden").toString().isEmpty() == false){
+
+        }else{
+            Integer numero = Integer.parseInt(pCombustible.listaMax());
+            Integer cantidad=0;
+            cantidad=numero +1;
+            tab_tabla.setValor("numero_orden", String.valueOf(cantidad));
+            utilitario.addUpdate("tab_tabla");
+        }
+    }
     public void dibujarOrden(){
         
         tab_tabla1.setId("tab_tabla1");
@@ -249,27 +378,27 @@ public class pre_orden_combustible extends Pantalla{
         tab_calculo.setId("tab_calculo");
         tab_calculo.setConexion(con_sql);
         tab_calculo.setTabla("mvcalculo_consumo", "ide_calculo_consumo", 3);
-        tab_calculo.setHeader("DATOS DE PROVISIÓN DE COMBUSTIBLE");        
-//        tab_tipo.setId("tab_tipo");
-//        tab_tipo.setConexion(con_sql);
-//        tab_tipo.setSql("SELECT MVE_SECUENCIAL,MVE_PLACA,MVE_KILOMETRAJE,MVE_TIPO_COMBUSTIBLE,MVE_CAPACIDAD_TANQUE_COMBUSTIBLE \n" +
-//                "FROM MVVEHICULO WHERE MVE_PLACA = '"+tab_tabla.getValor("placa_vehiculo")+"'");
-//        tab_tipo.setCampoPrimaria("MVE_SECUENCIAL");
-//        tab_tipo.setLectura(true);
-//        tab_tipo.dibujar();
-//        
-//        tab_calculo.getColumna("ide_tipo_combustible").setValorDefecto(tab_tipo.getValor("MVE_TIPO_COMBUSTIBLE"));
+        tab_calculo.setHeader("DATOS DE PROVISIÓN DE COMBUSTIBLE");    
+        
+        tab_tipo.setId("tab_tipo");
+        tab_tipo.setConexion(con_sql);
+        tab_tipo.setSql("SELECT MVE_SECUENCIAL,MVE_PLACA,MVE_KILOMETRAJE,MVE_TIPO_COMBUSTIBLE,MVE_CAPACIDAD_TANQUE_COMBUSTIBLE \n" +
+                "FROM MVVEHICULO WHERE MVE_PLACA = '"+tab_tabla1.getValor("placa_vehiculo")+"'");
+        tab_tipo.setCampoPrimaria("MVE_SECUENCIAL");
+        tab_tipo.setLectura(true);
+        tab_tipo.dibujar();
+        
+        tab_calculo.getColumna("ide_tipo_combustible").setValorDefecto(tab_tipo.getValor("MVE_TIPO_COMBUSTIBLE"));
         tab_calculo.getColumna("ide_tipo_combustible").setCombo("SELECT IDE_TIPO_COMBUSTIBLE,(DESCRIPCION_COMBUSTIBLE+'/'+cast(VALOR_GALON as varchar)) as valor FROM mvTIPO_COMBUSTIBLE");
         tab_calculo.getColumna("fecha_digitacion").setValorDefecto(utilitario.getFechaActual());
         tab_calculo.getColumna("hora_digitacion").setValorDefecto(utilitario.getFechaHoraActual());
         tab_calculo.getColumna("usu_digitacion").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
+        tab_calculo.getColumna("placa_vehiculo").setValorDefecto(tab_tabla1.getValor("placa_vehiculo"));
         tab_calculo.getColumna("fecha_digitacion").setVisible(false);
         tab_calculo.getColumna("hora_digitacion").setVisible(false);
         tab_calculo.getColumna("usu_digitacion").setVisible(false);
         tab_calculo.getColumna("ide_calculo_consumo").setVisible(false);
-        tab_calculo.getColumna("ide_tipo_combustible").setMetodoChange("clean");
         tab_calculo.getColumna("placa_vehiculo").setVisible(false);
-//        tab_calculo.getColumna("galones").setMetodoChange("valor");
         tab_calculo.getColumna("kilometraje").setMetodoChange("kilometraje");
         tab_calculo.getColumna("galones").setMetodoChange("galones");
         tab_calculo.setTipoFormulario(true);
@@ -277,7 +406,21 @@ public class pre_orden_combustible extends Pantalla{
         tab_calculo.dibujar();
         PanelTabla pte = new PanelTabla();
         pte.setPanelTabla(tab_calculo);
+        pte.getMenuTabla().getItem_guardar().setRendered(false);//nucontextual().setrendered(false);
+        pte.getMenuTabla().getItem_insertar().setRendered(false);//nucontextual().setrendered(false);
         
+        Boton bot_new = new Boton();
+        bot_new.setValue("NUEVO");
+        bot_new.setIcon("ui-icon-document");
+        bot_new.setMetodo("new_fila");
+        
+        Boton bot_save = new Boton();
+        bot_save.setValue("GUARDAR");
+        bot_save.setIcon("ui-icon-disk");
+        bot_save.setMetodo("guardar");
+        
+        pte.getChildren().add(bot_new);
+        pte.getChildren().add(bot_save);
         Division div = new Division();
         div.dividir2(ptt,pte,"35%", "h");
         agregarComponente(div);
@@ -287,17 +430,75 @@ public class pre_orden_combustible extends Pantalla{
         pan_opcion.getChildren().add(gru);
     }
     
+    public void new_fila(){
+        if (tab_calculo.isFocus()) {
+            tab_calculo.insertar();
+        }
+    }
+    
+    public void kilometraje(){
+        TablaGenerica tab_dato =pCombustible.getKilometraje(tab_tabla1.getValor("placa_vehiculo"));
+        if (!tab_dato.isEmpty()) {
+            Double valor1 = Double.valueOf(tab_dato.getValor("MVE_KILOMETRAJE"));
+            Double valor2 = Double.valueOf(tab_calculo.getValor("kilometraje"));
+            if(valor2>valor1){
+                tab_calculo.getColumna("galones").setLectura(false);
+                tab_calculo.getColumna("total").setLectura(false);
+//                tab_calculo.setValor("ide_tipo_combustible", tab_dato.getValor("MVE_TIPO_COMBUSTIBLE"));
+                utilitario.addUpdate("tab_calculo");
+            }else{
+                utilitario.agregarMensajeError("Kilometraje","Por Debajo del Anterior");
+                tab_calculo.getColumna("galones").setLectura(true);
+                tab_calculo.getColumna("total").setLectura(true);
+                tab_calculo.getColumna("ide_tipo_combustible").setLectura(true);
+                utilitario.addUpdate("tab_calculo");
+            }
+        }else{
+            utilitario.agregarMensajeError("Valor","No Se Encuentra Registrado");
+        }
+    }
+    
+    public void galones(){
+        TablaGenerica tab_dato =pCombustible.getKilometraje(tab_tabla1.getValor("placa_vehiculo"));
+        if (!tab_dato.isEmpty()) {
+            Double valor1 = Double.valueOf(tab_dato.getValor("MVE_CAPACIDAD_TANQUE_COMBUSTIBLE"));
+            Double valor2 = Double.valueOf(tab_calculo.getValor("galones"));
+            if(valor2<valor1){
+                tab_calculo.getColumna("total").setLectura(false);
+                utilitario.addUpdate("tab_calculo");
+                        valor();
+            }else{
+                utilitario.agregarMensajeError("Galones","Exceden Capacidad de Vehiculo");
+                tab_calculo.setValor("galones", null);
+                tab_calculo.getColumna("total").setLectura(true);
+                utilitario.addUpdate("tab_calculo");
+            }
+        }else{
+            utilitario.agregarMensajeError("Valor","No Se Encuentra Registrado");
+        }
+    }
+    
+    public void valor(){
+        TablaGenerica tab_dato =pCombustible.getCombustible(Integer.parseInt(tab_calculo.getValor("ide_tipo_combustible")));
+        if (!tab_dato.isEmpty()) {
+            Double valor;
+            valor = (Double.parseDouble(tab_dato.getValor("valor_galon"))*Double.parseDouble(tab_calculo.getValor("galones")));
+            tab_calculo.setValor("total", String.valueOf(Math.rint(valor*100)/100));
+            utilitario.addUpdate("tab_calculo");
+        }else{
+            utilitario.agregarMensajeError("Valor","No Se Encuentra Registrado");
+        }
+    }
+    
     @Override
     public void insertar() {
         if (tab_tabla.isFocus()) {
-            limpiar();
-            limpiarPanel();
-            aut_busca.limpiar();
-            utilitario.addUpdate("aut_busca");
-            tab_tabla1.limpiar();
-            ordenConsumo();
-            tab_calculo.limpiar();
             tab_tabla.insertar();
+        }else{
+            tab_tabla1.limpiar();
+            tab_calculo.limpiar();
+            limpiar();
+            ordenConsumo();
         }
     }
 
@@ -319,6 +520,57 @@ public class pre_orden_combustible extends Pantalla{
     public void actuKilometrajes(){
         if(tab_calculo.getValor("ide_calculo_consumo")!=null && tab_calculo.getValor("ide_calculo_consumo").toString().isEmpty() == false){
             pCombustible.ActKilometraje(tab_tabla1.getValor("placa_vehiculo"), Double.parseDouble(tab_calculo.getValor("kilometraje")));
+            
+        }
+    }
+    
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+    }
+    
+        @Override
+    public void aceptarReporte() {
+        rep_reporte.cerrar();
+        switch (rep_reporte.getNombre()) {
+            case "ORDEN DE CONSUMO":
+                aceptoOrden();
+          break;
+           case "CONSUMO PROMEDIO COMBUSTIBLE":
+                dia_dialogor.Limpiar();
+                dia_dialogor.dibujar();
+          break;
+        }
+    } 
+    
+      public void aceptoOrden(){
+        switch (rep_reporte.getNombre()) {
+               case "ORDEN DE CONSUMO":
+                   TablaGenerica tab_dato =pCombustible.getUsuario(tab_tabla.getValor("autoriza"));
+                   if (!tab_dato.isEmpty()) {
+                    p_parametros.put("autoriza", tab_dato.getValor("NOM_USUA")+"");
+                    p_parametros.put("id", Integer.parseInt(tab_tabla.getValor("ide_orden_consumo")+""));
+                    p_parametros.put("vale", Integer.parseInt(tab_tabla.getValor("numero_orden")+""));
+                    rep_reporte.cerrar();
+                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_formato.dibujar();
+                   }else{
+                       utilitario.agregarMensajeError("Usuario","No Disponible");
+                   }
+               break;
+               case "CONSUMO PROMEDIO COMBUSTIBLE":
+                    TablaGenerica tab_dato1 =pCombustible.getMes(Integer.parseInt(cmb_periodo.getValue()+""));
+                   if (!tab_dato1.isEmpty()) {
+                    p_parametros.put("anio", cmb_anio.getValue()+"");
+                    p_parametros.put("mes", tab_dato1.getValor("per_descripcion")+"");
+                    p_parametros.put("periodo", cmb_periodo.getValue()+"");
+                    rep_reporte.cerrar();
+                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_formato.dibujar();
+                    }else{
+                       utilitario.agregarMensajeError("Usuario","No Disponible");
+                   }
+                   break;
         }
     }
     
@@ -360,6 +612,38 @@ public class pre_orden_combustible extends Pantalla{
 
     public void setTab_calculo(Tabla tab_calculo) {
         this.tab_calculo = tab_calculo;
+    }
+
+    public Tabla getSet_colaborador() {
+        return set_colaborador;
+    }
+
+    public void setSet_colaborador(Tabla set_colaborador) {
+        this.set_colaborador = set_colaborador;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSef_formato() {
+        return sef_formato;
+    }
+
+    public void setSef_formato(SeleccionFormatoReporte sef_formato) {
+        this.sef_formato = sef_formato;
+    }
+
+    public Map getP_parametros() {
+        return p_parametros;
+    }
+
+    public void setP_parametros(Map p_parametros) {
+        this.p_parametros = p_parametros;
     }
     
 }
