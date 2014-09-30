@@ -542,6 +542,10 @@ public class pre_orden_combustible extends Pantalla{
                 dia_dialogor.Limpiar();
                 dia_dialogor.dibujar();
           break;
+           case "CONSUMO RENDIMIENTO COMBUSTIBLE":
+                dia_dialogor.Limpiar();
+                dia_dialogor.dibujar();
+          break;
         }
     } 
     
@@ -567,6 +571,19 @@ public class pre_orden_combustible extends Pantalla{
                    if (!tab_dato1.isEmpty()) {
                     p_parametros.put("anio", cmb_anio.getValue()+"");
                     p_parametros.put("mes", tab_dato1.getValor("per_descripcion")+"");
+                    p_parametros.put("periodo", cmb_periodo.getValue()+"");
+                    rep_reporte.cerrar();
+                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_formato.dibujar();
+                    }else{
+                       utilitario.agregarMensajeError("Usuario","No Disponible");
+                   }
+                   break;
+               case "CONSUMO RENDIMIENTO COMBUSTIBLE":
+                    TablaGenerica tab_dato2 =pCombustible.getMes(Integer.parseInt(cmb_periodo.getValue()+""));
+                   if (!tab_dato2.isEmpty()) {
+                    p_parametros.put("anio", cmb_anio.getValue()+"");
+                    p_parametros.put("mes", tab_dato2.getValor("per_descripcion")+"");
                     p_parametros.put("periodo", cmb_periodo.getValue()+"");
                     rep_reporte.cerrar();
                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
