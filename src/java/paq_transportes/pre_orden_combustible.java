@@ -105,7 +105,7 @@ public class pre_orden_combustible extends Pantalla{
         aut_busca.setMetodoChange("buscarOrden");
         aut_busca.setSize(70);
         
-        bar_botones.agregarComponente(new Etiqueta("Buscador Orden:"));
+        bar_botones.agregarComponente(new Etiqueta("Buscar Orden:"));
         bar_botones.agregarComponente(aut_busca);
         
         Boton bot_limpiar = new Boton();
@@ -128,8 +128,8 @@ public class pre_orden_combustible extends Pantalla{
         //Ingreso y busqueda de solicitudes 
         Grid gri_busca = new Grid();
         gri_busca.setColumns(2);
-        tex_busqueda.setSize(45);
-        gri_busca.getChildren().add(new Etiqueta("Buscar Solicitud:"));
+        tex_busqueda.setSize(25);
+        gri_busca.getChildren().add(new Etiqueta("Ingrese N° Orden a Buscar:"));
         gri_busca.getChildren().add(tex_busqueda);
         Boton bot_buscar = new Boton();
         bot_buscar.setValue("Buscar");
@@ -219,6 +219,7 @@ public class pre_orden_combustible extends Pantalla{
                 set_orden.cerrar();
                 dibujarOrden();
                 utilitario.addUpdate("aut_busca,pan_opcion");
+//                inser_new();
             } else {
                 utilitario.agregarMensajeInfo("Debe seleccionar una solicitud", "");
             }
@@ -255,6 +256,8 @@ public class pre_orden_combustible extends Pantalla{
         tab_tabla.getColumna("AUTORIZA").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         tab_tabla.getColumna("ci_conductor").setVisible(false);
         tab_tabla.getColumna("autoriza").setVisible(false);
+        tab_tabla.getColumna("fecha_orden").setLectura(true);
+        tab_tabla.getColumna("ide_tipo_combustible").setCombo("SELECT IDE_TIPO_COMBUSTIBLE,(DESCRIPCION_COMBUSTIBLE+'/'+cast(VALOR_GALON as varchar)) as valor FROM mvTIPO_COMBUSTIBLE");
         tab_tabla.getColumna("ide_orden_consumo").setVisible(false);
         tab_tabla.getColumna("anio").setVisible(false);
         tab_tabla.getColumna("periodo").setVisible(false);
@@ -328,6 +331,7 @@ public class pre_orden_combustible extends Pantalla{
                 tab_tabla.setValor("descripcion_vehiculo", tab_dato.getValor("descripcion"));
                 tab_tabla.setValor("conductor", tab_datoc.getValor("nombres"));
                 tab_tabla.setValor("ci_conductor", tab_datoc.getValor("cedula_pass"));
+                tab_tabla.setValor("ide_tipo_combustible", tab_dato.getValor("MVE_TIPO_COMBUSTIBLE"));
                 utilitario.addUpdate("tab_tabla");
             }else{
                 utilitario.agregarMensajeError("Conductor","No Disponible");
@@ -360,13 +364,14 @@ public class pre_orden_combustible extends Pantalla{
         } else {
             tab_tabla1.setCondicion("ide_orden_consumo=" + aut_busca.getValor());
         }
-        tab_tabla1.setHeader("ORDEN DE PROVISIÓN DE COMBUSTIBLE");
+        tab_tabla1.setHeader("REGISTRO DE COMBUSTIBLE UTILIZADO");
         tab_tabla1.getColumna("placa_vehiculo").setMetodoChange("busVehiculo");
         tab_tabla1.getColumna("conductor").setMetodoChange("buscaConductor");
         tab_tabla1.getColumna("fecha_orden").setValorDefecto(utilitario.getFechaHoraActual());
         tab_tabla1.getColumna("AUTORIZA").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         tab_tabla1.getColumna("ci_conductor").setVisible(false);
         tab_tabla1.getColumna("autoriza").setVisible(false);
+        tab_tabla1.getColumna("ide_tipo_combustible").setCombo("SELECT IDE_TIPO_COMBUSTIBLE,(DESCRIPCION_COMBUSTIBLE+'/'+cast(VALOR_GALON as varchar)) as valor FROM mvTIPO_COMBUSTIBLE");
         tab_tabla1.getColumna("ide_orden_consumo").setVisible(false);
         tab_tabla1.getColumna("anio").setVisible(false);
         tab_tabla1.getColumna("periodo").setVisible(false);
@@ -380,7 +385,6 @@ public class pre_orden_combustible extends Pantalla{
         tab_calculo.setId("tab_calculo");
         tab_calculo.setConexion(con_sql);
         tab_calculo.setTabla("mvcalculo_consumo", "ide_calculo_consumo", 3);
-        tab_calculo.setHeader("DATOS DE PROVISIÓN DE COMBUSTIBLE");    
         
         tab_tipo.setId("tab_tipo");
         tab_tipo.setConexion(con_sql);
@@ -391,7 +395,7 @@ public class pre_orden_combustible extends Pantalla{
         tab_tipo.dibujar();
         
         tab_calculo.getColumna("ide_tipo_combustible").setValorDefecto(tab_tipo.getValor("MVE_TIPO_COMBUSTIBLE"));
-        tab_calculo.getColumna("ide_tipo_combustible").setCombo("SELECT IDE_TIPO_COMBUSTIBLE,(DESCRIPCION_COMBUSTIBLE+'/'+cast(VALOR_GALON as varchar)) as valor FROM mvTIPO_COMBUSTIBLE");
+        tab_calculo.getColumna("ide_tipo_combustible").setVisible(false);
         tab_calculo.getColumna("fecha_digitacion").setValorDefecto(utilitario.getFechaActual());
         tab_calculo.getColumna("hora_digitacion").setValorDefecto(utilitario.getFechaHoraActual());
         tab_calculo.getColumna("usu_digitacion").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
@@ -432,6 +436,21 @@ public class pre_orden_combustible extends Pantalla{
         pan_opcion.getChildren().add(gru);
     }
     
+    public void inser_new(){
+        TablaGenerica tab_dato =pCombustible.getInsertar(Integer.parseInt(set_orden.getValorSeleccionado()));
+        if (!tab_dato.isEmpty()) {
+            System.err.println("Hola");
+            if(tab_dato.getValor("IDE_CALCULO_CONSUMO")!=null){
+                System.err.println("Hola1");
+                tab_calculo.insertar();
+            }   else{
+                 System.err.println("Holas2");
+            }           
+        }else{
+            
+        }
+    }
+        
     public void new_fila(){
         if (tab_calculo.isFocus()) {
             tab_calculo.insertar();
@@ -481,7 +500,7 @@ public class pre_orden_combustible extends Pantalla{
     }
     
     public void valor(){
-        TablaGenerica tab_dato =pCombustible.getCombustible(Integer.parseInt(tab_calculo.getValor("ide_tipo_combustible")));
+        TablaGenerica tab_dato =pCombustible.getCombustible(Integer.parseInt(tab_tabla1.getValor("ide_tipo_combustible")));
         if (!tab_dato.isEmpty()) {
             Double valor;
             valor = (Double.parseDouble(tab_dato.getValor("valor_galon"))*Double.parseDouble(tab_calculo.getValor("galones")));
