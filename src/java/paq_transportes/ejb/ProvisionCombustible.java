@@ -188,6 +188,18 @@ private Utilitario utilitario = new Utilitario();
         conexion = null;
     }
     
+    public void getConsumo(Integer orden,String date,String hora,Double kilom,Double galon,Double total,Integer tipo,String placa,String usu){
+
+        String nomina ="insert into MVCALCULO_CONSUMO(IDE_ORDEN_CONSUMO,FECHA_ABASTECIMIENTO,HORA_ABASTECIMIENTO,KILOMETRAJE,GALONES,TOTAL,FECHA_DIGITACION,\n" +
+                "HORA_DIGITACION,USU_DIGITACION,IDE_TIPO_COMBUSTIBLE,PLACA_VEHICULO)\n" +
+                "values ("+orden+",'"+date+"','"+hora+"',"+kilom+","+galon+","+total+",'"+utilitario.getFechaActual()+"','"+utilitario.getHoraActual()+"','"+usu+"',"+tipo+",'"+placa+"')";
+        conectar();
+        con_postgres.ejecutarSql(nomina);
+        con_postgres.desconectar();
+        con_postgres = null;
+        
+    }
+    
 private void conectar() {
     if (conexion == null) {
         conexion = new Conexion();
