@@ -9,17 +9,19 @@
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
-IDE_ORDEN_CONSUMO,
-FECHA_ORDEN,
-PLACA_VEHICULO,
-DESCRIPCION_VEHICULO,
-CONDUCTOR,
-CI_CONDUCTOR,
-AUTORIZA,
-NUMERO_ORDEN
+o.IDE_ORDEN_CONSUMO,
+o.FECHA_ORDEN,
+o.PLACA_VEHICULO,
+o.DESCRIPCION_VEHICULO,
+o.CONDUCTOR,
+o.CI_CONDUCTOR,
+o.AUTORIZA,
+o.NUMERO_ORDEN,
+t.DESCRIPCION_COMBUSTIBLE
 FROM
-MVORDEN_CONSUMO
-where NUMERO_ORDEN =$P{vale} and IDE_ORDEN_CONSUMO =$P{id}]]>
+dbo.MVORDEN_CONSUMO o
+INNER JOIN dbo.MVTIPO_COMBUSTIBLE t ON o.IDE_TIPO_COMBUSTIBLE = t.IDE_TIPO_COMBUSTIBLE
+where o.NUMERO_ORDEN =$P{vale} and o.IDE_ORDEN_CONSUMO =$P{id}]]>
 	</queryString>
 	<field name="IDE_ORDEN_CONSUMO" class="java.lang.Integer"/>
 	<field name="FECHA_ORDEN" class="java.sql.Timestamp"/>
@@ -29,6 +31,7 @@ where NUMERO_ORDEN =$P{vale} and IDE_ORDEN_CONSUMO =$P{id}]]>
 	<field name="CI_CONDUCTOR" class="java.lang.String"/>
 	<field name="AUTORIZA" class="java.lang.String"/>
 	<field name="NUMERO_ORDEN" class="java.lang.Integer"/>
+	<field name="DESCRIPCION_COMBUSTIBLE" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -39,7 +42,7 @@ where NUMERO_ORDEN =$P{vale} and IDE_ORDEN_CONSUMO =$P{id}]]>
 				<textElement verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[ORDEN DE PROVISIÓN DE COMBUSTIBLE]]></text>
+				<text><![CDATA[ORDEN DE ABASTECIMIENTO DE COMBUSTIBLE]]></text>
 			</staticText>
 			<image>
 				<reportElement uuid="ec1c96cf-9d13-46ae-89b9-d27255773890" x="251" y="-4" width="130" height="45"/>
@@ -50,7 +53,7 @@ where NUMERO_ORDEN =$P{vale} and IDE_ORDEN_CONSUMO =$P{id}]]>
 	<columnHeader>
 		<band height="160" splitType="Stretch">
 			<rectangle>
-				<reportElement uuid="9d97a883-36e2-49fe-85c7-aa1e823e71f0" x="0" y="2" width="380" height="156"/>
+				<reportElement uuid="9d97a883-36e2-49fe-85c7-aa1e823e71f0" x="0" y="1" width="380" height="156"/>
 			</rectangle>
 			<rectangle>
 				<reportElement uuid="3a0c96ea-a9fd-40cb-9ea8-ee2457cccb4c" x="6" y="34" width="370" height="43"/>
@@ -157,9 +160,6 @@ where NUMERO_ORDEN =$P{vale} and IDE_ORDEN_CONSUMO =$P{id}]]>
 				<reportElement uuid="b3b4c91a-a4cd-468c-89da-0307d7a57dde" x="65" y="92" width="100" height="1"/>
 			</line>
 			<line>
-				<reportElement uuid="6b7e37e5-795d-4885-80cb-120786d014d0" x="85" y="109" width="100" height="1"/>
-			</line>
-			<line>
 				<reportElement uuid="e30c1118-c37e-4b85-9e12-51053afd3109" x="72" y="123" width="100" height="1"/>
 			</line>
 			<line>
@@ -177,7 +177,7 @@ where NUMERO_ORDEN =$P{vale} and IDE_ORDEN_CONSUMO =$P{id}]]>
 				<textElement>
 					<font size="7" isBold="true"/>
 				</textElement>
-				<text><![CDATA[HORA ABATECIMIENTO:]]></text>
+				<text><![CDATA[HORA :]]></text>
 			</staticText>
 			<line>
 				<reportElement uuid="9ef0a8b5-7f78-471f-9835-51259fbdf80a" x="204" y="149" width="60" height="1"/>
@@ -185,6 +185,13 @@ where NUMERO_ORDEN =$P{vale} and IDE_ORDEN_CONSUMO =$P{id}]]>
 			<line>
 				<reportElement uuid="1ca53db1-41b3-4fc8-b53e-a0fe2e9e8486" x="78" y="148" width="60" height="1"/>
 			</line>
+			<textField>
+				<reportElement uuid="d6670b25-1642-4593-9fcf-0b5edfa73b04" x="85" y="98" width="100" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DESCRIPCION_COMBUSTIBLE}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<columnFooter>

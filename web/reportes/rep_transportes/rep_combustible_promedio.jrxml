@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_combustible_promedio" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f43a8d9c-99d4-4a48-8a03-89212e693bf6">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_combustible_promedio" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="dd462948-4e3d-4094-a365-5349816d51f2">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -16,172 +16,178 @@ where PERIODO = $P{periodo} and
 ANIO = $P{anio}) AS s
 LEFT JOIN
 (SELECT PLACA_VEHICULO,
-SUM (GALONES) as galon
+ROUND(SUM (GALONES),2) as galon
 FROM
 dbo.MVCALCULO_CONSUMO
 GROUP BY PLACA_VEHICULO)as f
 on s.PLACA_VEHICULO = f.PLACA_VEHICULO
 LEFT JOIN
 (SELECT PLACA_VEHICULO,
-SUM (TOTAL) as valor
+ROUND(SUM (TOTAL),2) as valor
 FROM
 dbo.MVCALCULO_CONSUMO
 GROUP BY PLACA_VEHICULO)as g
 on s.PLACA_VEHICULO = g.PLACA_VEHICULO
 ) as t
-order by placa_vehiculo]]>
+order by galon desc]]>
 	</queryString>
 	<field name="PLACA_VEHICULO" class="java.lang.String"/>
 	<field name="galon" class="java.lang.Double"/>
 	<field name="valor" class="java.lang.Double"/>
 	<background>
-		<band/>
+		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="72">
-			<frame>
-				<reportElement uuid="63fd8779-908e-477c-93a3-69b8074f2e7b" mode="Opaque" x="-21" y="-20" width="843" height="92" backcolor="#006699"/>
-				<staticText>
-					<reportElement uuid="f77845f8-1a9a-4170-96ea-8afd10545493" x="34" y="13" width="264" height="71" forecolor="#FFFFFF"/>
-					<textElement>
-						<font size="24" isBold="true"/>
-					</textElement>
-					<text><![CDATA[CONSUMO DE COMBUSTIBLE]]></text>
-				</staticText>
-			</frame>
+		<band height="79" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="c98aa59e-e183-42ad-989f-0b80afa670a8" x="2" y="0" width="800" height="79" backcolor="#006699"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="b7a4b68e-c65a-4b08-bd60-6271df125d04" x="10" y="3" width="220" height="68" forecolor="#FFFFFF"/>
+				<textElement>
+					<font size="24" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONSUMO DE COMBUSTIBLE]]></text>
+			</staticText>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="13"/>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="99a42b23-4f75-4c50-ab89-df66e8da5f39" x="199" y="0" width="426" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONSUMO PRIMEDIO DE COMBUSTIBLE GL]]></text>
+			</staticText>
+		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="21">
-			<line>
-				<reportElement uuid="23a863fb-18da-43aa-9304-7be895e53fa5" x="100" y="20" width="595" height="1" forecolor="#666666"/>
-			</line>
+		<band height="39" splitType="Stretch">
+			<textField>
+				<reportElement uuid="9adad633-0fb4-4b71-92a2-0ec64694acdb" x="341" y="0" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{mes}]]></textFieldExpression>
+			</textField>
 			<staticText>
-				<reportElement uuid="8101a08d-4721-4d94-9ca3-470fa3e975dc" mode="Opaque" x="120" y="0" width="185" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+				<reportElement uuid="e57488e3-4b48-4a94-a9ab-d45b596c8006" x="414" y="0" width="27" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[/]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="4a2e8e3a-9b29-4ffd-8924-1b908235fc12" x="441" y="0" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{anio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="6cd34433-666a-4702-a960-ea4622f4bdbd" mode="Opaque" x="278" y="19" width="108" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
 				<textElement textAlignment="Center">
-					<font size="14" isBold="true"/>
+					<font size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[PLACA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="dd4aedd6-a5f8-43f3-8c5f-cdd9951088f1" mode="Opaque" x="305" y="0" width="185" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+				<reportElement uuid="2f058b3f-42e3-417d-8949-475c8e4d9e75" mode="Opaque" x="385" y="19" width="99" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
 				<textElement textAlignment="Center">
-					<font size="14" isBold="true"/>
+					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Galones]]></text>
+				<text><![CDATA[GALONES]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="847c8944-2a09-4d82-813d-ee7214756215" mode="Opaque" x="490" y="0" width="185" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+				<reportElement uuid="6815a79c-4d20-471b-832c-d06f373034e9" mode="Opaque" x="482" y="19" width="67" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
 				<textElement textAlignment="Center">
-					<font size="14" isBold="true"/>
+					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Valor]]></text>
+				<text><![CDATA[VALOR]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="20">
-			<line>
-				<reportElement uuid="6a4e4fb6-c97e-4466-a79e-e34929c608f6" positionType="FixRelativeToBottom" x="120" y="19" width="555" height="1"/>
-			</line>
+		<band height="14" splitType="Stretch">
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="afe29655-8693-4d67-8e8a-e077fd3768ca" x="120" y="0" width="185" height="20"/>
+				<reportElement uuid="4fab1bae-a71c-45e1-b382-f8271f04a5bb" x="278" y="0" width="108" height="13"/>
 				<textElement>
-					<font size="14"/>
+					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{PLACA_VEHICULO}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="812d0393-925f-410f-8b52-0ae05618af5a" x="305" y="0" width="185" height="20"/>
-				<textElement>
-					<font size="14"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{galon}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="14a7d616-f364-4696-8d93-86c7d4fef0bb" x="490" y="0" width="185" height="20"/>
-				<textElement>
-					<font size="14"/>
+				<reportElement uuid="d819c136-91c3-492a-8e29-1222222e160d" x="482" y="0" width="67" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b43db111-75df-477d-b1b0-4191067d005c" x="385" y="0" width="99" height="13"/>
+				<textElement textAlignment="Center">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{galon}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<columnFooter>
-		<band/>
+		<band height="3"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="17">
-			<textField>
-				<reportElement uuid="81b5a217-6780-4157-9f65-369cd2ea2561" mode="Opaque" x="0" y="4" width="760" height="13" backcolor="#E6E6E6"/>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
-			</textField>
+		<band height="14">
 			<textField evaluationTime="Report">
-				<reportElement uuid="ac69509b-f9cb-462e-a1d1-6cd11037c5a9" mode="Opaque" x="760" y="4" width="40" height="13" backcolor="#E6E6E6"/>
+				<reportElement uuid="ed7f7450-db0a-438f-bf4d-c7eb0046b244" mode="Opaque" x="761" y="0" width="40" height="13" backcolor="#E6E6E6"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField pattern="EEEEE dd MMMMM yyyy">
-				<reportElement uuid="36d8169e-312e-416e-a570-4030bce7c4b5" x="0" y="4" width="100" height="13"/>
+				<reportElement uuid="28dde288-2081-45c8-8b12-8ed666603ff8" x="9" y="0" width="100" height="13"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e83f9607-7908-4ae3-8009-019cac831a4d" mode="Opaque" x="1" y="0" width="760" height="13" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="300">
-			<elementGroup>
-				<lineChart>
-					<chart>
-						<reportElement uuid="b0fa05e1-b47a-45ce-aa9a-47ecf84b9d7d" x="0" y="0" width="802" height="300"/>
-						<chartTitle>
-							<titleExpression><![CDATA["CONSUMO PROMEDIO DE COMBUSTIBLE GL"]]></titleExpression>
-						</chartTitle>
-						<chartSubtitle/>
-						<chartLegend/>
-					</chart>
-					<categoryDataset>
-						<categorySeries>
-							<seriesExpression><![CDATA["galon"]]></seriesExpression>
-							<categoryExpression><![CDATA[$F{PLACA_VEHICULO}]]></categoryExpression>
-							<valueExpression><![CDATA[$F{galon}]]></valueExpression>
-						</categorySeries>
-						<categorySeries>
-							<seriesExpression><![CDATA["Valor"]]></seriesExpression>
-							<categoryExpression><![CDATA[$F{PLACA_VEHICULO}]]></categoryExpression>
-							<valueExpression><![CDATA[$F{valor}]]></valueExpression>
-						</categorySeries>
-					</categoryDataset>
-					<linePlot>
-						<plot/>
-						<categoryAxisFormat>
-							<axisFormat/>
-						</categoryAxisFormat>
-						<valueAxisFormat>
-							<axisFormat/>
-						</valueAxisFormat>
-					</linePlot>
-				</lineChart>
-			</elementGroup>
-			<textField>
-				<reportElement uuid="ab1b0eb8-d6d0-43e7-8b47-1240b0984475" x="310" y="15" width="100" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$P{mes}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="d846e3fb-31cd-4347-bbb4-c9d77742a622" x="391" y="15" width="100" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$P{anio}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement uuid="5f71f4d8-e319-4e51-aaab-dd826db8df0a" x="378" y="15" width="13" height="20"/>
-				<textElement/>
-				<text><![CDATA[/]]></text>
-			</staticText>
+		<band height="250" splitType="Stretch">
+			<lineChart>
+				<chart>
+					<reportElement uuid="b4ea8269-6168-4305-a9fb-84ed4e4962a0" x="0" y="0" width="802" height="250"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA["VALOR"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{PLACA_VEHICULO}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{valor}]]></valueExpression>
+						<labelExpression><![CDATA[$F{PLACA_VEHICULO}]]></labelExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["GALONES"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{PLACA_VEHICULO}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{galon}]]></valueExpression>
+						<labelExpression><![CDATA[$F{PLACA_VEHICULO}]]></labelExpression>
+					</categorySeries>
+				</categoryDataset>
+				<linePlot>
+					<plot/>
+					<categoryAxisFormat>
+						<axisFormat/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat/>
+					</valueAxisFormat>
+				</linePlot>
+			</lineChart>
 		</band>
 	</summary>
 </jasperReport>
