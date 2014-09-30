@@ -30,6 +30,7 @@ private Utilitario utilitario = new Utilitario();
                 "MVE_SECUENCIAL,\n" +
                 "(MVE_MARCA+','+MVE_MODELO+',COLOR:'+MVE_COLOR+','+MVE_VERSION)as descripcion,\n" +
                 "MVE_PLACA,\n" +
+                "MVE_TIPO_COMBUSTIBLE,\n" +
                 "MVE_CONDUCTOR\n" +
                 "FROM \n" +
                 "MVVEHICULO\n" +
@@ -113,6 +114,24 @@ private Utilitario utilitario = new Utilitario();
                 "MVE_CAPACIDAD_TANQUE_COMBUSTIBLE\n" +
                 "FROM MVVEHICULO\n" +
                 "WHERE MVE_PLACA = '"+placa+"'");
+        tab_persona.ejecutarSql();
+       conexion.desconectar();
+       conexion = null;
+        return tab_persona;
+    }
+    
+    public TablaGenerica getInsertar(Integer ide) {
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT\n" +
+"c.IDE_ORDEN_CONSUMO,\n" +
+"o.IDE_CALCULO_CONSUMO\n" +
+"FROM\n" +
+"dbo.MVORDEN_CONSUMO c\n" +
+"INNER JOIN dbo.MVCALCULO_CONSUMO o ON c.IDE_ORDEN_CONSUMO = o.IDE_ORDEN_CONSUMO\n" +
+"WHERE\n" +
+"c.IDE_ORDEN_CONSUMO = "+ide+" and o.IDE_CALCULO_CONSUMO is not null");
         tab_persona.ejecutarSql();
        conexion.desconectar();
        conexion = null;
