@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_combustible_promedio" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="688fbae6-a1b0-4a38-8e41-0bff6f800730">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_consumo_rendimiento" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0daec862-e024-4c16-bd15-1fc593d38fa3">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -41,28 +41,28 @@ order by total]]>
 		<band height="79" splitType="Stretch"/>
 	</title>
 	<pageHeader>
-		<band height="5" splitType="Stretch"/>
+		<band height="4" splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="5" splitType="Stretch"/>
+		<band height="3" splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="5" splitType="Stretch"/>
+		<band height="3" splitType="Stretch"/>
 	</detail>
 	<columnFooter>
-		<band height="5" splitType="Stretch"/>
+		<band height="3" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="24" splitType="Stretch"/>
+		<band height="4" splitType="Stretch"/>
 	</pageFooter>
 	<summary>
-		<band height="300" splitType="Stretch">
+		<band height="250" splitType="Stretch">
 			<lineChart>
-				<chart isShowLegend="true" theme="default">
-					<reportElement x="-1" y="0" width="802" height="300" uuid="22c4c068-007f-4425-8a75-d814af3e1388"/>
-					<chartTitle/>
+				<chart theme="generic">
+					<reportElement uuid="e3023d27-29f5-47d1-b9ec-c364adf5f4cc" x="0" y="0" width="802" height="250"/>
+					<chartTitle position="Bottom"/>
 					<chartSubtitle/>
-					<chartLegend position="Right"/>
+					<chartLegend position="Top"/>
 				</chart>
 				<categoryDataset>
 					<categorySeries>
@@ -71,14 +71,23 @@ order by total]]>
 						<valueExpression><![CDATA[$F{total}]]></valueExpression>
 						<labelExpression><![CDATA[$F{PLACA_VEHICULO}+"-"+$F{total}]]></labelExpression>
 					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Galones"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{PLACA_VEHICULO}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{galon}]]></valueExpression>
+						<labelExpression><![CDATA[$F{PLACA_VEHICULO}+"-"+$F{galon}]]></labelExpression>
+					</categorySeries>
 				</categoryDataset>
-				<linePlot isShowShapes="true">
-					<plot/>
-					<categoryAxisFormat>
-						<axisFormat verticalTickLabels="true"/>
+				<linePlot>
+					<plot labelRotation="45.0">
+						<seriesColor seriesOrder="0" color="#99FF99"/>
+						<seriesColor seriesOrder="1" color="#FF3333"/>
+					</plot>
+					<categoryAxisFormat labelRotation="45.0">
+						<axisFormat/>
 					</categoryAxisFormat>
 					<valueAxisFormat>
-						<axisFormat verticalTickLabels="true"/>
+						<axisFormat/>
 					</valueAxisFormat>
 				</linePlot>
 			</lineChart>
