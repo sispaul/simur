@@ -58,32 +58,22 @@ order by total]]>
 	<summary>
 		<band height="250" splitType="Stretch">
 			<lineChart>
-				<chart theme="generic">
-					<reportElement uuid="e3023d27-29f5-47d1-b9ec-c364adf5f4cc" x="0" y="0" width="802" height="250"/>
-					<chartTitle position="Bottom"/>
+				<chart>
+					<reportElement x="191" y="43" width="200" height="100" uuid="80da271b-b405-451f-a78d-3b70ed2163e9"/>
+					<chartTitle/>
 					<chartSubtitle/>
-					<chartLegend position="Top"/>
+					<chartLegend/>
 				</chart>
 				<categoryDataset>
 					<categorySeries>
-						<seriesExpression><![CDATA["Valor"]]></seriesExpression>
-						<categoryExpression><![CDATA[$F{PLACA_VEHICULO}]]></categoryExpression>
-						<valueExpression><![CDATA[$F{total}]]></valueExpression>
-						<labelExpression><![CDATA[$F{PLACA_VEHICULO}+"-"+$F{total}]]></labelExpression>
-					</categorySeries>
-					<categorySeries>
-						<seriesExpression><![CDATA["Galones"]]></seriesExpression>
+						<seriesExpression><![CDATA[""]]></seriesExpression>
 						<categoryExpression><![CDATA[$F{PLACA_VEHICULO}]]></categoryExpression>
 						<valueExpression><![CDATA[$F{galon}]]></valueExpression>
-						<labelExpression><![CDATA[$F{PLACA_VEHICULO}+"-"+$F{galon}]]></labelExpression>
 					</categorySeries>
 				</categoryDataset>
 				<linePlot>
-					<plot labelRotation="45.0">
-						<seriesColor seriesOrder="0" color="#99FF99"/>
-						<seriesColor seriesOrder="1" color="#FF3333"/>
-					</plot>
-					<categoryAxisFormat labelRotation="45.0">
+					<plot/>
+					<categoryAxisFormat>
 						<axisFormat/>
 					</categoryAxisFormat>
 					<valueAxisFormat>
