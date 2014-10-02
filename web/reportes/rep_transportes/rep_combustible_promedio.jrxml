@@ -1,28 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_combustible_promedio" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="688fbae6-a1b0-4a38-8e41-0bff6f800730">
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="1.156629868288595"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="anio" class="java.lang.String"/>
+	<parameter name="mes" class="java.lang.String"/>
+	<parameter name="periodo" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select * from
-(select a.*,b.kilometros,c.galon,d.total from
+(select a.*,c.galon,d.total from
 (SELECT DISTINCT PLACA_VEHICULO
 FROM MVABASTECIMIENTO_COMBUSTIBLE
-where ANIO = '2014' and PERIODO = '10')as a
+where ANIO = $P{anio} and PERIODO = $P{periodo})as a
 left join
-(SELECT ROUND(AVG(KILOMETRAJE),2) as kilometros,
-PLACA_VEHICULO
-FROM MVABASTECIMIENTO_COMBUSTIBLE
-GROUP BY PLACA_VEHICULO) as b
-on a.placa_vehiculo = b.placa_vehiculo
-left join
-(SELECT ROUND(sum (GALONES),2) as galon,
+(SELECT ROUND(sum(GALONES),2) as galon,
 PLACA_VEHICULO
 FROM MVABASTECIMIENTO_COMBUSTIBLE
 GROUP BY PLACA_VEHICULO) as c
 on a.placa_vehiculo = c.placa_vehiculo
 left join
-(SELECT ROUND(sum (TOTAL),2) as total,
+(SELECT ROUND(sum(TOTAL),2) as total,
 PLACA_VEHICULO
 FROM MVABASTECIMIENTO_COMBUSTIBLE
 GROUP BY PLACA_VEHICULO) as d
@@ -31,14 +29,44 @@ on a.placa_vehiculo = d.placa_vehiculo
 order by total]]>
 	</queryString>
 	<field name="PLACA_VEHICULO" class="java.lang.String"/>
-	<field name="kilometros" class="java.lang.Integer"/>
 	<field name="galon" class="java.lang.Double"/>
 	<field name="total" class="java.lang.Double"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="79" splitType="Stretch"/>
+		<band height="98" splitType="Stretch">
+			<image>
+				<reportElement uuid="40a830a9-cda5-42a5-923e-067eda094e67" x="529" y="-13" width="211" height="111"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="b11d497d-8a96-4b30-bd3b-c433580a5225" key="staticText" x="26" y="2" width="266" height="43" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[GOBIERNO AUTÓNOMO DESCENTRALIZADO MUNICIPAL DEL CANTON RUMIÑAHUI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="51494549-0628-4f38-b652-17d0ef71dc26" key="staticText" x="26" y="36" width="266" height="21" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[CONSUMO DE COMBUSTIBLE GL POR MES]]></text>
+			</staticText>
+		</band>
 	</title>
 	<pageHeader>
 		<band height="5" splitType="Stretch"/>
@@ -53,13 +81,55 @@ order by total]]>
 		<band height="5" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="24" splitType="Stretch"/>
+		<band height="20" splitType="Stretch">
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="e98ada92-8bab-4e1a-abdd-270fdf0e2f30" key="textField" x="570" y="1" width="170" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="80c793b5-62ec-4049-a0ba-2d5bafd99c45" key="textField-5" x="13" y="1" width="115" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
+				<reportElement uuid="074888d1-1922-4e7d-a110-dda1b2c96025" key="textField" x="740" y="1" width="36" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
 	</pageFooter>
 	<summary>
-		<band height="300" splitType="Stretch">
+		<band height="310" splitType="Stretch">
 			<lineChart>
 				<chart isShowLegend="true" theme="default">
-					<reportElement x="-1" y="0" width="802" height="300" uuid="22c4c068-007f-4425-8a75-d814af3e1388"/>
+					<reportElement uuid="22c4c068-007f-4425-8a75-d814af3e1388" x="0" y="9" width="802" height="300">
+						<property name="net.sf.jasperreports.export.pdf.tag.h1"/>
+					</reportElement>
 					<chartTitle/>
 					<chartSubtitle/>
 					<chartLegend position="Right"/>
@@ -70,6 +140,12 @@ order by total]]>
 						<categoryExpression><![CDATA[$F{PLACA_VEHICULO}]]></categoryExpression>
 						<valueExpression><![CDATA[$F{total}]]></valueExpression>
 						<labelExpression><![CDATA[$F{PLACA_VEHICULO}+"-"+$F{total}]]></labelExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Galon"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{PLACA_VEHICULO}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{galon}]]></valueExpression>
+						<labelExpression><![CDATA[$F{PLACA_VEHICULO}+"  "+$F{galon}]]></labelExpression>
 					</categorySeries>
 				</categoryDataset>
 				<linePlot isShowShapes="true">
@@ -82,6 +158,21 @@ order by total]]>
 					</valueAxisFormat>
 				</linePlot>
 			</lineChart>
+			<textField>
+				<reportElement uuid="f444c0a2-bf13-47dd-ae0a-63f7ff4141a2" x="345" y="3" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{mes}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9a2f8b04-b3c0-46fa-a507-09b10c8e7c85" x="411" y="3" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{anio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="11b529b2-2a5b-474c-85b5-92a1c6570dd7" x="404" y="3" width="33" height="20"/>
+				<textElement/>
+				<text><![CDATA[/]]></text>
+			</staticText>
 		</band>
 	</summary>
 </jasperReport>

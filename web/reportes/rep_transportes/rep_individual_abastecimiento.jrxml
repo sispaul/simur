@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_individual_abastecimiento" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ec6dd5c6-647a-41c0-b145-dbf0aeda3301">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[select * from
+(select a.*,c.galon,d.total from
+(SELECT PLACA_VEHICULO,NUMERO_ABASTECIMIENTO
+FROM MVABASTECIMIENTO_COMBUSTIBLE
+where ANIO = '2014' and PERIODO = '10' and PLACA_VEHICULO ='PMD0666')as a
+left join
+(SELECT PLACA_VEHICULO,ROUND((GALONES),2) as galon,NUMERO_ABASTECIMIENTO
+FROM MVABASTECIMIENTO_COMBUSTIBLE
+GROUP BY GALONES,PLACA_VEHICULO,NUMERO_ABASTECIMIENTO) as c
+on a.placa_vehiculo = c.placa_vehiculo and a.numero_abastecimiento = c.numero_abastecimiento
+left join
+(SELECT PLACA_VEHICULO,ROUND((TOTAL),2) as total,NUMERO_ABASTECIMIENTO
+FROM MVABASTECIMIENTO_COMBUSTIBLE
+GROUP BY TOTAL,PLACA_VEHICULO,NUMERO_ABASTECIMIENTO) as d
+on a.placa_vehiculo = d.placa_vehiculo and a.numero_abastecimiento = d.numero_abastecimiento
+) as p
+order by numero_abastecimiento]]>
+	</queryString>
+	<field name="PLACA_VEHICULO" class="java.lang.String"/>
+	<field name="NUMERO_ABASTECIMIENTO" class="java.lang.String"/>
+	<field name="galon" class="java.lang.Double"/>
+	<field name="total" class="java.lang.Double"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="16" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="16" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="13" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="11" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="13" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="310" splitType="Stretch">
+			<lineChart>
+				<chart>
+					<reportElement uuid="a02d6765-7a58-4ef9-b939-f1d63c76a2db" x="0" y="0" width="802" height="310"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA["Valor"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{total}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{total}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Galones"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{galon}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{galon}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<linePlot>
+					<plot/>
+					<categoryAxisFormat>
+						<axisFormat/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat/>
+					</valueAxisFormat>
+				</linePlot>
+			</lineChart>
+		</band>
+	</summary>
+</jasperReport>
