@@ -94,15 +94,16 @@ public class AbastecimientoCombustible {
         return tab_persona;
     }
     
-    public String listaMax() {
+    public String listaMax(String placa) {
          conectar();
          String ValorMax;
          TablaGenerica tab_consulta = new TablaGenerica();
          conectar();
          tab_consulta.setConexion(conexion);
          tab_consulta.setSql("select 0 as id,\n" +
-                 "(case when max(NUMERO_ABASTECIMIENTO) is null then '0' when max(NUMERO_ABASTECIMIENTO)is not null then max(NUMERO_ABASTECIMIENTO) end) AS maximo\n" +
-                 "from MVABASTECIMIENTO_COMBUSTIBLE");
+                 "(case when count(NUMERO_ABASTECIMIENTO) is null then '0' when count(NUMERO_ABASTECIMIENTO)is not null then count(NUMERO_ABASTECIMIENTO) end) AS maximo\n" +
+                 "from MVABASTECIMIENTO_COMBUSTIBLE\n" +
+                 "where PLACA_VEHICULO = '"+placa+"' and ANIO = '"+utilitario.getAnio(utilitario.getFechaActual())+"' and PERIODO ='"+utilitario.getMes(utilitario.getFechaActual())+"'");
          tab_consulta.ejecutarSql();
          ValorMax = tab_consulta.getValor("maximo");
          return ValorMax;
@@ -117,6 +118,17 @@ public class AbastecimientoCombustible {
         conexion.desconectar();
         conexion = null;
     }
+    
+public TablaGenerica getMes(Integer periodo) {
+        conect();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT ide_periodo,per_descripcion FROM cont_periodo_actual where ide_periodo = "+periodo);
+        tab_persona.ejecutarSql();
+       con_postgres.desconectar();
+       con_postgres = null;
+        return tab_persona;
+    }    
     
     private void conectar() {
         if (conexion == null) {
