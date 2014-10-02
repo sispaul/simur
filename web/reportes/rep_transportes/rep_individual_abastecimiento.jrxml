@@ -3,6 +3,10 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="anio" class="java.lang.String"/>
+	<parameter name="placa" class="java.lang.String"/>
+	<parameter name="periodo" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select * from
 (select a.*,c.galon,d.total from
@@ -30,28 +34,59 @@ order by numero_abastecimiento]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="79" splitType="Stretch"/>
+		<band height="98" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="6d07ee7a-2302-4a48-8d57-b4e90064b918" key="staticText" x="26" y="37" width="266" height="34" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[CONSUMO DE COMBUSTIBLE GL POR VEHICULO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="186ee7b2-0045-4084-9a56-78ff97db03f9" key="staticText" x="26" y="3" width="266" height="43" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[GOBIERNO AUTÓNOMO DESCENTRALIZADO MUNICIPAL DEL CANTON RUMIÑAHUI]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="48f057c5-7978-4029-a192-1a9993218d48" x="516" y="3" width="198" height="95"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
+			</image>
+		</band>
 	</title>
 	<pageHeader>
-		<band height="16" splitType="Stretch"/>
+		<band height="10" splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="16" splitType="Stretch"/>
+		<band height="8" splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="13" splitType="Stretch"/>
+		<band height="9" splitType="Stretch"/>
 	</detail>
 	<columnFooter>
-		<band height="11" splitType="Stretch"/>
+		<band height="8" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="13" splitType="Stretch"/>
+		<band height="9" splitType="Stretch"/>
 	</pageFooter>
 	<summary>
-		<band height="310" splitType="Stretch">
+		<band height="320" splitType="Stretch">
 			<lineChart>
 				<chart>
-					<reportElement uuid="a02d6765-7a58-4ef9-b939-f1d63c76a2db" x="0" y="0" width="802" height="310"/>
+					<reportElement uuid="f573588b-5d27-47fc-ba77-0957f6c06d11" x="0" y="19" width="802" height="300"/>
 					<chartTitle/>
 					<chartSubtitle/>
 					<chartLegend/>
@@ -59,12 +94,12 @@ order by numero_abastecimiento]]>
 				<categoryDataset>
 					<categorySeries>
 						<seriesExpression><![CDATA["Valor"]]></seriesExpression>
-						<categoryExpression><![CDATA[$F{total}]]></categoryExpression>
+						<categoryExpression><![CDATA[$F{NUMERO_ABASTECIMIENTO}]]></categoryExpression>
 						<valueExpression><![CDATA[$F{total}]]></valueExpression>
 					</categorySeries>
 					<categorySeries>
-						<seriesExpression><![CDATA["Galones"]]></seriesExpression>
-						<categoryExpression><![CDATA[$F{galon}]]></categoryExpression>
+						<seriesExpression><![CDATA["galon"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{NUMERO_ABASTECIMIENTO}]]></categoryExpression>
 						<valueExpression><![CDATA[$F{galon}]]></valueExpression>
 					</categorySeries>
 				</categoryDataset>

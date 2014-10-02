@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_combustible_promedio" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="688fbae6-a1b0-4a38-8e41-0bff6f800730">
-	<property name="ireport.zoom" value="1.156629868288595"/>
+	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
@@ -37,7 +37,7 @@ order by total]]>
 	<title>
 		<band height="98" splitType="Stretch">
 			<image>
-				<reportElement uuid="40a830a9-cda5-42a5-923e-067eda094e67" x="529" y="-13" width="211" height="111"/>
+				<reportElement uuid="40a830a9-cda5-42a5-923e-067eda094e67" x="529" y="0" width="197" height="98"/>
 				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
 			</image>
 			<staticText>
