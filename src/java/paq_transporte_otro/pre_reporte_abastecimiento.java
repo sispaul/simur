@@ -186,11 +186,11 @@ public class pre_reporte_abastecimiento extends Pantalla{
         public void aceptarDialogo() {
             switch (rep_reporte.getNombre()) {
                 case "ABASTECIMIENTO GENERAL POR MES GALONES/CONSUMO":
-                    TablaGenerica tab_dato =aCombustible.getMes(Integer.parseInt(cmb_periodo.getValue()+""));
+                    TablaGenerica tab_dato =aCombustible.getMes(Integer.parseInt(cmb_peri.getValue()+""));
                    if (!tab_dato.isEmpty()) {
-                    p_parametros.put("anio", cmb_anio.getValue()+"");
+                    p_parametros.put("anio", cmb_ano.getValue()+"");
                     p_parametros.put("mes", tab_dato.getValor("per_descripcion")+"");
-                    p_parametros.put("periodo", cmb_periodo.getValue()+"");
+                    p_parametros.put("periodo", cmb_peri.getValue()+"");
                     rep_reporte.cerrar();
                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                     sef_formato.dibujar();
@@ -199,11 +199,11 @@ public class pre_reporte_abastecimiento extends Pantalla{
                    }
                     break;
                 case "ABASTECIMIENTO GENERAL POR kILOMETROS":
-                    TablaGenerica tab_dato1 =aCombustible.getMes(Integer.parseInt(cmb_periodo.getValue()+""));
+                    TablaGenerica tab_dato1 =aCombustible.getMes(Integer.parseInt(cmb_peri.getValue()+""));
                    if (!tab_dato1.isEmpty()) {
-                    p_parametros.put("anio", cmb_anio.getValue()+"");
+                    p_parametros.put("anio", cmb_ano.getValue()+"");
                     p_parametros.put("mes", tab_dato1.getValor("per_descripcion")+"");
-                    p_parametros.put("periodo", cmb_periodo.getValue()+"");
+                    p_parametros.put("periodo", cmb_peri.getValue()+"");
                     rep_reporte.cerrar();
                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                     sef_formato.dibujar();
