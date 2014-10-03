@@ -5,8 +5,10 @@
 package paq_transporte_otro;
 
 import framework.aplicacion.TablaGenerica;
+import framework.componentes.Boton;
 import framework.componentes.Division;
 import framework.componentes.Imagen;
+import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import javax.ejb.EJB;
@@ -32,6 +34,12 @@ public class pre_abastecimiento_combustible extends Pantalla{
     @EJB
     private AbastecimientoCombustible aCombustible = (AbastecimientoCombustible) utilitario.instanciarEJB(AbastecimientoCombustible.class);
     public pre_abastecimiento_combustible() {
+        
+        Boton bot_limpiar = new Boton();
+        bot_limpiar.setIcon("ui-icon-refresh");
+        bot_limpiar.setMetodo("actuRegis");
+        bar_botones.agregarBoton(bot_limpiar);
+        
         
         //usuario actual del sistema
         tab_consulta.setId("tab_consulta");
@@ -65,7 +73,7 @@ public class pre_abastecimiento_combustible extends Pantalla{
         tab_tabla.getColumna("descripcion_vehiculo").setLectura(true);
         tab_tabla.getColumna("numero_abastecimiento").setLectura(true);
         tab_tabla.getColumna("total").setLectura(true);
-        tab_tabla.getColumna("ide_abastecimiento_combustible").setVisible(false);
+//        tab_tabla.getColumna("ide_abastecimiento_combustible").setVisible(false);
         tab_tabla.getColumna("ci_conductor").setVisible(false);
         tab_tabla.getColumna("fecha_digitacion").setVisible(false);
         tab_tabla.getColumna("hora_digitacion").setVisible(false);
@@ -101,7 +109,7 @@ public class pre_abastecimiento_combustible extends Pantalla{
         tab_tabla1.getColumna("DESCRIPCION_VEHICULO").setLongitud(400);
         tab_tabla1.setNumeroTabla(2);
         tab_tabla1.setLectura(true);
-        tab_tabla1.setRows(10);
+        tab_tabla1.setRows(15);
 
         tab_tabla1.agregarRelacion(tab_tabla);
         tab_tabla1.dibujar();
@@ -195,23 +203,22 @@ public class pre_abastecimiento_combustible extends Pantalla{
         
     @Override
     public void insertar() {
-        tab_tabla.insertar();
+        if (tab_tabla.isFocus()) {
+            tab_tabla.limpiar();
+            tab_tabla.insertar();
+        }
     }
 
     @Override
     public void guardar() {
-        if(tab_tabla.getValor("ide_abastecimiento_combustible")!=null && tab_tabla.getValor("ide_abastecimiento_combustible").toString().isEmpty() == false){
-            aCombustible.ActRegistro(Integer.parseInt(tab_tabla.getValor("ide_abastecimiento_combustible")), tab_tabla.getValor("numero_abastecimiento"), Integer.parseInt(tab_tabla.getValor("ide_tipo_combustible")), tab_tabla.getValor("fecha_abastecimiento"), 
-                    tab_tabla.getValor("hora_abastecimiento"), Integer.parseInt(tab_tabla.getValor("kilometraje")), Double.valueOf(tab_tabla.getValor("galones")), Double.valueOf(tab_tabla.getValor("total")), 
-                    tab_tabla.getValor("placa_vehiculo"), tab_tabla.getValor("descripcion_vehiculo"), tab_tabla.getValor("conductor"), tab_tabla.getValor("ci_conductor"), tab_consulta.getValor("NICK_USUA"));
-            utilitario.agregarMensaje("Registros Actualizadoas con Exito","");
-             actuKilometrajes();
-        }else{
-            if(tab_tabla.guardar()){
-                con_sql.guardarPantalla();
-            }
+        String reg = new String();
+            tab_tabla.guardar();
+            con_sql.guardarPantalla();
+            reg = tab_tabla.getValorSeleccionado();
+            tab_tabla1.actualizar();
+            tab_tabla1.setFilaActual(reg);
+            tab_tabla1.calcularPaginaActual();
             actuKilometrajes();
-        }
     }
 
    public void actuKilometrajes(){
@@ -220,11 +227,24 @@ public class pre_abastecimiento_combustible extends Pantalla{
         }
     }
    
+   public void actuRegis(){
+               aCombustible.ActRegistro(Integer.parseInt(tab_tabla.getValor("ide_abastecimiento_combustible")), tab_tabla.getValor("numero_abastecimiento"), Integer.parseInt(tab_tabla.getValor("ide_tipo_combustible")), tab_tabla.getValor("fecha_abastecimiento"), 
+                       tab_tabla.getValor("hora_abastecimiento"), Integer.parseInt(tab_tabla.getValor("kilometraje")), Double.valueOf(tab_tabla.getValor("galones")), Double.valueOf(tab_tabla.getValor("total")), 
+                       tab_tabla.getValor("placa_vehiculo"), tab_tabla.getValor("descripcion_vehiculo"), tab_tabla.getValor("conductor"), tab_tabla.getValor("ci_conductor"), tab_consulta.getValor("NICK_USUA"));
+               utilitario.addUpdate("tab_tabla1");
+               utilitario.addUpdate("tab_tabla");
+   }
+   
     @Override
     public void eliminar() {
         tab_tabla.eliminar();
     }
-
+    
+    @Override
+    public void actualizar() {
+        
+    }
+    
     public Tabla getTab_tabla() {
         return tab_tabla;
     }

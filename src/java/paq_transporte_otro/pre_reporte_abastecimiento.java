@@ -213,31 +213,43 @@ public class pre_reporte_abastecimiento extends Pantalla{
                     break;
                 case "ABASTECIMIENTO POR VEHICULO GALONES/CONSUMO":
                     TablaGenerica tab_dato2 =aCombustible.getMes(Integer.parseInt(cmb_periodo.getValue()+""));
-                   if (!tab_dato2.isEmpty()) {
-                    p_parametros.put("anio", cmb_anio.getValue()+"");
-                    p_parametros.put("mes", tab_dato2.getValor("per_descripcion")+"");
-                    p_parametros.put("periodo", cmb_periodo.getValue()+"");
-                    p_parametros.put("placa", cmb_placa.getValue()+"");
-                    rep_reporte.cerrar();
-                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                    sef_formato.dibujar();
+                    if (!tab_dato2.isEmpty()) {
+                        TablaGenerica tab_datov =aCombustible.getVehiculo(cmb_placa.getValue()+"");
+                        if (!tab_datov.isEmpty()) {
+                            p_parametros.put("anio", cmb_anio.getValue()+"");
+                            p_parametros.put("mes", tab_dato2.getValor("per_descripcion")+"");
+                            p_parametros.put("periodo", cmb_periodo.getValue()+"");
+                            p_parametros.put("placa", cmb_placa.getValue()+"");
+                            p_parametros.put("descripcion", tab_datov.getValor("descripcion")+"");
+                            rep_reporte.cerrar();
+                            sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                            sef_formato.dibujar();
+                        }else{
+                            utilitario.agregarMensajeError("Placa","No Disponible");
+                        }
                     }else{
-                       utilitario.agregarMensajeError("Usuario","No Disponible");
-                   }
+                        utilitario.agregarMensajeError("Periodo","No Seleccionado");
+                    }
                     break;
                 case "ABASTECIMIENTO POR VEHICULO KILOMETROS":
                     TablaGenerica tab_dato3 =aCombustible.getMes(Integer.parseInt(cmb_periodo.getValue()+""));
-                   if (!tab_dato3.isEmpty()) {
-                    p_parametros.put("anio", cmb_anio.getValue()+"");
-                    p_parametros.put("mes", tab_dato3.getValor("per_descripcion")+"");
-                    p_parametros.put("periodo", cmb_periodo.getValue()+"");
-                    p_parametros.put("placa", cmb_placa.getValue()+"");
-                    rep_reporte.cerrar();
-                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                    sef_formato.dibujar();
+                    if (!tab_dato3.isEmpty()) {
+                        TablaGenerica tab_datov =aCombustible.getVehiculo(cmb_placa.getValue()+"");
+                        if (!tab_datov.isEmpty()) {
+                            p_parametros.put("anio", cmb_anio.getValue()+"");
+                            p_parametros.put("mes", tab_dato3.getValor("per_descripcion")+"");
+                            p_parametros.put("periodo", cmb_periodo.getValue()+"");
+                            p_parametros.put("placa", cmb_placa.getValue()+"");
+                            p_parametros.put("descripcion", tab_datov.getValor("descripcion")+"");
+                            rep_reporte.cerrar();
+                            sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                            sef_formato.dibujar();
+                        }else{
+                            utilitario.agregarMensajeError("Placa","No Disponible");
+                        }
                     }else{
-                       utilitario.agregarMensajeError("Usuario","No Disponible");
-                   }
+                        utilitario.agregarMensajeError("Periodo","No Seleccionado");
+                    }
                     break;
             }
         }
