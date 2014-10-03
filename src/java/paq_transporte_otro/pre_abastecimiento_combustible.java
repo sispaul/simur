@@ -5,11 +5,8 @@
 package paq_transporte_otro;
 
 import framework.aplicacion.TablaGenerica;
-import framework.componentes.AutoCompletar;
 import framework.componentes.Division;
-import framework.componentes.Grupo;
 import framework.componentes.Imagen;
-import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import javax.ejb.EJB;
@@ -79,6 +76,9 @@ public class pre_abastecimiento_combustible extends Pantalla{
         tab_tabla.getColumna("usu_actualizacion").setVisible(false);
         tab_tabla.getColumna("anio").setVisible(false);
         tab_tabla.getColumna("periodo").setVisible(false);
+        tab_tabla.getColumna("usu_digitacion").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
+        tab_tabla.getColumna("fecha_digitacion").setValorDefecto(String.valueOf(utilitario.getMes(utilitario.getFechaActual())));
+        tab_tabla.getColumna("hora_digitacion").setValorDefecto(String.valueOf(utilitario.getHora(utilitario.getFechaActual())));
         tab_tabla.getColumna("anio").setValorDefecto(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())));
         tab_tabla.getColumna("periodo").setValorDefecto(String.valueOf(utilitario.getMes(utilitario.getFechaActual())));
         tab_tabla.setTipoFormulario(true);
@@ -200,11 +200,18 @@ public class pre_abastecimiento_combustible extends Pantalla{
 
     @Override
     public void guardar() {
-        if(tab_tabla.isFocus()){
-            tab_tabla.guardar();
-            con_sql.guardarPantalla();
+        if(tab_tabla.getValor("ide_abastecimiento_combustible")!=null && tab_tabla.getValor("ide_abastecimiento_combustible").toString().isEmpty() == false){
+            aCombustible.ActRegistro(Integer.parseInt(tab_tabla.getValor("ide_abastecimiento_combustible")), tab_tabla.getValor("numero_abastecimiento"), Integer.parseInt(tab_tabla.getValor("ide_tipo_combustible")), tab_tabla.getValor("fecha_abastecimiento"), 
+                    tab_tabla.getValor("hora_abastecimiento"), Integer.parseInt(tab_tabla.getValor("kilometraje")), Double.valueOf(tab_tabla.getValor("galones")), Double.valueOf(tab_tabla.getValor("total")), 
+                    tab_tabla.getValor("placa_vehiculo"), tab_tabla.getValor("descripcion_vehiculo"), tab_tabla.getValor("conductor"), tab_tabla.getValor("ci_conductor"), tab_consulta.getValor("NICK_USUA"));
+            utilitario.agregarMensaje("Registros Actualizadoas con Exito","");
+             actuKilometrajes();
+        }else{
+            if(tab_tabla.guardar()){
+                con_sql.guardarPantalla();
+            }
+            actuKilometrajes();
         }
-        actuKilometrajes();
     }
 
    public void actuKilometrajes(){
