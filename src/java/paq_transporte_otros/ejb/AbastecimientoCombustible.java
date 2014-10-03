@@ -94,6 +94,23 @@ public class AbastecimientoCombustible {
         return tab_persona;
     }
     
+        public TablaGenerica getComparacion(Integer tipo) {
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT\n" +
+                                "ide_abastecimiento_combustible,\n" +
+                "NUMERO_ABASTECIMIENTO,\n" +
+                "NUMERO_VALE_ABASTECIMIENTO\n" +
+                "FROM\n" +
+                "MVABASTECIMIENTO_COMBUSTIBLE\n" +
+                "where ide_abastecimiento_combustible= "+tipo);
+        tab_persona.ejecutarSql();
+       conexion.desconectar();
+       conexion = null;
+        return tab_persona;
+    }
+    
     public String listaMax(String placa) {
          conectar();
          String ValorMax;
