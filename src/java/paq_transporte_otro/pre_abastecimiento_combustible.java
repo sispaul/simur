@@ -8,7 +8,6 @@ import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
 import framework.componentes.Division;
 import framework.componentes.Imagen;
-import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import javax.ejb.EJB;
