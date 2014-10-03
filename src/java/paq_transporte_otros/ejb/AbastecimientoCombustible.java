@@ -119,6 +119,28 @@ public class AbastecimientoCombustible {
         conexion = null;
     }
     
+    public void ActRegistro(Integer ide,String vale,Integer tipo,String fecha,String hora,Integer kilo,Double galon,Double total,String placa,String desc,String cond,
+            String ci,String usu){
+        String str_sql4 = "UPDATE MVABASTECIMIENTO_COMBUSTIBLE\n" +
+                "set IDE_TIPO_COMBUSTIBLE="+tipo+",\n" +
+                "FECHA_ABASTECIMIENTO='"+fecha+"',\n" +
+                "HORA_ABASTECIMIENTO='"+hora+"',\n" +
+                "KILOMETRAJE="+kilo+",\n" +
+                "GALONES="+galon+",\n" +
+                "TOTAL="+total+",\n" +
+                "PLACA_VEHICULO='"+placa+"',\n" +
+                "DESCRIPCION_VEHICULO='"+desc+"',\n" +
+                "CONDUCTOR='"+cond+"',\n" +
+                "CI_CONDUCTOR='"+ci+"',\n" +
+                "FECHA_ACTUALIZACION='"+utilitario.getFechaActual()+"',\n" +
+                "USU_ACTUALIZACION='"+usu+"'\n" +
+                "where ide_abastecimiento_combustible ="+ide+" and NUMERO_ABASTECIMIENTO = '"+vale+"'";
+        conectar();
+        conexion.ejecutarSql(str_sql4);
+        conexion.desconectar();
+        conexion = null;
+    }
+        
 public TablaGenerica getMes(Integer periodo) {
         conect();
         TablaGenerica tab_persona = new TablaGenerica();
