@@ -29,13 +29,8 @@ public class pre_abastecimiento_combustible extends Pantalla{
     
     //Para tabla de
     private Tabla tab_tabla = new Tabla();
+    private Tabla tab_tabla1 = new Tabla();
     private Tabla tab_consulta = new Tabla();
-    
-    //Contiene todos los elementos de la plantilla
-    private Panel pan_opcion = new Panel();
-    
-    //Busca de comprobante
-    private AutoCompletar aut_busca = new AutoCompletar();
     
     @EJB
     private AbastecimientoCombustible aCombustible = (AbastecimientoCombustible) utilitario.instanciarEJB(AbastecimientoCombustible.class);
@@ -57,40 +52,14 @@ public class pre_abastecimiento_combustible extends Pantalla{
         con_sql.setUnidad_persistencia(utilitario.getPropiedad("poolSqlmanAuto"));
         con_sql.NOMBRE_MARCA_BASE = "sqlserver";
         
-        aut_busca.setId("aut_busca");
-        aut_busca.setConexion(con_sql);
-        aut_busca.setAutoCompletar("SELECT ide_abastecimiento_combustible,PLACA_VEHICULO,NUMERO_VALE_ABASTECIMIENTO,FECHA_ABASTECIMIENTO,\n" +
-                "NUMERO_ABASTECIMIENTO\n" +
-                "FROM MVABASTECIMIENTO_COMBUSTIBLE");
-        aut_busca.setMetodoChange("buscarOrden");
-        aut_busca.setSize(70);
-        
-//        bar_botones.agregarComponente(new Etiqueta("Buscar Orden:"));
-//        bar_botones.agregarComponente(aut_busca);
-        
         // Imagen de encabezado
         Imagen quinde = new Imagen();
         quinde.setValue("imagenes/logo_transporte.png");
         agregarComponente(quinde);
         
-        //Elemento principal
-        pan_opcion.setId("pan_opcion");
-        pan_opcion.setTransient(true);
-        pan_opcion.setHeader("REGISTRO DE ABASTECIMIENTO DE COMBUSTIBLE");
-        agregarComponente(pan_opcion);
-        dibujarAbastecimiento();
-    }
-
-    public void dibujarAbastecimiento(){
         tab_tabla.setId("tab_tabla");
         tab_tabla.setConexion(con_sql);
         tab_tabla.setTabla("mvabastecimiento_combustible", "ide_abastecimiento_combustible", 1);
-        /*Filtro estatico para los datos a mostrar*/
-        if (aut_busca.getValue() == null) {
-            tab_tabla.setCondicion("ide_abastecimiento_combustible=-1");
-        } else {
-            tab_tabla.setCondicion("ide_abastecimiento_combustible=" + aut_busca.getValor());
-        }
         tab_tabla.getColumna("ide_tipo_combustible").setCombo("SELECT IDE_TIPO_COMBUSTIBLE,(DESCRIPCION_COMBUSTIBLE+'/'+cast(VALOR_GALON as varchar)) as valor FROM mvTIPO_COMBUSTIBLE");
         tab_tabla.getColumna("placa_vehiculo").setMetodoChange("busPlaca");
         tab_tabla.getColumna("kilometraje").setMetodoChange("kilometraje");
@@ -118,12 +87,31 @@ public class pre_abastecimiento_combustible extends Pantalla{
         PanelTabla ptt = new PanelTabla();
         ptt.setPanelTabla(tab_tabla);
         
+        tab_tabla1.setId("tab_tabla1");
+        tab_tabla1.setConexion(con_sql);
+        tab_tabla1.setSql("SELECT ide_abastecimiento_combustible,FECHA_ABASTECIMIENTO,NUMERO_VALE_ABASTECIMIENTO,PLACA_VEHICULO,DESCRIPCION_VEHICULO,\n" +
+                "CONDUCTOR,KILOMETRAJE,GALONES,TOTAL FROM MVABASTECIMIENTO_COMBUSTIBLE order by ide_abastecimiento_combustible");
+        tab_tabla1.getColumna("ide_abastecimiento_combustible").setNombreVisual("N° REGISTRO");
+        tab_tabla1.getColumna("PLACA_VEHICULO").setNombreVisual("PLACA");
+        tab_tabla1.getColumna("PLACA_VEHICULO").setFiltro(true);
+        tab_tabla1.getColumna("NUMERO_VALE_ABASTECIMIENTO").setNombreVisual("N° VALE");
+        tab_tabla1.getColumna("NUMERO_VALE_ABASTECIMIENTO").setFiltro(true);
+        tab_tabla1.getColumna("CONDUCTOR").setFiltro(true);
+        tab_tabla1.getColumna("DESCRIPCION_VEHICULO").setNombreVisual("DESCRIPCION VEHICULO");
+        tab_tabla1.getColumna("DESCRIPCION_VEHICULO").setLongitud(400);
+        tab_tabla1.setNumeroTabla(2);
+        tab_tabla1.setLectura(true);
+        tab_tabla1.setRows(10);
+
+        tab_tabla1.agregarRelacion(tab_tabla);
+        tab_tabla1.dibujar();
+        tab_tabla1.setFilaActual(0);
+        PanelTabla ptc = new PanelTabla();
+        ptc.setPanelTabla(tab_tabla1);
+        
         Division div = new Division();
-        div.dividir1(ptt);
+        div.dividir2(ptt, ptc, "37%", "h");
         agregarComponente(div);
-        Grupo gru = new Grupo();
-        gru.getChildren().add(div);
-        pan_opcion.getChildren().add(gru);
     }
     
     public void busPlaca(){
@@ -236,6 +224,14 @@ public class pre_abastecimiento_combustible extends Pantalla{
 
     public void setTab_tabla(Tabla tab_tabla) {
         this.tab_tabla = tab_tabla;
+    }
+
+    public Tabla getTab_tabla1() {
+        return tab_tabla1;
+    }
+
+    public void setTab_tabla1(Tabla tab_tabla1) {
+        this.tab_tabla1 = tab_tabla1;
     }
     
 }
