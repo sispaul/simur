@@ -7,6 +7,7 @@ package paq_transporte_otro;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
 import framework.componentes.Division;
+import framework.componentes.Foco;
 import framework.componentes.Imagen;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
@@ -63,6 +64,7 @@ public class pre_abastecimiento_combustible extends Pantalla{
         
         tab_tabla.setId("tab_tabla");
         tab_tabla.setConexion(con_sql);
+        tab_tabla.setHeader("REGISTRO DE ABASTECIMIENTO DE COMBUSTIBLE");
         tab_tabla.setTabla("mvabastecimiento_combustible", "ide_abastecimiento_combustible", 1);
         tab_tabla.getColumna("ide_tipo_combustible").setCombo("SELECT IDE_TIPO_COMBUSTIBLE,(DESCRIPCION_COMBUSTIBLE+'/'+cast(VALOR_GALON as varchar)) as valor FROM mvTIPO_COMBUSTIBLE");
         tab_tabla.getColumna("placa_vehiculo").setMetodoChange("busPlaca");
@@ -86,8 +88,8 @@ public class pre_abastecimiento_combustible extends Pantalla{
         tab_tabla.getColumna("usu_digitacion").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         tab_tabla.getColumna("fecha_digitacion").setValorDefecto(String.valueOf(utilitario.getMes(utilitario.getFechaActual())));
         tab_tabla.getColumna("hora_digitacion").setValorDefecto(String.valueOf(utilitario.getHora(utilitario.getFechaActual())));
-        tab_tabla.getColumna("anio").setValorDefecto(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())));
-        tab_tabla.getColumna("periodo").setValorDefecto(String.valueOf(utilitario.getMes(utilitario.getFechaActual())));
+        tab_tabla.getColumna("anio").setValorDefecto(String.valueOf(utilitario.getAnio(tab_tabla.getValor("fecha_abastecimiento"))));
+        tab_tabla.getColumna("periodo").setValorDefecto(String.valueOf(utilitario.getMes(tab_tabla.getValor("hora_abastecimiento"))));
         tab_tabla.setTipoFormulario(true);
         tab_tabla.getGrid().setColumns(4);
         tab_tabla.dibujar();
@@ -96,14 +98,13 @@ public class pre_abastecimiento_combustible extends Pantalla{
         
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setConexion(con_sql);
-        tab_tabla1.setSql("SELECT ide_abastecimiento_combustible,FECHA_ABASTECIMIENTO,NUMERO_VALE_ABASTECIMIENTO,PLACA_VEHICULO,DESCRIPCION_VEHICULO,\n" +
-                "CONDUCTOR,KILOMETRAJE,GALONES,TOTAL FROM MVABASTECIMIENTO_COMBUSTIBLE order by ide_abastecimiento_combustible");
+        tab_tabla1.setSql("SELECT top  10 ide_abastecimiento_combustible,FECHA_ABASTECIMIENTO,NUMERO_VALE_ABASTECIMIENTO,PLACA_VEHICULO,DESCRIPCION_VEHICULO,\n" +
+                "CONDUCTOR,KILOMETRAJE,GALONES,TOTAL FROM MVABASTECIMIENTO_COMBUSTIBLE where PERIODO = '"+utilitario.getMes(utilitario.getFechaActual())+"' order by ide_abastecimiento_combustible desc");
         tab_tabla1.getColumna("ide_abastecimiento_combustible").setNombreVisual("N° REGISTRO");
         tab_tabla1.getColumna("PLACA_VEHICULO").setNombreVisual("PLACA");
         tab_tabla1.getColumna("PLACA_VEHICULO").setFiltro(true);
         tab_tabla1.getColumna("NUMERO_VALE_ABASTECIMIENTO").setNombreVisual("N° VALE");
         tab_tabla1.getColumna("NUMERO_VALE_ABASTECIMIENTO").setFiltro(true);
-        tab_tabla1.getColumna("CONDUCTOR").setFiltro(true);
         tab_tabla1.getColumna("DESCRIPCION_VEHICULO").setNombreVisual("DESCRIPCION VEHICULO");
         tab_tabla1.getColumna("DESCRIPCION_VEHICULO").setLongitud(400);
         tab_tabla1.setNumeroTabla(2);
@@ -130,6 +131,9 @@ public class pre_abastecimiento_combustible extends Pantalla{
                 tab_tabla.setValor("conductor", tab_datoc.getValor("nombres"));
                 tab_tabla.setValor("ci_conductor", tab_datoc.getValor("cedula_pass"));
                 tab_tabla.setValor("ide_tipo_combustible", tab_dato.getValor("MVE_TIPO_COMBUSTIBLE"));
+//                Foco foc_foco = new Foco();
+//                foc_foco.setFor("tex_usuario");
+//                tab_tabla.getChildren().add(foc_foco);
                 utilitario.addUpdate("tab_tabla");
             }else{
                 utilitario.agregarMensajeError("Conductor","No Disponible");
@@ -232,6 +236,7 @@ public class pre_abastecimiento_combustible extends Pantalla{
                        tab_tabla.getValor("placa_vehiculo"), tab_tabla.getValor("descripcion_vehiculo"), tab_tabla.getValor("conductor"), tab_tabla.getValor("ci_conductor"), tab_consulta.getValor("NICK_USUA"));
                utilitario.addUpdate("tab_tabla1");
                utilitario.addUpdate("tab_tabla");
+               actuKilometrajes();
    }
    
     @Override
