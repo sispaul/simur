@@ -58,6 +58,7 @@ public class pre_bloqueo_rol extends Pantalla{
         tab_decimo.getColumna("per_actual").setVisible(false);
         tab_decimo.getColumna("per_bloqueo").setVisible(false);
         tab_decimo.getColumna("mayorizado").setVisible(false);
+        tab_decimo.getColumna("bloqueo_combustible").setVisible(false);
         tab_decimo.dibujar();
         PanelTabla tpd = new PanelTabla();
         tpd.setPanelTabla(tab_decimo);
