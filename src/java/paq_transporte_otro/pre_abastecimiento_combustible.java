@@ -30,6 +30,7 @@ public class pre_abastecimiento_combustible extends Pantalla{
     private Tabla tab_tabla = new Tabla();
     private Tabla tab_tabla1 = new Tabla();
     private Tabla tab_consulta = new Tabla();
+    private Tabla tab_periodo = new Tabla();
     
     @EJB
     private AbastecimientoCombustible aCombustible = (AbastecimientoCombustible) utilitario.instanciarEJB(AbastecimientoCombustible.class);
@@ -53,6 +54,13 @@ public class pre_abastecimiento_combustible extends Pantalla{
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         con_postgres.NOMBRE_MARCA_BASE = "postgres";
         
+        tab_periodo.setId("tab_periodo");
+        tab_periodo.setConexion(con_postgres);
+        tab_periodo.setSql("SELECT ide_periodo,bloqueo_combustible FROM cont_periodo_actual\n" +
+                "where bloqueo_combustible ='S'");
+        tab_periodo.setCampoPrimaria("ide_periodo");
+        tab_periodo.setLectura(true);
+        tab_periodo.dibujar();
         //cadena de conexión para base de datos en sql/manauto
         con_sql.setUnidad_persistencia(utilitario.getPropiedad("poolSqlmanAuto"));
         con_sql.NOMBRE_MARCA_BASE = "sqlserver";
@@ -61,7 +69,7 @@ public class pre_abastecimiento_combustible extends Pantalla{
         Imagen quinde = new Imagen();
         quinde.setValue("imagenes/logo_transporte.png");
         agregarComponente(quinde);
-        
+
         tab_tabla.setId("tab_tabla");
         tab_tabla.setConexion(con_sql);
         tab_tabla.setHeader("REGISTRO DE ABASTECIMIENTO DE COMBUSTIBLE");
@@ -88,8 +96,8 @@ public class pre_abastecimiento_combustible extends Pantalla{
         tab_tabla.getColumna("usu_digitacion").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         tab_tabla.getColumna("fecha_digitacion").setValorDefecto(String.valueOf(utilitario.getMes(utilitario.getFechaActual())));
         tab_tabla.getColumna("hora_digitacion").setValorDefecto(String.valueOf(utilitario.getHora(utilitario.getFechaActual())));
-        tab_tabla.getColumna("anio").setValorDefecto(String.valueOf(utilitario.getAnio(tab_tabla.getValor("fecha_abastecimiento"))));
-        tab_tabla.getColumna("periodo").setValorDefecto(String.valueOf(utilitario.getMes(tab_tabla.getValor("hora_abastecimiento"))));
+        tab_tabla.getColumna("anio").setValorDefecto(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())));
+        tab_tabla.getColumna("periodo").setValorDefecto(tab_periodo.getValor("ide_periodo"));
         tab_tabla.setTipoFormulario(true);
         tab_tabla.getGrid().setColumns(4);
         tab_tabla.dibujar();
@@ -99,7 +107,7 @@ public class pre_abastecimiento_combustible extends Pantalla{
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setConexion(con_sql);
         tab_tabla1.setSql("SELECT top  10 ide_abastecimiento_combustible,FECHA_ABASTECIMIENTO,NUMERO_VALE_ABASTECIMIENTO,PLACA_VEHICULO,DESCRIPCION_VEHICULO,\n" +
-                "CONDUCTOR,KILOMETRAJE,GALONES,TOTAL FROM MVABASTECIMIENTO_COMBUSTIBLE where PERIODO = '"+utilitario.getMes(utilitario.getFechaActual())+"' order by ide_abastecimiento_combustible desc");
+                "CONDUCTOR,KILOMETRAJE,GALONES,TOTAL FROM MVABASTECIMIENTO_COMBUSTIBLE where PERIODO = '"+tab_periodo.getValor("ide_periodo")+"' order by ide_abastecimiento_combustible desc");
         tab_tabla1.getColumna("ide_abastecimiento_combustible").setNombreVisual("N° REGISTRO");
         tab_tabla1.getColumna("PLACA_VEHICULO").setNombreVisual("PLACA");
         tab_tabla1.getColumna("PLACA_VEHICULO").setFiltro(true);
