@@ -6,7 +6,6 @@ package paq_transporte_otro;
 
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
-import framework.componentes.Calendario;
 import framework.componentes.Combo;
 import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
@@ -18,7 +17,6 @@ import framework.componentes.SeleccionFormatoReporte;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
-import org.primefaces.component.panelmenu.PanelMenu;
 import paq_sistema.aplicacion.Pantalla;
 import paq_transporte_otros.ejb.AbastecimientoCombustible;
 import persistencia.Conexion;
