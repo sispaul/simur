@@ -56,22 +56,22 @@ order by numero_abastecimiento]]>
 				<text><![CDATA[RENDIMIENTO KM/GL GENERAL]]></text>
 			</staticText>
 			<image>
-				<reportElement uuid="52350d25-be83-4450-ba77-758d8923853b" x="517" y="0" width="198" height="95"/>
+				<reportElement uuid="52350d25-be83-4450-ba77-758d8923853b" x="517" y="0" width="200" height="98"/>
 				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="9" splitType="Stretch"/>
+		<band height="2" splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="7" splitType="Stretch"/>
+		<band height="2" splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="8" splitType="Stretch"/>
+		<band height="2" splitType="Stretch"/>
 	</detail>
 	<columnFooter>
-		<band height="10" splitType="Stretch"/>
+		<band height="2" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
 		<band height="19" splitType="Stretch">
@@ -117,10 +117,10 @@ order by numero_abastecimiento]]>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="289" splitType="Stretch">
+		<band height="303" splitType="Stretch">
 			<lineChart>
 				<chart>
-					<reportElement uuid="b9c4402d-877e-492b-b84c-7a4808480cec" x="0" y="2" width="802" height="287"/>
+					<reportElement uuid="b9c4402d-877e-492b-b84c-7a4808480cec" x="0" y="16" width="802" height="287"/>
 					<chartTitle/>
 					<chartSubtitle/>
 					<chartLegend position="Right"/>

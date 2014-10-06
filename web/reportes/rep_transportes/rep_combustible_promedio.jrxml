@@ -69,16 +69,16 @@ order by total]]>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="5" splitType="Stretch"/>
+		<band height="2" splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="5" splitType="Stretch"/>
+		<band height="2" splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="5" splitType="Stretch"/>
+		<band height="2" splitType="Stretch"/>
 	</detail>
 	<columnFooter>
-		<band height="5" splitType="Stretch"/>
+		<band height="2" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
 		<band height="20" splitType="Stretch">
@@ -124,7 +124,7 @@ order by total]]>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="310" splitType="Stretch">
+		<band height="315" splitType="Stretch">
 			<staticText>
 				<reportElement uuid="11b529b2-2a5b-474c-85b5-92a1c6570dd7" x="404" y="3" width="33" height="20"/>
 				<textElement/>
@@ -132,7 +132,7 @@ order by total]]>
 			</staticText>
 			<lineChart>
 				<chart isShowLegend="true" theme="default">
-					<reportElement uuid="22c4c068-007f-4425-8a75-d814af3e1388" x="0" y="9" width="802" height="300">
+					<reportElement uuid="22c4c068-007f-4425-8a75-d814af3e1388" x="0" y="15" width="802" height="300">
 						<property name="net.sf.jasperreports.export.pdf.tag.h1"/>
 					</reportElement>
 					<chartTitle/>
