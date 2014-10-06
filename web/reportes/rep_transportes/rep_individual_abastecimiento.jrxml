@@ -64,22 +64,22 @@ order by numero_abastecimiento]]>
 				<text><![CDATA[GOBIERNO AUTÓNOMO DESCENTRALIZADO MUNICIPAL DEL CANTON RUMIÑAHUI]]></text>
 			</staticText>
 			<image>
-				<reportElement uuid="48f057c5-7978-4029-a192-1a9993218d48" x="516" y="3" width="198" height="95"/>
+				<reportElement uuid="48f057c5-7978-4029-a192-1a9993218d48" x="516" y="3" width="196" height="95"/>
 				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="10" splitType="Stretch"/>
+		<band height="2" splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="8" splitType="Stretch"/>
+		<band height="2" splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="9" splitType="Stretch"/>
+		<band height="2" splitType="Stretch"/>
 	</detail>
 	<columnFooter>
-		<band height="8" splitType="Stretch"/>
+		<band height="2" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
 		<band height="19" splitType="Stretch">
@@ -156,29 +156,29 @@ order by numero_abastecimiento]]>
 				</linePlot>
 			</lineChart>
 			<textField>
-				<reportElement uuid="dbd428f1-524c-4404-9e6e-f90ed95dc43b" x="64" y="10" width="100" height="20"/>
+				<reportElement uuid="dbd428f1-524c-4404-9e6e-f90ed95dc43b" x="64" y="2" width="100" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$P{placa}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="957571f4-4b11-47a3-ad15-d81ecd2604db" x="164" y="10" width="526" height="20"/>
+				<reportElement uuid="957571f4-4b11-47a3-ad15-d81ecd2604db" x="164" y="2" width="526" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$P{descripcion}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="d09341db-8c5e-4947-9e5d-724ceaab5b7e" x="701" y="10" width="100" height="20"/>
+				<reportElement uuid="d09341db-8c5e-4947-9e5d-724ceaab5b7e" x="701" y="2" width="100" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$P{mes}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="f73c9946-4ee3-46cb-8871-4c43d847dcfe" x="0" y="10" width="100" height="20"/>
+				<reportElement uuid="f73c9946-4ee3-46cb-8871-4c43d847dcfe" x="0" y="2" width="100" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[VEHICULO:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="5d31263d-5ea2-4d6d-b36e-3dec14e8666e" x="654" y="10" width="100" height="20"/>
+				<reportElement uuid="5d31263d-5ea2-4d6d-b36e-3dec14e8666e" x="654" y="2" width="100" height="20"/>
 				<textElement/>
 				<text><![CDATA[MES:]]></text>
 			</staticText>

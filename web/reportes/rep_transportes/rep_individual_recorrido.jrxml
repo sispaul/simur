@@ -58,22 +58,22 @@ order by numero_abastecimiento]]>
 				<text><![CDATA[RENDIMIENTO KM/GL POR VEHICULO]]></text>
 			</staticText>
 			<image>
-				<reportElement uuid="b98e2807-d2e5-4b2b-8a83-a1d6fac2f620" x="520" y="0" width="198" height="95"/>
+				<reportElement uuid="b98e2807-d2e5-4b2b-8a83-a1d6fac2f620" x="520" y="0" width="200" height="98"/>
 				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="8" splitType="Stretch"/>
+		<band height="2" splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="8" splitType="Stretch"/>
+		<band height="2" splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="8" splitType="Stretch"/>
+		<band height="2" splitType="Stretch"/>
 	</detail>
 	<columnFooter>
-		<band height="8" splitType="Stretch"/>
+		<band height="2" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
 		<band height="19" splitType="Stretch">
@@ -162,7 +162,7 @@ order by numero_abastecimiento]]>
 				<textFieldExpression><![CDATA[$P{placa}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="be221b99-2da4-49a8-8029-dad9c51c5b12" x="679" y="2" width="100" height="20"/>
+				<reportElement uuid="be221b99-2da4-49a8-8029-dad9c51c5b12" x="668" y="2" width="100" height="20"/>
 				<textElement/>
 				<text><![CDATA[MES:]]></text>
 			</staticText>
