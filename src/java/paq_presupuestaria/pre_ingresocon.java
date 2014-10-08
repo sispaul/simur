@@ -58,7 +58,6 @@ public class pre_ingresocon extends Pantalla{
     // DIALOGO DE ACCIÓN
     private Dialogo dia_dialogoe = new Dialogo();
     private Grid grid_de = new Grid();
-    private Grid grid_de1 = new Grid();
     
     private Tabla set_distribu = new Tabla();
      @EJB
@@ -250,7 +249,7 @@ public class pre_ingresocon extends Pantalla{
 
         programas.eiminarIngreso();
         programas.actualizacionPrograma();
-               programas.eiminarIngreso();
+//               programas.eiminarIngreso();
                programas.insertaIngresos(Integer.parseInt(cmb_ano.getValue()+""), Integer.parseInt(cmb_licenti.getValue()+""), cal_fechafin.getFecha());
                programas.actualizarIngresos(Integer.parseInt(cmb_licenti.getValue()+""));
                programas.actualizarDatosIngresos(cal_fechain.getFecha(), cal_fechafin.getFecha(), Integer.parseInt(cmb_ano.getValue()+""), Integer.parseInt(cmb_licenti.getValue()+""));
