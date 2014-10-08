@@ -82,6 +82,7 @@ public class pre_abastecimiento_combustible extends Pantalla{
         tab_tabla.getColumna("descripcion_vehiculo").setLectura(true);
         tab_tabla.getColumna("numero_abastecimiento").setLectura(true);
         tab_tabla.getColumna("total").setLectura(true);
+        tab_tabla.getColumna("titulo").setEtiqueta();
 //        tab_tabla.getColumna("ide_abastecimiento_combustible").setVisible(false);
         tab_tabla.getColumna("ci_conductor").setVisible(false);
         tab_tabla.getColumna("fecha_digitacion").setVisible(false);
