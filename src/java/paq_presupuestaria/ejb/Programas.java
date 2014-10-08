@@ -238,7 +238,7 @@ public class Programas {
     public void actualizarGastos(Integer cen) { 
             // Forma el sql para actualizar
         String str_sql2 ="update conc_cedula_presupuestaria_fechas \n" +
-                "set reforma1= 0, devengado1=0, pagado1=0, cobrado1=0, compromiso1=0, cobradoc1=0,val_inicial=0 where tipo= "+cen+"";
+                "set reforma1= 0, devengado1=0, pagado1=0, cobrado1=0, compromiso1=0, cobradoc1=0,val_inicial=0 where tipo= "+cen;
         conectar();
         con_postgres.ejecutarSql(str_sql2);
         con_postgres.desconectar();
