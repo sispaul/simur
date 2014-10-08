@@ -278,7 +278,7 @@ public class Programas {
                                         "group by ide_programa) b\n" +
                                         "where a.ide_programa=b.ide_programa\n" +
                                         "group by ide_clasificador,ide_funcion) a\n" +
-                                        "where a.ide_funcion = conc_cedula_presupuestaria_fechas.ide_funcion and conc_cedula_presupuestaria_fechas.tipo="+licn+" and  a.ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador;";
+                                        "where a.ide_funcion = conc_cedula_presupuestaria_fechas.ide_funcion and conc_cedula_presupuestaria_fechas.tipo="+licn+" and  a.ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador";
         conectar();
         con_postgres.ejecutarSql(str_sql4);
         con_postgres.desconectar();
@@ -304,7 +304,7 @@ public class Programas {
                                         "where a.ide_programa=b.ide_programa\n" +
                                         "group by ide_clasificador,ide_funcion) a\n" +
                                         "where a.ide_funcion = conc_cedula_presupuestaria_fechas.ide_funcion \n" +
-                                        "and conc_cedula_presupuestaria_fechas.tipo="+licen+" and a.ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador;";
+                                        "and conc_cedula_presupuestaria_fechas.tipo="+licen+" and a.ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador";
         conectar();
         con_postgres.ejecutarSql(str_sql5);
         con_postgres.desconectar();
