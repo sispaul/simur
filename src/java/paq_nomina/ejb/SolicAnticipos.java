@@ -1069,7 +1069,7 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
  }
  public void migra_lista(String cedula,String usu){
         String nomina ="insert into srh_solicitud_anticipo (ci_solicitante,solicitante,rmu,id_distributivo,cod_cargo,login_ingre_solicitud,ip_ingre_solicitud,login_aprob_solicitud, \n" +
-                    "ip_aprob_solicitud,aprobado_solicitante,fecha_aprobacion,ide_listado,fecha_listado,anio,periodo) \n" +
+                    "ip_aprob_solicitud,aprobado_solicitante,fecha_aprobacion,ide_listado,fecha_listado,anio,periodo,ide_tipo_anticipo) \n" +
                     "SELECT cedula, solicitante,rmu,id_distributivo,cod_cargo, \n" +
                     "'"+usu+"' as login_ingreso, \n" +
                     "'"+utilitario.getIp()+"' as ip_ingreso, \n" +
@@ -1080,7 +1080,8 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
                     "'LIST-2014-00000' as id_listado, \n" +
                     "'"+utilitario.getFechaActual()+"' as fecha_listado, \n" +
                     ""+utilitario.getAnio(utilitario.getFechaActual())+" as anio, \n" +
-                    ""+utilitario.getMes(utilitario.getFechaActual())+" as periodo \n" +
+                    ""+utilitario.getMes(utilitario.getFechaActual())+" as periodo, \n" +
+                    "2 as estado \n" +
                     "FROM srh_migrar_anticipo \n" +
                     "WHERE cedula ilike '"+cedula+"'";
         conectar();
@@ -1094,15 +1095,15 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
         String nomina ="insert into srh_calculo_anticipo(fecha_anticipo,valor_anticipo,numero_cuotas_anticipo,valor_cuota_mensual,val_cuo_adi,ide_periodo_anticipo_inicial,\n" +
                         "ide_periodo_anticipo_final,ide_solicitud_anticipo,ide_estado_anticipo)\n" +
                         "SELECT\n" +
-                        "'2014-09-02' as fecha,\n" +
+                        "'2014-10-02' as fecha,\n" +
                         "saldo,\n" +
                         "cuotas_pedientes,\n" +
                         "cast((saldo/cuotas_pedientes) as numeric(6,2)) as cuotas,\n" +
                         "cast(cuota_adicional as numeric) as cuota_adi,\n" +
-                        "9 as periodo,\n" +
-                        "(9+cuotas_pedientes) as fin,\n" +
+                        "10 as periodo,\n" +
+                        "(10+cuotas_pedientes) as fin,\n" +
                         ""+ide+" as ide,\n" +
-                        "1 as aprobado\n" +
+                        "2 as aprobado\n" +
                         "FROM\n" +
                         "srh_migrar_anticipo\n" +
                         "where cedula like '"+cedula+"'";
@@ -1117,15 +1118,15 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
         String nomina ="insert into srh_calculo_anticipo(fecha_anticipo,valor_anticipo,numero_cuotas_anticipo,valor_cuota_mensual,val_cuo_adi,ide_periodo_anticipo_inicial,\n" +
                         "ide_periodo_anticipo_final,ide_solicitud_anticipo,ide_estado_anticipo)\n" +
                         "SELECT\n" +
-                        "'2014-09-02' as fecha,\n" +
+                        "'2014-10-02' as fecha,\n" +
                         "(saldo+cuota_adicional) as anticipo,\n" +
                         "cuotas_pedientes,\n" +
                         "cast((saldo/(cuotas_pedientes-1)) as numeric(6,2)) as cuotas,\n" +
                         "cast(cuota_adicional as numeric) as cuota_adi,\n" +
-                        "9 as periodo,\n" +
-                        "(9+cuotas_pedientes) as fin,\n" +
+                        "10 as periodo,\n" +
+                        "(10+cuotas_pedientes) as fin,\n" +
                         ""+ide+" as ide,\n" +
-                        "1 as aprobado\n" +
+                        "2 as aprobado\n" +
                         "FROM\n" +
                         "srh_migrar_anticipo\n" +
                         "where cedula like '"+cedula+"'";
@@ -1266,7 +1267,7 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
                     "set rmu="+rmu+",\n" +
                     "id_distributivo="+anti+",\n" +
                     "cod_cargo="+aprob+"\n" +
-                    "where cedula like'"+cedula+"' and ide_migrar="+migrar;
+                    "where cedula ='"+cedula+"' and ide_migrar="+migrar;
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
@@ -1324,7 +1325,6 @@ public void actuaDevolucion(Integer solic){
 
 public TablaGenerica getPeriodoA(Integer ide) {
         //Busca a una empresa en la tabla maestra_ruc por ruc
-    System.err.println("Holas");
         conectar();
         TablaGenerica tab_persona = new TablaGenerica();
         conectar();
