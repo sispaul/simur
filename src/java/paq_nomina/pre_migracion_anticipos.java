@@ -50,11 +50,18 @@ private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(me
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
         
+        Boton bot_com = new Boton();
+        bot_com.setValue("Completar Listado");
+        bot_com.setExcluirLectura(true);
+        bot_com.setIcon("ui-icon-extlink");
+        bot_com.setMetodo("completa");
+        bar_botones.agregarBoton(bot_com);
+        
         Boton bot_save = new Boton();
         bot_save.setValue("Migrar Listado");
         bot_save.setExcluirLectura(true);
         bot_save.setIcon("ui-icon-extlink");
-        bot_save.setMetodo("migrar");
+        bot_save.setMetodo("migra_calculo");
         bar_botones.agregarBoton(bot_save);
         
         Boton bot_delete = new Boton();
@@ -72,7 +79,7 @@ private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(me
         tab_migracion.setId("tab_migracion");
         tab_migracion.setConexion(con_postgres);
         tab_migracion.setTabla("srh_migrar_anticipo", "ide_migrar", 1);
-        tab_migracion.setRows(15);
+        tab_migracion.setRows(13);
         tab_migracion.dibujar();
         PanelTabla pat_panel = new PanelTabla();
         pat_panel.setMensajeWarn("MIGRACION DE DATOS DE ANTICIPOS PENDIENTES");
@@ -93,7 +100,7 @@ private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(me
         tab_migracion.actualizar();
     }
     
-    public void migrar(){
+    public void completa(){
         for (int i = 0; i < tab_migracion.getTotalFilas(); i++) {
             tab_migracion.getValor(i, "cedula");
             TablaGenerica tab_dato = iAnticipos.empleadosCed(tab_migracion.getValor(i,"cedula"));//empleados
@@ -104,34 +111,34 @@ private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(me
                     TablaGenerica tab_dato1 = iAnticipos.trabajadoresCed(tab_migracion.getValor(i,"cedula"));//trabajadores
                     if (!tab_dato1.isEmpty()) {
                         iAnticipos.actuaMigrar(Double.parseDouble(tab_dato1.getValor("su")), Integer.parseInt(tab_dato1.getValor("id_distributivo_roles")), 
-                            Integer.parseInt(tab_dato.getValor("cod_cargo")), tab_migracion.getValor(i,"cedula"), Integer.parseInt(tab_migracion.getValor(i,"ide_migrar")));
+                            Integer.parseInt(tab_dato1.getValor("cod_cargo")), tab_migracion.getValor(i,"cedula"), Integer.parseInt(tab_migracion.getValor(i,"ide_migrar")));
                     }
         }
     }
         tab_migracion.actualizar();
-        migra_calculo();
     }
     public void migra_calculo(){
-        TablaGenerica tab_datoo = mDescuento.VerificarRol();
-        if (!tab_datoo.isEmpty()) {
          for (int i = 0; i < tab_migracion.getTotalFilas(); i++) {
             tab_migracion.getValor(i, "cedula");
-            iAnticipos.migra_lista(tab_migracion.getValor(i, "cedula"),utilitario.getVariable("NICK"));
-            TablaGenerica tab_datos = iAnticipos.cod_listado(tab_migracion.getValor(i, "cedula"));
-             if (!tab_datos.isEmpty()) {
-                  if((Integer.parseInt(tab_migracion.getValor(i,"cuotas_pedientes"))+(utilitario.getMes("2014-09-02")))>12){
-                      iAnticipos.migra_calculo1(tab_migracion.getValor(i, "cedula"), Integer.parseInt(tab_datos.getValor("ide_solicitud_anticipo")));
-                  }else{
-                        iAnticipos.migra_calculo(tab_migracion.getValor(i, "cedula"), Integer.parseInt(tab_datos.getValor("ide_solicitud_anticipo")));
-                  }                
+             if(tab_migracion.getValor(i, "id_distributivo").equals("1")){
+                 iAnticipos.migra_lista(tab_migracion.getValor(i, "cedula"),utilitario.getVariable("NICK"));
+                 TablaGenerica tab_datos = iAnticipos.cod_listado(tab_migracion.getValor(i, "cedula"));
+                 if (!tab_datos.isEmpty()) {
+                     iAnticipos.migra_calculo1(tab_migracion.getValor(i, "cedula"), Integer.parseInt(tab_datos.getValor("ide_solicitud_anticipo")));                
+                 }else{
+                     utilitario.agregarMensaje("No se encuentra en base", tab_migracion.getValor(i, "cedula"));
+                 }
              }else{
-                 utilitario.agregarMensaje("No se encuentra en base", tab_migracion.getValor(i, "cedula"));
+                 iAnticipos.migra_lista(tab_migracion.getValor(i, "cedula"),utilitario.getVariable("NICK"));
+                 TablaGenerica tab_datos = iAnticipos.cod_listado(tab_migracion.getValor(i, "cedula"));
+                 if (!tab_datos.isEmpty()) {
+                     iAnticipos.migra_calculo(tab_migracion.getValor(i, "cedula"), Integer.parseInt(tab_datos.getValor("ide_solicitud_anticipo")));               
+                 }else{
+                     utilitario.agregarMensaje("No se encuentra en base", tab_migracion.getValor(i, "cedula"));
+                 }
              }
          }
          migrar_detalle();
-        }else{
-               utilitario.agregarMensaje("Descuento No Puede Ser Subido a Rol", "Rol Perteneciente a Periodo Aun No Esta Creado");
-           }
     }
     
     public void migrar_detalle(){
