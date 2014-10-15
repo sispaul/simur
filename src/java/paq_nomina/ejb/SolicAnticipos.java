@@ -1069,13 +1069,12 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
  }
  public void migra_lista(String cedula,String usu){
         String nomina ="insert into srh_solicitud_anticipo (ci_solicitante,solicitante,rmu,id_distributivo,cod_cargo,login_ingre_solicitud,ip_ingre_solicitud,login_aprob_solicitud, \n" +
-                    "ip_aprob_solicitud,aprobado_solicitante,fecha_aprobacion,ide_listado,fecha_listado,anio,periodo,ide_tipo_anticipo) \n" +
+                    "ip_aprob_solicitud,fecha_aprobacion,ide_listado,fecha_listado,anio,periodo,ide_tipo_anticipo) \n" +
                     "SELECT cedula, solicitante,rmu,id_distributivo,cod_cargo, \n" +
                     "'"+usu+"' as login_ingreso, \n" +
                     "'"+utilitario.getIp()+"' as ip_ingreso, \n" +
                     "'"+usu+"' as login_aprobacion, \n" +
                     "'"+utilitario.getIp()+"' as ip_aprobacion, \n" +
-                    "1 as aprobacion, \n" +
                     "'"+utilitario.getFechaActual()+"' as fecha_aprobacion, \n" +
                     "'LIST-2014-00000' as id_listado, \n" +
                     "'"+utilitario.getFechaActual()+"' as fecha_listado, \n" +
@@ -1092,21 +1091,20 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
     }
   
     public void migra_calculo(String cedula,Integer ide){
-        String nomina ="insert into srh_calculo_anticipo(fecha_anticipo,valor_anticipo,numero_cuotas_anticipo,valor_cuota_mensual,val_cuo_adi,ide_periodo_anticipo_inicial,\n" +
-                        "ide_periodo_anticipo_final,ide_solicitud_anticipo,ide_estado_anticipo)\n" +
-                        "SELECT\n" +
-                        "'2014-10-02' as fecha,\n" +
-                        "saldo,\n" +
-                        "cuotas_pedientes,\n" +
-                        "cast((saldo/cuotas_pedientes) as numeric(6,2)) as cuotas,\n" +
-                        "cast(cuota_adicional as numeric) as cuota_adi,\n" +
-                        "10 as periodo,\n" +
-                        "(10+cuotas_pedientes) as fin,\n" +
-                        ""+ide+" as ide,\n" +
-                        "2 as aprobado\n" +
-                        "FROM\n" +
-                        "srh_migrar_anticipo\n" +
-                        "where cedula like '"+cedula+"'";
+        String nomina ="insert into srh_calculo_anticipo(fecha_anticipo,valor_anticipo,numero_cuotas_anticipo,valor_cuota_mensual,val_cuo_adi,ide_periodo_anticipo_inicial, ide_periodo_anticipo_final,ide_solicitud_anticipo,ide_estado_anticipo)\n" +
+                "SELECT '"+utilitario.getFechaActual()+"' as fecha,\n" +
+                "(case when (saldo+cuota_adicional)is null then saldo\n" +
+                "when (saldo+cuota_adicional)is not null then (saldo+cuota_adicional) end) as anticipo,  \n" +
+                "cuotas_pedientes,\n" +
+                "(case when (cuotas_pedientes)-1 <= 0 then cast((saldo/cuotas_pedientes) as numeric(6,2))  \n" +
+                "when (cuotas_pedientes)-1 >0 then cast((saldo/(cuotas_pedientes)-1) as numeric(6,2)) end) \n" +
+                "as cuotas,\n" +
+                "cast(cuota_adicional as numeric) as cuota_adi,  \n" +
+                "10 as periodo, (10+cuotas_pedientes) as fin,  \n" +
+                ""+ide+" as ide,  \n" +
+                "1 as aprobado\n" +
+                "FROM srh_migrar_anticipo\n" +
+                "where cedula like'"+cedula+"'";
         conectar();
         con_postgres.ejecutarSql(nomina);
         con_postgres.desconectar();

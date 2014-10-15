@@ -120,25 +120,15 @@ private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(me
     public void migra_calculo(){
          for (int i = 0; i < tab_migracion.getTotalFilas(); i++) {
             tab_migracion.getValor(i, "cedula");
-             if(tab_migracion.getValor(i, "id_distributivo").equals("1")){
                  iAnticipos.migra_lista(tab_migracion.getValor(i, "cedula"),utilitario.getVariable("NICK"));
                  TablaGenerica tab_datos = iAnticipos.cod_listado(tab_migracion.getValor(i, "cedula"));
                  if (!tab_datos.isEmpty()) {
-                     iAnticipos.migra_calculo1(tab_migracion.getValor(i, "cedula"), Integer.parseInt(tab_datos.getValor("ide_solicitud_anticipo")));                
-                 }else{
-                     utilitario.agregarMensaje("No se encuentra en base", tab_migracion.getValor(i, "cedula"));
-                 }
-             }else{
-                 iAnticipos.migra_lista(tab_migracion.getValor(i, "cedula"),utilitario.getVariable("NICK"));
-                 TablaGenerica tab_datos = iAnticipos.cod_listado(tab_migracion.getValor(i, "cedula"));
-                 if (!tab_datos.isEmpty()) {
-                     iAnticipos.migra_calculo(tab_migracion.getValor(i, "cedula"), Integer.parseInt(tab_datos.getValor("ide_solicitud_anticipo")));               
+                     iAnticipos.migra_calculo(tab_migracion.getValor(i, "cedula"), Integer.parseInt(tab_datos.getValor("ide_solicitud_anticipo")));                
                  }else{
                      utilitario.agregarMensaje("No se encuentra en base", tab_migracion.getValor(i, "cedula"));
                  }
              }
-         }
-         migrar_detalle();
+//         migrar_detalle();
     }
     
     public void migrar_detalle(){
@@ -149,13 +139,14 @@ private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(me
                 if (!tab_datos.isEmpty()) {
                    TablaGenerica tab_datoss = iAnticipos.cod_detalle( Integer.parseInt(tab_datos.getValor("ide_solicitud_anticipo")));
                     if (!tab_datoss.isEmpty()) {
-                            if(tab_migracion.getValor(i, "id_distributivo").equals("1")){//detalle solicitud de empleados
+                            if(tab_migracion.getValor(i, "id_distributivo").equals("1")){
+                                //detalle solicitud de empleados
                                  if((utilitario.getDia(tab_datoss.getValor("fecha_anticipo")))>10){
-                                     if((Integer.parseInt(tab_datoss.getValor("numero_cuotas_anticipo"))+(utilitario.getMes(tab_datoss.getValor("fecha_anticipo"))))>12){
-                                            for (int j = 0; j < (Integer.parseInt(tab_datoss.getValor("numero_cuotas_anticipo"))-1); j++){
+                                     if((Integer.parseInt(tab_datoss.getValor("numero_cuotas_anticipo"))+(utilitario.getMes(tab_datoss.getValor("fecha_anticipo"))))>12){  
+                                         for (int j = 0; j < (Integer.parseInt(tab_datoss.getValor("numero_cuotas_anticipo"))-1); j++){
                                             TablaGenerica tab_dato = iAnticipos.periodos1(Integer.parseInt(tab_datoss.getValor("ide_periodo_anticipo_inicial"))+j);
                                             if (!tab_dato.isEmpty()) {
-                                                   if(tab_dato.getValor("mes").equals("Diciembre")){ 
+                                                   if(tab_dato.getValor("mes").equals("Diciembre")){
                                                        iAnticipos.llenarSolicitud(Integer.parseInt(tab_datos.getValor("ide_solicitud_anticipo")), String.valueOf(j+1), Double.parseDouble(tab_datoss.getValor("val_cuo_adi")), 
                                                        Integer.parseInt(tab_datoss.getValor("ide_periodo_anticipo_inicial"))+j);
 
@@ -185,6 +176,7 @@ private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(me
                                         Integer.parseInt(tab_datoss.getValor("ide_periodo_anticipo_final"))-1);
                                           }
                                  }else {
+                                     System.err.println("holae1");
                                        if((Integer.parseInt(tab_datoss.getValor("numero_cuotas_anticipo"))+(utilitario.getMes(tab_datoss.getValor("fecha_anticipo"))))>12){
                                            for (int j = 0; j < (Integer.parseInt(tab_datoss.getValor("numero_cuotas_anticipo"))-1); j++){
                                             TablaGenerica tab_dato = iAnticipos.periodos1(Integer.parseInt(tab_datoss.getValor("ide_periodo_anticipo_inicial"))+j);
@@ -192,8 +184,9 @@ private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(me
                                                    if(tab_dato.getValor("mes").equals("Diciembre")){ 
                                                        iAnticipos.llenarSolicitud(Integer.parseInt(tab_datos.getValor("ide_solicitud_anticipo")), String.valueOf(j+1), Double.parseDouble(tab_datoss.getValor("val_cuo_adi")), 
                                                        Integer.parseInt(tab_datoss.getValor("ide_periodo_anticipo_inicial"))+j);
-
+                                                       System.err.println("holae");
                                                    }else{
+                                                       System.err.println("holad");
                                                            iAnticipos.llenarSolicitud(Integer.parseInt(tab_datos.getValor("ide_solicitud_anticipo")), String.valueOf(j+1), Double.parseDouble(tab_datoss.getValor("valor_cuota_mensual")), 
                                                            Integer.parseInt(tab_datoss.getValor("ide_periodo_anticipo_inicial"))+j);
                                                        }
@@ -201,6 +194,7 @@ private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(me
                                                    utilitario.agregarMensajeInfo("No se encuentra en roles", "");
                                                }
                                         }
+                                           System.err.println("holac");
                                            Double valorp=0.0,valors=0.0,totall=0.0;
                                            valorp = (Integer.parseInt(tab_datoss.getValor("numero_cuotas_anticipo"))-2)*Double.parseDouble(tab_datoss.getValor("valor_cuota_mensual"));
                                            valors= Double.parseDouble(tab_datoss.getValor("val_cuo_adi"))+valorp ;
@@ -211,7 +205,9 @@ private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(me
                                       for (int j = 0; j < (Integer.parseInt(tab_datoss.getValor("numero_cuotas_anticipo"))-1); j++){
                                             iAnticipos.llenarSolicitud(Integer.parseInt(tab_datos.getValor("ide_solicitud_anticipo")), String.valueOf(1+j), Double.parseDouble(tab_datoss.getValor("valor_cuota_mensual")), 
                                                         Integer.parseInt(tab_datoss.getValor("ide_periodo_anticipo_inicial"))+j);
+                                            System.err.println("holab");
                                      }
+                                      System.err.println("holaa");
                                         Double valor1=0.0,total=0.0;
                                         valor1 = (Integer.parseInt(tab_datoss.getValor("numero_cuotas_anticipo"))-1)*Double.parseDouble(tab_datoss.getValor("valor_cuota_mensual"));
                                         total = Double.parseDouble(tab_datoss.getValor("valor_anticipo"))-valor1 ;
@@ -221,12 +217,16 @@ private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(me
                                  }
                              }else{//detalle para solicitud de trabajadores
                                     for (int j = 0; j < (Integer.parseInt(tab_datoss.getValor("numero_cuotas_anticipo"))-1); j++){
-                                        iAnticipos.llenarSolicitud(Integer.parseInt(tab_datos.getValor("ide_solicitud_anticipo")), String.valueOf(1+j), Double.parseDouble(tab_datoss.getValor("valor_cuota_mensual")), 
+                                        System.err.println("hola11");
+                                        iAnticipos.llenarSolicitud(Integer.parseInt(tab_datos.getValor("ide_solicitud_anticipo")), String.valueOf(1+j), 
+                                                Double.parseDouble(tab_datoss.getValor("valor_cuota_mensual")), 
                                                   Integer.parseInt(tab_datoss.getValor("ide_periodo_anticipo_inicial"))+j);
                                    } 
                                       Double valor1=0.0,total=0.0;
                                       valor1 = (Integer.parseInt(tab_datoss.getValor("numero_cuotas_anticipo"))-1)*Double.parseDouble(tab_datoss.getValor("valor_cuota_mensual"));
                                       total = Double.parseDouble(tab_datoss.getValor("valor_anticipo"))-valor1 ;
+                                      System.err.println(valor1);
+                                      System.err.println(total);
                                       iAnticipos.llenarSolicitud(Integer.parseInt(tab_datos.getValor("ide_solicitud_anticipo")), tab_datoss.getValor("numero_cuotas_anticipo"), total, 
                                                   Integer.parseInt(tab_datoss.getValor("ide_periodo_anticipo_final")));   
                              }
@@ -239,6 +239,7 @@ private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(me
                 }
                                   }
     }
+    
     @Override
     public void insertar() {
     }
