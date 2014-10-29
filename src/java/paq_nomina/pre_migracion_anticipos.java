@@ -24,7 +24,6 @@ import persistencia.Conexion;
  * @author p-sistemas
  */
 public class pre_migracion_anticipos extends Pantalla{
-
     private Tabla tab_migracion = new Tabla();
     private Tabla tab_consulta = new Tabla();
     
@@ -34,10 +33,10 @@ public class pre_migracion_anticipos extends Pantalla{
     private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
     private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
     private Map p_parametros = new HashMap();
-    
-        @EJB
+    @EJB
     private SolicAnticipos iAnticipos = (SolicAnticipos) utilitario.instanciarEJB(SolicAnticipos.class);
-private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(mergeDescuento.class);
+    private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(mergeDescuento.class);
+    
     public pre_migracion_anticipos() {
         
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
