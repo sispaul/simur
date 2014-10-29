@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
 import paq_nomina.ejb.SolicAnticipos;
-import paq_nomina.ejb.mergeDescuento;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
@@ -35,7 +34,6 @@ public class pre_migracion_anticipos extends Pantalla{
     private Map p_parametros = new HashMap();
     @EJB
     private SolicAnticipos iAnticipos = (SolicAnticipos) utilitario.instanciarEJB(SolicAnticipos.class);
-    private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(mergeDescuento.class);
     
     public pre_migracion_anticipos() {
         
