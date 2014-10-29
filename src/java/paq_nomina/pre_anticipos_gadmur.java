@@ -466,6 +466,7 @@ public class pre_anticipos_gadmur extends Pantalla{
                     if (!tab_dato1.isEmpty()) {
                         Double rmu =Double.valueOf(tab_dato1.getValor("liquido_recibir"));
                         if(rmu>1){
+                            System.err.println(tab_dato1.getValor("COD_EMPLEADO"));
                         tab_anticipo.setValor("ide_empleado_solicitante", tab_dato1.getValor("COD_EMPLEADO"));
                         tab_anticipo.setValor("ci_solicitante", tab_dato1.getValor("cedula_pass"));
                         tab_anticipo.setValor("solicitante", tab_dato1.getValor("nombres"));
@@ -487,6 +488,7 @@ public class pre_anticipos_gadmur extends Pantalla{
                             if (!tab_dato2.isEmpty()) {
                                 Double rmut =Double.valueOf(tab_dato2.getValor("liquido_recibir"));
                                 if(rmut>1){
+                                    System.err.println(tab_dato2.getValor("COD_EMPLEADO"));
                                 tab_anticipo.setValor("ide_empleado_solicitante", tab_dato2.getValor("COD_EMPLEADO"));
                                 tab_anticipo.setValor("ci_solicitante", tab_dato2.getValor("cedula_pass"));
                                 tab_anticipo.setValor("solicitante", tab_dato2.getValor("nombres"));
