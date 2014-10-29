@@ -449,9 +449,6 @@ public class pre_aprobacion_anticipos extends Pantalla{
     
     public void save_listado(){
          for (int i = 0; i < tab_listado.getTotalFilas(); i++) {
-              System.err.println(tab_listado.getValor(i, "ide_solicitud_anticipo"));
-              System.err.println(tab_listado.getValor(i, "ide_empleado_solicitante"));
-              System.err.println(tab_listado.getValor(i, "ci_solicitante"));
               tab_listado.getValor(i, "ide_solicitud_anticipo");
               tab_listado.getValor(i, "ide_empleado_solicitante");
               tab_listado.getValor(i, "ci_solicitante");
