@@ -511,22 +511,22 @@ public class pre_aprobacion_anticipos extends Pantalla{
                                             sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                                             sef_formato.dibujar();
                                         } else {//
-                                            utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
+                                            utilitario.agregarMensaje("No se encuentra cargo ", "");
                                         }
                                     } else {//
-                                        utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
+                                        utilitario.agregarMensaje("No se a encuentra cargo registro ", "");
                                     }   
                                 } else {//
-                                    utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
+                                    utilitario.agregarMensaje("Quien aprueba no existe ", "");
                                 }
                             } else {
-                                utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
+                                utilitario.agregarMensaje("Quien ingresa no existe ", "");
                             }
                         } else {
-                            utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
+                            utilitario.agregarMensaje("No se dispone de director ", "");
                         } 
                     } else {
-                        utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
+                        utilitario.agregarMensaje("Login de ingreso No disponible ", "");
                     }
                 } else {
                     utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
