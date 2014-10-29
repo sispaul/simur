@@ -857,7 +857,7 @@ public class AntiSueldos {
                             "GROUP BY ide_anticipo) n1\n" +
                             "inner join (SELECT count(ide_anticipo) as pagando,ide_anticipo FROM srh_detalle_anticipo GROUP BY ide_anticipo) n2\n" +
                             "on n1.ide_anticipo = n2.ide_anticipo and n1.pagado = n2.pagando ) d1\n" +
-                            "WHERE d1.ide_anticipo = srh_anticipo.ide_anticipo";
+                            "WHERE srh_calculo_anticipo.ide_solicitud_anticipo = d1.ide_anticipo";
         conectar();
         con_postgres.ejecutarSql(str_sql4);
         con_postgres.desconectar();
