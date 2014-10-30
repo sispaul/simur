@@ -98,22 +98,47 @@ public class pre_migracion_anticipos extends Pantalla{
     }
     
     public void completa(){
-        for (int i = 0; i < tab_migracion.getTotalFilas(); i++) {
-            tab_migracion.getValor(i, "cedula");
-            TablaGenerica tab_dato = iAnticipos.empleadosCed(tab_migracion.getValor(i,"cedula"));//empleados
-                if (!tab_dato.isEmpty()) {
-                    iAnticipos.actuaMigrar(Double.parseDouble(tab_dato.getValor("ru")), Integer.parseInt(tab_dato.getValor("id_distributivo_roles")), 
-                            Integer.parseInt(tab_dato.getValor("cod_cargo")), tab_migracion.getValor(i,"cedula"), Integer.parseInt(tab_migracion.getValor(i,"ide_migrar")));
-                }else {
-                    TablaGenerica tab_dato1 = iAnticipos.trabajadoresCed(tab_migracion.getValor(i,"cedula"));//trabajadores
-                    if (!tab_dato1.isEmpty()) {
-                        iAnticipos.actuaMigrar(Double.parseDouble(tab_dato1.getValor("su")), Integer.parseInt(tab_dato1.getValor("id_distributivo_roles")), 
-                            Integer.parseInt(tab_dato1.getValor("cod_cargo")), tab_migracion.getValor(i,"cedula"), Integer.parseInt(tab_migracion.getValor(i,"ide_migrar")));
-                    }
-        }
-    }
+//        for (int i = 0; i < tab_migracion.getTotalFilas(); i++) {
+//            tab_migracion.getValor(i, "cedula");
+//            TablaGenerica tab_dato = iAnticipos.empleadosCed(tab_migracion.getValor(i,"cedula"));//empleados
+//                if (!tab_dato.isEmpty()) {
+//                    iAnticipos.actuaMigrar(Double.parseDouble(tab_dato.getValor("ru")), Integer.parseInt(tab_dato.getValor("id_distributivo_roles")), Integer.parseInt(tab_dato.getValor("cod_empleado")), 
+//                            Integer.parseInt(tab_dato.getValor("cod_cargo")),Double.parseDouble(tab_dato.getValor("liquido_recibir")), tab_migracion.getValor(i,"cedula"), Integer.parseInt(tab_migracion.getValor(i,"ide_migrar")));
+//                }else {
+//                    TablaGenerica tab_dato1 = iAnticipos.trabajadoresCed(tab_migracion.getValor(i,"cedula"));//trabajadores
+//                    if (!tab_dato1.isEmpty()) {
+//                        iAnticipos.actuaMigrar(Double.parseDouble(tab_dato1.getValor("su")), Integer.parseInt(tab_dato1.getValor("id_distributivo_roles")), Integer.parseInt(tab_dato.getValor("cod_empleado")),
+//                            Integer.parseInt(tab_dato1.getValor("cod_cargo")), Double.parseDouble(tab_dato.getValor("liquido_recibir")),tab_migracion.getValor(i,"cedula"), Integer.parseInt(tab_migracion.getValor(i,"ide_migrar")));
+//                    }
+//        }
+//    }
+        completar();
         tab_migracion.actualizar();
     }
+    
+    public void completar(){
+        for (int i = 0; i < tab_migracion.getTotalFilas(); i++) {
+            tab_migracion.getValor(i, "cedula");
+            TablaGenerica tab_dato = iAnticipos.empleado(tab_migracion.getValor(i, "cedula"));
+            if (!tab_dato.isEmpty()) {
+                if(tab_dato.getValor("cod_grupo")!= null){
+                    if(tab_dato.getValor("cod_tipo")!= null){
+                        if(tab_dato.getValor("cod_banco")!= null){
+                            if(tab_dato.getValor("cod_cuenta")!= null){
+                                if(tab_dato.getValor("numero_cuenta")!= null){
+                                    iAnticipos.actuaDaMigrar(Integer.parseInt(tab_dato.getValor("cod_grupo")), Integer.parseInt(tab_dato.getValor("cod_tipo")), Integer.parseInt(tab_dato.getValor("cod_banco")), 
+                                            Integer.parseInt(tab_dato.getValor("cod_cuenta")), tab_dato.getValor("numero_cuenta"), tab_migracion.getValor(i,"cedula"), Integer.parseInt(tab_migracion.getValor(i,"ide_migrar")));
+                                }
+                            }
+                        }
+                    }
+                }
+            }else{
+                
+            }
+        }
+    }
+    
     public void migra_calculo(){
          for (int i = 0; i < tab_migracion.getTotalFilas(); i++) {
             tab_migracion.getValor(i, "cedula");
