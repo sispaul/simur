@@ -1889,7 +1889,7 @@ public class pre_anticipo_sueldo extends Pantalla{
     public void guardar() {
         double dato3 =0;
         if(tab_anticipo.getValor("ide_solicitud_anticipo")!=null){
-                utilitario.agregarMensaje("Regiistro No Puede Ser Guardado", "");
+                utilitario.agregarMensaje("Registro No Puede Ser Guardado", "");
         }else {
             dato3 = (Double.parseDouble(tab_anticipo.getValor("rmu"))/2);
             if(tab_anticipo.getValor("ide_tipo_anticipo").equals("1")){
@@ -1903,7 +1903,7 @@ public class pre_anticipo_sueldo extends Pantalla{
                         }
                     }
                 }else{
-                    utilitario.agregarMensaje("Regiistro No Puede Ser Guardado", "Anticipo Ordinario No Cumple Condición");
+                    utilitario.agregarMensaje("Registro No Puede Ser Guardado", "Anticipo Ordinario No Cumple Condición");
                 }
             }else{
                 if (tab_anticipo.guardar()) {
