@@ -538,15 +538,15 @@ public class pre_ingreso_salicitantes extends Pantalla{
 
     @Override
     public void guardar() {
-        if (utilitario.validarRUC(tab_detalle.getValor("CEDULA_RUC_PROPIETARIO"))) {
-                if (tab_solicitud.guardar()) {
-                        utilitario.addUpdate("tab_solicitud");
-                        if (tab_detalle.guardar()) {
-                                guardarPantalla();
-                                utilitario.addUpdate("tab_detalle");
-                            }
-                }
-                }else if (utilitario.validarCedula(tab_detalle.getValor("CEDULA_RUC_PROPIETARIO"))) {
+//        if (utilitario.validarRUC(tab_detalle.getValor("CEDULA_RUC_PROPIETARIO"))) {
+//                if (tab_solicitud.guardar()) {
+//                        utilitario.addUpdate("tab_solicitud");
+//                        if (tab_detalle.guardar()) {
+//                                guardarPantalla();
+//                                utilitario.addUpdate("tab_detalle");
+//                            }
+//                }
+//                }else if (utilitario.validarCedula(tab_detalle.getValor("CEDULA_RUC_PROPIETARIO"))) {
                             if (tab_solicitud.guardar()) {
                                 utilitario.addUpdate("tab_solicitud");
                                 if (tab_detalle.guardar()) {
@@ -554,7 +554,7 @@ public class pre_ingreso_salicitantes extends Pantalla{
                                     utilitario.addUpdate("tab_detalle");
                                 }
                             }
-                        }
+//                        }
     }
 
     @Override
