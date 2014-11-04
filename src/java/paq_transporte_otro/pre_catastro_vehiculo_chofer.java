@@ -89,9 +89,10 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         gri_marca.getChildren().add(bot_marcax);
         set_marca.setId("set_marca");
         set_marca.getTab_seleccion().setConexion(con_sql);
-        set_marca.setSeleccionTabla("SELECT LIS_NOMBRE,LIS_NOMBRE as MARCA FROM MVLISTA where TAB_CODIGO = 'MARCA' and LIS_ESTADO = 1", "LIS_NOMBRE");
+        set_marca.setSeleccionTabla("SELECT LIS_NOMBRE,LIS_NOMBRE as MARCA FROM MVLISTA where TAB_CODIGO = 'MARCA' and LIS_ESTADO = 1 order by MARCA", "LIS_NOMBRE");
         set_marca.getTab_seleccion().getColumna("MARCA").setFiltro(true);
         set_marca.getTab_seleccion().setRows(13);
+        set_marca.setWidth("36%"); //siempre en porcentajes  ancho
         set_marca.setRadio();
         set_marca.getGri_cuerpo().setHeader(gri_marca);
         set_marca.getBot_aceptar().setMetodo("abrirSeleccionTabla1");
@@ -107,16 +108,23 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         bot_tipo.setIcon("ui-icon-disk");
         bot_tipo.setMetodo("insTipo");
         bar_botones.agregarBoton(bot_tipo);
+        Boton bot_tipox = new Boton();
+        bot_tipox.setValue("Eliminar");
+        bot_tipox.setIcon("ui-icon-closethick");
+        bot_tipox.setMetodo("endMarca");
+        bar_botones.agregarBoton(bot_tipox);
         gri_tipo.getChildren().add(bot_tipo);
+        gri_tipo.getChildren().add(bot_tipox);
         set_tipo.setId("set_tipo");
         set_tipo.getTab_seleccion().setConexion(con_sql);
-        set_tipo.setSeleccionTabla("SELECT LIS_NOMBRE,LIS_NOMBRE as TIPO FROM MVLISTA WHERE TAB_CODIGO = 'TIPO' and LIS_ESTADO = 1", "LIS_NOMBRE");
+        set_tipo.setSeleccionTabla("SELECT LIS_NOMBRE,LIS_NOMBRE as TIPO FROM MVLISTA WHERE TAB_CODIGO = 'TIPO' and LIS_ESTADO = 1 order by tipo", "LIS_NOMBRE");
         set_tipo.getTab_seleccion().getColumna("TIPO").setFiltro(true);
         set_tipo.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
         set_tipo.getTab_seleccion().setRows(13);
+        set_tipo.setWidth("36%"); //siempre en porcentajes  ancho
         set_tipo.setRadio();
         set_tipo.getGri_cuerpo().setHeader(gri_tipo);
-        set_tipo.getBot_aceptar().setMetodo("BusTipo");
+        set_tipo.getBot_aceptar().setMetodo("abrirSeleccionTabla2");
         set_tipo.setHeader("TIPO");
         agregarComponente(set_tipo);
         
@@ -129,18 +137,25 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         bot_modelo.setIcon("ui-icon-disk");
         bot_modelo.setMetodo("insModelo");
         bar_botones.agregarBoton(bot_modelo);
+        Boton bot_modelox = new Boton();
+        bot_modelox.setValue("Eliminar");
+        bot_modelox.setIcon("ui-icon-closethick");
+        bot_modelox.setMetodo("endMarca");
+        bar_botones.agregarBoton(bot_modelox);
         gri_modelo.getChildren().add(bot_modelo);
+        gri_modelo.getChildren().add(bot_modelox);
         set_modelo.setId("set_modelo");
-//        set_modelo.getTab_seleccion().setConexion(con_sql);
-        set_modelo.setSeleccionTabla("SELECT IDE_DETALLE_SOLICITUD,IDE_SOLICITUD_PLACA,NOMBRE_PROPIETARIO,NUMERO_RVMO FROM TRANS_DETALLE_SOLICITUD_PLACA WHERE IDE_DETALLE_SOLICITUD=-1", "IDE_DETALLE_SOLICITUD");
+        set_modelo.getTab_seleccion().setConexion(con_sql);
+        set_modelo.setSeleccionTabla("SELECT LIS_NOMBRE,LIS_NOMBRE as MODELO FROM MVLISTA WHERE TAB_CODIGO = 'TIPO' and LIS_ESTADO = 1 order by modelo", "LIS_NOMBRE");
+        set_modelo.getTab_seleccion().getColumna("MODELO").setFiltro(true);
         set_modelo.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
         set_modelo.getTab_seleccion().setRows(13);
+        set_modelo.setWidth("36%"); //siempre en porcentajes  ancho
         set_modelo.setRadio();
         set_modelo.getGri_cuerpo().setHeader(gri_modelo);
         set_modelo.getBot_aceptar().setMetodo("BusModelo");
         set_modelo.setHeader("MODELO");
         agregarComponente(set_modelo);
-        
     }
 
     public void abrirSeleccionTabla() {
@@ -148,10 +163,9 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
     }
        
     public void abrirSeleccionTabla1() {
-        System.err.println("Holas");
-        if (set_marca.getSeleccionados() != null && set_marca.getSeleccionados().isEmpty() == false) {
+        if (set_marca.getValorSeleccionado() != null && set_marca.getValorSeleccionado().isEmpty() == false) {
             set_tipo.dibujar();
-            set_tipo.getTab_seleccion().setSql("SELECT LIS_NOMBRE,LIS_NOMBRE as TIPO FROM MVLISTA WHERE TAB_CODIGO = 'TIPO' and LIS_ESTADO = 1 and DEPENDENCI = '"+set_marca.getSeleccionados()+"'");
+            set_tipo.getTab_seleccion().setSql("SELECT LIS_NOMBRE,LIS_NOMBRE as TIPO FROM MVLISTA WHERE TAB_CODIGO = 'TIPO' and LIS_ESTADO = 1 and DEPENDENCI = '"+set_marca.getValorSeleccionado()+"'");
             set_tipo.getTab_seleccion().ejecutarSql();
         } else {
             utilitario.agregarMensajeInfo("Debe seleccionar almenos un registro", "");
@@ -159,12 +173,39 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
     }
         
     public void abrirSeleccionTabla2() {
-        set_marca.dibujar();
+        if (set_tipo.getValorSeleccionado() != null && set_tipo.getValorSeleccionado().isEmpty() == false) {
+            set_modelo.dibujar();
+            set_modelo.getTab_seleccion().setSql("SELECT LIS_NOMBRE,LIS_NOMBRE as TIPO FROM MVLISTA WHERE TAB_CODIGO = 'TIPO' and LIS_ESTADO = 1 and DEPENDENCI = '"+set_modelo.getValorSeleccionado()+"'");
+            set_modelo.getTab_seleccion().ejecutarSql();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar almenos un registro", "");
+        }
     }
     
     public void insMarca(){
         
     }
+    
+    public void endMarca(){
+        
+    }
+    
+    public void insTipo(){
+        
+    }
+    
+    public void endTipo(){
+        
+    }
+    
+    public void insModelo(){
+        
+    }
+    
+    public void endModelo(){
+        
+    }
+    
     
     @Override
     public void insertar() {
