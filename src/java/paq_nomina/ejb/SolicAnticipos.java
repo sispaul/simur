@@ -1247,8 +1247,8 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
          conectar();
          tab_consulta.setConexion(con_postgres);
          tab_consulta.setSql("select 0 as id, \n" +
-"(case when max(ide_listado) is null then 'LIST-2014-00000' when max(ide_listado)is not null then max(ide_listado) end) AS maximo\n" +
-" from srh_solicitud_anticipo");
+                 "(case when max(ide_listado) is null then 'LIST-2014-00000' when max(ide_listado)is not null then max(ide_listado) end) AS maximo\n" +
+                 " from srh_solicitud_anticipo");
          tab_consulta.ejecutarSql();
          ValorMax = tab_consulta.getValor("maximo");
          return ValorMax;
