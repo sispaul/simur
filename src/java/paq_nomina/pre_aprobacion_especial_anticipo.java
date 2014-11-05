@@ -31,11 +31,10 @@ import persistencia.Conexion;
 
 /**
  *
- * @author KEJA
+ * @author p-sistemas
  */
-public class pre_aprobacion_anticipos extends Pantalla{
-    
-    //PARA ASIGNACION DE MES
+public class pre_aprobacion_especial_anticipo extends Pantalla{
+//PARA ASIGNACION DE MES
     String selec_mes = new String();
     
     private Tabla tab_anticipo = new Tabla();
@@ -57,13 +56,13 @@ public class pre_aprobacion_anticipos extends Pantalla{
     @EJB
     private SolicAnticipos iAnticipos = (SolicAnticipos) utilitario.instanciarEJB(SolicAnticipos.class);
     
-    ///REPORTES
+        ///REPORTES
     private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
     private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
     private Map p_parametros = new HashMap();
     
-    public pre_aprobacion_anticipos() {
-        //Mostrar el usuario 
+    public pre_aprobacion_especial_anticipo() {
+                //Mostrar el usuario 
         tab_consulta.setId("tab_consulta");
         tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
         tab_consulta.setCampoPrimaria("IDE_USUA");
@@ -101,8 +100,8 @@ public class pre_aprobacion_anticipos extends Pantalla{
                 "FROM srh_solicitud_anticipo AS s    \n" +
                 "INNER JOIN srh_calculo_anticipo AS c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo     \n" +
                 "INNER JOIN srh_periodo_anticipo AS p ON p.ide_periodo_anticipo = c.ide_periodo_anticipo_inicial \n" +
-                "WHERE c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO') \n" +
-                "and s.ide_tipo_ingreso_anticipo is null\n" +
+                "WHERE c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO')\n" +
+                "and s.ide_tipo_ingreso_anticipo = 'E' \n" +
                 "order by s.ide_solicitud_anticipo");
         tab_anticipo.setCampoPrimaria("ide_solicitud_anticipo");
         tab_anticipo.setCampoOrden("ide_solicitud_anticipo");
@@ -146,7 +145,7 @@ public class pre_aprobacion_anticipos extends Pantalla{
                 "INNER JOIN srh_calculo_anticipo AS c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo     \n" +
                 "INNER JOIN srh_periodo_anticipo AS p ON p.ide_periodo_anticipo = c.ide_periodo_anticipo_inicial  \n" +
                 "WHERE c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'APROBADO') and s.ide_listado is null\n" +
-                "and s.ide_tipo_ingreso_anticipo is null\n" +
+                "and s.ide_tipo_ingreso_anticipo = 'E' \n" +
                 "order by s.ide_solicitud_anticipo");
         tab_listado.setCampoPrimaria("ide_solicitud_anticipo");
         tab_listado.setCampoOrden("ide_solicitud_anticipo");
@@ -234,10 +233,9 @@ public class pre_aprobacion_anticipos extends Pantalla{
         set_lista.getBot_aceptar().setMetodo("aceptoAprobacion");
         set_lista.setHeader("SELECCIONE LISTADO");
         agregarComponente(set_lista);
-        
-    }   
-    
-    public void buscarColumna() {
+    }
+
+        public void buscarColumna() {
         if (cal_fecha.getValue() != null && cal_fecha.getValue().toString().isEmpty() == false ) {
             set_lista.getTab_seleccion().setSql("SELECT DISTINCT on (ide_listado ) ide_solicitud_anticipo,ide_listado FROM srh_solicitud_anticipo where fecha_listado='"+cal_fecha.getFecha()+"' ORDER BY ide_listado ");
             set_lista.getTab_seleccion().ejecutarSql();
@@ -273,7 +271,6 @@ public class pre_aprobacion_anticipos extends Pantalla{
     @Override
     public void eliminar() {
     }
-
     /* FUNCION QUE PERMITE RECORRER LA TABLA RECUPERANDO EVENTOS ACTUALES     */
     public void seleccionar_tabla1(SelectEvent evt) {
         tab_anticipo.seleccionarFila(evt);
@@ -456,80 +453,8 @@ public class pre_aprobacion_anticipos extends Pantalla{
          utilitario.agregarMensaje("Listado Guardado", "");
          utilitario.addUpdate("txt_num_listado");
     }
-    
-    /*CREACION DE REPORTES */
-    //llamada a reporte
-    @Override
-    public void abrirListaReportes() {
-        rep_reporte.dibujar();
-    }
-    
-    @Override
-    public void aceptarReporte() {
-        rep_reporte.cerrar();
-        cal_fecha.setFechaActual();
-        switch (rep_reporte.getNombre()) {
-           case "LISTA DE PAGO":
-                set_lista.dibujar();
-                set_lista.getTab_seleccion().limpiar();
-           break;
-        }
-    }
-    
-    public void aceptoAprobacion() {
-        rep_reporte.cerrar();
-        switch (rep_reporte.getNombre()) {
-            case "LISTA DE PAGO":
-                TablaGenerica tab_datoo = iAnticipos.ide_listado(Integer.parseInt(set_lista.getValorSeleccionado()));
-                if (!tab_datoo.isEmpty()) {
-                    TablaGenerica tab_dato1 = iAnticipos.login_solicitud(tab_datoo.getValor("ide_listado"));
-                    if (!tab_dato1.isEmpty()) {
-                        TablaGenerica tab_dato2 = iAnticipos.director();
-                        if (!tab_dato2.isEmpty()) {
-                            TablaGenerica tab_dato3 = iAnticipos.getUsuario(tab_dato1.getValor("login_ingre_solicitud"));
-                            if (!tab_dato3.isEmpty()) {
-                                TablaGenerica tab_dato4 = iAnticipos.getUsuario(tab_dato1.getValor("login_aprob_solicitud"));
-                                if (!tab_dato4.isEmpty()) {
-                                    TablaGenerica tab_dato5 = iAnticipos.cargoSolic(tab_dato3.getValor("NOM_USUA"));
-                                    if (!tab_dato5.isEmpty()) {
-                                        TablaGenerica tab_dato6 = iAnticipos.cargoSolic(tab_dato4.getValor("NOM_USUA"));
-                                        if (!tab_dato6.isEmpty()) {
-                                            p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
-                                            p_parametros.put("listado", tab_datoo.getValor("ide_listado")+"");
-                                            p_parametros.put("quien_elabora", tab_dato3.getValor("NOM_USUA")+"");
-                                            p_parametros.put("cargoi", tab_dato5.getValor("nombre_cargo")+"");
-                                            p_parametros.put("quien_aprueba", tab_dato4.getValor("NOM_USUA")+"");
-                                            p_parametros.put("cargoa", tab_dato6.getValor("nombre_cargo")+"");
-                                            p_parametros.put("director", tab_dato2.getValor("nombres")+"");
-                                            p_parametros.put("cargo", tab_dato2.getValor("nombre_cargo")+"");
-                                            rep_reporte.cerrar();
-                                            sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                                            sef_formato.dibujar();
-                                        } else {//
-                                            utilitario.agregarMensaje("No se encuentra cargo ", "");
-                                        }
-                                    } else {//
-                                        utilitario.agregarMensaje("No se a encuentra cargo registro ", "");
-                                    }   
-                                } else {//
-                                    utilitario.agregarMensaje("Quien aprueba no existe ", "");
-                                }
-                            } else {
-                                utilitario.agregarMensaje("Quien ingresa no existe ", "");
-                            }
-                        } else {
-                            utilitario.agregarMensaje("No se dispone de director ", "");
-                        } 
-                    } else {
-                        utilitario.agregarMensaje("Login de ingreso No disponible ", "");
-                    }
-                } else {
-                    utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
-                }
-                break;
-        }
-    }
-        //BUSQUEDA DE MES PARA LA AISGNACION DEL PERIODO
+
+            //BUSQUEDA DE MES PARA LA AISGNACION DEL PERIODO
     public String meses(Integer numero){
         switch (numero){
             case 12:
@@ -580,44 +505,12 @@ public class pre_aprobacion_anticipos extends Pantalla{
         this.tab_anticipo = tab_anticipo;
     }
 
-    public Conexion getCon_postgres() {
-        return con_postgres;
-    }
-
-    public void setCon_postgres(Conexion con_postgres) {
-        this.con_postgres = con_postgres;
-    }
-
     public Tabla getTab_listado() {
         return tab_listado;
     }
 
     public void setTab_listado(Tabla tab_listado) {
         this.tab_listado = tab_listado;
-    }
-
-    public Reporte getRep_reporte() {
-        return rep_reporte;
-    }
-
-    public void setRep_reporte(Reporte rep_reporte) {
-        this.rep_reporte = rep_reporte;
-    }
-
-    public SeleccionFormatoReporte getSef_formato() {
-        return sef_formato;
-    }
-
-    public void setSef_formato(SeleccionFormatoReporte sef_formato) {
-        this.sef_formato = sef_formato;
-    }
-
-    public Map getP_parametros() {
-        return p_parametros;
-    }
-
-    public void setP_parametros(Map p_parametros) {
-        this.p_parametros = p_parametros;
     }
 
     public SeleccionTabla getSet_lista() {
