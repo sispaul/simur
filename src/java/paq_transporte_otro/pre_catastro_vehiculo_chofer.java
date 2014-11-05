@@ -5,14 +5,15 @@
 package paq_transporte_otro;
 
 import framework.componentes.Boton;
-import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
+import javax.ejb.EJB;
 import paq_sistema.aplicacion.Pantalla;
+import paq_transporte_otros.ejb.AbastecimientoCombustible;
 import persistencia.Conexion;
 
 /**
@@ -23,18 +24,31 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
 
     private Conexion con_sql = new Conexion();
     private Tabla tab_tabla = new Tabla();
+    private Tabla tab_consulta = new Tabla();
     
     //DECLARACION OBJETOS PARA PARAMETROS
     private SeleccionTabla set_marca = new SeleccionTabla();
     private SeleccionTabla set_tipo = new SeleccionTabla();
     private SeleccionTabla set_modelo = new SeleccionTabla();
+    private SeleccionTabla set_version = new SeleccionTabla();
     
     //DECLARACION OBJETO TEXTO
     private Texto tmarca = new Texto();
     private Texto ttipo = new Texto();
     private Texto tmodelo = new Texto();
+    private Texto tversion = new Texto();
+    
+    @EJB
+    private AbastecimientoCombustible aCombustible = (AbastecimientoCombustible) utilitario.instanciarEJB(AbastecimientoCombustible.class);
     
     public pre_catastro_vehiculo_chofer() {
+        
+        //Mostrar el usuario 
+        tab_consulta.setId("tab_consulta");
+        tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
+        tab_consulta.setCampoPrimaria("IDE_USUA");
+        tab_consulta.setLectura(true);
+        tab_consulta.dibujar();
         
         Boton bot_registro = new Boton();
         bot_registro.setValue("INSERTAR MARCA");
@@ -91,7 +105,7 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         set_marca.getTab_seleccion().setConexion(con_sql);
         set_marca.setSeleccionTabla("SELECT LIS_NOMBRE,LIS_NOMBRE as MARCA FROM MVLISTA where TAB_CODIGO = 'MARCA' and LIS_ESTADO = 1 order by MARCA", "LIS_NOMBRE");
         set_marca.getTab_seleccion().getColumna("MARCA").setFiltro(true);
-        set_marca.getTab_seleccion().setRows(13);
+        set_marca.getTab_seleccion().setRows(11);
         set_marca.setWidth("36%"); //siempre en porcentajes  ancho
         set_marca.setRadio();
         set_marca.getGri_cuerpo().setHeader(gri_marca);
@@ -120,7 +134,7 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         set_tipo.setSeleccionTabla("SELECT LIS_NOMBRE,LIS_NOMBRE as TIPO FROM MVLISTA WHERE TAB_CODIGO = 'TIPO' and LIS_ESTADO = 1 order by tipo", "LIS_NOMBRE");
         set_tipo.getTab_seleccion().getColumna("TIPO").setFiltro(true);
         set_tipo.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
-        set_tipo.getTab_seleccion().setRows(13);
+        set_tipo.getTab_seleccion().setRows(11);
         set_tipo.setWidth("36%"); //siempre en porcentajes  ancho
         set_tipo.setRadio();
         set_tipo.getGri_cuerpo().setHeader(gri_tipo);
@@ -146,16 +160,45 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         gri_modelo.getChildren().add(bot_modelox);
         set_modelo.setId("set_modelo");
         set_modelo.getTab_seleccion().setConexion(con_sql);
-        set_modelo.setSeleccionTabla("SELECT LIS_NOMBRE,LIS_NOMBRE as MODELO FROM MVLISTA WHERE TAB_CODIGO = 'TIPO' and LIS_ESTADO = 1 order by modelo", "LIS_NOMBRE");
+        set_modelo.setSeleccionTabla("SELECT LIS_NOMBRE,LIS_NOMBRE as MODELO FROM MVLISTA WHERE TAB_CODIGO = 'MODELO' and LIS_ESTADO = 1 order by modelo", "LIS_NOMBRE");
         set_modelo.getTab_seleccion().getColumna("MODELO").setFiltro(true);
         set_modelo.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
-        set_modelo.getTab_seleccion().setRows(13);
+        set_modelo.getTab_seleccion().setRows(11);
         set_modelo.setWidth("36%"); //siempre en porcentajes  ancho
         set_modelo.setRadio();
         set_modelo.getGri_cuerpo().setHeader(gri_modelo);
-        set_modelo.getBot_aceptar().setMetodo("BusModelo");
+        set_modelo.getBot_aceptar().setMetodo("abrirSeleccionTabla3");
         set_modelo.setHeader("MODELO");
         agregarComponente(set_modelo);
+        
+        Grid gri_version = new Grid();
+        gri_version.setColumns(6);
+        gri_version.getChildren().add(new Etiqueta("Ingreso Versión"));
+        gri_version.getChildren().add(tversion);
+        Boton bot_version = new Boton();
+        bot_version.setValue("Guardar");
+        bot_version.setIcon("ui-icon-disk");
+        bot_version.setMetodo("insVersion");
+        bar_botones.agregarBoton(bot_version);
+        Boton bot_versionx = new Boton();
+        bot_versionx.setValue("Eliminar");
+        bot_versionx.setIcon("ui-icon-closethick");
+        bot_versionx.setMetodo("endVersion");
+        bar_botones.agregarBoton(bot_versionx);
+        gri_version.getChildren().add(bot_version);
+        gri_version.getChildren().add(bot_versionx);
+        set_version.setId("set_version");
+        set_version.getTab_seleccion().setConexion(con_sql);
+        set_version.setSeleccionTabla("SELECT LIS_NOMBRE,LIS_NOMBRE as VERSION FROM MVLISTA WHERE TAB_CODIGO = 'VERSI' and LIS_ESTADO = 1 order by version", "LIS_NOMBRE");
+        set_version.getTab_seleccion().getColumna("VERSION").setFiltro(true);
+        set_version.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
+        set_version.getTab_seleccion().setRows(11);
+        set_version.setWidth("36%"); //siempre en porcentajes  ancho
+        set_version.setRadio();
+        set_version.getGri_cuerpo().setHeader(gri_modelo);
+//        set_version.getBot_aceptar().setMetodo("BusVersion");
+        set_version.setHeader("VERSIÓN");
+        agregarComponente(set_version);
     }
 
     public void abrirSeleccionTabla() {
@@ -175,8 +218,18 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
     public void abrirSeleccionTabla2() {
         if (set_tipo.getValorSeleccionado() != null && set_tipo.getValorSeleccionado().isEmpty() == false) {
             set_modelo.dibujar();
-            set_modelo.getTab_seleccion().setSql("SELECT LIS_NOMBRE,LIS_NOMBRE as TIPO FROM MVLISTA WHERE TAB_CODIGO = 'TIPO' and LIS_ESTADO = 1 and DEPENDENCI = '"+set_modelo.getValorSeleccionado()+"'");
+            set_modelo.getTab_seleccion().setSql("SELECT LIS_NOMBRE,LIS_NOMBRE as MODELO FROM MVLISTA WHERE TAB_CODIGO = 'MODELO' and LIS_ESTADO = 1 and DEPENDENCI = '"+set_tipo.getValorSeleccionado()+"'");
             set_modelo.getTab_seleccion().ejecutarSql();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar almenos un registro", "");
+        }
+    }
+    
+    public void abrirSeleccionTabla3(){
+        if (set_modelo.getValorSeleccionado() != null && set_modelo.getValorSeleccionado().isEmpty() == false) {
+            set_version.dibujar();
+            set_version.getTab_seleccion().setSql("SELECT LIS_NOMBRE,LIS_NOMBRE as VERSION FROM MVLISTA WHERE TAB_CODIGO = 'VERSI' and LIS_ESTADO = 1 and DEPENDENCI = '"+set_modelo.getValorSeleccionado()+"'");
+            set_version.getTab_seleccion().ejecutarSql();
         } else {
             utilitario.agregarMensajeInfo("Debe seleccionar almenos un registro", "");
         }
@@ -206,6 +259,13 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         
     }
     
+    public void insVersion(){
+        
+    }
+    
+    public void endVersion(){
+        
+    }
     
     @Override
     public void insertar() {
