@@ -774,7 +774,6 @@ public class pre_anticipo_sueldo extends Pantalla{
                     servidor();
                 }
             }else{
-                System.err.println("Holas");
                 tab_parametros.getColumna("porcentaje_descuento_diciembre").setLectura(true);
                 tab_parametros.setValor("porcentaje_descuento_diciembre", "NULL");
                 tab_parametros.setValor("valor_cuota_mensual", "NULL");
