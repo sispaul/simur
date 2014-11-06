@@ -238,7 +238,7 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         
         tab_articulo.setId("tab_articulo");
         tab_articulo.setConexion(con_sql);
-        tab_articulo.setTabla("MVDETASIGNACION", "MAV_SECUENCIAL", 2);
+        tab_articulo.setTabla("MVDETALLEVEHICULO", "MAV_SECUENCIAL", 2);
         tab_articulo.getGrid().setColumns(4);
         tab_articulo.dibujar();
         PanelTabla tpa = new PanelTabla();
