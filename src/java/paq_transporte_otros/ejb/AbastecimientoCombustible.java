@@ -157,7 +157,30 @@ public class AbastecimientoCombustible {
         conexion.desconectar();
         conexion = null;
     }
-        
+       
+    public String ParametrosMax(String dependencia) {
+         conectar();
+         String ValorMax;
+         TablaGenerica tab_consulta = new TablaGenerica();
+         conectar();
+         tab_consulta.setConexion(conexion);
+         tab_consulta.setSql("select 0 as id,\n" +
+                 "(case when count(lis_id) is null then '0' when count(lis_id)is not null then count(lis_id) end) AS maximo\n" +
+                 "from mvlista where tab_codigo = '"+dependencia+"'");
+         tab_consulta.ejecutarSql();
+         ValorMax = tab_consulta.getValor("maximo");
+         return ValorMax;
+  }
+    
+    public void getParametros(String id,String nombre,String codigo,String dependencia,String login,String fecha){
+        String parametro ="insert into MVLISTA (LIS_ID,LIS_NOMBRE,LIS_ESTADO,TAB_CODIGO,DEPENDENCI,LIS_LOGININGRESO,LIS_FECHAINGRESO)\n" +
+                "values ('"+id+"','"+nombre+"',1,'"+codigo+"','"+dependencia+"','"+login+"','"+fecha+"')";
+        conectar();
+        conexion.ejecutarSql(parametro);
+        conexion.desconectar();
+        conexion = null;
+    }
+    
 public TablaGenerica getMes(Integer periodo) {
         conect();
         TablaGenerica tab_persona = new TablaGenerica();
@@ -167,8 +190,22 @@ public TablaGenerica getMes(Integer periodo) {
        con_postgres.desconectar();
        con_postgres = null;
         return tab_persona;
-    }    
-    
+    }   
+
+public TablaGenerica getChofer(String cedula) {
+        conect();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT cod_empleado, cedula_pass,nombres\n" +
+                "FROM srh_empleado\n" +
+                "where cod_empleado ='"+cedula+"' and estado = 1\n" +
+                "order by nombres");
+        tab_persona.ejecutarSql();
+       con_postgres.desconectar();
+       con_postgres = null;
+        return tab_persona;
+    }
+
     private void conectar() {
         if (conexion == null) {
             conexion = new Conexion();
@@ -189,5 +226,5 @@ public TablaGenerica getMes(Integer periodo) {
             con_sql.setUnidad_persistencia(utilitario.getPropiedad("recursojdbc"));
             con_sql.NOMBRE_MARCA_BASE = "sqlserver";
         }
-    }  
+    } 
 }
