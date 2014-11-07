@@ -58,6 +58,11 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
     
     //Contiene todos los elementos de la plantilla
     private Panel pan_opcion = new Panel();
+    private Panel pan_opcion1 = new Panel();
+    
+    private Texto txt_item = new Texto();
+    private Texto txt_cantidad = new Texto();
+    private Texto txt_estado = new Texto();
     
     //buscar solicitud
     private AutoCompletar aut_busca = new AutoCompletar();
@@ -252,15 +257,10 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         //Dibuja la Pantalla
     public void aceptarBusqueda() {
             if (set_ingresos.getValorSeleccionado() != null) {
-                System.err.println("HI");
                 aut_busca.setValor(set_ingresos.getValorSeleccionado());
-                System.err.println("HI1");
                 set_ingresos.cerrar();
-                System.err.println("HI2");
                 dibujaIngreso();
-                System.err.println("HI3");
                 utilitario.addUpdate("aut_busca,pan_opcion");
-                System.err.println("HI4");
             } else {
                 utilitario.agregarMensajeInfo("Debe seleccionar una registro", "");
             }
@@ -315,18 +315,45 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         PanelTabla tpg = new PanelTabla();
         tpg.setPanelTabla(tab_tabla);
         
+        Grid gri_medio = new Grid();
+        gri_medio.setColumns(6);
+        Boton bot_delete1 = new Boton();
+        bot_delete1.setValue("ELIMINAR");
+        bot_delete1.setIcon("ui-icon-closethick");
+        bot_delete1.setMetodo("eliminar");
+
         tab_articulo.setId("tab_articulo");
         tab_articulo.setConexion(con_sql);
         tab_articulo.setSql("SELECT MVE_SECUENCIAL,MDV_DETALLE,MDV_CANTIDAD,MDV_ESTADO FROM MVDETALLEVEHICULO where MVE_SECUENCIAL ="+tab_tabla.getValor("MVE_SECUENCIAL"));
         tab_articulo.getColumna("MVE_SECUENCIAL").setVisible(false);
         tab_articulo.getGrid().setColumns(4);
+        tab_articulo.setLectura(true);
         tab_articulo.dibujar();
         PanelTabla tpa = new PanelTabla();
         tpa.setPanelTabla(tab_articulo);
-        agregarComponente(tpa);
+        Grid gri_modelo = new Grid();
+        gri_modelo.setColumns(10);
+        gri_modelo.getChildren().add(new Etiqueta("Accesorio :"));
+        gri_modelo.getChildren().add(txt_item);
+        gri_modelo.getChildren().add(new Etiqueta("Cantidad :"));
+        gri_modelo.getChildren().add(txt_cantidad);
+        gri_modelo.getChildren().add(new Etiqueta("Estado :"));
+        gri_modelo.getChildren().add(txt_estado);
+        Boton bot_delete = new Boton();
+        bot_delete.setValue("ELIMINAR");
+        bot_delete.setIcon("ui-icon-closethick");
+        bot_delete.setMetodo("eliminar");
+               
+        Boton bot_save = new Boton();
+        bot_save.setValue("GUARDAR");
+        bot_save.setIcon("ui-icon-disk");
+        bot_save.setMetodo("ing");
+        gri_modelo.getChildren().add(bot_save);
+        gri_modelo.getChildren().add(bot_delete);
+        pan_opcion1.getChildren().add(gri_modelo);
         
         Division div = new Division();
-        div.dividir2(tpg, tpa, "50%", "h");
+        div.dividir3(tpg, pan_opcion1,tpa, "50%", "42%","h");
         Grupo gru = new Grupo();
         gru.getChildren().add(div);
         pan_opcion.getChildren().add(gru);
@@ -505,12 +532,6 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
     public void insertar() {
         if (tab_tabla.isFocus()) {
             tab_tabla.insertar();
-        }else if (tab_articulo.isFocus()){
-            if(tab_tabla.getValor("MVE_SECUENCIAL")!=null && tab_tabla.getValor("MVE_SECUENCIAL").isEmpty()==false){
-                tab_articulo.insertar();
-            }else{
-                utilitario.agregarMensajeInfo("Vehiculo no Ingresado", "");
-            }
         }
     }
 
@@ -520,17 +541,18 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
             con_sql.guardarPantalla(); 
         }
     }
-
+    
+    public void seleccionar_tabla(SelectEvent evt) {
+        tab_articulo.seleccionarFila(evt);
+    }
     public void ing(){
-        for (int i = 0; i < tab_articulo.getTotalFilas(); i++) {
-                   System.err.println(tab_articulo.getValor(i,"MDV_DETALLE"));
-                   System.err.println(tab_articulo.getValor(i,"MDV_CANTIDAD"));
-                   System.err.println(tab_articulo.getValor(i,"MDV_ESTADO"));
-               }
+        aCombustible.getMVDetalle(tab_tabla.getValor("MVE_SECUENCIAL"), txt_item.getValue()+"", Double.valueOf(txt_cantidad.getValue()+""), txt_estado.getValue()+"");
+        tab_articulo.actualizar();
     }
     
     @Override
     public void eliminar() {
+        utilitario.getTablaisFocus().eliminar();
     }  
 
     public Tabla getTab_tabla() {
