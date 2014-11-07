@@ -181,6 +181,15 @@ public class AbastecimientoCombustible {
         conexion = null;
     }
     
+    public void getMVDetalle(String codigo,String detalle,Double cantidad,String estado){
+        String parametro ="insert into MVDETALLEVEHICULO (MVE_SECUENCIAL,MDV_DETALLE,MDV_CANTIDAD,MDV_ESTADO)\n" +
+                "values('"+codigo+"','"+detalle+"',"+cantidad+",'"+estado+"')";
+        conectar();
+        conexion.ejecutarSql(parametro);
+        conexion.desconectar();
+        conexion = null;
+    }
+    
 public TablaGenerica getMes(Integer periodo) {
         conect();
         TablaGenerica tab_persona = new TablaGenerica();
@@ -196,7 +205,7 @@ public TablaGenerica getChofer(String cedula) {
         conect();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(con_postgres);
-        tab_persona.setSql("SELECT cod_empleado, cedula_pass,nombres\n" +
+        tab_persona.setSql("SELECT cod_empleado, cedula_pass,nombres, 1 as activo\n" +
                 "FROM srh_empleado\n" +
                 "where cod_empleado ='"+cedula+"' and estado = 1\n" +
                 "order by nombres");
