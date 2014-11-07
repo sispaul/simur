@@ -363,6 +363,7 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
     private void limpiarPanel() {
         //borra el contenido de la división central central
         pan_opcion.getChildren().clear();
+        pan_opcion1.getChildren().clear();
     }
 
     public void limpiar() {
@@ -533,6 +534,7 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         if (tab_tabla.isFocus()) {
             tab_tabla.insertar();
         }
+        tab_articulo.actualizar();
     }
 
     @Override
