@@ -7,7 +7,6 @@ package paq_transporte_otro;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
 import framework.componentes.Division;
-import framework.componentes.Foco;
 import framework.componentes.Imagen;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
@@ -18,11 +17,11 @@ import persistencia.Conexion;
 
 /**
  *
- * @author KEJA
+ * @author p-sistemas
  */
-public class pre_abastecimiento_combustible extends Pantalla{
+public class pre_abastecimiento_combustible_maquinaria extends Pantalla{
 
-    //Conexion a base
+        //Conexion a base
     private Conexion con_postgres= new Conexion();
     private Conexion con_sql = new Conexion();
     
@@ -32,10 +31,12 @@ public class pre_abastecimiento_combustible extends Pantalla{
     private Tabla tab_consulta = new Tabla();
     private Tabla tab_periodo = new Tabla();
     
-    @EJB
+        @EJB
     private AbastecimientoCombustible aCombustible = (AbastecimientoCombustible) utilitario.instanciarEJB(AbastecimientoCombustible.class);
-    public pre_abastecimiento_combustible() {
         
+    public pre_abastecimiento_combustible_maquinaria() {
+        
+                
         Boton bot_limpiar = new Boton();
         bot_limpiar.setIcon("ui-icon-refresh");
         bot_limpiar.setMetodo("actuRegis");
@@ -131,7 +132,7 @@ public class pre_abastecimiento_combustible extends Pantalla{
         agregarComponente(div);
     }
     
-    public void busPlaca(){
+        public void busPlaca(){
         TablaGenerica tab_dato =aCombustible.getVehiculo(tab_tabla.getValor("placa_vehiculo"));
         if (!tab_dato.isEmpty()) {
             TablaGenerica tab_datoc = aCombustible.getConductores(tab_dato.getValor("mve_conductor"));
@@ -212,7 +213,7 @@ public class pre_abastecimiento_combustible extends Pantalla{
             utilitario.addUpdate("tab_tabla");
         }
     }
-        
+
     @Override
     public void insertar() {
         if (tab_tabla.isFocus()) {
@@ -224,16 +225,16 @@ public class pre_abastecimiento_combustible extends Pantalla{
     @Override
     public void guardar() {
         String reg = new String();
-            tab_tabla.guardar();
-            con_sql.guardarPantalla();
-            reg = tab_tabla.getValorSeleccionado();
-            tab_tabla1.actualizar();
-            tab_tabla1.setFilaActual(reg);
-            tab_tabla1.calcularPaginaActual();
-            actuKilometrajes();
+        tab_tabla.guardar();
+        con_sql.guardarPantalla();
+        reg = tab_tabla.getValorSeleccionado();
+        tab_tabla1.actualizar();
+        tab_tabla1.setFilaActual(reg);
+        tab_tabla1.calcularPaginaActual();
+        actuKilometrajes();
     }
 
-   public void actuKilometrajes(){
+    public void actuKilometrajes(){
         if(tab_tabla.getValor("ide_abastecimiento_combustible")!=null && tab_tabla.getValor("ide_abastecimiento_combustible").toString().isEmpty() == false){
             aCombustible.ActKilometraje(tab_tabla.getValor("placa_vehiculo"), Double.parseDouble(tab_tabla.getValor("kilometraje")));
         }
@@ -247,18 +248,13 @@ public class pre_abastecimiento_combustible extends Pantalla{
                utilitario.addUpdate("tab_tabla");
                actuKilometrajes();
    }
-   
+    
     @Override
     public void eliminar() {
         tab_tabla.eliminar();
     }
     
-    @Override
-    public void actualizar() {
-        
-    }
-    
-    public Tabla getTab_tabla() {
+        public Tabla getTab_tabla() {
         return tab_tabla;
     }
 
@@ -273,5 +269,4 @@ public class pre_abastecimiento_combustible extends Pantalla{
     public void setTab_tabla1(Tabla tab_tabla1) {
         this.tab_tabla1 = tab_tabla1;
     }
-    
 }

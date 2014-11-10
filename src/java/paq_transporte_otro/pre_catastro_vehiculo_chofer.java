@@ -76,12 +76,12 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         pan_opcion.setHeader("INGRESO DE VEHICULOS");
         agregarComponente(pan_opcion);
         
-        Boton bot_busca = new Boton();
-        bot_busca.setValue("Busqueda Avanzada");
-        bot_busca.setExcluirLectura(true);
-        bot_busca.setIcon("ui-icon-search");
-        bot_busca.setMetodo("abrirVerTabla");
-        bar_botones.agregarBoton(bot_busca);
+//        Boton bot_busca = new Boton();
+//        bot_busca.setValue("Busqueda Avanzada");
+//        bot_busca.setExcluirLectura(true);
+//        bot_busca.setIcon("ui-icon-search");
+//        bot_busca.setMetodo("abrirVerTabla");
+//        bar_botones.agregarBoton(bot_busca);
         
         //Mostrar el usuario 
         tab_consulta.setId("tab_consulta");
@@ -297,6 +297,17 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         list.add(fil1);;
         list.add(fil2);;
         tab_tabla.getColumna("MVE_TIPOMEDICION").setRadio(list, " ");
+        List lista = new ArrayList();
+        Object fila1[] = {
+            "PLACA", "PLACA"
+        };
+        Object fila2[] = {
+            "CODIGO", "CODIGO"
+        };
+        lista.add(fila1);;
+        lista.add(fila2);;
+        tab_tabla.getColumna("MVE_TIPOCODIGO").setCombo(lista);
+        tab_tabla.getColumna("MVE_PLACA").setLectura(true);
         tab_tabla.getColumna("MVE_HOROMETRO").setLectura(true);
         tab_tabla.getColumna("MVE_KILOMETRAJE").setLectura(true);
         tab_tabla.getColumna("MVE_ASIGNADO").setVisible(false);
@@ -479,6 +490,11 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
             tab_tabla.getColumna("MVE_HOROMETRO").setLectura(true);
             utilitario.addUpdate("tab_tabla");
         }
+    }
+    
+    public void activarTipo(){
+        tab_tabla.getColumna("MVE_PLACA").setLectura(false);
+        utilitario.addUpdate("tab_tabla");
     }
     
     public void aceptoDialogoc() {
