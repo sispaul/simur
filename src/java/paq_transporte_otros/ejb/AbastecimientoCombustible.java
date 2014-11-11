@@ -67,6 +67,7 @@ public class AbastecimientoCombustible {
                 "MVE_PLACA,\n" +
                 "MVE_KILOMETRAJE,\n" +
                 "MVE_TIPO_COMBUSTIBLE,\n" +
+                "MVE_HOROMETRO,\n" +
                 "MVE_CAPACIDAD_TANQUE_COMBUSTIBLE\n" +
                 "FROM MVVEHICULO\n" +
                 "WHERE MVE_PLACA = '"+placa+"'");
@@ -111,6 +112,18 @@ public class AbastecimientoCombustible {
         return tab_persona;
     }
     
+        public TablaGenerica getDatos(Integer tipo) {
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT MVE_SECUENCIAL,MVE_MOTOR,MVE_CHASIS,MVE_MARCA,MVE_PLACA,MVE_TIPO,MVE_MODELO,MVE_COLOR,MVE_ANO,MVE_CONDUCTOR\n" +
+                "FROM MVVEHICULO where MVE_SECUENCIAL ="+tipo);
+        tab_persona.ejecutarSql();
+       conexion.desconectar();
+       conexion = null;
+        return tab_persona;
+    }
+        
     public String listaMax(String placa) {
          conectar();
          String ValorMax;
@@ -136,6 +149,15 @@ public class AbastecimientoCombustible {
         conexion = null;
     }
     
+    public void ActHoras(String conduc,Double hora){
+        String str_sql4 = "update MVVEHICULO\n" +
+                "set MVE_HOROMETRO = "+hora+"\n" +
+                "where MVE_PLACA = '"+conduc+"'";
+        conectar();
+        conexion.ejecutarSql(str_sql4);
+        conexion.desconectar();
+        conexion = null;
+    }
     public void ActRegistro(Integer ide,String vale,Integer tipo,String fecha,String hora,Integer kilo,Double galon,Double total,String placa,String desc,String cond,
             String ci,String usu){
         String str_sql4 = "UPDATE MVABASTECIMIENTO_COMBUSTIBLE\n" +
