@@ -82,12 +82,13 @@ public class pre_abastecimiento_combustible_vehiculos extends Pantalla{
         tab_tabla.getColumna("descripcion_vehiculo").setLectura(true);
         tab_tabla.getColumna("numero_abastecimiento").setLectura(true);
         tab_tabla.getColumna("total").setLectura(true);
-        tab_tabla.getColumna("titulo").setEtiqueta();
-//        tab_tabla.getColumna("ide_abastecimiento_combustible").setVisible(false);
         tab_tabla.getColumna("ci_conductor").setVisible(false);
         tab_tabla.getColumna("fecha_digitacion").setVisible(false);
+        tab_tabla.getColumna("titulo").setEtiqueta();
         tab_tabla.getColumna("hora_digitacion").setVisible(false);
         tab_tabla.getColumna("usu_digitacion").setVisible(false);
+        tab_tabla.getColumna("tipo_medicion").setVisible(false);
+        tab_tabla.getColumna("horas").setVisible(false);
         tab_tabla.getColumna("estado").setValorDefecto("1");
         tab_tabla.getColumna("estado").setVisible(false);
         tab_tabla.getColumna("fecha_actualizacion").setVisible(false);
@@ -108,7 +109,7 @@ public class pre_abastecimiento_combustible_vehiculos extends Pantalla{
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setConexion(con_sql);
         tab_tabla1.setSql("SELECT top  10 ide_abastecimiento_combustible,FECHA_ABASTECIMIENTO,NUMERO_VALE_ABASTECIMIENTO,PLACA_VEHICULO,DESCRIPCION_VEHICULO,\n" +
-                "CONDUCTOR,KILOMETRAJE,GALONES,TOTAL FROM MVABASTECIMIENTO_COMBUSTIBLE where PERIODO = '"+tab_periodo.getValor("ide_periodo")+"' order by ide_abastecimiento_combustible desc");
+                "CONDUCTOR,KILOMETRAJE,GALONES,TOTAL FROM MVABASTECIMIENTO_COMBUSTIBLE where PERIODO = '"+tab_periodo.getValor("ide_periodo")+"' and HORAS is null order by ide_abastecimiento_combustible desc");
         tab_tabla1.getColumna("ide_abastecimiento_combustible").setNombreVisual("N° REGISTRO");
         tab_tabla1.getColumna("PLACA_VEHICULO").setNombreVisual("PLACA");
         tab_tabla1.getColumna("PLACA_VEHICULO").setFiltro(true);

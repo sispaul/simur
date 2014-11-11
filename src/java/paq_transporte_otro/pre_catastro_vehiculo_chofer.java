@@ -287,6 +287,7 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         tab_tabla.getColumna("MVE_MODELO").setMetodoChange("cargarVersion");
         tab_tabla.getColumna("MVE_TIPOMEDICION").setMetodoChange("activarCasilla");
         tab_tabla.getColumna("MVE_CONDUCTOR").setMetodoChange("aceptoDialogoc");
+        tab_tabla.getColumna("MVE_TIPOCODIGO").setMetodoChange("activarTipo");
         List list = new ArrayList();
         Object fil1[] = {
             "KILOMETROS", "KILOMETROS"
@@ -494,6 +495,7 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
     
     public void activarTipo(){
         tab_tabla.getColumna("MVE_PLACA").setLectura(false);
+        tab_tabla.setValor("MVE_PLACA", null);
         utilitario.addUpdate("tab_tabla");
     }
     
