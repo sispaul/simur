@@ -7,6 +7,7 @@ package paq_transporte_otro;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
+import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
@@ -32,6 +33,9 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
     
     private Tabla tab_tabla = new Tabla();
     private SeleccionTabla set_automotores = new SeleccionTabla(); 
+    private Tabla set_departamento = new Tabla(); 
+    private Tabla set_cargo = new Tabla(); 
+    private Tabla set_responsable = new Tabla(); 
     //Contiene todos los elementos de la plantilla
     private Panel pan_opcion = new Panel();
     
@@ -42,6 +46,17 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
     private Texto tanio = new Texto();
     private Texto tcolor = new Texto();
     private Texto tconductor = new Texto();
+    
+    //Dialogos
+    private Dialogo dia_dialogod = new Dialogo();
+    private Dialogo dia_dialogoc = new Dialogo();
+    private Dialogo dia_dialogor = new Dialogo();
+    private Grid grid_de = new Grid();
+    private Grid grid_ca = new Grid();
+    private Grid grid_re = new Grid();
+    private Grid gridd = new Grid();
+    private Grid gridc = new Grid();
+    private Grid gridr = new Grid();
     
     //buscar solicitud
     private AutoCompletar aut_busca = new AutoCompletar();
@@ -60,7 +75,7 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         //cadena de conexión para otra base de datos
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         con_postgres.NOMBRE_MARCA_BASE = "postgres";
-        
+  
         //cadena de conexión para base de datos en sql/manauto
         con_sql.setUnidad_persistencia(utilitario.getPropiedad("poolSqlmanAuto"));
         con_sql.NOMBRE_MARCA_BASE = "sqlserver";
@@ -152,6 +167,45 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         set_automotores.getBot_aceptar().setMetodo("aceptoRegistro");
         set_automotores.setHeader("AUTOMOTORES");
         agregarComponente(set_automotores);
+        
+        dia_dialogod.setId("dia_dialogod");
+        dia_dialogod.setTitle("DIRECCIONES"); //titulo
+        dia_dialogod.setWidth("45%"); //siempre en porcentajes  ancho
+        dia_dialogod.setHeight("40%");//siempre porcentaje   alto
+        dia_dialogod.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogod.getBot_aceptar().setMetodo("buscarCarg");
+        grid_de.setColumns(4);
+        agregarComponente(dia_dialogod);
+        
+        dia_dialogoc.setId("dia_dialogoc");
+        dia_dialogoc.setTitle("CARGOS"); //titulo
+        dia_dialogoc.setWidth("30%"); //siempre en porcentajes  ancho
+        dia_dialogoc.setHeight("40%");//siempre porcentaje   alto
+        dia_dialogoc.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogoc.getBot_aceptar().setMetodo("buscarServ");
+        grid_ca.setColumns(4);
+        agregarComponente(dia_dialogoc);
+        
+        dia_dialogor.setId("dia_dialogor");
+        dia_dialogor.setTitle("SERVIDORES"); //titulo
+        dia_dialogor.setWidth("30%"); //siempre en porcentajes  ancho
+        dia_dialogor.setHeight("40%");//siempre porcentaje   alto
+        dia_dialogor.setResizable(false); //para que no se pueda cambiar el tamaño
+//        dia_dialogor.getBot_aceptar().setMetodo("aceptoServ");
+        grid_re.setColumns(4);
+        agregarComponente(dia_dialogor);
+        
+        //tabla de seleccion
+        set_departamento.setId("set_departamento");
+        set_departamento.setConexion(con_postgres);
+        set_departamento.setHeader("DIRECCIONES");
+        set_departamento.setSql("SELECT DISTINCT srh_empleado.cod_direccion,srh_direccion.nombre_dir\n" +
+                "FROM srh_empleado, srh_direccion where srh_empleado.cod_direccion = srh_direccion.cod_direccion and srh_direccion.estado_dir= 'ACTIVA'\n" +
+                "order by srh_empleado.cod_direccion");
+        set_departamento.getColumna("nombre_dir").setFiltro(true);
+        set_departamento.setTipoSeleccion(false);
+        set_departamento.setRows(10);
+        set_departamento.dibujar();
     }
 
     public void abrirVerTabla() {
@@ -187,6 +241,8 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         } else {
             tab_tabla.setCondicion("mav_secuencial=" + aut_busca.getValor());
         }
+        tab_tabla.getColumna("MAV_DEPARTAMENTO").setMetodoChange("buscarDir");
+        
         tab_tabla.getColumna("MVE_SECUENCIAL").setVisible(false);
         tab_tabla.getColumna("MAV_ESTADO_TRAMITE").setVisible(false);
         tab_tabla.getColumna("MAV_ESTADO_ASIGNACION").setVisible(false);
@@ -217,6 +273,53 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         tab_tabla.setValor("MAV_ESTADO_ASIGNACION","1");
         tab_tabla.setValor("MAV_NOMBRE_COND",tconductor.getValue()+"");
         utilitario.addUpdate("tab_tabla");
+    }
+    
+    public void buscarDir(){
+        dia_dialogod.Limpiar();
+        dia_dialogod.setDialogo(gridd);
+        grid_de.getChildren().add(set_departamento);
+        dia_dialogod.setDialogo(grid_de);
+        set_departamento.dibujar();
+        dia_dialogod.dibujar();
+    }
+    
+    public void buscarCarg(){
+        dia_dialogod.cerrar();
+        dia_dialogoc.Limpiar();
+        dia_dialogoc.setDialogo(gridc);
+        grid_ca.getChildren().add(set_cargo);
+        set_cargo.setId("set_cargo");
+        set_cargo.setConexion(con_postgres);
+        set_cargo.setHeader("CARGOS");
+        set_cargo.setSql("SELECT DISTINCT srh_empleado.cod_cargo,srh_cargos.nombre_cargo\n" +
+                "FROM srh_empleado\n" +
+                "INNER JOIN srh_cargos ON srh_empleado.cod_cargo = srh_cargos.cod_cargo\n" +
+                "where srh_empleado.cod_direccion = "+set_departamento.getValorSeleccionado()+" order by srh_empleado.cod_cargo");
+        set_cargo.getColumna("nombre_cargo").setFiltro(true);
+        set_cargo.setTipoSeleccion(false);
+        set_cargo.setRows(10);
+        dia_dialogoc.setDialogo(grid_ca);
+        set_cargo.dibujar();
+        dia_dialogoc.dibujar();
+    }
+    
+    public void buscarServ(){
+        dia_dialogoc.cerrar();
+        dia_dialogor.Limpiar();
+        dia_dialogor.setDialogo(gridr);
+        grid_re.getChildren().add(set_responsable);
+        set_responsable.setId("set_responsable");
+        set_responsable.setConexion(con_postgres);
+        set_responsable.setHeader("CARGOS");
+        set_responsable.setSql("SELECT cod_empleado,nombres FROM srh_empleado\n" +
+                "where estado = 1 and cod_direccion = "+set_departamento.getValorSeleccionado()+" and cod_cargo = "+set_cargo.getValorSeleccionado()+" order by nombres");
+        set_responsable.getColumna("nombres").setFiltro(true);
+        set_responsable.setTipoSeleccion(false);
+        set_responsable.setRows(10);
+        dia_dialogor.setDialogo(grid_re);
+        set_responsable.dibujar();
+        dia_dialogor.dibujar();
     }
     @Override
     public void insertar() {
@@ -252,6 +355,30 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
 
     public void setSet_automotores(SeleccionTabla set_automotores) {
         this.set_automotores = set_automotores;
+    }
+
+    public Tabla getSet_departamento() {
+        return set_departamento;
+    }
+
+    public void setSet_departamento(Tabla set_departamento) {
+        this.set_departamento = set_departamento;
+    }
+
+    public Tabla getSet_cargo() {
+        return set_cargo;
+    }
+
+    public void setSet_cargo(Tabla set_cargo) {
+        this.set_cargo = set_cargo;
+    }
+
+    public Tabla getSet_responsable() {
+        return set_responsable;
+    }
+
+    public void setSet_responsable(Tabla set_responsable) {
+        this.set_responsable = set_responsable;
     }
     
 }
