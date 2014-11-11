@@ -4,6 +4,7 @@
  */
 package paq_transporte_otro;
 
+import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Division;
@@ -50,6 +51,12 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
     
     public pre_asignacion_desaignacion_vehiculo() {
         
+         tplaca.setId("tplaca");
+         tmarca.setId("tmarca");
+         tmodelo.setId("tmodelo");
+         tanio.setId("tanio");
+         tcolor.setId("tcolor");
+         tconductor.setId("tconductor");
         //cadena de conexión para otra base de datos
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         con_postgres.NOMBRE_MARCA_BASE = "postgres";
@@ -142,7 +149,7 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         set_automotores.getTab_seleccion().setRows(11);
         set_automotores.setWidth("55%"); //siempre en porcentajes  ancho
         set_automotores.setRadio();
-        set_automotores.getBot_aceptar().setMetodo("aceptoTabla");
+        set_automotores.getBot_aceptar().setMetodo("aceptoRegistro");
         set_automotores.setHeader("AUTOMOTORES");
         agregarComponente(set_automotores);
     }
@@ -151,8 +158,23 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         set_automotores.dibujar();
     }
     
-    public void aceptoTabla(){
-        
+    public void aceptoRegistro(){
+        if(set_automotores.getValorSeleccionado()!= null && set_automotores.getValorSeleccionado().isEmpty() == false){
+            TablaGenerica tab_dato =aCombustible.getDatos(Integer.parseInt(set_automotores.getValorSeleccionado()));
+            if (!tab_dato.isEmpty()) {
+                tplaca.setValue(tab_dato.getValor("MVE_PLACA") +""); tmarca.setValue(tab_dato.getValor("MVE_MARCA") +""); tmodelo.setValue(tab_dato.getValor("MVE_MODELO") +"");
+                tanio.setValue(tab_dato.getValor("MVE_ANO") +""); tcolor.setValue(tab_dato.getValor("MVE_COLOR") +""); tconductor.setValue(tab_dato.getValor("MVE_CONDUCTOR") +"");
+                utilitario.addUpdate("tplaca");utilitario.addUpdate("tmarca");utilitario.addUpdate("tplaca");utilitario.addUpdate("tmodelo");utilitario.addUpdate("tanio");
+                utilitario.addUpdate("tcolor");utilitario.addUpdate("tconductor");
+                tab_tabla.insertar();
+                set_automotores.cerrar();
+                conductor();
+            }else{
+                utilitario.agregarMensajeInfo("No existen Datos", " DISPONIBLES");
+            }
+        }else{
+            utilitario.agregarMensajeInfo("Debe seleccionar almenos un registro", "");
+        }
     }
     
     public void dibujardocumento(){
@@ -165,6 +187,19 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         } else {
             tab_tabla.setCondicion("mav_secuencial=" + aut_busca.getValor());
         }
+        tab_tabla.getColumna("MVE_SECUENCIAL").setVisible(false);
+        tab_tabla.getColumna("MAV_ESTADO_TRAMITE").setVisible(false);
+        tab_tabla.getColumna("MAV_ESTADO_ASIGNACION").setVisible(false);
+        tab_tabla.getColumna("MAV_DIRECCION_COND").setVisible(false);
+        tab_tabla.getColumna("MAV_MOTIVO").setVisible(false);
+        tab_tabla.getColumna("MAV_LOGININGRESO").setVisible(false);
+        tab_tabla.getColumna("MAV_FECHAINGRESO").setVisible(false);
+        tab_tabla.getColumna("MAV_FECHAACTUALI").setVisible(false);
+        tab_tabla.getColumna("MAV_LOGINBORRADO").setVisible(false);
+        tab_tabla.getColumna("MAV_FECHABORRADO").setVisible(false);
+        tab_tabla.getColumna("MAV_ESTADO_REGISTRO").setVisible(false);
+        tab_tabla.getColumna("MAV_LOGINACTUALI").setVisible(false);
+        tab_tabla.getColumna("MAV_FECHADESCARGO").setVisible(false);
         tab_tabla.setTipoFormulario(true);
         tab_tabla.getGrid().setColumns(4);
         tab_tabla.dibujar();
@@ -174,9 +209,15 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         Grupo gru = new Grupo();
         gru.getChildren().add(ptt);
         pan_opcion.getChildren().add(gru); 
-        
     }
     
+    public void conductor(){
+        tab_tabla.setValor("MVE_SECUENCIAL",set_automotores.getValorSeleccionado()+"");
+        tab_tabla.setValor("MAV_ESTADO_TRAMITE","ASIGNADO");
+        tab_tabla.setValor("MAV_ESTADO_ASIGNACION","1");
+        tab_tabla.setValor("MAV_NOMBRE_COND",tconductor.getValue()+"");
+        utilitario.addUpdate("tab_tabla");
+    }
     @Override
     public void insertar() {
     }
