@@ -38,6 +38,8 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
     private Tabla set_cargo = new Tabla(); 
     private Tabla set_responsable = new Tabla(); 
     private Tabla set_registros = new Tabla();
+    private Tabla set_conductor = new Tabla();
+    private Tabla tab_articulo = new Tabla();
     //Contiene todos los elementos de la plantilla
     private Panel pan_opcion = new Panel();
     
@@ -56,16 +58,19 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
     private Dialogo dia_dialogor = new Dialogo();
     private Dialogo dia_dialogore = new Dialogo();
     private Dialogo dia_dialogoco = new Dialogo();
+    private Dialogo dia_dialogocon = new Dialogo();
     private Grid grid_de = new Grid();
     private Grid grid_ca = new Grid();
     private Grid grid_re = new Grid();
     private Grid grid_res = new Grid();
     private Grid grid_co = new Grid();
+    private Grid grid_con = new Grid();
     private Grid gridd = new Grid();
     private Grid gridc = new Grid();
     private Grid gridr = new Grid();
     private Grid gridre = new Grid();
     private Grid gridco = new Grid();
+    private Grid gridcon = new Grid();
     
     //buscar solicitud
     private AutoCompletar aut_busca = new AutoCompletar();
@@ -161,10 +166,10 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         bot_quitar.setValue("Des-Asignar: ");
         bot_quitar.setIcon("ui-icon-cancel");
         bot_quitar.setMetodo("Entrega");
-        gri_botones.getChildren().add(bot_busca);
         gri_botones.getChildren().add(bot_news);
-        gri_botones.getChildren().add(bot_quitar);
         gri_botones.getChildren().add(bot_asigna);
+        gri_botones.getChildren().add(bot_busca);
+        gri_botones.getChildren().add(bot_quitar);
         pan_panel1.getChildren().add(gri_botones);
         
         Division div = new Division();
@@ -231,6 +236,15 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         dia_dialogoco.getBot_aceptar().setMetodo("actuResgitro");
         grid_res.setColumns(4);
         agregarComponente(dia_dialogoco);
+        
+        dia_dialogocon.setId("dia_dialogocon");
+        dia_dialogocon.setTitle("CONDUCTORES - DISPONIBLES"); //titulo
+        dia_dialogocon.setWidth("40%"); //siempre en porcentajes  ancho
+        dia_dialogocon.setHeight("50%");//siempre porcentaje   alto
+        dia_dialogocon.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogocon.getBot_aceptar().setMetodo("aceptoConductor");
+        grid_con.setColumns(2);
+        agregarComponente(dia_dialogocon);
         
         //tabla de seleccion
         set_departamento.setId("set_departamento");
@@ -313,6 +327,7 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         tab_tabla.getColumna("MAV_LOGININGRESO").setValorDefecto(utilitario.getVariable("NICK"));
         tab_tabla.getColumna("MAV_FECHAINGRESO").setValorDefecto(utilitario.getFechaHoraActual());
         tab_tabla.getColumna("MAV_DEPARTAMENTO").setMetodoChange("buscarDir");
+        tab_tabla.getColumna("MAV_NOMBRE_COND").setMetodoChange("aceptoDialogocon");
         
         tab_tabla.getColumna("MVE_SECUENCIAL").setVisible(false);
         tab_tabla.getColumna("MAV_ESTADO_TRAMITE").setVisible(false);
@@ -333,8 +348,20 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         
         PanelTabla ptt = new PanelTabla();
         ptt.setPanelTabla(tab_tabla);
+        
+        tab_articulo.setId("tab_articulo");
+        tab_articulo.setConexion(con_sql);
+        tab_articulo.setSql("SELECT MVE_SECUENCIAL,MDV_DETALLE,MDV_CANTIDAD,MDV_ESTADO FROM MVDETALLEVEHICULO where MVE_SECUENCIAL ="+tab_tabla.getValor("MVE_SECUENCIAL"));
+        tab_articulo.getColumna("MVE_SECUENCIAL").setVisible(false);
+        tab_articulo.getGrid().setColumns(4);
+        tab_articulo.setLectura(true);
+        tab_articulo.dibujar();
+        PanelTabla tpa = new PanelTabla();
+        tpa.setPanelTabla(tab_articulo);
+        
         Grupo gru = new Grupo();
         gru.getChildren().add(ptt);
+        gru.getChildren().add(tpa);
         pan_opcion.getChildren().add(gru); 
     }
     
@@ -500,6 +527,38 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         }
     }
     
+    public void aceptoDialogocon() {
+        dia_dialogocon.Limpiar();
+        dia_dialogocon.setDialogo(gridcon);
+        grid_con.getChildren().add(set_conductor);
+        set_conductor.setId("set_conductor");
+        set_conductor.setConexion(con_postgres);
+        set_conductor.setSql("SELECT cod_empleado, cedula_pass,nombres\n" +
+                "FROM srh_empleado\n" +
+                "where cod_cargo in (SELECT cod_cargo FROM srh_cargos WHERE nombre_cargo like '%CHOFER%') and estado = 1\n" +
+                "order by nombres");
+        set_conductor.getColumna("nombres").setFiltro(true);
+        set_conductor.setRows(12);
+        set_conductor.setTipoSeleccion(false);
+        dia_dialogocon.setDialogo(grid_con);
+        set_conductor.dibujar();
+        dia_dialogocon.dibujar();
+    }
+    
+    public void aceptoConductor(){
+        if (set_conductor.getValorSeleccionado()!= null) {
+            TablaGenerica tab_dato =aCombustible.getChofer(set_conductor.getValorSeleccionado());
+            if (!tab_dato.isEmpty()) {
+                tab_tabla.setValor("MVE_CONDUCTOR", tab_dato.getValor("nombres"));
+                tab_tabla.setValor("MVE_ASIGNADO", tab_dato.getValor("activo"));
+                utilitario.addUpdate("tab_tabla");
+                dia_dialogocon.cerrar();
+            }else{
+                utilitario.agregarMensajeInfo("No existen Datos", "");
+            }
+        }
+    }
+    
     @Override
     public void insertar() {
     }
@@ -568,6 +627,22 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
 
     public void setSet_registros(Tabla set_registros) {
         this.set_registros = set_registros;
+    }
+
+    public Tabla getSet_conductor() {
+        return set_conductor;
+    }
+
+    public void setSet_conductor(Tabla set_conductor) {
+        this.set_conductor = set_conductor;
+    }
+
+    public Tabla getTab_articulo() {
+        return tab_articulo;
+    }
+
+    public void setTab_articulo(Tabla tab_articulo) {
+        this.tab_articulo = tab_articulo;
     }
     
 }
