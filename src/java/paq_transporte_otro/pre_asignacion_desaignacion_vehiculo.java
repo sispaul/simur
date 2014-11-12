@@ -113,7 +113,7 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         Panel pan_panel = new Panel();
         pan_panel.setId("pan_panel");
         pan_panel.setStyle("width: 750px;");
-        pan_panel.setHeader("Busqueda para Asignar - DesAsignar");
+        pan_panel.setHeader("ENTREGA - RECEPCION");
         
         Grid gri_busca = new Grid();
         gri_busca.setColumns(6);
@@ -163,8 +163,8 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         bot_quitar.setMetodo("Entrega");
         gri_botones.getChildren().add(bot_busca);
         gri_botones.getChildren().add(bot_news);
-        gri_botones.getChildren().add(bot_asigna);
         gri_botones.getChildren().add(bot_quitar);
+        gri_botones.getChildren().add(bot_asigna);
         pan_panel1.getChildren().add(gri_botones);
         
         Division div = new Division();
