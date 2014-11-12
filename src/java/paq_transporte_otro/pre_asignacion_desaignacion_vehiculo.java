@@ -345,10 +345,9 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         tab_tabla.setTipoFormulario(true);
         tab_tabla.getGrid().setColumns(4);
         tab_tabla.dibujar();
-        
         PanelTabla ptt = new PanelTabla();
         ptt.setPanelTabla(tab_tabla);
-        
+
         tab_articulo.setId("tab_articulo");
         tab_articulo.setConexion(con_sql);
         tab_articulo.setSql("SELECT MVE_SECUENCIAL,MDV_DETALLE,MDV_CANTIDAD,MDV_ESTADO FROM MVDETALLEVEHICULO where MVE_SECUENCIAL ="+tab_tabla.getValor("MVE_SECUENCIAL"));
