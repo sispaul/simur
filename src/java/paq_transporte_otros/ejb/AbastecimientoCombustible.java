@@ -15,7 +15,6 @@ import persistencia.Conexion;
  */
 @Stateless
 public class AbastecimientoCombustible {
-
     private Conexion conexion,con_postgres,con_sql;
     private Utilitario utilitario = new Utilitario();
     // Add business logic below. (Right-click in editor and choose
@@ -39,7 +38,7 @@ public class AbastecimientoCombustible {
         return tab_persona;
     }
     
-        //extraer los datos del conductor desde produccion2014/srh_empleado
+    //extraer los datos del conductor desde produccion2014/srh_empleado
     public TablaGenerica getConductores(String nombre) {
         conect();
         TablaGenerica tab_persona = new TablaGenerica();
@@ -55,7 +54,7 @@ public class AbastecimientoCombustible {
         tab_persona.ejecutarSql();
        con_postgres.desconectar();
        con_postgres = null;
-        return tab_persona;
+       return tab_persona;
     }
     
     public TablaGenerica getKilometraje(String placa) {
@@ -92,15 +91,15 @@ public class AbastecimientoCombustible {
         tab_persona.ejecutarSql();
        conexion.desconectar();
        conexion = null;
-        return tab_persona;
+       return tab_persona;
     }
     
-        public TablaGenerica getComparacion(Integer tipo) {
+    public TablaGenerica getComparacion(Integer tipo) {
         conectar();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(conexion);
         tab_persona.setSql("SELECT\n" +
-                                "ide_abastecimiento_combustible,\n" +
+                "ide_abastecimiento_combustible,\n" +
                 "NUMERO_ABASTECIMIENTO,\n" +
                 "NUMERO_VALE_ABASTECIMIENTO\n" +
                 "FROM\n" +
@@ -109,18 +108,43 @@ public class AbastecimientoCombustible {
         tab_persona.ejecutarSql();
        conexion.desconectar();
        conexion = null;
-        return tab_persona;
+       return tab_persona;
     }
     
-        public TablaGenerica getDatos(Integer tipo) {
+    public TablaGenerica getDatos(Integer tipo) {
         conectar();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(conexion);
         tab_persona.setSql("SELECT MVE_SECUENCIAL,MVE_MOTOR,MVE_CHASIS,MVE_MARCA,MVE_PLACA,MVE_TIPO,MVE_MODELO,MVE_COLOR,MVE_ANO,MVE_CONDUCTOR\n" +
                 "FROM MVVEHICULO where MVE_SECUENCIAL ="+tipo);
         tab_persona.ejecutarSql();
-       conexion.desconectar();
+        conexion.desconectar();
        conexion = null;
+       return tab_persona;
+    }
+    
+    public TablaGenerica getVerificar(Integer tipo) {
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT MVE_SECUENCIAL, count(dbo.MVASIGNARVEH.MAV_ESTADO_ASIGNACION) as valor\n" +
+                "FROM MVASIGNARVEH where MVE_SECUENCIAL = "+tipo+" and MAV_ESTADO_ASIGNACION = 1 GROUP BY MVE_SECUENCIAL");
+        tab_persona.ejecutarSql();
+        conexion.desconectar();
+       conexion = null;
+       return tab_persona;
+    }
+    
+    public TablaGenerica datosExtraer(Integer tipo) {
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT a.MAV_SECUENCIAL,v.MVE_PLACA,v.MVE_MARCA,v.MVE_MODELO,v.MVE_ANO,v.MVE_COLOR,a.MAV_NOMEMPLEA\n" +
+                "FROM MVASIGNARVEH a INNER JOIN MVVEHICULO  v ON a.MVE_SECUENCIAL = v.MVE_SECUENCIAL\n" +
+                "where a.MAV_SECUENCIAL ="+tipo);
+        tab_persona.ejecutarSql();
+        conexion.desconectar();
+        conexion = null;
         return tab_persona;
     }
         
@@ -158,6 +182,21 @@ public class AbastecimientoCombustible {
         conexion.desconectar();
         conexion = null;
     }
+    
+    public void actDescargo(Integer tipo,String motivo,String usu,String fecha){
+        String str_sql4 = "UPDATE MVASIGNARVEH\n" +
+                "SET MAV_ESTADO_ASIGNACION= '0',\n" +
+                "MAV_ESTADO_TRAMITE='DESCARGO',\n" +
+                "MAV_MOTIVO='"+motivo+"',\n" +
+                "MAV_LOGINACTUALI='"+usu+"',\n" +
+                "MAV_FECHAACTUALI='"+fecha+"'\n" +
+                "where MAV_SECUENCIAL ="+tipo;
+        conectar();
+        conexion.ejecutarSql(str_sql4);
+        conexion.desconectar();
+        conexion = null;
+    }
+        
     public void ActRegistro(Integer ide,String vale,Integer tipo,String fecha,String hora,Integer kilo,Double galon,Double total,String placa,String desc,String cond,
             String ci,String usu){
         String str_sql4 = "UPDATE MVABASTECIMIENTO_COMBUSTIBLE\n" +
@@ -211,7 +250,44 @@ public class AbastecimientoCombustible {
         conexion.desconectar();
         conexion = null;
     }
+        
+        public TablaGenerica getDirec(Integer tipo) {
+        conect();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT DISTINCT srh_empleado.cod_direccion,srh_direccion.nombre_dir\n" +
+                "FROM srh_empleado, srh_direccion where srh_empleado.cod_direccion = srh_direccion.cod_direccion and srh_direccion.estado_dir= 'ACTIVA' and srh_empleado.cod_direccion ="+tipo);
+        tab_persona.ejecutarSql();
+       con_postgres.desconectar();
+       con_postgres = null;
+        return tab_persona;
+        }
+        
+        public TablaGenerica getCarg(Integer tipo,Integer dir) {
+        conect();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT DISTINCT srh_empleado.cod_cargo,srh_cargos.nombre_cargo\n" +
+                "FROM srh_empleado INNER JOIN srh_cargos ON srh_empleado.cod_cargo = srh_cargos.cod_cargo\n" +
+                "where srh_empleado.cod_direccion = "+dir+" and srh_empleado.cod_cargo="+tipo);
+        tab_persona.ejecutarSql();
+       con_postgres.desconectar();
+       con_postgres = null;
+        return tab_persona;
+        }
     
+        public TablaGenerica getResp(Integer tipo,Integer dir,String cod) {
+        conect();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT cod_empleado,nombres FROM srh_empleado\n" +
+                "where estado = 1 and cod_direccion = "+dir+" and cod_cargo = "+tipo+" and cod_empleado='"+cod+"'");
+        tab_persona.ejecutarSql();
+       con_postgres.desconectar();
+       con_postgres = null;
+        return tab_persona;
+        }
+        
 public TablaGenerica getMes(Integer periodo) {
         conect();
         TablaGenerica tab_persona = new TablaGenerica();
