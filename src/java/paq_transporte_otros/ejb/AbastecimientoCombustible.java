@@ -313,6 +313,17 @@ public TablaGenerica getChofer(String cedula) {
         return tab_persona;
     }
 
+public TablaGenerica getActivos(String codigo) {
+        conect();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT ide_activo,nombre||'; '||marca||'; MODELO: '||modelo||'; SERIE: '||serie||'; RESPONSABLE: '||nom_responsable as descripcion\n" +
+                "FROM afi_activos where codigo = '"+codigo+"'");
+        tab_persona.ejecutarSql();
+       con_postgres.desconectar();
+       con_postgres = null;
+        return tab_persona;
+    }
     private void conectar() {
         if (conexion == null) {
             conexion = new Conexion();
