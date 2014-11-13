@@ -278,6 +278,12 @@ public class pre_aprobacion_especial_anticipo extends Pantalla{
     
     public void requisito(){
          for (int i = 0; i < tab_anticipo.getTotalFilas(); i++) {
+             System.err.println( tab_anticipo.getValor(i, "ide_solicitud_anticipo"));
+             System.err.println(tab_anticipo.getValor(i, "ci_solicitante"));
+             System.err.println(tab_anticipo.getValor(i, "aprobado_solicitante"));
+             System.err.println(tab_anticipo.getValor(i, "numero_cuotas_anticipo"));
+             System.err.println(tab_anticipo.getValor(i, "val_cuo_adi"));
+             System.err.println(tab_anticipo.getValor(i, "id_distributivo"));
               tab_anticipo.getValor(i, "ide_solicitud_anticipo");
               tab_anticipo.getValor(i, "ci_solicitante");
               tab_anticipo.getValor(i, "aprobado_solicitante");
@@ -288,7 +294,7 @@ public class pre_aprobacion_especial_anticipo extends Pantalla{
               if(tab_anticipo.getValor(i, "aprobado_solicitante")!=null){
                          if(tab_anticipo.getValor(i, "aprobado_solicitante").equals("1")){
                              if(tab_anticipo.getValor(i, "id_distributivo").equals("1")){//detalle solicitud de empleados
-                                 if((utilitario.getDia(tab_anticipo.getValor(i, "fecha_anticipo")))>10){
+                                 if((utilitario.getDia(tab_anticipo.getValor(i, "fecha_anticipo")))>15){
                                      if((Integer.parseInt(tab_anticipo.getValor(i, "numero_cuotas_anticipo"))+(utilitario.getMes(tab_anticipo.getValor(i, "fecha_anticipo"))))>12){
                                             for (int j = 0; j < (Integer.parseInt(tab_anticipo.getValor(i, "numero_cuotas_anticipo"))-1); j++){
                                             TablaGenerica tab_dato = iAnticipos.periodos1(Integer.parseInt(tab_anticipo.getValor(i,"ide_periodo_anticipo_inicial"))+j);
