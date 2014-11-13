@@ -14,9 +14,13 @@ import framework.componentes.Grid;
 import framework.componentes.Grupo;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
+import java.util.HashMap;
+import java.util.Map;
 import javax.ejb.EJB;
 import paq_sistema.aplicacion.Pantalla;
 import paq_transporte_otros.ejb.AbastecimientoCombustible;
@@ -77,6 +81,11 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
     
     @EJB
     private AbastecimientoCombustible aCombustible = (AbastecimientoCombustible) utilitario.instanciarEJB(AbastecimientoCombustible.class);
+    
+    ///REPORTES
+    private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
+    private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
+    private Map p_parametros = new HashMap();
     
     public pre_asignacion_desaignacion_vehiculo() {
         
@@ -268,6 +277,13 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         set_registros.setTipoSeleccion(false);
         set_registros.setRows(10);
         set_registros.dibujar();
+        
+        /*         * CONFIGURACIÓN DE OBJETO REPORTE         */
+        bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
+        agregarComponente(rep_reporte); //2 agregar el listado de reportes
+        sef_formato.setId("sef_formato");
+        sef_formato.setConexion(con_sql);
+        agregarComponente(sef_formato);
     }
 
     public void abrirVerTabla() {
@@ -580,6 +596,38 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
     public void eliminar() {
     }
 
+    /*CREACION DE REPORTES */
+    //llamada a reporte
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+    }
+    
+    @Override
+    public void aceptarReporte() {
+        rep_reporte.cerrar();
+        switch (rep_reporte.getNombre()) {
+           case "COMPROBANTE DE SALIDA":
+               abrirReporte();
+           break;
+        }
+    }
+    
+    public void abrirReporte() {
+        rep_reporte.cerrar();
+        switch (rep_reporte.getNombre()) {
+           case "COMPROBANTE DE SALIDA":
+               p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
+               p_parametros.put("codigo", Integer.parseInt(tab_tabla.getValor("MAV_SECUENCIAL")+""));
+               p_parametros.put("placa", tplaca.getValue()+"");
+               rep_reporte.cerrar();
+               sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+               sef_formato.dibujar();
+           break;
+        }
+    }
+        
+        
     public Tabla getTab_tabla() {
         return tab_tabla;
     }
@@ -650,6 +698,30 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
 
     public void setTab_articulo(Tabla tab_articulo) {
         this.tab_articulo = tab_articulo;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSef_formato() {
+        return sef_formato;
+    }
+
+    public void setSef_formato(SeleccionFormatoReporte sef_formato) {
+        this.sef_formato = sef_formato;
+    }
+
+    public Map getP_parametros() {
+        return p_parametros;
+    }
+
+    public void setP_parametros(Map p_parametros) {
+        this.p_parametros = p_parametros;
     }
     
 }
