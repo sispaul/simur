@@ -526,19 +526,36 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
     }
     
     public void endMarca(){
-        
+        if (set_marca.getValorSeleccionado() != null && set_marca.getValorSeleccionado().isEmpty() == false) {
+            
+
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
+        }
     }
     
     public void endTipo(){
-        
+        if (set_tipo.getValorSeleccionado() != null && set_tipo.getValorSeleccionado().isEmpty() == false) {
+            
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
+        }
     }
     
     public void endModelo(){
-        
+        if (set_modelo.getValorSeleccionado() != null && set_modelo.getValorSeleccionado().isEmpty() == false) {
+            
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
+        }
     }
     
     public void endVersion(){
-        
+        if (set_version.getValorSeleccionado() != null && set_version.getValorSeleccionado().isEmpty() == false) {
+            
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
+        }
     }
     
     public void infoActivo(){
