@@ -63,7 +63,7 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
     private Texto txt_item = new Texto();
     private Texto txt_cantidad = new Texto();
     private Texto txt_estado = new Texto();
-    
+
     //buscar solicitud
     private AutoCompletar aut_busca = new AutoCompletar();
     @EJB
@@ -75,14 +75,7 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         pan_opcion.setTransient(true);
         pan_opcion.setHeader("INGRESO DE VEHICULOS");
         agregarComponente(pan_opcion);
-        
-//        Boton bot_busca = new Boton();
-//        bot_busca.setValue("Busqueda Avanzada");
-//        bot_busca.setExcluirLectura(true);
-//        bot_busca.setIcon("ui-icon-search");
-//        bot_busca.setMetodo("abrirVerTabla");
-//        bar_botones.agregarBoton(bot_busca);
-        
+
         //Mostrar el usuario 
         tab_consulta.setId("tab_consulta");
         tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
@@ -288,6 +281,7 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         tab_tabla.getColumna("MVE_TIPOMEDICION").setMetodoChange("activarCasilla");
         tab_tabla.getColumna("MVE_CONDUCTOR").setMetodoChange("aceptoDialogoc");
         tab_tabla.getColumna("MVE_TIPOCODIGO").setMetodoChange("activarTipo");
+        tab_tabla.getColumna("MVE_PLACA").setMetodoChange("infoActivo");
         List list = new ArrayList();
         Object fil1[] = {
             "KILOMETROS", "KILOMETROS"
@@ -545,6 +539,15 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
     
     public void endVersion(){
         
+    }
+    
+    public void infoActivo(){
+        if(tab_tabla.getValor("MVE_TIPOCODIGO").equals("CODIGO")){
+             TablaGenerica tab_dato =aCombustible.getActivos(tab_tabla.getValor("MVE_PLACA"));
+            if (!tab_dato.isEmpty()) {
+                utilitario.agregarNotificacionInfo(tab_dato.getValor("descripcion"), null);
+            }
+        }
     }
     
     @Override
