@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_vehiculo_egre_ingre" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0df0613e-f80e-450c-a7d9-849073d2c240">
+	<property name="ireport.zoom" value="1.2100000000000017"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="nom_resp" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["el que imprimio"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="codigo" class="java.lang.Integer"/>
+	<parameter name="placa" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+v.MVE_SECUENCIAL,
+v.MVE_PLACA,
+v.MVE_MARCA,
+v.MVE_MODELO,
+v.MVE_COLOR,
+v.MVE_ANO,
+a.MAV_FECHAASIGNACION,
+a.MAV_NOMBRE_COND,
+a.MAV_DEPARTAMENTO,
+a.MAV_CARGOEMPLEA,
+a.MAV_NOMEMPLEA,
+a.MAV_AUTORIZA,
+a.MAV_OBSERVACIONES,
+d.MVE_SECUENCIAL,
+d.MDV_DETALLE,
+d.MDV_CANTIDAD,
+d.MDV_ESTADO,
+a.MAV_ESTADO_ASIGNACION
+FROM MVVEHICULO v
+INNER JOIN MVASIGNARVEH a ON a.MVE_SECUENCIAL = v.MVE_SECUENCIAL
+INNER JOIN MVDETALLEVEHICULO d ON d.MVE_SECUENCIAL = v.MVE_SECUENCIAL
+where a.MAV_ESTADO_ASIGNACION = 1 and a.MAV_SECUENCIAL = $P{codigo} and  v.MVE_PLACA =$P{placa}]]>
+	</queryString>
+	<field name="MVE_SECUENCIAL" class="java.lang.String"/>
+	<field name="MVE_PLACA" class="java.lang.String"/>
+	<field name="MVE_MARCA" class="java.lang.String"/>
+	<field name="MVE_MODELO" class="java.lang.String"/>
+	<field name="MVE_COLOR" class="java.lang.String"/>
+	<field name="MVE_ANO" class="java.lang.String"/>
+	<field name="MAV_FECHAASIGNACION" class="java.sql.Timestamp"/>
+	<field name="MAV_NOMBRE_COND" class="java.lang.String"/>
+	<field name="MAV_DEPARTAMENTO" class="java.lang.String"/>
+	<field name="MAV_CARGOEMPLEA" class="java.lang.String"/>
+	<field name="MAV_NOMEMPLEA" class="java.lang.String"/>
+	<field name="MAV_AUTORIZA" class="java.lang.String"/>
+	<field name="MAV_OBSERVACIONES" class="java.lang.String"/>
+	<field name="MDV_DETALLE" class="java.lang.String"/>
+	<field name="MDV_CANTIDAD" class="java.math.BigDecimal"/>
+	<field name="MDV_ESTADO" class="java.lang.String"/>
+	<field name="MAV_ESTADO_ASIGNACION" class="java.lang.String"/>
+	<group name="VEHICULO_SALIDA">
+		<groupExpression><![CDATA[$F{MVE_PLACA}]]></groupExpression>
+		<groupHeader>
+			<band height="321">
+				<rectangle>
+					<reportElement uuid="9bd7b162-4da6-483d-9837-ab93f30126a9" x="29" y="296" width="496" height="22" backcolor="#999999"/>
+				</rectangle>
+				<rectangle>
+					<reportElement uuid="9dfc1a92-f0ba-4471-b6ad-2d0fa2fdc67e" x="29" y="145" width="338" height="65"/>
+				</rectangle>
+				<rectangle>
+					<reportElement uuid="0eeef3bd-8353-4b53-97ff-5128a0bf3a18" x="29" y="50" width="496" height="68"/>
+				</rectangle>
+				<textField>
+					<reportElement uuid="3bab887b-64dc-40d5-8cb3-8c3d728af7e2" x="101" y="55" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{MVE_PLACA}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="a0010cc0-5a5a-47f1-821c-e48e6d8f0232" x="101" y="74" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{MVE_MARCA}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="171bd18e-c51c-4647-a951-15f5192f2ff9" x="101" y="93" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{MVE_MODELO}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="d0308091-542d-47bb-973b-c5e762f05da8" x="390" y="0" width="146" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{MAV_FECHAASIGNACION}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="7ac93585-b355-496b-8673-711a7caada66" x="44" y="55" width="100" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[# PLACA:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="03c8face-3711-45cf-bf39-8e4d38083952" x="44" y="74" width="100" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[MARCA:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="e29ef236-d250-433a-a51a-fe5a9d310fb0" x="44" y="93" width="100" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[MODELO:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="d63db25e-47d2-4809-9e17-30e9c9a1cb77" x="254" y="0" width="136" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[FECHA DE ASIGNACIÓN: ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="a6d85a2e-655f-49e6-919a-8bc71e01af8b" x="260" y="55" width="100" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[COLOR:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="58af3b6c-6910-48f3-8c05-4e1ea589d045" x="260" y="74" width="100" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[AÑO:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="4b85c0eb-2c29-4ba7-815e-04654c4870ee" x="305" y="55" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{MVE_COLOR}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="6eee7ea1-8977-40aa-b3a1-5fe4fa843d51" x="305" y="74" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{MVE_ANO}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="8bbf2187-961b-4fab-a286-e7c8bbc9115b" x="335" y="93" width="181" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{MAV_NOMBRE_COND}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="43e47a73-4b7b-4c71-87b8-6327a7d1f2cc" x="349" y="222" width="206" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{MAV_AUTORIZA}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="442b8599-7d92-4838-88e5-2cb5f2341eb5" x="260" y="93" width="129" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[CONDUCTOR:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="1a98cd07-58be-4d9f-897f-9c994a588d3a" x="253" y="222" width="129" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[AUTORIZADO POR:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="8aba1762-0327-4229-a1f6-8c3cf2fca40a" x="134" y="150" width="233" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{MAV_DEPARTAMENTO}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="84db75cb-9d97-44f9-b362-25d8ae474d06" x="134" y="169" width="178" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{MAV_CARGOEMPLEA}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="5f3d7c90-2550-4215-8dc2-3fa58eca9302" x="134" y="188" width="202" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{MAV_NOMEMPLEA}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="d78b3616-fd00-4e09-9c8c-11b4b94a9e16" x="34" y="150" width="100" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[DEPARTAMENTO:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="5bb890b2-f909-498d-be14-37aa84498b10" x="34" y="169" width="100" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[CARGO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="b8a3898b-fb33-4d2d-85a4-dc60c4a78b4a" x="34" y="188" width="100" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[SOLICITANTE:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="76b4bed6-7cd1-4da2-ade2-06e503bb75c4" x="29" y="30" width="162" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[DATOS VEHICULO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="fbcfe810-d68f-4bf3-a4ad-1c7992e3e402" x="29" y="125" width="162" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[DATOS SOLICITANTE]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="f7b13311-a341-4a27-b40c-003f542593af" x="113" y="245" width="423" height="43"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{MAV_OBSERVACIONES}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="51246530-e379-4e1c-b914-d608131e2008" x="29" y="245" width="100" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[OBSERVACIÓN:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="a687d55a-e813-43d1-b1ca-7cae441b2201" x="54" y="297" width="100" height="20" forecolor="#FFFFFF"/>
+					<textElement/>
+					<text><![CDATA[DESCRIPCIÓN]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="c8049472-6906-4f8d-a886-cab232e09944" x="235" y="297" width="100" height="20" forecolor="#FFFFFF"/>
+					<textElement/>
+					<text><![CDATA[ESTADO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="a2f1e979-2b88-4b6f-8dcb-a12dc0bc366a" x="396" y="297" width="100" height="20" forecolor="#FFFFFF"/>
+					<textElement/>
+					<text><![CDATA[CANTIDAD]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="8"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="0060adc1-99c6-4b19-bd04-2ed8614bad19" key="staticText" x="3" y="3" width="273" height="34" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[GOBIERNO AUTONOMO DESCENTRALIZADO MUNICIPAL DEL CANTON RUMIÑAHUI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4d047605-92cc-4fcd-9701-f63c30247047" key="staticText" x="139" y="49" width="273" height="18" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[COMPROBANTE DE SALIDA DE VEHICULO]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="674d5581-43ca-4f20-82d5-fccca62c4a0b" x="405" y="1" width="149" height="76"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_transporte.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="7" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="6" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="3cb970f8-aa2f-41b9-b106-9373d27861fc" x="54" y="0" width="151" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{MDV_DETALLE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3404603a-4b6f-4313-831c-345a0283f91a" x="235" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{MDV_ESTADO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4d7608ac-39aa-480b-9d6e-f9d1365e3c60" x="396" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{MDV_CANTIDAD}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="42" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="b9d64804-3446-42d1-bb9a-31364f40971a" x="355" y="17" width="129" height="20"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[AUTORIZADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="07a347da-36e1-4c66-8915-12ec43a50077" x="91" y="17" width="129" height="20"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONDUCTOR]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="612fab8e-3593-4c2b-9ace-c40795b051d0" x="58" y="2" width="208" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{MAV_NOMBRE_COND}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0624793e-0bbf-4ed4-9440-ba0adcea8160" x="306" y="2" width="241" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{MAV_AUTORIZA}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="d7ca9ef2-a122-407c-bb1b-8f9afb26cbd9" x="60" y="2" width="202" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="d4538a62-f6af-45d9-b608-c6213c48a6e6" x="312" y="2" width="235" height="1"/>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="22" splitType="Stretch">
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="4d2cc9aa-110f-4a04-b4fe-888c86d1322e" key="textField" x="344" y="0" width="170" height="19"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
+				<reportElement uuid="b3a9f5fa-6be8-4f1c-81e9-1d1be52309ab" key="textField" x="518" y="0" width="36" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="CP1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="1f783674-08af-4646-a76a-4051f2b7bce9" key="textField" x="1" y="0" width="135" height="19"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9293532c-7e10-4c92-8bae-63fea68780dd" x="205" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{nom_resp}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="12" splitType="Stretch"/>
+	</summary>
+</jasperReport>
