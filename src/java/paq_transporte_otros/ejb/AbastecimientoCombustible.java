@@ -189,7 +189,7 @@ public class AbastecimientoCombustible {
                 "MAV_ESTADO_TRAMITE='DESCARGO',\n" +
                 "MAV_MOTIVO='"+motivo+"',\n" +
                 "MAV_LOGINACTUALI='"+usu+"',\n" +
-                "MAV_FECHAACTUALI='"+fecha+"'\n" +
+                "MAV_FECHAACTUALI="+utilitario.getFormatoFechaSQL(utilitario.getFechaHoraActual())+"\n" +
                 "where MAV_SECUENCIAL ="+tipo;
         conectar();
         conexion.ejecutarSql(str_sql4);

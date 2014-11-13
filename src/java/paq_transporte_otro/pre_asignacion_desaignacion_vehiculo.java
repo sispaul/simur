@@ -304,7 +304,6 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
                     tab_tabla.insertar();
                     set_automotores.cerrar();
                     conductor();
-                    tablaActu();
                 }else{
                     utilitario.agregarMensajeInfo("No existen Datos", " DISPONIBLES");
                 }
@@ -321,7 +320,6 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
                     tab_tabla.insertar();
                     set_automotores.cerrar();
                     conductor();
-                    tablaActu();
                 }else{
                     utilitario.agregarMensajeInfo("No existen Datos", " DISPONIBLES");
                 }
@@ -382,12 +380,6 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         pan_opcion.getChildren().add(gru); 
     }
     
-    public void tablaActu(){
-        System.err.println("Hola");
-        System.err.println(set_automotores.getValorSeleccionado());
-        tab_articulo.setSql("SELECT MVE_SECUENCIAL,MDV_DETALLE,MDV_CANTIDAD,MDV_ESTADO FROM MVDETALLEVEHICULO where MVE_SECUENCIAL ="+set_automotores.getValorSeleccionado());
-        utilitario.addUpdate("tab_articulo");
-    }
     public void conductor(){
         tab_tabla.setValor("MVE_SECUENCIAL",set_automotores.getValorSeleccionado()+"");
         tab_tabla.setValor("MAV_ESTADO_TRAMITE","ASIGNADO");
@@ -543,8 +535,9 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
     
     public void actuResgitro(){
         if(tab_tabla.getValor("MAV_SECUENCIAL")!=null && tab_tabla.getValor("MAV_SECUENCIAL").isEmpty() == false){
-        aCombustible.actDescargo(Integer.parseInt(tab_tabla.getValor("MAV_SECUENCIAL")), tcomentario.getValue()+"",utilitario.getVariable("NICK"), utilitario.getFechaHoraActual());
-         utilitario.agregarMensaje("Información","No Disponible");
+        aCombustible.actDescargo(Integer.parseInt(tab_tabla.getValor("MAV_SECUENCIAL")), tcomentario.getValue()+"",utilitario.getVariable("NICK"), utilitario.getFechaActual());
+         utilitario.agregarMensaje("Vehiculo","Disponible");
+         dia_dialogoco.cerrar();
         }else{
             utilitario.agregarMensajeError("RESGISTRO NO DISPONIBLE","");
         }
