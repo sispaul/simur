@@ -7,6 +7,7 @@ package paq_nomina;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
+import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
@@ -40,6 +41,7 @@ public class pre_aprobacion_especial_anticipo extends Pantalla{
     private Tabla tab_anticipo = new Tabla();
     private Tabla tab_listado = new Tabla();
     private Tabla tab_consulta = new Tabla();
+    private Tabla set_pagos = new Tabla();
     private SeleccionTabla set_lista = new SeleccionTabla();
     
     //Conexion a base
@@ -50,8 +52,22 @@ public class pre_aprobacion_especial_anticipo extends Pantalla{
     private Panel pan_opcion2 = new Panel();
     
     private Texto txt_num_listado = new Texto();
+    private Texto tnum_doc = new Texto();
+    private Texto tvalor = new Texto();
+    private Texto tcedula = new Texto();
+    private Texto tnombre = new Texto();
+    private Texto tsaldo = new Texto();
     
     private Calendario cal_fecha = new Calendario();
+    private Calendario cal_fechad = new Calendario();
+    
+    //Dialogo Busca 
+    private Dialogo dia_dialogo = new Dialogo();
+    private Dialogo dia_dialogop = new Dialogo();
+    private Grid grid_d = new Grid();
+    private Grid grid_p = new Grid();
+    private Grid grid = new Grid();
+    private Grid gridp = new Grid();
     
     @EJB
     private SolicAnticipos iAnticipos = (SolicAnticipos) utilitario.instanciarEJB(SolicAnticipos.class);
@@ -72,6 +88,13 @@ public class pre_aprobacion_especial_anticipo extends Pantalla{
         Imagen quinde = new Imagen();
         quinde.setValue("imagenes/logo_talento.png");
         agregarComponente(quinde);
+        
+        Boton bot_limpiar = new Boton();
+        bot_limpiar.setValue("PAGO ANTICIPADO");
+        bot_limpiar.setExcluirLectura(true);
+        bot_limpiar.setIcon("ui-icon-contact");
+        bot_limpiar.setMetodo("pago_anticipado");
+        bar_botones.agregarBoton(bot_limpiar);
         
         pan_opcion.setId("pan_opcion");
         pan_opcion.setTransient(true);
@@ -233,9 +256,42 @@ public class pre_aprobacion_especial_anticipo extends Pantalla{
         set_lista.getBot_aceptar().setMetodo("aceptoAprobacion");
         set_lista.setHeader("SELECCIONE LISTADO");
         agregarComponente(set_lista);
+        
+        //para poder busca por apelllido el garante
+        dia_dialogo.setId("dia_dialogo");
+        dia_dialogo.setTitle("BUSCAR SOLICITUD DE ANTICIPO"); //titulo
+        dia_dialogo.setWidth("55%"); //siempre en porcentajes  ancho
+        dia_dialogo.setHeight("50%");//siempre porcentaje   alto
+        dia_dialogo.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogo.getBot_aceptar().setMetodo("datos_anticipo");
+        grid_d.setColumns(4);
+        agregarComponente(dia_dialogo);
+        
+        dia_dialogop.setId("dia_dialogop");
+        dia_dialogop.setTitle("BUSCAR SOLICITUD DE ANTICIPO"); //titulo
+        dia_dialogop.setWidth("40%"); //siempre en porcentajes  ancho
+        dia_dialogop.setHeight("35%");//siempre porcentaje   alto
+        dia_dialogop.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogop.getBot_aceptar().setMetodo("aceptoSolicitud");
+        grid_p.setColumns(4);
+        agregarComponente(dia_dialogop);
+        
+        set_pagos.setId("set_pagos");
+        set_pagos.setConexion(con_postgres);
+        set_pagos.setHeader("DIRECCIONES");
+        set_pagos.setSql("SELECT s.ide_solicitud_anticipo,s.ci_solicitante,s.solicitante,c.valor_anticipo,c.valor_cuota_mensual,c.val_cuo_adi,c.numero_cuotas_pagadas,\n" +
+                "c.valor_pagado,(valor_anticipo-valor_pagado)as saldo\n" +
+                "FROM srh_solicitud_anticipo s INNER JOIN srh_calculo_anticipo c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
+                "where c.ide_estado_anticipo in (2,3) order by s.ide_solicitud_anticipo");
+        set_pagos.getColumna("ci_solicitante").setFiltro(true);
+        set_pagos.getColumna("solicitante").setFiltro(true);
+        set_pagos.setTipoSeleccion(false);
+        set_pagos.setRows(10);
+        set_pagos.dibujar();
+        
     }
-
-        public void buscarColumna() {
+    
+    public void buscarColumna() {
         if (cal_fecha.getValue() != null && cal_fecha.getValue().toString().isEmpty() == false ) {
             set_lista.getTab_seleccion().setSql("SELECT DISTINCT on (ide_listado ) ide_solicitud_anticipo,ide_listado FROM srh_solicitud_anticipo where fecha_listado='"+cal_fecha.getFecha()+"' ORDER BY ide_listado ");
             set_lista.getTab_seleccion().ejecutarSql();
@@ -259,6 +315,45 @@ public class pre_aprobacion_especial_anticipo extends Pantalla{
          tab_listado.actualizar();
     }
     
+    public void pago_anticipado(){
+        dia_dialogo.Limpiar();
+        dia_dialogo.setDialogo(grid);
+        grid_d.getChildren().add(set_pagos);
+        dia_dialogo.setDialogo(grid_d);
+        set_pagos.dibujar();
+        dia_dialogo.dibujar();
+    }
+    
+    public void datos_anticipo(){
+//        dia_dialogo.cerrar();
+        dia_dialogop.Limpiar();
+        dia_dialogop.setDialogo(gridp);
+        Grid gru_lis = new Grid();
+        gru_lis.setColumns(4);
+        tcedula.setSize(10);
+        gru_lis.getChildren().add(new Etiqueta("CEDULA :"));
+        gru_lis.getChildren().add(tcedula);
+        tnombre.setSize(38);
+        gru_lis.getChildren().add(new Etiqueta("NOMBRES :"));
+        gru_lis.getChildren().add(tnombre);
+        tsaldo.setSize(8);
+        gru_lis.getChildren().add(new Etiqueta("SALDO $ :"));
+        gru_lis.getChildren().add(tsaldo);
+        gridp.getChildren().add(gru_lis);
+        gridp.getChildren().add(new Etiqueta("___________________________________________________________"));
+        gridp.getChildren().add(new Etiqueta("FECHA DE DEPOSITO :"));
+        gridp.getChildren().add(cal_fechad);
+        tnum_doc.setSize(10);
+        gridp.getChildren().add(new Etiqueta("# DE DOCUMENTO :"));
+        gridp.getChildren().add(tnum_doc);
+        tvalor.setSize(5);
+        gridp.getChildren().add(new Etiqueta(" VALOR $ :"));
+        gridp.getChildren().add(tvalor);
+        dia_dialogop.setDialogo(grid_p);
+        set_pagos.dibujar();
+        dia_dialogop.dibujar();
+    }
+    
     @Override
     public void insertar() {
     }
@@ -278,12 +373,6 @@ public class pre_aprobacion_especial_anticipo extends Pantalla{
     
     public void requisito(){
          for (int i = 0; i < tab_anticipo.getTotalFilas(); i++) {
-             System.err.println( tab_anticipo.getValor(i, "ide_solicitud_anticipo"));
-             System.err.println(tab_anticipo.getValor(i, "ci_solicitante"));
-             System.err.println(tab_anticipo.getValor(i, "aprobado_solicitante"));
-             System.err.println(tab_anticipo.getValor(i, "numero_cuotas_anticipo"));
-             System.err.println(tab_anticipo.getValor(i, "val_cuo_adi"));
-             System.err.println(tab_anticipo.getValor(i, "id_distributivo"));
               tab_anticipo.getValor(i, "ide_solicitud_anticipo");
               tab_anticipo.getValor(i, "ci_solicitante");
               tab_anticipo.getValor(i, "aprobado_solicitante");
@@ -525,6 +614,14 @@ public class pre_aprobacion_especial_anticipo extends Pantalla{
 
     public void setSet_lista(SeleccionTabla set_lista) {
         this.set_lista = set_lista;
+    }
+
+    public Tabla getSet_pagos() {
+        return set_pagos;
+    }
+
+    public void setSet_pagos(Tabla set_pagos) {
+        this.set_pagos = set_pagos;
     }
     
 }

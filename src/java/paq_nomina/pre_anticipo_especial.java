@@ -296,6 +296,9 @@ public class pre_anticipo_especial extends Pantalla{
         tab_anticipo.getColumna("cod_banco").setVisible(false);
         tab_anticipo.getColumna("cod_cuenta").setVisible(false);
         tab_anticipo.getColumna("numero_cuenta").setVisible(false);
+        tab_anticipo.getColumna("usu_anulacion").setVisible(false);
+        tab_anticipo.getColumna("comen_anulacion").setVisible(false);
+        tab_anticipo.getColumna("fecha_anulacion").setVisible(false);
         
         tab_anticipo.setTipoFormulario(true);
         tab_anticipo.agregarRelacion(tab_garante);
@@ -348,6 +351,7 @@ public class pre_anticipo_especial extends Pantalla{
         tab_parametros.getColumna("IDE_CALCULO_ANTICIPO").setVisible(false);
         tab_parametros.getColumna("numero_cuotas_pagadas").setVisible(false);
         tab_parametros.getColumna("valor_pagado").setVisible(false);
+        tab_parametros.getColumna("usu_anulacion").setVisible(false);
         
         tab_parametros.setTipoFormulario(true);
         tab_parametros.getGrid().setColumns(6);

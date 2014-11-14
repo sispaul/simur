@@ -759,32 +759,23 @@ public class AntiSueldos {
         
  }
     
-    public void deleteDetalle(Integer anti){
-        String au_sql="delete from srh_detalle_anticipo where ide_solicitud_anticipo ="+anti;
+    public void deleteCalculo(Integer anti,Integer cal,String usu){
+        String au_sql="UPDATE srh_calculo_anticipo\n" +
+                "SET ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado ='NEGADO') ,\n" +
+                "usu_anulacion = '"+usu+"' where ide_calculo_anticipo = "+cal+" and ide_solicitud_anticipo = ="+anti;
         conectar();
         con_postgres.ejecutarSql(au_sql);
         con_postgres.desconectar();
         con_postgres = null;
     }
     
-    public void deleteCalculo(Integer anti){
-        String au_sql="delete from srh_calculo_anticipo where ide_solicitud_anticipo ="+anti;
-        conectar();
-        con_postgres.ejecutarSql(au_sql);
-        con_postgres.desconectar();
-        con_postgres = null;
-    }
-    
-    public void deleteGarante(Integer anti){
-        String au_sql="delete from srh_garante_anticipo where ide_solicitud_anticipo ="+anti;
-        conectar();
-        con_postgres.ejecutarSql(au_sql);
-        con_postgres.desconectar();
-        con_postgres = null;
-    }
-    
-    public void deleteSolicitud(Integer anti){
-        String au_sql="delete from srh_solicitud_anticipo where ide_solicitud_anticipo ="+anti;
+    public void deleteSolicitud(Integer anti,String cedula,String usu,String comen,String fecha){
+        String au_sql="UPDATE srh_solicitud_anticipo\n" +
+                "SET usu_anulacion='"+usu+"',\n" +
+                "comen_anulacion='"+comen+"',\n" +
+                "fecha_anulacion='"+fecha+"',\n" +
+                "aprobado_solicitante =0\n" +
+                "where ide_solicitud_anticipo = "+anti+" and ci_solicitante ='"+cedula+"'";
         conectar();
         con_postgres.ejecutarSql(au_sql);
         con_postgres.desconectar();

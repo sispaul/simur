@@ -425,7 +425,7 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
             Integer numero = Integer.parseInt(aCombustible.ParametrosMax("MARCA"));
             Integer cantidad=0;
             cantidad=numero +1;
-            aCombustible.getParametros(String.valueOf(cantidad),tmarca.getValue()+"","MARCA","N/D",utilitario.getVariable("NICK"),utilitario.getFechaActual());
+            aCombustible.getParametros(String.valueOf(cantidad),tmarca.getValue()+"","MARCA","N/D",utilitario.getVariable("NICK"),utilitario.getFormatoFechaSQL(utilitario.getFechaActual()));
             tmarca.limpiar();
         }
     }
@@ -435,7 +435,8 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
             Integer numero = Integer.parseInt(aCombustible.ParametrosMax("TIPO"));
             Integer cantidad=0;
             cantidad=numero +1;
-            aCombustible.getParametros(String.valueOf(cantidad),ttipo.getValue()+"","TIPO",set_marca.getValorSeleccionado(),utilitario.getVariable("NICK"),utilitario.getFechaActual());
+            aCombustible.getParametros(String.valueOf(cantidad),ttipo.getValue()+"","TIPO",set_marca.getValorSeleccionado(),utilitario.getVariable("NICK"),utilitario.getFormatoFechaSQL(utilitario.getFechaActual()));
+            tmarca.limpiar();;
             ttipo.limpiar();
         }
     }
@@ -445,7 +446,8 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
             Integer numero = Integer.parseInt(aCombustible.ParametrosMax("MODELO"));
             Integer cantidad=0;
             cantidad=numero +1;
-            aCombustible.getParametros(String.valueOf(cantidad),tmodelo.getValue()+"","MODEL",set_tipo.getValorSeleccionado(),utilitario.getVariable("NICK"),utilitario.getFechaActual());
+            aCombustible.getParametros(String.valueOf(cantidad),tmodelo.getValue()+"","MODEL",set_tipo.getValorSeleccionado(),utilitario.getVariable("NICK"),utilitario.getFormatoFechaSQL(utilitario.getFechaActual()));
+            tmarca.limpiar();;
             tmodelo.limpiar();
         }
     }
@@ -455,7 +457,8 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
             Integer numero = Integer.parseInt(aCombustible.ParametrosMax("VERSION"));
             Integer cantidad=0;
             cantidad=numero +1;
-            aCombustible.getParametros(String.valueOf(cantidad),tversion.getValue()+"","VERSI",set_modelo.getValorSeleccionado(),utilitario.getVariable("NICK"),utilitario.getFechaActual());
+            aCombustible.getParametros(String.valueOf(cantidad),tversion.getValue()+"","VERSI",set_modelo.getValorSeleccionado(),utilitario.getVariable("NICK"),utilitario.getFormatoFechaSQL(utilitario.getFechaActual()));
+            tmarca.limpiar();;
             tversion.limpiar();
         }
     }
