@@ -340,7 +340,7 @@ public class pre_aprobacion_especial_anticipo extends Pantalla{
         gru_lis.getChildren().add(new Etiqueta("SALDO $ :"));
         gru_lis.getChildren().add(tsaldo);
         gridp.getChildren().add(gru_lis);
-        gridp.getChildren().add(new Etiqueta("___________________________________________________________"));
+        gridp.getChildren().add(new Etiqueta("_____________________________________________________________________________"));
         gridp.getChildren().add(new Etiqueta("FECHA DE DEPOSITO :"));
         gridp.getChildren().add(cal_fechad);
         tnum_doc.setSize(10);
