@@ -66,6 +66,7 @@ public class pre_anticipo_sueldo extends Pantalla{
     //Cuadros para texto, busqueda reportes
     private Texto txt_cedula = new Texto();
     private Texto tex_busqueda = new Texto();
+    private Texto tcomenta = new Texto();
     
     //Dialogo Busca 
     private Dialogo dia_dialogo = new Dialogo();
@@ -73,14 +74,17 @@ public class pre_anticipo_sueldo extends Pantalla{
     private Dialogo dia_dialogoca = new Dialogo();
     private Dialogo dia_dialogoso = new Dialogo();
     private Dialogo dia_dialogosr = new Dialogo();
+    private Dialogo dia_dialogoan = new Dialogo();
     private Grid grid_d = new Grid();
     private Grid grid_ca = new Grid();
     private Grid grid_so = new Grid();
     private Grid grid_ds = new Grid();
+    private Grid grid_an = new Grid();
     private Grid grid = new Grid();
     private Grid grids = new Grid();
     private Grid gridso = new Grid();
     private Grid gridr = new Grid();
+    private Grid gridan = new Grid();
     
     //Contiene todos los elementos de la plantilla
     private Panel pan_opcion = new Panel();
@@ -143,7 +147,7 @@ public class pre_anticipo_sueldo extends Pantalla{
         Boton bot_abort = new Boton();
         bot_abort.setValue("Anular Solictud");
         bot_abort.setIcon("ui-icon-closethick");
-        bot_abort.setMetodo("Anular");
+        bot_abort.setMetodo("Anular1");
         bar_botones.agregarBoton(bot_abort);
         
         Boton bot_des = new Boton();
@@ -233,6 +237,15 @@ public class pre_anticipo_sueldo extends Pantalla{
         dia_dialogosr.getBot_aceptar().setMetodo("aceptoAnticipo");
         gridr.setColumns(4);
         agregarComponente(dia_dialogosr);
+        
+        dia_dialogoan.setId("dia_dialogoan");
+        dia_dialogoan.setTitle("MOTIVO DE ANULACIÓN"); //titulo
+        dia_dialogoan.setWidth("35%"); //siempre en porcentajes  ancho
+        dia_dialogoan.setHeight("20%");//siempre porcentaje   alto
+        dia_dialogoan.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogoan.getBot_aceptar().setMetodo("Anular");
+        grid_an.setColumns(4);
+        agregarComponente(dia_dialogoan);
         
         dibujarSolicitud();
         
@@ -336,6 +349,9 @@ public class pre_anticipo_sueldo extends Pantalla{
         tab_anticipo.getColumna("anio").setVisible(false);
         tab_anticipo.getColumna("periodo").setVisible(false);
         tab_anticipo.getColumna("ide_tipo_ingreso_anticipo").setVisible(false);
+        tab_anticipo.getColumna("usu_anulacion").setVisible(false);
+        tab_anticipo.getColumna("comen_anulacion").setVisible(false);
+        tab_anticipo.getColumna("fecha_anulacion").setVisible(false);
         
         tab_anticipo.setTipoFormulario(true);
         tab_anticipo.agregarRelacion(tab_garante);
@@ -388,6 +404,7 @@ public class pre_anticipo_sueldo extends Pantalla{
         tab_parametros.getColumna("IDE_CALCULO_ANTICIPO").setVisible(false);
         tab_parametros.getColumna("numero_cuotas_pagadas").setVisible(false);
         tab_parametros.getColumna("valor_pagado").setVisible(false);
+        tab_parametros.getColumna("usu_anulacion").setVisible(false);
         
         tab_parametros.setTipoFormulario(true);
         tab_parametros.getGrid().setColumns(6);
@@ -1858,14 +1875,22 @@ public class pre_anticipo_sueldo extends Pantalla{
     }
     
         //Permite Anular la solictud qeu esta ingresada siempre y cuando no este cobrandose.
+    public void Anular1(){
+        dia_dialogoan.Limpiar();
+        dia_dialogoan.setDialogo(gridan);
+        tcomenta.setSize(60);
+        gridan.getChildren().add(new Etiqueta(" INGRESE COMENTARIO :"));
+        gridan.getChildren().add(tcomenta);
+        dia_dialogoan.setDialogo(grid_an);
+        dia_dialogoan.dibujar();;
+    }
+    
     public void Anular(){
         if(tab_parametros.getValor("ide_estado_anticipo").equals("3")){//se encuentra pangandose
               utilitario.agregarMensajeError("Actualmente se Encuentra Descontandose", "");
         }else{
-        iAnticipos.deleteDetalle(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")));
-        iAnticipos.deleteCalculo(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")));
-        iAnticipos.deleteGarante(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")));
-        iAnticipos.deleteSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")));
+        iAnticipos.deleteCalculo(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")),Integer.parseInt(tab_parametros.getValor("ide_calculo_anticipo")),utilitario.getVariable("NICK"));
+        iAnticipos.deleteSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")),tab_anticipo.getValor("ci_solicitante"),utilitario.getVariable("NICK"),tcomenta.getValue()+"",utilitario.getFechaActual());
         utilitario.agregarMensaje("Solicitud Anulada", "Con Exito");
         limpiarPanel();
         }
