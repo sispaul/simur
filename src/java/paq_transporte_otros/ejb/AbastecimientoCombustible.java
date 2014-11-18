@@ -38,6 +38,22 @@ public class AbastecimientoCombustible {
         return tab_persona;
     }
     
+    public void deleteMarca(String anti){
+    String au_sql="DELETE FROM MVLISTA WHERE LIS_NOMBRE ='"+anti+"' and TAB_CODIGO = 'marca'";
+    conectar();
+    conexion.ejecutarSql(au_sql);
+    conexion.desconectar();
+    conexion = null;
+    }
+    
+    public void deleteParam(String anti,String mensaje,String depen){
+    String au_sql="DELETE FROM MVLISTA WHERE LIS_NOMBRE ='"+anti+"' and TAB_CODIGO = '"+mensaje+"' and DEPENDENCI='"+depen+"'";
+    conectar();
+    conexion.ejecutarSql(au_sql);
+    conexion.desconectar();
+    conexion = null;
+    }
+    
     //extraer los datos del conductor desde produccion2014/srh_empleado
     public TablaGenerica getConductores(String nombre) {
         conect();
