@@ -425,8 +425,9 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
             Integer numero = Integer.parseInt(aCombustible.ParametrosMax("MARCA"));
             Integer cantidad=0;
             cantidad=numero +1;
-            aCombustible.getParametros(String.valueOf(cantidad),tmarca.getValue()+"","MARCA","N/D",utilitario.getVariable("NICK"),utilitario.getFormatoFechaSQL(utilitario.getFechaActual()));
+            aCombustible.getParametros(String.valueOf(cantidad),tmarca.getValue()+"","MARCA","N/D",utilitario.getVariable("NICK"),utilitario.getFechaActual());
             tmarca.limpiar();
+            utilitario.agregarMensaje("Registro Guardado", "Marca");
         }
     }
     
@@ -435,9 +436,10 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
             Integer numero = Integer.parseInt(aCombustible.ParametrosMax("TIPO"));
             Integer cantidad=0;
             cantidad=numero +1;
-            aCombustible.getParametros(String.valueOf(cantidad),ttipo.getValue()+"","TIPO",set_marca.getValorSeleccionado(),utilitario.getVariable("NICK"),utilitario.getFormatoFechaSQL(utilitario.getFechaActual()));
+            aCombustible.getParametros(String.valueOf(cantidad),ttipo.getValue()+"","TIPO",set_marca.getValorSeleccionado(),utilitario.getVariable("NICK"),utilitario.getFechaActual());
             tmarca.limpiar();;
             ttipo.limpiar();
+            utilitario.agregarMensaje("Registro Guardado", "Tipo");
         }
     }
     
@@ -446,9 +448,10 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
             Integer numero = Integer.parseInt(aCombustible.ParametrosMax("MODELO"));
             Integer cantidad=0;
             cantidad=numero +1;
-            aCombustible.getParametros(String.valueOf(cantidad),tmodelo.getValue()+"","MODEL",set_tipo.getValorSeleccionado(),utilitario.getVariable("NICK"),utilitario.getFormatoFechaSQL(utilitario.getFechaActual()));
+            aCombustible.getParametros(String.valueOf(cantidad),tmodelo.getValue()+"","MODEL",set_tipo.getValorSeleccionado(),utilitario.getVariable("NICK"),utilitario.getFechaActual());
             tmarca.limpiar();;
             tmodelo.limpiar();
+            utilitario.agregarMensaje("Registro Guardado", "Modelo");
         }
     }
     
@@ -457,9 +460,10 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
             Integer numero = Integer.parseInt(aCombustible.ParametrosMax("VERSION"));
             Integer cantidad=0;
             cantidad=numero +1;
-            aCombustible.getParametros(String.valueOf(cantidad),tversion.getValue()+"","VERSI",set_modelo.getValorSeleccionado(),utilitario.getVariable("NICK"),utilitario.getFormatoFechaSQL(utilitario.getFechaActual()));
+            aCombustible.getParametros(String.valueOf(cantidad),tversion.getValue()+"","VERSI",set_modelo.getValorSeleccionado(),utilitario.getVariable("NICK"),utilitario.getFechaActual());
             tmarca.limpiar();;
             tversion.limpiar();
+            utilitario.agregarMensaje("Registro Guardado", "Versión");
         }
     }
     
@@ -530,8 +534,8 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
     
     public void endMarca(){
         if (set_marca.getValorSeleccionado() != null && set_marca.getValorSeleccionado().isEmpty() == false) {
-            
-
+            aCombustible.deleteMarca(set_marca.getValorSeleccionado());
+            utilitario.agregarMensaje("Registro eliminado", "Marca");
         } else {
             utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
         }
@@ -539,7 +543,9 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
     
     public void endTipo(){
         if (set_tipo.getValorSeleccionado() != null && set_tipo.getValorSeleccionado().isEmpty() == false) {
-            
+            String mensaje = "tipo";
+            aCombustible.deleteParam(set_tipo.getValorSeleccionado(), mensaje, set_marca.getValorSeleccionado());
+            utilitario.agregarMensaje("Registro eliminado", "Tipo");
         } else {
             utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
         }
@@ -547,7 +553,9 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
     
     public void endModelo(){
         if (set_modelo.getValorSeleccionado() != null && set_modelo.getValorSeleccionado().isEmpty() == false) {
-            
+            String mensaje = "model";
+            aCombustible.deleteParam(set_modelo.getValorSeleccionado(), mensaje, set_tipo.getValorSeleccionado());
+            utilitario.agregarMensaje("Registro eliminado", "Modelo");
         } else {
             utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
         }
@@ -555,7 +563,9 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
     
     public void endVersion(){
         if (set_version.getValorSeleccionado() != null && set_version.getValorSeleccionado().isEmpty() == false) {
-            
+            String mensaje = "versi";
+            aCombustible.deleteParam(set_version.getValorSeleccionado(), mensaje, set_modelo.getValorSeleccionado());
+            utilitario.agregarMensaje("Registro eliminado", "Versión");
         } else {
             utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
         }

@@ -1346,7 +1346,6 @@ public void actuaDevolucion(Integer solic){
 
 public TablaGenerica getPeriodoA(Integer ide) {
         //Busca a una empresa en la tabla maestra_ruc por ruc
-    System.err.println("Holas");
         conectar();
         TablaGenerica tab_persona = new TablaGenerica();
         conectar();
