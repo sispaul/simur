@@ -260,7 +260,7 @@ public class pre_aprobacion_especial_anticipo extends Pantalla{
         //para poder busca por apelllido el garante
         dia_dialogo.setId("dia_dialogo");
         dia_dialogo.setTitle("BUSCAR SOLICITUD DE ANTICIPO"); //titulo
-        dia_dialogo.setWidth("55%"); //siempre en porcentajes  ancho
+        dia_dialogo.setWidth("60%"); //siempre en porcentajes  ancho
         dia_dialogo.setHeight("50%");//siempre porcentaje   alto
         dia_dialogo.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_dialogo.getBot_aceptar().setMetodo("datos_anticipo");
@@ -326,31 +326,41 @@ public class pre_aprobacion_especial_anticipo extends Pantalla{
     
     public void datos_anticipo(){
 //        dia_dialogo.cerrar();
-        dia_dialogop.Limpiar();
-        dia_dialogop.setDialogo(gridp);
-        Grid gru_lis = new Grid();
-        gru_lis.setColumns(4);
-        tcedula.setSize(10);
-        gru_lis.getChildren().add(new Etiqueta("CEDULA :"));
-        gru_lis.getChildren().add(tcedula);
-        tnombre.setSize(38);
-        gru_lis.getChildren().add(new Etiqueta("NOMBRES :"));
-        gru_lis.getChildren().add(tnombre);
-        tsaldo.setSize(8);
-        gru_lis.getChildren().add(new Etiqueta("SALDO $ :"));
-        gru_lis.getChildren().add(tsaldo);
-        gridp.getChildren().add(gru_lis);
-        gridp.getChildren().add(new Etiqueta("FECHA DE DEPOSITO :"));
-        gridp.getChildren().add(cal_fechad);
-        tnum_doc.setSize(10);
-        gridp.getChildren().add(new Etiqueta("# DE DOCUMENTO :"));
-        gridp.getChildren().add(tnum_doc);
-        tvalor.setSize(5);
-        gridp.getChildren().add(new Etiqueta(" VALOR $ :"));
-        gridp.getChildren().add(tvalor);
-        dia_dialogop.setDialogo(grid_p);
-        set_pagos.dibujar();
-        dia_dialogop.dibujar();
+        if (set_pagos.getValorSeleccionado() != null && set_pagos.getValorSeleccionado().toString().isEmpty() == false ) {
+            TablaGenerica tab_dato = iAnticipos.getSolicitud(Integer.parseInt(set_pagos.getValorSeleccionado()));
+            if (!tab_dato.isEmpty()) {
+                        dia_dialogop.Limpiar();
+                        dia_dialogop.setDialogo(gridp);
+                        Grid gru_lis = new Grid();
+                        gru_lis.setColumns(4);
+                        tcedula.setSize(10);
+                        gru_lis.getChildren().add(new Etiqueta("CEDULA :"));
+                        gru_lis.getChildren().add(tcedula);
+                        tnombre.setSize(38);
+                        gru_lis.getChildren().add(new Etiqueta("NOMBRES :"));
+                        gru_lis.getChildren().add(tnombre);
+                        tsaldo.setSize(8);
+                        gru_lis.getChildren().add(new Etiqueta("SALDO $ :"));
+                        gru_lis.getChildren().add(tsaldo);
+                        gridp.getChildren().add(gru_lis);
+                        gridp.getChildren().add(new Etiqueta("FECHA DE DEPOSITO :"));
+                        gridp.getChildren().add(cal_fechad);
+                        tnum_doc.setSize(10);
+                        gridp.getChildren().add(new Etiqueta("# DE DOCUMENTO :"));
+                        gridp.getChildren().add(tnum_doc);
+                        tvalor.setSize(5);
+                        gridp.getChildren().add(new Etiqueta(" VALOR $ :"));
+                        gridp.getChildren().add(tvalor);
+                        dia_dialogop.setDialogo(grid_p);
+                        set_pagos.dibujar();
+                        dia_dialogop.dibujar();
+                        
+            }else {
+                utilitario.agregarMensajeInfo("No se encuentra registro", "");
+            }
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar una registro", "");
+        }
     }
     
     @Override
