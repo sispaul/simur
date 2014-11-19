@@ -811,7 +811,7 @@ public class pre_anticipo_sueldo extends Pantalla{
         meses_a = utilitario.getMes(utilitario.getFechaActual());
         dias_a = utilitario.getDia(utilitario.getFechaActual());
         if(tab_anticipo.getValor("id_distributivo").equals("1")){
-            if(tab_anticipo.getValor("cod_tipo").equals("4") ||tab_anticipo.getValor("cod_tipo").equals("8")){
+            if(tab_anticipo.getValor("cod_tipo").equals("4") ||tab_anticipo.getValor("cod_tipo").equals("8")||tab_anticipo.getValor("cod_tipo").equals("3")){
                 if(utilitario.getDia(tab_parametros.getValor("FECHA_ANTICIPO"))<=15){//VALIDACION POR DIA HASTA 10
                     if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>=1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=12){
                         Integer porcentaje =0;  
@@ -924,7 +924,7 @@ public class pre_anticipo_sueldo extends Pantalla{
                             }
                         }
                         }else{
-                            if(tab_datof.getValor("cod_tipo").equals("4")){
+                            if(tab_anticipo.getValor("cod_tipo").equals("4") ||tab_anticipo.getValor("cod_tipo").equals("8")||tab_anticipo.getValor("cod_tipo").equals("3")){
                                 if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>=1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=12){
                                 Integer porcentaje =0;  
                                 porcentaje= utilitario.getMes(utilitario.getFechaActual())+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))-1;
@@ -1026,7 +1026,7 @@ public class pre_anticipo_sueldo extends Pantalla{
                             }
                         }
                         }else{
-                                if(tab_datof.getValor("cod_tipo").equals("4")){
+                                if(tab_anticipo.getValor("cod_tipo").equals("4") ||tab_anticipo.getValor("cod_tipo").equals("8")||tab_anticipo.getValor("cod_tipo").equals("3")){
                                 if(Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))>1 && Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))<=12){
                                 Integer porcentaje =0;  
                                 porcentaje= utilitario.getMes(utilitario.getFechaActual())+Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo"))-1;
