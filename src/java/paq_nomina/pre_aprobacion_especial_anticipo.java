@@ -78,6 +78,12 @@ public class pre_aprobacion_especial_anticipo extends Pantalla{
     private Map p_parametros = new HashMap();
     
     public pre_aprobacion_especial_anticipo() {
+        
+        tnum_doc.setId("tnum_doc");
+        tvalor.setId("tvalor");
+        tcedula.setId("tcedula");
+        tnombre.setId("tnombre");
+        tsaldo.setId("tsaldo");
                 //Mostrar el usuario 
         tab_consulta.setId("tab_consulta");
         tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
@@ -326,6 +332,7 @@ public class pre_aprobacion_especial_anticipo extends Pantalla{
     
     public void datos_anticipo(){
 //        dia_dialogo.cerrar();
+        System.err.println(set_pagos.getValorSeleccionado());
         if (set_pagos.getValorSeleccionado() != null && set_pagos.getValorSeleccionado().toString().isEmpty() == false ) {
             TablaGenerica tab_dato = iAnticipos.getSolicitud(Integer.parseInt(set_pagos.getValorSeleccionado()));
             if (!tab_dato.isEmpty()) {
@@ -354,7 +361,12 @@ public class pre_aprobacion_especial_anticipo extends Pantalla{
                         dia_dialogop.setDialogo(grid_p);
                         set_pagos.dibujar();
                         dia_dialogop.dibujar();
-                        
+                        tcedula.setValue(tab_dato.getValor("ci_solicitante") +"");
+                        tnombre.setValue(tab_dato.getValor("solicitante") +"");
+                        tsaldo.setValue(tab_dato.getValor("saldo") +"");
+                        utilitario.addUpdate("tcedula");
+                        utilitario.addUpdate("tnombre");
+                        utilitario.addUpdate("tsaldo");
             }else {
                 utilitario.agregarMensajeInfo("No se encuentra registro", "");
             }
