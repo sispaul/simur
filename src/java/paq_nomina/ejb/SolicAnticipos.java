@@ -15,8 +15,7 @@ import persistencia.Conexion;
  */
 @Stateless
 public class SolicAnticipos {
-
-    // Add business logic below. (Right-click in editor and choose
+// Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
 
     private Utilitario utilitario = new Utilitario();
@@ -802,145 +801,138 @@ public class SolicAnticipos {
         return tab_funcionario;
         
  }
- 
-public TablaGenerica VerifEmpleid(String cedu,Integer tipo ){
+    public TablaGenerica VerifEmpleid(String cedu,Integer tipo ){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
-                                "s.ide_empleado_solicitante,\n" +
-                                "s.ci_solicitante,\n" +
-                                "s.solicitante,\n" +
-                                "s.ide_tipo_anticipo\n" +
-                                "FROM\n" +
-                                "srh_solicitud_anticipo s\n" +
-                                "INNER JOIN srh_calculo_anticipo c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
-                                "WHERE\n" +
-                                "s.ci_solicitante LIKE '"+cedu+"' and s.ide_tipo_anticipo ="+tipo+"\n" +
-                                "and (c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO')OR\n" +
-                                "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'APROBADO')OR\n" +
-                                "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'PAGANDO'))");
+                "s.ide_empleado_solicitante,\n" +
+                "s.ci_solicitante,\n" +
+                "s.solicitante,\n" +
+                "s.ide_tipo_anticipo\n" +
+                "FROM\n" +
+                "srh_solicitud_anticipo s\n" +
+                "INNER JOIN srh_calculo_anticipo c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
+                "WHERE\n" +
+                "s.ci_solicitante LIKE '"+cedu+"' and s.ide_tipo_anticipo ="+tipo+"\n" +
+                "and (c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO')OR\n" +
+                "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'APROBADO')OR\n" +
+                "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'PAGANDO'))");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
-        
- }
-  
-public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
+    }
+    
+    public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
-                                "s.ide_empleado_solicitante,\n" +
-                                "s.ci_solicitante,\n" +
-                                "s.solicitante\n" +
-                                "FROM\n" +
-                                "srh_solicitud_anticipo s\n" +
-                                "INNER JOIN srh_calculo_anticipo c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
-                                "WHERE\n" +
-                                "s.ide_empleado_solicitante = "+codigo+" and s.ide_tipo_anticipo = "+tipo+"\n" +
-                                "and (c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO')OR\n" +
-                                "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'APROBADO')OR\n" +
-                                "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'PAGANDO'))");
+                "s.ide_empleado_solicitante,\n" +
+                "s.ci_solicitante,\n" +
+                "s.solicitante\n" +
+                "FROM\n" +
+                "srh_solicitud_anticipo s\n" +
+                "INNER JOIN srh_calculo_anticipo c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
+                "WHERE\n" +
+                "s.ide_empleado_solicitante = "+codigo+" and s.ide_tipo_anticipo = "+tipo+"\n" +
+                "and (c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO')OR\n" +
+                "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'APROBADO')OR\n" +
+                "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'PAGANDO'))");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
-        
- }
-
- public TablaGenerica VerifGaranteid(String cedula){
+    }
+    
+    public TablaGenerica VerifGaranteid(String cedula){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
-                                "g.ci_garante,\n" +
-                                "g.garante,\n" +
-                                "c.ide_estado_anticipo\n" +
-                                "FROM\n" +
-                                "srh_solicitud_anticipo s\n" +
-                                "INNER JOIN srh_garante_anticipo g ON g.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
-                                "INNER JOIN srh_calculo_anticipo c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
-                                "where g.ci_garante like '"+cedula+"' and (c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO')OR \n" +
-                                "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'APROBADO')OR \n" +
-                                "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'PAGANDO'))");
+                "g.ci_garante,\n" +
+                "g.garante,\n" +
+                "c.ide_estado_anticipo\n" +
+                "FROM\n" +
+                "srh_solicitud_anticipo s\n" +
+                "INNER JOIN srh_garante_anticipo g ON g.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
+                "INNER JOIN srh_calculo_anticipo c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
+                "where g.ci_garante like '"+cedula+"' and (c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO')OR \n" +
+                "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'APROBADO')OR \n" +
+                "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'PAGANDO'))");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
-        return tab_funcionario;
-        
- }
-  
- public TablaGenerica VerifGaranteCod(Integer codigo){
+        return tab_funcionario;  
+    }
+    
+    public TablaGenerica VerifGaranteCod(Integer codigo){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
-                                "s.ide_empleado_solicitante,\n" +
-                                "g.ide_empleado_garante,\n" +
-                                "g.ci_garante,\n" +
-                                "g.garante\n" +
-                                "FROM\n" +
-                                "srh_solicitud_anticipo AS s\n" +
-                                "INNER JOIN srh_calculo_anticipo AS c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
-                                "INNER JOIN srh_garante_anticipo g ON g.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
-                                "WHERE\n" +
-                                "g.ide_empleado_garante = "+codigo+" AND\n" +
-                                "(c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO') OR\n" +
-                                "c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'APROBADO') OR\n" +
-                                "c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'PAGANDO'))");
+                "s.ide_empleado_solicitante,\n" +
+                "g.ide_empleado_garante,\n" +
+                "g.ci_garante,\n" +
+                "g.garante\n" +
+                "FROM\n" +
+                "srh_solicitud_anticipo AS s\n" +
+                "INNER JOIN srh_calculo_anticipo AS c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
+                "INNER JOIN srh_garante_anticipo g ON g.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
+                "WHERE\n" +
+                "g.ide_empleado_garante = "+codigo+" AND\n" +
+                "(c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO') OR\n" +
+                "c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'APROBADO') OR\n" +
+                "c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'PAGANDO'))");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
-        
- }
- 
- public TablaGenerica Garantemple(String ci){
+    }
+    
+    public TablaGenerica Garantemple(String ci){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
-                                "e.cod_empleado, e.cedula_pass,\n" +
-                                "e.nombres,e.fecha_ingreso,\n" +
-                                "e.fecha_nombramiento,e.id_distributivo,\n" +
-                                "e.cod_tipo,i.tipo\n" +
-                                "FROM\n" +
-                                "srh_empleado e,\n" +
-                                "srh_tipo_empleado i\n" +
-                                "WHERE\n" +
-                                "e.estado = 1 AND\n" +
-                                "e.cod_tipo = i.cod_tipo AND\n" +
-                                "e.cod_tipo in (4,7,8)\n" +
-                                "and e.cedula_pass like '"+ci+"'");
+                "e.cod_empleado, e.cedula_pass,\n" +
+                "e.nombres,e.fecha_ingreso,\n" +
+                "e.fecha_nombramiento,e.id_distributivo,\n" +
+                "e.cod_tipo,i.tipo\n" +
+                "FROM\n" +
+                "srh_empleado e,\n" +
+                "srh_tipo_empleado i\n" +
+                "WHERE\n" +
+                "e.estado = 1 AND\n" +
+                "e.cod_tipo = i.cod_tipo AND\n" +
+                "e.cod_tipo in (4,7,8)\n" +
+                "and e.cedula_pass like '"+ci+"'");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
-        
- }
- 
-  public TablaGenerica GaranteNom(Integer empleado){
+    }
+    
+    public TablaGenerica GaranteNom(Integer empleado){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT cod_empleado,cedula_pass,nombres,id_distributivo,cod_tipo\n" +
-                                "FROM srh_empleado WHERE estado = 1 AND cod_tipo IN (4,7,8) AND cod_empleado ="+empleado+" order by nombres ");
+                "FROM srh_empleado WHERE estado = 1 AND cod_tipo IN (4,7,8) AND cod_empleado ="+empleado+" order by nombres ");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
-        
- }
+    }
     
-  public TablaGenerica Datos(String usuario){
+    public TablaGenerica Datos(String usuario){
         conectarSQL();
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectarSQL();
@@ -950,9 +942,9 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
         conexion.desconectar();
         conexion = null;
         return tab_funcionario;
- }
- 
-  public TablaGenerica empleado(String ci){
+    }
+    
+    public TablaGenerica empleado(String ci){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
@@ -979,26 +971,24 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
-        
- }
-  
-  public TablaGenerica FechaContrato(Integer codigoE){
+    }
+    
+    public TablaGenerica FechaContrato(Integer codigoE){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT fecha_contrato,cod_tipo,ide_num_contrato,fecha_fin\n" +
-                                "FROM srh_num_contratos\n" +
-                                "where cod_empleado = "+codigoE+"\n" +
-                                "ORDER BY fecha_contrato DESC LIMIT 1");
+                "FROM srh_num_contratos\n" +
+                "where cod_empleado = "+codigoE+"\n" +
+                "ORDER BY fecha_contrato DESC LIMIT 1");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
-        
- }
-  
-  public TablaGenerica periodos(String mes, String anio ){
+    }
+    
+    public TablaGenerica periodos(String mes, String anio ){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
@@ -1008,10 +998,9 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
-        
- }
-  
-  public TablaGenerica periodos1(Integer id ){
+    }
+    
+    public TablaGenerica periodos1(Integer id ){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
@@ -1021,23 +1010,21 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
-        
- }
-  
-  public TablaGenerica validar(String id ){
+    }
+    
+    public TablaGenerica validar(String id ){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT ide_anticipo,ide_empleado_garante,ci_garante,garante,ide_empleado_solicitante,ci_solicitante,solicitante,\n" +
-                                "fecha_actua_solicitante,ide_estado_anticipo,aprobado_solicitante\n" +
-                                "FROM srh_anticipo WHERE ci_solicitante like'"+id+"'");
+                "fecha_actua_solicitante,ide_estado_anticipo,aprobado_solicitante\n" +
+                "FROM srh_anticipo WHERE ci_solicitante like'"+id+"'");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
-        
- }
+    }
   
   public TablaGenerica estado(){
         conectar();
@@ -1049,100 +1036,94 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
-        
- }
+  }
   
- public TablaGenerica ide_listado(Integer lista){
+  public TablaGenerica ide_listado(Integer lista){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
-"s.ide_solicitud_anticipo,\n" +
-"s.ide_listado,\n" +
-"s.anio,\n" +
-"d.periodo\n" +
-"FROM\n" +
-"srh_solicitud_anticipo s\n" +
-"INNER JOIN srh_detalle_anticipo d ON d.ide_anticipo = s.ide_solicitud_anticipo\n" +
-"where s.ide_solicitud_anticipo ="+lista);
+                "s.ide_solicitud_anticipo,\n" +
+                "s.ide_listado,\n" +
+                "s.anio,\n" +
+                "d.periodo\n" +
+                "FROM\n" +
+                "srh_solicitud_anticipo s\n" +
+                "INNER JOIN srh_detalle_anticipo d ON d.ide_anticipo = s.ide_solicitud_anticipo\n" +
+                "where s.ide_solicitud_anticipo ="+lista);
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
-        
- }
- public void migra_lista(String cedula,String usu){
-        String nomina ="insert into srh_solicitud_anticipo (ci_solicitante,solicitante,rmu,id_distributivo,cod_cargo,login_ingre_solicitud,ip_ingre_solicitud,login_aprob_solicitud, \n" +
-                "ip_aprob_solicitud,aprobado_solicitante,fecha_aprobacion,ide_listado,fecha_listado,anio,periodo,ide_tipo_anticipo) \n" +
-                "SELECT cedula, solicitante,rmu,id_distributivo,cod_cargo, \n" +
-                "'"+usu+"' as login_ingreso, \n" +
-                "'"+utilitario.getIp()+"' as ip_ingreso, \n" +
-                "'"+usu+"' as login_aprobacion, \n" +
-                "'"+utilitario.getIp()+"' as ip_aprobacion, \n" +
-                "1 as aprobacion, \n" +
-                "'"+utilitario.getFechaActual()+"' as fecha_aprobacion, \n" +
-                "'LIST-2014-00000' as id_listado, \n" +
-                "'"+utilitario.getFechaActual()+"' as fecha_listado, \n" +
-                ""+utilitario.getAnio(utilitario.getFechaActual())+" as anio, \n" +
-                ""+utilitario.getMes(utilitario.getFechaActual())+" as periodo, \n" +
-                "2 as tipo_ant \n" +
-                "FROM srh_migrar_anticipo \n" +
-                "WHERE cedula ilike '"+cedula+"'";
-        conectar();
-        con_postgres.ejecutarSql(nomina);
-        con_postgres.desconectar();
-        con_postgres = null;
-        
-    }
+  }
+  public void migra_lista(String cedula,String usu){
+      String nomina ="insert into srh_solicitud_anticipo (ci_solicitante,solicitante,rmu,id_distributivo,cod_cargo,login_ingre_solicitud,ip_ingre_solicitud,login_aprob_solicitud, \n" +
+              "ip_aprob_solicitud,aprobado_solicitante,fecha_aprobacion,ide_listado,fecha_listado,anio,periodo,ide_tipo_anticipo) \n" +
+              "SELECT cedula, solicitante,rmu,id_distributivo,cod_cargo, \n" +
+              "'"+usu+"' as login_ingreso, \n" +
+              "'"+utilitario.getIp()+"' as ip_ingreso, \n" +
+              "'"+usu+"' as login_aprobacion, \n" +
+              "'"+utilitario.getIp()+"' as ip_aprobacion, \n" +
+              "1 as aprobacion, \n" +
+              "'"+utilitario.getFechaActual()+"' as fecha_aprobacion, \n" +
+              "'LIST-2014-00000' as id_listado, \n" +
+              "'"+utilitario.getFechaActual()+"' as fecha_listado, \n" +
+              ""+utilitario.getAnio(utilitario.getFechaActual())+" as anio, \n" +
+              ""+utilitario.getMes(utilitario.getFechaActual())+" as periodo, \n" +
+              "2 as tipo_ant \n" +
+              "FROM srh_migrar_anticipo \n" +
+              "WHERE cedula ilike '"+cedula+"'";
+      conectar();
+      con_postgres.ejecutarSql(nomina);
+      con_postgres.desconectar();
+      con_postgres = null;
+  }
   
-    public void migra_calculo(String cedula,Integer ide){
-        String nomina ="insert into srh_calculo_anticipo(fecha_anticipo,valor_anticipo,numero_cuotas_anticipo,valor_cuota_mensual,val_cuo_adi,ide_periodo_anticipo_inicial,\n" +
-                        "ide_periodo_anticipo_final,ide_solicitud_anticipo,ide_estado_anticipo)\n" +
-                        "SELECT\n" +
-                        "'2014-11-04' as fecha,\n" +
-                        "saldo,\n" +
-                        "cuotas_pendientes,\n" +
-                        "cast((saldo/cuotas_pendientes) as numeric(6,2)) as cuotas,\n" +
-                        "cast(cuota_adicional as numeric) as cuota_adi,\n" +
-                        "11 as periodo,\n" +
-                        "(11+cuotas_pendientes) as fin,\n" +
-                        ""+ide+" as ide,\n" +
-                        "2 as aprobado\n" +
-                        "FROM\n" +
-                        "srh_migrar_anticipo\n" +
-                        "where cedula like '"+cedula+"'";
-        conectar();
-        con_postgres.ejecutarSql(nomina);
-        con_postgres.desconectar();
-        con_postgres = null;
-        
-    }
+  public void migra_calculo(String cedula,Integer ide){
+      String nomina ="insert into srh_calculo_anticipo(fecha_anticipo,valor_anticipo,numero_cuotas_anticipo,valor_cuota_mensual,val_cuo_adi,ide_periodo_anticipo_inicial,\n" +
+              "ide_periodo_anticipo_final,ide_solicitud_anticipo,ide_estado_anticipo)\n" +
+              "SELECT\n" +
+              "'2014-11-19' as fecha,\n" +
+              "saldo,\n" +
+              "cast((saldo/cuotas_pendientes) as numeric(6,2)) as cuotas,\n" +
+              "cast(cuota_adicional as numeric) as cuota_adi,\n" +
+              "11 as periodo,\n" +
+              "(11+cuotas_pendientes) as fin,\n" +
+              ""+ide+" as ide,\n" +
+              "2 as aprobado\n" +
+              "FROM\n" +
+              "srh_migrar_anticipo\n" +
+              "where cedula like '"+cedula+"'";
+      conectar();
+      con_postgres.ejecutarSql(nomina);
+      con_postgres.desconectar();
+      con_postgres = null;
+  }
   
-        public void migra_calculo1(String cedula,Integer ide){
-        String nomina ="insert into srh_calculo_anticipo(fecha_anticipo,valor_anticipo,numero_cuotas_anticipo,valor_cuota_mensual,val_cuo_adi,ide_periodo_anticipo_inicial,\n" +
-                        "ide_periodo_anticipo_final,ide_solicitud_anticipo,ide_estado_anticipo)\n" +
-                        "SELECT\n" +
-                        "'2014-11-04' as fecha,\n" +
-                        "saldo,\n" +
-                        "cuotas_pendientes,\n" +
-                        "cast(((saldo-cuota_adicional)/(cuotas_pendientes-1)) as numeric(6,2)) as cuotas,\n" +
-                        "cast(cuota_adicional as numeric) as cuota_adi,\n" +
-                        "11 as periodo,\n" +
-                        "(11+cuotas_pendientes) as fin,\n" +
-                        ""+ide+" as ide,\n" +
-                        "2 as aprobado\n" +
-                        "FROM\n" +
-                        "srh_migrar_anticipo\n" +
-                        "where cedula like '"+cedula+"'";
-        conectar();
-        con_postgres.ejecutarSql(nomina);
-        con_postgres.desconectar();
-        con_postgres = null;
-        
-    }
-    
-    public TablaGenerica cod_listado(String cedula){
+  public void migra_calculo1(String cedula,Integer ide){
+      String nomina ="insert into srh_calculo_anticipo(fecha_anticipo,valor_anticipo,numero_cuotas_anticipo,valor_cuota_mensual,val_cuo_adi,ide_periodo_anticipo_inicial,\n" +
+              "ide_periodo_anticipo_final,ide_solicitud_anticipo,ide_estado_anticipo)\n" +
+              "SELECT\n" +
+              "'2014-11-19' as fecha,\n" +
+              "saldo,\n" +
+              "cuotas_pendientes,\n" +
+              "cast(((saldo-cuota_adicional)/(cuotas_pendientes-1)) as numeric(6,2)) as cuotas,\n" +
+              "cast(cuota_adicional as numeric) as cuota_adi,\n" +
+              "11 as periodo,\n" +
+              "(11+cuotas_pendientes) as fin,\n" +
+              ""+ide+" as ide,\n" +
+              "2 as aprobado\n" +
+              "FROM\n" +
+              "srh_migrar_anticipo\n" +
+              "where cedula like '"+cedula+"'";
+      conectar();
+      con_postgres.ejecutarSql(nomina);
+      con_postgres.desconectar();
+      con_postgres = null;
+  }
+  
+  public TablaGenerica cod_listado(String cedula){
        conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
@@ -1152,8 +1133,7 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
-        
- }  
+  }  
   
   public TablaGenerica cod_detalle(Integer ide){
        conectar();
@@ -1161,43 +1141,41 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
         conectar();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
-                                "ide_calculo_anticipo,\n" +
-                                "fecha_anticipo,\n" +
-                                "valor_anticipo,\n" +
-                                "numero_cuotas_anticipo,\n" +
-                                "valor_cuota_mensual,\n" +
-                                "val_cuo_adi,\n" +
-                                "ide_periodo_anticipo_inicial,\n" +
-                                "ide_periodo_anticipo_final\n" +
-                                "FROM\n" +
-                                "srh_calculo_anticipo\n" +
-                                "where ide_solicitud_anticipo ="+ide);
+                "ide_calculo_anticipo,\n" +
+                "fecha_anticipo,\n" +
+                "valor_anticipo,\n" +
+                "numero_cuotas_anticipo,\n" +
+                "valor_cuota_mensual,\n" +
+                "val_cuo_adi,\n" +
+                "ide_periodo_anticipo_inicial,\n" +
+                "ide_periodo_anticipo_final\n" +
+                "FROM\n" +
+                "srh_calculo_anticipo\n" +
+                "where ide_solicitud_anticipo ="+ide);
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
-        
- }
+  }
   
- public TablaGenerica login_solicitud(String ide){
+  public TablaGenerica login_solicitud(String ide){
        conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
-                                "ide_solicitud_anticipo,\n" +
-                                "ide_listado,\n" +
-                                "login_aprob_solicitud,\n" +
-                                "login_ingre_solicitud\n" +
-                                "FROM\n" +
-                                "srh_solicitud_anticipo\n" +
-                                "where ide_listado like '"+ide+"'");
+                "ide_solicitud_anticipo,\n" +
+                "ide_listado,\n" +
+                "login_aprob_solicitud,\n" +
+                "login_ingre_solicitud\n" +
+                "FROM\n" +
+                "srh_solicitud_anticipo\n" +
+                "where ide_listado like '"+ide+"'");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
-        
- }
+  }
   
   public TablaGenerica director(){
         conectar();
@@ -1205,43 +1183,43 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
         conectar();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT e.cod_empleado,\n" +
-                            "e.cedula_pass,\n" +
-                            "e.nombres,\n" +
-                            "e.estado,\n" +
-                            "e.cod_cargo,\n" +
-                            "c.nombre_cargo\n" +
-                            "FROM srh_empleado e\n" +
-                            "INNER JOIN srh_cargos c ON e.cod_cargo = c.cod_cargo\n" +
-                            "WHERE e.cod_cargo = 391 AND e.estado = 1");
+                "e.cedula_pass,\n" +
+                "e.nombres,\n" +
+                "e.estado,\n" +
+                "e.cod_cargo,\n" +
+                "c.nombre_cargo\n" +
+                "FROM srh_empleado e\n" +
+                "INNER JOIN srh_cargos c ON e.cod_cargo = c.cod_cargo\n" +
+                "WHERE e.cod_cargo = 391 AND e.estado = 1");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;   
- }
+  }
   
-    public TablaGenerica cargoSolic(String nombre){
+  public TablaGenerica cargoSolic(String nombre){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
         conectar();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT e.cod_empleado,\n" +
-                        "e.cedula_pass,\n" +
-                        "e.nombres,\n" +
-                        "e.estado,\n" +
-                        "e.cod_cargo,\n" +
-                        "c.nombre_cargo\n" +
-                        "FROM srh_empleado e\n" +
-                        "INNER JOIN srh_cargos c ON e.cod_cargo = c.cod_cargo\n" +
-                        "WHERE e.nombres like '"+nombre+"'");
+                "e.cedula_pass,\n" +
+                "e.nombres,\n" +
+                "e.estado,\n" +
+                "e.cod_cargo,\n" +
+                "c.nombre_cargo\n" +
+                "FROM srh_empleado e\n" +
+                "INNER JOIN srh_cargos c ON e.cod_cargo = c.cod_cargo\n" +
+                "WHERE e.nombres like '"+nombre+"'");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;   
- }
- 
+  }
+
+  
   public String listaMax() {
          conectar();
-
          String ValorMax;
          TablaGenerica tab_consulta = new TablaGenerica();
          conectar();
@@ -1253,21 +1231,21 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
          ValorMax = tab_consulta.getValor("maximo");
          return ValorMax;
   }
- 
+  
   public void actuaSolicitud(Integer anti,String cuota,Integer aprob,String usu){
     String au_sql="update srh_solicitud_anticipo\n" +
-                    "set aprobado_solicitante ="+aprob+",\n" +
-                    "login_aprob_solicitud ='"+usu+"',\n" +
-                    "ip_aprob_solicitud ='"+utilitario.getIp()+"',\n" +
-                    "fecha_aprobacion ='"+utilitario.getFechaActual()+"'\n" +
-                    "WHERE ide_solicitud_anticipo="+anti+" and ci_solicitante = '"+cuota+"'";
+            "set aprobado_solicitante ="+aprob+",\n" +
+            "login_aprob_solicitud ='"+usu+"',\n" +
+            "ip_aprob_solicitud ='"+utilitario.getIp()+"',\n" +
+            "fecha_aprobacion ='"+utilitario.getFechaActual()+"'\n" +
+            "WHERE ide_solicitud_anticipo="+anti+" and ci_solicitante = '"+cuota+"'";
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
-}
-
-    public void actuaMigrar(Double rmu,Integer anti,Integer codigo,Integer aprob,Double rmua,String cedula,Integer migrar){
+  }
+  
+  public void actuaMigrar(Double rmu,Integer anti,Integer codigo,Integer aprob,Double rmua,String cedula,Integer migrar){
     String au_sql="UPDATE srh_migrar_anticipo\n" +
             "set rmu="+rmu+",\n" +
             "id_distributivo="+anti+",\n" +
@@ -1279,9 +1257,9 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
-}
+  }
   
-    public void actuaDaMigrar(Integer grupo,Integer tipo,Integer banco,Integer cuenta,String numero,String cedula,Integer migrar){
+  public void actuaDaMigrar(Integer grupo,Integer tipo,Integer banco,Integer cuenta,String numero,String cedula,Integer migrar){
     String au_sql="UPDATE srh_migrar_anticipo\n" +
             "set cod_grupo="+grupo+",\n" +
             "cod_tipo="+tipo+",\n" +
@@ -1293,56 +1271,55 @@ public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
-}
-    
-public void actualizSolicitud(Integer anti,String cedula){
-    String au_sql="update srh_calculo_anticipo\n" +
-                    "set ide_estado_anticipo =(SELECT ide_estado_tipo FROM srh_estado_anticipo WHERE estado like 'APROBADO')\n" +
-                    "where ide_solicitud_anticipo = (SELECT\n" +
-                    "ide_solicitud_anticipo\n" +
-                    "FROM\n" +
-                    "srh_solicitud_anticipo\n" +
-                    "where ide_solicitud_anticipo = "+anti+" and ci_solicitante like '"+cedula+"' and aprobado_solicitante =1)";
-    conectar();
-    con_postgres.ejecutarSql(au_sql);
-    con_postgres.desconectar();
-    con_postgres = null;
-}
+  }
   
-
-public void negarSolicitud(Integer anti,String cedula){
+  public void actualizSolicitud(Integer anti,String cedula){
     String au_sql="update srh_calculo_anticipo\n" +
-                    "set ide_estado_anticipo =(SELECT ide_estado_tipo FROM srh_estado_anticipo WHERE estado like 'NEGADO')\n" +
-                    "where ide_solicitud_anticipo = (SELECT\n" +
-                    "ide_solicitud_anticipo\n" +
-                    "FROM\n" +
-                    "srh_solicitud_anticipo\n" +
-                    "where ide_solicitud_anticipo = "+anti+" and ci_solicitante like '"+cedula+"')";
+            "set ide_estado_anticipo =(SELECT ide_estado_tipo FROM srh_estado_anticipo WHERE estado like 'APROBADO')\n" +
+            "where ide_solicitud_anticipo = (SELECT\n" +
+            "ide_solicitud_anticipo\n" +
+            "FROM\n" +
+            "srh_solicitud_anticipo\n" +
+            "where ide_solicitud_anticipo = "+anti+" and ci_solicitante like '"+cedula+"' and aprobado_solicitante =1)";
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
-}
-
-public void llenarListado(Integer solic,Integer ide,String cedula,String lista){
+  }
+  
+  public void negarSolicitud(Integer anti,String cedula){
+    String au_sql="update srh_calculo_anticipo\n" +
+            "set ide_estado_anticipo =(SELECT ide_estado_tipo FROM srh_estado_anticipo WHERE estado like 'NEGADO')\n" +
+            "where ide_solicitud_anticipo = (SELECT\n" +
+            "ide_solicitud_anticipo\n" +
+            "FROM\n" +
+            "srh_solicitud_anticipo\n" +
+            "where ide_solicitud_anticipo = "+anti+" and ci_solicitante like '"+cedula+"')";
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+  }
+  
+  public void llenarListado(Integer solic,Integer ide,String cedula,String lista){
     String au_sql="UPDATE srh_solicitud_anticipo\n" +
-                    "set ide_listado ='"+lista+"',\n" +
-                    "fecha_listado ='"+utilitario.getFechaActual()+"'\n" +
-                    "where ide_solicitud_anticipo = "+solic+" and ide_empleado_solicitante = "+ide+" and ci_solicitante ilike '"+cedula+"'";
+            "set ide_listado ='"+lista+"',\n" +
+            "fecha_listado ='"+utilitario.getFechaActual()+"'\n" +
+            "where ide_solicitud_anticipo = "+solic+" and ide_empleado_solicitante = "+ide+" and ci_solicitante ilike '"+cedula+"'";
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
-}
-
-public void actuaDevolucion(Integer solic){
+  }
+  
+  public void actuaDevolucion(Integer solic){
     String au_sql="UPDATE srh_calculo_anticipo set ide_estado_anticipo = 1\n" +
-                    "where ide_solicitud_anticipo ="+solic;
+            "where ide_solicitud_anticipo ="+solic;
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
-}
+  }
 
 public TablaGenerica getPeriodoA(Integer ide) {
         //Busca a una empresa en la tabla maestra_ruc por ruc
@@ -1359,11 +1336,26 @@ public TablaGenerica getPeriodoA(Integer ide) {
                             "srh_detalle_anticipo\n" +
                             "where periodo is null and anio is null and ide_anticipo ="+ide);
         tab_persona.ejecutarSql();
-        conexion.desconectar();
-        conexion = null;
+        con_postgres.desconectar();
+        con_postgres = null;
         return tab_persona;
 }
 
+public TablaGenerica getSolicitud(Integer ide) {
+        //Busca a una empresa en la tabla maestra_ruc por ruc
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        conectar();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT s.ide_solicitud_anticipo,s.ci_solicitante,s.solicitante,c.valor_anticipo,c.valor_cuota_mensual,c.val_cuo_adi,c.numero_cuotas_pagadas,\n" +
+                "c.valor_pagado,(valor_anticipo-valor_pagado)as saldo\n" +
+                "FROM srh_solicitud_anticipo s INNER JOIN srh_calculo_anticipo c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
+                "where c.ide_estado_anticipo in (2,3) and s.ide_solicitud_anticipo ="+ide);
+        tab_persona.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_persona;
+}
 
     public void actuaPerAnio15(Integer anti){
     String au_sql="update srh_detalle_anticipo\n" +
