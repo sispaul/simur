@@ -405,6 +405,9 @@ public class pre_anticipo_sueldo extends Pantalla{
         tab_parametros.getColumna("numero_cuotas_pagadas").setVisible(false);
         tab_parametros.getColumna("valor_pagado").setVisible(false);
         tab_parametros.getColumna("usu_anulacion").setVisible(false);
+        tab_parametros.getColumna("usu_pago_anticipado").setVisible(false);
+        tab_parametros.getColumna("fecha_pago_anticipado").setVisible(false);
+        tab_parametros.getColumna("numero_documento_pago").setVisible(false);
         
         tab_parametros.setTipoFormulario(true);
         tab_parametros.getGrid().setColumns(6);
