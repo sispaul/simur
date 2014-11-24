@@ -249,9 +249,34 @@ public class AbastecimientoCombustible {
          return ValorMax;
   }
     
-    public void getParametros(String id,String nombre,String codigo,String dependencia,String login,String fecha){
+    public TablaGenerica get_DuplicaDatos(String nombre,String codigo,String dependencia) {
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT LIS_ID,LIS_NOMBRE,TAB_CODIGO,DEPENDENCI\n" +
+                "FROM MVLISTA\n" +
+                "WHERE LIS_NOMBRE='"+nombre+"' AND TAB_CODIGO='"+codigo+"' AND DEPENDENCI ='"+dependencia+"'");
+        tab_persona.ejecutarSql();
+        conexion.desconectar();
+        conexion = null;
+        return tab_persona;
+    }
+    
+    public TablaGenerica get_ExtraDatos(String nombre,String codigo,String dependencia) {
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT LIS_ID,LIS_NOMBRE,TAB_CODIGO,DEPENDENCI\n" +
+                "FROM MVLISTA\n" +
+                "WHERE LIS_ID='"+nombre+"' AND TAB_CODIGO='"+codigo+"' AND DEPENDENCI ='"+dependencia+"'");
+        tab_persona.ejecutarSql();
+        conexion.desconectar();
+        conexion = null;
+        return tab_persona;
+    }
+    public void getParametros(String id,String nombre,String codigo,String dependencia,String login){
         String parametro ="insert into MVLISTA (LIS_ID,LIS_NOMBRE,LIS_ESTADO,TAB_CODIGO,DEPENDENCI,LIS_LOGININGRESO,LIS_FECHAINGRESO)\n" +
-                "values ('"+id+"','"+nombre+"',1,'"+codigo+"','"+dependencia+"','"+login+"','"+fecha+"')";
+                "values ('"+id+"','"+nombre+"',1,'"+codigo+"','"+dependencia+"','"+login+"',"+utilitario.getFormatoFechaSQL(utilitario.getFechaActual())+")";
         conectar();
         conexion.ejecutarSql(parametro);
         conexion.desconectar();
