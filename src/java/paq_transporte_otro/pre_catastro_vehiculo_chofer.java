@@ -37,6 +37,8 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
     private Tabla tab_articulo = new Tabla();
     private Tabla tab_consulta = new Tabla();
     private Tabla set_conductor = new Tabla();
+    private Tabla set_marcas = new Tabla();
+    private Tabla set_tipos = new Tabla();
     
     //DECLARACION OBJETOS PARA PARAMETROS
     private SeleccionTabla set_ingresos = new SeleccionTabla();
@@ -64,6 +66,21 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
     private Texto txt_cantidad = new Texto();
     private Texto txt_estado = new Texto();
 
+    //Dialogo de Ingreso de tablas
+    private Dialogo dia_dialogo = new Dialogo();
+    private Dialogo dia_dialogot = new Dialogo();
+    private Dialogo dia_dialogom = new Dialogo();
+    private Dialogo dia_dialogov = new Dialogo();
+    private Grid grid_o = new Grid();
+    private Grid grid_t = new Grid();
+    private Grid grid_m = new Grid();
+    private Grid grid_v = new Grid();
+    private Grid grid = new Grid();
+    private Grid gridt = new Grid();
+    private Grid gridm = new Grid();
+    private Grid gridv = new Grid();
+    
+    String tipo, modelo,version;
     //buscar solicitud
     private AutoCompletar aut_busca = new AutoCompletar();
     @EJB
@@ -103,7 +120,7 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         Boton bot_registro = new Boton();
         bot_registro.setValue("INSERTAR MARCA");
         bot_registro.setIcon("ui-icon-comment");
-        bot_registro.setMetodo("abrirSeleccionTabla");
+        bot_registro.setMetodo("ing_marcas");
         bar_botones.agregarBoton(bot_registro);
         
         //Dialogos de Ingreso de parametros necesarios para vehiculo
@@ -125,7 +142,7 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         gri_marca.getChildren().add(bot_marcax);
         set_marca.setId("set_marca");
         set_marca.getTab_seleccion().setConexion(con_sql);
-        set_marca.setSeleccionTabla("SELECT LIS_NOMBRE,LIS_NOMBRE as MARCA FROM MVLISTA where TAB_CODIGO = 'MARCA' and LIS_ESTADO = 1 order by MARCA", "LIS_NOMBRE");
+        set_marca.setSeleccionTabla("SELECT LIS_ID,LIS_NOMBRE as MARCA FROM MVLISTA where TAB_CODIGO = 'MARCA' and LIS_ESTADO = 1 order by LIS_NOMBRE ", "LIS_NOMBRE");
         set_marca.getTab_seleccion().getColumna("MARCA").setFiltro(true);
         set_marca.getTab_seleccion().setRows(11);
         set_marca.setWidth("36%"); //siempre en porcentajes  ancho
@@ -153,7 +170,7 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         gri_tipo.getChildren().add(bot_tipox);
         set_tipo.setId("set_tipo");
         set_tipo.getTab_seleccion().setConexion(con_sql);
-        set_tipo.setSeleccionTabla("SELECT LIS_NOMBRE,LIS_NOMBRE as TIPO FROM MVLISTA WHERE TAB_CODIGO = 'TIPO' and LIS_ESTADO = 1 order by tipo", "LIS_NOMBRE");
+        set_tipo.setSeleccionTabla("SELECT LIS_ID,LIS_NOMBRE as TIPO FROM MVLISTA WHERE TAB_CODIGO = 'TIPO' and LIS_ESTADO = 1 order by LIS_NOMBRE ", "LIS_NOMBRE");
         set_tipo.getTab_seleccion().getColumna("TIPO").setFiltro(true);
         set_tipo.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
         set_tipo.getTab_seleccion().setRows(11);
@@ -182,7 +199,7 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         gri_modelo.getChildren().add(bot_modelox);
         set_modelo.setId("set_modelo");
         set_modelo.getTab_seleccion().setConexion(con_sql);
-        set_modelo.setSeleccionTabla("SELECT LIS_NOMBRE,LIS_NOMBRE as MODELO FROM MVLISTA WHERE TAB_CODIGO = 'MODEL' and LIS_ESTADO = 1 order by modelo", "LIS_NOMBRE");
+        set_modelo.setSeleccionTabla("SELECT LIS_ID,LIS_NOMBRE as MODELO FROM MVLISTA WHERE TAB_CODIGO = 'MODEL' and LIS_ESTADO = 1 order by LIS_NOMBRE ", "LIS_NOMBRE");
         set_modelo.getTab_seleccion().getColumna("MODELO").setFiltro(true);
         set_modelo.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
         set_modelo.getTab_seleccion().setRows(11);
@@ -211,7 +228,7 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         gri_version.getChildren().add(bot_versionx);
         set_version.setId("set_version");
         set_version.getTab_seleccion().setConexion(con_sql);
-        set_version.setSeleccionTabla("SELECT LIS_NOMBRE,LIS_NOMBRE as VERSION FROM MVLISTA WHERE TAB_CODIGO = 'VERSI' and LIS_ESTADO = 1 order by version", "LIS_NOMBRE");
+        set_version.setSeleccionTabla("SELECT LIS_ID,LIS_NOMBRE as VERSION FROM MVLISTA WHERE TAB_CODIGO = 'VERSI' and LIS_ESTADO = 1 order by LIS_NOMBRE ", "LIS_NOMBRE");
         set_version.getTab_seleccion().getColumna("VERSION").setFiltro(true);
         set_version.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
         set_version.getTab_seleccion().setRows(11);
@@ -241,8 +258,105 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         set_ingresos.getBot_aceptar().setMetodo("aceptarBusqueda");
         set_ingresos.setHeader("BUSCAR SOLICITUD POR CEDULA");
         agregarComponente(set_ingresos);
+        
+        //para poder busca por apelllido el garante
+        Grid gri_marcas = new Grid();
+        gri_marcas.setColumns(6);
+        gri_marcas.getChildren().add(new Etiqueta("Ingrese Marca: "));
+        gri_marcas.getChildren().add(tmarca);
+        Boton bot_marcas = new Boton();
+        bot_marcas.setValue("Guardar");
+        bot_marcas.setIcon("ui-icon-disk");
+        bot_marcas.setMetodo("insMarca");
+        bar_botones.agregarBoton(bot_marcas);
+        Boton bot_marcaxs = new Boton();
+        bot_marcaxs.setValue("Eliminar");
+        bot_marcaxs.setIcon("ui-icon-closethick");
+        bot_marcaxs.setMetodo("endMarca");
+        bar_botones.agregarBoton(bot_marcaxs);
+        gri_marcas.getChildren().add(bot_marcas);
+        gri_marcas.getChildren().add(bot_marcaxs);
+        dia_dialogo.setId("dia_dialogo");
+        dia_dialogo.setTitle("IINGRESO DE MARCA"); //titulo
+        dia_dialogo.setWidth("30%"); //siempre en porcentajes  ancho
+        dia_dialogo.setHeight("40%");//siempre porcentaje   alto
+        dia_dialogo.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogo.getGri_cuerpo().setHeader(gri_marcas);
+        dia_dialogo.getBot_aceptar().setMetodo("acepta_marca");
+        grid_o.setColumns(4);
+        agregarComponente(dia_dialogo);
+        
+        set_marcas.setId("set_marcas");
+        set_marcas.setConexion(con_sql);
+        set_marcas.setSql("SELECT LIS_ID,LIS_NOMBRE FROM MVLISTA where TAB_CODIGO = 'MARCA' and LIS_ESTADO = 1 order by LIS_NOMBRE");
+        set_marcas.getColumna("LIS_NOMBRE").setFiltro(true);
+        set_marcas.setTipoSeleccion(false);
+        set_marcas.setRows(10);
+        set_marcas.dibujar();
+        
+        Grid gri_tipos = new Grid();
+        gri_tipos.setColumns(6);
+        gri_tipos.getChildren().add(new Etiqueta("Ingrese Tipo"));
+        gri_tipos.getChildren().add(ttipo);
+        Boton bot_tipos = new Boton();
+        bot_tipos.setValue("Guardar");
+        bot_tipos.setIcon("ui-icon-disk");
+        bot_tipos.setMetodo("insTipo");
+        bar_botones.agregarBoton(bot_tipos);
+        Boton bot_tipoxs = new Boton();
+        bot_tipoxs.setValue("Eliminar");
+        bot_tipoxs.setIcon("ui-icon-closethick");
+        bot_tipoxs.setMetodo("endTipo");
+        bar_botones.agregarBoton(bot_tipoxs);
+        gri_tipos.getChildren().add(bot_tipos);
+        gri_tipos.getChildren().add(bot_tipoxs);
+        dia_dialogot.setId("dia_dialogot");
+        dia_dialogot.setTitle("IINGRESO DE TIPO"); //titulo
+        dia_dialogot.setWidth("30%"); //siempre en porcentajes  ancho
+        dia_dialogot.setHeight("40%");//siempre porcentaje   alto
+        dia_dialogot.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogot.getGri_cuerpo().setHeader(gri_tipos);
+        dia_dialogot.getBot_aceptar().setMetodo("acepta_marca");
+        grid_t.setColumns(4);
+        agregarComponente(dia_dialogot);
+        
     }
-
+    
+    public void ing_marcas(){
+        dia_dialogo.Limpiar();
+        dia_dialogo.setDialogo(grid);
+        grid_o.getChildren().add(set_marcas);
+        dia_dialogo.setDialogo(grid_o);
+        set_marcas.dibujar();
+        dia_dialogo.dibujar();
+    }
+    
+    public void acepta_marca(){
+//        dia_dialogo.cerrar();
+        tipo = null;
+        tipo = set_marcas.getValorSeleccionado();
+        if (set_marcas.getValorSeleccionado() != null && set_marcas.getValorSeleccionado().isEmpty() == false) {
+            TablaGenerica tab_dato =aCombustible.get_ExtraDatos(set_marcas.getValorSeleccionado()+"","MARCA", "N/D");
+            if (!tab_dato.isEmpty()) {
+                dia_dialogot.Limpiar();
+                dia_dialogot.setDialogo(gridt);
+                grid_t.getChildren().add(set_tipos);
+                set_tipos.setId("set_tipos");
+                set_tipos.setConexion(con_sql);
+                set_tipos.setSql("SELECT LIS_ID,LIS_NOMBRE FROM MVLISTA WHERE TAB_CODIGO = 'TIPO' and LIS_ESTADO = 1 and dependenci ='"+tab_dato.getValor("LIS_NOMBRE")+"' order by LIS_NOMBRE");
+                set_tipos.getColumna("LIS_NOMBRE").setFiltro(true);
+                set_tipos.setTipoSeleccion(false);
+                set_tipos.setRows(10);
+                set_tipos.dibujar();
+                dia_dialogot.setDialogo(grid_t);
+                set_marcas.dibujar();
+                dia_dialogot.dibujar();
+            }else{
+            }
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar almenos un registro", "");
+        }
+    }
     public void abrirVerTabla() {
         set_ingresos.dibujar();
     }
@@ -422,24 +536,39 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
     
     public void insMarca(){
         if(tmarca.getValue()!= null && tmarca.toString().isEmpty()==false){
-            Integer numero = Integer.parseInt(aCombustible.ParametrosMax("MARCA"));
-            Integer cantidad=0;
-            cantidad=numero +1;
-            aCombustible.getParametros(String.valueOf(cantidad),tmarca.getValue()+"","MARCA","N/D",utilitario.getVariable("NICK"),utilitario.getFechaActual());
-            tmarca.limpiar();
-            utilitario.agregarMensaje("Registro Guardado", "Marca");
+            TablaGenerica tab_dato =aCombustible.get_DuplicaDatos(tmarca.getValue()+"","MARCA", "N/D");
+            if (!tab_dato.isEmpty()) {
+                utilitario.agregarMensaje("Marca ya se Encuentra Registrada", "");
+            }else{
+                Integer numero = Integer.parseInt(aCombustible.ParametrosMax("MARCA"));
+                Integer cantidad=0;
+                cantidad=numero +1;
+                aCombustible.getParametros(String.valueOf(cantidad),tmarca.getValue()+"","MARCA","N/D",utilitario.getVariable("NICK"));
+                tmarca.limpiar();
+                utilitario.agregarMensaje("Registro Guardado", "Marca");
+                set_marcas.actualizar();
+            }
         }
     }
     
     public void insTipo(){
-        if(ttipo.getValue()!= null && ttipo.toString().isEmpty()==false){
-            Integer numero = Integer.parseInt(aCombustible.ParametrosMax("TIPO"));
-            Integer cantidad=0;
-            cantidad=numero +1;
-            aCombustible.getParametros(String.valueOf(cantidad),ttipo.getValue()+"","TIPO",set_marca.getValorSeleccionado(),utilitario.getVariable("NICK"),utilitario.getFechaActual());
-            tmarca.limpiar();;
-            ttipo.limpiar();
-            utilitario.agregarMensaje("Registro Guardado", "Tipo");
+            TablaGenerica tab_dato =aCombustible.get_ExtraDatos(tipo,"MARCA", "N/D");
+            if (!tab_dato.isEmpty()) {
+                TablaGenerica tab_dato1 =aCombustible.get_DuplicaDatos(ttipo.getValue()+"","TIPO", "N/D");
+                if (!tab_dato1.isEmpty()) {
+                    utilitario.agregarMensaje("Tipo ya se Encuentra Registrado", "");
+                }else{
+                    if(ttipo.getValue()!= null && ttipo.toString().isEmpty()==false){
+                    Integer numero = Integer.parseInt(aCombustible.ParametrosMax("TIPO"));
+                    Integer cantidad=0;
+                    cantidad=numero +1;
+                    aCombustible.getParametros(String.valueOf(cantidad),ttipo.getValue()+"","TIPO",tab_dato.getValor("LIS_NOMBRE"),utilitario.getVariable("NICK"));
+                    tmarca.limpiar();;
+                    ttipo.limpiar();
+                    utilitario.agregarMensaje("Registro Guardado", "Tipo");
+                    set_tipos.actualizar();
+                }
+            }
         }
     }
     
@@ -448,7 +577,7 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
             Integer numero = Integer.parseInt(aCombustible.ParametrosMax("MODELO"));
             Integer cantidad=0;
             cantidad=numero +1;
-            aCombustible.getParametros(String.valueOf(cantidad),tmodelo.getValue()+"","MODEL",set_tipo.getValorSeleccionado(),utilitario.getVariable("NICK"),utilitario.getFechaActual());
+            aCombustible.getParametros(String.valueOf(cantidad),tmodelo.getValue()+"","MODEL",set_tipo.getValorSeleccionado(),utilitario.getVariable("NICK"));
             tmarca.limpiar();;
             tmodelo.limpiar();
             utilitario.agregarMensaje("Registro Guardado", "Modelo");
@@ -457,10 +586,11 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
     
     public void insVersion(){
         if(tversion.getValue()!= null && tversion.toString().isEmpty()==false){
+            
             Integer numero = Integer.parseInt(aCombustible.ParametrosMax("VERSION"));
             Integer cantidad=0;
             cantidad=numero +1;
-            aCombustible.getParametros(String.valueOf(cantidad),tversion.getValue()+"","VERSI",set_modelo.getValorSeleccionado(),utilitario.getVariable("NICK"),utilitario.getFechaActual());
+            aCombustible.getParametros(String.valueOf(cantidad),tversion.getValue()+"","VERSI",set_modelo.getValorSeleccionado(),utilitario.getVariable("NICK"));
             tmarca.limpiar();;
             tversion.limpiar();
             utilitario.agregarMensaje("Registro Guardado", "Versión");
@@ -678,6 +808,22 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
 
     public void setAut_busca(AutoCompletar aut_busca) {
         this.aut_busca = aut_busca;
+    }
+
+    public Tabla getSet_marcas() {
+        return set_marcas;
+    }
+
+    public void setSet_marcas(Tabla set_marcas) {
+        this.set_marcas = set_marcas;
+    }
+
+    public Tabla getSet_tipos() {
+        return set_tipos;
+    }
+
+    public void setSet_tipos(Tabla set_tipos) {
+        this.set_tipos = set_tipos;
     }
     
 }
