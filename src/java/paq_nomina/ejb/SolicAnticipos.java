@@ -1320,28 +1320,28 @@ public class SolicAnticipos {
     con_postgres.desconectar();
     con_postgres = null;
   }
-
-public TablaGenerica getPeriodoA(Integer ide) {
+  
+  public TablaGenerica getPeriodoA(Integer ide) {
         //Busca a una empresa en la tabla maestra_ruc por ruc
         conectar();
         TablaGenerica tab_persona = new TablaGenerica();
         conectar();
         tab_persona.setConexion(con_postgres);
         tab_persona.setSql("SELECT ide_anticipo,\n" +
-                            "ide_detalle_anticipo,\n" +
-                            "ide_periodo_descuento,\n" +
-                            "periodo,\n" +
-                            "anio\n" +
-                            "FROM\n" +
-                            "srh_detalle_anticipo\n" +
-                            "where periodo is null and anio is null and ide_anticipo ="+ide);
+                "ide_detalle_anticipo,\n" +
+                "ide_periodo_descuento,\n" +
+                "periodo,\n" +
+                "anio\n" +
+                "FROM\n" +
+                "srh_detalle_anticipo\n" +
+                "where periodo is null and anio is null and ide_anticipo ="+ide);
         tab_persona.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
         return tab_persona;
-}
-
-public TablaGenerica getSolicitud(Integer ide) {
+  }
+  
+  public TablaGenerica getSolicitud(Integer ide) {
         //Busca a una empresa en la tabla maestra_ruc por ruc
         conectar();
         TablaGenerica tab_persona = new TablaGenerica();
@@ -1355,153 +1355,202 @@ public TablaGenerica getSolicitud(Integer ide) {
         con_postgres.desconectar();
         con_postgres = null;
         return tab_persona;
-}
-
-    public void actuaPerAnio15(Integer anti){
+  }
+  
+  public TablaGenerica getSoli_Detalle(String cedula) {
+        //Busca a una empresa en la tabla maestra_ruc por ruc
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        conectar();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT s.ide_solicitud_anticipo,\n" +
+                "s.ci_solicitante,\n" +
+                "s.solicitante,\n" +
+                "c.ide_calculo_anticipo,\n" +
+                "c.valor_anticipo,\n" +
+                "c.valor_pagado,\n" +
+                "(valor_anticipo-valor_pagado) AS saldo\n" +
+                "FROM srh_solicitud_anticipo s \n" +
+                "INNER JOIN srh_calculo_anticipo c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
+                "where c.ide_estado_anticipo in (2,3) and s.ci_solicitante = '"+cedula+"'");
+        tab_persona.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_persona;
+  }
+  
+  public void set_ActDetalle_PagoAnti(Integer ide,Integer periodo,String usu,String fecha){
     String au_sql="update srh_detalle_anticipo\n" +
-            "set periodo =d.periodo, \n" +
-            "anio =d.anio\n" +
-            "from (SELECT\n" +
-            "ide_periodo_anticipo,\n" +
-            "periodo,\n" +
-            "anio\n" +
-            "FROM\n" +
-            "srh_periodo_anticipo ) as d\n" +
-            "where \n" +
-            "srh_detalle_anticipo.periodo is null and\n" +
-            "srh_detalle_anticipo.anio is null and \n" +
-            "d.ide_periodo_anticipo = srh_detalle_anticipo.ide_periodo_descuento  and \n" +
-            "srh_detalle_anticipo.ide_anticipo = "+anti;
+            "set ide_periodo_descontado="+periodo+",\n" +
+            "ide_estado_cuota=1,\n" +
+            "usu_pago_anticipado='"+usu+"',\n" +
+            "fecha_pago_anticipado='"+fecha+"'\n" +
+            "where ide_periodo_descontado is null and ide_estado_cuota is null and ide_anticipo ="+ide;
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
-    }
-
-    public void actuaPerAnio16(Integer anti){
-    String au_sql="update srh_detalle_anticipo\n" +
-            "set periodo =d.periodo, \n" +
-            "anio =d.anio\n" +
-            "from (SELECT\n" +
-            "ide_periodo_anticipo,\n" +
-            "periodo,\n" +
-            "anio\n" +
-            "FROM\n" +
-            "srh_periodo_anticipo ) as d\n" +
-            "where \n" +
-            "srh_detalle_anticipo.periodo is null and\n" +
-            "srh_detalle_anticipo.anio is null and \n" +
-            "d.ide_periodo_anticipo = srh_detalle_anticipo.ide_periodo_descuento  and \n" +
-            "srh_detalle_anticipo.ide_anticipo = "+anti;
-    conectar();
-    con_postgres.ejecutarSql(au_sql);
-    con_postgres.desconectar();
-    con_postgres = null;
-    }
-public void actuaSoliDevolucion(Integer solic){
-    String au_sql="UPDATE srh_solicitud_anticipo set login_aprob_solicitud = null,\n" +
-                "ip_aprob_solicitud = null,fecha_aprobacion = null,aprobado_solicitante = null\n" +
-                "where ide_solicitud_anticipo ="+solic;
-    conectar();
-    con_postgres.ejecutarSql(au_sql);
-    con_postgres.desconectar();
-    con_postgres = null;
-}
-
-public void actuaCalculo(Integer solic,Double valor){
+  }
+  
+    public void set_ActCalculo_PagoAnti(Integer solic,Integer calcu,String usu,String fecha,String doc){
     String au_sql="UPDATE srh_calculo_anticipo\n" +
-                    "set valor_cuota_mensual ="+valor+"\n" +
-                    "where ide_solicitud_anticipo ="+solic;
+            "SET ide_estado_anticipo =4,\n" +
+            "usu_pago_anticipado='"+usu+"',\n" +
+            "fecha_pago_anticipado='"+fecha+"',\n" +
+            "numero_documento_pago ='"+doc+"'\n" +
+            "where ide_solicitud_anticipo = "+solic+" and ide_calculo_anticipo ="+calcu;
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
-}
-
-public void llenarSolicitud(Integer anti,String cuota,Double valor,Integer perdes){
+  }
+  
+  public void actuaPerAnio15(Integer anti){
+    String au_sql="update srh_detalle_anticipo\n" +
+            "set periodo =d.periodo, \n" +
+            "anio =d.anio\n" +
+            "from (SELECT\n" +
+            "ide_periodo_anticipo,\n" +
+            "periodo,\n" +
+            "anio\n" +
+            "FROM\n" +
+            "srh_periodo_anticipo ) as d\n" +
+            "where \n" +
+            "srh_detalle_anticipo.periodo is null and\n" +
+            "srh_detalle_anticipo.anio is null and \n" +
+            "d.ide_periodo_anticipo = srh_detalle_anticipo.ide_periodo_descuento  and \n" +
+            "srh_detalle_anticipo.ide_anticipo = "+anti;
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+  }
+  
+  public void actuaPerAnio16(Integer anti){
+    String au_sql="update srh_detalle_anticipo\n" +
+            "set periodo =d.periodo, \n" +
+            "anio =d.anio\n" +
+            "from (SELECT\n" +
+            "ide_periodo_anticipo,\n" +
+            "periodo,\n" +
+            "anio\n" +
+            "FROM\n" +
+            "srh_periodo_anticipo ) as d\n" +
+            "where \n" +
+            "srh_detalle_anticipo.periodo is null and\n" +
+            "srh_detalle_anticipo.anio is null and \n" +
+            "d.ide_periodo_anticipo = srh_detalle_anticipo.ide_periodo_descuento  and \n" +
+            "srh_detalle_anticipo.ide_anticipo = "+anti;
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+  }
+  
+  public void actuaSoliDevolucion(Integer solic){
+    String au_sql="UPDATE srh_solicitud_anticipo set login_aprob_solicitud = null,\n" +
+            "ip_aprob_solicitud = null,fecha_aprobacion = null,aprobado_solicitante = null\n" +
+            "where ide_solicitud_anticipo ="+solic;
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+  }
+  
+  public void actuaCalculo(Integer solic,Double valor){
+    String au_sql="UPDATE srh_calculo_anticipo\n" +
+            "set valor_cuota_mensual ="+valor+"\n" +
+            "where ide_solicitud_anticipo ="+solic;
+    conectar();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+  }
+  
+  public void llenarSolicitud(Integer anti,String cuota,Double valor,Integer perdes){
     String au_sql="insert into srh_detalle_anticipo (ide_anticipo,cuota,valor,ide_periodo_descuento)\n" +
-                  "values ("+anti+",'"+cuota+"',"+valor+","+perdes+")";
+            "values ("+anti+",'"+cuota+"',"+valor+","+perdes+")";
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
-}
-
-public void llenarSolicitud1(Integer anti,String cuota,Double valor,Integer perdes,Double valor1){
+  }
+  
+  public void llenarSolicitud1(Integer anti,String cuota,Double valor,Integer perdes,Double valor1){
     String au_sql="insert into srh_detalle_anticipo (ide_anticipo,cuota,valor,ide_periodo_descuento,valor_cuota_mensual)\n" +
-                  "values ("+anti+",'"+cuota+"',"+valor+","+perdes+","+valor1+")";
+            "values ("+anti+",'"+cuota+"',"+valor+","+perdes+","+valor1+")";
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
-}
-
-public void deleteDetalle(Integer anti){
+  }
+  
+  public void deleteDetalle(Integer anti){
     String au_sql="delete from srh_detalle_anticipo where ide_solicitud_anticipo ="+anti;
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
-}
-
-public void deleteCalculo(Integer anti){
+  }
+  
+  public void deleteCalculo(Integer anti){
     String au_sql="delete from srh_calculo_anticipo where ide_solicitud_anticipo ="+anti;
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
-}
-
-public void deleteGarante(Integer anti){
+  }
+  
+  public void deleteGarante(Integer anti){
     String au_sql="delete from srh_garante_anticipo where ide_solicitud_anticipo ="+anti;
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
-}
-
-public void deleteSolicitud(Integer anti){
+  }
+  
+  public void deleteSolicitud(Integer anti){
     String au_sql="delete from srh_solicitud_anticipo where ide_solicitud_anticipo ="+anti;
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
-}
-
-public void deleteDevolver(Integer anti){
+  }
+  
+  public void deleteDevolver(Integer anti){
     String au_sql="delete from srh_detalle_anticipo where ide_anticipo ="+anti;
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
-}
-
-public void deleteMigrar(){
+  }
+  
+  public void deleteMigrar(){
     String au_sql="delete from srh_migrar_anticipo";
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
-}
-
-public void llenarSolicitud(Integer anti,String cuota,Double valor,String obser,Integer perdes){
+  }
+  
+  public void llenarSolicitud(Integer anti,String cuota,Double valor,String obser,Integer perdes){
     String au_sql="insert into srh_detalle_anticipo (ide_anticipo,cuota,valor,ide_periodo_descuento)\n" +
-                  "values ("+anti+",'"+cuota+"',"+valor+","+perdes+")";
+            "values ("+anti+",'"+cuota+"',"+valor+","+perdes+")";
     conectar();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
-}
-
-private void conectar() {
+  }
+  
+  private void conectar() {
         if (con_postgres == null) {
             con_postgres = new Conexion();
             con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
             con_postgres.NOMBRE_MARCA_BASE = "postgres";
         }
-}
-
-public TablaGenerica getUsuario(String iden) {
+  }
+  
+  public TablaGenerica getUsuario(String iden) {
         //Busca a una empresa en la tabla maestra_ruc por ruc
         conectarSQL();
         TablaGenerica tab_persona = new TablaGenerica();
@@ -1511,9 +1560,9 @@ public TablaGenerica getUsuario(String iden) {
         conexion.desconectar();
         conexion = null;
         return tab_persona;
-}
-
-public TablaGenerica getTranferencia(Integer iden) {
+  }
+  
+  public TablaGenerica getTranferencia(Integer iden) {
         //Busca a una empresa en la tabla maestra_ruc por ruc
         conectarSQL();
         TablaGenerica tab_persona = new TablaGenerica();
@@ -1523,14 +1572,13 @@ public TablaGenerica getTranferencia(Integer iden) {
         conexion.desconectar();
         conexion = null;
         return tab_persona;
-}
-
-private void conectarSQL() {
+  }
+  
+  private void conectarSQL() {
         if (conexion == null) {
             conexion = new Conexion();
             conexion.NOMBRE_MARCA_BASE="sqlserver";
             conexion.setUnidad_persistencia(utilitario.getPropiedad("recursojdbc"));
         }
-}
-
+  }
 }
