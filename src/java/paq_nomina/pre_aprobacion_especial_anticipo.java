@@ -275,10 +275,10 @@ public class pre_aprobacion_especial_anticipo extends Pantalla{
         
         dia_dialogop.setId("dia_dialogop");
         dia_dialogop.setTitle("BUSCAR SOLICITUD DE ANTICIPO"); //titulo
-        dia_dialogop.setWidth("40%"); //siempre en porcentajes  ancho
-        dia_dialogop.setHeight("35%");//siempre porcentaje   alto
+        dia_dialogop.setWidth("45%"); //siempre en porcentajes  ancho
+        dia_dialogop.setHeight("40%");//siempre porcentaje   alto
         dia_dialogop.setResizable(false); //para que no se pueda cambiar el tamaño
-        dia_dialogop.getBot_aceptar().setMetodo("aceptoSolicitud");
+        dia_dialogop.getBot_aceptar().setMetodo("pagoAnti");
         grid_p.setColumns(4);
         agregarComponente(dia_dialogop);
         
@@ -329,10 +329,9 @@ public class pre_aprobacion_especial_anticipo extends Pantalla{
         set_pagos.dibujar();
         dia_dialogo.dibujar();
     }
-    
+    //PAGO ANTICIPADO DE ADELANTO
     public void datos_anticipo(){
 //        dia_dialogo.cerrar();
-        System.err.println(set_pagos.getValorSeleccionado());
         if (set_pagos.getValorSeleccionado() != null && set_pagos.getValorSeleccionado().toString().isEmpty() == false ) {
             TablaGenerica tab_dato = iAnticipos.getSolicitud(Integer.parseInt(set_pagos.getValorSeleccionado()));
             if (!tab_dato.isEmpty()) {
@@ -375,6 +374,24 @@ public class pre_aprobacion_especial_anticipo extends Pantalla{
         }
     }
     
+    public void pagoAnti(){
+        TablaGenerica tab_dato = iAnticipos.getSoli_Detalle(tcedula.getValue()+"");
+        if (!tab_dato.isEmpty()) {
+            Double valors=0.0,valorp=0.0;
+            valors = Double.parseDouble(tvalor.getValue()+"");
+            valorp = Double.parseDouble(tab_dato.getValor("saldo"));
+            if(valors.equals(valorp)){
+            iAnticipos.set_ActDetalle_PagoAnti(Integer.parseInt(tab_dato.getValor("ide_solicitud_anticipo")), Integer.parseInt(utilitario.getMes(utilitario.getFechaActual())+""),utilitario.getVariable("NICK"),cal_fechad.getValue()+"");
+            iAnticipos.set_ActCalculo_PagoAnti(Integer.parseInt(tab_dato.getValor("ide_solicitud_anticipo")),Integer.parseInt(tab_dato.getValor("ide_calculo_anticipo")),utilitario.getVariable("NICK"),cal_fechad.getValue()+"",tnum_doc.getValue()+"");
+            utilitario.agregarMensajeInfo("Pago Completo Realizado con exito", "");
+            }else{
+                utilitario.agregarMensajeInfo("Opción para Pago Total", "");
+            }
+        }else {
+            utilitario.agregarMensajeInfo("No se encuentra registro", "");
+        }
+    }
+
     @Override
     public void insertar() {
     }
