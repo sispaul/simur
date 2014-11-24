@@ -357,6 +357,19 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
             utilitario.agregarMensajeInfo("Debe seleccionar almenos un registro", "");
         }
     }
+    
+    public void acepta_tipo(){
+        modelo=null;
+        modelo=set_tipos.getValorSeleccionado();
+        if (set_tipos.getValorSeleccionado() != null && set_tipos.getValorSeleccionado().isEmpty() == false) {
+            TablaGenerica tab_dato =aCombustible.get_ExtraDatos(set_tipos.getValorSeleccionado()+"","TIPO", tipo);
+            if (!tab_dato.isEmpty()) {
+                
+            }
+        }else {
+            utilitario.agregarMensajeInfo("Debe seleccionar almenos un registro", "");
+        }
+    }
     public void abrirVerTabla() {
         set_ingresos.dibujar();
     }
