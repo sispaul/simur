@@ -97,12 +97,12 @@ public class pre_placas_inventario extends Pantalla{
     
     //conexion otra base
     private Conexion con_postgres= new Conexion();
-    private Conexion conexion= new Conexion();
+    private Conexion con_sql= new Conexion();
     private int i;
     
     public pre_placas_inventario() {
-        conexion.NOMBRE_MARCA_BASE="sqlserver";
-        conexion.setUnidad_persistencia(utilitario.getPropiedad("recursojdbc"));
+        con_sql.NOMBRE_MARCA_BASE="sqlserver";
+        con_sql.setUnidad_persistencia(utilitario.getPropiedad("recursojdbc"));
         //Persistencia a la postgres.
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         con_postgres.NOMBRE_MARCA_BASE="postgres";
@@ -962,6 +962,14 @@ public void devolverAnt(){
 
     public void setSet_placas(SeleccionTabla set_placas) {
         this.set_placas = set_placas;
+    }
+
+    public Conexion getCon_sql() {
+        return con_sql;
+    }
+
+    public void setCon_sql(Conexion con_sql) {
+        this.con_sql = con_sql;
     }
     
 }

@@ -85,7 +85,7 @@ Integer identificacion;
     private Combo cmb_usuario = new Combo();
     private Combo cmb_tipos = new Combo();
     
-    private Conexion conexion= new Conexion();
+    private Conexion con_sql= new Conexion();
     @EJB
     private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servicioPlaca.class);
     
@@ -97,8 +97,8 @@ Integer identificacion;
     private Combo cmb_rango = new Combo();
     private Combo cmb_placas = new Combo();
     public pre_asignacion_placa() {
-            conexion.NOMBRE_MARCA_BASE="sqlserver";
-            conexion.setUnidad_persistencia(utilitario.getPropiedad("recursojdbc"));
+            con_sql.NOMBRE_MARCA_BASE="sqlserver";
+            con_sql.setUnidad_persistencia(utilitario.getPropiedad("recursojdbc"));
         
                 bar_botones.quitarBotonInsertar();
 		bar_botones.quitarBotonEliminar();
@@ -484,7 +484,7 @@ Integer identificacion;
     public void asignar (){
     String asignacion="INSERT INTO TRANS_APROBACION_PLACA (FECHA_APROBACION,APROBADO,USU_APROBACION,IDE_DETALLE_SOLICITUD) "
             + "VALUES ("+ utilitario.getFormatoFechaSQL(utilitario.getFechaActual()) +",1,'"+tab_consulta.getValor("NICK_USUA")+"',"+tab_detalle.getValor("IDE_DETALLE_SOLICITUD")+")";
-    conexion.ejecutarSql(asignacion);
+    con_sql.ejecutarSql(asignacion);
     aprobacion();
     }   
        
@@ -838,6 +838,14 @@ Integer identificacion;
 
     public void setSet_placa(SeleccionTabla set_placa) {
         this.set_placa = set_placa;
+    }
+
+    public Conexion getCon_sql() {
+        return con_sql;
+    }
+
+    public void setCon_sql(Conexion con_sql) {
+        this.con_sql = con_sql;
     }
     
 }
