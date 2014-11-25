@@ -93,6 +93,7 @@ public class pre_placa_asignada extends Pantalla{
         
         cmb_usuario.setId("cmb_usuario");
         cmb_usuario.setCombo("SELECT IDE_USUA,NICK_USUA FROM SIS_USUARIO WHERE IDE_PERF BETWEEN 10 and 13");
+//        cmb_usuario.setCombo("SELECT IDE_USUA,NICK_USUA FROM SIS_USUARIO WHERE IDE_PERF <> 1");
         cmb_usuario.eliminarVacio();
         
         //Boton para asignacion de estados
@@ -336,21 +337,25 @@ public class pre_placa_asignada extends Pantalla{
     
    //ASIGNACION DE PLACAS
     public void asignar (){
-    String asignacion="INSERT INTO TRANS_APROBACION_PLACA (FECHA_APROBACION,APROBADO,USU_APROBACION,IDE_DETALLE_SOLICITUD) "
-            + "VALUES ("+ utilitario.getFormatoFechaSQL(utilitario.getFechaActual()) +",1,'"+tab_consulta.getValor("NICK_USUA")+"',"+tab_detalle.getValor("IDE_DETALLE_SOLICITUD")+")";
-    conexion.ejecutarSql(asignacion);
-    aprobacion();
+        if(tab_detalle.getValor("IDE_PLACA")!= null&&tab_detalle.getValor("IDE_PLACA").isEmpty() == false){
+            utilitario.agregarMensajeError("Solicitud ya posee placa asignada", "");   
+        }else{
+            String asignacion="INSERT INTO TRANS_APROBACION_PLACA (FECHA_APROBACION,APROBADO,USU_APROBACION,IDE_DETALLE_SOLICITUD) "
+                    + "VALUES ("+ utilitario.getFormatoFechaSQL(utilitario.getFechaActual()) +",1,'"+tab_consulta.getValor("NICK_USUA")+"',"+tab_detalle.getValor("IDE_DETALLE_SOLICITUD")+")";
+            conexion.ejecutarSql(asignacion);
+            aprobacion();
+        }
     }   
-       
+    
     public void aprobacion(){
         dia_dialogoe.Limpiar();
         dia_dialogoe.setDialogo(gride);
         dia_dialogoe.setDialogo(grid_de);
         dia_dialogoe.dibujar();
     }
-       
-   public void aceptoValores(){
-       Integer fisicap = Integer.parseInt(ser_Placa.getTipoDisponibleFP(Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")), Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO"))));
+    
+    public void aceptoValores(){
+    Integer fisicap = Integer.parseInt(ser_Placa.getTipoDisponibleFP(Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")), Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO"))));
        Integer papel = Integer.parseInt(ser_Placa.getTipoDisponiblePP(Integer.parseInt(tab_detalle.getValor("IDE_TIPO_VEHICULO")), Integer.parseInt(tab_detalle.getValor("IDE_TIPO_SERVICIO"))));
         if(fisicap> 0){
                  TablaGenerica tab_dato = ser_Placa.getAprobacion(Integer.parseInt(tab_detalle.getValor("IDE_DETALLE_SOLICITUD")));
