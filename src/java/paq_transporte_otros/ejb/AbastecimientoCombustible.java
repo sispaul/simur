@@ -15,7 +15,7 @@ import persistencia.Conexion;
  */
 @Stateless
 public class AbastecimientoCombustible {
-    private Conexion conexion,con_postgres,con_sql;
+    private Conexion conexion,con_postgres;
     private Utilitario utilitario = new Utilitario();
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
@@ -379,11 +379,4 @@ public TablaGenerica getActivos(String codigo) {
             con_postgres.NOMBRE_MARCA_BASE = "postgres";
         }
     }
-    private void con_sql() {
-        if (con_sql == null) {
-            con_sql = new Conexion();
-            con_sql.setUnidad_persistencia(utilitario.getPropiedad("recursojdbc"));
-            con_sql.NOMBRE_MARCA_BASE = "sqlserver";
-        }
-    } 
 }
