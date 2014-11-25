@@ -477,5 +477,13 @@ public void limpiar() {
     public void setSet_cuenta(Tabla set_cuenta) {
         this.set_cuenta = set_cuenta;
     }
+
+    public Conexion getCon_postgres() {
+        return con_postgres;
+    }
+
+    public void setCon_postgres(Conexion con_postgres) {
+        this.con_postgres = con_postgres;
+    }
     
 }

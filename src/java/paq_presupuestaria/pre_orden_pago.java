@@ -130,5 +130,13 @@ public class pre_orden_pago extends Pantalla{
     public void setAut_busca(AutoCompletar aut_busca) {
         this.aut_busca = aut_busca;
     }
+
+    public Conexion getCon_postgres() {
+        return con_postgres;
+    }
+
+    public void setCon_postgres(Conexion con_postgres) {
+        this.con_postgres = con_postgres;
+    }
     
 }
