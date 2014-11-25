@@ -740,10 +740,7 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
             con_sql.guardarPantalla(); 
         }
     }
-    
-    public void seleccionar_tabla(SelectEvent evt) {
-        tab_articulo.seleccionarFila(evt);
-    }
+
     public void ing(){
         aCombustible.getMVDetalle(tab_tabla.getValor("MVE_SECUENCIAL"), txt_item.getValue()+"", Double.valueOf(txt_cantidad.getValue()+""), txt_estado.getValue()+"");
         tab_articulo.actualizar();
