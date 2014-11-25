@@ -661,5 +661,13 @@ public class pre_aprobacion_especial_anticipo extends Pantalla{
     public void setSet_pagos(Tabla set_pagos) {
         this.set_pagos = set_pagos;
     }
+
+    public Conexion getCon_postgres() {
+        return con_postgres;
+    }
+
+    public void setCon_postgres(Conexion con_postgres) {
+        this.con_postgres = con_postgres;
+    }
     
 }
