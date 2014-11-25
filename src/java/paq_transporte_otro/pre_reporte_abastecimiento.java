@@ -287,5 +287,21 @@ public class pre_reporte_abastecimiento extends Pantalla{
     public void setP_parametros(Map p_parametros) {
         this.p_parametros = p_parametros;
     }
+
+    public Conexion getCon_sql() {
+        return con_sql;
+    }
+
+    public void setCon_sql(Conexion con_sql) {
+        this.con_sql = con_sql;
+    }
+
+    public Conexion getCon_postgres() {
+        return con_postgres;
+    }
+
+    public void setCon_postgres(Conexion con_postgres) {
+        this.con_postgres = con_postgres;
+    }
     
 }

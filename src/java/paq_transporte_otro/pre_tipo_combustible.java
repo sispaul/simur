@@ -68,5 +68,13 @@ public class pre_tipo_combustible extends Pantalla{
     public void setTab_tabla(Tabla tab_tabla) {
         this.tab_tabla = tab_tabla;
     }
+
+    public Conexion getCon_sql() {
+        return con_sql;
+    }
+
+    public void setCon_sql(Conexion con_sql) {
+        this.con_sql = con_sql;
+    }
     
 }
