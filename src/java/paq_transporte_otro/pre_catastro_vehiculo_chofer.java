@@ -822,5 +822,21 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
     public void setSet_versions(Tabla set_versions) {
         this.set_versions = set_versions;
     }
+
+    public Conexion getCon_sql() {
+        return con_sql;
+    }
+
+    public void setCon_sql(Conexion con_sql) {
+        this.con_sql = con_sql;
+    }
+
+    public Conexion getCon_postgres() {
+        return con_postgres;
+    }
+
+    public void setCon_postgres(Conexion con_postgres) {
+        this.con_postgres = con_postgres;
+    }
     
 }
