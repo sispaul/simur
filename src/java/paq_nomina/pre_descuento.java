@@ -519,4 +519,13 @@ private Conexion con_postgres= new Conexion();
     public void setSet_roles(SeleccionTabla set_roles) {
         this.set_roles = set_roles;
     }
+
+    public Conexion getCon_postgres() {
+        return con_postgres;
+    }
+
+    public void setCon_postgres(Conexion con_postgres) {
+        this.con_postgres = con_postgres;
+    }
+    
 }
