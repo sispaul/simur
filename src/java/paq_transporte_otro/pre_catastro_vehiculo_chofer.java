@@ -502,6 +502,7 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
                 tmarca.limpiar();
                 utilitario.agregarMensaje("Registro Guardado", "Marca");
                 set_marcas.actualizar();
+                cargarMarca();
             }
         }
     }
@@ -576,6 +577,11 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
                 }
             }
         }
+    }
+    
+    public void cargarMarca(){
+         tab_tabla.getColumna("MVE_MARCA").setCombo("SELECT LIS_NOMBRE,LIS_NOMBRE AS MARCA FROM MVLISTA where TAB_CODIGO = 'MARCA' and LIS_ESTADO = 1");
+        utilitario.addUpdateTabla(tab_tabla,"MVE_MARCA","");//actualiza solo componentes
     }
     
     public void cargarTipo(){
