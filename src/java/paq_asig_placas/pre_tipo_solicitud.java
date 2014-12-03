@@ -18,6 +18,7 @@ public class pre_tipo_solicitud extends Pantalla{
     private Tabla tab_tabla = new Tabla();
     
     public pre_tipo_solicitud() {
+        //Tabla
         //id a la tabla
         tab_tabla.setId("tab_tabla");
         tab_tabla.setTabla("TRANS_TIPO_SOLICTUD", "IDE_TIPO_SOLICTUD",1);
