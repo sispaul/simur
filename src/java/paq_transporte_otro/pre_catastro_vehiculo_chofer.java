@@ -462,7 +462,10 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         tab_articulo.setLectura(true);
         tab_articulo.dibujar();
         PanelTabla tpa = new PanelTabla();
-        tpa.setPanelTabla(tab_articulo);
+        Panel pan_pa = new Panel();
+        pan_pa.setId("pan_pa");
+        pan_pa.setStyle("width:1000px;");
+        
         Grid gri_modelo = new Grid();
         gri_modelo.setColumns(10);
         gri_modelo.getChildren().add(new Etiqueta("Accesorio :"));
@@ -482,10 +485,12 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         bot_save.setMetodo("ing");
         gri_modelo.getChildren().add(bot_save);
         gri_modelo.getChildren().add(bot_delete);
-        pan_opcion1.getChildren().add(gri_modelo);
+        pan_pa.getChildren().add(gri_modelo);
+        tpa.getChildren().add(pan_pa);
+        tpa.setPanelTabla(tab_articulo);
         
         Division div = new Division();
-        div.dividir3(tpg, pan_opcion1,tpa, "50%", "42%","h");
+        div.dividir2(tpg,tpa, "50%","h");
         Grupo gru = new Grupo();
         gru.getChildren().add(div);
         pan_opcion.getChildren().add(gru);
@@ -773,6 +778,18 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
     public void ing(){
         aCombustible.getMVDetalle(tab_tabla.getValor("MVE_SECUENCIAL"), txt_item.getValue()+"", Double.valueOf(txt_cantidad.getValue()+""), txt_estado.getValue()+"");
         tab_articulo.actualizar();
+        
+        TablaGenerica tab_dato =aCombustible.get_ExDatos(txt_item.getValue()+"");
+        if (!tab_dato.isEmpty()) {
+        }else{
+            if(txt_item.getValue()!= null && txt_item.toString().isEmpty()==false){
+                Integer numero = Integer.parseInt(aCombustible.ParametrosMax("ACCES"));
+                Integer cantidad=0;
+                cantidad=numero +1;
+                aCombustible.getParametros1(String.valueOf(cantidad),txt_item.getValue()+"","ACCES", "N/D", utilitario.getVariable("NICK"), txt_cantidad.getValue()+"");
+                txt_item.limpiar();;
+            }
+        }
     }
     
     @Override
