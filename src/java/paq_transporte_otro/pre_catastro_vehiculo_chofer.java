@@ -405,6 +405,30 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         lista.add(fila1);;
         lista.add(fila2);;
         tab_tabla.getColumna("MVE_TIPOCODIGO").setCombo(lista);
+        List listad = new ArrayList();
+        Object filas1[] = {
+            "ACTIVO", "ACTIVO"
+        };
+        Object filas2[] = {
+            "PASIVO", "PASIVO"
+        };
+        listad.add(filas1);;
+        listad.add(filas2);;
+        tab_tabla.getColumna("MVE_ESTADO_REGISTRO").setCombo(listad);
+        List listes = new ArrayList();
+        Object filase1[] = {
+            "ACTIVO", "ACTIVO"
+        };
+        Object filase2[] = {
+            "MANTENIMIENTO", "MANTENIMIENTO"
+        };
+        Object filase3[] = {
+            "DE BAJA", "DE BAJA"
+        };
+        listes.add(filase1);;
+        listes.add(filase2);;
+        listes.add(filase3);;
+        tab_tabla.getColumna("MVE_ESTADO").setCombo(listes);
         tab_tabla.getColumna("MVE_PLACA").setLectura(true);
         tab_tabla.getColumna("MVE_HOROMETRO").setLectura(true);
         tab_tabla.getColumna("MVE_KILOMETRAJE").setLectura(true);
@@ -412,7 +436,6 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         tab_tabla.getColumna("MVE_OBSERVACIONES").setVisible(false);
         tab_tabla.getColumna("MVE_LOGININGRESO").setVisible(false);
         tab_tabla.getColumna("MVE_LOGINACTUALI").setVisible(false);
-        tab_tabla.getColumna("MVE_ESTADO_REGISTRO").setVisible(false);
         tab_tabla.getColumna("MVE_FECHA_BORRADO").setVisible(false);
         tab_tabla.getColumna("MVE_FECHAINGRESO").setVisible(false);
         tab_tabla.getColumna("MVE_FECHAACTUALI").setVisible(false);
