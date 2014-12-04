@@ -46,6 +46,7 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
     private Tabla tab_articulo = new Tabla();
     //Contiene todos los elementos de la plantilla
     private Panel pan_opcion = new Panel();
+    private Panel pan_opcion1 = new Panel();
     
     //Cajas de Texto
     private Texto tplaca = new Texto();
@@ -55,7 +56,9 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
     private Texto tcolor = new Texto();
     private Texto tconductor = new Texto();
     private Texto tcomentario = new Texto();
-    
+    private Texto txt_item = new Texto();
+    private Texto txt_cantidad = new Texto();
+    private Texto txt_estado = new Texto();
     //Dialogos
     private Dialogo dia_dialogod = new Dialogo();
     private Dialogo dia_dialogoc = new Dialogo();
@@ -154,31 +157,17 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         //Botones
         Panel pan_panel1 = new Panel();
         pan_panel1.setId("pan_panel1");
-        pan_panel1.setStyle("width:250px;");
+        pan_panel1.setStyle("width:300px;");
         pan_panel1.setHeader("Acciones De Botones");
         
         Grid gri_botones = new Grid();
         gri_botones.setColumns(2);
         Boton bot_busca = new Boton();
-        bot_busca.setValue("Buscar: ");
+        bot_busca.setValue("Buscar Automotor/Maquinaria: ");
         bot_busca.setIcon("ui-icon-search");
         bot_busca.setMetodo("buscaRegistro");
-        Boton bot_news = new Boton();
-        bot_news.setValue("Nuevo: ");
-        bot_news.setIcon("ui-icon-document");
-        bot_news.setMetodo("abrirVerTabla");
-        Boton bot_asigna = new Boton();
-        bot_asigna.setValue("Asignar :");
-        bot_asigna.setIcon("ui-icon-check");
-        bot_asigna.setMetodo("guardar");
-        Boton bot_quitar = new Boton();
-        bot_quitar.setValue("Des-Asignar: ");
-        bot_quitar.setIcon("ui-icon-cancel");
-        bot_quitar.setMetodo("Entrega");
-        gri_botones.getChildren().add(bot_news);
-        gri_botones.getChildren().add(bot_asigna);
+        gri_botones.getChildren().add(new Etiqueta("NUEVO REGISTRO :"));
         gri_botones.getChildren().add(bot_busca);
-        gri_botones.getChildren().add(bot_quitar);
         pan_panel1.getChildren().add(gri_botones);
         
         Division div = new Division();
@@ -290,6 +279,61 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         set_automotores.dibujar();
     }
     
+        //mostrar datos de tabla
+    public void buscaRegistro(){
+     set_automotores.dibujar();
+    }
+    
+        //llenada los datos de la selección de vehiculo/automotor
+    public void filtrarListado(){
+        if(set_automotores.getValorSeleccionado()!= null && set_automotores.getValorSeleccionado().isEmpty() == false){
+            TablaGenerica tab_datov =aCombustible.getVerificar(Integer.parseInt(set_automotores.getValorSeleccionado()));
+            if (!tab_datov.isEmpty()) {
+                if(Integer.parseInt(tab_datov.getValor("valor"))<=1){
+                    TablaGenerica tab_datoc =aCombustible.setVerificar(Integer.parseInt(set_automotores.getValorSeleccionado()));
+                    if (!tab_datoc.isEmpty()) {
+                        if(tab_datoc.getValor("MVE_SECUENCIAL")!=null && tab_datoc.getValor("MVE_SECUENCIAL").isEmpty() == false){
+                            aCombustible.actDescargo(Integer.parseInt(tab_datoc.getValor("MVE_SECUENCIAL")),utilitario.getVariable("NICK"), utilitario.getFechaActual());
+                            TablaGenerica tab_dato =aCombustible.getDatos(Integer.parseInt(set_automotores.getValorSeleccionado()));
+                            if (!tab_dato.isEmpty()) {
+                                tplaca.setValue(tab_dato.getValor("MVE_PLACA") +""); tmarca.setValue(tab_dato.getValor("MVE_MARCA") +""); tmodelo.setValue(tab_dato.getValor("MVE_MODELO") +"");
+                                tanio.setValue(tab_dato.getValor("MVE_ANO") +""); tcolor.setValue(tab_dato.getValor("MVE_COLOR") +""); tconductor.setValue(tab_dato.getValor("MVE_CONDUCTOR") +"");
+                                utilitario.addUpdate("tplaca");utilitario.addUpdate("tmarca");utilitario.addUpdate("tplaca");utilitario.addUpdate("tmodelo");utilitario.addUpdate("tanio");
+                                utilitario.addUpdate("tcolor");utilitario.addUpdate("tconductor");
+                                tab_tabla.insertar();
+                                set_automotores.cerrar();
+                                conductor();
+                            }else{
+                                utilitario.agregarMensajeInfo(" DATOS ", " NO DISPONIBLES ");
+                            }
+                        }else{
+                            utilitario.agregarMensajeError("RESGISTRO NO PUDO SER DESCARGADO","");
+                        }
+                    }else{
+                        utilitario.agregarMensajeError("RESGISTROS NO PUDO SER UTILIZADOS","");
+                    }
+                }else{
+                    utilitario.agregarMensajeInfo("Automotor Posee Mas de 2 Asignaciones", " Actualmente");
+                }
+            }else{
+                TablaGenerica tab_dato =aCombustible.getDatos(Integer.parseInt(set_automotores.getValorSeleccionado()));
+                if (!tab_dato.isEmpty()) {
+                    tplaca.setValue(tab_dato.getValor("MVE_PLACA") +""); tmarca.setValue(tab_dato.getValor("MVE_MARCA") +""); tmodelo.setValue(tab_dato.getValor("MVE_MODELO") +"");
+                    tanio.setValue(tab_dato.getValor("MVE_ANO") +""); tcolor.setValue(tab_dato.getValor("MVE_COLOR") +""); tconductor.setValue(tab_dato.getValor("MVE_CONDUCTOR") +"");
+                    utilitario.addUpdate("tplaca");utilitario.addUpdate("tmarca");utilitario.addUpdate("tplaca");utilitario.addUpdate("tmodelo");utilitario.addUpdate("tanio");
+                    utilitario.addUpdate("tcolor");utilitario.addUpdate("tconductor");
+                    tab_tabla.insertar();
+                    set_automotores.cerrar();
+                    conductor();
+                }else{
+                    utilitario.agregarMensajeInfo("No existen Datos", " DISPONIBLES");
+                }
+            }
+        }else{
+            utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
+        }
+    }
+    
     public void aceptoRegistro(){
         if(set_automotores.getValorSeleccionado()!= null && set_automotores.getValorSeleccionado().isEmpty() == false){
             TablaGenerica tab_datov =aCombustible.getVerificar(Integer.parseInt(set_automotores.getValorSeleccionado()));
@@ -371,13 +415,40 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         tab_articulo.getGrid().setColumns(4);
         tab_articulo.setLectura(true);
         tab_articulo.dibujar();
-        PanelTabla tpa = new PanelTabla();
+         PanelTabla tpa = new PanelTabla();
         tpa.setPanelTabla(tab_articulo);
+        Grid gri_modelo = new Grid();
+        gri_modelo.setColumns(10);
+        gri_modelo.getChildren().add(new Etiqueta("Accesorio :"));
+        gri_modelo.getChildren().add(txt_item);
+        gri_modelo.getChildren().add(new Etiqueta("Cantidad :"));
+        gri_modelo.getChildren().add(txt_cantidad);
+        gri_modelo.getChildren().add(new Etiqueta("Estado :"));
+        gri_modelo.getChildren().add(txt_estado);
+        Boton bot_delete = new Boton();
+        bot_delete.setValue("ELIMINAR");
+        bot_delete.setIcon("ui-icon-closethick");
+        bot_delete.setMetodo("eliminar");
+               
+        Boton bot_save = new Boton();
+        bot_save.setValue("GUARDAR");
+        bot_save.setIcon("ui-icon-disk");
+        bot_save.setMetodo("ing");
         
+        Boton bot_extra = new Boton();
+        bot_extra.setValue("EXTRAER");
+        bot_extra.setIcon("ui-icon-search");
+        bot_extra.setMetodo("ing");
+        gri_modelo.getChildren().add(bot_save);
+        gri_modelo.getChildren().add(bot_delete);
+        gri_modelo.getChildren().add(bot_extra);
+        pan_opcion1.getChildren().add(gri_modelo);
+        
+        Division div = new Division();
+        div.dividir3(ptt, pan_opcion1,tpa, "39%", "51%","h");
         Grupo gru = new Grupo();
-        gru.getChildren().add(ptt);
-        gru.getChildren().add(tpa);
-        pan_opcion.getChildren().add(gru); 
+        gru.getChildren().add(div);
+        pan_opcion.getChildren().add(gru);
     }
     
     public void conductor(){
@@ -473,20 +544,22 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         dia_dialogor.cerrar();
     }
     
-    public void buscaRegistro(){
-        dia_dialogore.Limpiar();
-        dia_dialogore.setDialogo(gridre);
-        grid_res.getChildren().add(set_registros);
-        dia_dialogore.setDialogo(grid_res);
-        set_registros.dibujar();
-        dia_dialogore.dibujar();
-    }
+//    public void buscaRegistro(){
+//        dia_dialogore.Limpiar();
+//        dia_dialogore.setDialogo(gridre);
+//        grid_res.getChildren().add(set_registros);
+//        dia_dialogore.setDialogo(grid_res);
+//        set_registros.dibujar();
+//        dia_dialogore.dibujar();
+//    }
     
         //limpia y borrar el contenido de la pantalla
     private void limpiarPanel() {
         //borra el contenido de la división central central
         pan_opcion.getChildren().clear();
+        pan_opcion1.getChildren().clear();
         utilitario.addUpdate("pan_opcion");
+        utilitario.addUpdate("pan_opcion1");
     }
 
     public void limpiar() {
@@ -575,6 +648,24 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         }
     }
     
+        public void migrar(){
+        if(tab_tabla.getValor("mav_secuencial")!=null){
+            TablaGenerica tab_dato =aCombustible.getVehiculo(tplaca.getValue()+"");
+            if (!tab_dato.isEmpty()) {
+                System.err.println("Hola");
+                System.err.println(aCombustible.RegisMaxSis());
+                aCombustible.getAccesorios(tab_tabla.getValor("mav_secuencial"), tab_dato.getValor("MVE_SECUENCIAL"));
+                utilitario.addUpdate("tab_articulo");
+                tab_articulo.actualizar();
+            }else{
+                utilitario.agregarMensajeInfo("Ingrese Accesorios de Manera Manual", "");
+            }
+        }else{
+            utilitario.agregarMensaje("Guardar Primero el Resgistro Anterior", "");
+        }
+       utilitario.addUpdate("tab_articulo");
+    }
+        
     @Override
     public void insertar() {
     }
