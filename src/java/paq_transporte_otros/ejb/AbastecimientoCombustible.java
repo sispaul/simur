@@ -15,7 +15,7 @@ import persistencia.Conexion;
  */
 @Stateless
 public class AbastecimientoCombustible {
-    private Conexion conexion,con_postgres;
+    private Conexion conexion,con_postgres,con_sql;
     private Utilitario utilitario = new Utilitario();
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
@@ -92,6 +92,43 @@ public class AbastecimientoCombustible {
         return tab_persona;
     }
     
+        public void getAccesorios(String id,String codigo){
+        String parametro ="insert into MVDETASIGNACION (MAV_SECUENCIAL,MAV_ESTADO_ASIGNACION,MDA_DETALLE,MDA_CANTIDAD,MDA_ESTADO)\n" +
+                "select '"+id+"' as secuencial,1 as estado,mdv_detalle,mdv_cantidad,mdv_estado from MVDETALLEVEHICULO where MVE_SECUENCIAL = '"+codigo+"'";
+        conectar();
+        conexion.ejecutarSql(parametro);
+        conexion.desconectar();
+        conexion = null;
+    }
+    
+            public TablaGenerica setVerificar(Integer tipo) {
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT top 1 MVE_SECUENCIAL,MAV_SECUENCIAL,MAV_DEPARTAMENTO,MAV_NOMBRE_COND,MAV_DIRECCION_COND,\n" +
+                "MAV_ESTADO_ASIGNACION,MAV_ESTADO_TRAMITE,MAV_FECHAASIGNACION,MAV_AUTORIZA\n" +
+                "FROM MVASIGNARVEH\n" +
+                "where MVE_SECUENCIAL = "+tipo+" and MAV_ESTADO_ASIGNACION = 1\n" +
+                "order by MAV_SECUENCIAL desc");
+        tab_persona.ejecutarSql();
+        conexion.desconectar();
+       conexion = null;
+       return tab_persona;
+    }  
+            
+              public void actDescargo(Integer tipo,String usu,String fecha){
+        String str_sql4 = "UPDATE MVASIGNARVEH\n" +
+                "SET MAV_ESTADO_ASIGNACION= '0',\n" +
+                "MAV_ESTADO_TRAMITE='DESCARGO',\n" +
+                "MAV_LOGINACTUALI='"+usu+"',\n" +
+                "MAV_FECHAACTUALI="+utilitario.getFormatoFechaSQL(utilitario.getFechaHoraActual())+"\n" +
+                "where MAV_SECUENCIAL ="+tipo;
+        conectar();
+        conexion.ejecutarSql(str_sql4);
+        conexion.desconectar();
+        conexion = null;
+    }
+        
     //extrae datos de catalogo de combustibles SIGAG/trans_tipo_combustible
     public TablaGenerica getCombustible(Integer tipo) {
         conectar();
@@ -377,6 +414,37 @@ public TablaGenerica getActivos(String codigo) {
             con_postgres = new Conexion();
             con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
             con_postgres.NOMBRE_MARCA_BASE = "postgres";
+        }
+    }
+    
+        public void ActuReg(Integer ide,String vale){
+        String str_sql4 = "update SIS_BLOQUEO\n" +
+                "set MAXIMO_BLOQ ="+ide+"\n" +
+                "where TABLA_BLOQ = '"+vale+"'";
+        con_sqll();
+        con_sql.ejecutarSql(str_sql4);
+        con_sql.desconectar();
+        con_sql = null;
+    }
+    
+    public String RegisMaxSis() {
+         con_sqll();
+         String ValorMax;
+         TablaGenerica tab_consulta = new TablaGenerica();
+         con_sqll();
+         tab_consulta.setConexion(con_sql);
+         tab_consulta.setSql("select 0 as id,\n" +
+                 "(case when max(IDE_BLOQ) is null then '0' when max(IDE_BLOQ)is not null then max(IDE_BLOQ) end) as maximo\n" +
+                 "from SIS_BLOQUEO where Tabla_BLOQ = 'MVDETASIGNACION'");
+         tab_consulta.ejecutarSql();
+         ValorMax = tab_consulta.getValor("maximo");
+         return ValorMax;
+    }
+        
+    private void con_sqll() {
+        if (con_sql == null) {
+            con_sql = new Conexion();
+            con_sql.setUnidad_persistencia(utilitario.getPropiedad("recursojdbc"));
         }
     }
 }
