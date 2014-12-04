@@ -311,6 +311,19 @@ public class AbastecimientoCombustible {
         conexion = null;
         return tab_persona;
     }
+
+    public TablaGenerica get_ExDatos(String nombre) {
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT LIS_ID, LIS_NOMBRE\n" +
+                "FROM MVLISTA WHERE TAB_CODIGO = 'ACCES'AND LIS_ESTADO = 1 AND LIS_NOMBRE='"+nombre+"'");
+        tab_persona.ejecutarSql();
+        conexion.desconectar();
+        conexion = null;
+        return tab_persona;
+    }
+    
     public void getParametros(String id,String nombre,String codigo,String dependencia,String login){
         String parametro ="insert into MVLISTA (LIS_ID,LIS_NOMBRE,LIS_ESTADO,TAB_CODIGO,DEPENDENCI,LIS_LOGININGRESO,LIS_FECHAINGRESO)\n" +
                 "values ('"+id+"','"+nombre+"',1,'"+codigo+"','"+dependencia+"','"+login+"',"+utilitario.getFormatoFechaSQL(utilitario.getFechaActual())+")";
@@ -319,7 +332,16 @@ public class AbastecimientoCombustible {
         conexion.desconectar();
         conexion = null;
     }
-    
+
+    public void getParametros1(String id,String nombre,String codigo,String dependencia,String login,String cantidad){
+        String parametro ="insert into MVLISTA (LIS_ID,LIS_NOMBRE,LIS_ESTADO,TAB_CODIGO,DEPENDENCI,LIS_LOGININGRESO,LIS_FECHAINGRESO,LIS_CANTIDAD)\n" +
+                "values ('"+id+"','"+nombre+"',1,'"+codigo+"','"+dependencia+"','"+login+"',"+utilitario.getFormatoFechaSQL(utilitario.getFechaActual())+",'"+cantidad+"')";
+        conectar();
+        conexion.ejecutarSql(parametro);
+        conexion.desconectar();
+        conexion = null;
+    }
+        
     public void getMVDetalle(String codigo,String detalle,Double cantidad,String estado){
         String parametro ="insert into MVDETALLEVEHICULO (MVE_SECUENCIAL,MDV_DETALLE,MDV_CANTIDAD,MDV_ESTADO)\n" +
                 "values('"+codigo+"','"+detalle+"',"+cantidad+",'"+estado+"')";
@@ -328,8 +350,17 @@ public class AbastecimientoCombustible {
         conexion.desconectar();
         conexion = null;
     }
-        
-        public TablaGenerica getDirec(Integer tipo) {
+    
+    public void getMVDetalleASI(String codigo,String detalle,Double cantidad,String estado){
+        String parametro ="insert into MVDETASIGNACION (MAV_SECUENCIAL,MDA_DETALLE,MDA_CANTIDAD,MDA_ESTADO,MAV_ESTADO_ASIGNADO)\n" +
+                "values('"+codigo+"','"+detalle+"',"+cantidad+",'"+estado+"','1')";
+        conectar();
+        conexion.ejecutarSql(parametro);
+        conexion.desconectar();
+        conexion = null;
+    }
+    
+    public TablaGenerica getDirec(Integer tipo) {
         conect();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(con_postgres);
@@ -339,9 +370,9 @@ public class AbastecimientoCombustible {
        con_postgres.desconectar();
        con_postgres = null;
         return tab_persona;
-        }
+    }
         
-        public TablaGenerica getCarg(Integer tipo,Integer dir) {
+    public TablaGenerica getCarg(Integer tipo,Integer dir) {
         conect();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(con_postgres);
@@ -352,9 +383,9 @@ public class AbastecimientoCombustible {
        con_postgres.desconectar();
        con_postgres = null;
         return tab_persona;
-        }
+    }
     
-        public TablaGenerica getResp(Integer tipo,Integer dir,String cod) {
+    public TablaGenerica getResp(Integer tipo,Integer dir,String cod) {
         conect();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(con_postgres);
@@ -364,9 +395,9 @@ public class AbastecimientoCombustible {
        con_postgres.desconectar();
        con_postgres = null;
         return tab_persona;
-        }
-        
-public TablaGenerica getMes(Integer periodo) {
+    }
+    
+    public TablaGenerica getMes(Integer periodo) {
         conect();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(con_postgres);
@@ -376,8 +407,8 @@ public TablaGenerica getMes(Integer periodo) {
        con_postgres = null;
         return tab_persona;
     }   
-
-public TablaGenerica getChofer(String cedula) {
+    
+    public TablaGenerica getChofer(String cedula) {
         conect();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(con_postgres);
@@ -390,8 +421,8 @@ public TablaGenerica getChofer(String cedula) {
        con_postgres = null;
         return tab_persona;
     }
-
-public TablaGenerica getActivos(String codigo) {
+    
+    public TablaGenerica getActivos(String codigo) {
         conect();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(con_postgres);
@@ -401,7 +432,9 @@ public TablaGenerica getActivos(String codigo) {
        con_postgres.desconectar();
        con_postgres = null;
         return tab_persona;
+    
     }
+    
     private void conectar() {
         if (conexion == null) {
             conexion = new Conexion();
@@ -417,7 +450,7 @@ public TablaGenerica getActivos(String codigo) {
         }
     }
     
-        public void ActuReg(Integer ide,String vale){
+    public void ActuReg(Integer ide,String vale){
         String str_sql4 = "update SIS_BLOQUEO\n" +
                 "set MAXIMO_BLOQ ="+ide+"\n" +
                 "where TABLA_BLOQ = '"+vale+"'";
