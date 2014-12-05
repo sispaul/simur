@@ -4,11 +4,10 @@
  */
 package paq_transporte_otro;
 
+import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
-import framework.componentes.Calendario;
 import framework.componentes.Combo;
-import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
@@ -17,9 +16,14 @@ import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
+import framework.componentes.Texto;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJB;
+import org.primefaces.event.SelectEvent;
+import paq_presupuestaria.ejb.Programas;
 import paq_sistema.aplicacion.Pantalla;
+import paq_transporte_otros.ejb.AbastecimientoCombustible;
 import persistencia.Conexion;
 
 /**
@@ -33,6 +37,16 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
     //cadena de conexion a base de datos
     private Conexion con_sql = new Conexion();
     private Conexion con_postgres = new Conexion();
+    
+    private Texto tconductor = new Texto();
+    private Texto tdependencia = new Texto();
+    private Texto tmotor = new Texto();
+    private Texto tchasis = new Texto();
+    private Texto tplaca = new Texto();
+    private Texto tcodigo = new Texto();
+    private Texto tanio = new Texto();
+    private Texto tKM = new Texto();
+    private Texto tfecha = new Texto();
     
     //identificador para tablas
     private Tabla tab_vehiculo = new Tabla();
@@ -48,19 +62,25 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
     
     //variables de busqueda
     String search,nuevo;
-    //calendario
-    private Calendario cal_fecha = new Calendario();
-    private Calendario cal_utlrevision = new Calendario();
     
     //Contiene todos los elementos de la plantilla
     private Panel pan_opcion = new Panel();
     
-    //dialogo de seleccion
-    private Dialogo dia_dialogov = new Dialogo();
-    private Grid grid_v = new Grid();
-    private Grid gridv = new Grid();
-    
+    @EJB
+    private AbastecimientoCombustible aCombustible = (AbastecimientoCombustible) utilitario.instanciarEJB(AbastecimientoCombustible.class);
+   private Programas aprogramas = (Programas) utilitario.instanciarEJB(Programas.class);
+   
     public pre_mantenimiento_vehiculo() {
+
+        tconductor.setId("tconductor");
+        tdependencia.setId("tdependencia");
+        tmotor.setId("tmotor");
+        tchasis.setId("tchasis");
+        tplaca.setId("tplaca");
+        tcodigo.setId("tcodigo");
+        tanio.setId("tanio");
+        tKM.setId("tKM");
+        tfecha.setId("tfecha");
         
         //cadena de conexión para base de datos en sql/manauto
         con_sql.setUnidad_persistencia(utilitario.getPropiedad("poolSqlmanAuto"));
@@ -73,16 +93,16 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
         aut_busca.setId("aut_busca");
         aut_busca.setConexion(con_sql);
         aut_busca.setAutoCompletar("SELECT\n" +
-                "v.MVE_SECUENCIAL,\n" +
-                "v.MVE_PLACA,\n" +
-                "v.MVE_MARCA,\n" +
-                "v.MVE_MODELO,\n" +
-                "v.MVE_COLOR,\n" +
-                "v.MVE_ANO,\n" +
+                "c.MSC_SECUENCIAL,\n" +
+                "v.MVE_PLACA, \n" +
+                "v.MVE_MARCA, \n" +
+                "v.MVE_MODELO, \n" +
+                "v.MVE_COLOR, \n" +
+                "v.MVE_ANO, \n" +
                 "v.MVE_ESTADO_REGISTRO,\n" +
-                "c.MSC_SECUENCIAL\n" +
-                "FROM MVVEHICULO AS v \n" +
-                " INNER JOIN dbo.MVCABSOLICITUD c ON c.MVE_SECUENCIAL = v.MVE_SECUENCIAL\n" +
+                "v.MVE_SECUENCIAL\n" +
+                "FROM MVVEHICULO AS v  \n" +
+                "INNER JOIN dbo.MVCABSOLICITUD c ON c.MVE_SECUENCIAL = v.MVE_SECUENCIAL \n" +
                 "WHERE v.MVE_ESTADO_REGISTRO = 'activo'");
         aut_busca.setMetodoChange("filtrarSolicitud");
         aut_busca.setSize(70);
@@ -124,40 +144,64 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
         bot_busca.setIcon("ui-icon-search");
         bot_busca.setMetodo("new_regis");
         nuevo = bot_busca.getValue()+"";
-        Boton bot_recupera = new Boton();
-        bot_recupera.setValue("Buscar ");
-        bot_recupera.setIcon("ui-icon-search");
-        bot_recupera.setMetodo("new_reg");
-        search = bot_recupera.getValue()+"";
         gri_busca.getChildren().add(new Etiqueta(" TIPO DE MANTENIMIENTO :"));
         gri_busca.getChildren().add(cmb_mantenimiento);
         gri_busca.getChildren().add(new Etiqueta(" NUEVO REG. :"));
         gri_busca.getChildren().add(bot_busca);
-        gri_busca.getChildren().add(new Etiqueta(" BUSCAR :"));
-        gri_busca.getChildren().add(bot_recupera);
         pan_panel.getChildren().add(gri_busca);
         
         //Botones
+        Panel pan_matriz = new Panel();
+        pan_matriz.setId("pan_matriz");
+        pan_matriz.setStyle("width: 989px;");
+        pan_matriz.setHeader("INFORMACIÓN DE AUTOMOTOR/MAQUINARIA");
+        
         Panel pan_panel1 = new Panel();
         pan_panel1.setId("pan_panel1");
-        pan_panel1.setStyle("width:1000px;");
-        pan_panel1.setHeader("INFORMACIÓN DE AUTOMOTOR/MAQUINARIA");
-        
-        Grid gri_info = new Grid();
-        gri_info.setColumns(2);
-        cal_fecha.setSize(12);
-        cal_utlrevision.setSize(12);
+        pan_panel1.setStyle("width:500px;");
 
+        Grid gri_info = new Grid();
+        gri_info.setColumns(4);
+        tfecha.setSize(12);
         gri_info.getChildren().add(new Etiqueta(" ULT. REVISIÓN :"));
-        gri_info.getChildren().add(cal_utlrevision);
-        gri_info.getChildren().add(new Etiqueta(" SIG. REVISIÓN :"));
-        gri_info.getChildren().add(cal_fecha);
+        gri_info.getChildren().add(tfecha);
+        gri_info.getChildren().add(new Etiqueta(" KM ACTUAL :"));
+        gri_info.getChildren().add(tKM);
         pan_panel1.getChildren().add(gri_info);
         
+        Panel pan_panel2 = new Panel();
+        pan_panel2.setId("pan_panel2");
+        pan_panel2.setStyle("width:970px;");
+
+        Grid gri_info1 = new Grid();
+        gri_info1.setColumns(6);
+        tconductor.setSize(35);
+        tdependencia.setSize(35);
+        tplaca.setSize(9);
+        tcodigo.setSize(15);
+        tanio.setSize(9);
+        tKM.setSize(12);
+        gri_info1.getChildren().add(new Etiqueta(" CONDUCTOR :"));
+        gri_info1.getChildren().add(tconductor);
+        gri_info1.getChildren().add(new Etiqueta(" DEPENDENCIA :"));
+        gri_info1.getChildren().add(tdependencia);
+        gri_info1.getChildren().add(new Etiqueta(" PLACA :"));
+        gri_info1.getChildren().add(tplaca);
+        gri_info1.getChildren().add(new Etiqueta(" CODIGO :"));
+        gri_info1.getChildren().add(tcodigo);
+        gri_info1.getChildren().add(new Etiqueta(" MOTOR :"));
+        gri_info1.getChildren().add(tmotor);
+        gri_info1.getChildren().add(new Etiqueta(" CHASIS :"));
+        gri_info1.getChildren().add(tchasis);
+        gri_info1.getChildren().add(new Etiqueta(" AÑO :"));
+        gri_info1.getChildren().add(tanio);
+        pan_panel2.getChildren().add(gri_info1);
+        pan_matriz.getChildren().add(pan_panel1);
+        pan_matriz.getChildren().add(pan_panel2);
         Division div = new Division();
-        div.dividir2(pan_panel,pan_panel1, "28%", "V");
+        div.dividir2(pan_panel,pan_matriz, "28%", "V");
         Division div1 = new Division();
-        div1.dividir2(div,pan_opcion, "23%", "H");
+        div1.dividir2(div,pan_opcion, "32%", "H");
         agregarComponente(div1);
         dibujarMantenimiento(); 
         
@@ -192,25 +236,6 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
         set_invehiculo.setHeader("SELECCIONE AUTOMOTOR/MAQUINARIA");
         agregarComponente(set_invehiculo);
         
-        dia_dialogov.setId("dia_dialogov");
-        dia_dialogov.setTitle("SOLICITUD DE MANTENIMIENTO"); //titulo
-        dia_dialogov.setWidth("45%"); //siempre en porcentajes  ancho
-        dia_dialogov.setHeight("40%");//siempre porcentaje   alto
-        dia_dialogov.setResizable(false); //para que no se pueda cambiar el tamaño
-        dia_dialogov.getBot_aceptar().setMetodo("aceptCargas");
-        grid_v.setColumns(4);
-        agregarComponente(dia_dialogov);
-        
-        set_solvehiculo.setId("set_solvehiculo");
-        set_solvehiculo.setConexion(con_sql);
-        set_solvehiculo.setSql("SELECT c.MVE_SECUENCIAL,c.MVE_PLACA,c.MVE_MARCA,c.MVE_MODELO,c.MVE_COLOR,c.MVE_ANO\n" +
-                "FROM MVVEHICULO c INNER JOIN MVCABSOLICITUD e ON e.MVE_SECUENCIAL = c.MVE_SECUENCIAL\n" +
-                "WHERE c.MVE_ESTADO_REGISTRO = 'activo' and e.MSC_ESTADO_TRAMITE = 'mantenimiento'\n" +
-                "ORDER BY c.MVE_SECUENCIAL ASC");
-        set_solvehiculo.getColumna("MVE_PLACA").setFiltro(true);
-        set_solvehiculo.setTipoSeleccion(false);
-        set_solvehiculo.setRows(10);
-        set_solvehiculo.dibujar();
     }
     
             //limpia y borrar el contenido de la pantalla
@@ -235,80 +260,81 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
         }
     }
     
-    public void new_reg(){
-        if(cmb_mantenimiento.getValue()!=null){
-            dia_dialogov.Limpiar();
-            dia_dialogov.setDialogo(gridv);
-            grid_v.getChildren().add(set_solvehiculo);
-            dia_dialogov.setDialogo(grid_v);
-            set_solvehiculo.dibujar();
-            dia_dialogov.dibujar();
+    public void filtrarSolicitud (SelectEvent evt){
+        limpiar();
+        aut_busca.onSelect(evt);
+        if (aut_busca.getValor() != null) {
+            dibujarMantenimiento();
+            utilitario.addUpdate("aut_busca,pan_opcion");
+            datos_vehiculo();
+        }     
+    }
+    
+    public void aceplistado(){
+        if(set_invehiculo.getValorSeleccionado()!=null && set_invehiculo.getValorSeleccionado().toString().isEmpty()==false){
+         TablaGenerica tab_dato =aCombustible.get_ExDatosSoli(set_invehiculo.getValorSeleccionado());
+         if (!tab_dato.isEmpty()) {
+             
+             tconductor.setValue(tab_dato.getValor("MVE_CONDUCTOR"));
+             tmotor.setValue(tab_dato.getValor("MVE_MOTOR"));
+             tchasis.setValue(tab_dato.getValor("MVE_CHASIS"));
+             tplaca.setValue(tab_dato.getValor("MVE_PLACA"));
+             tanio.setValue(tab_dato.getValor("MVE_ANO"));
+             tKM.setValue(tab_dato.getValor("MVE_KILOMETRAJE"));
+             tfecha.setValue(tab_dato.getValor("FECHA"));
+             
+             utilitario.addUpdate("tconductor");
+             utilitario.addUpdate("tmotor");
+             utilitario.addUpdate("tchasis");
+             utilitario.addUpdate("tplaca");
+             utilitario.addUpdate("tanio");
+             utilitario.addUpdate("tKM");
+             utilitario.addUpdate("tfecha");
+             set_invehiculo.cerrar();
+             tab_mante.insertar();
+             tab_mante.setValor("MVE_SECUENCIAL", set_invehiculo.getValorSeleccionado());
+             utilitario.addUpdate("tab_mante");
+             estado();
+         }else{
+             utilitario.agregarMensaje("Datos no Encontrados", "");
+         }
         }else{
-            utilitario.agregarMensaje("SELECCIONAR TIPO DE MANTENIMIENTO", "");
+            utilitario.agregarMensaje("Seleccionar Al menos un Registro", "");
         }
     }
     
-    public void filtrarSolicitud (){
-        limpiar();
-        if(set_invehiculo.getSeleccionados()!=null){
-            
-        }else if (set_solvehiculo.getSeleccionados()!=null){
-            
-        }else{
-            utilitario.agregarMensaje("Seleccionar", "Tipo de Mantenimiento");
-        }
-//        if (set_registros.getValorSeleccionado() != null) {
-//            aut_busca.setValor(set_registros.getValorSeleccionado());
-//            dia_dialogore.cerrar();
-//            dibujardocumento();
-//            utilitario.addUpdate("aut_busca,pan_opcion");
-//            completa_dato();
-//        } else {
-//            utilitario.agregarMensajeInfo("Debe seleccionar una empresa", "");
-//        }
+    public void datos_vehiculo(){
+        TablaGenerica tab_dato =aCombustible.get_ExDatosCom(aut_busca.getValor());
+         if (!tab_dato.isEmpty()) {
+             tconductor.setValue(tab_dato.getValor("MSC_CONDUCTOR"));
+             tmotor.setValue(tab_dato.getValor("MVE_MOTOR"));
+             tchasis.setValue(tab_dato.getValor("MVE_CHASIS"));
+             tplaca.setValue(tab_dato.getValor("MVE_PLACA"));
+             tanio.setValue(tab_dato.getValor("MVE_ANO"));
+
+             utilitario.addUpdate("tconductor");
+             utilitario.addUpdate("tmotor");
+             utilitario.addUpdate("tchasis");
+             utilitario.addUpdate("tplaca");
+             utilitario.addUpdate("tanio");
+
+         }else{
+             utilitario.agregarMensaje("Datos no Encontrados", "");
+         }
     }
     
     public void dibujarMantenimiento(){
-        tab_vehiculo.setId("tab_vehiculo");
-        tab_vehiculo.setConexion(con_sql);
-        tab_vehiculo.setTabla("mvvehiculo", "mve_secuencial", 1);
-//                /*Filtro estatico para los datos a mostrar*/
-//        if (aut_busca.getValue() == null) {
-//            tab_vehiculo.setCondicion("mve_secuencial=-1");
-//        } else {
-//            tab_vehiculo.setCondicion("mve_secuencial=" + aut_busca.getValor());
-//        }
-        tab_vehiculo.getColumna("MVE_SECUENCIAL").setVisible(false);
-        tab_vehiculo.getColumna("MVE_TIPO").setVisible(false);
-        tab_vehiculo.getColumna("MVE_ESTADO").setVisible(false);
-        tab_vehiculo.getColumna("MVE_DURACION_LLANTA").setVisible(false);
-        tab_vehiculo.getColumna("MVE_CAPACIDAD_TANQUE_COMBUSTIBLE").setVisible(false);
-        tab_vehiculo.getColumna("MVE_TIPO_COMBUSTIBLE ").setVisible(false);
-        tab_vehiculo.getColumna("MVE_FECHA_BORRADO").setVisible(false);
-        tab_vehiculo.getColumna("MVE_LOGINBORRADO").setVisible(false);
-        tab_vehiculo.getColumna("MVE_ESTADO_REGISTRO").setVisible(false);
-        tab_vehiculo.getColumna("MVE_FECHAACTUALI").setVisible(false);
-        tab_vehiculo.getColumna("MVE_FECHAINGRESO").setVisible(false);
-        tab_vehiculo.getColumna("MVE_ASIGNADO").setVisible(false);
-        tab_vehiculo.getColumna("MVE_TIPOCODIGO").setVisible(false);
-        tab_vehiculo.getColumna("MVE_LOGINACTUALI").setVisible(false);
-        tab_vehiculo.getColumna("MVE_LOGININGRESO").setVisible(false);
-        tab_vehiculo.getColumna("MVE_TIPOMEDICION").setVisible(false);
-        tab_vehiculo.getColumna("MVE_OBSERVACIONES").setVisible(false);
-        tab_vehiculo.getColumna("MVE_NUMIMR").setVisible(false);
-        tab_vehiculo.getColumna("MVE_TAMANIO").setVisible(false);
-        tab_vehiculo.getColumna("MVE_VERSION").setVisible(false);
-        tab_vehiculo.agregarRelacion(tab_mante);
-        tab_vehiculo.setTipoFormulario(true);
-        tab_vehiculo.getGrid().setColumns(4);
-        tab_vehiculo.dibujar();
-        PanelTabla tve = new PanelTabla();
-        tve.setPanelTabla(tab_vehiculo);
-        
+
         tab_mante.setId("tab_mante");
         tab_mante.setConexion(con_sql);
-        tab_mante.setTabla("mvcabsolicitud", "msc_secuencial", 2);
-        tab_mante.getColumna("msc_conductor").setValorDefecto(tab_vehiculo.getValor("mve_conductor")+"");
+        tab_mante.setTabla("mvcabsolicitud", "msc_secuencial", 1);
+        /*Filtro estatico para los datos a mostrar*/
+        if (aut_busca.getValue() == null) {
+            tab_mante.setCondicion("msc_secuencial=-1");
+        } else {
+            tab_mante.setCondicion("msc_secuencial=" + aut_busca.getValor());
+        }
+        tab_mante.getColumna("msc_conductor").setValorDefecto(tconductor.getValue()+"");
         tab_mante.getColumna("msc_fecha").setValorDefecto(utilitario.getFechaHoraActual());
         tab_mante.getColumna("msc_tipo_mantenimiento").setVisible(false);
         tab_mante.getColumna("msc_solicitud").setVisible(false);
@@ -321,6 +347,7 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
         tab_mante.getColumna("msc_estado_registro").setVisible(false);
         tab_mante.getColumna("msc_tiposol").setVisible(false);
         tab_mante.getColumna("msc_monto").setVisible(false);
+        tab_mante.getColumna("MVE_SECUENCIAL").setVisible(false);
         tab_mante.getColumna("msc_conductor").setVisible(false);
         tab_mante.getColumna("msc_estado_tramite").setLectura(true);
         tab_mante.getColumna("msc_proveedor").setMetodoChange("proveedor");
@@ -330,11 +357,8 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
         tab_mante.dibujar();
         PanelTabla tpa = new PanelTabla();
         tpa.setPanelTabla(tab_mante);
-        
-        Division div1 = new Division();
-        div1.dividir2(tve,tpa, "28%", "H");
         Grupo gru = new Grupo();
-        gru.getChildren().add(div1);
+        gru.getChildren().add(tpa);
         pan_opcion.getChildren().add(gru);
     }
     
@@ -344,38 +368,47 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
         utilitario.addUpdate("tab_mante");
     }
     
-    public void aceplistado(){
-        
-    }
-    
-    public void aceptCargas(){
-        
-    }
-    
     public void proveedor(){
         set_proveedor.dibujar();
     }
-    
+    public void acepProveedor (){
+        if(set_proveedor.getValorSeleccionado()!= null && set_proveedor.getValorSeleccionado().toString().isEmpty()==false){
+            TablaGenerica tab_dato =aprogramas.proveedor1(Integer.parseInt(set_proveedor.getValorSeleccionado()));
+            if (!tab_dato.isEmpty()) {
+                tab_mante.setValor("msc_proveedor", tab_dato.getValor("titular")+"");
+                utilitario.addUpdate("tab_mante");
+                set_proveedor.cerrar();
+            }
+        }else{
+            utilitario.agregarMensaje("Seleccione un Registro", "");
+        }
+    }
     public void autoriza(){
         set_autorizador.dibujar();
     }
     
-    public void acepProveedor(){
-        
-    }
-    
     public void acepAutoriza(){
-        
+        if(set_autorizador.getValorSeleccionado()!= null && set_autorizador.getValorSeleccionado().toString().isEmpty()==false){
+            TablaGenerica tab_dato =aprogramas.empleadoCod(set_autorizador.getValorSeleccionado());
+            if (!tab_dato.isEmpty()) {
+                tab_mante.setValor("MSC_AUTORIZADO", tab_dato.getValor("nombres")+"");
+                utilitario.addUpdate("tab_mante");
+                set_autorizador.cerrar();
+            }
+        }else{
+            utilitario.agregarMensaje("Seleccione un Registro", "");
+        }
     }
     
     @Override
     public void insertar() {
-        tab_mante.insertar();
-        estado();
+
     }
 
     @Override
     public void guardar() {
+        tab_mante.guardar();
+        con_sql.guardarPantalla();
     }
 
     @Override
