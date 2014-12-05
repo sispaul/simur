@@ -435,6 +435,36 @@ public class AbastecimientoCombustible {
     
     }
     
+        ///solicitud de mantenimiento
+    
+    public TablaGenerica get_ExDatosCom(String nombre) {
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT c.MSC_SECUENCIAL,v.MVE_PLACA,v.MVE_MARCA,c.MSC_CONDUCTOR,v.MVE_ANO,v.MVE_MOTOR,v.MVE_CHASIS\n" +
+                "FROM MVVEHICULO AS v   \n" +
+                "INNER JOIN dbo.MVCABSOLICITUD c ON c.MVE_SECUENCIAL = v.MVE_SECUENCIAL\n" +
+                "WHERE v.MVE_ESTADO_REGISTRO = 'activo' and c.MSC_SECUENCIAL ='"+nombre+"'");
+        tab_persona.ejecutarSql();
+        conexion.desconectar();
+        conexion = null;
+        return tab_persona;
+    }
+    
+    public TablaGenerica get_ExDatosSoli(String nombre) {
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT v.MVE_SECUENCIAL,v.MVE_MOTOR,v.MVE_CHASIS,v.MVE_PLACA,v.MVE_ANO,v.MVE_KILOMETRAJE,v.MVE_CONDUCTOR,\n" +
+                "(SELECT top 1 MSC_FECHA\n" +
+                "FROM MVCABSOLICITUD where MVE_SECUENCIAL= v.MVE_SECUENCIAL order by MSC_SECUENCIAL desc) as FECHA\n" +
+                "FROM MVVEHICULO v WHERE v.MVE_SECUENCIAL ='"+nombre+"'");
+        tab_persona.ejecutarSql();
+        conexion.desconectar();
+        conexion = null;
+        return tab_persona;
+    }
+    
     private void conectar() {
         if (conexion == null) {
             conexion = new Conexion();
@@ -472,8 +502,8 @@ public class AbastecimientoCombustible {
          tab_consulta.ejecutarSql();
          ValorMax = tab_consulta.getValor("maximo");
          return ValorMax;
-    }
-        
+    } 
+    
     private void con_sqll() {
         if (con_sql == null) {
             con_sql = new Conexion();
