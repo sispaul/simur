@@ -352,7 +352,7 @@ public class AbastecimientoCombustible {
     }
     
     public void getMVDetalleASI(String codigo,String detalle,Double cantidad,String estado){
-        String parametro ="insert into MVDETASIGNACION (MAV_SECUENCIAL,MDA_DETALLE,MDA_CANTIDAD,MDA_ESTADO,MAV_ESTADO_ASIGNADO)\n" +
+        String parametro ="insert into MVDETASIGNACION (MAV_SECUENCIAL,MDA_DETALLE,MDA_CANTIDAD,MDA_ESTADO,MAV_ESTADO_ASIGNACION)\n" +
                 "values('"+codigo+"','"+detalle+"',"+cantidad+",'"+estado+"','1')";
         conectar();
         conexion.ejecutarSql(parametro);
