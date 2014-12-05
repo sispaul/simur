@@ -716,10 +716,23 @@ public class Programas {
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
-        return tab_funcionario;
-        
+        return tab_funcionario; 
  } 
  
+  public TablaGenerica empleadoCod(String codigo){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT cod_empleado,cedula_pass,nombres,fecha_ingreso,fecha_nombramiento,relacion_laboral,id_distributivo\n" +
+                                "FROM srh_empleado where estado = 1 and cod_empleado like '"+codigo+"'");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+        
+ }
+  
    public TablaGenerica proveedor(String ruc){
         conectar();
         TablaGenerica tab_funcionario = new TablaGenerica();
