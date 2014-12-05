@@ -725,7 +725,7 @@ public class Programas {
         conectar();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT cod_empleado,cedula_pass,nombres,fecha_ingreso,fecha_nombramiento,relacion_laboral,id_distributivo\n" +
-                                "FROM srh_empleado where estado = 1 and cod_empleado like '"+codigo+"'");
+                                "FROM srh_empleado where estado = 1 and cod_empleado = '"+codigo+"'");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
