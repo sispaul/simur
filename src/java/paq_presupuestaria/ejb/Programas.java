@@ -743,8 +743,32 @@ public class Programas {
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
-        
- }
+   }
+   
+      public TablaGenerica proveedor1(Integer ruc){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT\n" +
+                                "p.ide_proveedor,\n" +
+                                "p.ruc,\n" +
+                                "p.titular,\n" +
+                                "p.ban_codigo,\n" +
+                                "p.numero_cuenta,\n" +
+                                "p.tipo_cuenta,\n" +
+                                "p.ide_tipo_proveedor,\n" +
+                                "p.codigo_banco,\n" +
+                                "o.ban_nombre\n" +
+                                "FROM\n" +
+                                "tes_proveedores p ,\n" +
+                                "ocebanco o\n" +
+                                "where p.ban_codigo = o.ban_codigo and p.ide_proveedor ="+ruc);
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+   }
    
  public TablaGenerica busEstado(String estado){
         conectar();
