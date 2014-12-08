@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_pie_orden_trabajo" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="0" bottomMargin="0" uuid="ad8a8cfd-4761-4978-a97e-6fcd968e7a4b">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="placa" class="java.lang.String"/>
+	<parameter name="numero" class="java.lang.String"/>
+	<parameter name="id" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[declare @One integer = 1
+SELECT
+v.MVE_SECUENCIAL,
+v.MVE_MARCA+'  '+
+v.MVE_MODELO+'  '+
+v.MVE_VERSION AS VEHICULO,
+v.MVE_PLACA,
+c.MSC_CONDUCTOR
+FROM MVVEHICULO v
+INNER JOIN MVCABSOLICITUD c ON c.MVE_SECUENCIAL = v.MVE_SECUENCIAL
+WHERE v.MVE_PLACA =$P{placa} and @One =$P{numero} and c.MSC_SECUENCIAL = $P{id}]]>
+	</queryString>
+	<field name="MVE_SECUENCIAL" class="java.lang.String"/>
+	<field name="VEHICULO" class="java.lang.String"/>
+	<field name="MVE_PLACA" class="java.lang.String"/>
+	<field name="MSC_CONDUCTOR" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="166">
+			<staticText>
+				<reportElement uuid="b7e4e64b-52f6-49ca-baaa-6ba1788023ec" x="20" y="0" width="44" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOTA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4320508e-a73c-436b-b253-8f695f3e75a3" x="64" y="0" width="365" height="20"/>
+				<textElement/>
+				<text><![CDATA[EL TRABAJO FUE RECIBIDO CON SATISFACCIÓN]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="a37cc845-abdd-4c3a-9197-1496e5bc475f" x="336" y="83" width="100" height="20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MVE_PLACA}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="8a7e0a04-550b-4386-9c8f-ed34a9e49b65" x="230" y="70" width="100" height="13"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONDUCTOR]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="a3a61e9d-839d-4681-b62a-0be4c1ca09aa" x="158" y="83" width="178" height="20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{VEHICULO}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="1cf08c5b-4d1d-4fa0-b754-9ce0980bdef6" x="230" y="50" width="100" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="0d4a0dfc-ba59-4e8e-abeb-c598f868f2bd" x="184" y="55" width="216" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{MSC_CONDUCTOR}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="b519fedb-bdcb-4a8d-9539-d1104cfeafbe" x="10" y="124" width="234" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA DE INGRESO.........................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6b2fa9c4-37b9-4a23-a3e6-c565ef9f2d66" x="10" y="144" width="234" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA DE SALIDA.............................................]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+</jasperReport>
