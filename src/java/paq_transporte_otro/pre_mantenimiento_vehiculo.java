@@ -8,17 +8,22 @@ import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Combo;
+import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
 import paq_presupuestaria.ejb.Programas;
@@ -52,6 +57,8 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
     private Tabla tab_vehiculo = new Tabla();
     private Tabla tab_mante = new  Tabla();
     private Tabla set_solvehiculo = new Tabla();
+    private Tabla tab_consulta = new Tabla();
+    
     //obejto para seleccion
     private SeleccionTabla set_invehiculo = new SeleccionTabla();
     private SeleccionTabla set_proveedor = new SeleccionTabla();
@@ -59,6 +66,7 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
     
     //seleccion tipo de mantenimiento
     private Combo cmb_mantenimiento = new Combo();
+    private Combo cmb_impresion = new Combo();
     
     //variables de busqueda
     String search,nuevo;
@@ -66,12 +74,31 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
     //Contiene todos los elementos de la plantilla
     private Panel pan_opcion = new Panel();
     
+    //Dialogos
+    private Dialogo dia_dialogod = new Dialogo();
+    private Grid grid_de = new Grid();
+    private Grid gridd = new Grid();
+    
+    
     @EJB
     private AbastecimientoCombustible aCombustible = (AbastecimientoCombustible) utilitario.instanciarEJB(AbastecimientoCombustible.class);
-   private Programas aprogramas = (Programas) utilitario.instanciarEJB(Programas.class);
+    private Programas aprogramas = (Programas) utilitario.instanciarEJB(Programas.class);
+   
+   ///REPORTES
+    private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
+    private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
+    private Map p_parametros = new HashMap();
    
     public pre_mantenimiento_vehiculo() {
 
+        //usuario actual del sistema
+        tab_consulta.setId("tab_consulta");
+        tab_consulta.setSql("SELECT u.IDE_USUA,u.NOM_USUA,u.NICK_USUA,u.IDE_PERF,p.NOM_PERF,p.PERM_UTIL_PERF\n" +
+                "FROM SIS_USUARIO u,SIS_PERFIL p where u.IDE_PERF = p.IDE_PERF and IDE_USUA="+utilitario.getVariable("IDE_USUA"));
+        tab_consulta.setCampoPrimaria("IDE_USUA");
+        tab_consulta.setLectura(true);
+        tab_consulta.dibujar();
+        
         tconductor.setId("tconductor");
         tdependencia.setId("tdependencia");
         tmotor.setId("tmotor");
@@ -236,6 +263,22 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
         set_invehiculo.setHeader("SELECCIONE AUTOMOTOR/MAQUINARIA");
         agregarComponente(set_invehiculo);
         
+        dia_dialogod.setId("dia_dialogod");
+        dia_dialogod.setTitle("SELECCIONE OPCIÓN"); //titulo
+        dia_dialogod.setWidth("25%"); //siempre en porcentajes  ancho
+        dia_dialogod.setHeight("10%");//siempre porcentaje   alto
+        dia_dialogod.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogod.getBot_aceptar().setMetodo("abrirReporte");
+        grid_de.setColumns(4);
+        agregarComponente(dia_dialogod);
+        
+                /*         * CONFIGURACIÓN DE OBJETO REPORTE         */
+        bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
+        agregarComponente(rep_reporte); //2 agregar el listado de reportes
+        sef_formato.setId("sef_formato");
+        sef_formato.setConexion(con_sql);
+        agregarComponente(sef_formato);
+        
     }
     
             //limpia y borrar el contenido de la pantalla
@@ -272,6 +315,7 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
     
     public void aceplistado(){
         if(set_invehiculo.getValorSeleccionado()!=null && set_invehiculo.getValorSeleccionado().toString().isEmpty()==false){
+            
          TablaGenerica tab_dato =aCombustible.get_ExDatosSoli(set_invehiculo.getValorSeleccionado());
          if (!tab_dato.isEmpty()) {
              
@@ -298,6 +342,7 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
          }else{
              utilitario.agregarMensaje("Datos no Encontrados", "");
          }
+         
         }else{
             utilitario.agregarMensaje("Seleccionar Al menos un Registro", "");
         }
@@ -415,6 +460,82 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
     public void eliminar() {
     }
 
+    /*CREACION DE REPORTES */
+    //llamada a reporte
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+    }
+    
+    @Override
+    public void aceptarReporte() {
+        rep_reporte.cerrar();
+        switch (rep_reporte.getNombre()) {
+           case "ORDEN DE TRABAJO":
+               Grid gri_seleccion = new Grid();
+               gri_seleccion.setColumns(2);
+               cmb_impresion.setId("cmb_impresion");
+               List listar = new ArrayList();
+               Object filai1[] = {
+                   "0", "NO"
+               };
+               Object filai2[] = {
+                   "1", "SI"
+               };
+               listar.add(filai1);;
+               listar.add(filai2);;
+               cmb_impresion.setCombo(listar);
+               gri_seleccion.getChildren().add(new Etiqueta(" RE IMPRESION :"));
+               gri_seleccion.getChildren().add(cmb_impresion);
+               
+               dia_dialogod.Limpiar();
+               dia_dialogod.setDialogo(gridd);
+               grid_de.getChildren().add(gri_seleccion);
+               dia_dialogod.setDialogo(grid_de);
+               dia_dialogod.dibujar();
+           break;
+        }
+    }
+    
+    public void abrirReporte() {
+        rep_reporte.cerrar();
+        switch (rep_reporte.getNombre()) {
+           case "ORDEN DE TRABAJO":
+               String anio;
+               anio=String.valueOf(utilitario.getAnio(utilitario.getFechaActual()));
+               if(cmb_impresion.getValue().equals("0")){
+                   TablaGenerica tab_dato =aCombustible.ParametrosID(tab_mante.getValor("msc_secuencial")+"");
+                   if(!tab_dato.isEmpty()){
+                       Integer numero = Integer.parseInt(aCombustible.ParametrosMax("ORDEN"));
+                       String cadena = anio+"-"+String.valueOf(numero)+"";
+                       p_parametros.put("secuencial", cadena);
+                   }else{
+                       Integer numero = Integer.parseInt(aCombustible.ParametrosMax("ORDEN"));
+                       Integer cantidad=0;
+                       cantidad=numero +1;
+                       String cadena = anio+"-"+String.valueOf(numero)+"";
+                       p_parametros.put("secuencial", cadena);
+                       aCombustible.getNumero(String.valueOf(cantidad), "ORDEN", "ORDEN", tab_mante.getValor("msc_secuencial"),utilitario.getVariable("NICK"));
+                   }
+               }else {
+                   Integer numero = Integer.parseInt(aCombustible.ParametrosMax("ORDEN"));
+                   String cadena = anio+"-"+String.valueOf(numero)+"";
+                   p_parametros.put("secuencial", cadena);
+               }
+               p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
+               p_parametros.put("placa", tplaca.getValue()+"");
+               p_parametros.put("id", tab_mante.getValor("msc_secuencial")+"");
+               p_parametros.put("numero", cmb_impresion.getValue()+"");
+               p_parametros.put("fecha_orden", utilitario.getFechaLarga(utilitario.getFechaActual())+"");
+               p_parametros.put("director", cmb_impresion.getValue()+"");
+               p_parametros.put("mantenimiento", utilitario.getFechaLarga(utilitario.getFechaActual())+"");
+               rep_reporte.cerrar();
+               sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+               sef_formato.dibujar();
+           break;
+        }
+    }
+    
     public Conexion getCon_sql() {
         return con_sql;
     }
@@ -486,4 +607,29 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
     public void setSet_solvehiculo(Tabla set_solvehiculo) {
         this.set_solvehiculo = set_solvehiculo;
     }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSef_formato() {
+        return sef_formato;
+    }
+
+    public void setSef_formato(SeleccionFormatoReporte sef_formato) {
+        this.sef_formato = sef_formato;
+    }
+
+    public Map getP_parametros() {
+        return p_parametros;
+    }
+
+    public void setP_parametros(Map p_parametros) {
+        this.p_parametros = p_parametros;
+    }
+    
 }

@@ -285,10 +285,22 @@ public class AbastecimientoCombustible {
          ValorMax = tab_consulta.getValor("maximo");
          return ValorMax;
   }
+    public TablaGenerica ParametrosID(String dependencia) {
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        conectar();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT LIS_ID,DEPENDENCI FROM MVLISTA where DEPENDENCI = '"+dependencia+"'");
+        tab_persona.ejecutarSql();
+        conexion.desconectar();
+        conexion = null;
+        return tab_persona;
+  }
     
     public TablaGenerica get_DuplicaDatos(String nombre,String codigo,String dependencia) {
         conectar();
         TablaGenerica tab_persona = new TablaGenerica();
+        conectar();
         tab_persona.setConexion(conexion);
         tab_persona.setSql("SELECT LIS_ID,LIS_NOMBRE,TAB_CODIGO,DEPENDENCI\n" +
                 "FROM MVLISTA\n" +
@@ -332,7 +344,16 @@ public class AbastecimientoCombustible {
         conexion.desconectar();
         conexion = null;
     }
-
+    
+    public void getNumero(String id,String nombre,String codigo,String dependencia,String login){
+        String parametro ="insert into MVLISTA (LIS_ID,LIS_NOMBRE,LIS_ESTADO,TAB_CODIGO,DEPENDENCI,LIS_LOGININGRESO,LIS_FECHAINGRESO)\n" +
+                "values ('"+id+"','"+nombre+"',1,'"+codigo+"','"+dependencia+"','"+login+"',"+utilitario.getFormatoFechaSQL(utilitario.getFechaActual())+")";
+        conectar();
+        conexion.ejecutarSql(parametro);
+        conexion.desconectar();
+        conexion = null;
+    }
+    
     public void getParametros1(String id,String nombre,String codigo,String dependencia,String login,String cantidad){
         String parametro ="insert into MVLISTA (LIS_ID,LIS_NOMBRE,LIS_ESTADO,TAB_CODIGO,DEPENDENCI,LIS_LOGININGRESO,LIS_FECHAINGRESO,LIS_CANTIDAD)\n" +
                 "values ('"+id+"','"+nombre+"',1,'"+codigo+"','"+dependencia+"','"+login+"',"+utilitario.getFormatoFechaSQL(utilitario.getFechaActual())+",'"+cantidad+"')";
