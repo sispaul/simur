@@ -285,6 +285,21 @@ public class AbastecimientoCombustible {
          ValorMax = tab_consulta.getValor("maximo");
          return ValorMax;
   }
+    
+    public String SecuencialCab() {
+         conectar();
+         String ValorMax;
+         TablaGenerica tab_consulta = new TablaGenerica();
+         conectar();
+         tab_consulta.setConexion(conexion);
+         tab_consulta.setSql("select 0 as id,\n" +
+                 "(case when count(msc_solicitud) is null then '0' when count(msc_solicitud)is not null then count(msc_solicitud) end) AS maximo\n" +
+                 "from MVCABSOLICITUD");
+         tab_consulta.ejecutarSql();
+         ValorMax = tab_consulta.getValor("maximo");
+         return ValorMax;
+    }
+    
     public TablaGenerica ParametrosID(String dependencia) {
         conectar();
         TablaGenerica tab_persona = new TablaGenerica();

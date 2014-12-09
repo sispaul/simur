@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
+import paq_nomina.ejb.mergeDescuento;
 import paq_presupuestaria.ejb.Programas;
 import paq_sistema.aplicacion.Pantalla;
 import paq_transporte_otros.ejb.AbastecimientoCombustible;
@@ -83,6 +84,7 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
     @EJB
     private AbastecimientoCombustible aCombustible = (AbastecimientoCombustible) utilitario.instanciarEJB(AbastecimientoCombustible.class);
     private Programas aprogramas = (Programas) utilitario.instanciarEJB(Programas.class);
+   private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(mergeDescuento.class);
    
    ///REPORTES
     private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
@@ -382,7 +384,7 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
         tab_mante.getColumna("msc_conductor").setValorDefecto(tconductor.getValue()+"");
         tab_mante.getColumna("msc_fecha").setValorDefecto(utilitario.getFechaHoraActual());
         tab_mante.getColumna("msc_tipo_mantenimiento").setVisible(false);
-        tab_mante.getColumna("msc_solicitud").setVisible(false);
+//        tab_mante.getColumna("msc_solicitud").setVisible(false);
         tab_mante.getColumna("msc_loginingreso").setVisible(false);
         tab_mante.getColumna("msc_fechaingreso").setVisible(false);
         tab_mante.getColumna("msc_loginactuali").setVisible(false);
@@ -410,6 +412,7 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
     public void estado(){
         tab_mante.setValor("msc_estado_tramite","MANTENIMIENTO");
         tab_mante.setValor("msc_tiposol", cmb_mantenimiento.getValue()+"");
+        tab_mante.setValor("msc_solicitud",aCombustible.SecuencialCab());
         utilitario.addUpdate("tab_mante");
     }
     
@@ -503,36 +506,41 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
            case "ORDEN DE TRABAJO":
                String anio;
                anio=String.valueOf(utilitario.getAnio(utilitario.getFechaActual()));
-               if(cmb_impresion.getValue().equals("0")){
-                   TablaGenerica tab_dato =aCombustible.ParametrosID(tab_mante.getValor("msc_secuencial")+"");
-                   if(!tab_dato.isEmpty()){
+               TablaGenerica tab_datod = mDescuento.Direc_Asist(Integer.parseInt("229"));
+               if(!tab_datod.isEmpty()){
+                   if(cmb_impresion.getValue().equals("0")){
+                       TablaGenerica tab_dato =aCombustible.ParametrosID(tab_mante.getValor("msc_secuencial")+"");
+                       if(!tab_dato.isEmpty()){
+                           Integer numero = Integer.parseInt(aCombustible.ParametrosMax("ORDEN"));
+                           String cadena = anio+"-"+String.valueOf(numero)+"";
+                           p_parametros.put("secuencial", cadena);
+                       }else{
+                           Integer numero = Integer.parseInt(aCombustible.ParametrosMax("ORDEN"));
+                           Integer cantidad=0;
+                           cantidad=numero +1;
+                           String cadena = anio+"-"+String.valueOf(numero)+"";
+                           p_parametros.put("secuencial", cadena);
+                           aCombustible.getNumero(String.valueOf(cantidad), "ORDEN", "ORDEN", tab_mante.getValor("msc_secuencial"),utilitario.getVariable("NICK"));
+                       }
+                   }else {
                        Integer numero = Integer.parseInt(aCombustible.ParametrosMax("ORDEN"));
                        String cadena = anio+"-"+String.valueOf(numero)+"";
                        p_parametros.put("secuencial", cadena);
-                   }else{
-                       Integer numero = Integer.parseInt(aCombustible.ParametrosMax("ORDEN"));
-                       Integer cantidad=0;
-                       cantidad=numero +1;
-                       String cadena = anio+"-"+String.valueOf(numero)+"";
-                       p_parametros.put("secuencial", cadena);
-                       aCombustible.getNumero(String.valueOf(cantidad), "ORDEN", "ORDEN", tab_mante.getValor("msc_secuencial"),utilitario.getVariable("NICK"));
                    }
-               }else {
-                   Integer numero = Integer.parseInt(aCombustible.ParametrosMax("ORDEN"));
-                   String cadena = anio+"-"+String.valueOf(numero)+"";
-                   p_parametros.put("secuencial", cadena);
+                   p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
+                   p_parametros.put("placa", tplaca.getValue()+"");
+                   p_parametros.put("id", tab_mante.getValor("msc_secuencial")+"");
+                   p_parametros.put("numero", cmb_impresion.getValue()+"");
+                   p_parametros.put("fecha_orden", utilitario.getFechaLarga(utilitario.getFechaActual())+"");
+                   p_parametros.put("director", tab_datod.getValor("nombres")+"");
+                   p_parametros.put("mantenimiento", tab_mante.getValor("msc_solicitud")+"");
+                   rep_reporte.cerrar();
+                   sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                   sef_formato.dibujar();
+               }else{
+                   utilitario.agregarMensaje("Director No Disponible", "");
                }
-               p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
-               p_parametros.put("placa", tplaca.getValue()+"");
-               p_parametros.put("id", tab_mante.getValor("msc_secuencial")+"");
-               p_parametros.put("numero", cmb_impresion.getValue()+"");
-               p_parametros.put("fecha_orden", utilitario.getFechaLarga(utilitario.getFechaActual())+"");
-               p_parametros.put("director", cmb_impresion.getValue()+"");
-               p_parametros.put("mantenimiento", utilitario.getFechaLarga(utilitario.getFechaActual())+"");
-               rep_reporte.cerrar();
-               sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-               sef_formato.dibujar();
-           break;
+               break;
         }
     }
     
