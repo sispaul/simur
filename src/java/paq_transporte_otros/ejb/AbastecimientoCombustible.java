@@ -500,6 +500,24 @@ public class AbastecimientoCombustible {
         conexion = null;
         return tab_persona;
     }
+   
+    public TablaGenerica get_ExResgistroSoli(String nombre) {
+        conectar();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(conexion);
+        tab_persona.setSql("SELECT\n" +
+                "v.MVE_SECUENCIAL,\n" +
+                "v.MVE_PLACA,\n" +
+                "c.MSC_TIPOSOL,\n" +
+                "c.MSC_ESTADO_TRAMITE\n" +
+                "FROM MVVEHICULO v\n" +
+                "INNER JOIN MVCABSOLICITUD c ON c.MVE_SECUENCIAL = v.MVE_SECUENCIAL\n" +
+                "where v.MVE_PLACA = '"+nombre+"' and c.MSC_ESTADO_TRAMITE = 'SOLICITUD' and c.MSC_ESTADO_REGISTRO ='ACTIVO'");
+        tab_persona.ejecutarSql();
+        conexion.desconectar();
+        conexion = null;
+        return tab_persona;
+    }
     
     private void conectar() {
         if (conexion == null) {
