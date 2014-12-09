@@ -59,6 +59,7 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
     private Tabla tab_mante = new  Tabla();
     private Tabla set_solvehiculo = new Tabla();
     private Tabla tab_consulta = new Tabla();
+    private Tabla set_desvehiculo = new Tabla();
     
     //obejto para seleccion
     private SeleccionTabla set_invehiculo = new SeleccionTabla();
@@ -137,6 +138,13 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
         aut_busca.setSize(70);
         bar_botones.agregarComponente(new Etiqueta("Buscar Solicitud:"));
         bar_botones.agregarComponente(aut_busca);
+        
+        Boton bot_limpiar = new Boton();
+        bot_limpiar.setValue("Limpiar");
+        bot_limpiar.setExcluirLectura(true);
+        bot_limpiar.setIcon("ui-icon-cancel");
+        bot_limpiar.setMetodo("limpia_pa");
+        bar_botones.agregarBoton(bot_limpiar);
         
         //Ingreso y busqueda 
         Panel pan_panel = new Panel();
@@ -261,9 +269,15 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
         set_invehiculo.getTab_seleccion().getColumna("MVE_PLACA").setFiltro(true);
         set_invehiculo.getTab_seleccion().setRows(10);
         set_invehiculo.setRadio();
-        set_invehiculo.getBot_aceptar().setMetodo("aceplistado");
+        set_invehiculo.getBot_aceptar().setMetodo("des_historial");
         set_invehiculo.setHeader("SELECCIONE AUTOMOTOR/MAQUINARIA");
         agregarComponente(set_invehiculo);
+        
+        set_desvehiculo.setId("set_desvehiculo");
+        set_desvehiculo.setConexion(con_sql);
+        set_desvehiculo.setSql("");
+        set_desvehiculo.setRows(10);
+        set_desvehiculo.dibujar();
         
         dia_dialogod.setId("dia_dialogod");
         dia_dialogod.setTitle("SELECCIONE OPCIÓN"); //titulo
@@ -281,6 +295,21 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
         sef_formato.setConexion(con_sql);
         agregarComponente(sef_formato);
         
+    }
+    
+        //permite limpiar el formulario sin guardar o mantener algun dato
+    public void limpia_pa(){
+        if(tab_mante.getValor("msc_secuencial")!=null){
+            limpiar();
+            tab_mante.limpiar();
+            tab_mante.getChildren().clear();
+//            utilitario.agregarMensaje("Limpia Formulario", "");
+        }else{
+            limpiar();
+            utilitario.agregarMensaje("Limpia Formulario", "Registro Nuevo");
+            tab_mante.limpiar();
+            tab_mante.getChildren().clear();
+        }
     }
     
             //limpia y borrar el contenido de la pantalla
@@ -315,6 +344,24 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
         }     
     }
     
+    public void des_historial(){
+        TablaGenerica tab_datos =aCombustible.get_ExDatosCom(set_invehiculo.getValorSeleccionado());
+        if (!tab_datos.isEmpty()) {
+            TablaGenerica tab_dato =aCombustible.get_ExResgistroSoli(tab_datos.getValor("MVE_PLACA"));
+            if (!tab_dato.isEmpty()) {
+                utilitario.agregarMensaje("Cierre solicitud anterior", tab_dato.getValor("MVE_PLACA"));
+            }else{
+                aceplistado();
+            }
+        }else{
+            utilitario.agregarMensaje("Registro No Disponible", "");
+        }
+    }
+    
+    public void acep_historial(){
+        
+    }
+    
     public void aceplistado(){
         if(set_invehiculo.getValorSeleccionado()!=null && set_invehiculo.getValorSeleccionado().toString().isEmpty()==false){
             
@@ -341,6 +388,8 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
              tab_mante.setValor("MVE_SECUENCIAL", set_invehiculo.getValorSeleccionado());
              utilitario.addUpdate("tab_mante");
              estado();
+             aut_busca.limpiar();
+             utilitario.addUpdate("aut_busca");
          }else{
              utilitario.agregarMensaje("Datos no Encontrados", "");
          }
@@ -375,7 +424,7 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
         tab_mante.setId("tab_mante");
         tab_mante.setConexion(con_sql);
         tab_mante.setTabla("mvcabsolicitud", "msc_secuencial", 1);
-        /*Filtro estatico para los datos a mostrar*/
+//        /*Filtro estatico para los datos a mostrar*/
         if (aut_busca.getValue() == null) {
             tab_mante.setCondicion("msc_secuencial=-1");
         } else {
@@ -383,8 +432,8 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
         }
         tab_mante.getColumna("msc_conductor").setValorDefecto(tconductor.getValue()+"");
         tab_mante.getColumna("msc_fecha").setValorDefecto(utilitario.getFechaHoraActual());
+        tab_mante.getColumna("msc_secuencial").setVisible(false);
         tab_mante.getColumna("msc_tipo_mantenimiento").setVisible(false);
-//        tab_mante.getColumna("msc_solicitud").setVisible(false);
         tab_mante.getColumna("msc_loginingreso").setVisible(false);
         tab_mante.getColumna("msc_fechaingreso").setVisible(false);
         tab_mante.getColumna("msc_loginactuali").setVisible(false);
@@ -410,12 +459,12 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
     }
     
     public void estado(){
-        tab_mante.setValor("msc_estado_tramite","MANTENIMIENTO");
+        tab_mante.setValor("msc_estado_tramite","SOLICITUD");
         tab_mante.setValor("msc_tiposol", cmb_mantenimiento.getValue()+"");
         tab_mante.setValor("msc_solicitud",aCombustible.SecuencialCab());
         utilitario.addUpdate("tab_mante");
     }
-    
+      
     public void proveedor(){
         set_proveedor.dibujar();
     }
@@ -461,6 +510,7 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
 
     @Override
     public void eliminar() {
+        
     }
 
     /*CREACION DE REPORTES */
@@ -638,6 +688,14 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
 
     public void setP_parametros(Map p_parametros) {
         this.p_parametros = p_parametros;
+    }
+
+    public Tabla getSet_desvehiculo() {
+        return set_desvehiculo;
+    }
+
+    public void setSet_desvehiculo(Tabla set_desvehiculo) {
+        this.set_desvehiculo = set_desvehiculo;
     }
     
 }
