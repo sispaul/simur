@@ -220,9 +220,27 @@ public TablaGenerica Suma(){
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
-        
  }
- 
+  
+  public TablaGenerica Direc_Asist(Integer codigo){
+        conectar();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conectar();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT\n" +
+                "c.cod_cargo,\n" +
+                "c.nombre_cargo,\n" +
+                "e.cedula_pass,\n" +
+                "e.nombres\n" +
+                "FROM srh_cargos c\n" +
+                "INNER JOIN srh_empleado e ON e.cod_cargo = c.cod_cargo\n" +
+                "WHERE c.cod_cargo ="+codigo);//299
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario; 
+ }
+  
   private void conectar() {
       if (con_postgres == null) {
           con_postgres = new Conexion();
