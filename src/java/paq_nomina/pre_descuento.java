@@ -157,7 +157,7 @@ private Conexion con_postgres= new Conexion();
         set_roles.getTab_seleccion().setConexion(con_postgres);//conexion para seleccion con otra base
         set_roles.setSeleccionTabla("SELECT ide_col,descripcion_col FROM SRH_COLUMNAS WHERE ide_col=-1", "ide_col");
         set_roles.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
-        set_roles.getTab_seleccion().setRows(16);
+        set_roles.getTab_seleccion().setRows(14);
         set_roles.setRadio();
         set_roles.getBot_aceptar().setMetodo("aceptoDesc");
         set_roles.setHeader("SELECCIONE PARAMETROS PARA DESCUENTO");
@@ -289,7 +289,7 @@ private Conexion con_postgres= new Conexion();
          tab_consulta.setSql("select ano,ide_periodo,id_distributivo_roles,ide_columna from srh_descuento");
          tab_consulta.ejecutarSql();
          ano = Integer.parseInt(tab_consulta.getValor("ano"));
-         ide_periodo=Integer.parseInt(tab_consulta.getValor("ide_columna"));
+         ide_periodo=Integer.parseInt(tab_consulta.getValor("ide_periodo"));
          id_distributivo_roles=Integer.parseInt(tab_consulta.getValor("id_distributivo_roles"));
          ide_columna=Integer.parseInt(tab_consulta.getValor("ide_columna")) ;
          
@@ -310,7 +310,7 @@ private Conexion con_postgres= new Conexion();
                tab_consulta.setSql("select ano,ide_periodo,id_distributivo_roles,ide_columna from srh_descuento");
                tab_consulta.ejecutarSql();
                ano = Integer.parseInt(tab_consulta.getValor("ano"));
-               ide_periodo=Integer.parseInt(tab_consulta.getValor("ide_columna"));
+               ide_periodo=Integer.parseInt(tab_consulta.getValor("ide_periodo"));
                id_distributivo_roles=Integer.parseInt(tab_consulta.getValor("id_distributivo_roles"));
                ide_columna=Integer.parseInt(tab_consulta.getValor("ide_columna")) ;  
                mDescuento.migrarDescuento(ano,ide_periodo,id_distributivo_roles,ide_columna,tab_usuario.getValor("NICK_USUA")+"");
