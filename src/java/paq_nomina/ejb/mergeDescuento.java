@@ -103,32 +103,69 @@ public class mergeDescuento {
         con_postgres = null;
     }
     
-    public void InsertarAnticipo(Integer tipo){
+        public void InsertarAnticipo(Integer tipo){
         // Forma el sql para el ingreso
-        String str_sql3 = "insert into srh_descuento (id_distributivo_roles,ano,ide_columna,ide_periodo,num_descuento,descuento,cedula,nombres,ide_empleado,ide_empleado_rol)\n" +
-                "SELECT\n" +
-                "a.id_distributivo,\n" +
-                "CAST(q.anio AS int),\n" +
-                "(case when a.id_distributivo = 1  then 1 when a.id_distributivo = 2 then 46 end ) AS dist,\n" +
-                "CAST(q.periodo AS int),\n" +
-                "CAST(d.ide_detalle_anticipo AS int),\n" +
-                "d.valor,\n" +
-                "a.ci_solicitante,\n" +
-                "a.solicitante,\n" +
-                "a.ide_empleado_solicitante,\n" +
-                "a.ide_empleado_solicitante\n" +
-                "FROM  \n" +
-                " srh_detalle_anticipo d,  \n" +
-                " srh_periodo_anticipo q,  \n" +
-                " srh_solicitud_anticipo a\n" +
-                "WHERE  \n" +
-                " d.ide_periodo_descuento = q.ide_periodo_anticipo AND  \n" +
-                " d.ide_anticipo = a.ide_solicitud_anticipo AND  \n" +
-                " q.periodo = "+utilitario.getMes(utilitario.getFechaActual())+" and   \n" +
-                " a.id_distributivo = "+tipo+" and   \n" +
-                " d.ide_estado_cuota is null and   \n" +
-                " q.anio like '"+utilitario.getAnio(utilitario.getFechaActual())+"'\n" +
-                "order by a.id_distributivo,a.solicitante";
+        String str_sql3 = "insert into srh_descuento (id_distributivo_roles,ano,ide_columna,ide_periodo,descuento,cedula,nombres,ide_empleado,ide_empleado_rol) \n" +
+                "select cast (id_distributivo as int)\n" +
+                ",cast (anio as int)\n" +
+                ",(case when id_distributivo = 1 then 1 when id_distributivo = 2 then 46 end ) AS dist\n" +
+                ", cast (periodo as int)\n" +
+                ",valor,ci_solicitante\n" +
+                ",solicitante\n" +
+                ",ide_empleado\n" +
+                ",ide_empleado_solicitante \n" +
+                "from ( \n" +
+                "select * from ( \n" +
+                "SELECT a.id_distributivo\n" +
+                ",d.anio,sum(d.valor) as valor\n" +
+                ",a.ci_solicitante, a.solicitante\n" +
+                ", a.ide_empleado_solicitante as ide_empleado\n" +
+                ", a.ide_empleado_solicitante\n" +
+                ",d.periodo \n" +
+                "FROM srh_detalle_anticipo d\n" +
+                ", srh_solicitud_anticipo a \n" +
+                ",srh_calculo_anticipo as f \n" +
+                "WHERE d.ide_anticipo = a.ide_solicitud_anticipo \n" +
+                "and a.ide_solicitud_anticipo  = f.ide_solicitud_anticipo  \n" +
+                "AND d.periodo = '"+utilitario.getMes(utilitario.getFechaActual())+"' \n" +
+                "and a.id_distributivo = "+tipo+" \n" +
+                "and d.ide_estado_cuota is null \n" +
+                "and d.anio = '"+utilitario.getAnio(utilitario.getFechaActual())+"' \n" +
+                "and f.ide_estado_anticipo <> 5 \n" +
+                "GROUP BY a.ci_solicitante\n" +
+                ",a.id_distributivo\n" +
+                ",d.anio, a.solicitante\n" +
+                ", a.ide_empleado_solicitante\n" +
+                ", a.ide_empleado_solicitante\n" +
+                ",d.periodo \n" +
+                "having count(a.ci_solicitante)<=1 order by a.solicitante) as a \n" +
+                "UNION select * from ( \n" +
+                "SELECT a.id_distributivo\n" +
+                ",d.anio\n" +
+                ",sum(d.valor) as valor\n" +
+                ",a.ci_solicitante\n" +
+                ", a.solicitante\n" +
+                ", a.ide_empleado_solicitante as ide_empleado\n" +
+                ", a.ide_empleado_solicitante \n" +
+                ",d.periodo \n" +
+                "FROM srh_detalle_anticipo d\n" +
+                ", srh_solicitud_anticipo a\n" +
+                ",srh_calculo_anticipo as f \n" +
+                "WHERE d.ide_anticipo = a.ide_solicitud_anticipo \n" +
+                "and a.ide_solicitud_anticipo  = f.ide_solicitud_anticipo \n" +
+                "AND d.periodo = '"+utilitario.getMes(utilitario.getFechaActual())+"' \n" +
+                "and a.id_distributivo = "+tipo+" \n" +
+                "and d.ide_estado_cuota is null \n" +
+                "and d.anio = '"+utilitario.getAnio(utilitario.getFechaActual())+"'\n" +
+                "and f.ide_estado_anticipo <> 5 \n" +
+                "GROUP BY a.ci_solicitante\n" +
+                ",a.id_distributivo\n" +
+                ",d.anio\n" +
+                ", a.solicitante\n" +
+                ", a.ide_empleado_solicitante\n" +
+                ", a.ide_empleado_solicitante\n" +
+                ",d.periodo \n" +
+                "having count(a.ci_solicitante)>1 order by a.solicitante) as b ) as c order by solicitante";
         conectar();
         con_postgres.ejecutarSql(str_sql3);
         con_postgres.desconectar();
