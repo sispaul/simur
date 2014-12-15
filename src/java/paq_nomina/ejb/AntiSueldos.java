@@ -762,7 +762,7 @@ public class AntiSueldos {
     public void deleteCalculo(Integer anti,Integer cal,String usu){
         String au_sql="UPDATE srh_calculo_anticipo\n" +
                 "SET ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado ='NEGADO') ,\n" +
-                "usu_anulacion = '"+usu+"' where ide_calculo_anticipo = "+cal+" and ide_solicitud_anticipo = ="+anti;
+                "usu_anulacion = '"+usu+"' where ide_calculo_anticipo = "+cal+" and ide_solicitud_anticipo = "+anti;
         conectar();
         con_postgres.ejecutarSql(au_sql);
         con_postgres.desconectar();
