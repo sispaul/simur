@@ -15,7 +15,11 @@ import persistencia.Conexion;
  */
 @Stateless
 public class ProvisionCombustible {
-private Conexion conexion,con_postgres,con_sql;
+ private Conexion 
+            con_sql,//Conexion a la base de sigag
+            con_manauto,//Conexion a la base de manauto
+            con_postgres//Cnexion a la base de postgres 2014
+;
 private Utilitario utilitario = new Utilitario();
 
     // Add business logic below. (Right-click in editor and choose
@@ -23,9 +27,9 @@ private Utilitario utilitario = new Utilitario();
 
 //busquedad e vehiculo en manauto/mvvehiculo
     public TablaGenerica getVehiculo(String placa) {
-        conectar();
+        con_mantenimiento();
         TablaGenerica tab_persona = new TablaGenerica();
-        tab_persona.setConexion(conexion);
+        tab_persona.setConexion(con_manauto);
         tab_persona.setSql("SELECT\n" +
                 "MVE_SECUENCIAL,\n" +
                 "(MVE_MARCA+','+MVE_MODELO+',COLOR:'+MVE_COLOR+','+MVE_VERSION)as descripcion,\n" +
@@ -36,27 +40,27 @@ private Utilitario utilitario = new Utilitario();
                 "MVVEHICULO\n" +
                 "where MVE_PLACA ='"+placa+"'");
         tab_persona.ejecutarSql();
-        conexion.desconectar();
-        conexion = null;
+        con_manauto.desconectar();
+        con_manauto = null;
         return tab_persona;
     }
     
     public TablaGenerica getConductor(Integer ide) {
-        conectar();
+        con_mantenimiento();
         TablaGenerica tab_persona = new TablaGenerica();
-        tab_persona.setConexion(conexion);
+        tab_persona.setConexion(con_manauto);
         tab_persona.setSql("SELECT MVE_SECUENCIAL,MVE_CONDUCTOR\n" +
                 "FROM MVVEHICULO\n" +
                 "WHERE MVE_SECUENCIAL ="+ide);
         tab_persona.ejecutarSql();
-        conexion.desconectar();
-        conexion = null;
+        con_manauto.desconectar();
+        con_manauto = null;
         return tab_persona;
     }
     
     //extraer los datos del conductor desde produccion2014/srh_empleado
     public TablaGenerica getConductores(String nombre) {
-        conect();
+        con_postgresql();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(con_postgres);
         tab_persona.setSql("SELECT\n" +
@@ -74,7 +78,7 @@ private Utilitario utilitario = new Utilitario();
     }
     
     public TablaGenerica getMes(Integer periodo) {
-        conect();
+        con_postgresql();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(con_postgres);
         tab_persona.setSql("SELECT ide_periodo,per_descripcion FROM cont_periodo_actual where ide_periodo = "+periodo);
@@ -86,9 +90,9 @@ private Utilitario utilitario = new Utilitario();
     
     //extrae datos de catalogo de combustibles SIGAG/trans_tipo_combustible
     public TablaGenerica getCombustible(Integer tipo) {
-        conectar();
+        con_mantenimiento();
         TablaGenerica tab_persona = new TablaGenerica();
-        tab_persona.setConexion(conexion);
+        tab_persona.setConexion(con_manauto);
         tab_persona.setSql("SELECT\n" +
                 "IDE_TIPO_COMBUSTIBLE,\n" +
                 "DESCRIPCION_COMBUSTIBLE,\n" +
@@ -97,15 +101,15 @@ private Utilitario utilitario = new Utilitario();
                 "MVTIPO_COMBUSTIBLE\n" +
                 "where IDE_TIPO_COMBUSTIBLE ="+tipo);
         tab_persona.ejecutarSql();
-       conexion.desconectar();
-       conexion = null;
+       con_manauto.desconectar();
+       con_manauto = null;
         return tab_persona;
     }
     
     public TablaGenerica getKilometraje(String placa) {
-        conectar();
+        con_mantenimiento();
         TablaGenerica tab_persona = new TablaGenerica();
-        tab_persona.setConexion(conexion);
+        tab_persona.setConexion(con_manauto);
         tab_persona.setSql("SELECT\n" +
                 "MVE_SECUENCIAL,\n" +
                 "MVE_PLACA,\n" +
@@ -115,48 +119,48 @@ private Utilitario utilitario = new Utilitario();
                 "FROM MVVEHICULO\n" +
                 "WHERE MVE_PLACA = '"+placa+"'");
         tab_persona.ejecutarSql();
-       conexion.desconectar();
-       conexion = null;
+       con_manauto.desconectar();
+       con_manauto = null;
         return tab_persona;
     }
     
     public TablaGenerica getInsertar(Integer ide) {
-        conectar();
+        con_mantenimiento();
         TablaGenerica tab_persona = new TablaGenerica();
-        tab_persona.setConexion(conexion);
+        tab_persona.setConexion(con_manauto);
         tab_persona.setSql("SELECT\n" +
-"c.IDE_ORDEN_CONSUMO,\n" +
-"o.IDE_CALCULO_CONSUMO\n" +
-"FROM\n" +
-"dbo.MVORDEN_CONSUMO c\n" +
-"INNER JOIN dbo.MVCALCULO_CONSUMO o ON c.IDE_ORDEN_CONSUMO = o.IDE_ORDEN_CONSUMO\n" +
-"WHERE\n" +
-"c.IDE_ORDEN_CONSUMO = "+ide+" and o.IDE_CALCULO_CONSUMO is not null");
+                "c.IDE_ORDEN_CONSUMO,\n" +
+                "o.IDE_CALCULO_CONSUMO\n" +
+                "FROM\n" +
+                "dbo.MVORDEN_CONSUMO c\n" +
+                "INNER JOIN dbo.MVCALCULO_CONSUMO o ON c.IDE_ORDEN_CONSUMO = o.IDE_ORDEN_CONSUMO\n" +
+                "WHERE\n" +
+                "c.IDE_ORDEN_CONSUMO = "+ide+" and o.IDE_CALCULO_CONSUMO is not null");
         tab_persona.ejecutarSql();
-       conexion.desconectar();
-       conexion = null;
-        return tab_persona;
+       con_manauto.desconectar();
+       con_manauto = null;
+       return tab_persona;
     }
     
     public TablaGenerica getNick(Integer ide,Integer tipo) {
-        conectar();
+        con_mantenimiento();
         TablaGenerica tab_persona = new TablaGenerica();
-        tab_persona.setConexion(conexion);
+        tab_persona.setConexion(con_manauto);
         tab_persona.setSql("SELECT\n" +
-"IDE_ORDEN_CONSUMO,\n" +
-"AUTORIZA,\n" +
-"NUMERO_ORDEN\n" +
-"FROM\n" +
-"MVORDEN_CONSUMO\n" +
-"where IDE_ORDEN_CONSUMO = "+ide+" and NUMERO_ORDEN="+tipo);
+                "IDE_ORDEN_CONSUMO,\n" +
+                "AUTORIZA,\n" +
+                "NUMERO_ORDEN\n" +
+                "FROM\n" +
+                "MVORDEN_CONSUMO\n" +
+                "where IDE_ORDEN_CONSUMO = "+ide+" and NUMERO_ORDEN="+tipo);
         tab_persona.ejecutarSql();
-       conexion.desconectar();
-       conexion = null;
-        return tab_persona;
+       con_manauto.desconectar();
+       con_manauto = null;
+       return tab_persona;
     }
     
     public TablaGenerica getUsuario(String nick) {
-        con_sql();
+        con_sigag();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(con_sql);
         tab_persona.setSql("SELECT u.IDE_USUA,u.NOM_USUA,u.NICK_USUA,u.IDE_PERF,p.NOM_PERF,p.PERM_UTIL_PERF\n" +
@@ -169,11 +173,11 @@ private Utilitario utilitario = new Utilitario();
     }
     
     public String listaMax() {
-         conectar();
+         con_mantenimiento();
          String ValorMax;
          TablaGenerica tab_consulta = new TablaGenerica();
-         conectar();
-         tab_consulta.setConexion(conexion);
+         con_mantenimiento();
+         tab_consulta.setConexion(con_manauto);
          tab_consulta.setSql("select 0 as id,\n" +
                  "(case when max(numero_orden) is null then '0' when max(numero_orden)is not null then max(numero_orden) end) AS maximo\n" +
                  "from mvorden_consumo");
@@ -191,20 +195,20 @@ private Utilitario utilitario = new Utilitario();
                 "FECHA_MODIFICACION = '"+utilitario.getFechaHoraActual()+"',\n" +
                 "MODIFICA = '"+usu+"'\n" +
                 "WHERE IDE_ORDEN_CONSUMO ="+vale+" AND NUMERO_VALE ="+numero;
-        conectar();
-        conexion.ejecutarSql(str_sql4);
-        conexion.desconectar();
-        conexion = null;
+        con_mantenimiento();
+        con_manauto.ejecutarSql(str_sql4);
+        con_manauto.desconectar();
+        con_manauto = null;
     }
     
     public void ActKilometraje(String conduc,Double kilom){
         String str_sql4 = "update MVVEHICULO\n" +
                 "set MVE_KILOMETRAJE = "+kilom+"\n" +
                 "where MVE_PLACA = '"+conduc+"'";
-        conectar();
-        conexion.ejecutarSql(str_sql4);
-        conexion.desconectar();
-        conexion = null;
+        con_mantenimiento();
+        con_manauto.ejecutarSql(str_sql4);
+        con_manauto.desconectar();
+        con_manauto = null;
     }
     
     public void getConsumo(Integer orden,String date,String hora,Double kilom,Double galon,Double total,Integer tipo,String placa,String usu){
@@ -212,35 +216,32 @@ private Utilitario utilitario = new Utilitario();
         String nomina ="insert into MVCALCULO_CONSUMO(IDE_ORDEN_CONSUMO,FECHA_ABASTECIMIENTO,HORA_ABASTECIMIENTO,KILOMETRAJE,GALONES,TOTAL,FECHA_DIGITACION,\n" +
                 "HORA_DIGITACION,USU_DIGITACION,IDE_TIPO_COMBUSTIBLE,PLACA_VEHICULO)\n" +
                 "values ("+orden+",'"+date+"','"+hora+"',"+kilom+","+galon+","+total+",'"+utilitario.getFechaActual()+"','"+utilitario.getHoraActual()+"','"+usu+"',"+tipo+",'"+placa+"')";
-        conectar();
-        con_postgres.ejecutarSql(nomina);
-        con_postgres.desconectar();
-        con_postgres = null;
+        con_mantenimiento();
+        con_manauto.ejecutarSql(nomina);
+        con_manauto.desconectar();
+        con_manauto = null;
         
     }
+    ///conexion manauto 
+    private void con_sigag(){
+        if (con_sql == null) {
+            con_sql = new Conexion();
+            con_sql.setUnidad_persistencia("recursojdbc");
+        }
+    }
     
-private void conectar() {
-    if (conexion == null) {
-        conexion = new Conexion();
-        conexion.NOMBRE_MARCA_BASE="sqlserver";
-        conexion.setUnidad_persistencia(utilitario.getPropiedad("poolSqlmanAuto"));
+    private void con_mantenimiento(){
+        if(con_manauto == null){
+            con_manauto = new Conexion();
+            con_manauto.setUnidad_persistencia("poolSqlmanAuto");
+        }
     }
-}
-
-private void conect() {
-    if (con_postgres == null) {
-        con_postgres = new Conexion();
-        con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
-        con_postgres.NOMBRE_MARCA_BASE = "postgres";
+    
+    private void con_postgresql(){
+        if(con_postgres == null){
+            con_postgres = new Conexion();
+            con_postgres.setUnidad_persistencia("poolPostgres");
+        }
     }
-}
-
-private void con_sql() {
-    if (con_sql == null) {
-        con_sql = new Conexion();
-        con_sql.setUnidad_persistencia(utilitario.getPropiedad("recursojdbc"));
-        con_sql.NOMBRE_MARCA_BASE = "sqlserver";
-    }
-}
 
 }

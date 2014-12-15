@@ -19,14 +19,17 @@ public class SolicAnticipos {
     // "Insert Code > Add Business Method")
 
     private Utilitario utilitario = new Utilitario();
-    private Conexion con_postgres;
-    private Conexion conexion;
+        private Conexion 
+            con_sql,//Conexion a la base de sigag
+            con_manauto,//Conexion a la base de manauto
+            con_postgres,//Cnexion a la base de postgres 2014
+            con_ciudadania; //Conexion a la base de ciudadania;
     
     ///Buscar en roles
     public TablaGenerica empleados(Integer codigo){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("select *,(TOTAL_INGRESOS-TOTAL_EGRESOS) as LIQUIDO_RECIBIR from\n" +
                                 "(select aa.*,a.FONDOS_RESERVA,(case when a.FONDOS_RESERVA is NULL then '0' when a.FONDOS_RESERVA > 0 then a.FONDOS_RESERVA end ) as confirma1,\n" +
@@ -132,9 +135,9 @@ public class SolicAnticipos {
     
     
     public TablaGenerica trabajadores(Integer codigo){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("select *,(TOTAL_INGRESOS-TOTAL_EGRESOS) as LIQUIDO_RECIBIR from\n" +
                         "(\n" +
@@ -284,9 +287,9 @@ public class SolicAnticipos {
    
 
  public TablaGenerica empleadosCed(String cedula){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("select *,(TOTAL_INGRESOS-TOTAL_EGRESOS) as LIQUIDO_RECIBIR from  \n" +
                                 " (select aa.*,a.FONDOS_RESERVA,(case when a.FONDOS_RESERVA is NULL then '0' when a.FONDOS_RESERVA > 0 then a.FONDOS_RESERVA end ) as confirma1,  \n" +
@@ -393,9 +396,9 @@ public class SolicAnticipos {
     
  
  public TablaGenerica trabajadoresCed(String cedula){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("select *,(TOTAL_INGRESOS-TOTAL_EGRESOS) as LIQUIDO_RECIBIR from\n" +
                         "(\n" +
@@ -544,9 +547,9 @@ public class SolicAnticipos {
  }
  
  public TablaGenerica empleadosNom(String codigo){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("select *,(TOTAL_INGRESOS-TOTAL_EGRESOS) as LIQUIDO_RECIBIR from\n" +
                                 "(select aa.*,a.FONDOS_RESERVA,(case when a.FONDOS_RESERVA is NULL then '0' when a.FONDOS_RESERVA > 0 then a.FONDOS_RESERVA end ) as confirma1,\n" +
@@ -652,9 +655,9 @@ public class SolicAnticipos {
     
     
     public TablaGenerica trabajadoresNom(String codigo){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("select *,(TOTAL_INGRESOS-TOTAL_EGRESOS) as LIQUIDO_RECIBIR from\n" +
                         "(\n" +
@@ -802,9 +805,9 @@ public class SolicAnticipos {
         
  }
     public TablaGenerica VerifEmpleid(String cedu,Integer tipo ){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
                 "s.ide_empleado_solicitante,\n" +
@@ -826,9 +829,9 @@ public class SolicAnticipos {
     }
     
     public TablaGenerica VerifEmpleCod(Integer codigo,Integer tipo){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
                 "s.ide_empleado_solicitante,\n" +
@@ -849,9 +852,9 @@ public class SolicAnticipos {
     }
     
     public TablaGenerica VerifGaranteid(String cedula){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
                 "g.ci_garante,\n" +
@@ -871,9 +874,9 @@ public class SolicAnticipos {
     }
     
     public TablaGenerica VerifGaranteCod(Integer codigo){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
                 "s.ide_empleado_solicitante,\n" +
@@ -896,9 +899,9 @@ public class SolicAnticipos {
     }
     
     public TablaGenerica Garantemple(String ci){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
                 "e.cod_empleado, e.cedula_pass,\n" +
@@ -920,9 +923,9 @@ public class SolicAnticipos {
     }
     
     public TablaGenerica GaranteNom(Integer empleado){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT cod_empleado,cedula_pass,nombres,id_distributivo,cod_tipo\n" +
                 "FROM srh_empleado WHERE estado = 1 AND cod_tipo IN (4,7,8) AND cod_empleado ="+empleado+" order by nombres ");
@@ -933,21 +936,21 @@ public class SolicAnticipos {
     }
     
     public TablaGenerica Datos(String usuario){
-        conectarSQL();
+        con_sigag();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectarSQL();
-        tab_funcionario.setConexion(conexion);
+        con_sigag();
+        tab_funcionario.setConexion(con_sql);
         tab_funcionario.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where NICK_USUA like '"+usuario+"'");
         tab_funcionario.ejecutarSql();
-        conexion.desconectar();
-        conexion = null;
+        con_sql.desconectar();
+        con_sql = null;
         return tab_funcionario;
     }
     
     public TablaGenerica empleado(String ci){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
                 "cod_empleado,\n" +
@@ -974,9 +977,9 @@ public class SolicAnticipos {
     }
     
     public TablaGenerica FechaContrato(Integer codigoE){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT fecha_contrato,cod_tipo,ide_num_contrato,fecha_fin\n" +
                 "FROM srh_num_contratos\n" +
@@ -989,9 +992,9 @@ public class SolicAnticipos {
     }
     
     public TablaGenerica periodos(String mes, String anio ){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT ide_periodo_anticipo,periodo,mes,anio FROM srh_periodo_anticipo where mes like '"+mes+"' and anio like '"+anio+"'");
         tab_funcionario.ejecutarSql();
@@ -1001,9 +1004,9 @@ public class SolicAnticipos {
     }
     
     public TablaGenerica periodos1(Integer id ){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT ide_periodo_anticipo,periodo,mes,anio FROM srh_periodo_anticipo where ide_periodo_anticipo ="+id);
         tab_funcionario.ejecutarSql();
@@ -1013,9 +1016,9 @@ public class SolicAnticipos {
     }
     
     public TablaGenerica validar(String id ){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT ide_anticipo,ide_empleado_garante,ci_garante,garante,ide_empleado_solicitante,ci_solicitante,solicitante,\n" +
                 "fecha_actua_solicitante,ide_estado_anticipo,aprobado_solicitante\n" +
@@ -1027,9 +1030,9 @@ public class SolicAnticipos {
     }
   
   public TablaGenerica estado(){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT ide_estado_tipo,estado FROM srh_estado_anticipo WHERE ide_estado_tipo = 1");
         tab_funcionario.ejecutarSql();
@@ -1039,9 +1042,9 @@ public class SolicAnticipos {
   }
   
   public TablaGenerica ide_listado(Integer lista){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
                 "s.ide_solicitud_anticipo,\n" +
@@ -1074,7 +1077,7 @@ public class SolicAnticipos {
               "2 as tipo_ant \n" +
               "FROM srh_migrar_anticipo \n" +
               "WHERE cedula ilike '"+cedula+"'";
-      conectar();
+      con_postgresql();
       con_postgres.ejecutarSql(nomina);
       con_postgres.desconectar();
       con_postgres = null;
@@ -1095,7 +1098,7 @@ public class SolicAnticipos {
               "FROM\n" +
               "srh_migrar_anticipo\n" +
               "where cedula like '"+cedula+"'";
-      conectar();
+      con_postgresql();
       con_postgres.ejecutarSql(nomina);
       con_postgres.desconectar();
       con_postgres = null;
@@ -1117,16 +1120,16 @@ public class SolicAnticipos {
               "FROM\n" +
               "srh_migrar_anticipo\n" +
               "where cedula like '"+cedula+"'";
-      conectar();
+      con_postgresql();
       con_postgres.ejecutarSql(nomina);
       con_postgres.desconectar();
       con_postgres = null;
   }
   
   public TablaGenerica cod_listado(String cedula){
-       conectar();
+       con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT ide_solicitud_anticipo,ci_solicitante FROM srh_solicitud_anticipo where ci_solicitante  like '"+cedula+"' and  ide_listado like 'LIST-2014-00000'");
         tab_funcionario.ejecutarSql();
@@ -1136,9 +1139,9 @@ public class SolicAnticipos {
   }  
   
   public TablaGenerica cod_detalle(Integer ide){
-       conectar();
+       con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
                 "ide_calculo_anticipo,\n" +
@@ -1159,9 +1162,9 @@ public class SolicAnticipos {
   }
   
   public TablaGenerica login_solicitud(String ide){
-       conectar();
+       con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
                 "ide_solicitud_anticipo,\n" +
@@ -1178,9 +1181,9 @@ public class SolicAnticipos {
   }
   
   public TablaGenerica director(){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT e.cod_empleado,\n" +
                 "e.cedula_pass,\n" +
@@ -1198,9 +1201,9 @@ public class SolicAnticipos {
   }
   
   public TablaGenerica cargoSolic(String nombre){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT e.cod_empleado,\n" +
                 "e.cedula_pass,\n" +
@@ -1219,10 +1222,10 @@ public class SolicAnticipos {
 
   
   public String listaMax() {
-         conectar();
+         con_postgresql();
          String ValorMax;
          TablaGenerica tab_consulta = new TablaGenerica();
-         conectar();
+         con_postgresql();
          tab_consulta.setConexion(con_postgres);
          tab_consulta.setSql("select 0 as id, \n" +
                  "(case when max(ide_listado) is null then 'LIST-2014-00000' when max(ide_listado)is not null then max(ide_listado) end) AS maximo\n" +
@@ -1239,7 +1242,7 @@ public class SolicAnticipos {
             "ip_aprob_solicitud ='"+utilitario.getIp()+"',\n" +
             "fecha_aprobacion ='"+utilitario.getFechaActual()+"'\n" +
             "WHERE ide_solicitud_anticipo="+anti+" and ci_solicitante = '"+cuota+"'";
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
@@ -1253,7 +1256,7 @@ public class SolicAnticipos {
             "rmu_liquido_anterior="+rmua+",\n" +
             "cod_cargo="+aprob+"\n" +
             "where cedula like'"+cedula+"' and ide_migrar="+migrar;
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
@@ -1267,7 +1270,7 @@ public class SolicAnticipos {
             "cod_cuenta="+cuenta+",\n" +
             "numero_cuenta='"+numero+"'\n" +
             "where cedula like'"+cedula+"' and ide_migrar="+migrar;
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
@@ -1281,7 +1284,7 @@ public class SolicAnticipos {
             "FROM\n" +
             "srh_solicitud_anticipo\n" +
             "where ide_solicitud_anticipo = "+anti+" and ci_solicitante like '"+cedula+"' and aprobado_solicitante =1)";
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
@@ -1295,7 +1298,7 @@ public class SolicAnticipos {
             "FROM\n" +
             "srh_solicitud_anticipo\n" +
             "where ide_solicitud_anticipo = "+anti+" and ci_solicitante like '"+cedula+"')";
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
@@ -1306,7 +1309,7 @@ public class SolicAnticipos {
             "set ide_listado ='"+lista+"',\n" +
             "fecha_listado ='"+utilitario.getFechaActual()+"'\n" +
             "where ide_solicitud_anticipo = "+solic+" and ide_empleado_solicitante = "+ide+" and ci_solicitante ilike '"+cedula+"'";
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
@@ -1315,7 +1318,7 @@ public class SolicAnticipos {
   public void actuaDevolucion(Integer solic){
     String au_sql="UPDATE srh_calculo_anticipo set ide_estado_anticipo = 1\n" +
             "where ide_solicitud_anticipo ="+solic;
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
@@ -1323,9 +1326,9 @@ public class SolicAnticipos {
   
   public TablaGenerica getPeriodoA(Integer ide) {
         //Busca a una empresa en la tabla maestra_ruc por ruc
-        conectar();
+        con_postgresql();
         TablaGenerica tab_persona = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_persona.setConexion(con_postgres);
         tab_persona.setSql("SELECT ide_anticipo,\n" +
                 "ide_detalle_anticipo,\n" +
@@ -1343,9 +1346,9 @@ public class SolicAnticipos {
   
   public TablaGenerica getSolicitud(Integer ide) {
         //Busca a una empresa en la tabla maestra_ruc por ruc
-        conectar();
+        con_postgresql();
         TablaGenerica tab_persona = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_persona.setConexion(con_postgres);
         tab_persona.setSql("SELECT s.ide_solicitud_anticipo,s.ci_solicitante,s.solicitante,c.valor_anticipo,c.valor_cuota_mensual,c.val_cuo_adi,c.numero_cuotas_pagadas,\n" +
                 "c.valor_pagado,(valor_anticipo-valor_pagado)as saldo\n" +
@@ -1359,9 +1362,9 @@ public class SolicAnticipos {
   
   public TablaGenerica getSoli_Detalle(String cedula) {
         //Busca a una empresa en la tabla maestra_ruc por ruc
-        conectar();
+        con_postgresql();
         TablaGenerica tab_persona = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_persona.setConexion(con_postgres);
         tab_persona.setSql("SELECT s.ide_solicitud_anticipo,\n" +
                 "s.ci_solicitante,\n" +
@@ -1386,7 +1389,7 @@ public class SolicAnticipos {
             "usu_pago_anticipado='"+usu+"',\n" +
             "fecha_pago_anticipado='"+fecha+"'\n" +
             "where ide_periodo_descontado is null and ide_estado_cuota is null and ide_anticipo ="+ide;
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
@@ -1399,7 +1402,7 @@ public class SolicAnticipos {
             "fecha_pago_anticipado='"+fecha+"',\n" +
             "numero_documento_pago ='"+doc+"'\n" +
             "where ide_solicitud_anticipo = "+solic+" and ide_calculo_anticipo ="+calcu;
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
@@ -1420,7 +1423,7 @@ public class SolicAnticipos {
             "srh_detalle_anticipo.anio is null and \n" +
             "d.ide_periodo_anticipo = srh_detalle_anticipo.ide_periodo_descuento  and \n" +
             "srh_detalle_anticipo.ide_anticipo = "+anti;
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
@@ -1441,7 +1444,7 @@ public class SolicAnticipos {
             "srh_detalle_anticipo.anio is null and \n" +
             "d.ide_periodo_anticipo = srh_detalle_anticipo.ide_periodo_descuento  and \n" +
             "srh_detalle_anticipo.ide_anticipo = "+anti;
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
@@ -1451,7 +1454,7 @@ public class SolicAnticipos {
     String au_sql="UPDATE srh_solicitud_anticipo set login_aprob_solicitud = null,\n" +
             "ip_aprob_solicitud = null,fecha_aprobacion = null,aprobado_solicitante = null\n" +
             "where ide_solicitud_anticipo ="+solic;
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
@@ -1461,7 +1464,7 @@ public class SolicAnticipos {
     String au_sql="UPDATE srh_calculo_anticipo\n" +
             "set valor_cuota_mensual ="+valor+"\n" +
             "where ide_solicitud_anticipo ="+solic;
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
@@ -1470,7 +1473,7 @@ public class SolicAnticipos {
   public void llenarSolicitud(Integer anti,String cuota,Double valor,Integer perdes){
     String au_sql="insert into srh_detalle_anticipo (ide_anticipo,cuota,valor,ide_periodo_descuento)\n" +
             "values ("+anti+",'"+cuota+"',"+valor+","+perdes+")";
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
@@ -1479,7 +1482,7 @@ public class SolicAnticipos {
   public void llenarSolicitud1(Integer anti,String cuota,Double valor,Integer perdes,Double valor1){
     String au_sql="insert into srh_detalle_anticipo (ide_anticipo,cuota,valor,ide_periodo_descuento,valor_cuota_mensual)\n" +
             "values ("+anti+",'"+cuota+"',"+valor+","+perdes+","+valor1+")";
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
@@ -1487,7 +1490,7 @@ public class SolicAnticipos {
   
   public void deleteDetalle(Integer anti){
     String au_sql="delete from srh_detalle_anticipo where ide_solicitud_anticipo ="+anti;
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
@@ -1495,7 +1498,7 @@ public class SolicAnticipos {
   
   public void deleteCalculo(Integer anti){
     String au_sql="delete from srh_calculo_anticipo where ide_solicitud_anticipo ="+anti;
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
@@ -1503,7 +1506,7 @@ public class SolicAnticipos {
   
   public void deleteGarante(Integer anti){
     String au_sql="delete from srh_garante_anticipo where ide_solicitud_anticipo ="+anti;
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
@@ -1511,7 +1514,7 @@ public class SolicAnticipos {
   
   public void deleteSolicitud(Integer anti){
     String au_sql="delete from srh_solicitud_anticipo where ide_solicitud_anticipo ="+anti;
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
@@ -1519,7 +1522,7 @@ public class SolicAnticipos {
   
   public void deleteDevolver(Integer anti){
     String au_sql="delete from srh_detalle_anticipo where ide_anticipo ="+anti;
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
@@ -1527,7 +1530,7 @@ public class SolicAnticipos {
   
   public void deleteMigrar(){
     String au_sql="delete from srh_migrar_anticipo";
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
@@ -1536,49 +1539,48 @@ public class SolicAnticipos {
   public void llenarSolicitud(Integer anti,String cuota,Double valor,String obser,Integer perdes){
     String au_sql="insert into srh_detalle_anticipo (ide_anticipo,cuota,valor,ide_periodo_descuento)\n" +
             "values ("+anti+",'"+cuota+"',"+valor+","+perdes+")";
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
     con_postgres = null;
   }
   
-  private void conectar() {
-        if (con_postgres == null) {
-            con_postgres = new Conexion();
-            con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
-            con_postgres.NOMBRE_MARCA_BASE = "postgres";
-        }
-  }
-  
   public TablaGenerica getUsuario(String iden) {
         //Busca a una empresa en la tabla maestra_ruc por ruc
-        conectarSQL();
+        con_sigag();
         TablaGenerica tab_persona = new TablaGenerica();
-        tab_persona.setConexion(conexion);
+        tab_persona.setConexion(con_sql);
         tab_persona.setSql("SELECT IDE_USUA,NOM_USUA FROM SIS_USUARIO where NICK_USUA like '" + iden+ "'");
         tab_persona.ejecutarSql();
-        conexion.desconectar();
-        conexion = null;
+        con_sql.desconectar();
+        con_sql = null;
         return tab_persona;
   }
   
   public TablaGenerica getTranferencia(Integer iden) {
         //Busca a una empresa en la tabla maestra_ruc por ruc
-        conectarSQL();
+        con_sigag();
         TablaGenerica tab_persona = new TablaGenerica();
-        tab_persona.setConexion(conexion);
+        tab_persona.setConexion(con_sql);
         tab_persona.setSql("SELECT ide_detalle_listado,num_transferencia FROM tes_detalle_comprobante_pago_listado where ide_detalle_listado ="+iden);
         tab_persona.ejecutarSql();
-        conexion.desconectar();
-        conexion = null;
+        con_sql.desconectar();
+        con_sql = null;
         return tab_persona;
   }
   
-  private void conectarSQL() {
-        if (conexion == null) {
-            conexion = new Conexion();
-            conexion.NOMBRE_MARCA_BASE="sqlserver";
-            conexion.setUnidad_persistencia(utilitario.getPropiedad("recursojdbc"));
+  private void con_sigag(){
+        if (con_sql == null) {
+            con_sql = new Conexion();
+            con_sql.setUnidad_persistencia("recursojdbc");
         }
-  }
+    }
+  
+  private void con_postgresql(){
+        if(con_postgres == null){
+            con_postgres = new Conexion();
+            con_postgres.setUnidad_persistencia("poolPostgres");
+        }
+    }
+  
 }
