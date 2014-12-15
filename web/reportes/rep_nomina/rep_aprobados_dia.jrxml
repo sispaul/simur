@@ -37,6 +37,7 @@ FROM
 INNER JOIN "public".srh_calculo_anticipo AS c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo
 INNER JOIN "public".srh_detalle_anticipo AS d ON d.ide_anticipo = s.ide_solicitud_anticipo
 where s.ci_solicitante ilike $P{identificacion}
+and c.ide_estado_anticipo <> 4 and c.ide_estado_anticipo <> 5
 ORDER BY
 s.solicitante ASC,
 d.ide_periodo_descuento ASC,
