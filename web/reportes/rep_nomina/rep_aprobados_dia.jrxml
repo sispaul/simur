@@ -31,7 +31,7 @@ d.valor,
 (case when d.ide_estado_cuota =1 then 'COBRADO' end ) AS estad,
 c.valor_pagado,
 c.numero_cuotas_pagadas,
-(case when c.val_cuo_adi is NOT NULL  then cast(((c.valor_anticipo+c.val_cuo_adi)-c.valor_pagado)as numeric(6,2)) when c.val_cuo_adi is NULL then cast((c.valor_anticipo-c.valor_pagado)as numeric(6,2)) end ) AS saldo
+(case when c.val_cuo_adi is NOT NULL  then cast(((c.valor_anticipo)-c.valor_pagado)as numeric(6,2)) when c.val_cuo_adi is NULL then cast((c.valor_anticipo-c.valor_pagado)as numeric(6,2)) end ) AS saldo
 FROM
 "public".srh_solicitud_anticipo AS s
 INNER JOIN "public".srh_calculo_anticipo AS c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo
