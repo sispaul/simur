@@ -29,7 +29,7 @@ public class Programas {
                             "select ide_clasificador,pre_codigo,con_ide_clasificador,pre_descripcion,tipo,nivel,ide_funcion,des_funcion,cod_funcion\n" +
                             "from conc_clasificador,pre_funcion_programa\n" +
                             "order by ide_funcion,pre_codigo";
-    conectar();    
+    con_postgresql();    
     con_postgres.ejecutarSql(str_sqlr);
     con_postgres.desconectar();
     con_postgres = null;
@@ -40,7 +40,7 @@ public class Programas {
  */
     public void eiminarIngreso (){
     String str_sqlr ="delete from conc_cedula_presupuestaria_fechas";
-    conectar();    
+    con_postgresql();    
     con_postgres.ejecutarSql(str_sqlr);
     con_postgres.desconectar();
     con_postgres = null;
@@ -51,7 +51,7 @@ public class Programas {
         String str_sql1 =       "insert into conc_cedula_presupuestaria_fechas (ide_clasificador,pre_codigo,con_ide_clasificador,pre_descripcion,tipo,ano_curso,nivel,fechaced)" +
                                 "select ide_clasificador,pre_codigo,con_ide_clasificador,pre_descripcion,tipo,"+ano+",nivel,'"+fecha+"' from conc_clasificador" +
                                 " where tipo ="+tipo+" order by pre_codigo ";
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(str_sql1);
 //    con_postgres.desconectar();
 //    con_postgres = null;
@@ -62,7 +62,7 @@ public class Programas {
         // Forma el sql para actualizacion
         String str_sql2 = "update conc_cedula_presupuestaria_fechas \n" +
                            "set reforma1= 0, devengado1=0, pagado1=0, cobrado1=0, compromiso1=0, cobradoc1=0,val_inicial=0 where tipo="+combo+"";
-        conectar();
+        con_postgresql();
     con_postgres.ejecutarSql(str_sql2);
     con_postgres.desconectar();
     con_postgres = null;
@@ -142,7 +142,7 @@ public class Programas {
 "tes_detalle_comprobante_pago_listado.ide_listado =link.ide_listado and tes_detalle_comprobante_pago_listado.item =link.item and \n" +
 "tes_detalle_comprobante_pago_listado.cedula_pass_beneficiario=link.cedula_pass_beneficiario and \n" +
 "tes_detalle_comprobante_pago_listado.comprobante =link.comprobante and tes_detalle_comprobante_pago_listado.ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado WHERE estado like 'ENVIADO')";
-        conectar();
+        con_postgresql();
     con_postgres.ejecutarSql(str_sql2);
     con_postgres.desconectar();
     con_postgres = null;
@@ -164,7 +164,7 @@ public class Programas {
                                     "  conc_clasificador b,pre_mensual c where a.ide_clasificador=b.ide_clasificador and a.ide_pre_anual = c.ide_pre_anual and ano="+anio+"" +
                                     "  and fecha_ejecucion between '"+ini+"' and '"+fin+"' and tipo= "+lice+" group by b.ide_clasificador,ano,tipo order by tipo ) a \n" +
                                     "  where a.ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador";
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(str_sql3);
     con_postgres.desconectar();
     con_postgres = null;
@@ -174,7 +174,7 @@ public class Programas {
         String str_sqlg="update conc_cedula_presupuestaria_fechas set reforma1 = reforma \n" +
                                     "from ( select sum(reforma1) as reforma,con_ide_clasificador \n" +
                                     "from conc_cedula_presupuestaria_fechas group by con_ide_clasificador ) a where a.con_ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador";  
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(str_sqlg);
     con_postgres.desconectar();
     con_postgres = null;
@@ -183,7 +183,7 @@ public class Programas {
         String str_sqlg1="update conc_cedula_presupuestaria_fechas set val_inicial = reforma from ( select sum(val_inicial) as reforma,con_ide_clasificador \n" +
                                     "from conc_cedula_presupuestaria_fechas group by con_ide_clasificador ) a where a.con_ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador";
     
-        conectar();
+        con_postgresql();
     con_postgres.ejecutarSql(str_sqlg1);
     con_postgres.desconectar();
     con_postgres = null;
@@ -195,7 +195,7 @@ public class Programas {
                                     "sum((case when devengado1 is null then 0 else devengado1 end)) as devengado, con_ide_clasificador \n" +
                                     "from conc_cedula_presupuestaria_fechas  where ano_curso="+ani+" and tipo= "+tip+" group by  con_ide_clasificador ) a \n" +
                                     "where a.con_ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador";
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(str_sqlg2);
     con_postgres.desconectar();
     con_postgres = null;
@@ -212,7 +212,7 @@ public class Programas {
                                     "from conc_clasificador,pre_funcion_programa\n" +
                                     "where tipo = "+ti+"" +
                                     "order by ide_funcion,pre_codigo";
-        conectar();
+        con_postgresql();
         con_postgres.ejecutarSql(str_sql1);
         con_postgres.desconectar();
         con_postgres = null;
@@ -228,7 +228,7 @@ public class Programas {
                         "ide_estado_listado,ide_detalle_listado,'"+utilitario.getFechaActual()+"',num_transferencia\n" +
                         "FROM tes_detalle_comprobante_pago_listado\n" +
                         "where ide_listado="+lista+" and item ="+item+" and comprobante like '"+comprobar+"' and ide_detalle_listado ="+detalle;
-        conectar();
+        con_postgresql();
         con_postgres.ejecutarSql(str_sql1);
         con_postgres.desconectar();
         con_postgres = null;
@@ -238,7 +238,7 @@ public class Programas {
             // Forma el sql para actualizar
         String str_sql2 ="update conc_cedula_presupuestaria_fechas \n" +
                 "set reforma1= 0, devengado1=0, pagado1=0, cobrado1=0, compromiso1=0, cobradoc1=0,val_inicial=0 where tipo= "+cen;
-        conectar();
+        con_postgresql();
         con_postgres.ejecutarSql(str_sql2);
         con_postgres.desconectar();
         con_postgres = null;
@@ -260,7 +260,7 @@ public class Programas {
                                         "where a.ide_programa = b.ide_programa\n" +
                                         "group by a.ide_clasificador,ide_funcion) a\n" +
                                         "where a.ide_funcion = conc_cedula_presupuestaria_fechas.ide_funcion and conc_cedula_presupuestaria_fechas.tipo="+lic+" and  a.ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador";
-        conectar();
+        con_postgresql();
         con_postgres.ejecutarSql(str_sql3);
         con_postgres.desconectar();
         con_postgres = null;
@@ -278,7 +278,7 @@ public class Programas {
                                         "where a.ide_programa=b.ide_programa\n" +
                                         "group by ide_clasificador,ide_funcion) a\n" +
                                         "where a.ide_funcion = conc_cedula_presupuestaria_fechas.ide_funcion and conc_cedula_presupuestaria_fechas.tipo="+licn+" and  a.ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador";
-        conectar();
+        con_postgresql();
         con_postgres.ejecutarSql(str_sql4);
         con_postgres.desconectar();
         con_postgres = null;
@@ -304,7 +304,7 @@ public class Programas {
                                         "group by ide_clasificador,ide_funcion) a\n" +
                                         "where a.ide_funcion = conc_cedula_presupuestaria_fechas.ide_funcion \n" +
                                         "and conc_cedula_presupuestaria_fechas.tipo="+licen+" and a.ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador";
-        conectar();
+        con_postgresql();
         con_postgres.ejecutarSql(str_sql5);
         con_postgres.desconectar();
         con_postgres = null;
@@ -319,7 +319,7 @@ public class Programas {
                                         "group by con_ide_clasificador,ide_funcion,tipo having tipo="+licn+") a\n" +
                                         "where a.ide_funcion = conc_cedula_presupuestaria_fechas.ide_funcion and conc_cedula_presupuestaria_fechas.tipo=a.tipo \n" +
                                         "and  a.con_ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador";
-         conectar();
+         con_postgresql();
         con_postgres.ejecutarSql(str_sql6);
         con_postgres.desconectar();
         con_postgres = null;
@@ -347,7 +347,7 @@ public class Programas {
                                         "group by  con_ide_clasificador,ide_funcion,tipo ) a\n" +
                                         "where a.ide_funcion = conc_cedula_presupuestaria_fechas.ide_funcion and conc_cedula_presupuestaria_fechas.tipo=a.tipo \n" +
                                         "and a.con_ide_clasificador = conc_cedula_presupuestaria_fechas.ide_clasificador";
-        conectar();
+        con_postgresql();
         con_postgres.ejecutarSql(str_sql7);
         con_postgres.desconectar();
         con_postgres = null;
@@ -358,7 +358,7 @@ public class Programas {
                             "tipo_cuenta = '"+tipcuen+"',actividad ='"+activida+"',telefono1 ='"+fono+"',ide_tipo_proveedor ="+tiprov+" ,\n" +
                             "telefono2 ='"+fono1+"' ,ruc ='"+ruc+"',codigo_banco ='"+cuban+"',\n" +
                             "usuario_actua ='"+usu+"',ip_actua = '"+utilitario.getIp()+"',fecha_actua ='"+utilitario.getFechaActual()+"' WHERE ide_proveedor ="+provee;
-         conectar();
+         con_postgresql();
         con_postgres.ejecutarSql(proveedor);
         con_postgres.desconectar();
         con_postgres = null;
@@ -367,7 +367,7 @@ public class Programas {
     public void actuEmpleado(Integer banco,String numero,String usu,Integer ci,Integer tipo){
        String empleado="Update srh_empleado set cod_banco="+banco+",numero_cuenta='"+numero+"',ip_responsable ='"+utilitario.getIp()+"',"
                         + "nom_responsable='"+usu+"',cod_cuenta="+tipo+",fecha_responsable='"+utilitario.getFechaActual()+"'WHERE cod_empleado = "+ci;
-       conectar();
+       con_postgresql();
        con_postgres.ejecutarSql(empleado);
        con_postgres.desconectar();
        con_postgres = null;
@@ -379,7 +379,7 @@ public class Programas {
                     + "usuario_actua_paga='"+usu+"',ip_actua_paga='"+utilitario.getIp()+"'\n" +
                     "WHERE ide_listado ="+ide;
        
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(str_sqlg);
     con_postgres.desconectar();
     con_postgres = null;
@@ -395,7 +395,7 @@ public class Programas {
                         "ip_ingre_envia='"+utilitario.getIp()+"',\n" +
                         "ide_estado_listado=(SELECT ide_estado_listado FROM tes_estado_listado WHERE estado like 'PAGADO')\n" +
                         "WHERE comprobante like '"+comprobante+"' and ide_listado ="+lista+" and ide_detalle_listado ="+detalle;  
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(str_sqlg);
     con_postgres.desconectar();
     con_postgres = null;
@@ -408,7 +408,7 @@ public class Programas {
                         "ip_actua_devolucion='"+utilitario.getIp()+"',\n" +
                         "ide_estado_listado=(SELECT ide_estado_listado FROM tes_estado_listado WHERE estado like 'DEVUELTO') \n" +
                         "WHERE comprobante like '"+comprobante+"' and ide_listado = "+lista+" and ide_detalle_listado ="+detalle+" and item="+item;  
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(str_sqlg);
     con_postgres.desconectar();
     con_postgres = null;
@@ -419,7 +419,7 @@ public class Programas {
         String str_sqlg="UPDATE tes_comprobante_pago_listado \n" +
                         "set devolucion = (SELECT ide_estado_listado FROM tes_estado_listado WHERE estado like 'DEVUELTO')\n" +
                         "WHERE ci_envia like '"+cedula+"' and ide_listado = "+lista+"and item="+item;  
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(str_sqlg);
     con_postgres.desconectar();
     con_postgres = null;
@@ -430,7 +430,7 @@ public class Programas {
         String str_sqlg="UPDATE tes_comprobante_pago\n" +
                 "set estado_comprobante = (SELECT ide_estado_listado FROM tes_estado_listado WHERE estado LIKE 'PENDIENTE')\n" +
                 "where comprobante = '"+comprobante+"'";  
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(str_sqlg);
     con_postgres.desconectar();
     con_postgres = null;
@@ -444,7 +444,7 @@ public class Programas {
                         "ip_ingre_envia='"+utilitario.getIp()+"',\n" +
                         "ide_estado_listado=(SELECT ide_estado_listado FROM tes_estado_listado WHERE estado like 'ENVIADO')\n" +
                         "WHERE comprobante like '"+comprobante+"' and ide_listado ="+lista+" and ide_detalle_listado ="+detalle;  
-    conectar();
+   con_postgresql();
     con_postgres.ejecutarSql(str_sqlg);
     con_postgres.desconectar();
     con_postgres = null;
@@ -455,7 +455,7 @@ public class Programas {
           String str_sqlg="UPDATE tes_detalle_comprobante_pago_listado \n" +
                             "set ide_estado_listado=(SELECT ide_estado_listado FROM tes_estado_listado WHERE estado like 'DEVUELTO'),comentario = '"+comentario+"'\n" +
                             "WHERE comprobante like'"+comprobante+"'  and ide_listado ="+lista+" and num_documento like'"+cuenta+"'";  
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(str_sqlg);
     con_postgres.desconectar();
     con_postgres = null;
@@ -466,7 +466,7 @@ public class Programas {
           String str_sqlg="UPDATE tes_detalle_comprobante_pago_listado \n" +
                             "set ide_estado_listado=(SELECT ide_estado_listado FROM tes_estado_listado WHERE estado like 'PAGADO'),comentario = null\n" +
                             "WHERE comprobante like'"+comprobante+"'  and ide_listado ="+lista+" and num_documento like'"+cuenta+"'";  
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(str_sqlg);
     con_postgres.desconectar();
     con_postgres = null;
@@ -477,7 +477,7 @@ public class Programas {
           String str_sqlg="UPDATE tes_detalle_comprobante_pago_listado \n" +
                             "set num_transferencia='"+trans+"'\n" +
                             "WHERE comprobante like'"+comprobante+"' and ide_listado ="+lista+" and num_documento like'"+cuenta+"'";  
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(str_sqlg);
     con_postgres.desconectar();
     con_postgres = null;
@@ -488,7 +488,7 @@ public class Programas {
           String str_sqlg="UPDATE tes_comprobante_pago\n" +
                   "SET estado_comprobante = (SELECT ide_estado_listado FROM tes_estado_listado where estado ='PAGADO')\n" +
                   "WHERE comprobante = '"+cuenta+"'";  
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(str_sqlg);
     con_postgres.desconectar();
     con_postgres = null;
@@ -500,7 +500,7 @@ public class Programas {
                         "set num_documento='"+numero+"',\n" +
                         "fecha_transferencia='"+fecha+"'\n" +
                         "WHERE comprobante like '"+comprobante+"' and ide_listado ="+lista+" and ide_detalle_listado ="+detalle;  
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(str_sqlg);
     con_postgres.desconectar();
     con_postgres = null;
@@ -512,7 +512,7 @@ public class Programas {
                         "set ban_codigo="+codigo+",\n" +
                         "tipo_cuenta='"+tipo+"',usuario_actua_pagado='"+usu+"',ide_estado_detalle_listado ="+estado+" ,ban_nombre = (SELECT o.ban_nombre FROM ocebanco o WHERE o.ban_codigo ="+codigo+"),num_transferencia = '"+registro+"',ip_actua_pagado='"+utilitario.getIp()+"'\n" +
                         "WHERE ide_detalle_listado="+detalle+" and ide_listado ="+listado;  
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(str_sqlg);
     con_postgres.desconectar();
     con_postgres = null;
@@ -523,7 +523,7 @@ public class Programas {
                     "set fecha_devolucion='"+utilitario.getFechaActual()+"',ci_devolucion='"+ci+"',usuario_actua_devolucion='"+respon+"',"
                     + "ip_actua_devolucion ='"+utilitario.getIp()+"'\n" +
                     "where ide_listado = "+ide;
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(str_sqlg);
     con_postgres.desconectar();
     con_postgres = null;
@@ -532,7 +532,7 @@ public class Programas {
    public void actuLisDevol(Integer ide){
     String str_sqlg="UPDATE tes_comprobante_pago_listado\n" +
                     "set devolucion='1' where ide_listado = "+ide;
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(str_sqlg);
     con_postgres.desconectar();
     con_postgres = null;
@@ -541,7 +541,7 @@ public class Programas {
     public void actuLisDevolver(Integer ide,Integer item){
     String str_sqlg="UPDATE tes_comprobante_pago_listado\n" +
                     "set estado=(SELECT ide_estado_listado FROM tes_estado_listado WHERE estado like 'CERRADO') where item="+item+" and ide_listado = "+ide;
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(str_sqlg);
     con_postgres.desconectar();
     con_postgres = null;
@@ -558,7 +558,7 @@ public class Programas {
                     "ide_listado ="+lis+" and\n" +
                     "comprobante like '"+compro+"' and\n" +
                     "cedula_pass_beneficiario like '"+cedula+"'";
-    conectar();
+    con_postgresql();
     con_postgres.ejecutarSql(str_sqlg);
     con_postgres.desconectar();
     con_postgres = null;
@@ -569,7 +569,7 @@ public class Programas {
                     "set numero_cuenta ='"+cuenta+"',ban_codigo="+codigo+",ban_nombre=(SELECT ban_nombre FROM ocebanco WHERE ban_codigo ="+codigo+"),"
                       + "tipo_cuenta='"+tipo+"',usuario_actua_devolucion='"+usu+"',num_transferencia='"+registro+"',ip_actua_devolucion='"+utilitario.getIp()+"',ide_estado_detalle_listado="+estado+"\n" +
                     "where ide_detalle_listado = "+detalle+" and ide_listado = "+listado;
-                        conectar();
+                        con_postgresql();
     con_postgres.ejecutarSql(str_sqlg);
     con_postgres.desconectar();
     con_postgres = null;    
@@ -587,16 +587,16 @@ public class Programas {
                             "item="+item+" and\n" +
                             "comprobante= '"+comprobante+"'and\n" +
                             "cedula_pass_beneficiario='"+cedula+"'";
-        conectar();
+        con_postgresql();
     con_postgres.ejecutarSql(str_sql2);
     con_postgres.desconectar();
     con_postgres = null;
     }
     
      public TablaGenerica periodo(Integer periodo){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT ide_tipo_cuenta,tipo_cuenta,cuenta FROM ocebanco_tipo_cuenta WHERE ide_tipo_cuenta ="+periodo);
         tab_funcionario.ejecutarSql();
@@ -607,9 +607,9 @@ public class Programas {
  }
      
   public TablaGenerica banco(Integer banco){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT ban_codigo,ban_nombre,num_banco FROM ocebanco WHERE ban_codigo ="+banco);
         tab_funcionario.ejecutarSql();
@@ -621,9 +621,9 @@ public class Programas {
  
   public TablaGenerica getTranferencia(Integer iden) {
         //Busca a una empresa en la tabla maestra_ruc por ruc
-        conectar();
+        con_postgresql();
         TablaGenerica tab_persona = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_persona.setConexion(con_postgres);
         tab_persona.setSql("SELECT ide_detalle_listado,ide_listado,num_documento FROM tes_detalle_comprobante_pago_listado where ide_detalle_listado ="+iden);
         tab_persona.ejecutarSql();
@@ -633,9 +633,9 @@ public class Programas {
 }
   
  public TablaGenerica item(Integer banco){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT \n" +
                                 " ide_listado, \n" +
@@ -656,9 +656,9 @@ public class Programas {
  }
   
  public TablaGenerica empleado(){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT cod_empleado,cedula_pass,nombres,cod_empleado,estado\n" +
                                 "FROM srh_empleado WHERE cod_cargo = 101 and estado = 1");
@@ -669,9 +669,9 @@ public class Programas {
  }
 
   public TablaGenerica Pagos_lista(Integer item,Integer lista){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
                 "ide_detalle_listado,\n" +
@@ -697,9 +697,9 @@ public class Programas {
  
  
   public TablaGenerica empleado1(String cedula){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
                                 "e.cod_empleado,\n" +
@@ -719,9 +719,9 @@ public class Programas {
  } 
  
   public TablaGenerica empleadoCod(String codigo){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT cod_empleado,cedula_pass,nombres,fecha_ingreso,fecha_nombramiento,relacion_laboral,id_distributivo\n" +
                                 "FROM srh_empleado where estado = 1 and cod_empleado = '"+codigo+"'");
@@ -733,9 +733,9 @@ public class Programas {
  }
   
    public TablaGenerica proveedor(String ruc){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
                                 "p.ide_proveedor,\n" +
@@ -758,9 +758,9 @@ public class Programas {
    }
    
       public TablaGenerica proveedor1(Integer ruc){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
                                 "p.ide_proveedor,\n" +
@@ -783,9 +783,9 @@ public class Programas {
    }
    
  public TablaGenerica busEstado(String estado){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT ide_detalle_listado,ide_listado,item,ide_estado_listado\n" +
                                 "FROM tes_detalle_comprobante_pago_listado\n" +
@@ -798,9 +798,9 @@ public class Programas {
  }
   
    public TablaGenerica Beneficiarios(Integer item){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
                                 "ide_detalle_listado,\n" +
@@ -824,11 +824,11 @@ public class Programas {
  }
  
    public String listaMax() {
-         conectar();
+         con_postgresql();
 
          String ValorMax;
          TablaGenerica tab_consulta = new TablaGenerica();
-         conectar();
+         con_postgresql();
          tab_consulta.setConexion(con_postgres);
          tab_consulta.setSql("select 0 as id ,\n" +
                             "(case when max(num_documento) is null then 'LIST-2014-00000' when max(num_documento)is not null then max(num_documento) end) AS maximo\n" +
@@ -838,11 +838,10 @@ public class Programas {
          return ValorMax;
   }
  
-     private void conectar() {
-        if (con_postgres == null) {
+    private void con_postgresql(){
+        if(con_postgres == null){
             con_postgres = new Conexion();
-            con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
-            con_postgres.NOMBRE_MARCA_BASE = "postgres";
+            con_postgres.setUnidad_persistencia("poolPostgres");
         }
-     }
+    }
 }

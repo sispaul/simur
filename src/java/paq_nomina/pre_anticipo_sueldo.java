@@ -1819,7 +1819,7 @@ public class pre_anticipo_sueldo extends Pantalla{
     
      public void buscarSolicitud() {
             if (tex_busqueda.getValue() != null && tex_busqueda.getValue().toString().isEmpty() == false) {
-                set_solicitud.getTab_seleccion().setSql("SELECT ide_solicitud_anticipo,ci_solicitante,solicitante,(case when aprobado_solicitante = 1 then 'SI' ELSE 'NO' end ) AS aprobado FROM srh_solicitud_anticipo WHERE ci_solicitante LIKE '" + tex_busqueda.getValue() + "'");
+                set_solicitud.getTab_seleccion().setSql("SELECT ide_solicitud_anticipo,ci_solicitante,solicitante,(case when aprobado_solicitante = 1 then 'SI' ELSE 'NO' end ) AS aprobado FROM srh_solicitud_anticipo WHERE aprobado_solicitante = 1 and ci_solicitante LIKE '" + tex_busqueda.getValue() + "'");
                 set_solicitud.getTab_seleccion().ejecutarSql();
             } else {
                 utilitario.agregarMensajeInfo("Debe ingresar un valor en el texto", "");
@@ -1833,7 +1833,7 @@ public class pre_anticipo_sueldo extends Pantalla{
           set_solicitu.setId("set_solicitu");
           set_solicitu.setConexion(con_postgres);
           set_solicitu.setHeader("LISTADO DE SERVIDORES");
-          set_solicitu.setSql("SELECT ide_solicitud_anticipo,ci_solicitante,solicitante,(case when aprobado_solicitante = 1 then 'SI' ELSE 'NO' end ) AS aprobado FROM srh_solicitud_anticipo where ci_solicitante is not null");
+          set_solicitu.setSql("SELECT ide_solicitud_anticipo,ci_solicitante,solicitante,(case when aprobado_solicitante = 1 then 'SI' ELSE 'NO' end ) AS aprobado FROM srh_solicitud_anticipo where ci_solicitante is not null and aprobado_solicitante =1");
           set_solicitu.getColumna("solicitante").setFiltro(true);
           set_solicitu.setRows(10);
           set_solicitu.setTipoSeleccion(false);
@@ -1892,10 +1892,11 @@ public class pre_anticipo_sueldo extends Pantalla{
         if(tab_parametros.getValor("ide_estado_anticipo").equals("3")){//se encuentra pangandose
               utilitario.agregarMensajeError("Actualmente se Encuentra Descontandose", "");
         }else{
-        iAnticipos.deleteCalculo(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")),Integer.parseInt(tab_parametros.getValor("ide_calculo_anticipo")),utilitario.getVariable("NICK"));
-        iAnticipos.deleteSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")),tab_anticipo.getValor("ci_solicitante"),utilitario.getVariable("NICK"),tcomenta.getValue()+"",utilitario.getFechaActual());
-        utilitario.agregarMensaje("Solicitud Anulada", "Con Exito");
-        limpiarPanel();
+            iAnticipos.deleteDetalle(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")));
+            iAnticipos.deleteCalculo(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")),Integer.parseInt(tab_parametros.getValor("ide_calculo_anticipo")),utilitario.getVariable("NICK"));
+            iAnticipos.deleteSolicitud(Integer.parseInt(tab_anticipo.getValor("ide_solicitud_anticipo")),tab_anticipo.getValor("ci_solicitante"),utilitario.getVariable("NICK"),tcomenta.getValue()+"",utilitario.getFechaActual());
+            utilitario.agregarMensaje("Solicitud Anulada", "Con Exito");
+            limpiarPanel();
         }
     }
     
