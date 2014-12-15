@@ -296,6 +296,7 @@ public class pre_placa_asignada extends Pantalla{
         tab_detalle.getColumna("TIPO_VEHICULO").setVisible(false);
         tab_detalle.getColumna("TIPO_SERVICIO").setVisible(false);
         tab_detalle.getColumna("IDE_APROBACION_PLACA").setVisible(false);
+        tab_detalle.setRows(13);
         tab_detalle.dibujar();
         PanelTabla tbp_d=new PanelTabla(); 
         tbp_d.setPanelTabla(tab_detalle);
