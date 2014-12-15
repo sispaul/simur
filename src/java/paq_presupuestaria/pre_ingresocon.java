@@ -64,7 +64,7 @@ public class pre_ingresocon extends Pantalla{
     private Programas programas =(Programas) utilitario.instanciarEJB(Programas.class);
      
     public pre_ingresocon() {
-        
+
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         con_postgres.NOMBRE_MARCA_BASE = "postgres"; 
         

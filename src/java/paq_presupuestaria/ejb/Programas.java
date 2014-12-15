@@ -8,14 +8,13 @@ import framework.aplicacion.TablaGenerica;
 import javax.ejb.Stateless;
 import paq_sistema.aplicacion.Utilitario;
 import persistencia.Conexion;
-
 /**
  *
  * @author p-sistemas
  */
 @Stateless
 public class Programas {
-
+    
     private Conexion con_postgres;
     private Utilitario utilitario = new Utilitario();
     // Add business logic below. (Right-click in editor and choose
