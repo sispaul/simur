@@ -22,10 +22,9 @@ public class mergeDescuento {
     // "Insert Code > Add Business Method")
     private Utilitario utilitario = new Utilitario();
     private Conexion con_postgres;
-      
-    
-         public void actualizarDescuento(Integer ano,Integer ide_periodo,Integer id_distributivo_roles,Integer ide_columna) 
-         {
+
+    public void actualizarDescuento(Integer ano,Integer ide_periodo,Integer id_distributivo_roles,Integer ide_columna) 
+    {
         // Forma el sql para el ingreso
     
         String str_sql1;
@@ -33,13 +32,13 @@ public class mergeDescuento {
                   +"from  srh_empleado where srh_descuento.ANO="+utilitario.getAnio(utilitario.getFechaActual())+" and srh_descuento.IDE_PERIODO="+utilitario.getMes(utilitario.getFechaActual())+" and "
                   +"srh_descuento.ID_DISTRIBUTIVO_ROLES="+id_distributivo_roles+" and "
                   +"srh_descuento.IDE_COLUMNA="+ide_columna+" and srh_empleado.cedula_pass=srh_descuento.cedula";
-        conectar();
+        con_postgresql();
         con_postgres.ejecutarSql(str_sql1);
         con_postgres.desconectar();
         con_postgres = null;
-       }   
-         
-       public void actualizarDescuento1(Integer ano,Integer ide_periodo,Integer id_distributivo_roles,Integer ide_columna) {
+    }   
+    
+    public void actualizarDescuento1(Integer ano,Integer ide_periodo,Integer id_distributivo_roles,Integer ide_columna) {
         // Forma el sql para el ingreso
     
         String str_sql1;
@@ -47,24 +46,22 @@ public class mergeDescuento {
                   +"from sRH_ROLES WHERE sRH_ROLES.ANO="+utilitario.getAnio(utilitario.getFechaActual())+" AND sRH_ROLES.IDE_PERIODO="+utilitario.getMes(utilitario.getFechaActual())+" AND "
                   +"sRH_ROLES.ID_DISTRIBUTIVO_ROLES="+id_distributivo_roles+" AND sRH_ROLES.IDE_COLUMNAS="+ide_columna+" and "
                   +"srh_roles.ide_empleado=srh_descuento.ide_empleado";  
-        conectar();
+        con_postgresql();
         con_postgres.ejecutarSql(str_sql1);
         con_postgres.desconectar();
         con_postgres = null;
-       }   
-         
-         public void borrarDescuento() 
-                {
+    }   
+    
+    public void borrarDescuento() {
         // Forma el sql para el ingreso
     
         String str_sql3 = "DELETE FROM srh_descuento";
-        conectar();
+        con_postgresql();
         con_postgres.ejecutarSql(str_sql3);
         con_postgres.desconectar();
         con_postgres = null;
-     }   
-       public void migrarDescuento(Integer ano,Integer ide_periodo,Integer id_distributivo_roles,Integer ide_columna,String nombre) 
-                {
+    }   
+    public void migrarDescuento(Integer ano,Integer ide_periodo,Integer id_distributivo_roles,Integer ide_columna,String nombre) {
         // Forma el sql para el ingreso
     
         String str_sql4 = "update SRH_ROLES set valor_egreso=srh_descuento.descuento"
@@ -72,11 +69,11 @@ public class mergeDescuento {
                                 +" WHERE SRH_ROLES.ANO="+utilitario.getAnio(utilitario.getFechaActual())+" AND SRH_ROLES.IDE_PERIODO="+utilitario.getMes(utilitario.getFechaActual())+" AND"
                                 +" SRH_ROLES.ID_DISTRIBUTIVO_ROLES="+id_distributivo_roles+" AND SRH_ROLES.IDE_COLUMNAS="+ide_columna+" and "
                                 +"srh_roles.ide_empleado=srh_descuento.ide_empleado";
-        conectar();
+        con_postgresql();
         con_postgres.ejecutarSql(str_sql4);
         con_postgres.desconectar();
         con_postgres = null;
-     }
+    }
     
     public void ActualizaDatos(String cedula, Integer colum,Integer dis){
         String str_sql4 = "update srh_descuento\n" +
@@ -97,13 +94,13 @@ public class mergeDescuento {
                 "WHERE\n" +
                 "srh_empleado.cedula_pass = '"+cedula+"') d1\n" +
                 "where srh_descuento.cedula = d1.cedula_pass and d1.id_distributivo ="+dis;
-        conectar();
+        con_postgresql();
         con_postgres.ejecutarSql(str_sql4);
         con_postgres.desconectar();
         con_postgres = null;
     }
     
-        public void InsertarAnticipo(Integer tipo){
+    public void InsertarAnticipo(Integer tipo){
         // Forma el sql para el ingreso
         String str_sql3 = "insert into srh_descuento (id_distributivo_roles,ano,ide_columna,ide_periodo,descuento,cedula,nombres,ide_empleado,ide_empleado_rol) \n" +
                 "select cast (id_distributivo as int)\n" +
@@ -166,16 +163,16 @@ public class mergeDescuento {
                 ", a.ide_empleado_solicitante\n" +
                 ",d.periodo \n" +
                 "having count(a.ci_solicitante)>1 order by a.solicitante) as b ) as c order by solicitante";
-        conectar();
+        con_postgresql();
         con_postgres.ejecutarSql(str_sql3);
         con_postgres.desconectar();
         con_postgres = null;
      }
      
      public TablaGenerica sumaPeriodo(){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT sum(d.valor) as total\n" +
                             "FROM  \n" +
@@ -192,25 +189,24 @@ public class mergeDescuento {
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;   
- }
+     }
      
-public TablaGenerica periodo(Integer periodo){
-        conectar();
+     public TablaGenerica periodo(Integer periodo){
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT ide_periodo,per_descripcion FROM cont_periodo_actual where ide_periodo="+periodo );
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
-        
- }
-
-public TablaGenerica Suma(){
-        conectar();
+     }
+     
+     public TablaGenerica Suma(){
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT sum(descuento) as total \n" +
                 "FROM srh_descuento where ano = '"+utilitario.getAnio(utilitario.getFechaActual())+"' and ide_periodo ="+utilitario.getMes(utilitario.getFechaActual()));
@@ -218,51 +214,48 @@ public TablaGenerica Suma(){
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
-        
- }
- 
- public TablaGenerica distibutivo(Integer distri){
-        conectar();
+     }
+     
+     public TablaGenerica distibutivo(Integer distri){
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT id_distributivo,descripcion FROM srh_tdistributivo where id_distributivo="+distri);
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
-        
- }
- 
- public TablaGenerica columnas(Integer colum){
-        conectar();
+     }
+     
+     public TablaGenerica columnas(Integer colum){
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT ide_col,descripcion_col FROM SRH_COLUMNAS WHERE ide_col="+colum );
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
-        
- }
- 
-  public TablaGenerica VerificarRol(){
-        conectar();
+     }
+     
+     public TablaGenerica VerificarRol(){
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT ide_roles,ide_columnas FROM srh_roles where ano = "+utilitario.getAnio(utilitario.getFechaActual())+" and ide_periodo = "+utilitario.getMes(utilitario.getFechaActual()));
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
- }
-  
-  public TablaGenerica Direc_Asist(Integer codigo){
-        conectar();
+     }
+     
+     public TablaGenerica Direc_Asist(Integer codigo){
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
                 "c.cod_cargo,\n" +
@@ -276,14 +269,13 @@ public TablaGenerica Suma(){
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario; 
- }
-  
-  private void conectar() {
-      if (con_postgres == null) {
-          con_postgres = new Conexion();
-          con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
-          con_postgres.NOMBRE_MARCA_BASE = "postgres";
-        }
      }
+  
+  private void con_postgresql(){
+        if(con_postgres == null){
+            con_postgres = new Conexion();
+            con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
+        }
+    }
 }      
 

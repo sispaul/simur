@@ -44,7 +44,7 @@ public class decimoCuarto {
                         " e.nombres ASC, \n" +
                         " e.cedula_pass ASC, \n" +
                         " e.cod_empleado ASC";
-        conectar();
+        con_postgresql();
         con_postgres.ejecutarSql(nomina);
         con_postgres.desconectar();
         con_postgres = null;
@@ -56,7 +56,7 @@ public class decimoCuarto {
         String nomina ="insert into srh_roles (ide_empleado,ano,ide_periodo,ide_columnas,valor,fecha_responsable,cod_cargo_rol,ide_programa,id_distributivo_roles)\n" +
                         "select DISTINCT ide_empleado,ano,ide_periodo,125 as  ide_columnas,0.00 as valor, current_date as fecha_responsable,cod_cargo_rol,ide_programa,id_distributivo_roles\n" +
                         "from srh_roles where ano="+utilitario.getAnio(utilitario.getFechaActual())+" and ide_periodo=7 and id_distributivo_roles=1 and ide_columnas=14";
-        conectar();
+        con_postgresql();
         con_postgres.ejecutarSql(nomina);
         con_postgres.desconectar();
         con_postgres = null;
@@ -67,7 +67,7 @@ public class decimoCuarto {
         String nomina ="insert into srh_roles (ide_empleado,ano,ide_periodo,ide_columnas,valor,fecha_responsable,cod_cargo_rol,ide_programa,id_distributivo_roles)\n" +
                         "select DISTINCT ide_empleado,ano,ide_periodo,125 as ide_columnas,0.0 as valor,current_date as fecha_responsable,cod_cargo_rol,ide_programa,id_distributivo_roles\n" +
                         "from srh_roles where ano="+utilitario.getAnio(utilitario.getFechaActual())+" and ide_periodo=7 and ide_columnas=40 and id_distributivo_roles=2";
-        conectar();
+        con_postgresql();
         con_postgres.ejecutarSql(nomina);
         con_postgres.desconectar();
         con_postgres = null;
@@ -80,7 +80,7 @@ public class decimoCuarto {
                         "order by fecha_contrato desc LIMIT 1),\n" +
                         "descripcion_periodo = (SELECT tipo FROM srh_tipo_empleado where cod_tipo = "+codigo+" )\n" +
                         "where cedula like '"+iden+"'";
-        conectar();
+        con_postgresql();
         con_postgres.ejecutarSql(decimo);
         con_postgres.desconectar();
         con_postgres = null;
@@ -89,7 +89,7 @@ public class decimoCuarto {
     public void decimo_cont(String iden,Double valor){
         String decimo="update srh_decimo_cuarto \n" +
                        "set valor_decimo = "+valor+" where cedula like '"+iden+"'";
-        conectar();
+        con_postgresql();
         con_postgres.ejecutarSql(decimo);
         con_postgres.desconectar();
         con_postgres = null;
@@ -98,7 +98,7 @@ public class decimoCuarto {
     public void decimo_dias(String iden,Integer dias){
         String decimo="update srh_decimo_cuarto \n" +
                        "set dias = "+dias+" where cedula like '"+iden+"'";
-        conectar();
+        con_postgresql();
         con_postgres.ejecutarSql(decimo);
         con_postgres.desconectar();
         con_postgres = null;
@@ -109,7 +109,7 @@ public class decimoCuarto {
         // Forma el sql para el ingreso
     
         String str_sql3 = "DELETE FROM srh_decimo_cuarto";
-        conectar();
+        con_postgresql();
         con_postgres.ejecutarSql(str_sql3);
         con_postgres.desconectar();
         con_postgres = null;
@@ -128,7 +128,7 @@ public class decimoCuarto {
                             "SRH_ROLES.ID_DISTRIBUTIVO_ROLES="+id_distributivo_rol+" AND \n" +
                             "SRH_ROLES.IDE_COLUMNAS="+ide_columna+" and \n" +
                             "srh_roles.ide_empleado ="+ide_emple;
-        conectar();
+        con_postgresql();
         con_postgres.ejecutarSql(str_sql4);
         con_postgres.desconectar();
         con_postgres = null;
@@ -155,16 +155,16 @@ public class decimoCuarto {
                             " '"+usu+"' as usu\n" +
                             " FROM srh_decimo_cuarto \n" +
                             " order by nombres asc";
-        conectar();
+        con_postgresql();
         con_postgres.ejecutarSql(str_sql3);
         con_postgres.desconectar();
         con_postgres = null;
      }
      
      public TablaGenerica periodo(Integer periodo){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT ide_periodo,per_descripcion FROM cont_periodo_actual where ide_periodo="+periodo );
         tab_funcionario.ejecutarSql();
@@ -175,9 +175,9 @@ public class decimoCuarto {
  }
  
  public TablaGenerica distibutivo(Integer distri){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT id_distributivo,descripcion FROM srh_tdistributivo where id_distributivo="+distri);
         tab_funcionario.ejecutarSql();
@@ -188,9 +188,9 @@ public class decimoCuarto {
  }
  
  public TablaGenerica columnas(Integer colum){
-        conectar();
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT ide_col,descripcion_col FROM SRH_COLUMNAS WHERE ide_col="+colum );
         tab_funcionario.ejecutarSql();
@@ -199,13 +199,12 @@ public class decimoCuarto {
         return tab_funcionario;
         
  }
-     
-    private void conectar() {
-        if (con_postgres == null) {
+ 
+ private void con_postgresql(){
+        if(con_postgres == null){
             con_postgres = new Conexion();
             con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
-            con_postgres.NOMBRE_MARCA_BASE = "postgres";
         }
-}
+    }
     
 }

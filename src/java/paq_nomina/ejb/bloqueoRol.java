@@ -21,23 +21,21 @@ public class bloqueoRol {
     private Utilitario utilitario = new Utilitario();
     private Conexion con_postgres;
     
-public TablaGenerica verifSI(String dato){
-        conectar();
+    public TablaGenerica verifSI(String dato){
+        con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
-        conectar();
+        con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT count(*) as cantidad,bloqueo_rol FROM cont_periodo_actual where bloqueo_rol like '"+dato+"' GROUP BY bloqueo_rol");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
- }
-        
-   private void conectar() {
-        if (con_postgres == null) {
+    }
+    private void con_postgresql(){
+        if(con_postgres == null){
             con_postgres = new Conexion();
             con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
-            con_postgres.NOMBRE_MARCA_BASE = "postgres";
         }
     }
 }

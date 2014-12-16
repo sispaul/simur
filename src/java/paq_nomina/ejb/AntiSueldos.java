@@ -871,7 +871,6 @@ public class AntiSueldos {
         if(con_postgres == null){
             con_postgres = new Conexion();
             con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
-//            con_postgres.NOMBRE_MARCA_BASE = "postgres";
         }
     }
 }
