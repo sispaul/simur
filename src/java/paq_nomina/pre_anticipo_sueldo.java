@@ -276,8 +276,12 @@ public class pre_anticipo_sueldo extends Pantalla{
     
     public void verificaDetalle(){
         iAnticipos.CamAnticipoF();
+        verificarSolicitud();
     }
     
+    public void verificarSolicitud(){
+        iAnticipos.CamAnticipoSo();
+    }
     //limpia y borrar el contenido de la pantalla
     private void limpiarPanel() {
         //borra el contenido de la división central central

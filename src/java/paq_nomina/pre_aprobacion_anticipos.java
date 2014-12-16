@@ -376,6 +376,7 @@ public class pre_aprobacion_anticipos extends Pantalla{
             if(valors.equals(valorp)){
             iAnticipos.set_ActDetalle_PagoAnti(Integer.parseInt(tab_dato.getValor("ide_solicitud_anticipo")), Integer.parseInt(utilitario.getMes(utilitario.getFechaActual())+""),utilitario.getVariable("NICK"),cal_fechad.getFecha());
             iAnticipos.set_ActCalculo_PagoAnti(Integer.parseInt(tab_dato.getValor("ide_solicitud_anticipo")),Integer.parseInt(tab_dato.getValor("ide_calculo_anticipo")),utilitario.getVariable("NICK"),cal_fechad.getFecha(),tnum_doc.getValue()+"");
+            iAnticipos.set_ActSolicitud_PagoAnti(Integer.parseInt(tab_dato.getValor("ide_solicitud_anticipo")));
             utilitario.agregarMensajeInfo("Pago Completo Realizado con exito", "");
             }else{
                 utilitario.agregarMensajeInfo("Opción para Pago Total", "");
