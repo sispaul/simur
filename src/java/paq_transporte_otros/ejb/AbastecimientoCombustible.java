@@ -51,6 +51,38 @@ public class AbastecimientoCombustible {
     con_manauto = null;
     }
     
+    public void deleteMarcas(Integer anti){
+    String au_sql="delete from MVMARCA where MVMARCA_ID ="+anti;
+    con_mantenimiento();
+    con_manauto.ejecutarSql(au_sql);
+    con_manauto.desconectar();
+    con_manauto = null;
+    }
+    
+    public void deleteTipos(Integer anti){
+    String au_sql="delete from MVTIPO where MVTIPO_ID ="+anti;
+    con_mantenimiento();
+    con_manauto.ejecutarSql(au_sql);
+    con_manauto.desconectar();
+    con_manauto = null;
+    }
+    
+    public void deleteModelos(Integer anti){
+    String au_sql="delete from MVTIPO where MVTIPO_ID ="+anti;
+    con_mantenimiento();
+    con_manauto.ejecutarSql(au_sql);
+    con_manauto.desconectar();
+    con_manauto = null;
+    }
+    
+    public void deleteversion(Integer anti){
+    String au_sql="delete from MVTIPO where MVTIPO_ID ="+anti;
+    con_mantenimiento();
+    con_manauto.ejecutarSql(au_sql);
+    con_manauto.desconectar();
+    con_manauto = null;
+    }
+    
     public void deleteParam(String anti,String mensaje,String depen){
     String au_sql="DELETE FROM MVLISTA WHERE LIS_NOMBRE ='"+anti+"' and TAB_CODIGO = '"+mensaje+"' and DEPENDENCI='"+depen+"'";
     con_mantenimiento();
@@ -331,6 +363,69 @@ public class AbastecimientoCombustible {
         return tab_persona;
     }
     
+    public TablaGenerica get_DuplicarDato(String nombre,Integer codigo) {
+        con_mantenimiento();
+        TablaGenerica tab_persona = new TablaGenerica();
+        con_mantenimiento();
+        tab_persona.setConexion(con_manauto);
+        tab_persona.setSql("SELECT MVTIPO_ID,MVTIPO_DESCRIPCION FROM dbo.MVTIPO where MVMARCA_ID = "+codigo+" and MVTIPO_DESCRIPCION like '"+nombre+"'");
+        tab_persona.ejecutarSql();
+        con_manauto.desconectar();
+        con_manauto = null;
+        return tab_persona;
+    }
+    
+    public TablaGenerica get_DuplicamDato(String nombre,Integer codigo) {
+        con_mantenimiento();
+        TablaGenerica tab_persona = new TablaGenerica();
+        con_mantenimiento();
+        tab_persona.setConexion(con_manauto);
+        tab_persona.setSql("SELECT\n" +
+                "MVMODELO_ID,\n" +
+                "MVMODELO_DESCRIPCION\n" +
+                "FROM\n" +
+                "dbo.MVMODELO\n" +
+                "where MVMODELO_DESCRIPCION ='"+nombre+"' and  MVTIPO_ID="+codigo);
+        tab_persona.ejecutarSql();
+        con_manauto.desconectar();
+        con_manauto = null;
+        return tab_persona;
+    }
+    
+    public TablaGenerica get_DuplicavDato(String nombre,Integer codigo) {
+        con_mantenimiento();
+        TablaGenerica tab_persona = new TablaGenerica();
+        con_mantenimiento();
+        tab_persona.setConexion(con_manauto);
+        tab_persona.setSql("SELECT\n" +
+                "MVERSION_ID,\n" +
+                "MVERSION_DESCRIPCION\n" +
+                "FROM MVVERSION\n" +
+                "where MVMODELO_ID ="+codigo+" and MVERSION_DESCRIPCION='"+nombre+"'");
+        tab_persona.ejecutarSql();
+        con_manauto.desconectar();
+        con_manauto = null;
+        return tab_persona;
+    }
+    
+    public TablaGenerica get_DuplicaDato(String nombre) {
+        con_mantenimiento();
+        TablaGenerica tab_persona = new TablaGenerica();
+        con_mantenimiento();
+        tab_persona.setConexion(con_manauto);
+        tab_persona.setSql("SELECT\n" +
+                "MVMARCA_ID,\n" +
+                "MVMARCA_DESCRIPCION,\n" +
+                "MVMARCA_ESTADO\n" +
+                "FROM\n" +
+                "MVMARCA\n" +
+                "where MVMARCA_DESCRIPCION like '"+nombre+"'");
+        tab_persona.ejecutarSql();
+        con_manauto.desconectar();
+        con_manauto = null;
+        return tab_persona;
+    }
+    
     public TablaGenerica get_ExtraDatos(String nombre,String codigo,String dependencia) {
         con_mantenimiento();
         TablaGenerica tab_persona = new TablaGenerica();
@@ -359,6 +454,24 @@ public class AbastecimientoCombustible {
     public void getParametros(String id,String nombre,String codigo,String dependencia,String login){
         String parametro ="insert into MVLISTA (LIS_ID,LIS_NOMBRE,LIS_ESTADO,TAB_CODIGO,DEPENDENCI,LIS_LOGININGRESO,LIS_FECHAINGRESO)\n" +
                 "values ('"+id+"','"+nombre+"',1,'"+codigo+"','"+dependencia+"','"+login+"',"+utilitario.getFormatoFechaSQL(utilitario.getFechaActual())+")";
+        con_mantenimiento();
+        con_manauto.ejecutarSql(parametro);
+        con_manauto.desconectar();
+        con_manauto = null;
+    }
+    
+    public void getParametrom(String nombre,String login){
+        String parametro ="insert into MVMARCA (MVMARCA_DESCRIPCION,MVMARCA_ESTADO,MVMARCA_FECHAING,MVMARCA_LOGININ)\n" +
+                "values ('"+nombre+"',1,"+utilitario.getFormatoFechaSQL(utilitario.getFechaActual())+",'"+login+"')";
+        con_mantenimiento();
+        con_manauto.ejecutarSql(parametro);
+        con_manauto.desconectar();
+        con_manauto = null;
+    }
+    
+    public void getParametrot(String nombre,String login,Integer marca){
+        String parametro ="insert into MVTIPO (MVMARCA_ID,MVTIPO_DESCRIPCION,MVTIPO_ESTADO,MVTIPO_FECHAING,MVTIPO_LOGININ)\n" +
+                "values ("+marca+",'"+nombre+"',1,"+utilitario.getFormatoFechaSQL(utilitario.getFechaActual())+",'"+login+"')";
         con_mantenimiento();
         con_manauto.ejecutarSql(parametro);
         con_manauto.desconectar();
