@@ -1407,7 +1407,17 @@ public class SolicAnticipos {
     con_postgres.desconectar();
     con_postgres = null;
   }
-  
+    
+    public void set_ActSolicitud_PagoAnti(Integer solic){
+    String au_sql="update srh_solicitud_anticipo\n" +
+            "set aprobado_solicitante = 2\n" +
+            "where ide_solicitud_anticipo = "+solic;
+    con_postgresql();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }    
+    
   public void actuaPerAnio15(Integer anti){
     String au_sql="update srh_detalle_anticipo\n" +
             "set periodo =d.periodo, \n" +
