@@ -119,7 +119,7 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         bot_registro.setValue("INSERTAR MARCA");
         bot_registro.setIcon("ui-icon-comment");
         bot_registro.setMetodo("ing_marcas");
-        bar_botones.agregarBoton(bot_registro);
+//        bar_botones.agregarBoton(bot_registro);
         
         //Dialogos de Ingreso de parametros necesarios para vehiculo
         dia_dialogoC.setId("dia_dialogoC");
@@ -373,11 +373,15 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         } else {
             tab_tabla.setCondicion("mve_secuencial=" + aut_busca.getValor());
         }
-        tab_tabla.getColumna("MVE_MARCA").setCombo("SELECT LIS_NOMBRE,LIS_NOMBRE AS MARCA FROM MVLISTA where TAB_CODIGO = 'MARCA' and LIS_ESTADO = 1");
-        tab_tabla.getColumna("MVE_TIPO").setCombo("SELECT LIS_NOMBRE,LIS_NOMBRE AS TIPO FROM MVLISTA WHERE TAB_CODIGO = 'tipo' and LIS_ESTADO = 1");
+//        tab_tabla.getColumna("MVE_MARCA").setCombo("SELECT LIS_NOMBRE,LIS_NOMBRE AS MARCA FROM MVLISTA where TAB_CODIGO = 'MARCA' and LIS_ESTADO = 1");
+//        tab_tabla.getColumna("MVE_TIPO").setCombo("SELECT LIS_NOMBRE,LIS_NOMBRE AS TIPO FROM MVLISTA WHERE TAB_CODIGO = 'tipo' and LIS_ESTADO = 1");
+        //        tab_tabla.getColumna("MVE_MARCA").setCombo("SELECT LIS_NOMBRE,LIS_NOMBRE AS MARCA FROM MVLISTA where TAB_CODIGO = 'MARCA' and LIS_ESTADO = 1");
+//        tab_tabla.getColumna("MVE_TIPO").setCombo("SELECT LIS_NOMBRE,LIS_NOMBRE AS TIPO FROM MVLISTA WHERE TAB_CODIGO = 'tipo' and LIS_ESTADO = 1");
         tab_tabla.getColumna("MVE_TIPO_COMBUSTIBLE").setCombo("SELECT IDE_TIPO_COMBUSTIBLE,(DESCRIPCION_COMBUSTIBLE+'/'+cast(VALOR_GALON as varchar)) as valor FROM mvTIPO_COMBUSTIBLE");
-        tab_tabla.getColumna("MVE_MODELO").setCombo("SELECT LIS_NOMBRE,LIS_NOMBRE as MODELO FROM MVLISTA WHERE TAB_CODIGO = 'MODEL' and LIS_ESTADO = 1");
-        tab_tabla.getColumna("MVE_VERSION").setCombo("SELECT LIS_NOMBRE,LIS_NOMBRE as VERSION FROM MVLISTA WHERE TAB_CODIGO = 'VERSI' and LIS_ESTADO = 1");
+//        tab_tabla.getColumna("MVE_MODELO").setCombo("SELECT LIS_NOMBRE,LIS_NOMBRE as MODELO FROM MVLISTA WHERE TAB_CODIGO = 'MODEL' and LIS_ESTADO = 1");
+//        tab_tabla.getColumna("MVE_VERSION").setCombo("SELECT LIS_NOMBRE,LIS_NOMBRE as VERSION FROM MVLISTA WHERE TAB_CODIGO = 'VERSI' and LIS_ESTADO = 1");
+        //        tab_tabla.getColumna("MVE_MODELO").setCombo("SELECT LIS_NOMBRE,LIS_NOMBRE as MODELO FROM MVLISTA WHERE TAB_CODIGO = 'MODEL' and LIS_ESTADO = 1");
+//        tab_tabla.getColumna("MVE_VERSION").setCombo("SELECT LIS_NOMBRE,LIS_NOMBRE as VERSION FROM MVLISTA WHERE TAB_CODIGO = 'VERSI' and LIS_ESTADO = 1");
         tab_tabla.getColumna("MVE_MARCA").setMetodoChange("cargarTipo");
         tab_tabla.getColumna("MVE_TIPO").setMetodoChange("cargarModelo");
         tab_tabla.getColumna("MVE_MODELO").setMetodoChange("cargarVersion");
@@ -884,5 +888,4 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
     public void setCon_postgres(Conexion con_postgres) {
         this.con_postgres = con_postgres;
     }
-    
 }
