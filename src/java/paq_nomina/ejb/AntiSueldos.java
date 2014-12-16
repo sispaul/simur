@@ -808,8 +808,8 @@ public class AntiSueldos {
         con_postgres.desconectar();
         con_postgres = null;
     }   
-        
-        public void ActualizarDetalleAnticipo(Integer anio,Integer periodo){
+    
+    public void ActualizarDetalleAnticipo(Integer anio,Integer periodo){
         // Forma el sql para el ingreso
         String str_sql4 = "update srh_detalle_anticipo \n" +
                 "set ide_periodo_descontado = srh_detalle_anticipo.ide_periodo_descuento, \n" +
@@ -848,9 +848,9 @@ public class AntiSueldos {
         con_postgres.ejecutarSql(str_sql4);
         con_postgres.desconectar();
         con_postgres = null;
-     }
-
-        public void CamAnticipoF(){
+    }
+    
+    public void CamAnticipoF(){
         String str_sql4 = "update srh_calculo_anticipo\n" +
                             "SET ide_estado_anticipo = 4\n" +
                             "from (\n" +
@@ -864,8 +864,24 @@ public class AntiSueldos {
         con_postgres.ejecutarSql(str_sql4);
         con_postgres.desconectar();
         con_postgres = null;
-        }
-        
+    }
+    
+    public void CamAnticipoSo(){
+        String str_sql4 = "update srh_solicitud_anticipo\n" +
+                "set aprobado_solicitante = 2\n" +
+                "from (\n" +
+                "SELECT n1.pagado,n2.ide_anticipo\n" +
+                "from (SELECT count(ide_anticipo) as pagado,ide_anticipo FROM srh_detalle_anticipo where ide_estado_cuota = 1 \n" +
+                "GROUP BY ide_anticipo) n1\n" +
+                "inner join (SELECT count(ide_anticipo) as pagando,ide_anticipo FROM srh_detalle_anticipo GROUP BY ide_anticipo) n2\n" +
+                "on n1.ide_anticipo = n2.ide_anticipo and n1.pagado = n2.pagando ) d1\n" +
+                "WHERE srh_solicitud_anticipo.ide_solicitud_anticipo = d1.ide_anticipo";
+        con_postgresql();
+        con_postgres.ejecutarSql(str_sql4);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+    
     //metodo que posee la cadena de conexion a base de datos
     private void con_postgresql(){
         if(con_postgres == null){
