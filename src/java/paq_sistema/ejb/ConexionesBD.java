@@ -27,14 +27,14 @@ public class ConexionesBD {
     private void con_sigag(){
         if (con_sql == null) {
             con_sql = new Conexion();
-            con_sql.setUnidad_persistencia("recursojdbc");
+            con_sql.setUnidad_persistencia(utilitario.getPropiedad("recursojdbc"));
         }
     }
     
     private void con_mantenimiento(){
         if(con_manauto == null){
             con_manauto = new Conexion();
-            con_manauto.setUnidad_persistencia("poolSqlmanAuto");
+            con_manauto.setUnidad_persistencia(utilitario.getPropiedad("poolSqlmanAuto"));
         }
     }
     
@@ -48,7 +48,7 @@ public class ConexionesBD {
     private void con_ciudadanos(){
         if(con_ciudadania == null){
             con_ciudadania = new Conexion();
-            con_ciudadania.setUnidad_persistencia("ciudadania");
+            con_ciudadania.setUnidad_persistencia(utilitario.getPropiedad("ciudadania"));
         }
     }
 }
