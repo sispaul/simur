@@ -1582,7 +1582,7 @@ public class SolicAnticipos {
   private void con_sigag(){
         if (con_sql == null) {
             con_sql = new Conexion();
-            con_sql.setUnidad_persistencia("recursojdbc");
+            con_sql.setUnidad_persistencia(utilitario.getPropiedad("recursojdbc"));
         }
     }
   
