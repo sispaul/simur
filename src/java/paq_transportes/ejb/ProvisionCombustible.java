@@ -240,7 +240,7 @@ private Utilitario utilitario = new Utilitario();
     private void con_postgresql(){
         if(con_postgres == null){
             con_postgres = new Conexion();
-            con_postgres.setUnidad_persistencia("poolPostgres");
+            con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         }
     }
 

@@ -5,6 +5,7 @@
 package paq_sistema.ejb;
 
 import javax.ejb.Stateless;
+import paq_sistema.aplicacion.Utilitario;
 import persistencia.Conexion;
 
 /**
@@ -21,7 +22,7 @@ public class ConexionesBD {
             con_manauto,//Conexion a la base de manauto
             con_postgres,//Cnexion a la base de postgres 2014
             con_ciudadania; //Conexion a la base de ciudadania
-    
+    private Utilitario utilitario = new Utilitario();
     
     private void con_sigag(){
         if (con_sql == null) {
@@ -40,7 +41,7 @@ public class ConexionesBD {
     private void con_postgresql(){
         if(con_postgres == null){
             con_postgres = new Conexion();
-            con_postgres.setUnidad_persistencia("poolPostgres");
+            con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         }
     }
     
