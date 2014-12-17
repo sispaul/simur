@@ -84,7 +84,7 @@ public class AbastecimientoCombustible {
     }
     
     public void deleteaccesorio(String anti){
-    String au_sql="update MVDETALLEVEHICULO set MDV_ESTADO = ' DE BAJA' where MDV_CODIGO = '"+anti+"'";
+    String au_sql="update MVDETALLEVEHICULO set MDV_ESTADO = 'DE BAJA' where MDV_CODIGO = '"+anti+"'";
     con_mantenimiento();
     con_manauto.ejecutarSql(au_sql);
     con_manauto.desconectar();
