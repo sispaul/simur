@@ -119,7 +119,7 @@ public class pre_catastro_vehiculo_chofer extends Pantalla{
         bot_registro.setValue("INSERTAR MARCA");
         bot_registro.setIcon("ui-icon-comment");
         bot_registro.setMetodo("ing_marcas");
-//        bar_botones.agregarBoton(bot_registro);
+        bar_botones.agregarBoton(bot_registro);
         
         //Dialogos de Ingreso de parametros necesarios para vehiculo
         dia_dialogoC.setId("dia_dialogoC");

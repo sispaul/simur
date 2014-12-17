@@ -5,13 +5,21 @@
 package paq_transporte_otro;
 
 import framework.aplicacion.TablaGenerica;
+import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Dialogo;
+import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
+import framework.componentes.Grupo;
+import framework.componentes.Panel;
+import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.EJB;
+import org.primefaces.event.SelectEvent;
 import paq_sistema.aplicacion.Pantalla;
 import paq_transporte_otros.ejb.AbastecimientoCombustible;
 import persistencia.Conexion;
@@ -29,31 +37,57 @@ public class pre_inventario_automores extends Pantalla{
     private Tabla set_tipo = new Tabla();
     private Tabla set_modelo = new Tabla();
     private Tabla set_version = new Tabla();
+    private Tabla set_conductor = new Tabla();
+    private Tabla set_accesorio = new Tabla();
+    private Tabla tab_tabla = new Tabla();
+    private Tabla tab_consulta = new Tabla();
     
     //Dialogo de Ingreso de tablas
+    private Dialogo dia_dialogoC = new Dialogo();
     private Dialogo dia_dialogo = new Dialogo();
     private Dialogo dia_dialogot = new Dialogo();
     private Dialogo dia_dialogom = new Dialogo();
     private Dialogo dia_dialogov = new Dialogo();
+    private Dialogo dia_dialogoa = new Dialogo();
     private Grid grid_o = new Grid();
     private Grid grid_t = new Grid();
     private Grid grid_m = new Grid();
     private Grid grid_v = new Grid();
+    private Grid grid_co = new Grid();
+    private Grid grid_a = new Grid();
     private Grid grid = new Grid();
     private Grid gridt = new Grid();
     private Grid gridm = new Grid();
     private Grid gridv = new Grid();
+    private Grid gridc = new Grid();
+    private Grid grida = new Grid();
     
     //DECLARACION OBJETO TEXTO
     private Texto tmarca = new Texto();
     private Texto ttipo = new Texto();
     private Texto tmodelo = new Texto();
     private Texto tversion = new Texto();
+    private Texto taccesorio = new Texto();
+    private Texto txt_cantidad = new Texto();
+    private Texto txt_estado = new Texto();
+    
+    //buscar solicitud
+    private AutoCompletar aut_busca = new AutoCompletar();
+    
+    //Contiene todos los elementos de la plantilla
+    private Panel pan_opcion = new Panel();
     
     @EJB
     private AbastecimientoCombustible aCombustible = (AbastecimientoCombustible) utilitario.instanciarEJB(AbastecimientoCombustible.class);
     
     public pre_inventario_automores() {
+        
+        //Mostrar el usuario 
+        tab_consulta.setId("tab_consulta");
+        tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
+        tab_consulta.setCampoPrimaria("IDE_USUA");
+        tab_consulta.setLectura(true);
+        tab_consulta.dibujar();
         
         //cadena de conexión para otra base de datos
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
@@ -63,13 +97,36 @@ public class pre_inventario_automores extends Pantalla{
         con_sql.setUnidad_persistencia(utilitario.getPropiedad("poolSqlmanAuto"));
         con_sql.NOMBRE_MARCA_BASE = "sqlserver";
         
+        //Elemento principal
+        pan_opcion.setId("pan_opcion");
+        pan_opcion.setTransient(true);
+        pan_opcion.setHeader("INGRESO DE VEHICULOS");
+        agregarComponente(pan_opcion);
+        
+        //Auto busqueda para, verificar solicitud
+        aut_busca.setId("aut_busca");
+        aut_busca.setConexion(con_sql);
+        aut_busca.setAutoCompletar("SELECT v.MVE_SECUENCIAL,v.MVE_PLACA,m.MVMARCA_DESCRIPCION,o.MVMODELO_DESCRIPCION,v.MVE_CHASIS\n" +
+                "FROM dbo.MVVEHICULO AS v ,dbo.MVMARCA AS m ,dbo.MVMODELO AS o,dbo.MVTIPO t\n" +
+                "WHERE v.MVE_MARCA = m.MVMARCA_ID AND t.MVMARCA_ID = m.MVMARCA_ID AND o.MVTIPO_ID = t.MVTIPO_ID");
+        aut_busca.setMetodoChange("filtrarSolicitud");
+        aut_busca.setSize(70);
+        bar_botones.agregarComponente(new Etiqueta("Buscar Solicitud:"));
+        bar_botones.agregarComponente(aut_busca);
+        
         Boton bot_marca = new Boton();
         bot_marca.setValue("INSERTAR MARCA");
-        bot_marca.setIcon("ui-icon-comment");
+        bot_marca.setIcon("ui-icon-gear");
         bot_marca.setMetodo("ing_marcas");
         bar_botones.agregarBoton(bot_marca);
         
-        //para poder busca por apelllido el garante
+        Boton bot_accesorio = new Boton();
+        bot_accesorio.setValue("INSERTAR ACCESORIOS");
+        bot_accesorio.setIcon("ui-icon-wrench");
+        bot_accesorio.setMetodo("ing_accesorio");
+        bar_botones.agregarBoton(bot_accesorio);
+        
+        //para marca,tipo,modelo,version
         Grid gri_marcas = new Grid();
         gri_marcas.setColumns(6);
         gri_marcas.getChildren().add(new Etiqueta("Ingrese Marca: "));
@@ -181,8 +238,153 @@ public class pre_inventario_automores extends Pantalla{
         grid_v.setColumns(4);
         agregarComponente(dia_dialogov);
         
+        dibujaIngreso();
+        
+        dia_dialogoC.setId("dia_dialogoC");
+        dia_dialogoC.setTitle("CONDUCTORES - DISPONIBLES"); //titulo
+        dia_dialogoC.setWidth("40%"); //siempre en porcentajes  ancho
+        dia_dialogoC.setHeight("50%");//siempre porcentaje   alto
+        dia_dialogoC.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogoC.getBot_aceptar().setMetodo("aceptoConductor");
+        grid_co.setColumns(2);
+        agregarComponente(dia_dialogoC);
+        
+        //Para accesorios
+        Grid gri_accesorio = new Grid();
+        gri_accesorio.setColumns(6);
+        gri_accesorio.getChildren().add(new Etiqueta("Accesorio"));
+        gri_accesorio.getChildren().add(taccesorio);
+        txt_cantidad.setSize(2);
+        gri_accesorio.getChildren().add(new Etiqueta("Cantidad"));
+        gri_accesorio.getChildren().add(txt_cantidad);
+        txt_estado.setSize(10);
+        gri_accesorio.getChildren().add(new Etiqueta("Estado"));
+        gri_accesorio.getChildren().add(txt_estado);
+        Boton bot_accesoriog = new Boton();
+        bot_accesoriog.setValue("Guardar");
+        bot_accesoriog.setIcon("ui-icon-disk");
+        bot_accesoriog.setMetodo("insAccesorio");
+        bar_botones.agregarBoton(bot_accesoriog);
+        Boton bot_accesorioe = new Boton();
+        bot_accesorioe.setValue("Eliminar");
+        bot_accesorioe.setIcon("ui-icon-closethick");
+        bot_accesorioe.setMetodo("endAccesorio");
+        bar_botones.agregarBoton(bot_accesorioe);
+        gri_accesorio.getChildren().add(bot_accesoriog);
+        gri_accesorio.getChildren().add(bot_accesorioe);
+        dia_dialogoa.setId("dia_dialogoa");
+        dia_dialogoa.setTitle("ACCESORIOS DE AUTOMOTOR / MAQUINARIA"); //titulo
+        dia_dialogoa.setWidth("38%"); //siempre en porcentajes  ancho
+        dia_dialogoa.setHeight("40%");//siempre porcentaje   alto
+        dia_dialogoa.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogoa.getGri_cuerpo().setHeader(gri_accesorio);
+        grid_a.setColumns(4);
+        agregarComponente(dia_dialogoa);
+        
+    }
+    //PANTALLA DE REGISTRO DE INFORMACIÓN
+    
+    public void dibujaIngreso(){
+        limpiarPanel();
+        tab_tabla.setId("tab_tabla");
+        tab_tabla.setConexion(con_sql);
+        tab_tabla.setTabla("mvvehiculo", "mve_secuencial", 1);
+        /*Filtro estatico para los datos a mostrar*/
+        if (aut_busca.getValue() == null) {
+            tab_tabla.setCondicion("mve_secuencial=-1");
+        } else {
+            tab_tabla.setCondicion("mve_secuencial=" + aut_busca.getValor());
+        }
+        tab_tabla.getColumna("MVE_MARCA").setCombo("SELECT MVMARCA_ID,MVMARCA_DESCRIPCION FROM MVMARCA order by MVMARCA_DESCRIPCION");
+        tab_tabla.getColumna("MVE_TIPO").setCombo("SELECT MVTIPO_ID,MVTIPO_DESCRIPCION FROM MVTIPO ORDER BY MVTIPO_DESCRIPCION");
+        tab_tabla.getColumna("MVE_MODELO").setCombo("SELECT MVMODELO_ID,MVMODELO_DESCRIPCION FROM MVMODELO order by MVMODELO_DESCRIPCION");
+        tab_tabla.getColumna("MVE_VERSION").setCombo("SELECT MVERSION_ID,MVERSION_DESCRIPCION FROM MVVERSION ORDER BY MVERSION_DESCRIPCION");
+        tab_tabla.getColumna("MVE_TIPO_COMBUSTIBLE").setCombo("SELECT IDE_TIPO_COMBUSTIBLE,(DESCRIPCION_COMBUSTIBLE+'/'+cast(VALOR_GALON as varchar)) as valor FROM mvTIPO_COMBUSTIBLE");
+        tab_tabla.getColumna("MVE_MARCA").setMetodoChange("cargarTipo");
+        tab_tabla.getColumna("MVE_TIPO").setMetodoChange("cargarModelo");
+        tab_tabla.getColumna("MVE_MODELO").setMetodoChange("cargarVersion");
+        tab_tabla.getColumna("MVE_TIPOMEDICION").setMetodoChange("activarCasilla");
+        tab_tabla.getColumna("MVE_CONDUCTOR").setMetodoChange("aceptoDialogoc");
+        tab_tabla.getColumna("MVE_TIPOCODIGO").setMetodoChange("activarTipo");
+        tab_tabla.getColumna("MVE_PLACA").setMetodoChange("infoActivo");
+        List list = new ArrayList();
+        Object fil1[] = {
+            "KILOMETROS", "KILOMETROS"
+        };
+        Object fil2[] = {
+            "HORAS", "HORAS"
+        };
+        list.add(fil1);;
+        list.add(fil2);;
+        tab_tabla.getColumna("MVE_TIPOMEDICION").setRadio(list, " ");
+        List lista = new ArrayList();
+        Object fila1[] = {
+            "PLACA", "PLACA"
+        };
+        Object fila2[] = {
+            "CODIGO", "CODIGO"
+        };
+        lista.add(fila1);;
+        lista.add(fila2);;
+        tab_tabla.getColumna("MVE_TIPOCODIGO").setCombo(lista);
+        List listad = new ArrayList();
+        Object filas1[] = {
+            "ACTIVO", "ACTIVO"
+        };
+        Object filas2[] = {
+            "PASIVO", "PASIVO"
+        };
+        listad.add(filas1);;
+        listad.add(filas2);;
+        tab_tabla.getColumna("MVE_ESTADO_REGISTRO").setCombo(listad);
+        List listes = new ArrayList();
+        Object filase1[] = {
+            "ACTIVO", "ACTIVO"
+        };
+        Object filase2[] = {
+            "MANTENIMIENTO", "MANTENIMIENTO"
+        };
+        Object filase3[] = {
+            "DE BAJA", "DE BAJA"
+        };
+        listes.add(filase1);;
+        listes.add(filase2);;
+        listes.add(filase3);;
+        tab_tabla.getColumna("MVE_ESTADO").setCombo(listes);
+        tab_tabla.getColumna("MVE_PLACA").setLectura(true);
+        tab_tabla.getColumna("MVE_HOROMETRO").setLectura(true);
+        tab_tabla.getColumna("MVE_KILOMETRAJE").setLectura(true);
+        tab_tabla.getColumna("MVE_ASIGNADO").setVisible(false);
+        tab_tabla.getColumna("MVE_OBSERVACIONES").setVisible(false);
+        tab_tabla.getColumna("MVE_LOGININGRESO").setVisible(false);
+        tab_tabla.getColumna("MVE_LOGINACTUALI").setVisible(false);
+        tab_tabla.getColumna("MVE_FECHA_BORRADO").setVisible(false);
+        tab_tabla.getColumna("MVE_FECHAINGRESO").setVisible(false);
+        tab_tabla.getColumna("MVE_FECHAACTUALI").setVisible(false);
+        tab_tabla.getColumna("MVE_LOGINBORRADO").setVisible(false);
+        tab_tabla.getColumna("MVE_NUMIMR").setVisible(false);
+        tab_tabla.setTipoFormulario(true);
+        tab_tabla.getGrid().setColumns(4);
+        tab_tabla.dibujar();
+        PanelTabla tpg = new PanelTabla();
+        tpg.setPanelTabla(tab_tabla);
+        
+        Division div = new Division();
+        div.dividir1(tpg);
+        Grupo gru = new Grupo();
+        gru.getChildren().add(div);
+        pan_opcion.getChildren().add(gru);
     }
     
+    //BUSQUEDA DE REGISTRO
+    public void filtrarSolicitud(SelectEvent evt) {
+        //Filtra el cliente seleccionado en el autocompletar
+        limpiar();
+        aut_busca.onSelect(evt);
+        dibujaIngreso();
+    }
+    //DATOS PARA VEHICULO
+    //MARCA
     public void ing_marcas(){
         dia_dialogo.Limpiar();
         dia_dialogo.setDialogo(grid);
@@ -202,7 +404,7 @@ public class pre_inventario_automores extends Pantalla{
                 tmarca.limpiar();
                 utilitario.agregarMensaje("Registro Guardado", "Marca");
                 set_marca.actualizar();
-//                cargarMarca();
+                cargarMarca();
             }
         }
     }
@@ -216,12 +418,7 @@ public class pre_inventario_automores extends Pantalla{
             utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
         }
     }
-    
-//    public void cargarMarca(){
-//         tab_tabla.getColumna("MVE_MARCA").setCombo("SELECT LIS_NOMBRE,LIS_NOMBRE AS MARCA FROM MVLISTA where TAB_CODIGO = 'MARCA' and LIS_ESTADO = 1");
-//        utilitario.addUpdateTabla(tab_tabla,"MVE_MARCA","");//actualiza solo componentes
-//    }
-    
+    //TIPO
     public void acep_marcas(){
         if (set_marca.getValorSeleccionado() != null && set_marca.getValorSeleccionado().isEmpty() == false) {
             dia_dialogot.Limpiar();
@@ -264,7 +461,7 @@ public class pre_inventario_automores extends Pantalla{
             utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
         }
     }
-    
+    //MODELO
     public void acepta_tipo(){
         if (set_tipo.getValorSeleccionado() != null && set_tipo.getValorSeleccionado().isEmpty() == false) {
             dia_dialogom.Limpiar();
@@ -272,7 +469,7 @@ public class pre_inventario_automores extends Pantalla{
             grid_m.getChildren().add(set_modelo);
             set_modelo.setId("set_modelo");
             set_modelo.setConexion(con_sql);
-            set_modelo.setSql("SELECT MVMODELO_ID, MVMODELO_DESCRIPCION FROM MVMODELO where MVTIPO_ID ="+set_modelo.getValorSeleccionado()+"  order by MVMODELO_DESCRIPCION");
+            set_modelo.setSql("SELECT MVMODELO_ID, MVMODELO_DESCRIPCION FROM MVMODELO where MVTIPO_ID ="+set_tipo.getValorSeleccionado()+"  order by MVMODELO_DESCRIPCION");
             set_modelo.getColumna("MVMODELO_DESCRIPCION").setFiltro(true);
             set_modelo.setTipoSeleccion(false);
             set_modelo.setRows(10);
@@ -289,7 +486,7 @@ public class pre_inventario_automores extends Pantalla{
             utilitario.agregarMensaje("Modelo ya se Encuentra Registrado", "");
         }else{
             if(tmodelo.getValue()!= null && tmodelo.toString().isEmpty()==false){
-                aCombustible.getParametros(tmodelo.getValue()+"","MODEL",tab_dato1.getValor("LIS_NOMBRE"),utilitario.getVariable("NICK"));
+                aCombustible.getParametromo(tmodelo.getValue()+"",utilitario.getVariable("NICK"),Integer.parseInt(set_tipo.getValorSeleccionado()));
                 tmodelo.limpiar();
                 utilitario.agregarMensaje("Registro Guardado", "Modelo");
                 set_modelo.actualizar();
@@ -299,14 +496,14 @@ public class pre_inventario_automores extends Pantalla{
     
     public void endModelo(){
         if (set_modelo.getValorSeleccionado() != null && set_modelo.getValorSeleccionado().isEmpty() == false) {
-                        aCombustible.deleteParam(tab_dato2.getValor("LIS_NOMBRE"), mensaje, tab_dato1.getValor("LIS_NOMBRE"));
+                        aCombustible.deleteModelos(Integer.parseInt(set_modelo.getValorSeleccionado()));
                         utilitario.agregarMensaje("Registro eliminado", "Modelo");
                         set_modelo.actualizar();
         } else {
             utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
-        }
+        } 
     }
-    
+    //VERSIÓN
     public void acepta_modelo(){
         if (set_modelo.getValorSeleccionado() != null && set_modelo.getValorSeleccionado().isEmpty() == false) {
             dia_dialogov.Limpiar();
@@ -332,7 +529,7 @@ public class pre_inventario_automores extends Pantalla{
                 utilitario.agregarMensaje("Modelo ya se Encuentra Registrado", "");
             }else{
                 if(tversion.getValue()!= null && tversion.toString().isEmpty()==false){
-                    aCombustible.getParametros(tversion.getValue()+"","VERSI",tab_dato2.getValor("LIS_NOMBRE"),utilitario.getVariable("NICK"));
+                    aCombustible.getParametrove(tversion.getValue()+"",utilitario.getVariable("NICK"),Integer.parseInt(set_modelo.getValorSeleccionado()));
                     tversion.limpiar();
                     utilitario.agregarMensaje("Registro Guardado", "Versión");
                     set_version.actualizar();
@@ -342,27 +539,169 @@ public class pre_inventario_automores extends Pantalla{
     
     public void endVersion(){
         if (set_version.getValorSeleccionado() != null && set_version.getValorSeleccionado().isEmpty() == false) {
-                            aCombustible.deleteParam(tab_dato3.getValor("LIS_NOMBRE"), mensaje, tab_dato2.getValor("LIS_NOMBRE"));
+                            aCombustible.deleteversion(Integer.parseInt(set_version.getValorSeleccionado()));
                             utilitario.agregarMensaje("Registro eliminado", "Versión");
                             set_version.actualizar();
         } else {
             utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
         }
     }
+
+    //ACTUALIZAR COMBOS
+    public void cargarMarca(){
+        tab_tabla.getColumna("MVE_MARCA").setCombo("SELECT MVMARCA_ID,MVMARCA_DESCRIPCION FROM MVMARCA order by MVMARCA_DESCRIPCION");
+        utilitario.addUpdateTabla(tab_tabla,"MVE_MARCA","");//actualiza solo componentes
+    }
+    
+    public void cargarTipo(){
+        tab_tabla.getColumna("MVE_TIPO").setCombo("SELECT MVTIPO_ID,MVTIPO_DESCRIPCION FROM MVTIPO where MVMARCA_ID ='"+tab_tabla.getValor("MVE_MARCA")+"'");
+        utilitario.addUpdateTabla(tab_tabla,"MVE_TIPO","");//actualiza solo componentes
+    }
+    
+    public void cargarModelo(){
+        tab_tabla.getColumna("MVE_MODELO").setCombo("SELECT MVMODELO_ID,MVMODELO_DESCRIPCION FROM MVMODELO where MVTIPO_ID ='"+tab_tabla.getValor("MVE_TIPO")+"'");
+        utilitario.addUpdateTabla(tab_tabla,"MVE_MODELO","");//actualiza solo componentes
+    }
+    
+    public void cargarVersion(){
+        tab_tabla.getColumna("MVE_VERSION").setCombo("SELECT MVERSION_ID,MVERSION_DESCRIPCION FROM MVVERSION where MVMODELO_ID='"+tab_tabla.getValor("MVE_MODELO")+"'");
+        utilitario.addUpdateTabla(tab_tabla,"MVE_VERSION","");//actualiza solo componentes
+    }
+
+    //DATOS PARA CONDUCTOR
+    public void aceptoDialogoc() {
+        dia_dialogoC.Limpiar();
+        dia_dialogoC.setDialogo(gridc);
+        grid_co.getChildren().add(set_conductor);
+        set_conductor.setId("set_conductor");
+        set_conductor.setConexion(con_postgres);
+        set_conductor.setSql("SELECT cod_empleado, cedula_pass,nombres\n" +
+                "FROM srh_empleado\n" +
+                "where cod_cargo in (SELECT cod_cargo FROM srh_cargos WHERE nombre_cargo like '%CHOFER%') and estado = 1\n" +
+                "order by nombres");
+        set_conductor.getColumna("nombres").setFiltro(true);
+        set_conductor.setRows(12);
+        set_conductor.setTipoSeleccion(false);
+        dia_dialogoC.setDialogo(grid_co);
+        set_conductor.dibujar();
+        dia_dialogoC.dibujar();
+    }
+    
+    public void aceptoConductor(){
+        if (set_conductor.getValorSeleccionado()!= null) {
+            TablaGenerica tab_dato =aCombustible.getChofer(set_conductor.getValorSeleccionado());
+            if (!tab_dato.isEmpty()) {
+                tab_tabla.setValor("MVE_CONDUCTOR", tab_dato.getValor("nombres"));
+                tab_tabla.setValor("MVE_ASIGNADO", tab_dato.getValor("activo"));
+                utilitario.addUpdate("tab_tabla");
+                dia_dialogoC.cerrar();
+            }else{
+                utilitario.agregarMensajeInfo("No existen Datos", "");
+            }
+        }
+    }
+    
+    //COMPONENTES ADICIONALES ACTIVAR
+    public void activarCasilla(){
+        if(tab_tabla.getValor("MVE_TIPOMEDICION").equals("HORAS")){
+            tab_tabla.getColumna("MVE_KILOMETRAJE").setLectura(true);
+            tab_tabla.getColumna("MVE_HOROMETRO").setLectura(false);
+            utilitario.addUpdate("tab_tabla");
+        }else{
+            tab_tabla.getColumna("MVE_KILOMETRAJE").setLectura(false);
+            tab_tabla.getColumna("MVE_HOROMETRO").setLectura(true);
+            utilitario.addUpdate("tab_tabla");
+        }
+    }
+    
+    public void activarTipo(){
+        tab_tabla.getColumna("MVE_PLACA").setLectura(false);
+        tab_tabla.setValor("MVE_PLACA", null);
+        utilitario.addUpdate("tab_tabla");
+    }
+    
+    //limpia y borrar el contenido de la pantalla
+    private void limpiarPanel() {
+        //borra el contenido de la división central central
+        pan_opcion.getChildren().clear();
+    }
+
+    public void limpiar() {
+        aut_busca.limpiar();
+        utilitario.addUpdate("aut_busca");
+        limpiarPanel();
+        utilitario.addUpdate("pan_opcion");
+    }
+    
+    public void infoActivo(){
+        if(tab_tabla.getValor("MVE_TIPOCODIGO").equals("CODIGO")){
+             TablaGenerica tab_dato =aCombustible.getActivos(tab_tabla.getValor("MVE_PLACA"));
+            if (!tab_dato.isEmpty()) {
+                utilitario.agregarNotificacionInfo(tab_dato.getValor("descripcion"), null);
+            }
+        }
+    }
+    
+    //para ingreso de accesorios
+    public void ing_accesorio(){
+        if(tab_tabla.getValor("mve_secuencial")!=null && tab_tabla.getValor("mve_secuencial").isEmpty() == false){
+            dia_dialogoa.Limpiar();
+            dia_dialogoa.setDialogo(grida);
+            grid_a.getChildren().add(set_accesorio);
+            set_accesorio.setId("set_accesorio");
+            set_accesorio.setConexion(con_sql);
+            set_accesorio.setSql("SELECT MDV_CODIGO,MDV_DETALLE,MDV_CANTIDAD,MDV_ESTADO FROM MVDETALLEVEHICULO WHERE MDV_ESTADO <> 'DE BAJA' AND MVE_SECUENCIAL='"+tab_tabla.getValor("mve_secuencial")+"' ORDER BY MDV_DETALLE");
+            set_accesorio.getColumna("MDV_DETALLE").setFiltro(true);
+            set_accesorio.setRows(12);
+            set_accesorio.setTipoSeleccion(false);
+            dia_dialogoa.setDialogo(grid_a);
+            set_accesorio.dibujar();
+            dia_dialogoa.dibujar();
+            
+        }else{
+            utilitario.agregarMensaje("Ubicarse en Registro", "");
+        }
+    }
+    
+    public void insAccesorio(){
         
+        if(taccesorio.getValue()!= null && taccesorio.toString().isEmpty()==false){
+            if(txt_estado.getValue()!= null && txt_estado.toString().isEmpty()==false){
+                aCombustible.getParametacce(tab_tabla.getValor("mve_secuencial"), taccesorio.getValue()+"", txt_cantidad.getValue()+"", txt_estado.getValue()+"", aCombustible.ParametrosAcc());
+                taccesorio.limpiar();
+                utilitario.agregarMensaje("Registro Guardado", "Accesorio");
+                set_accesorio.actualizar();
+            }
+        }
+    }
+    
+    public void endAccesorio(){
+        if (set_accesorio.getValorSeleccionado() != null && set_accesorio.getValorSeleccionado().isEmpty() == false) {
+            aCombustible.deleteaccesorio(set_accesorio.getValorSeleccionado());
+            utilitario.agregarMensaje("Registro eliminado", "Accesorio");
+            set_accesorio.actualizar();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
+        }
+    }
+    
     @Override
     public void insertar() {
-
+        if (tab_tabla.isFocus()) {
+            tab_tabla.insertar();
+        }
     }
 
     @Override
     public void guardar() {
-
+        if(tab_tabla.guardar()){
+            con_sql.guardarPantalla(); 
+        }
     }
 
     @Override
     public void eliminar() {
-
+        utilitario.getTablaisFocus().eliminar();
     }
 
     public Conexion getCon_sql() {
@@ -411,6 +750,38 @@ public class pre_inventario_automores extends Pantalla{
 
     public void setSet_version(Tabla set_version) {
         this.set_version = set_version;
+    }
+
+    public AutoCompletar getAut_busca() {
+        return aut_busca;
+    }
+
+    public void setAut_busca(AutoCompletar aut_busca) {
+        this.aut_busca = aut_busca;
+    }
+
+    public Tabla getTab_tabla() {
+        return tab_tabla;
+    }
+
+    public void setTab_tabla(Tabla tab_tabla) {
+        this.tab_tabla = tab_tabla;
+    }
+
+    public Tabla getSet_conductor() {
+        return set_conductor;
+    }
+
+    public void setSet_conductor(Tabla set_conductor) {
+        this.set_conductor = set_conductor;
+    }
+
+    public Tabla getSet_accesorio() {
+        return set_accesorio;
+    }
+
+    public void setSet_accesorio(Tabla set_accesorio) {
+        this.set_accesorio = set_accesorio;
     }
     
 }
