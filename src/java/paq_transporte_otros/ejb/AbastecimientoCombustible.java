@@ -83,6 +83,14 @@ public class AbastecimientoCombustible {
     con_manauto = null;
     }
     
+    public void deleteaccesorio(String anti){
+    String au_sql="update MVDETALLEVEHICULO set MDV_ESTADO = ' DE BAJA' where MDV_CODIGO = '"+anti+"'";
+    con_mantenimiento();
+    con_manauto.ejecutarSql(au_sql);
+    con_manauto.desconectar();
+    con_manauto = null;
+    }
+    
     public void deleteParam(String anti,String mensaje,String depen){
     String au_sql="DELETE FROM MVLISTA WHERE LIS_NOMBRE ='"+anti+"' and TAB_CODIGO = '"+mensaje+"' and DEPENDENCI='"+depen+"'";
     con_mantenimiento();
@@ -323,6 +331,20 @@ public class AbastecimientoCombustible {
          return ValorMax;
   }
     
+    public String ParametrosAcc() {
+         con_mantenimiento();
+         String ValorMax;
+         TablaGenerica tab_consulta = new TablaGenerica();
+         con_mantenimiento();
+         tab_consulta.setConexion(con_manauto);
+         tab_consulta.setSql("select 0 as id,\n" +
+                 "(case when count(MDV_CODIGO) is null then '0' when count(MDV_CODIGO)is not null then count(MDV_CODIGO) end) AS maximo\n" +
+                 "from MVDETALLEVEHICULO");
+         tab_consulta.ejecutarSql();
+         ValorMax = tab_consulta.getValor("maximo");
+         return ValorMax;
+  }
+    
     public String SecuencialCab() {
          con_mantenimiento();
          String ValorMax;
@@ -472,6 +494,32 @@ public class AbastecimientoCombustible {
     public void getParametrot(String nombre,String login,Integer marca){
         String parametro ="insert into MVTIPO (MVMARCA_ID,MVTIPO_DESCRIPCION,MVTIPO_ESTADO,MVTIPO_FECHAING,MVTIPO_LOGININ)\n" +
                 "values ("+marca+",'"+nombre+"',1,"+utilitario.getFormatoFechaSQL(utilitario.getFechaActual())+",'"+login+"')";
+        con_mantenimiento();
+        con_manauto.ejecutarSql(parametro);
+        con_manauto.desconectar();
+        con_manauto = null;
+    }
+    
+    public void getParametromo(String nombre,String login,Integer tipo){
+        String parametro ="insert into MVMODELO(MVTIPO_ID,MVMODELO_DESCRIPCION,MVMODELO_ESTADO,MVMODELO_FECHAING,MVMODELO_LOGININ)\n" +
+                "values ("+tipo+",'"+nombre+"',1,"+utilitario.getFormatoFechaSQL(utilitario.getFechaActual())+",'"+login+"')";
+        con_mantenimiento();
+        con_manauto.ejecutarSql(parametro);
+        con_manauto.desconectar();
+        con_manauto = null;
+    }
+    public void getParametrove(String nombre,String login,Integer modelo){
+        String parametro ="insert into MVVERSION(MVMODELO_ID,MVERSION_DESCRIPCION,MVERSION_ESTADO,MVERSION_FECHAING,MVERSION_LOGININ)\n" +
+                "values ("+modelo+",'"+nombre+"',1,"+utilitario.getFormatoFechaSQL(utilitario.getFechaActual())+",'"+login+"')";
+        con_mantenimiento();
+        con_manauto.ejecutarSql(parametro);
+        con_manauto.desconectar();
+        con_manauto = null;
+    }
+    
+    public void getParametacce(String nombre,String numero,String cantidad,String estado,String codigo){
+        String parametro ="insert into MVDETALLEVEHICULO (MVE_SECUENCIAL,MDV_DETALLE,MDV_CANTIDAD,MDV_ESTADO,MDV_CODIGO)\n" +
+                "values ('"+nombre+"','"+numero+"','"+cantidad+"','"+estado+"','"+codigo+"')";
         con_mantenimiento();
         con_manauto.ejecutarSql(parametro);
         con_manauto.desconectar();
@@ -637,6 +685,16 @@ public class AbastecimientoCombustible {
         return tab_persona;
     }
     
+    public TablaGenerica get_ValiAccesorio(String nombre) {
+        con_mantenimiento();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_manauto);
+        tab_persona.setSql("SELECT MDV_DETALLE,MDV_CANTIDAD,MDV_ESTADO FROM MVDETALLEVEHICULO WHERE MVE_SECUENCIAL='"+nombre+"'");
+        tab_persona.ejecutarSql();
+        con_manauto.desconectar();
+        con_manauto = null;
+        return tab_persona;
+    }
     
     public void ActuReg(Integer ide,String vale){
         String str_sql4 = "update SIS_BLOQUEO\n" +
