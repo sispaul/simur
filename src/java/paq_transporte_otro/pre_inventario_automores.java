@@ -107,8 +107,8 @@ public class pre_inventario_automores extends Pantalla{
         aut_busca.setId("aut_busca");
         aut_busca.setConexion(con_sql);
         aut_busca.setAutoCompletar("SELECT v.MVE_SECUENCIAL,v.MVE_PLACA,m.MVMARCA_DESCRIPCION,o.MVMODELO_DESCRIPCION,v.MVE_CHASIS\n" +
-                "FROM dbo.MVVEHICULO AS v ,dbo.MVMARCA AS m ,dbo.MVMODELO AS o,dbo.MVTIPO t\n" +
-                "WHERE v.MVE_MARCA = m.MVMARCA_ID AND t.MVMARCA_ID = m.MVMARCA_ID AND o.MVTIPO_ID = t.MVTIPO_ID");
+                "FROM MVVEHICULO AS v ,MVMARCA AS m ,MVMODELO o\n" +
+                "WHERE v.MVE_MARCA = m.MVMARCA_ID and v.MVE_MODELO = o.MVMODELO_ID");
         aut_busca.setMetodoChange("filtrarSolicitud");
         aut_busca.setSize(70);
         bar_botones.agregarComponente(new Etiqueta("Buscar Solicitud:"));

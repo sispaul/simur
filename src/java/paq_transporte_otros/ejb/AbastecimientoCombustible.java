@@ -91,6 +91,30 @@ public class AbastecimientoCombustible {
     con_manauto = null;
     }
     
+    public void updateFecha(String anti,Integer codigo){
+    String au_sql="update MVVEHICULO set MVE_FECHA_BORRADO ="+utilitario.getFormatoFechaSQL(anti)+" where MVE_SECUENCIAL ="+codigo;
+    con_mantenimiento();
+    con_manauto.ejecutarSql(au_sql);
+    con_manauto.desconectar();
+    con_manauto = null;
+    }
+    
+    public void updateSolicitud(Integer codigo){
+    String au_sql="update MVCABSOLICITUD\n" +
+            "set MSC_ESTADO_TRAMITE = 'TERMINADA'\n" +
+            "from (SELECT\n" +
+            "s.MSC_SECUENCIAL\n" +
+            "FROM\n" +
+            "dbo.MVVEHICULO v\n" +
+            "INNER JOIN dbo.MVCABSOLICITUD s ON s.MVE_SECUENCIAL = v.MVE_SECUENCIAL\n" +
+            "where v.MVE_SECUENCIAL="+codigo+" and s.MSC_ESTADO_TRAMITE = 'SOLICITUD') AS d\n" +
+            "where MVCABSOLICITUD.MSC_SECUENCIAL=d.MSC_SECUENCIAL";
+    con_mantenimiento();
+    con_manauto.ejecutarSql(au_sql);
+    con_manauto.desconectar();
+    con_manauto = null;
+    }
+    
     public void deleteParam(String anti,String mensaje,String depen){
     String au_sql="DELETE FROM MVLISTA WHERE LIS_NOMBRE ='"+anti+"' and TAB_CODIGO = '"+mensaje+"' and DEPENDENCI='"+depen+"'";
     con_mantenimiento();
