@@ -22,6 +22,7 @@ import framework.componentes.Texto;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
+import org.primefaces.event.SelectEvent;
 import paq_sistema.aplicacion.Pantalla;
 import paq_transporte_otros.ejb.AbastecimientoCombustible;
 import persistencia.Conexion;
@@ -42,7 +43,6 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
     private Tabla set_departamento = new Tabla(); 
     private Tabla set_cargo = new Tabla(); 
     private Tabla set_responsable = new Tabla(); 
-    private Tabla set_registros = new Tabla();
     private Tabla set_conductor = new Tabla();
     private Tabla tab_articulo = new Tabla();
     //Contiene todos los elementos de la plantilla
@@ -58,6 +58,9 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
     private Texto tconductor = new Texto();
     private Texto tcomentario = new Texto();
     private Texto taccesorio = new Texto();
+    private Texto txt_cantidad = new Texto();
+    private Texto txt_estado = new Texto();
+    
     //Dialogos
     private Dialogo dia_dialogod = new Dialogo();
     private Dialogo dia_dialogoc = new Dialogo();
@@ -128,7 +131,7 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         bar_botones.agregarComponente(aut_busca);
         
         Boton bot_save = new Boton();
-        bot_save.setValue("ARTICULOS");
+        bot_save.setValue("ACCESORIOS");
         bot_save.setIcon("ui-icon-extlink");
         bot_save.setMetodo("lista");
         bar_botones.agregarComponente(bot_save);
@@ -261,52 +264,38 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         set_departamento.setTipoSeleccion(false);
         set_departamento.setRows(10);
         set_departamento.dibujar();
-
-        set_registros.setId("set_registros");
-        set_registros.setConexion(con_sql);
-        set_registros.setHeader("REGISTROS PARA DESCARGO");
-        set_registros.setSql("SELECT a.MAV_SECUENCIAL,v.MVE_PLACA,a.MAV_NOMEMPLEA,a.MAV_CARGOEMPLEA,a.MAV_DEPARTAMENTO,a.MAV_NOMBRE_COND\n" +
-                "FROM MVASIGNARVEH a INNER JOIN MVVEHICULO v ON a.MVE_SECUENCIAL = v.MVE_SECUENCIAL\n" +
-                "where a.MAV_ESTADO_ASIGNACION = 1 order by v.MVE_PLACA");
-        set_registros.getColumna("MVE_PLACA").setFiltro(true);
-        set_registros.setTipoSeleccion(false);
-        set_registros.setRows(10);
-        set_registros.dibujar();
         
-        Grid gri_versions = new Grid();
-        gri_versions.setColumns(6);
-        gri_versions.getChildren().add(new Etiqueta("Ingreso Accesorio"));
-        gri_versions.getChildren().add(taccesorio);
-        Boton bot_versions = new Boton();
-        bot_versions.setValue("Guardar");
-        bot_versions.setIcon("ui-icon-disk");
-        bot_versions.setMetodo("insAccesorio");
-        bar_botones.agregarBoton(bot_versions);
-        Boton bot_versionxs = new Boton();
-        bot_versionxs.setValue("Eliminar");
-        bot_versionxs.setIcon("ui-icon-closethick");
-        bot_versionxs.setMetodo("endAccesorio");
-        bar_botones.agregarBoton(bot_versionxs);
-        gri_versions.getChildren().add(bot_versions);
-        gri_versions.getChildren().add(bot_versionxs);
-        
-        dia_dialogoa.setId("dia_dialogo");
-        dia_dialogoa.setTitle("IINGRESO DE MARCA"); //titulo
-        dia_dialogoa.setWidth("45%"); //siempre en porcentajes  ancho
-        dia_dialogoa.setHeight("50%");//siempre porcentaje   alto
+        //Para accesorios
+        Grid gri_accesorio = new Grid();
+        gri_accesorio.setColumns(6);
+        gri_accesorio.getChildren().add(new Etiqueta("Accesorio"));
+        gri_accesorio.getChildren().add(taccesorio);
+        txt_cantidad.setSize(2);
+        gri_accesorio.getChildren().add(new Etiqueta("Cantidad"));
+        gri_accesorio.getChildren().add(txt_cantidad);
+        txt_estado.setSize(10);
+        gri_accesorio.getChildren().add(new Etiqueta("Estado"));
+        gri_accesorio.getChildren().add(txt_estado);
+        Boton bot_accesoriog = new Boton();
+        bot_accesoriog.setValue("Guardar");
+        bot_accesoriog.setIcon("ui-icon-disk");
+        bot_accesoriog.setMetodo("insAccesorio");
+        bar_botones.agregarBoton(bot_accesoriog);
+        Boton bot_accesorioe = new Boton();
+        bot_accesorioe.setValue("Eliminar");
+        bot_accesorioe.setIcon("ui-icon-closethick");
+        bot_accesorioe.setMetodo("endAccesorio");
+        bar_botones.agregarBoton(bot_accesorioe);
+        gri_accesorio.getChildren().add(bot_accesoriog);
+        gri_accesorio.getChildren().add(bot_accesorioe);
+        dia_dialogoa.setId("dia_dialogoa");
+        dia_dialogoa.setTitle("ACCESORIOS DE AUTOMOTOR / MAQUINARIA"); //titulo
+        dia_dialogoa.setWidth("38%"); //siempre en porcentajes  ancho
+        dia_dialogoa.setHeight("40%");//siempre porcentaje   alto
         dia_dialogoa.setResizable(false); //para que no se pueda cambiar el tamaño
-        dia_dialogoa.getGri_cuerpo().setHeader(gri_versions);
-        dia_dialogoa.getBot_aceptar().setMetodo("aceptar_lis");
+        dia_dialogoa.getGri_cuerpo().setHeader(gri_accesorio);
         grid_a.setColumns(4);
         agregarComponente(dia_dialogoa);
-        
-        set_accesorio.setId("set_accesorio");
-        set_accesorio.setConexion(con_sql);
-        set_accesorio.setSql("SELECT LIS_ID,LIS_NOMBRE, null as Cantidad,cast (null as varchar) as Estado FROM MVLISTA where TAB_CODIGO ='ACCES' order by LIS_ID");
-        set_accesorio.getColumna("LIS_NOMBRE").setFiltro(true);
-        set_accesorio.getColumna("LIS_NOMBRE").setLectura(true);
-        set_accesorio.setRows(9);
-        set_accesorio.dibujar();
         
         /*         * CONFIGURACIÓN DE OBJETO REPORTE         */
         bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
@@ -327,62 +316,82 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
      set_automotores.dibujar();
     }
     
-    public void insAccesorio(){
-        if(taccesorio.getValue()!= null && taccesorio.toString().isEmpty()==false){
-            TablaGenerica tab_dato =aCombustible.get_DuplicaDatos(taccesorio.getValue()+"","ACCES", "N/D");
-            if (!tab_dato.isEmpty()) {
-                utilitario.agregarMensaje("Accesorio ya se Encuentra Registrado", "");
-            }else{
-                if(taccesorio.getValue()!= null && taccesorio.toString().isEmpty()==false){
-                    Integer numero = Integer.parseInt(aCombustible.ParametrosMax("ACCES"));
-                    Integer cantidad=0;
-                    cantidad=numero +1;
-                    aCombustible.getParametros1(String.valueOf(cantidad),taccesorio.getValue()+"","ACCES","N/D",utilitario.getVariable("NICK"),"1");
-                    taccesorio.limpiar();
-                    utilitario.addUpdate("taccesorio");
-                    utilitario.agregarMensaje("Registro Guardado", "Accesorio");
-                    utilitario.addUpdate("set_accesorio");
-                    set_accesorio.actualizar();
-                }
-            }
-        }
-    }
-    
-    public void endAccesorio(){
-        if (set_accesorio.getValorSeleccionado()!= null && set_accesorio.getValorSeleccionado().isEmpty() == false) {
-            TablaGenerica tab_dato =aCombustible.get_ExtraDatos(set_accesorio.getValorSeleccionado()+"","ACCES", "N/D");
-            if (!tab_dato.isEmpty()) {
-                aCombustible.deleteParam(tab_dato.getValor("LIS_NOMBRE"),"ACCES","N/D");
-                utilitario.agregarMensaje("Accesorio", "Eliminado");
-                set_accesorio.actualizar();
-            }
-        } else {
-            utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
-        }
-    }
-    
+    //Accesorios para asignacion
     public void lista(){
+        if(tab_tabla.getValor("mav_secuencial")!=null && tab_tabla.getValor("mav_secuencial").isEmpty() == false){
+            TablaGenerica tab_dato =aCombustible.getVehiculo(tplaca.getValue()+"");
+            if (!tab_dato.isEmpty()) {
+                TablaGenerica tab_datoa =aCombustible.get_ValiAccesorio(tab_dato.getValor("MVE_SECUENCIAL"));
+                if (!tab_datoa.isEmpty()) {
+                    TablaGenerica tab_datoac =aCombustible.get_ValiAcces(tab_dato.getValor("MVE_SECUENCIAL"));
+                    if (!tab_datoa.isEmpty()) {
+                        dibujar();
+                    }else{
+                        aCombustible.getAccesorios(tab_tabla.getValor("mav_secuencial"), tab_dato.getValor("MVE_SECUENCIAL"));
+                        dibujar();
+                    }
+                }else{
+//                    utilitario.agregarMensaje("No encuentra Accesorios", "");
+                    dibujar();
+                }
+            }else{
+                utilitario.agregarMensaje("No encuentra Registro", "");
+            }
+        }else{
+            utilitario.agregarMensaje("Debe ubicarse en un Registro", "");
+        }
+    }
+    
+    public void dibujar(){
         dia_dialogoa.Limpiar();
         dia_dialogoa.setDialogo(grida);
         grid_a.getChildren().add(set_accesorio);
+        set_accesorio.setId("set_accesorio");
+        set_accesorio.setConexion(con_sql);
+        set_accesorio.setSql("SELECT MDA_CODIGO,MDA_DETALLE,MDA_CANTIDAD,MDA_ESTADO\n" +
+                "FROM MVDETASIGNACION WHERE MDA_ESTADO <> 'de baja' and MAV_SECUENCIAL ="+tab_tabla.getValor("mav_secuencial"));
+        set_accesorio.getColumna("MDA_DETALLE").setFiltro(true);
+        set_accesorio.setRows(9);
+        set_accesorio.setTipoSeleccion(false);
         dia_dialogoa.setDialogo(grid_a);
         set_accesorio.dibujar();
         dia_dialogoa.dibujar();
     }
     
+    public void insAccesorio(){
+        if(taccesorio.getValue()!= null && taccesorio.toString().isEmpty()==false){
+            if(txt_estado.getValue()!= null && txt_estado.toString().isEmpty()==false){
+                aCombustible.getParametacces(tab_tabla.getValor("mav_secuencial"), taccesorio.getValue()+"", txt_cantidad.getValue()+"", txt_estado.getValue()+"", aCombustible.ParametrosAccE());
+                taccesorio.limpiar();
+                utilitario.agregarMensaje("Registro Guardado", "Accesorio");
+                set_accesorio.actualizar();
+            }
+        }
+    }
+    
+    public void endAccesorio(){
+        if (set_accesorio.getValorSeleccionado() != null && set_accesorio.getValorSeleccionado().isEmpty() == false) {
+            aCombustible.deleteaccesorios(set_accesorio.getValorSeleccionado());
+            utilitario.agregarMensaje("Registro eliminado", "Accesorio");
+            set_accesorio.actualizar();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
+        }
+    }
+    
     public void aceptar_lis(){
         if(set_accesorio.getValorSeleccionado()!= null && set_accesorio.getValorSeleccionado().isEmpty() == false){
-                            if(tab_tabla.getValor("mav_secuencial")!= null && tab_tabla.getValor("mav_secuencial").isEmpty() == false){
-            TablaGenerica tab_dato =aCombustible.get_ExtraDatos(set_accesorio.getValorSeleccionado()+"","ACCES", "N/D");
-            if (!tab_dato.isEmpty()) {
-                  aCombustible.getMVDetalleASI(tab_tabla.getValor("mav_secuencial"), tab_dato.getValor("LIS_NOMBRE")+"", Double.valueOf(set_accesorio.getValor("Cantidad")+""), set_accesorio.getValor("Estado")+""); 
-                tab_articulo.actualizar();
-            }else{
-                utilitario.agregarMensaje("Accesorio nose Encuentra en Base", "");
-            }
-                            }else{
-                    utilitario.agregarMensaje("Solicitud No Existe", "");
+            if(tab_tabla.getValor("mav_secuencial")!= null && tab_tabla.getValor("mav_secuencial").isEmpty() == false){
+                TablaGenerica tab_dato =aCombustible.get_ExtraDatos(set_accesorio.getValorSeleccionado()+"","ACCES", "N/D");
+                if (!tab_dato.isEmpty()) {
+                    aCombustible.getMVDetalleASI(tab_tabla.getValor("mav_secuencial"), tab_dato.getValor("LIS_NOMBRE")+"", Double.valueOf(set_accesorio.getValor("Cantidad")+""), set_accesorio.getValor("Estado")+""); 
+                    tab_articulo.actualizar();
+                }else{
+                    utilitario.agregarMensaje("Accesorio nose Encuentra en Base", "");
                 }
+            }else{
+                utilitario.agregarMensaje("Solicitud No Existe", "");
+            }
         }  
     }
     
@@ -511,18 +520,9 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         PanelTabla ptt = new PanelTabla();
         ptt.setPanelTabla(tab_tabla);
 
-        tab_articulo.setId("tab_articulo");
-        tab_articulo.setConexion(con_sql);
-        tab_articulo.setSql("SELECT MAV_SECUENCIAL,MDA_DETALLE,MDA_CANTIDAD,MDA_ESTADO FROM MVDETASIGNACION where MAV_SECUENCIAL ="+tab_tabla.getValor("MVE_SECUENCIAL"));
-        tab_articulo.getColumna("MAV_SECUENCIAL").setVisible(false);
-        tab_articulo.getGrid().setColumns(4);
-        tab_articulo.setLectura(true);
-        tab_articulo.dibujar();
-        PanelTabla tpa = new PanelTabla();
-        tpa.setPanelTabla(tab_articulo);
         
         Division div = new Division();
-        div.dividir2(ptt,tpa, "45%","h");
+        div.dividir1(ptt);
         Grupo gru = new Grupo();
         gru.getChildren().add(div);
         pan_opcion.getChildren().add(gru);
@@ -621,16 +621,6 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         }
         dia_dialogor.cerrar();
     }
-    
-//    public void buscaRegistro(){
-//        dia_dialogore.Limpiar();
-//        dia_dialogore.setDialogo(gridre);
-//        grid_res.getChildren().add(set_registros);
-//        dia_dialogore.setDialogo(grid_res);
-//        set_registros.dibujar();
-//        dia_dialogore.dibujar();
-//    }
-    
         //limpia y borrar el contenido de la pantalla
     private void limpiarPanel() {
         //borra el contenido de la división central central
@@ -646,22 +636,17 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         limpiarPanel();
         utilitario.addUpdate("pan_opcion");
     }
-
-    public void filtrarSolicitud (){
+    
+    public void filtrarSolicitud (SelectEvent evt){
         limpiar();
-        if (set_registros.getValorSeleccionado() != null) {
-            aut_busca.setValor(set_registros.getValorSeleccionado());
-            dia_dialogore.cerrar();
-            dibujardocumento();
-            utilitario.addUpdate("aut_busca,pan_opcion");
-            completa_dato();
-        } else {
-            utilitario.agregarMensajeInfo("Debe seleccionar una empresa", "");
-        }
+        aut_busca.onSelect(evt);
+        dibujardocumento();
+        utilitario.addUpdate("aut_busca,pan_opcion");
+        completa_dato();
     }
     
     public void completa_dato(){
-     TablaGenerica tab_dato =aCombustible.datosExtraer(Integer.parseInt(set_registros.getValorSeleccionado()));
+     TablaGenerica tab_dato =aCombustible.datosExtraer(Integer.parseInt(aut_busca.getValor()));
         if (!tab_dato.isEmpty()) {
             tplaca.setValue(tab_dato.getValor("MVE_PLACA") +""); tmarca.setValue(tab_dato.getValor("MVE_MARCA") +""); tmodelo.setValue(tab_dato.getValor("MVE_MODELO") +"");
             tanio.setValue(tab_dato.getValor("MVE_ANO") +""); tcolor.setValue(tab_dato.getValor("MVE_COLOR") +""); tconductor.setValue(tab_dato.getValor("MAV_NOMEMPLEA") +"");
@@ -834,14 +819,6 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
 
     public void setSet_responsable(Tabla set_responsable) {
         this.set_responsable = set_responsable;
-    }
-
-    public Tabla getSet_registros() {
-        return set_registros;
-    }
-
-    public void setSet_registros(Tabla set_registros) {
-        this.set_registros = set_registros;
     }
 
     public Tabla getSet_conductor() {
