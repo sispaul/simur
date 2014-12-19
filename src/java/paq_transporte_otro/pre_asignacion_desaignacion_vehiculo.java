@@ -400,11 +400,11 @@ public class pre_asignacion_desaignacion_vehiculo extends Pantalla{
         if(set_automotores.getValorSeleccionado()!= null && set_automotores.getValorSeleccionado().isEmpty() == false){
             TablaGenerica tab_datov =aCombustible.getVerificar(Integer.parseInt(set_automotores.getValorSeleccionado()));
             if (!tab_datov.isEmpty()) {
-                if(Integer.parseInt(tab_datov.getValor("valor"))<=1){
+                if(Integer.parseInt(tab_datov.getValor("valor"))==1){
                     TablaGenerica tab_datoc =aCombustible.setVerificar(Integer.parseInt(set_automotores.getValorSeleccionado()));
                     if (!tab_datoc.isEmpty()) {
-                        if(tab_datoc.getValor("MVE_SECUENCIAL")!=null && tab_datoc.getValor("MVE_SECUENCIAL").isEmpty() == false){
-                            aCombustible.actDescargo(Integer.parseInt(tab_datoc.getValor("MVE_SECUENCIAL")),utilitario.getVariable("NICK"), utilitario.getFechaActual());
+                        if(tab_datoc.getValor("MAV_SECUENCIAL")!=null && tab_datoc.getValor("MAV_SECUENCIAL").isEmpty() == false){
+                            aCombustible.actDescargo(Integer.parseInt(tab_datoc.getValor("MAV_SECUENCIAL")),utilitario.getVariable("NICK"), utilitario.getFechaActual());
                             TablaGenerica tab_dato =aCombustible.getDatos(Integer.parseInt(set_automotores.getValorSeleccionado()));
                             if (!tab_dato.isEmpty()) {
                                 tplaca.setValue(tab_dato.getValor("MVE_PLACA") +""); tmarca.setValue(tab_dato.getValor("MVE_MARCA") +""); tmodelo.setValue(tab_dato.getValor("MVE_MODELO") +"");
