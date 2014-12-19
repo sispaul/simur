@@ -99,8 +99,8 @@ public class AbastecimientoCombustible {
     con_manauto = null;
     }
     
-    public void updateFecha(String anti,Integer codigo){
-    String au_sql="update MVVEHICULO set MVE_FECHA_BORRADO ="+utilitario.getFormatoFechaSQL(anti)+" where MVE_SECUENCIAL ="+codigo;
+    public void updateFecha(String anti,Integer codigo,String observacion){
+    String au_sql="update MVVEHICULO set MVE_OBSERVACIONES = '"+observacion+"',MVE_FECHA_BORRADO ="+utilitario.getFormatoFechaSQL(anti)+" where MVE_SECUENCIAL ="+codigo;
     con_mantenimiento();
     con_manauto.ejecutarSql(au_sql);
     con_manauto.desconectar();
@@ -195,7 +195,7 @@ public class AbastecimientoCombustible {
     
     public void actDescargo(Integer tipo,String usu,String fecha){
         String str_sql4 = "UPDATE MVASIGNARVEH\n" +
-                "SET MAV_ESTADO_ASIGNACION= '0',\n" +
+                "SET MAV_ESTADO_ASIGNACION= '2',\n" +
                 "MAV_ESTADO_TRAMITE='DESCARGO',\n" +
                 "MAV_LOGINACTUALI='"+usu+"',\n" +
                 "MAV_FECHAACTUALI="+utilitario.getFormatoFechaSQL(utilitario.getFechaHoraActual())+"\n" +
