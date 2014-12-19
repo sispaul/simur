@@ -307,6 +307,8 @@ public class pre_inventario_automores extends Pantalla{
         tab_tabla.getColumna("MVE_CONDUCTOR").setMetodoChange("aceptoDialogoc");
         tab_tabla.getColumna("MVE_TIPOCODIGO").setMetodoChange("activarTipo");
         tab_tabla.getColumna("MVE_PLACA").setMetodoChange("infoActivo");
+        tab_tabla.getColumna("MVE_LOGININGRESO").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
+        tab_tabla.getColumna("MVE_FECHAINGRESO").setValorDefecto(utilitario.getFechaActual());
         List list = new ArrayList();
         Object fil1[] = {
             "KILOMETROS", "KILOMETROS"
