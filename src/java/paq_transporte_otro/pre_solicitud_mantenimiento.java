@@ -310,12 +310,12 @@ public class pre_solicitud_mantenimiento extends Pantalla{
             if(tab_cabecera.getValor("msc_secuencial")!=null){
                 if (tab_cabecera.guardar()) {
                     con_sql.guardarPantalla();
-                    aCombustible.updateFecha(tab_cabecera.getValor("msc_fecha"), Integer.parseInt(tab_vehiculo.getValor("mve_secuencial")));
+                    aCombustible.updateFecha(tab_cabecera.getValor("msc_fecha"), Integer.parseInt(tab_vehiculo.getValor("mve_secuencial")),tab_cabecera.getValor("msc_observacion"));
                 }
             }else{
                 if (tab_cabecera.guardar()) {
                     con_sql.guardarPantalla();
-                    aCombustible.updateFecha(tab_cabecera.getValor("msc_fecha"), Integer.parseInt(tab_vehiculo.getValor("mve_secuencial")));
+                    aCombustible.updateFecha(tab_cabecera.getValor("msc_fecha"), Integer.parseInt(tab_vehiculo.getValor("mve_secuencial")),tab_cabecera.getValor("msc_observacion"));
                 }
             }
         }else{
