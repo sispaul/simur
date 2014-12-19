@@ -30,7 +30,7 @@ public class AbastecimientoCombustible {
         tab_persona.setConexion(con_manauto);
         tab_persona.setSql("SELECT\n" +
                 "MVE_SECUENCIAL,\n" +
-                "(MVE_MARCA+','+MVE_MODELO+',COLOR:'+MVE_COLOR+','+MVE_VERSION)as descripcion,\n" +
+                "(MVE_MARCA+'   '+MVE_MODELO+'  '+MVE_VERSION)as descripcion,\n" +
                 "MVE_PLACA,\n" +
                 "MVE_TIPO_COMBUSTIBLE,\n" +
                 "MVE_CONDUCTOR\n" +
@@ -85,6 +85,14 @@ public class AbastecimientoCombustible {
     
     public void deleteaccesorio(String anti){
     String au_sql="update MVDETALLEVEHICULO set MDV_ESTADO = 'DE BAJA' where MDV_CODIGO = '"+anti+"'";
+    con_mantenimiento();
+    con_manauto.ejecutarSql(au_sql);
+    con_manauto.desconectar();
+    con_manauto = null;
+    }
+    
+    public void deleteaccesorios(String anti){
+    String au_sql="update MVDETASIGNACION set MDA_ESTADO = 'DE BAJA' where MDA_CODIGO = '"+anti+"'";
     con_mantenimiento();
     con_manauto.ejecutarSql(au_sql);
     con_manauto.desconectar();
@@ -369,6 +377,20 @@ public class AbastecimientoCombustible {
          return ValorMax;
   }
     
+    public String ParametrosAccE() {
+         con_mantenimiento();
+         String ValorMax;
+         TablaGenerica tab_consulta = new TablaGenerica();
+         con_mantenimiento();
+         tab_consulta.setConexion(con_manauto);
+         tab_consulta.setSql("select 0 as id,\n" +
+                 "(case when count(MDA_CODIGO) is null then '0' when count(MDA_CODIGO)is not null then count(MDA_CODIGO) end) AS maximo\n" +
+                 "from MVDETASIGNACION");
+         tab_consulta.ejecutarSql();
+         ValorMax = tab_consulta.getValor("maximo");
+         return ValorMax;
+  }
+    
     public String SecuencialCab() {
          con_mantenimiento();
          String ValorMax;
@@ -545,6 +567,16 @@ public class AbastecimientoCombustible {
         String parametro ="insert into MVDETALLEVEHICULO (MVE_SECUENCIAL,MDV_DETALLE,MDV_CANTIDAD,MDV_ESTADO,MDV_CODIGO)\n" +
                 "values ('"+nombre+"','"+numero+"','"+cantidad+"','"+estado+"','"+codigo+"')";
         con_mantenimiento();
+        System.err.println(parametro);
+        con_manauto.ejecutarSql(parametro);
+        con_manauto.desconectar();
+        con_manauto = null;
+    }
+    
+    public void getParametacces(String nombre,String numero,String cantidad,String estado,String codigo){
+        String parametro ="insert into MVDETASIGNACION (MAV_SECUENCIAL,MAV_ESTADO_ASIGNACION,MDA_DETALLE,MDA_CANTIDAD,MDA_ESTADO,MDA_CODIGO)\n" +
+                "values ('"+nombre+"','1','"+numero+"','"+cantidad+"','"+estado+"','"+codigo+"')";
+        con_mantenimiento();
         con_manauto.ejecutarSql(parametro);
         con_manauto.desconectar();
         con_manauto = null;
@@ -714,6 +746,17 @@ public class AbastecimientoCombustible {
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(con_manauto);
         tab_persona.setSql("SELECT MDV_DETALLE,MDV_CANTIDAD,MDV_ESTADO FROM MVDETALLEVEHICULO WHERE MVE_SECUENCIAL='"+nombre+"'");
+        tab_persona.ejecutarSql();
+        con_manauto.desconectar();
+        con_manauto = null;
+        return tab_persona;
+    }
+    
+    public TablaGenerica get_ValiAcces(String nombre) {
+        con_mantenimiento();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_manauto);
+        tab_persona.setSql("SELECT MAV_SECUENCIAL,MDA_DETALLE FROM MVDETASIGNACION WHERE MAV_SECUENCIAL ='"+nombre+"'");
         tab_persona.ejecutarSql();
         con_manauto.desconectar();
         con_manauto = null;
