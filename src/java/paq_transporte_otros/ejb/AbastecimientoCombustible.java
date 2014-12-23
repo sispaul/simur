@@ -28,15 +28,24 @@ public class AbastecimientoCombustible {
         con_mantenimiento();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(con_manauto);
-        tab_persona.setSql("SELECT\n" +
-                "MVE_SECUENCIAL,\n" +
-                "(MVE_MARCA+'   '+MVE_MODELO+'  '+MVE_VERSION)as descripcion,\n" +
-                "MVE_PLACA,\n" +
-                "MVE_TIPO_COMBUSTIBLE,\n" +
-                "MVE_CONDUCTOR\n" +
-                "FROM \n" +
-                "MVVEHICULO\n" +
-                "where MVE_PLACA ='"+placa+"'");
+        tab_persona.setSql("SELECT \n" +
+                "v.MVE_SECUENCIAL,\n" +
+                "v.MVE_PLACA,\n" +
+                "v.MVE_TIPO_COMBUSTIBLE,\n" +
+                "v.MVE_CONDUCTOR,\n" +
+                "(m.MVMARCA_DESCRIPCION+'  '+o.MVMODELO_DESCRIPCION+'  '+r.MVERSION_DESCRIPCION) as descripcion\n" +
+                "FROM MVVEHICULO v,\n" +
+                "MVMARCA m,\n" +
+                "MVMODELO o,\n" +
+                "MVTIPO t ,\n" +
+                "MVVERSION r\n" +
+                "WHERE v.MVE_MARCA = m.MVMARCA_ID \n" +
+                "AND v.MVE_TIPO =  t.MVTIPO_ID \n" +
+                "AND v.MVE_MODELO = o.MVMODELO_ID \n" +
+                "AND t.MVMARCA_ID = m.MVMARCA_ID \n" +
+                "AND o.MVTIPO_ID = t.MVTIPO_ID \n" +
+                "AND r.MVMODELO_ID = o.MVMODELO_ID \n" +
+                "AND v.MVE_PLACA = '"+placa+"'");
         tab_persona.ejecutarSql();
         con_manauto.desconectar();
         con_manauto = null;
