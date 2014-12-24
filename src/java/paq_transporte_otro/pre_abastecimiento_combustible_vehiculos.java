@@ -220,7 +220,7 @@ public class pre_abastecimiento_combustible_vehiculos extends Pantalla{
         if(tab_tabla.getValor("numero_abastecimiento")!=null && tab_tabla.getValor("numero_abastecimiento").toString().isEmpty() == false){
 
         }else{
-            Integer numero = Integer.parseInt(aCombustible.listaMax(tab_tabla.getValor("placa_vehiculo")));
+            Integer numero = Integer.parseInt(aCombustible.listaMax(tab_tabla.getValor("placa_vehiculo"),String.valueOf(utilitario.getAnio(tab_tabla.getValor("fecha_abastecimiento"))),String.valueOf(utilitario.getMes(tab_tabla.getValor("fecha_abastecimiento")))));
             Integer cantidad=0;
             cantidad=numero +1;
             tab_tabla.setValor("numero_abastecimiento", String.valueOf(cantidad));

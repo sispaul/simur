@@ -287,7 +287,7 @@ public class AbastecimientoCombustible {
         return tab_persona;
     }
         
-    public String listaMax(String placa) {
+    public String listaMax(String placa,String anio,String fecha) {
          con_mantenimiento();
          String ValorMax;
          TablaGenerica tab_consulta = new TablaGenerica();
@@ -296,7 +296,7 @@ public class AbastecimientoCombustible {
          tab_consulta.setSql("select 0 as id,\n" +
                  "(case when count(NUMERO_ABASTECIMIENTO) is null then '0' when count(NUMERO_ABASTECIMIENTO)is not null then count(NUMERO_ABASTECIMIENTO) end) AS maximo\n" +
                  "from MVABASTECIMIENTO_COMBUSTIBLE\n" +
-                 "where PLACA_VEHICULO = '"+placa+"' and ANIO = '"+utilitario.getAnio(utilitario.getFechaActual())+"' and PERIODO ='"+utilitario.getMes(utilitario.getFechaActual())+"'");
+                 "where PLACA_VEHICULO = '"+placa+"' and ANIO = '"+anio+"' and PERIODO ='"+fecha+"'");
          tab_consulta.ejecutarSql();
          ValorMax = tab_consulta.getValor("maximo");
          return ValorMax;
