@@ -235,7 +235,9 @@ public class pre_detalle_mantenimiento extends Pantalla{
         tab_cabecera.getColumna("MCA_ACOTACIONES").setVisible(false);
         tab_cabecera.getColumna("MCA_ESTADO_REGISTRO").setVisible(false);
         tab_cabecera.getColumna("MCA_FORMAPAGO").setVisible(false);
-//        tab_cabecera.getColumna("MCA_OBSERVACION").setVisible(false);
+        tab_cabecera.getColumna("MCA_ESTADO_TRAMITE").setVisible(false);
+        tab_cabecera.getColumna("MSC_SECUENCIAL").setVisible(false);
+        tab_cabecera.getColumna("MCA_FECHASOLI").setVisible(false);
         tab_cabecera.setTipoFormulario(true);
         tab_cabecera.getGrid().setColumns(4);
         tab_cabecera.agregarRelacion(tab_detalle);
@@ -253,8 +255,7 @@ public class pre_detalle_mantenimiento extends Pantalla{
         tab_detalle.getColumna("MDE_COMPROBANTE").setVisible(false);
         tab_detalle.getColumna("MDE_CANTIDAD_SOL").setVisible(false);
         tab_detalle.getColumna("MDE_TOTAL").setVisible(false);
-//        tab_detalle.setTipoFormulario(true);
-        tab_detalle.getGrid().setColumns(4);
+        tab_detalle.setRows(10);
         tab_detalle.dibujar();
         PanelTabla ptd = new PanelTabla();
         ptd.setPanelTabla(tab_detalle);
@@ -301,8 +302,8 @@ public class pre_detalle_mantenimiento extends Pantalla{
         Double valor=0.0;
         for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
             tab_detalle.getValor(i, "MDE_VALOR");
-            valor= Double.valueOf(tab_detalle.getValor(i, "MDE_VALOR"));
-            
+            valor= Double.valueOf(tab_detalle.getSumaColumna("MDE_VALOR"));
+            System.err.println(valor);
         }
     }
     
