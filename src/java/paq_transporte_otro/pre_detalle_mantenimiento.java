@@ -235,7 +235,7 @@ public class pre_detalle_mantenimiento extends Pantalla{
         tab_cabecera.getColumna("MCA_ACOTACIONES").setVisible(false);
         tab_cabecera.getColumna("MCA_ESTADO_REGISTRO").setVisible(false);
         tab_cabecera.getColumna("MCA_FORMAPAGO").setVisible(false);
-        tab_cabecera.getColumna("MCA_OBSERVACION").setVisible(false);
+//        tab_cabecera.getColumna("MCA_OBSERVACION").setVisible(false);
         tab_cabecera.setTipoFormulario(true);
         tab_cabecera.getGrid().setColumns(4);
         tab_cabecera.agregarRelacion(tab_detalle);
