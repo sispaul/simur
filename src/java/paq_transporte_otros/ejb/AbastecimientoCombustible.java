@@ -407,8 +407,8 @@ public class AbastecimientoCombustible {
          con_mantenimiento();
          tab_consulta.setConexion(con_manauto);
          tab_consulta.setSql("select 0 as id,\n" +
-                 "(case when count(msc_solicitud) is null then '0' when count(msc_solicitud)is not null then count(msc_solicitud) end) AS maximo\n" +
-                 "from MVCABSOLICITUD");
+                 "(case when count(msc_secuencial) is null then '0' when count(msc_secuencial)is not null then count(msc_secuencial) end) AS maximo\n" +
+                 "from MVCABMANTENI");
          tab_consulta.ejecutarSql();
          ValorMax = tab_consulta.getValor("maximo");
          return ValorMax;
