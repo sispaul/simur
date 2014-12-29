@@ -60,6 +60,14 @@ public class AbastecimientoCombustible {
     con_manauto = null;
     }
     
+    public void deleteArticulo(String anti){
+    String au_sql="delete from MVARTICULOS where MAR_SECUENCIAL = '"+anti+"'";
+    con_mantenimiento();
+    con_manauto.ejecutarSql(au_sql);
+    con_manauto.desconectar();
+    con_manauto = null;
+    }
+    
     public void deleteMarcas(Integer anti){
     String au_sql="delete from MVMARCA where MVMARCA_ID ="+anti;
     con_mantenimiento();
@@ -372,6 +380,20 @@ public class AbastecimientoCombustible {
          return ValorMax;
   }
     
+    public String ParameMax() {
+         con_mantenimiento();
+         String ValorMax;
+         TablaGenerica tab_consulta = new TablaGenerica();
+         con_mantenimiento();
+         tab_consulta.setConexion(con_manauto);
+         tab_consulta.setSql("select 0 as id,\n" +
+                 "(case when count(mar_secuenial) is null then '0' when count(mar_secuenial)is not null then count(mar_secuenial) end) AS maximo\n" +
+                 "from mvarticulos");
+         tab_consulta.ejecutarSql();
+         ValorMax = tab_consulta.getValor("maximo");
+         return ValorMax;
+    }
+    
     public String ParametrosAcc() {
          con_mantenimiento();
          String ValorMax;
@@ -434,6 +456,18 @@ public class AbastecimientoCombustible {
         tab_persona.setSql("SELECT LIS_ID,LIS_NOMBRE,TAB_CODIGO,DEPENDENCI\n" +
                 "FROM MVLISTA\n" +
                 "WHERE LIS_NOMBRE='"+nombre+"' AND TAB_CODIGO='"+codigo+"' AND DEPENDENCI ='"+dependencia+"'");
+        tab_persona.ejecutarSql();
+        con_manauto.desconectar();
+        con_manauto = null;
+        return tab_persona;
+    }
+
+    public TablaGenerica get_DuplicaDat(String nombre) {
+        con_mantenimiento();
+        TablaGenerica tab_persona = new TablaGenerica();
+        con_mantenimiento();
+        tab_persona.setConexion(con_manauto);
+        tab_persona.setSql("SELECT MAR_SECUENCIAL,MAR_CODIGO,MAR_DESCRIPCION FROM MVARTICULOS where MAR_DESCRIPCION = '"+nombre+"'");
         tab_persona.ejecutarSql();
         con_manauto.desconectar();
         con_manauto = null;
@@ -531,6 +565,15 @@ public class AbastecimientoCombustible {
     public void getParametros(String id,String nombre,String codigo,String dependencia,String login){
         String parametro ="insert into MVLISTA (LIS_ID,LIS_NOMBRE,LIS_ESTADO,TAB_CODIGO,DEPENDENCI,LIS_LOGININGRESO,LIS_FECHAINGRESO)\n" +
                 "values ('"+id+"','"+nombre+"',1,'"+codigo+"','"+dependencia+"','"+login+"',"+utilitario.getFormatoFechaSQL(utilitario.getFechaActual())+")";
+        con_mantenimiento();
+        con_manauto.ejecutarSql(parametro);
+        con_manauto.desconectar();
+        con_manauto = null;
+    }
+    
+    public void getParame(String id,String codigo,String nombre,String tipo,String unidad,Double valor,String dependencia,String login){
+        String parametro ="insert into MVARTICULOS (MAR_SECUENCIAL,MAR_CODIGO,MAR_DESCRIPCION,MAR_TIPOPRODUCTO,MAR_UNIDAD,MAR_VALOR,MAR_PERTENECE,MAR_LOGININGRESO,MAR_FECHAINGRESO,MAR_ESTADO_REGISTRO)\n" +
+                "values ('"+id+"','"+codigo+"','"+nombre+"','"+tipo+"','"+unidad+"',"+valor+",'"+dependencia+"','"+login+"',"+utilitario.getFormatoFechaSQL(utilitario.getFechaActual())+",'ACTIVO')";
         con_mantenimiento();
         con_manauto.ejecutarSql(parametro);
         con_manauto.desconectar();
