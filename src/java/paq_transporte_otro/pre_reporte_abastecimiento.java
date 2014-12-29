@@ -58,7 +58,7 @@ public class pre_reporte_abastecimiento extends Pantalla{
         // Imagen de encabezado
         Imagen quinde = new Imagen();
         quinde.setValue("imagenes/logo_transporte.png");
-        agregarComponente(quinde);
+//        agregarComponente(quinde);
         
         //cadena de conexión para base de datos en sql/manauto
         con_sql.setUnidad_persistencia(utilitario.getPropiedad("poolSqlmanAuto"));
@@ -166,7 +166,7 @@ public class pre_reporte_abastecimiento extends Pantalla{
                     dia_dialogovgl.Limpiar();
                     dia_dialogovgl.dibujar();
                     break;
-                case "ABASTECIMIENTO GENERAL POR kILOMETROS":
+                case "ABASTECIMIENTO GENERAL POR KILOMETROS/MINUTOS":
                     dia_dialogovgl.Limpiar();
                     dia_dialogovgl.dibujar();
                     break;
@@ -174,7 +174,7 @@ public class pre_reporte_abastecimiento extends Pantalla{
                     dia_dialogoinvg.Limpiar();
                     dia_dialogoinvg.dibujar();
                     break;
-                case "ABASTECIMIENTO POR VEHICULO KILOMETROS":
+                case "ABASTECIMIENTO POR VEHICULO KILOMETROS/MINUTOS":
                     dia_dialogoinvg.Limpiar();
                     dia_dialogoinvg.dibujar();
                     break;
@@ -196,7 +196,7 @@ public class pre_reporte_abastecimiento extends Pantalla{
                        utilitario.agregarMensajeError("Usuario","No Disponible");
                    }
                     break;
-                case "ABASTECIMIENTO GENERAL POR kILOMETROS":
+                case "ABASTECIMIENTO GENERAL POR KILOMETROS/MINUTOS":
                     TablaGenerica tab_dato1 =aCombustible.getMes(Integer.parseInt(cmb_peri.getValue()+""));
                    if (!tab_dato1.isEmpty()) {
                     p_parametros.put("anio", cmb_ano.getValue()+"");
@@ -229,7 +229,7 @@ public class pre_reporte_abastecimiento extends Pantalla{
                         utilitario.agregarMensajeError("Periodo","No Seleccionado");
                     }
                     break;
-                case "ABASTECIMIENTO POR VEHICULO KILOMETROS":
+                case "ABASTECIMIENTO POR VEHICULO KILOMETROS/MINUTOS":
                     TablaGenerica tab_dato3 =aCombustible.getMes(Integer.parseInt(cmb_periodo.getValue()+""));
                     if (!tab_dato3.isEmpty()) {
                         TablaGenerica tab_datov =aCombustible.getVehiculo(cmb_placa.getValue()+"");
