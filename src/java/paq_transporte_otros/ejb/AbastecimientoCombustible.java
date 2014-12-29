@@ -331,9 +331,9 @@ public class AbastecimientoCombustible {
         con_manauto = null;
     }
     
-    public void ActHoras(String conduc,Double hora){
+    public void ActHoras(String conduc,String hora){
         String str_sql4 = "update MVVEHICULO\n" +
-                "set MVE_HOROMETRO = "+hora+"\n" +
+                "set MVE_HOROMETRO = '"+hora+"'\n" +
                 "where MVE_PLACA = '"+conduc+"'";
         con_mantenimiento();
         con_manauto.ejecutarSql(str_sql4);
@@ -746,7 +746,7 @@ public class AbastecimientoCombustible {
         con_postgresql();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(con_postgres);
-        tab_persona.setSql("SELECT ide_activo,nombre||'; '||marca||'; MODELO: '||modelo||'; SERIE: '||serie||'; RESPONSABLE: '||nom_responsable as descripcion\n" +
+        tab_persona.setSql("SELECT ide_activo,(nombre||'; MARCA: '||marca||'; MODELO: '||modelo||'; SERIE: '||serie||'; RESPONSABLE: '||nom_responsable) as descripcion \n" +
                 "FROM afi_activos where codigo = '"+codigo+"'");
         tab_persona.ejecutarSql();
        con_postgres.desconectar();

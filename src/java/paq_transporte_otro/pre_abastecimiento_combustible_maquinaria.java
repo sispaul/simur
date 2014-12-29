@@ -261,7 +261,7 @@ public class pre_abastecimiento_combustible_maquinaria extends Pantalla{
         }
         }else{
             if(tab_tabla.getValor("ide_abastecimiento_combustible")!=null && tab_tabla.getValor("ide_abastecimiento_combustible").toString().isEmpty() == false){
-                aCombustible.ActHoras(tab_tabla.getValor("placa_vehiculo"), Double.parseDouble(tab_tabla.getValor("horas")));
+                aCombustible.ActHoras(tab_tabla.getValor("placa_vehiculo"),tab_tabla.getValor("horas"));
             }
         }
     }
