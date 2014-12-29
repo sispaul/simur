@@ -176,6 +176,7 @@ public class pre_detalle_mantenimiento extends Pantalla{
         tab_cabecera.setId("tab_cabecera");
         tab_cabecera.setConexion(con_sql);
         tab_cabecera.setTabla("mvcabmanteni", "mca_secuencial", 2);
+        tab_cabecera.getColumna("").setVisible(true);
         tab_cabecera.setTipoFormulario(true);
         tab_cabecera.getGrid().setColumns(4);
         tab_cabecera.agregarRelacion(tab_detalle);
