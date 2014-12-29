@@ -201,7 +201,6 @@ public class pre_detalle_mantenimiento extends Pantalla{
     }
 
     public void dibujarDetalle(){
-        limpiarPanel();
         tab_cabecera.setId("tab_cabecera");
         tab_cabecera.setConexion(con_sql);
         tab_cabecera.setTabla("mvcabmanteni", "mca_secuencial", 1);
