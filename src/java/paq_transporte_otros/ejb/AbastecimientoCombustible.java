@@ -270,6 +270,17 @@ public class AbastecimientoCombustible {
        return tab_persona;
     }
     
+    public TablaGenerica getValor(String tipo) {
+        con_mantenimiento();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_manauto);
+        tab_persona.setSql("SELECT MAR_SECUENCIAL,MAR_CODIGO,MAR_DESCRIPCION,MAR_VALOR FROM dbo.MVARTICULOS where MAR_SECUENCIAL = '"+tipo+"'");
+        tab_persona.ejecutarSql();
+        con_manauto.desconectar();
+       con_manauto = null;
+       return tab_persona;
+    }
+    
     public TablaGenerica getVerificar(Integer tipo) {
         con_mantenimiento();
         TablaGenerica tab_persona = new TablaGenerica();
@@ -386,8 +397,7 @@ public class AbastecimientoCombustible {
          TablaGenerica tab_consulta = new TablaGenerica();
          con_mantenimiento();
          tab_consulta.setConexion(con_manauto);
-         tab_consulta.setSql("select 0 as id,\n" +
-                 "(case when count(mar_secuenial) is null then '0' when count(mar_secuenial)is not null then count(mar_secuenial) end) AS maximo\n" +
+         tab_consulta.setSql("select 0 as id,(case when count(MAR_SECUENCIAL) is null then '0' when count(MAR_SECUENCIAL)is not null then count(MAR_SECUENCIAL) end) AS maximo\n" +
                  "from mvarticulos");
          tab_consulta.ejecutarSql();
          ValorMax = tab_consulta.getValor("maximo");

@@ -27,8 +27,8 @@ public class pre_tipo_combustible extends Pantalla{
         con_sql.NOMBRE_MARCA_BASE = "sqlserver";
         
         // Imagen de encabezado
-        Imagen quinde = new Imagen();
-        quinde.setValue("imagenes/logo_transporte.png");
+//        Imagen quinde = new Imagen();
+//        quinde.setValue("imagenes/logo_transporte.png");
         
         tab_tabla.setId("tab_tabla");
         tab_tabla.setConexion(con_sql);
@@ -41,7 +41,7 @@ public class pre_tipo_combustible extends Pantalla{
         ptt.setPanelTabla(tab_tabla);
         
         Division div = new Division();
-        div.dividir2(quinde, ptt, "15%", "h");
+        div.dividir1(ptt);
         agregarComponente(div);
     }
 

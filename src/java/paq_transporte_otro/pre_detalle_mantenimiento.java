@@ -12,12 +12,15 @@ import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
+import framework.componentes.Grupo;
+import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
+import org.primefaces.event.SelectEvent;
 import paq_sistema.aplicacion.Pantalla;
 import paq_transporte_otros.ejb.AbastecimientoCombustible;
 import persistencia.Conexion;
@@ -53,6 +56,9 @@ public class pre_detalle_mantenimiento extends Pantalla{
     private Grid grid_o = new Grid();
     private Grid grid = new Grid();
     
+    //Contiene todos los elementos de la plantilla
+    private Panel pan_opcion = new Panel();
+    
     //buscar solicitud
     private AutoCompletar aut_busca = new AutoCompletar();
     
@@ -73,6 +79,25 @@ public class pre_detalle_mantenimiento extends Pantalla{
         //cadena de conexión para base de datos en sql/manauto
         con_sql.setUnidad_persistencia(utilitario.getPropiedad("poolSqlmanAuto"));
         con_sql.NOMBRE_MARCA_BASE = "sqlserver";
+        
+        //Elemento principal
+        pan_opcion.setId("pan_opcion");
+        pan_opcion.setTransient(true);
+        pan_opcion.setHeader("DETALLE SE MANTENIMIENTO");
+        agregarComponente(pan_opcion);
+        
+        //Auto busqueda para, verificar solicitud
+        aut_busca.setId("aut_busca");
+        aut_busca.setConexion(con_sql);
+        aut_busca.setAutoCompletar("SELECT c.MCA_SECUENCIAL,c.MCA_FECHAINMAN,v.MVE_PLACA,m.MVMARCA_DESCRIPCION,c.MCA_PROVEEDOR,c.MCA_TIPO_MANTENIMIENTO\n" +
+                "FROM dbo.MVCABMANTENI c \n" +
+                "INNER JOIN dbo.MVVEHICULO v ON c.MVE_SECUENCIAL = v.MVE_SECUENCIAL\n" +
+                "INNER JOIN dbo.MVMARCA m ON v.MVE_MARCA = m.MVMARCA_ID\n" +
+                "where c.MCA_ESTADO_TRAMITE = 'solicitud'");
+        aut_busca.setMetodoChange("filtrarSolicitud");
+        aut_busca.setSize(70);
+        bar_botones.agregarComponente(new Etiqueta("Buscar Solicitud Por Placa:"));
+        bar_botones.agregarComponente(aut_busca);        
         
         cmb_unidad.setId("cmb_unidad");
         List lista = new ArrayList();
@@ -157,7 +182,7 @@ public class pre_detalle_mantenimiento extends Pantalla{
         gri_marcas.getChildren().add(bot_marcaxs);
         dia_dialogo.setId("dia_dialogo");
         dia_dialogo.setTitle("IINGRESO DE MARCA"); //titulo
-        dia_dialogo.setWidth("60%"); //siempre en porcentajes  ancho
+        dia_dialogo.setWidth("55%"); //siempre en porcentajes  ancho
         dia_dialogo.setHeight("70%");//siempre porcentaje   alto
         dia_dialogo.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_dialogo.getGri_cuerpo().setHeader(gri_marcas);
@@ -172,11 +197,45 @@ public class pre_detalle_mantenimiento extends Pantalla{
         set_articulos.setTipoSeleccion(false);
         set_articulos.setRows(10);
         set_articulos.dibujar();
-        
+       dibujarDetalle();
+    }
+
+    public void dibujarDetalle(){
+        limpiarPanel();
         tab_cabecera.setId("tab_cabecera");
         tab_cabecera.setConexion(con_sql);
-        tab_cabecera.setTabla("mvcabmanteni", "mca_secuencial", 2);
-        tab_cabecera.getColumna("").setVisible(true);
+        tab_cabecera.setTabla("mvcabmanteni", "mca_secuencial", 1);
+                /*Filtro estatico para los datos a mostrar*/
+        if (aut_busca.getValue() == null) {
+            tab_cabecera.setCondicion("mca_secuencial=-1");
+        } else {
+            tab_cabecera.setCondicion("mca_secuencial=" + aut_busca.getValor());
+        }
+        tab_cabecera.getColumna("MVE_SECUENCIAL").setCombo("SELECT v.MVE_SECUENCIAL,+'Placa: '+v.MVE_PLACA+' Marca: '+m.MVMARCA_DESCRIPCION+' Tipo: '+t.MVTIPO_DESCRIPCION+' Color: '+v.MVE_COLOR+' Ano: '+v.MVE_ANO\n" +
+                "FROM MVVEHICULO v\n" +
+                "INNER JOIN MVMARCA m ON v.MVE_MARCA = m.MVMARCA_ID\n" +
+                "INNER JOIN MVTIPO t ON t.MVMARCA_ID = m.MVMARCA_ID");
+        tab_cabecera.getColumna("MCA_SECUENCIAL").setVisible(false);
+        tab_cabecera.getColumna("MCA_FECHA_BORRADO").setVisible(false);
+        tab_cabecera.getColumna("MCA_LOGINACTUALI").setVisible(false);
+        tab_cabecera.getColumna("MCA_LOGININGRESO").setVisible(false);
+        tab_cabecera.getColumna("MCA_FECHAINGRESO").setVisible(false);
+        tab_cabecera.getColumna("MCA_LOGINBORRADO").setVisible(false);
+        tab_cabecera.getColumna("MCA_LOGININGRESO ").setVisible(false);
+        tab_cabecera.getColumna("MCA_LOGINACTUALI").setVisible(false);
+        tab_cabecera.getColumna("MCA_FECHAINGRESO").setVisible(false);
+        tab_cabecera.getColumna("MCA_FECHAACTUALI").setVisible(false);
+        tab_cabecera.getColumna("MCA_LOGINBORRADO").setVisible(false);
+        tab_cabecera.getColumna("MCA_FECHASAMAN").setVisible(false);
+        tab_cabecera.getColumna("MCA_MONTO").setVisible(false);
+        tab_cabecera.getColumna("MCA_KMACTUAL").setVisible(false);
+        tab_cabecera.getColumna("MCA_KMANTERIOR").setVisible(false);
+        tab_cabecera.getColumna("MCA_TIPOSOL").setVisible(false);
+        tab_cabecera.getColumna("MCA_TIPOMEDICION").setVisible(false);
+        tab_cabecera.getColumna("MCA_ACOTACIONES").setVisible(false);
+        tab_cabecera.getColumna("MCA_ESTADO_REGISTRO").setVisible(false);
+        tab_cabecera.getColumna("MCA_FORMAPAGO").setVisible(false);
+        tab_cabecera.getColumna("MCA_OBSERVACION").setVisible(false);
         tab_cabecera.setTipoFormulario(true);
         tab_cabecera.getGrid().setColumns(4);
         tab_cabecera.agregarRelacion(tab_detalle);
@@ -186,18 +245,67 @@ public class pre_detalle_mantenimiento extends Pantalla{
         
         tab_detalle.setId("tab_detalle");
         tab_detalle.setConexion(con_sql);
-        tab_detalle.setTabla("mvdetmateni", "mde_codigo", 3);
-        tab_detalle.setTipoFormulario(true);
+        tab_detalle.setTabla("mvdetmateni", "mde_codigo", 2);
+        tab_detalle.getColumna("MAR_SECUENCIAL").setCombo("SELECT MAR_SECUENCIAL,MAR_CODIGO,MAR_DESCRIPCION,MAR_VALOR FROM dbo.MVARTICULOS order by MAR_CODIGO");
+        tab_detalle.getColumna("MAR_SECUENCIAL").setAutoCompletar();
+        tab_detalle.getColumna("MDE_CANTIDAD").setMetodoChange("valor");
+        tab_detalle.getColumna("MDE_FECHACOMP").setValorDefecto(utilitario.getFechaActual());
+        tab_detalle.getColumna("MDE_COMPROBANTE").setVisible(false);
+        tab_detalle.getColumna("MDE_CANTIDAD_SOL").setVisible(false);
+        tab_detalle.getColumna("MDE_TOTAL").setVisible(false);
+//        tab_detalle.setTipoFormulario(true);
         tab_detalle.getGrid().setColumns(4);
         tab_detalle.dibujar();
         PanelTabla ptd = new PanelTabla();
         ptd.setPanelTabla(tab_detalle);
         
         Division div = new Division();
-        div.dividir2(ptc, ptd,"%", "H");
-        agregarComponente(div);
+        div.dividir2(ptc, ptd,"40%", "H");
+        Grupo gru = new Grupo();
+        gru.getChildren().add(div);
+        pan_opcion.getChildren().add(gru);
+    }
+    
+    public void filtrarSolicitud(SelectEvent evt) {
+        //Filtra el cliente seleccionado en el autocompletar
+        limpiar();
+        aut_busca.onSelect(evt);
+        dibujarDetalle();
+    }
+    
+        //limpia y borrar el contenido de la pantalla
+    private void limpiarPanel() {
+        //borra el contenido de la división central central
+        pan_opcion.getChildren().clear();
     }
 
+    public void limpiar() {
+        aut_busca.limpiar();
+        utilitario.addUpdate("aut_busca");
+        limpiarPanel();
+        utilitario.addUpdate("pan_opcion");
+    }
+    
+    public void valor (){
+        TablaGenerica tab_dato =aCombustible.getValor(tab_detalle.getValor("MAR_SECUENCIAL"));
+         if (!tab_dato.isEmpty()) {
+             Double valor=0.0;
+             valor = Double.valueOf(tab_detalle.getValor("MDE_CANTIDAD"))*Double.valueOf(tab_dato.getValor("MAR_VALOR"));
+             tab_detalle.setValor("MDE_VALOR", String.valueOf(valor));
+             utilitario.addUpdate("tab_detalle");
+//             total();
+         }
+    }
+    
+    public void total(){
+        Double valor=0.0;
+        for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
+            tab_detalle.getValor(i, "MDE_VALOR");
+            valor= Double.valueOf(tab_detalle.getValor(i, "MDE_VALOR"));
+            
+        }
+    }
+    
     public void ing_articulos(){
         dia_dialogo.Limpiar();
         dia_dialogo.setDialogo(grid);
@@ -227,7 +335,7 @@ public class pre_detalle_mantenimiento extends Pantalla{
     }
     
     public void cargarArticulo(){
-        tab_detalle.getColumna("mar_secuencial").setCombo("SELECT LIS_NOMBRE,LIS_NOMBRE AS MARCA FROM MVLISTA where TAB_CODIGO = 'MARCA' and LIS_ESTADO = 1");
+        tab_detalle.getColumna("mar_secuencial").setCombo("SELECT MAR_SECUENCIAL,MAR_CODIGO,MAR_DESCRIPCION,MAR_VALOR FROM dbo.MVARTICULOS order by MAR_CODIGO");
         utilitario.addUpdateTabla(tab_detalle,"mar_secuencial","");//actualiza solo componentes
     }
     
@@ -244,14 +352,27 @@ public class pre_detalle_mantenimiento extends Pantalla{
     
     @Override
     public void insertar() {
+        if (tab_detalle.isFocus()) {
+            tab_detalle.insertar();
+        }
     }
 
     @Override
     public void guardar() {
+        if(tab_detalle.getValor("mde_codigo")!=null){
+            if (tab_detalle.guardar()) {
+                con_sql.guardarPantalla();
+            }
+        }else{
+            if (tab_detalle.guardar()) {
+                con_sql.guardarPantalla();
+            }
+        }
     }
 
     @Override
     public void eliminar() {
+        tab_detalle.eliminar();
     }
 
     public Conexion getCon_postgres() {
