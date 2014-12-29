@@ -159,8 +159,8 @@ public class pre_abastecimiento_automotores extends Pantalla{
         tab_tabla.getColumna("hora_digitacion").setVisible(false);
         tab_tabla.getColumna("usu_digitacion").setVisible(false);
         tab_tabla.getColumna("tipo_medicion").setVisible(false);
-        tab_tabla.getColumna("tipo_medicion").setValorDefecto("KILOMETROS");
-        tab_tabla.getColumna("horas").setVisible(false);
+        tab_tabla.getColumna("tipo_medicion").setValorDefecto("1");
+        tab_tabla.getColumna("va_hora").setVisible(false);
         tab_tabla.getColumna("estado").setValorDefecto("1");
         tab_tabla.getColumna("estado").setVisible(false);
         tab_tabla.getColumna("fecha_actualizacion").setVisible(false);
@@ -209,7 +209,6 @@ public class pre_abastecimiento_automotores extends Pantalla{
             if(valor2>valor1){
                 tab_tabla.getColumna("galones").setLectura(false);
                 utilitario.addUpdate("tab_calculo");
-                carga();
             }else{
                 utilitario.agregarMensajeError("Kilometraje","Por Debajo del Anterior");
                 tab_tabla.getColumna("galones").setLectura(true);
@@ -228,6 +227,7 @@ public class pre_abastecimiento_automotores extends Pantalla{
             if(valor2<valor1){
                 utilitario.addUpdate("tab_tabla");
                         valor();
+                                carga();
             }else{
                 utilitario.agregarMensajeError("Galones","Exceden Capacidad de Vehiculo");
                 tab_tabla.setValor("galones", null);

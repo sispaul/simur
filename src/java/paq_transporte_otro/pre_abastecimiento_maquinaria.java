@@ -149,6 +149,7 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
         tab_tabla.getColumna("kilometraje").setMetodoChange("kilometraje");
         tab_tabla.getColumna("galones").setMetodoChange("galones");
         tab_tabla.getColumna("tipo_medicion").setMetodoChange("activarCasilla");
+        tab_tabla.getColumna("va_hora").setMetodoChange("cal_hora");
          List list = new ArrayList();
         Object fil1[] = {
             "1", "KILOMETROS"
@@ -160,9 +161,10 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
         list.add(fil2);;
         tab_tabla.getColumna("tipo_medicion").setRadio(list, " ");
         tab_tabla.getColumna("ide_tipo_combustible").setLectura(true);
+        tab_tabla.getColumna("galones").setLectura(true);
         tab_tabla.getColumna("descripcion_vehiculo").setLectura(true);
         tab_tabla.getColumna("kilometraje").setLectura(true);
-        tab_tabla.getColumna("horas").setLectura(true);
+        tab_tabla.getColumna("va_hora").setLectura(true);
         tab_tabla.getColumna("numero_abastecimiento").setLectura(true);
         tab_tabla.getColumna("total").setLectura(true);
         tab_tabla.getColumna("titulo").setEtiqueta();
@@ -177,8 +179,8 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
         tab_tabla.getColumna("anio").setVisible(false);
         tab_tabla.getColumna("periodo").setVisible(false);
         tab_tabla.getColumna("usu_digitacion").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
-        tab_tabla.getColumna("fecha_digitacion").setValorDefecto(String.valueOf(utilitario.getMes(utilitario.getFechaActual())));
-        tab_tabla.getColumna("hora_digitacion").setValorDefecto(String.valueOf(utilitario.getHora(utilitario.getFechaActual())));
+        tab_tabla.getColumna("fecha_digitacion").setValorDefecto(String.valueOf(utilitario.getFechaActual()));
+        tab_tabla.getColumna("hora_digitacion").setValorDefecto(String.valueOf(utilitario.getHoraActual()));
         tab_tabla.setTipoFormulario(true);
         tab_tabla.getGrid().setColumns(4);
         tab_tabla.dibujar();
@@ -229,6 +231,31 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
         }
     }  
     
+    public void cal_hora(){
+        String horas =tab_tabla.getValor("va_hora").substring(0,4);
+        String minutos =tab_tabla.getValor("va_hora").substring(5,7);
+        if(Integer.parseInt(minutos)<60){
+            TablaGenerica tab_dato =aCombustible.getKilometraje(tab_tabla.getValor("placa_vehiculo"));
+            if (!tab_dato.isEmpty()) {
+                String valor1 = tab_dato.getValor("MVE_HOROMETRO").substring(0,4);
+                String valor2 = tab_tabla.getValor("va_hora").substring(0,4);
+                if(Integer.parseInt(valor2)>Integer.parseInt(valor1)){
+                    tab_tabla.getColumna("galones").setLectura(false);
+                    utilitario.addUpdate("tab_tabla");
+                    carga();
+                }else{
+                    utilitario.agregarMensajeError("Horas","Por Debajo de la Anterior");
+                    tab_tabla.getColumna("galones").setLectura(true);
+                    utilitario.addUpdate("tab_tabla");
+                }
+            }else{
+                utilitario.agregarMensajeError("Valor","No Se Encuentra Registrado");
+            }
+        }else{
+            utilitario.agregarMensaje("Minutos No Deben Ser Mayor", "60");
+        }
+    }
+    
     public void galones(){
         TablaGenerica tab_dato =aCombustible.getKilometraje(tab_tabla.getValor("placa_vehiculo"));
         if (!tab_dato.isEmpty()) {
@@ -275,11 +302,11 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
     public void activarCasilla(){
         if(tab_tabla.getValor("TIPO_MEDICION").equals("2")){
             tab_tabla.getColumna("KILOMETRAJE").setLectura(true);
-            tab_tabla.getColumna("HORAS").setLectura(false);
+            tab_tabla.getColumna("VA_HORA").setLectura(false);
             utilitario.addUpdate("tab_tabla");
         }else{
             tab_tabla.getColumna("KILOMETRAJE").setLectura(false);
-            tab_tabla.getColumna("HORAS").setLectura(true);
+            tab_tabla.getColumna("VA_HORA").setLectura(true);
             utilitario.addUpdate("tab_tabla");
         }
     }
@@ -291,13 +318,14 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
     }
     
     public void actuKilometrajes(){
-        if(tab_tabla.getValor("1").equals("1")){
+        System.err.println(tab_tabla.getValor("tipo_medicion"));
+        if(tab_tabla.getValor("tipo_medicion").equals("1")){
             if(tab_tabla.getValor("ide_abastecimiento_combustible")!=null && tab_tabla.getValor("ide_abastecimiento_combustible").toString().isEmpty() == false){
                 aCombustible.ActKilometraje(tab_tabla.getValor("placa_vehiculo"), Double.parseDouble(tab_tabla.getValor("kilometraje")));
             }
         }else{
             if(tab_tabla.getValor("ide_abastecimiento_combustible")!=null && tab_tabla.getValor("ide_abastecimiento_combustible").toString().isEmpty() == false){
-                aCombustible.ActHoras(tab_tabla.getValor("placa_vehiculo"), Double.parseDouble(tab_tabla.getValor("horas")));
+                aCombustible.ActHoras(tab_tabla.getValor("placa_vehiculo"), tab_tabla.getValor("va_hora"));
             }
         }
     }
@@ -310,8 +338,8 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
        actuKilometrajes();
        utilitario.agregarMensaje("Registro Actualizado", "");
    }
-
-        public void lista(){
+    
+    public void lista(){
         set_lista.dibujar();
     }
     
