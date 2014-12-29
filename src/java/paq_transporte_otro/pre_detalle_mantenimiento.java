@@ -249,7 +249,7 @@ public class pre_detalle_mantenimiento extends Pantalla{
         tab_detalle.setConexion(con_sql);
         tab_detalle.setTabla("mvdetmateni", "mde_codigo", 2);
         tab_detalle.getColumna("MAR_SECUENCIAL").setCombo("SELECT MAR_SECUENCIAL,MAR_CODIGO,MAR_DESCRIPCION,MAR_VALOR FROM dbo.MVARTICULOS order by MAR_CODIGO");
-        tab_detalle.getColumna("MAR_SECUENCIAL").setAutoCompletar();
+//        tab_detalle.getColumna("MAR_SECUENCIAL").setAutoCompletar();
         tab_detalle.getColumna("MDE_CANTIDAD").setMetodoChange("valor");
         tab_detalle.getColumna("MDE_FECHACOMP").setValorDefecto(utilitario.getFechaActual());
         tab_detalle.getColumna("MDE_COMPROBANTE").setVisible(false);
@@ -288,6 +288,7 @@ public class pre_detalle_mantenimiento extends Pantalla{
     }
     
     public void valor (){
+        System.err.println("ing");
         TablaGenerica tab_dato =aCombustible.getValor(tab_detalle.getValor("MAR_SECUENCIAL"));
          if (!tab_dato.isEmpty()) {
              Double valor=0.0;
