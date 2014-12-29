@@ -186,8 +186,8 @@ public class pre_solicitud_mantenimiento extends Pantalla{
         
         tab_cabecera.setId("tab_cabecera");
         tab_cabecera.setConexion(con_sql);
-        tab_cabecera.setTabla("mvcabsolicitud", "msc_secuencial", 2);
-        tab_cabecera.getColumna("msc_conductor").setValorDefecto(tab_vehiculo.getValor("mve_conductor"));
+        tab_cabecera.setTabla("mvcabmanteni", "mca_secuencial", 2);
+        tab_cabecera.getColumna("mca_responsable").setValorDefecto(tab_vehiculo.getValor("mve_conductor"));
          List lista = new ArrayList();
         Object fila1[] = {
             "INTERNO", "INTERNO"
@@ -201,22 +201,29 @@ public class pre_solicitud_mantenimiento extends Pantalla{
         lista.add(fila1);;
         lista.add(fila2);;
         lista.add(fila3);;
-        tab_cabecera.getColumna("msc_tipo_mantenimiento").setCombo(lista);
-        tab_cabecera.getColumna("msc_secuencial").setVisible(false);
-        tab_cabecera.getColumna("msc_solicitud").setLectura(true);
-        tab_cabecera.getColumna("msc_loginingreso").setVisible(false);
-        tab_cabecera.getColumna("msc_fechaingreso").setVisible(false);
-        tab_cabecera.getColumna("msc_loginactuali").setVisible(false);
-        tab_cabecera.getColumna("msc_fechaactuali").setVisible(false);
-        tab_cabecera.getColumna("msc_loginborrado").setVisible(false);
-        tab_cabecera.getColumna("msc_fecha_borrado").setVisible(false);
-        tab_cabecera.getColumna("msc_estado_registro").setVisible(false);
-        tab_cabecera.getColumna("msc_tiposol").setVisible(false);
-        tab_cabecera.getColumna("msc_monto").setVisible(false);
-        tab_cabecera.getColumna("msc_conductor").setVisible(false);
-        tab_cabecera.getColumna("msc_estado_tramite").setLectura(true);
-        tab_cabecera.getColumna("msc_proveedor").setMetodoChange("proveedor");
-        tab_cabecera.getColumna("msc_autorizado").setMetodoChange("autoriza");
+        tab_cabecera.getColumna("mca_tipo_mantenimiento").setCombo(lista);
+        tab_cabecera.getColumna("mca_fechainman").setValorDefecto(utilitario.getFechaActual());
+        tab_cabecera.getColumna("mca_secuencial").setVisible(false);
+        tab_cabecera.getColumna("mca_fechasoli").setVisible(false);
+        tab_cabecera.getColumna("mca_fechasoli").setValorDefecto(utilitario.getHoraActual());
+        tab_cabecera.getColumna("mca_fechasaman").setVisible(false);
+        tab_cabecera.getColumna("mca_kmanterior").setVisible(false);
+        tab_cabecera.getColumna("mca_kmactual").setVisible(false);
+        tab_cabecera.getColumna("mca_acotaciones").setVisible(false);
+        tab_cabecera.getColumna("mca_tipomedicion").setVisible(false);
+        tab_cabecera.getColumna("mca_loginingreso").setVisible(false);
+        tab_cabecera.getColumna("mca_fechaingreso").setVisible(false);
+        tab_cabecera.getColumna("mca_loginactuali").setVisible(false);
+        tab_cabecera.getColumna("mca_fechaactuali").setVisible(false);
+        tab_cabecera.getColumna("mca_loginborrado").setVisible(false);
+        tab_cabecera.getColumna("mca_fecha_borrado").setVisible(false);
+        tab_cabecera.getColumna("mca_estado_registro").setVisible(false);
+        tab_cabecera.getColumna("mca_tiposol").setVisible(false);
+        tab_cabecera.getColumna("mca_monto").setVisible(false);
+        tab_cabecera.getColumna("mca_responsable").setVisible(false);
+        tab_cabecera.getColumna("mca_estado_tramite").setLectura(true);
+        tab_cabecera.getColumna("mca_proveedor").setMetodoChange("proveedor");
+        tab_cabecera.getColumna("mca_autorizado").setMetodoChange("autoriza");
         tab_cabecera.setTipoFormulario(true);
         tab_cabecera.getGrid().setColumns(2);
         tab_cabecera.dibujar();
@@ -255,9 +262,9 @@ public class pre_solicitud_mantenimiento extends Pantalla{
     
     //Estado De Solicitud
     public void estado(){
-        tab_cabecera.setValor("msc_estado_tramite","SOLICITUD");
-        tab_cabecera.setValor("msc_solicitud",aCombustible.SecuencialCab());
-        utilitario.addUpdate("tab_mante");
+        tab_cabecera.setValor("mca_estado_tramite","SOLICITUD");
+        tab_cabecera.setValor("msc_secuencial",aCombustible.SecuencialCab());
+        utilitario.addUpdate("tab_cabecera");
     }
     
     //Información obligatoria de proveedor y autorizador
@@ -269,7 +276,7 @@ public class pre_solicitud_mantenimiento extends Pantalla{
         if(set_proveedor.getValorSeleccionado()!= null && set_proveedor.getValorSeleccionado().toString().isEmpty()==false){
             TablaGenerica tab_dato =aprogramas.proveedor1(Integer.parseInt(set_proveedor.getValorSeleccionado()));
             if (!tab_dato.isEmpty()) {
-                tab_cabecera.setValor("msc_proveedor", tab_dato.getValor("titular")+"");
+                tab_cabecera.setValor("mca_proveedor", tab_dato.getValor("titular")+"");
                 utilitario.addUpdate("tab_cabecera");
                 set_proveedor.cerrar();
             }
@@ -286,7 +293,7 @@ public class pre_solicitud_mantenimiento extends Pantalla{
         if(set_autorizador.getValorSeleccionado()!= null && set_autorizador.getValorSeleccionado().toString().isEmpty()==false){
             TablaGenerica tab_dato =aprogramas.empleadoCod(set_autorizador.getValorSeleccionado());
             if (!tab_dato.isEmpty()) {
-                tab_cabecera.setValor("MSC_AUTORIZADO", tab_dato.getValor("nombres")+"");
+                tab_cabecera.setValor("mca_AUTORIZADO", tab_dato.getValor("nombres")+"");
                 utilitario.addUpdate("tab_cabecera");
                 set_autorizador.cerrar();
                 estado();
@@ -306,16 +313,16 @@ public class pre_solicitud_mantenimiento extends Pantalla{
 
     @Override
     public void guardar() {
-        if(tab_cabecera.getValor("msc_estado_tramite").equals("SOLICITUD")){
-            if(tab_cabecera.getValor("msc_secuencial")!=null){
+        if(tab_cabecera.getValor("mca_estado_tramite").equals("SOLICITUD")){
+            if(tab_cabecera.getValor("mca_secuencial")!=null){
                 if (tab_cabecera.guardar()) {
                     con_sql.guardarPantalla();
-                    aCombustible.updateFecha(tab_cabecera.getValor("msc_fecha"), Integer.parseInt(tab_vehiculo.getValor("mve_secuencial")),tab_cabecera.getValor("msc_observacion"));
+                    aCombustible.updateFecha(tab_cabecera.getValor("mca_fechainman"), Integer.parseInt(tab_vehiculo.getValor("mve_secuencial")),tab_cabecera.getValor("mca_observacion"));
                 }
             }else{
                 if (tab_cabecera.guardar()) {
                     con_sql.guardarPantalla();
-                    aCombustible.updateFecha(tab_cabecera.getValor("msc_fecha"), Integer.parseInt(tab_vehiculo.getValor("mve_secuencial")),tab_cabecera.getValor("msc_observacion"));
+                    aCombustible.updateFecha(tab_cabecera.getValor("mca_fechainman"), Integer.parseInt(tab_vehiculo.getValor("mve_secuencial")),tab_cabecera.getValor("mca_observacion"));
                 }
             }
         }else{
