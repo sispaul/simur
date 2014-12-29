@@ -14,9 +14,9 @@
 FROM MVABASTECIMIENTO_COMBUSTIBLE
 where ANIO = $P{anio} and PERIODO = $P{periodo})as a
 left join
-(SELECT PLACA_VEHICULO,ROUND((KILOMETRAJE),2) as kilometros,NUMERO_ABASTECIMIENTO
+(SELECT PLACA_VEHICULO,ROUND(((case when KILOMETRAJE is not null then KILOMETRAJE when KILOMETRAJE is null then ((substring(va_hora,0,5))*60+(substring(va_hora,6,7))) end )),2) as kilometros,NUMERO_ABASTECIMIENTO
 FROM MVABASTECIMIENTO_COMBUSTIBLE
-GROUP BY KILOMETRAJE,PLACA_VEHICULO,NUMERO_ABASTECIMIENTO) as c
+GROUP BY KILOMETRAJE,PLACA_VEHICULO,NUMERO_ABASTECIMIENTO,va_hora) as c
 on a.placa_vehiculo = c.placa_vehiculo and a.numero_abastecimiento = c.numero_abastecimiento
 ) as p
 order by numero_abastecimiento]]>

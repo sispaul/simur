@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_vehiculo_egre_ingre" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0df0613e-f80e-450c-a7d9-849073d2c240">
-	<property name="ireport.zoom" value="1.2100000000000017"/>
+	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="nom_resp" class="java.lang.String" isForPrompting="false">
@@ -24,20 +24,19 @@ a.MAV_CARGOEMPLEA,
 a.MAV_NOMEMPLEA,
 a.MAV_AUTORIZA,
 a.MAV_OBSERVACIONES,
-d.MVE_SECUENCIAL,
-d.MDV_DETALLE,
-d.MDV_CANTIDAD,
-d.MDV_ESTADO,
+d.MDA_DETALLE,
+d.MDA_CANTIDAD,
+d.MDA_ESTADO,
 a.MAV_ESTADO_ASIGNACION
-FROM MVVEHICULO v
-INNER JOIN MVASIGNARVEH a ON a.MVE_SECUENCIAL = v.MVE_SECUENCIAL
-INNER JOIN MVDETALLEVEHICULO d ON d.MVE_SECUENCIAL = v.MVE_SECUENCIAL
-where a.MAV_ESTADO_ASIGNACION = 1 and a.MAV_SECUENCIAL = $P{codigo} and  v.MVE_PLACA =$P{placa}]]>
+FROM MVVEHICULO AS v
+INNER JOIN MVASIGNARVEH AS a ON a.MVE_SECUENCIAL = v.MVE_SECUENCIAL
+INNER JOIN MVDETASIGNACION D ON d.MAV_SECUENCIAL = a.MAV_SECUENCIAL AND d.MAV_ESTADO_ASIGNACION = a.MAV_ESTADO_ASIGNACION
+where a.MAV_ESTADO_ASIGNACION = 1 and a.MAV_SECUENCIAL = $P{codigo} and  v.MVE_PLACA =$P{placa} AND d.MDA_ESTADO <> 'DE BAJA']]>
 	</queryString>
 	<field name="MVE_SECUENCIAL" class="java.lang.String"/>
 	<field name="MVE_PLACA" class="java.lang.String"/>
-	<field name="MVE_MARCA" class="java.lang.String"/>
-	<field name="MVE_MODELO" class="java.lang.String"/>
+	<field name="MVE_MARCA" class="java.lang.Integer"/>
+	<field name="MVE_MODELO" class="java.lang.Integer"/>
 	<field name="MVE_COLOR" class="java.lang.String"/>
 	<field name="MVE_ANO" class="java.lang.String"/>
 	<field name="MAV_FECHAASIGNACION" class="java.sql.Timestamp"/>
@@ -47,9 +46,9 @@ where a.MAV_ESTADO_ASIGNACION = 1 and a.MAV_SECUENCIAL = $P{codigo} and  v.MVE_P
 	<field name="MAV_NOMEMPLEA" class="java.lang.String"/>
 	<field name="MAV_AUTORIZA" class="java.lang.String"/>
 	<field name="MAV_OBSERVACIONES" class="java.lang.String"/>
-	<field name="MDV_DETALLE" class="java.lang.String"/>
-	<field name="MDV_CANTIDAD" class="java.math.BigDecimal"/>
-	<field name="MDV_ESTADO" class="java.lang.String"/>
+	<field name="MDA_DETALLE" class="java.lang.String"/>
+	<field name="MDA_CANTIDAD" class="java.math.BigDecimal"/>
+	<field name="MDA_ESTADO" class="java.lang.String"/>
 	<field name="MAV_ESTADO_ASIGNACION" class="java.lang.String"/>
 	<group name="VEHICULO_SALIDA">
 		<groupExpression><![CDATA[$F{MVE_PLACA}]]></groupExpression>
@@ -64,17 +63,17 @@ where a.MAV_ESTADO_ASIGNACION = 1 and a.MAV_SECUENCIAL = $P{codigo} and  v.MVE_P
 				<rectangle>
 					<reportElement uuid="0eeef3bd-8353-4b53-97ff-5128a0bf3a18" x="29" y="50" width="496" height="68"/>
 				</rectangle>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement uuid="3bab887b-64dc-40d5-8cb3-8c3d728af7e2" x="101" y="55" width="100" height="20"/>
 					<textElement/>
 					<textFieldExpression><![CDATA[$F{MVE_PLACA}]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement uuid="a0010cc0-5a5a-47f1-821c-e48e6d8f0232" x="101" y="74" width="100" height="20"/>
 					<textElement/>
 					<textFieldExpression><![CDATA[$F{MVE_MARCA}]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement uuid="171bd18e-c51c-4647-a951-15f5192f2ff9" x="101" y="93" width="100" height="20"/>
 					<textElement/>
 					<textFieldExpression><![CDATA[$F{MVE_MODELO}]]></textFieldExpression>
@@ -126,17 +125,17 @@ where a.MAV_ESTADO_ASIGNACION = 1 and a.MAV_SECUENCIAL = $P{codigo} and  v.MVE_P
 					</textElement>
 					<text><![CDATA[AÑO:]]></text>
 				</staticText>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement uuid="4b85c0eb-2c29-4ba7-815e-04654c4870ee" x="305" y="55" width="100" height="20"/>
 					<textElement/>
 					<textFieldExpression><![CDATA[$F{MVE_COLOR}]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement uuid="6eee7ea1-8977-40aa-b3a1-5fe4fa843d51" x="305" y="74" width="100" height="20"/>
 					<textElement/>
 					<textFieldExpression><![CDATA[$F{MVE_ANO}]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement uuid="8bbf2187-961b-4fab-a286-e7c8bbc9115b" x="335" y="93" width="181" height="20"/>
 					<textElement/>
 					<textFieldExpression><![CDATA[$F{MAV_NOMBRE_COND}]]></textFieldExpression>
@@ -160,17 +159,17 @@ where a.MAV_ESTADO_ASIGNACION = 1 and a.MAV_SECUENCIAL = $P{codigo} and  v.MVE_P
 					</textElement>
 					<text><![CDATA[AUTORIZADO POR:]]></text>
 				</staticText>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement uuid="8aba1762-0327-4229-a1f6-8c3cf2fca40a" x="134" y="150" width="233" height="20"/>
 					<textElement/>
 					<textFieldExpression><![CDATA[$F{MAV_DEPARTAMENTO}]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement uuid="84db75cb-9d97-44f9-b362-25d8ae474d06" x="134" y="169" width="178" height="20"/>
 					<textElement/>
 					<textFieldExpression><![CDATA[$F{MAV_CARGOEMPLEA}]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement uuid="5f3d7c90-2550-4215-8dc2-3fa58eca9302" x="134" y="188" width="202" height="20"/>
 					<textElement/>
 					<textFieldExpression><![CDATA[$F{MAV_NOMEMPLEA}]]></textFieldExpression>
@@ -209,18 +208,6 @@ where a.MAV_ESTADO_ASIGNACION = 1 and a.MAV_SECUENCIAL = $P{codigo} and  v.MVE_P
 						<font isBold="true"/>
 					</textElement>
 					<text><![CDATA[DATOS SOLICITANTE]]></text>
-				</staticText>
-				<textField>
-					<reportElement uuid="f7b13311-a341-4a27-b40c-003f542593af" x="113" y="245" width="423" height="43"/>
-					<textElement/>
-					<textFieldExpression><![CDATA[$F{MAV_OBSERVACIONES}]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement uuid="51246530-e379-4e1c-b914-d608131e2008" x="29" y="245" width="100" height="20"/>
-					<textElement>
-						<font isBold="true"/>
-					</textElement>
-					<text><![CDATA[OBSERVACIÓN:]]></text>
 				</staticText>
 				<staticText>
 					<reportElement uuid="a687d55a-e813-43d1-b1ca-7cae441b2201" x="54" y="297" width="100" height="20" forecolor="#FFFFFF"/>
@@ -291,17 +278,17 @@ where a.MAV_ESTADO_ASIGNACION = 1 and a.MAV_SECUENCIAL = $P{codigo} and  v.MVE_P
 			<textField>
 				<reportElement uuid="3cb970f8-aa2f-41b9-b106-9373d27861fc" x="54" y="0" width="151" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[$F{MDV_DETALLE}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{MDA_DETALLE}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="3404603a-4b6f-4313-831c-345a0283f91a" x="235" y="0" width="100" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[$F{MDV_ESTADO}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{MDA_ESTADO}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="4d7608ac-39aa-480b-9d6e-f9d1365e3c60" x="396" y="0" width="100" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[$F{MDV_CANTIDAD}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{MDA_CANTIDAD}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
