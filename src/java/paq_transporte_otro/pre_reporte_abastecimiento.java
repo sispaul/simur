@@ -162,11 +162,11 @@ public class pre_reporte_abastecimiento extends Pantalla{
         public void aceptarReporte() {
             rep_reporte.cerrar();
             switch (rep_reporte.getNombre()) {
-                case "ABASTECIMIENTO GENERAL POR MES GALONES/CONSUMO":
+                case "ABASTECIMIENTO POR MES GALONES/CONSUMO":
                     dia_dialogovgl.Limpiar();
                     dia_dialogovgl.dibujar();
                     break;
-                case "ABASTECIMIENTO GENERAL POR KILOMETROS/MINUTOS":
+                case "ABASTECIMIENTO POR MES KILOMETROS/MINUTOS":
                     dia_dialogovgl.Limpiar();
                     dia_dialogovgl.dibujar();
                     break;
@@ -187,7 +187,7 @@ public class pre_reporte_abastecimiento extends Pantalla{
         
         public void aceptarDialogo() {
             switch (rep_reporte.getNombre()) {
-                case "ABASTECIMIENTO GENERAL POR MES GALONES/CONSUMO":
+                case "ABASTECIMIENTO POR MES GALONES/CONSUMO":
                     TablaGenerica tab_dato =aCombustible.getMes(Integer.parseInt(cmb_peri.getValue()+""));
                    if (!tab_dato.isEmpty()) {
                     p_parametros.put("anio", cmb_ano.getValue()+"");
@@ -200,7 +200,7 @@ public class pre_reporte_abastecimiento extends Pantalla{
                        utilitario.agregarMensajeError("Usuario","No Disponible");
                    }
                     break;
-                case "ABASTECIMIENTO GENERAL POR KILOMETROS/MINUTOS":
+                case "ABASTECIMIENTO POR MES KILOMETROS/MINUTOS":
                     TablaGenerica tab_dato1 =aCombustible.getMes(Integer.parseInt(cmb_peri.getValue()+""));
                    if (!tab_dato1.isEmpty()) {
                     p_parametros.put("anio", cmb_ano.getValue()+"");
