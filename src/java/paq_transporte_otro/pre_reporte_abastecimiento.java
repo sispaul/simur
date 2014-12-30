@@ -23,7 +23,7 @@ import persistencia.Conexion;
 
 /**
  *
- * @author p-sistemas
+ * @author Keja
  */
 public class pre_reporte_abastecimiento extends Pantalla{
 
