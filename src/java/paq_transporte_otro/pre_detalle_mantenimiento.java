@@ -45,7 +45,8 @@ public class pre_detalle_mantenimiento extends Pantalla{
     private Texto tdescripcion = new Texto();
     private Texto tvalor = new Texto();
     private Texto tcodigo = new Texto();
-
+    private Texto ttotal = new Texto();
+    
     //combo de seleccion
     private Combo cmb_unidad = new Combo();
     private Combo cmb_manten = new Combo();
@@ -66,6 +67,10 @@ public class pre_detalle_mantenimiento extends Pantalla{
     private AbastecimientoCombustible aCombustible = (AbastecimientoCombustible) utilitario.instanciarEJB(AbastecimientoCombustible.class);
     
     public pre_detalle_mantenimiento() {
+        tdescripcion.setId("tdescripcion");
+        tvalor.setId("tvalor");
+        tcodigo.setId("tcodigo");
+        ttotal.setId("ttotal");
         //Mostrar el usuario 
         tab_consulta.setId("tab_consulta");
         tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
@@ -181,7 +186,7 @@ public class pre_detalle_mantenimiento extends Pantalla{
         gri_marcas.getChildren().add(bot_marcas);
         gri_marcas.getChildren().add(bot_marcaxs);
         dia_dialogo.setId("dia_dialogo");
-        dia_dialogo.setTitle("IINGRESO DE MARCA"); //titulo
+        dia_dialogo.setTitle("INGRESO DE ARTICULOS"); //titulo
         dia_dialogo.setWidth("55%"); //siempre en porcentajes  ancho
         dia_dialogo.setHeight("70%");//siempre porcentaje   alto
         dia_dialogo.setResizable(false); //para que no se pueda cambiar el tamaño
@@ -217,7 +222,7 @@ public class pre_detalle_mantenimiento extends Pantalla{
                 "FROM MVVEHICULO v\n" +
                 "INNER JOIN MVMARCA m ON v.MVE_MARCA = m.MVMARCA_ID\n" +
                 "INNER JOIN MVTIPO t ON t.MVMARCA_ID = m.MVMARCA_ID");
-//        tab_cabecera.getColumna("MCA_SECUENCIAL").setVisible(false);
+        tab_cabecera.getColumna("MCA_SECUENCIAL").setVisible(false);
 //        tab_cabecera.getColumna("MCA_FECHA_BORRADO").setVisible(false);
 //        tab_cabecera.getColumna("MCA_LOGINACTUALI").setVisible(false);
 //        tab_cabecera.getColumna("MCA_LOGININGRESO").setVisible(false);
@@ -238,7 +243,7 @@ public class pre_detalle_mantenimiento extends Pantalla{
 //        tab_cabecera.getColumna("MCA_ESTADO_REGISTRO").setVisible(false);
 //        tab_cabecera.getColumna("MCA_FORMAPAGO").setVisible(false);
 //        tab_cabecera.getColumna("MCA_ESTADO_TRAMITE").setVisible(false);
-//        tab_cabecera.getColumna("MSC_SECUENCIAL").setVisible(false);
+        tab_cabecera.getColumna("MSC_SECUENCIAL").setVisible(false);
 //        tab_cabecera.getColumna("MCA_FECHASOLI").setVisible(false);
 //        tab_cabecera.getColumna("MCA_ESTADO_TRAMITE").setVisible(false);
         tab_cabecera.setTipoFormulario(true);
@@ -248,19 +253,32 @@ public class pre_detalle_mantenimiento extends Pantalla{
         PanelTabla ptc = new PanelTabla();
         ptc.setPanelTabla(tab_cabecera);
         
+        Boton bot_end = new Boton();
+        bot_end.setValue("Terminar Solictud");
+        bot_end.setIcon("ui-icon-disk");
+        bot_end.setMetodo("termina");
+        bar_botones.agregarBoton(bot_end);
+        
+        Grid gri_total = new Grid();
+        gri_total.setColumns(6);
+        gri_total.getChildren().add(bot_end);
+        gri_total.getChildren().add(new Etiqueta("Valor Total: "));
+        gri_total.getChildren().add(ttotal);
+        
         tab_detalle.setId("tab_detalle");
         tab_detalle.setConexion(con_sql);
         tab_detalle.setTabla("mvdetmateni", "mde_codigo", 2);
-        tab_detalle.getColumna("MAR_SECUENCIAL").setCombo("SELECT MAR_SECUENCIAL,MAR_CODIGO,MAR_DESCRIPCION,MAR_VALOR FROM dbo.MVARTICULOS order by MAR_CODIGO");
+        tab_detalle.getColumna("MAR_SECUENCIAL").setCombo("SELECT MAR_SECUENCIAL,MAR_CODIGO,MAR_DESCRIPCION FROM dbo.MVARTICULOS order by MAR_CODIGO");
         tab_detalle.getColumna("MAR_SECUENCIAL").setAutoCompletar();
-        tab_detalle.getColumna("MDE_CANTIDAD").setMetodoChange("valor");
+        tab_detalle.getColumna("MAR_SECUENCIAL").setMetodoChange("valor");
+        tab_detalle.getColumna("MDE_CANTIDAD").setMetodoChange("total");
         tab_detalle.getColumna("MDE_FECHACOMP").setValorDefecto(utilitario.getFechaActual());
         tab_detalle.getColumna("MDE_COMPROBANTE").setVisible(false);
         tab_detalle.getColumna("MDE_CANTIDAD_SOL").setVisible(false);
-        tab_detalle.getColumna("MDE_TOTAL").setVisible(false);
         tab_detalle.setRows(10);
         tab_detalle.dibujar();
         PanelTabla ptd = new PanelTabla();
+        ptd.getChildren().add(gri_total);
         ptd.setPanelTabla(tab_detalle);
         
         Division div = new Division();
@@ -291,26 +309,33 @@ public class pre_detalle_mantenimiento extends Pantalla{
     }
     
     public void valor(){
-        System.err.println("Ing");
         TablaGenerica tab_dato =aCombustible.getValor(tab_detalle.getValor("MAR_SECUENCIAL"));
          if (!tab_dato.isEmpty()) {
-             Double valor=0.0;
-             valor = Double.valueOf(tab_detalle.getValor("MDE_CANTIDAD"))*Double.valueOf(tab_dato.getValor("MAR_VALOR"));
-             tab_detalle.setValor("MDE_VALOR", String.valueOf(valor));
+             tab_detalle.setValor("MDE_VALOR", tab_dato.getValor("MAR_VALOR"));
              utilitario.addUpdate("tab_detalle");
-             total();
          }
     }
     
     public void total(){
         Double valor=0.0;
-        for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
-            tab_detalle.getValor(i, "MDE_VALOR");
-            valor= Double.valueOf(tab_detalle.getSumaColumna("MDE_VALOR"));
-            System.err.println(valor);
-        }
+        valor = Double.valueOf(tab_detalle.getValor("MDE_CANTIDAD"))*Double.valueOf(tab_detalle.getValor("MDE_VALOR"));
+        tab_detalle.setValor("MDE_TOTAL", String.valueOf(valor));
+        utilitario.addUpdate("tab_detalle");
+        suma();
     }
     
+    public void suma(){
+        ttotal.clearInitialState();
+        ttotal.limpiar();
+        Double valor=0.0;
+        for (int i = 0; i < tab_detalle.getTotalFilas(); i++) {
+            tab_detalle.getValor(i, "MDE_TOTAL");
+            valor= Double.valueOf(tab_detalle.getSumaColumna("MDE_TOTAL"));
+        }
+        ttotal.setValue(valor);
+        utilitario.addUpdate("ttotal");
+    }
+
     public void ing_articulos(){
         dia_dialogo.Limpiar();
         dia_dialogo.setDialogo(grid);
@@ -364,17 +389,16 @@ public class pre_detalle_mantenimiento extends Pantalla{
 
     @Override
     public void guardar() {
-        if(tab_detalle.getValor("mde_codigo")!=null){
-            if (tab_detalle.guardar()) {
-                con_sql.guardarPantalla();
-            }
-        }else{
-            if (tab_detalle.guardar()) {
-                con_sql.guardarPantalla();
-            }
+        if (tab_detalle.guardar()) {
+            con_sql.guardarPantalla();
         }
     }
-
+    
+    public void termina(){
+        aCombustible.updateSolicitud(Integer.parseInt(tab_cabecera.getValor("mve_secuencial")));
+        tab_cabecera.actualizar();
+    }
+    
     @Override
     public void eliminar() {
         tab_detalle.eliminar();

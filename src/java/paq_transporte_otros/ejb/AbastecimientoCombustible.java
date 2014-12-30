@@ -186,6 +186,20 @@ public class AbastecimientoCombustible {
         return tab_persona;
     }
     
+    public TablaGenerica getSolicitud(String placa) {
+        con_mantenimiento();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_manauto);
+        tab_persona.setSql("SELECT c.MCA_SECUENCIAL,v.MVE_PLACA\n" +
+                "FROM MVCABMANTENI c\n" +
+                "INNER JOIN dbo.MVVEHICULO v ON c.MVE_SECUENCIAL = v.MVE_SECUENCIAL\n" +
+                "WHERE c.MCA_ESTADO_TRAMITE = 'solicitud' and v.MVE_PLACA ='"+placa+"'");
+        tab_persona.ejecutarSql();
+       con_manauto.desconectar();
+       con_manauto = null;
+        return tab_persona;
+    }
+    
     public void getAccesorios(String id,String codigo){
         String parametro ="insert into MVDETASIGNACION (MAV_SECUENCIAL,MAV_ESTADO_ASIGNACION,MDA_DETALLE,MDA_CANTIDAD,MDA_ESTADO)\n" +
                 "select '"+id+"' as secuencial,1 as estado,mdv_detalle,mdv_cantidad,mdv_estado from MVDETALLEVEHICULO where MVE_SECUENCIAL = '"+codigo+"'";
@@ -432,7 +446,7 @@ public class AbastecimientoCombustible {
          return ValorMax;
   }
     
-    public String SecuencialCab() {
+    public String SecuencialCab(String anio,String periodo,Integer codigo) {
          con_mantenimiento();
          String ValorMax;
          TablaGenerica tab_consulta = new TablaGenerica();
@@ -440,7 +454,7 @@ public class AbastecimientoCombustible {
          tab_consulta.setConexion(con_manauto);
          tab_consulta.setSql("select 0 as id,\n" +
                  "(case when count(msc_secuencial) is null then '0' when count(msc_secuencial)is not null then count(msc_secuencial) end) AS maximo\n" +
-                 "from MVCABMANTENI");
+                 "from MVCABMANTENI where mca_anio = '"+anio+"'and mca_periodo ='"+periodo+"' and mve_secuencial ="+codigo);
          tab_consulta.ejecutarSql();
          ValorMax = tab_consulta.getValor("maximo");
          return ValorMax;
