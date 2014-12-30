@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_mantenimiento_general" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e50076bc-87cf-462b-a57a-76cea3d97f6d">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="anio" class="java.lang.String"/>
+	<parameter name="mes" class="java.lang.String"/>
+	<parameter name="periodo" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from
+(select a.*,b.total from
+(SELECT MVE_SECUENCIAL,MVE_PLACA FROM MVVEHICULO WHERE MVE_ESTADO = 'ACTIVO') as a
+left join
+(SELECT
+Sum(d.MDE_TOTAL) AS total,
+c.MCA_SECUENCIAL,
+c.MVE_SECUENCIAL
+FROM dbo.MVCABMANTENI c
+INNER JOIN dbo.MVDETMATENI d ON d.MCA_SECUENCIAL = c.MCA_SECUENCIAL
+where c.mca_anio = $P{anio} and c.mca_periodo = $P{periodo}
+GROUP BY c.MCA_SECUENCIAL,c.MVE_SECUENCIAL) as b
+on a.MVE_SECUENCIAL = b.MVE_SECUENCIAL ) as p
+order by total]]>
+	</queryString>
+	<field name="MVE_SECUENCIAL" class="java.lang.String"/>
+	<field name="MVE_PLACA" class="java.lang.String"/>
+	<field name="total" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="98" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="9c959a88-4ee4-48d3-8dc5-068f9d440563" key="staticText" x="10" y="10" width="266" height="43" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[GOBIERNO AUTÓNOMO DESCENTRALIZADO MUNICIPAL DEL CANTON RUMIÑAHUI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0289aadf-5e98-422e-8ce9-450a6a31560a" key="staticText" x="10" y="44" width="266" height="21" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[VALOR DE MANTENIMIENTO GENERAL]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="a1bf508e-b5f5-412c-b87c-b5ca85a466ed" x="539" y="0" width="197" height="98"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="2" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="2" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="2" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="2" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="19" splitType="Stretch">
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
+				<reportElement uuid="ff2ffbdb-c3f0-401b-894c-3f11f174cfcb" key="textField" x="737" y="0" width="36" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="7efbb14c-48c9-483a-8834-f7eea6832c84" key="textField" x="567" y="0" width="170" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="e3d05255-d162-4943-ada7-d39fcb3d16db" key="textField-5" x="10" y="0" width="115" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="330" splitType="Stretch">
+			<lineChart>
+				<chart>
+					<reportElement uuid="504ddd8a-bdf8-41e4-a730-f1f607c87519" x="0" y="22" width="802" height="308"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend position="Right"/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA["Mantenimiento"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{MVE_PLACA}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{total}]]></valueExpression>
+						<labelExpression><![CDATA[$F{MVE_PLACA}+"-"+$F{total}]]></labelExpression>
+					</categorySeries>
+				</categoryDataset>
+				<linePlot>
+					<plot/>
+					<categoryAxisFormat>
+						<axisFormat/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat/>
+					</valueAxisFormat>
+				</linePlot>
+			</lineChart>
+			<textField>
+				<reportElement uuid="52e69da2-dccc-4b06-b6ea-ed36d4dd4ce6" x="396" y="4" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{anio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="527c5e79-3014-4197-977d-e67192728400" x="330" y="4" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{mes}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="6c1fda34-4ff0-4a71-bd31-12bbe2b565fc" x="389" y="4" width="33" height="20"/>
+				<textElement/>
+				<text><![CDATA[/]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>
