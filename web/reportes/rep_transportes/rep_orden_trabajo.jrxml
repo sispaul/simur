@@ -19,19 +19,22 @@
 	<queryString>
 		<![CDATA[SELECT
 v.MVE_SECUENCIAL,
-v.MVE_MARCA+'  '+
-v.MVE_MODELO+'  '+
-v.MVE_VERSION AS VEHICULO,
+m.MVMARCA_DESCRIPCION+'  '+
+o.MVMODELO_DESCRIPCION AS VEHICULO,
 v.MVE_PLACA,
 c.MCA_DETALLE,
 c.MCA_RESPONSABLE,
 c.MCA_PROVEEDOR
-FROM dbo.MVVEHICULO AS v
-INNER JOIN dbo.MVCABMANTENI c ON c.MVE_SECUENCIAL = v.MVE_SECUENCIAL
-WHERE v.MVE_PLACA =$P{placa} and c.MCA_SECUENCIAL = $P{id}]]>
+FROM
+dbo.MVVEHICULO AS v
+INNER JOIN dbo.MVCABMANTENI AS c ON c.MVE_SECUENCIAL = v.MVE_SECUENCIAL
+INNER JOIN dbo.MVMARCA m  ON v.MVE_MARCA = m.MVMARCA_ID
+INNER JOIN dbo.MVTIPO t ON t.MVMARCA_ID = m.MVMARCA_ID
+INNER JOIN dbo.MVMODELO o ON o.MVTIPO_ID = t.MVTIPO_ID
+WHERE v.MVE_MODELO = o.MVMODELO_ID and v.MVE_PLACA =$P{placa} AND c.MCA_SECUENCIAL = $P{id}]]>
 	</queryString>
 	<field name="MVE_SECUENCIAL" class="java.lang.String"/>
-	<field name="VEHICULO" class="java.lang.Integer"/>
+	<field name="VEHICULO" class="java.lang.String"/>
 	<field name="MVE_PLACA" class="java.lang.String"/>
 	<field name="MCA_DETALLE" class="java.lang.String"/>
 	<field name="MCA_RESPONSABLE" class="java.lang.String"/>
@@ -128,7 +131,7 @@ WHERE v.MVE_PLACA =$P{placa} and c.MCA_SECUENCIAL = $P{id}]]>
 				<text><![CDATA[UNIDA DE TRANSPORTES]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="97f4c577-0fd7-423f-bca4-c08cdfc509e3" x="143" y="66" width="100" height="20"/>
+				<reportElement uuid="97f4c577-0fd7-423f-bca4-c08cdfc509e3" x="143" y="66" width="193" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$P{fecha_orden}]]></textFieldExpression>
 			</textField>
