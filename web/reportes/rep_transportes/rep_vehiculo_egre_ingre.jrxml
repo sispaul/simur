@@ -13,8 +13,6 @@
 		<![CDATA[SELECT
 v.MVE_SECUENCIAL,
 v.MVE_PLACA,
-v.MVE_MARCA,
-v.MVE_MODELO,
 v.MVE_COLOR,
 v.MVE_ANO,
 a.MAV_FECHAASIGNACION,
@@ -27,19 +25,21 @@ a.MAV_OBSERVACIONES,
 d.MDA_DETALLE,
 d.MDA_CANTIDAD,
 d.MDA_ESTADO,
-a.MAV_ESTADO_ASIGNACION
-FROM MVVEHICULO AS v
-INNER JOIN MVASIGNARVEH AS a ON a.MVE_SECUENCIAL = v.MVE_SECUENCIAL
-INNER JOIN MVDETASIGNACION D ON d.MAV_SECUENCIAL = a.MAV_SECUENCIAL AND d.MAV_ESTADO_ASIGNACION = a.MAV_ESTADO_ASIGNACION
-where a.MAV_ESTADO_ASIGNACION = 1 and a.MAV_SECUENCIAL = $P{codigo} and  v.MVE_PLACA =$P{placa} AND d.MDA_ESTADO <> 'DE BAJA']]>
+a.MAV_ESTADO_ASIGNACION,
+m.MVMARCA_DESCRIPCION,
+o.MVMODELO_DESCRIPCION
+FROM dbo.MVVEHICULO AS v
+INNER JOIN dbo.MVASIGNARVEH AS a ON a.MVE_SECUENCIAL = v.MVE_SECUENCIAL
+INNER JOIN dbo.MVDETASIGNACION AS d ON d.MAV_SECUENCIAL= a.MAV_SECUENCIAL AND d.MAV_ESTADO_ASIGNACION= a.MAV_ESTADO_ASIGNACION
+INNER JOIN dbo.MVMARCA m ON v.MVE_MARCA = m.MVMARCA_ID ,
+dbo.MVMODELO o
+where v.MVE_MODELO=o.MVMODELO_ID and a.MAV_ESTADO_ASIGNACION = 1 and a.MAV_SECUENCIAL = $P{codigo} and  v.MVE_PLACA =$P{placa} AND d.MDA_ESTADO <> 'DE BAJA']]>
 	</queryString>
 	<field name="MVE_SECUENCIAL" class="java.lang.String"/>
 	<field name="MVE_PLACA" class="java.lang.String"/>
-	<field name="MVE_MARCA" class="java.lang.Integer"/>
-	<field name="MVE_MODELO" class="java.lang.Integer"/>
 	<field name="MVE_COLOR" class="java.lang.String"/>
 	<field name="MVE_ANO" class="java.lang.String"/>
-	<field name="MAV_FECHAASIGNACION" class="java.sql.Timestamp"/>
+	<field name="MAV_FECHAASIGNACION" class="java.lang.String"/>
 	<field name="MAV_NOMBRE_COND" class="java.lang.String"/>
 	<field name="MAV_DEPARTAMENTO" class="java.lang.String"/>
 	<field name="MAV_CARGOEMPLEA" class="java.lang.String"/>
@@ -50,6 +50,8 @@ where a.MAV_ESTADO_ASIGNACION = 1 and a.MAV_SECUENCIAL = $P{codigo} and  v.MVE_P
 	<field name="MDA_CANTIDAD" class="java.math.BigDecimal"/>
 	<field name="MDA_ESTADO" class="java.lang.String"/>
 	<field name="MAV_ESTADO_ASIGNACION" class="java.lang.String"/>
+	<field name="MVMARCA_DESCRIPCION" class="java.lang.String"/>
+	<field name="MVMODELO_DESCRIPCION" class="java.lang.String"/>
 	<group name="VEHICULO_SALIDA">
 		<groupExpression><![CDATA[$F{MVE_PLACA}]]></groupExpression>
 		<groupHeader>
@@ -71,12 +73,12 @@ where a.MAV_ESTADO_ASIGNACION = 1 and a.MAV_SECUENCIAL = $P{codigo} and  v.MVE_P
 				<textField isBlankWhenNull="true">
 					<reportElement uuid="a0010cc0-5a5a-47f1-821c-e48e6d8f0232" x="101" y="74" width="100" height="20"/>
 					<textElement/>
-					<textFieldExpression><![CDATA[$F{MVE_MARCA}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{MVMARCA_DESCRIPCION}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement uuid="171bd18e-c51c-4647-a951-15f5192f2ff9" x="101" y="93" width="100" height="20"/>
+					<reportElement uuid="171bd18e-c51c-4647-a951-15f5192f2ff9" x="101" y="93" width="152" height="20"/>
 					<textElement/>
-					<textFieldExpression><![CDATA[$F{MVE_MODELO}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{MVMODELO_DESCRIPCION}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement uuid="d0308091-542d-47bb-973b-c5e762f05da8" x="390" y="0" width="146" height="20"/>
@@ -261,10 +263,6 @@ where a.MAV_ESTADO_ASIGNACION = 1 and a.MAV_SECUENCIAL = $P{codigo} and  v.MVE_P
 				</textElement>
 				<text><![CDATA[COMPROBANTE DE SALIDA DE VEHICULO]]></text>
 			</staticText>
-			<image>
-				<reportElement uuid="674d5581-43ca-4f20-82d5-fccca62c4a0b" x="405" y="1" width="149" height="76"/>
-				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_transporte.png"]]></imageExpression>
-			</image>
 		</band>
 	</title>
 	<pageHeader>
