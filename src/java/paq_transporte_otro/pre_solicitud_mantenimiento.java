@@ -70,7 +70,6 @@ public class pre_solicitud_mantenimiento extends Pantalla{
     
     //Contiene todos los elementos de la plantilla
     private Panel pan_opcion = new Panel();
-    private Panel pan_limpiar = new Panel();
     
     //buscar solicitud
     private AutoCompletar aut_busca = new AutoCompletar();
