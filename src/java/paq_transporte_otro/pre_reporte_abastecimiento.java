@@ -170,11 +170,11 @@ public class pre_reporte_abastecimiento extends Pantalla{
                     dia_dialogovgl.Limpiar();
                     dia_dialogovgl.dibujar();
                     break;
-                case "ABASTECIMIENTO POR INDIVIDUAL GALONES/CONSUMO":
+                case "ABASTECIMIENTO INDIVIDUAL GALONES/CONSUMO":
                     dia_dialogoinvg.Limpiar();
                     dia_dialogoinvg.dibujar();
                     break;
-                case "ABASTECIMIENTO POR INDIVIDUAL KILOMETROS/MINUTOS":
+                case "ABASTECIMIENTO INDIVIDUAL KILOMETROS/MINUTOS":
                     dia_dialogoinvg.Limpiar();
                     dia_dialogoinvg.dibujar();
                     break;
@@ -213,7 +213,7 @@ public class pre_reporte_abastecimiento extends Pantalla{
                        utilitario.agregarMensajeError("Usuario","No Disponible");
                    }
                     break;
-                case "ABASTECIMIENTO POR INDIVIDUAL GALONES/CONSUMO":
+                case "ABASTECIMIENTO INDIVIDUAL GALONES/CONSUMO":
                     TablaGenerica tab_dato2 =aCombustible.getMes(Integer.parseInt(cmb_periodo.getValue()+""));
                     if (!tab_dato2.isEmpty()) {
                         TablaGenerica tab_datov =aCombustible.getVehiculo(cmb_placa.getValue()+"");
@@ -233,7 +233,7 @@ public class pre_reporte_abastecimiento extends Pantalla{
                         utilitario.agregarMensajeError("Periodo","No Seleccionado");
                     }
                     break;
-                case "ABASTECIMIENTO POR INDIVIDUAL KILOMETROS/MINUTOS":
+                case "ABASTECIMIENTO INDIVIDUAL KILOMETROS/MINUTOS":
                     TablaGenerica tab_dato3 =aCombustible.getMes(Integer.parseInt(cmb_periodo.getValue()+""));
                     if (!tab_dato3.isEmpty()) {
                         TablaGenerica tab_datov =aCombustible.getVehiculo(cmb_placa.getValue()+"");
