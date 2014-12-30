@@ -23,19 +23,19 @@ v.MVE_MARCA+'  '+
 v.MVE_MODELO+'  '+
 v.MVE_VERSION AS VEHICULO,
 v.MVE_PLACA,
-c.MSC_DETALLE,
-c.MSC_CONDUCTOR,
-c.MSC_PROVEEDOR
-FROM MVVEHICULO v
-INNER JOIN MVCABSOLICITUD c ON c.MVE_SECUENCIAL = v.MVE_SECUENCIAL
-WHERE v.MVE_PLACA =$P{placa} and c.MSC_SECUENCIAL = $P{id}]]>
+c.MCA_DETALLE,
+c.MCA_RESPONSABLE,
+c.MCA_PROVEEDOR
+FROM dbo.MVVEHICULO AS v
+INNER JOIN dbo.MVCABMANTENI c ON c.MVE_SECUENCIAL = v.MVE_SECUENCIAL
+WHERE v.MVE_PLACA =$P{placa} and c.MCA_SECUENCIAL = $P{id}]]>
 	</queryString>
 	<field name="MVE_SECUENCIAL" class="java.lang.String"/>
-	<field name="VEHICULO" class="java.lang.String"/>
+	<field name="VEHICULO" class="java.lang.Integer"/>
 	<field name="MVE_PLACA" class="java.lang.String"/>
-	<field name="MSC_DETALLE" class="java.lang.String"/>
-	<field name="MSC_CONDUCTOR" class="java.lang.String"/>
-	<field name="MSC_PROVEEDOR" class="java.lang.String"/>
+	<field name="MCA_DETALLE" class="java.lang.String"/>
+	<field name="MCA_RESPONSABLE" class="java.lang.String"/>
+	<field name="MCA_PROVEEDOR" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -115,7 +115,7 @@ WHERE v.MVE_PLACA =$P{placa} and c.MSC_SECUENCIAL = $P{id}]]>
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{MSC_PROVEEDOR}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{MCA_PROVEEDOR}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="b6ac56e1-4315-439f-bac6-5cac23ba0fbc" x="84" y="26" width="126" height="20"/>
@@ -191,7 +191,7 @@ WHERE v.MVE_PLACA =$P{placa} and c.MSC_SECUENCIAL = $P{id}]]>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="621f708d-bed2-4aca-9e54-e75059dd927b" x="93" y="3" width="453" height="38"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[$F{MSC_DETALLE}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{MCA_DETALLE}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="33b5262f-416d-48ce-b891-4b3a6c646bfd" x="41" y="3" width="52" height="38"/>
@@ -264,7 +264,7 @@ WHERE v.MVE_PLACA =$P{placa} and c.MSC_SECUENCIAL = $P{id}]]>
 			<textField>
 				<reportElement uuid="486077be-8b38-449e-b4e5-ca8a4ea0a76e" x="298" y="66" width="216" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[$F{MSC_CONDUCTOR}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{MCA_RESPONSABLE}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement uuid="aebb9b4d-860a-45df-bc63-305133002e98" x="344" y="61" width="100" height="1"/>
