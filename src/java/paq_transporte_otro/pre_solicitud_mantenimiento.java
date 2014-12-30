@@ -142,6 +142,15 @@ public class pre_solicitud_mantenimiento extends Pantalla{
         agregarComponente(sef_formato);
         
         dibujarSolicitud();
+        
+        dia_dialogod.setId("dia_dialogod");
+        dia_dialogod.setTitle("SELECCIONE OPCIÓN"); //titulo
+        dia_dialogod.setWidth("25%"); //siempre en porcentajes  ancho
+        dia_dialogod.setHeight("10%");//siempre porcentaje   alto
+        dia_dialogod.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogod.getBot_aceptar().setMetodo("abrirReporte");
+        grid_de.setColumns(4);
+        agregarComponente(dia_dialogod);
     }
 
     public void dibujarSolicitud(){
@@ -370,7 +379,6 @@ public class pre_solicitud_mantenimiento extends Pantalla{
                cmb_impresion.setCombo(listar);
                gri_seleccion.getChildren().add(new Etiqueta(" RE IMPRESION :"));
                gri_seleccion.getChildren().add(cmb_impresion);
-               
                dia_dialogod.Limpiar();
                dia_dialogod.setDialogo(gridd);
                grid_de.getChildren().add(gri_seleccion);
@@ -389,7 +397,7 @@ public class pre_solicitud_mantenimiento extends Pantalla{
                TablaGenerica tab_datod = mDescuento.Direc_Asist(Integer.parseInt("229"));
                if(!tab_datod.isEmpty()){
                    if(cmb_impresion.getValue().equals("0")){
-                       TablaGenerica tab_dato =aCombustible.ParametrosID(tab_cabecera.getValor("msc_secuencial")+"");
+                       TablaGenerica tab_dato =aCombustible.ParametrosID(tab_cabecera.getValor("mca_secuencial")+"");
                        if(!tab_dato.isEmpty()){
                            Integer numero = Integer.parseInt(aCombustible.ParametrosMax("ORDEN"));
                            String cadena = anio+"-"+String.valueOf(numero)+"";
@@ -400,7 +408,7 @@ public class pre_solicitud_mantenimiento extends Pantalla{
                            cantidad=numero +1;
                            String cadena = anio+"-"+String.valueOf(numero)+"";
                            p_parametros.put("secuencial", cadena);
-                           aCombustible.getNumero(String.valueOf(cantidad), "ORDEN", "ORDEN", tab_cabecera.getValor("msc_secuencial"),utilitario.getVariable("NICK"));
+                           aCombustible.getNumero(String.valueOf(cantidad), "ORDEN", "ORDEN", tab_cabecera.getValor("mca_secuencial"),utilitario.getVariable("NICK"));
                        }
                    }else {
                        Integer numero = Integer.parseInt(aCombustible.ParametrosMax("ORDEN"));
@@ -409,11 +417,11 @@ public class pre_solicitud_mantenimiento extends Pantalla{
                    }
                    p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
                    p_parametros.put("placa", tab_vehiculo.getValor("mve_placa")+"");
-                   p_parametros.put("id", tab_cabecera.getValor("msc_secuencial")+"");
+                   p_parametros.put("id", tab_cabecera.getValor("mca_secuencial")+"");
                    p_parametros.put("numero", cmb_impresion.getValue()+"");
                    p_parametros.put("fecha_orden", utilitario.getFechaLarga(utilitario.getFechaActual())+"");
                    p_parametros.put("director", tab_datod.getValor("nombres")+"");
-                   p_parametros.put("mantenimiento", tab_cabecera.getValor("msc_solicitud")+"");
+                   p_parametros.put("mantenimiento", tab_cabecera.getValor("msc_secuencial")+"");
                    rep_reporte.cerrar();
                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                    sef_formato.dibujar();
