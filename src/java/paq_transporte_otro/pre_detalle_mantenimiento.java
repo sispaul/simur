@@ -87,17 +87,17 @@ public class pre_detalle_mantenimiento extends Pantalla{
         agregarComponente(pan_opcion);
         
         //Auto busqueda para, verificar solicitud
-        aut_busca.setId("aut_busca");
-        aut_busca.setConexion(con_sql);
-        aut_busca.setAutoCompletar("SELECT c.MCA_SECUENCIAL,c.MCA_FECHAINMAN,v.MVE_PLACA,m.MVMARCA_DESCRIPCION,c.MCA_PROVEEDOR,c.MCA_TIPO_MANTENIMIENTO\n" +
-                "FROM dbo.MVCABMANTENI c \n" +
-                "INNER JOIN dbo.MVVEHICULO v ON c.MVE_SECUENCIAL = v.MVE_SECUENCIAL\n" +
-                "INNER JOIN dbo.MVMARCA m ON v.MVE_MARCA = m.MVMARCA_ID\n" +
-                "where c.MCA_ESTADO_TRAMITE = 'solicitud'");
-        aut_busca.setMetodoChange("filtrarSolicitud");
-        aut_busca.setSize(70);
-        bar_botones.agregarComponente(new Etiqueta("Buscar Solicitud Por Placa:"));
-        bar_botones.agregarComponente(aut_busca);        
+//        aut_busca.setId("aut_busca");
+//        aut_busca.setConexion(con_sql);
+//        aut_busca.setAutoCompletar("SELECT c.MCA_SECUENCIAL,c.MCA_FECHAINMAN,v.MVE_PLACA,m.MVMARCA_DESCRIPCION,c.MCA_PROVEEDOR,c.MCA_TIPO_MANTENIMIENTO\n" +
+//                "FROM dbo.MVCABMANTENI c \n" +
+//                "INNER JOIN dbo.MVVEHICULO v ON c.MVE_SECUENCIAL = v.MVE_SECUENCIAL\n" +
+//                "INNER JOIN dbo.MVMARCA m ON v.MVE_MARCA = m.MVMARCA_ID\n" +
+//                "where c.MCA_ESTADO_TRAMITE = 'solicitud'");
+//        aut_busca.setMetodoChange("filtrarSolicitud");
+//        aut_busca.setSize(70);
+//        bar_botones.agregarComponente(new Etiqueta("Buscar Solicitud Por Placa:"));
+//        bar_botones.agregarComponente(aut_busca);        
         
         cmb_unidad.setId("cmb_unidad");
         List lista = new ArrayList();
@@ -203,40 +203,44 @@ public class pre_detalle_mantenimiento extends Pantalla{
     public void dibujarDetalle(){
         tab_cabecera.setId("tab_cabecera");
         tab_cabecera.setConexion(con_sql);
-        tab_cabecera.setTabla("mvcabmanteni", "mca_secuencial", 1);
-                /*Filtro estatico para los datos a mostrar*/
-        if (aut_busca.getValue() == null) {
-            tab_cabecera.setCondicion("mca_secuencial=-1");
-        } else {
-            tab_cabecera.setCondicion("mca_secuencial=" + aut_busca.getValor());
-        }
+        tab_cabecera.setSql("SELECT MCA_SECUENCIAL,MSC_SECUENCIAL,MVE_SECUENCIAL,MCA_FECHAINMAN,MCA_RESPONSABLE,MCA_PROVEEDOR,MCA_AUTORIZADO,MCA_DETALLE,\n" +
+                "MCA_OBSERVACION,MCA_TIPO_MANTENIMIENTO\n" +
+                "FROM MVCABMANTENI where MCA_ESTADO_TRAMITE = 'solicitud' order by MSC_SECUENCIAL");
+//        tab_cabecera.setTabla("mvcabmanteni", "mca_secuencial", 1);
+//                /*Filtro estatico para los datos a mostrar*/
+////        if (aut_busca.getValue() == null) {
+////            tab_cabecera.setCondicion("mca_secuencial=-1");
+////        } else {
+////            tab_cabecera.setCondicion("mca_secuencial=" + aut_busca.getValor());
+////        }
         tab_cabecera.getColumna("MVE_SECUENCIAL").setCombo("SELECT v.MVE_SECUENCIAL,+'Placa: '+v.MVE_PLACA+' Marca: '+m.MVMARCA_DESCRIPCION+' Tipo: '+t.MVTIPO_DESCRIPCION+' Color: '+v.MVE_COLOR+' Ano: '+v.MVE_ANO\n" +
                 "FROM MVVEHICULO v\n" +
                 "INNER JOIN MVMARCA m ON v.MVE_MARCA = m.MVMARCA_ID\n" +
                 "INNER JOIN MVTIPO t ON t.MVMARCA_ID = m.MVMARCA_ID");
-        tab_cabecera.getColumna("MCA_SECUENCIAL").setVisible(false);
-        tab_cabecera.getColumna("MCA_FECHA_BORRADO").setVisible(false);
-        tab_cabecera.getColumna("MCA_LOGINACTUALI").setVisible(false);
-        tab_cabecera.getColumna("MCA_LOGININGRESO").setVisible(false);
-        tab_cabecera.getColumna("MCA_FECHAINGRESO").setVisible(false);
-        tab_cabecera.getColumna("MCA_LOGINBORRADO").setVisible(false);
-        tab_cabecera.getColumna("MCA_LOGININGRESO ").setVisible(false);
-        tab_cabecera.getColumna("MCA_LOGINACTUALI").setVisible(false);
-        tab_cabecera.getColumna("MCA_FECHAINGRESO").setVisible(false);
-        tab_cabecera.getColumna("MCA_FECHAACTUALI").setVisible(false);
-        tab_cabecera.getColumna("MCA_LOGINBORRADO").setVisible(false);
-        tab_cabecera.getColumna("MCA_FECHASAMAN").setVisible(false);
-        tab_cabecera.getColumna("MCA_MONTO").setVisible(false);
-        tab_cabecera.getColumna("MCA_KMACTUAL").setVisible(false);
-        tab_cabecera.getColumna("MCA_KMANTERIOR").setVisible(false);
-        tab_cabecera.getColumna("MCA_TIPOSOL").setVisible(false);
-        tab_cabecera.getColumna("MCA_TIPOMEDICION").setVisible(false);
-        tab_cabecera.getColumna("MCA_ACOTACIONES").setVisible(false);
-        tab_cabecera.getColumna("MCA_ESTADO_REGISTRO").setVisible(false);
-        tab_cabecera.getColumna("MCA_FORMAPAGO").setVisible(false);
-        tab_cabecera.getColumna("MCA_ESTADO_TRAMITE").setVisible(false);
-        tab_cabecera.getColumna("MSC_SECUENCIAL").setVisible(false);
-        tab_cabecera.getColumna("MCA_FECHASOLI").setVisible(false);
+//        tab_cabecera.getColumna("MCA_SECUENCIAL").setVisible(false);
+//        tab_cabecera.getColumna("MCA_FECHA_BORRADO").setVisible(false);
+//        tab_cabecera.getColumna("MCA_LOGINACTUALI").setVisible(false);
+//        tab_cabecera.getColumna("MCA_LOGININGRESO").setVisible(false);
+//        tab_cabecera.getColumna("MCA_FECHAINGRESO").setVisible(false);
+//        tab_cabecera.getColumna("MCA_LOGINBORRADO").setVisible(false);
+//        tab_cabecera.getColumna("MCA_LOGININGRESO ").setVisible(false);
+//        tab_cabecera.getColumna("MCA_LOGINACTUALI").setVisible(false);
+//        tab_cabecera.getColumna("MCA_FECHAINGRESO").setVisible(false);
+//        tab_cabecera.getColumna("MCA_FECHAACTUALI").setVisible(false);
+//        tab_cabecera.getColumna("MCA_LOGINBORRADO").setVisible(false);
+//        tab_cabecera.getColumna("MCA_FECHASAMAN").setVisible(false);
+//        tab_cabecera.getColumna("MCA_MONTO").setVisible(false);
+//        tab_cabecera.getColumna("MCA_KMACTUAL").setVisible(false);
+//        tab_cabecera.getColumna("MCA_KMANTERIOR").setVisible(false);
+//        tab_cabecera.getColumna("MCA_TIPOSOL").setVisible(false);
+//        tab_cabecera.getColumna("MCA_TIPOMEDICION").setVisible(false);
+//        tab_cabecera.getColumna("MCA_ACOTACIONES").setVisible(false);
+//        tab_cabecera.getColumna("MCA_ESTADO_REGISTRO").setVisible(false);
+//        tab_cabecera.getColumna("MCA_FORMAPAGO").setVisible(false);
+//        tab_cabecera.getColumna("MCA_ESTADO_TRAMITE").setVisible(false);
+//        tab_cabecera.getColumna("MSC_SECUENCIAL").setVisible(false);
+//        tab_cabecera.getColumna("MCA_FECHASOLI").setVisible(false);
+//        tab_cabecera.getColumna("MCA_ESTADO_TRAMITE").setVisible(false);
         tab_cabecera.setTipoFormulario(true);
         tab_cabecera.getGrid().setColumns(4);
         tab_cabecera.agregarRelacion(tab_detalle);
@@ -248,7 +252,7 @@ public class pre_detalle_mantenimiento extends Pantalla{
         tab_detalle.setConexion(con_sql);
         tab_detalle.setTabla("mvdetmateni", "mde_codigo", 2);
         tab_detalle.getColumna("MAR_SECUENCIAL").setCombo("SELECT MAR_SECUENCIAL,MAR_CODIGO,MAR_DESCRIPCION,MAR_VALOR FROM dbo.MVARTICULOS order by MAR_CODIGO");
-//        tab_detalle.getColumna("MAR_SECUENCIAL").setAutoCompletar();
+        tab_detalle.getColumna("MAR_SECUENCIAL").setAutoCompletar();
         tab_detalle.getColumna("MDE_CANTIDAD").setMetodoChange("valor");
         tab_detalle.getColumna("MDE_FECHACOMP").setValorDefecto(utilitario.getFechaActual());
         tab_detalle.getColumna("MDE_COMPROBANTE").setVisible(false);
@@ -287,7 +291,7 @@ public class pre_detalle_mantenimiento extends Pantalla{
     }
     
     public void valor(){
-        System.err.println("ing");
+        System.err.println("Ing");
         TablaGenerica tab_dato =aCombustible.getValor(tab_detalle.getValor("MAR_SECUENCIAL"));
          if (!tab_dato.isEmpty()) {
              Double valor=0.0;
