@@ -178,6 +178,10 @@ public class pre_reporte_abastecimiento extends Pantalla{
                     dia_dialogoinvg.Limpiar();
                     dia_dialogoinvg.dibujar();
                     break;
+                case "MANTENIMIENTO POR MES":
+                    dia_dialogovgl.Limpiar();
+                    dia_dialogovgl.dibujar();
+                    break;
             }
         }
         
@@ -247,6 +251,19 @@ public class pre_reporte_abastecimiento extends Pantalla{
                         }
                     }else{
                         utilitario.agregarMensajeError("Periodo","No Seleccionado");
+                    }
+                    break;
+                case "MANTENIMIENTO POR MES":
+                    TablaGenerica tab_dato4 =aCombustible.getMes(Integer.parseInt(cmb_peri.getValue()+""));
+                    if (!tab_dato4.isEmpty()) {
+                        p_parametros.put("anio", cmb_ano.getValue()+"");
+                        p_parametros.put("mes", tab_dato4.getValor("per_descripcion")+"");
+                        p_parametros.put("periodo", cmb_peri.getValue()+"");
+                        rep_reporte.cerrar();
+                        sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                        sef_formato.dibujar();
+                    }else{
+                        utilitario.agregarMensajeError("Usuario","No Disponible");
                     }
                     break;
             }
