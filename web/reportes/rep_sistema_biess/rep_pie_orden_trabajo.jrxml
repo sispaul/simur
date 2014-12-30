@@ -10,17 +10,19 @@
 		<![CDATA[declare @One integer = 1
 SELECT
 v.MVE_SECUENCIAL,
-v.MVE_MARCA+'  '+
-v.MVE_MODELO+'  '+
-v.MVE_VERSION AS VEHICULO,
+m.MVMARCA_DESCRIPCION+'  '+
+o.MVMODELO_DESCRIPCION AS VEHICULO,
 v.MVE_PLACA,
 c.MCA_RESPONSABLE
 FROM MVVEHICULO v
-INNER JOIN dbo.MVCABMANTENI c ON c.MVE_SECUENCIAL = v.MVE_SECUENCIAL
-WHERE v.MVE_PLACA =$P{placa} and @One =$P{numero} and c.MSC_SECUENCIAL = $P{id}]]>
+INNER JOIN dbo.MVCABMANTENI AS c ON c.MVE_SECUENCIAL = v.MVE_SECUENCIAL
+INNER JOIN dbo.MVMARCA m  ON v.MVE_MARCA = m.MVMARCA_ID
+INNER JOIN dbo.MVTIPO t ON t.MVMARCA_ID = m.MVMARCA_ID
+INNER JOIN dbo.MVMODELO o ON o.MVTIPO_ID = t.MVTIPO_ID
+WHERE v.MVE_MODELO = o.MVMODELO_ID and v.MVE_PLACA =$P{placa} and @One =$P{numero} and c.MCA_SECUENCIAL = $P{id}]]>
 	</queryString>
 	<field name="MVE_SECUENCIAL" class="java.lang.String"/>
-	<field name="VEHICULO" class="java.lang.Integer"/>
+	<field name="VEHICULO" class="java.lang.String"/>
 	<field name="MVE_PLACA" class="java.lang.String"/>
 	<field name="MCA_RESPONSABLE" class="java.lang.String"/>
 	<background>
