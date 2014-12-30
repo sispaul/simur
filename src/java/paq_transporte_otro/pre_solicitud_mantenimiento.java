@@ -221,6 +221,10 @@ public class pre_solicitud_mantenimiento extends Pantalla{
         tab_cabecera.getColumna("mca_tiposol").setVisible(false);
         tab_cabecera.getColumna("mca_monto").setVisible(false);
         tab_cabecera.getColumna("mca_responsable").setVisible(false);
+        tab_cabecera.getColumna("mca_anio").setVisible(false);
+        tab_cabecera.getColumna("mca_periodo").setVisible(false);
+        tab_cabecera.getColumna("mca_anio").setValorDefecto(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())));
+        tab_cabecera.getColumna("mca_periodo").setValorDefecto(String.valueOf(utilitario.getMes(utilitario.getFechaActual())));
         tab_cabecera.getColumna("mca_estado_tramite").setLectura(true);
         tab_cabecera.getColumna("mca_proveedor").setMetodoChange("proveedor");
         tab_cabecera.getColumna("mca_autorizado").setMetodoChange("autoriza");
@@ -263,7 +267,7 @@ public class pre_solicitud_mantenimiento extends Pantalla{
     //Estado De Solicitud
     public void estado(){
         tab_cabecera.setValor("mca_estado_tramite","SOLICITUD");
-        tab_cabecera.setValor("msc_secuencial",aCombustible.SecuencialCab());
+        tab_cabecera.setValor("msc_secuencial",aCombustible.SecuencialCab(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())), String.valueOf(utilitario.getMes(utilitario.getFechaActual())), Integer.parseInt(tab_vehiculo.getValor("mve_secuencial"))));
         utilitario.addUpdate("tab_cabecera");
     }
     
@@ -305,10 +309,14 @@ public class pre_solicitud_mantenimiento extends Pantalla{
     
     @Override
     public void insertar() {
-        if (tab_cabecera.isFocus()) {
-            tab_cabecera.insertar();
+        TablaGenerica tab_dato = aCombustible.getSolicitud(tab_vehiculo.getValor("mve_placa"));
+        if (!tab_dato.isEmpty()) {
+            utilitario.agregarMensaje("Solicitud Anterior", "No Terminada");
+        }else{
+            if (tab_cabecera.isFocus()) {
+                tab_cabecera.insertar();
+            }
         }
-        aCombustible.updateSolicitud(Integer.parseInt(tab_vehiculo.getValor("mve_secuencial")));
     }
 
     @Override

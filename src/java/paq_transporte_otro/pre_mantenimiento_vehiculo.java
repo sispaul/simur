@@ -461,7 +461,7 @@ public class pre_mantenimiento_vehiculo extends Pantalla{
     public void estado(){
         tab_mante.setValor("msc_estado_tramite","SOLICITUD");
         tab_mante.setValor("msc_tiposol", cmb_mantenimiento.getValue()+"");
-        tab_mante.setValor("msc_solicitud",aCombustible.SecuencialCab());
+        tab_mante.setValor("msc_secuencial",aCombustible.SecuencialCab(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())), String.valueOf(utilitario.getMes(utilitario.getFechaActual())), Integer.parseInt(tab_vehiculo.getValor("mve_secuencial"))));
         utilitario.addUpdate("tab_mante");
     }
       
