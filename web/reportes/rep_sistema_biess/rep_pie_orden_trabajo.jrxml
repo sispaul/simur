@@ -14,15 +14,15 @@ v.MVE_MARCA+'  '+
 v.MVE_MODELO+'  '+
 v.MVE_VERSION AS VEHICULO,
 v.MVE_PLACA,
-c.MSC_CONDUCTOR
+c.MCA_RESPONSABLE
 FROM MVVEHICULO v
-INNER JOIN MVCABSOLICITUD c ON c.MVE_SECUENCIAL = v.MVE_SECUENCIAL
+INNER JOIN dbo.MVCABMANTENI c ON c.MVE_SECUENCIAL = v.MVE_SECUENCIAL
 WHERE v.MVE_PLACA =$P{placa} and @One =$P{numero} and c.MSC_SECUENCIAL = $P{id}]]>
 	</queryString>
 	<field name="MVE_SECUENCIAL" class="java.lang.String"/>
-	<field name="VEHICULO" class="java.lang.String"/>
+	<field name="VEHICULO" class="java.lang.Integer"/>
 	<field name="MVE_PLACA" class="java.lang.String"/>
-	<field name="MSC_CONDUCTOR" class="java.lang.String"/>
+	<field name="MCA_RESPONSABLE" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -67,7 +67,7 @@ WHERE v.MVE_PLACA =$P{placa} and @One =$P{numero} and c.MSC_SECUENCIAL = $P{id}]
 			<textField>
 				<reportElement uuid="0d4a0dfc-ba59-4e8e-abeb-c598f868f2bd" x="184" y="55" width="216" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[$F{MSC_CONDUCTOR}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{MCA_RESPONSABLE}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="b519fedb-bdcb-4a8d-9539-d1104cfeafbe" x="10" y="124" width="234" height="20"/>
