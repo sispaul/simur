@@ -306,7 +306,6 @@ public class pre_inventario_automores extends Pantalla{
         tab_tabla.getColumna("MVE_TIPOMEDICION").setMetodoChange("activarCasilla");
         tab_tabla.getColumna("MVE_CONDUCTOR").setMetodoChange("aceptoDialogoc");
         tab_tabla.getColumna("MVE_TIPOCODIGO").setMetodoChange("activarTipo");
-//        tab_tabla.getColumna("MVE_PLACA").setMetodoChange("infoActivo");
         tab_tabla.getColumna("MVE_LOGININGRESO").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         tab_tabla.getColumna("MVE_FECHAINGRESO").setValorDefecto(utilitario.getFechaActual());
         List list = new ArrayList();
@@ -356,6 +355,7 @@ public class pre_inventario_automores extends Pantalla{
         tab_tabla.getColumna("MVE_PLACA").setLectura(true);
         tab_tabla.getColumna("MVE_HOROMETRO").setLectura(true);
         tab_tabla.getColumna("MVE_KILOMETRAJE").setLectura(true);
+        tab_tabla.getColumna("MVE_RENDIMIENTO").setLectura(true);
         tab_tabla.getColumna("MVE_ASIGNADO").setVisible(false);
         tab_tabla.getColumna("MVE_OBSERVACIONES").setVisible(false);
         tab_tabla.getColumna("MVE_LOGININGRESO").setVisible(false);
@@ -365,6 +365,8 @@ public class pre_inventario_automores extends Pantalla{
         tab_tabla.getColumna("MVE_FECHAACTUALI").setVisible(false);
         tab_tabla.getColumna("MVE_LOGINBORRADO").setVisible(false);
         tab_tabla.getColumna("MVE_NUMIMR").setVisible(false);
+        tab_tabla.getColumna("MVE_TIPO_INGRESO").setVisible(false);
+        tab_tabla.getColumna("MVE_ESTADO_REGISTRO").setVisible(false);
         tab_tabla.setTipoFormulario(true);
         tab_tabla.getGrid().setColumns(4);
         tab_tabla.dibujar();
@@ -377,6 +379,7 @@ public class pre_inventario_automores extends Pantalla{
         gru.getChildren().add(div);
         pan_opcion.getChildren().add(gru);
     }
+    
     
     //BUSQUEDA DE REGISTRO
     public void filtrarSolicitud(SelectEvent evt) {
@@ -608,18 +611,28 @@ public class pre_inventario_automores extends Pantalla{
         if(tab_tabla.getValor("MVE_TIPOMEDICION").equals("HORAS")){
             tab_tabla.getColumna("MVE_KILOMETRAJE").setLectura(true);
             tab_tabla.getColumna("MVE_HOROMETRO").setLectura(false);
+            tab_tabla.getColumna("MVE_RENDIMIENTO").setLectura(false);
             utilitario.addUpdate("tab_tabla");
         }else{
             tab_tabla.getColumna("MVE_KILOMETRAJE").setLectura(false);
             tab_tabla.getColumna("MVE_HOROMETRO").setLectura(true);
+            tab_tabla.getColumna("MVE_RENDIMIENTO").setLectura(true);
             utilitario.addUpdate("tab_tabla");
         }
     }
     
     public void activarTipo(){
-        tab_tabla.getColumna("MVE_PLACA").setLectura(false);
-        tab_tabla.setValor("MVE_PLACA", null);
-        utilitario.addUpdate("tab_tabla");
+        if(tab_tabla.getValor("MVE_TIPOCODIGO").equals("placa")){
+            tab_tabla.getColumna("MVE_PLACA").setLectura(false);
+            tab_tabla.setValor("MVE_PLACA", null);
+            tab_tabla.setValor("MVE_TIPO_INGRESO", "A");
+            utilitario.addUpdate("tab_tabla");
+        }else{
+            tab_tabla.getColumna("MVE_PLACA").setLectura(false);
+            tab_tabla.setValor("MVE_PLACA", null);
+            tab_tabla.setValor("MVE_TIPO_INGRESO", "M");
+            utilitario.addUpdate("tab_tabla");
+        }
     }
     
     //limpia y borrar el contenido de la pantalla

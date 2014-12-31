@@ -5,10 +5,13 @@
 package paq_asig_placas;
 
 import framework.aplicacion.TablaGenerica;
+import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Dialogo;
+import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
+import framework.componentes.Grupo;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
@@ -21,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
+import org.primefaces.event.SelectEvent;
 import paq_sistema.aplicacion.Pantalla;
 import paq_transportes.ejb.Serviciobusqueda;
 import paq_transportes.ejb.servicioPlaca;
@@ -39,9 +43,6 @@ public class pre_placas_pendientes extends Pantalla{
     
     //PANEL DE BUSQUEDA
     private Panel pan_opcion = new Panel();
-    private Panel pan_opcion1 = new Panel();
-    private Panel pan_opcion2 = new Panel();
-    private Panel pan_opcion3 = new Panel();
     
     //DIALOGO
     private Dialogo dia_dialogoe = new Dialogo();
@@ -51,6 +52,8 @@ public class pre_placas_pendientes extends Pantalla{
         //PARA CANTIDAD QUE SE RETIRA
     private Texto  txt_numero = new Texto();
     private Texto  txt_placa = new Texto();
+    
+    private AutoCompletar aut_busca = new AutoCompletar();
     
     @EJB
     private servicioPlaca ser_Placa =(servicioPlaca) utilitario.instanciarEJB(servicioPlaca.class);
@@ -63,78 +66,26 @@ public class pre_placas_pendientes extends Pantalla{
     
     public pre_placas_pendientes() {
         
+        aut_busca.setId("aut_busca");
+        aut_busca.setAutoCompletar("SELECT DISTINCT e.CODIGO,e.CODIGO as codigo,p.FECHA_RETIRO FROM TRANS_ENCAB_ENTREGAS e INNER JOIN TRANS_ENTREGAR_PLACA p ON p.CODIGO = e.CODIGO");
+        aut_busca.setMetodoChange("filtrarSolicitud");
+        aut_busca.setSize(70);
+        
+        bar_botones.agregarComponente(new Etiqueta("Buscador Tramite:"));
+        bar_botones.agregarComponente(aut_busca);
+        
+        Boton bot_limpiar = new Boton();
+        bot_limpiar.setIcon("ui-icon-cancel");
+        bot_limpiar.setMetodo("limpiar");
+        bar_botones.agregarBoton(bot_limpiar);
+        
         //muestra el usuario que esta logeado
         tab_consulta.setId("tab_consulta");
         tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
         tab_consulta.setCampoPrimaria("IDE_USUA");
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
-        tab_cabecera.setId("tab_cabecera");
-        tab_cabecera.setTabla("trans_encab_entregas", "codigo", 1);
-        List lista1 = new ArrayList();
-        Object filaa[] = {
-            "PARTICULAR", "PARTICULAR"
-        };
-        Object filab[] = {
-            "GESTOR", "GESTOR"
-        };
-        lista1.add(filaa);;
-        lista1.add(filab);;
-        tab_cabecera.getColumna("tipo").setRadio(lista1, "PARTICULAR");
-        tab_cabecera.setTipoFormulario(true);
-        tab_cabecera.getGrid().setColumns(2);
-        tab_cabecera.agregarRelacion(tab_entrega);
-        tab_cabecera.dibujar();
-        PanelTabla tpc=new PanelTabla();
-        tpc.setPanelTabla(tab_cabecera);
-        
-        pan_opcion1.getChildren().add(tpc);
-        
-        tab_entrega.setId("tab_entrega");
-        tab_entrega.setTabla("trans_entregar_placa", "IDE_ENTREGA_PLACA", 2);
-        tab_entrega.getColumna("cedula_quien_retira").setMetodoChange("quienEs");
-        tab_entrega.getColumna("fecha_retiro").setValorDefecto(utilitario.getFechaActual());
-        tab_entrega.getColumna("placa").setMetodoChange("revisar");
-        tab_entrega.getColumna("fecha_retiro").setLectura(true);
-        tab_entrega.getColumna("USU_ENTREGA").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
-        tab_entrega.dibujar();
-        PanelTabla tpe=new PanelTabla();
-        tpe.setPanelTabla(tab_entrega);
-        pan_opcion2.getChildren().add(tpe);
-        
-        Boton bot_new = new Boton();
-        bot_new.setValue("NUEVO");
-        bot_new.setIcon("ui-icon-document");
-        bot_new.setMetodo("insertar");
-        
-        Boton bot_save = new Boton();
-        bot_save.setValue("GUARDAR");
-        bot_save.setIcon("ui-icon-disk");
-        bot_save.setMetodo("guardar");
-        
-        Boton bot_delete = new Boton();
-        bot_delete.setValue("ELIMINAR");
-        bot_delete.setIcon("ui-icon-closethick");
-        bot_delete.setMetodo("eliminar");
-        
-        Boton bot_print = new Boton();
-        bot_print.setValue("Imprimir");
-        bot_print.setIcon("ui-icon-print");
-        bot_print.setMetodo("abrirListaReportes");
-        
-        pan_opcion3.getChildren().add(bot_new);
-        pan_opcion3.getChildren().add(bot_save);
-        pan_opcion3.getChildren().add(bot_delete);
-        pan_opcion3.getChildren().add(bot_print);
-        
-        pan_opcion.setId("pan_opcion");
-	pan_opcion.setTransient(true);
-        pan_opcion.getChildren().add(pan_opcion1);
-        pan_opcion.getChildren().add(pan_opcion2);
-//        pan_opcion.getChildren().add(pan_opcion3);
 
-        agregarComponente(pan_opcion);
-        
         //CREACION DE OBJETOS DIALOGOS PARA SELECCION
         dia_dialogoe.setId("dia_dialogoe");
         dia_dialogoe.setTitle("CANATIDAD A RETIRAR"); //titulo
@@ -175,73 +126,149 @@ public class pre_placas_pendientes extends Pantalla{
         set_placa.getBot_aceptar().setMetodo("listo");
         set_placa.setHeader("BUSCAR PLACA - ENTREGADAS");
         agregarComponente(set_placa);
+        
+        pan_opcion.setId("pan_opcion");
+	pan_opcion.setTransient(true);
+        agregarComponente(pan_opcion);
+        
+        dibujaEntrega();
+    }
+    
+    public void dibujaEntrega(){
+        limpiarPanel();
+        tab_cabecera.setId("tab_cabecera");
+        tab_cabecera.setTabla("trans_encab_entregas", "codigo", 1);
+                /*Filtro estatico para los datos a mostrar*/
+        if (aut_busca.getValue() == null) {
+            tab_cabecera.setCondicion("codigo=-1");
+        } else {
+            tab_cabecera.setCondicion("codigo=" + aut_busca.getValor());
+        }
+        List lista1 = new ArrayList();
+        Object filaa[] = {
+            "PARTICULAR", "PARTICULAR"
+        };
+        Object filab[] = {
+            "GESTOR", "GESTOR"
+        };
+        lista1.add(filaa);;
+        lista1.add(filab);;
+        tab_cabecera.getColumna("tipo").setRadio(lista1, "PARTICULAR");
+        tab_cabecera.setTipoFormulario(true);
+        tab_cabecera.getGrid().setColumns(2);
+        tab_cabecera.agregarRelacion(tab_entrega);
+        tab_cabecera.dibujar();
+        PanelTabla tpc=new PanelTabla();
+        tpc.setPanelTabla(tab_cabecera);
+        
+        tab_entrega.setId("tab_entrega");
+        tab_entrega.setTabla("trans_entregar_placa", "IDE_ENTREGA_PLACA", 2);
+        tab_entrega.getColumna("cedula_quien_retira").setMetodoChange("quienEs");
+        tab_entrega.getColumna("fecha_retiro").setValorDefecto(utilitario.getFechaActual());
+        tab_entrega.getColumna("placa").setMetodoChange("revisar");
+        tab_entrega.getColumna("fecha_retiro").setLectura(true);
+        tab_entrega.getColumna("USU_ENTREGA").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
+        tab_entrega.setRows(15);
+        tab_entrega.dibujar();
+        PanelTabla tpe=new PanelTabla();
+        tpe.setPanelTabla(tab_entrega);
+
+        Division div = new Division();
+        div.dividir2(tpc, tpe, "15%", "h");
+        Grupo gru = new Grupo();
+        gru.getChildren().add(div);
+        pan_opcion.getChildren().add(gru); 
+    }
+
+    public void filtrarSolicitud (SelectEvent evt){
+        limpiar();
+        aut_busca.onSelect(evt);
+        if (aut_busca.getValor() != null) {
+            dibujaEntrega();
+            utilitario.addUpdate("aut_busca,pan_opcion");
+        }     
+    }
+    
+    private void limpiarPanel() {
+        //borra el contenido de la división central central
+        pan_opcion.getChildren().clear();
+        utilitario.addUpdate("pan_opcion");
+    }
+    
+    public void limpiar() {
+        aut_busca.limpiar();
+        utilitario.addUpdate("aut_busca");
+        limpiarPanel();
+        utilitario.addUpdate("pan_opcion");
     }
     
     public void buscarPlaca(){
         if (txt_placa.getValue() != null && txt_placa.getValue().toString().isEmpty() == false ) {
-                            set_placa.getTab_seleccion().setSql("SELECT IDE_ENTREGA_PLACA,FECHA_RETIRO,CEDULA_QUIEN_RETIRA,NOMBRE_QUIEN_RETIRA,\n" +
-                                    "NOMBRE_PROPIETARIO,USU_ENTREGA \n" +
-                                    "FROM TRANS_ENTREGAR_PLACA\n" +
-                                    "where placa = '"+txt_placa.getValue()+"'");
-                            set_placa.getTab_seleccion().ejecutarSql();
-                        } else {
-                               utilitario.agregarMensajeInfo("Debe Ingresar Placa a Buscar", "");
-                               }
+            set_placa.getTab_seleccion().setSql("SELECT IDE_ENTREGA_PLACA,FECHA_RETIRO,CEDULA_QUIEN_RETIRA,NOMBRE_QUIEN_RETIRA,\n" +
+                    "NOMBRE_PROPIETARIO,USU_ENTREGA \n" +
+                    "FROM TRANS_ENTREGAR_PLACA\n" +
+                    "where placa = '"+txt_placa.getValue()+"'");
+            set_placa.getTab_seleccion().ejecutarSql();
+        } else {
+            utilitario.agregarMensajeInfo("Debe Ingresar Placa a Buscar", "");
+        }
     }
     
     public void listo(){
         set_placa.cerrar();
     }
         public void quienEs(){
-        if(tab_cabecera.getValor("tipo").equals("PARTICULAR")){ //PARTICULAR
+            if(tab_cabecera.getValor("tipo").equals("PARTICULAR")){ //PARTICULAR
                 IDquien();
 //                tab_entrega.setValor("PARTICULAR_EMPRESA","PARTICULAR");
                 utilitario.addUpdate("tab_entrega");
             }else if(tab_cabecera.getValor("tipo").equals("GESTOR")){//GESTOR
-                        QueS();
-                    }
+                QueS();
+            }
     }
     
    public void IDquien(){
        if (utilitario.validarCedula(tab_entrega.getValor("cedula_quien_retira"))) {
-            TablaGenerica tab_dato = serviciobusqueda.getPersona(tab_entrega.getValor("cedula_quien_retira"));
-            if (!tab_dato.isEmpty()) {
+           TablaGenerica tab_dato = serviciobusqueda.getPersona(tab_entrega.getValor("cedula_quien_retira"));
+           if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra   
                 tab_entrega.setValor("nombre_quien_retira", tab_dato.getValor("nombre"));
                 utilitario.addUpdate("tab_entrega");
-                } else {
-                         utilitario.agregarMensajeInfo("Cédula ingresada no existe en la base de datos del municipio", " Ingrese el nombre");
-                        }
-        } else if (utilitario.validarRUC(tab_entrega.getValor("cedula_quien_retira"))) {
+//                cantidad();
+           } else {
+               utilitario.agregarMensajeInfo("Cédula ingresada no existe en la base de datos del municipio", " Ingrese el nombre");
+           }
+       } else if (utilitario.validarRUC(tab_entrega.getValor("cedula_quien_retira"))) {
             TablaGenerica tab_dato = serviciobusqueda.getEmpresa(tab_entrega.getValor("cedula_quien_retira"));
             if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra   
                 tab_entrega.setValor("nombre_quien_retira", tab_dato.getValor("razon_social"));
                 utilitario.addUpdate("tab_entrega");
-                } else {
-                        utilitario.agregarMensajeInfo("RUC ingresado no existe en la base de datos del municipio", "Ingrese el nombre");
-                        }
-        } else  {
-                utilitario.agregarMensajeError("El Número de IDENTIFICACION no es válido", "");
-                }
-    }
+//                cantidad();
+            } else {
+                utilitario.agregarMensajeInfo("RUC ingresado no existe en la base de datos del municipio", "Ingrese el nombre");
+            }
+       } else  {
+           utilitario.agregarMensajeError("El Número de IDENTIFICACION no es válido", "");
+       }
+   }
     
-    public void QueS(){
-        cedula = tab_entrega.getValor("cedula_quien_retira");
-         if (utilitario.validarCedula(tab_entrega.getValor("cedula_quien_retira"))) {
-            TablaGenerica tab_dato = serviciobusqueda.getGestors(tab_entrega.getValor("cedula_quien_retira"));
-            if (!tab_dato.isEmpty()) {
+   public void QueS(){
+       cedula = tab_entrega.getValor("cedula_quien_retira");
+       if (utilitario.validarCedula(tab_entrega.getValor("cedula_quien_retira"))) {
+           TablaGenerica tab_dato = serviciobusqueda.getGestors(tab_entrega.getValor("cedula_quien_retira"));
+           if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra 
-                nombre = tab_dato.getValor("NOMBRE_GESTOR");
-                tab_entrega.setValor("nombre_quien_retira", nombre);
-                utilitario.addUpdate("tab_entrega");
-                cantidad();
-                } else {
-                         utilitario.agregarMensajeInfo("Cédula ingresada no existe en la base de datos", " Ingrese el nombre");
-                        }
-        } else  {
-                utilitario.agregarMensajeError("Gestor no corresponde", "");
-                }
+               nombre = tab_dato.getValor("NOMBRE_GESTOR");
+               tab_entrega.setValor("nombre_quien_retira", nombre);
+               utilitario.addUpdate("tab_entrega");
+               cantidad();
+           } else {
+               utilitario.agregarMensajeInfo("Cédula ingresada no existe en la base de datos", " Ingrese el nombre");
+           }
+       } else  {
+           utilitario.agregarMensajeError("Gestor no corresponde", "");
+       }
     }
      
  public void cantidad(){
@@ -254,51 +281,51 @@ public class pre_placas_pendientes extends Pantalla{
         dia_dialogoe.dibujar();
     }
     
-    public void GeneraCantida(){
-       Integer  valinicio = Integer.parseInt(txt_numero.getValue()+"");
+ public void GeneraCantida(){
+        Integer  valinicio = Integer.parseInt(txt_numero.getValue()+"");
         for (int i = 1; i < valinicio; i++) {
-                             tab_entrega.insertar();
-                                tab_entrega.setValor("cedula_quien_retira", cedula);
-                                tab_entrega.setValor("nombre_quien_retira", nombre);
-                             dia_dialogoe.cerrar();
-                         }
-    }
+            tab_entrega.insertar();
+            tab_entrega.setValor("cedula_quien_retira", cedula);
+            tab_entrega.setValor("nombre_quien_retira", nombre);
+            utilitario.addUpdate("tab_entrega");
+            dia_dialogoe.cerrar();
+        }
+ }
     
     public void revisar(){
-        
-      TablaGenerica tab_dato1 = ser_Placa.getPlacaBusc(tab_entrega.getValor("placa"));
-           if(!tab_dato1.isEmpty()) {
-                  utilitario.agregarMensaje("Placa Entregada", tab_dato1.getValor("placa"));
-                  utilitario.addUpdate("tab_entrega");
+        TablaGenerica tab_dato1 = ser_Placa.getPlacaBusc(tab_entrega.getValor("placa"));
+        if(!tab_dato1.isEmpty()) {
+            utilitario.agregarMensaje("Placa Entregada", tab_dato1.getValor("placa"));
+            utilitario.addUpdate("tab_entrega");
+        }else {
+            TablaGenerica tab_dato = ser_Placa.getPlacaBus(tab_entrega.getValor("placa"));
+            if(!tab_dato.isEmpty()) {
+                utilitario.agregarMensaje("Placa Entregada", tab_dato.getValor("placa"));
+                utilitario.agregarMensaje("Propietario", tab_dato.getValor("NOMBRE_PROPIETARIO"));
+                utilitario.addUpdate("tab_entrega");
             }else {
-                   TablaGenerica tab_dato = ser_Placa.getPlacaBus(tab_entrega.getValor("placa"));
-                    if(!tab_dato.isEmpty()) {
-                            utilitario.agregarMensaje("Placa Entregada", tab_dato.getValor("placa"));
-                            utilitario.agregarMensaje("Propietario", tab_dato.getValor("NOMBRE_PROPIETARIO"));
-                            utilitario.addUpdate("tab_entrega");
-                   }else {
-                           TablaGenerica tab_dato2 = ser_Placa.getPlacaEntrega(tab_entrega.getValor("placa"));
-                             if(!tab_dato2.isEmpty()) {
-                                    tab_entrega.setValor("cedula_propietario", tab_dato2.getValor("CEDULA_RUC_PROPIETARIO"));
-                                    tab_entrega.setValor("nombre_propietario", tab_dato2.getValor("NOMBRE_PROPIETARIO"));
-                                    tab_entrega.setValor("ide_detalle_solicitud", tab_dato2.getValor("IDE_DETALLE_SOLICITUD"));
-                                    utilitario.addUpdate("tab_entrega");
-                               }else {
-                                      utilitario.agregarMensajeInfo("Placa No Entregada", "");
-                                      }
-                    }
+                TablaGenerica tab_dato2 = ser_Placa.getPlacaEntrega(tab_entrega.getValor("placa"));
+                if(!tab_dato2.isEmpty()) {
+                    tab_entrega.setValor("cedula_propietario", tab_dato2.getValor("CEDULA_RUC_PROPIETARIO"));
+                    tab_entrega.setValor("nombre_propietario", tab_dato2.getValor("NOMBRE_PROPIETARIO"));
+                    tab_entrega.setValor("ide_detalle_solicitud", tab_dato2.getValor("IDE_DETALLE_SOLICITUD"));
+                    utilitario.addUpdate("tab_entrega");
+                }else {
+                    utilitario.agregarMensajeInfo("Placa No Entregada", "");
+                }
             }
+        }
     }
     
     public void ejeGuardar(){
         TablaGenerica tab_dato = ser_Placa.getIDEntrega(Integer.parseInt(tab_entrega.getValor("IDE_DETALLE_SOLICITUD")));
-            if (!tab_dato.isEmpty()) {
+        if (!tab_dato.isEmpty()) {
                 // Cargo la información de la base de datos maestra  
-                ser_Placa.actualizarDS1(Integer.parseInt(tab_dato.getValor("IDE_ENTREGA_PLACA")),Integer.parseInt(tab_entrega.getValor("IDE_DETALLE_SOLICITUD")),tab_entrega.getValor("NOMBRE_quien_RETIRA"), tab_entrega.getValor("CEDULA_quien_RETIRA"));
-                actualizarDE();
-            } else {
-                utilitario.agregarMensajeInfo("Proceso no encuentra ide detalle", "");
-            }
+            ser_Placa.actualizarDS1(Integer.parseInt(tab_dato.getValor("IDE_ENTREGA_PLACA")),Integer.parseInt(tab_entrega.getValor("IDE_DETALLE_SOLICITUD")),tab_entrega.getValor("NOMBRE_quien_RETIRA"), tab_entrega.getValor("CEDULA_quien_RETIRA"));
+            actualizarDE();
+        } else {
+            utilitario.agregarMensajeInfo("Proceso no encuentra ide detalle", "");
+        }
     }   
          
     public void actualizarDE(){
@@ -435,6 +462,14 @@ public class pre_placas_pendientes extends Pantalla{
 
     public void setSet_placa(SeleccionTabla set_placa) {
         this.set_placa = set_placa;
+    }
+
+    public AutoCompletar getAut_busca() {
+        return aut_busca;
+    }
+
+    public void setAut_busca(AutoCompletar aut_busca) {
+        this.aut_busca = aut_busca;
     }
     
 }
