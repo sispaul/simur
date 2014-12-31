@@ -33,6 +33,7 @@ public class AbastecimientoCombustible {
                 "v.MVE_PLACA,\n" +
                 "v.MVE_TIPO_COMBUSTIBLE,\n" +
                 "v.MVE_CONDUCTOR,\n" +
+                "v.MVE_TIPO_INGRESO,\n" +
                 "(m.MVMARCA_DESCRIPCION+'  '+o.MVMODELO_DESCRIPCION+'  '+r.MVERSION_DESCRIPCION) as descripcion\n" +
                 "FROM MVVEHICULO v,\n" +
                 "MVMARCA m,\n" +
