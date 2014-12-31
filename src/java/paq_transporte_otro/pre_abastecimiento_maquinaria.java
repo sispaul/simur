@@ -91,7 +91,7 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
         aut_busca.setId("aut_busca");
         aut_busca.setConexion(con_sql);
         aut_busca.setAutoCompletar("SELECT IDE_ABASTECIMIENTO_COMBUSTIBLE,NUMERO_ABASTECIMIENTO,PLACA_VEHICULO,DESCRIPCION_VEHICULO,NUMERO_VALE_ABASTECIMIENTO,FECHA_ABASTECIMIENTO\n" +
-                "FROM MVABASTECIMIENTO_COMBUSTIBLE order by FECHA_ABASTECIMIENTO");
+                "FROM MVABASTECIMIENTO_COMBUSTIBLE where TIPO_INGRESO ='M' order by FECHA_ABASTECIMIENTO");
 //        aut_busca.setMetodoChange("filtrarSolicitud");
         aut_busca.setSize(80);
         
@@ -120,7 +120,7 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
         set_lista.setId("set_lista");
         set_lista.getTab_seleccion().setConexion(con_sql);//conexion para seleccion con otra base
         set_lista.setSeleccionTabla("SELECT IDE_ABASTECIMIENTO_COMBUSTIBLE,PLACA_VEHICULO,DESCRIPCION_VEHICULO,NUMERO_VALE_ABASTECIMIENTO,GALONES,KILOMETRAJE,TOTAL,FECHA_ABASTECIMIENTO\n" +
-                "FROM MVABASTECIMIENTO_COMBUSTIBLE WHERE IDE_ABASTECIMIENTO_COMBUSTIBLE=-1 order by FECHA_ABASTECIMIENTO", "IDE_ABASTECIMIENTO_COMBUSTIBLE");
+                "FROM MVABASTECIMIENTO_COMBUSTIBLE WHERE TIPO_INGRESO ='M' and IDE_ABASTECIMIENTO_COMBUSTIBLE=-1 order by FECHA_ABASTECIMIENTO", "IDE_ABASTECIMIENTO_COMBUSTIBLE");
         set_lista.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
         set_lista.getTab_seleccion().setRows(10);
         set_lista.setRadio();
@@ -150,7 +150,7 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
         tab_tabla.getColumna("galones").setMetodoChange("galones");
         tab_tabla.getColumna("tipo_medicion").setMetodoChange("activarCasilla");
         tab_tabla.getColumna("va_hora").setMetodoChange("cal_hora");
-        tab_tabla.getColumna("MVE_TIPO_INGRESO").setMetodoChange("M");
+        tab_tabla.getColumna("TIPO_INGRESO").setValorDefecto("M");
          List list = new ArrayList();
         Object fil1[] = {
             "1", "KILOMETROS"
@@ -179,6 +179,7 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
         tab_tabla.getColumna("usu_actualizacion").setVisible(false);
         tab_tabla.getColumna("anio").setVisible(false);
         tab_tabla.getColumna("periodo").setVisible(false);
+        tab_tabla.getColumna("TIPO_INGRESO").setVisible(false);
         tab_tabla.getColumna("usu_digitacion").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         tab_tabla.getColumna("fecha_digitacion").setValorDefecto(String.valueOf(utilitario.getFechaActual()));
         tab_tabla.getColumna("hora_digitacion").setValorDefecto(String.valueOf(utilitario.getHoraActual()));
@@ -319,7 +320,6 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
     }
     
     public void actuKilometrajes(){
-        System.err.println(tab_tabla.getValor("tipo_medicion"));
         if(tab_tabla.getValor("tipo_medicion").equals("1")){
             if(tab_tabla.getValor("ide_abastecimiento_combustible")!=null && tab_tabla.getValor("ide_abastecimiento_combustible").toString().isEmpty() == false){
                 aCombustible.ActKilometraje(tab_tabla.getValor("placa_vehiculo"), Double.parseDouble(tab_tabla.getValor("kilometraje")));

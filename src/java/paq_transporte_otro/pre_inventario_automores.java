@@ -306,6 +306,9 @@ public class pre_inventario_automores extends Pantalla{
         tab_tabla.getColumna("MVE_TIPOMEDICION").setMetodoChange("activarCasilla");
         tab_tabla.getColumna("MVE_CONDUCTOR").setMetodoChange("aceptoDialogoc");
         tab_tabla.getColumna("MVE_TIPOCODIGO").setMetodoChange("activarTipo");
+        tab_tabla.getColumna("MVE_KILOMETRAJE").setMetodoChange("recorrido");
+        tab_tabla.getColumna("MVE_HOROMETRO").setMetodoChange("recorrido");
+        tab_tabla.getColumna("MVE_HOROMETRO").setMascara("0099:99");
         tab_tabla.getColumna("MVE_LOGININGRESO").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         tab_tabla.getColumna("MVE_FECHAINGRESO").setValorDefecto(utilitario.getFechaActual());
         List list = new ArrayList();
@@ -357,6 +360,7 @@ public class pre_inventario_automores extends Pantalla{
         tab_tabla.getColumna("MVE_KILOMETRAJE").setLectura(true);
         tab_tabla.getColumna("MVE_RENDIMIENTO").setLectura(true);
         tab_tabla.getColumna("MVE_ASIGNADO").setVisible(false);
+        tab_tabla.getColumna("MVE_CI_CONDUCTOR").setVisible(false);
         tab_tabla.getColumna("MVE_OBSERVACIONES").setVisible(false);
         tab_tabla.getColumna("MVE_LOGININGRESO").setVisible(false);
         tab_tabla.getColumna("MVE_LOGINACTUALI").setVisible(false);
@@ -388,6 +392,22 @@ public class pre_inventario_automores extends Pantalla{
         aut_busca.onSelect(evt);
         dibujaIngreso();
     }
+    
+    public void recorrido(){
+        if(tab_tabla.getValor("MVE_KILOMETRAJE")!=null){
+            tab_tabla.setValor("MVE_NUMIMR", "K");
+            utilitario.addUpdate("tab_tabla");
+       }else{
+        String minutos =tab_tabla.getValor("MVE_HOROMETRO").substring(5,7);
+        if(Integer.parseInt(minutos)<60){
+            tab_tabla.setValor("MVE_NUMIMR", "M");
+            utilitario.addUpdate("tab_tabla");
+        }else{
+            utilitario.agregarMensaje("Minutos No Deben Ser Mayor", "60");
+        }
+        }
+    }
+    
     //DATOS PARA VEHICULO
     //MARCA
     public void ing_marcas(){
@@ -597,6 +617,7 @@ public class pre_inventario_automores extends Pantalla{
             TablaGenerica tab_dato =aCombustible.getChofer(set_conductor.getValorSeleccionado());
             if (!tab_dato.isEmpty()) {
                 tab_tabla.setValor("MVE_CONDUCTOR", tab_dato.getValor("nombres"));
+                tab_tabla.setValor("MVE_CI_CONDUCTOR", tab_dato.getValor("cod_empleado"));
                 tab_tabla.setValor("MVE_ASIGNADO", tab_dato.getValor("activo"));
                 utilitario.addUpdate("tab_tabla");
                 dia_dialogoC.cerrar();

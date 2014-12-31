@@ -47,7 +47,7 @@ public class pre_abastecimiento_automotores extends Pantalla{
     private AbastecimientoCombustible aCombustible = (AbastecimientoCombustible) utilitario.instanciarEJB(AbastecimientoCombustible.class);
     
     public pre_abastecimiento_automotores() {
-        
+
         //usuario actual del sistema
         tab_consulta.setId("tab_consulta");
         tab_consulta.setSql("SELECT u.IDE_USUA,u.NOM_USUA,u.NICK_USUA,u.IDE_PERF,p.NOM_PERF,p.PERM_UTIL_PERF\n" +
@@ -87,7 +87,7 @@ public class pre_abastecimiento_automotores extends Pantalla{
         aut_busca.setId("aut_busca");
         aut_busca.setConexion(con_sql);
         aut_busca.setAutoCompletar("SELECT IDE_ABASTECIMIENTO_COMBUSTIBLE,NUMERO_ABASTECIMIENTO,PLACA_VEHICULO,DESCRIPCION_VEHICULO,NUMERO_VALE_ABASTECIMIENTO,FECHA_ABASTECIMIENTO\n" +
-                "FROM MVABASTECIMIENTO_COMBUSTIBLE order by FECHA_ABASTECIMIENTO");
+                "FROM MVABASTECIMIENTO_COMBUSTIBLE where TIPO_INGRESO ='K' order by FECHA_ABASTECIMIENTO");
 //        aut_busca.setMetodoChange("filtrarSolicitud");
         aut_busca.setSize(80);
         
@@ -118,7 +118,7 @@ public class pre_abastecimiento_automotores extends Pantalla{
         set_lista.setId("set_lista");
         set_lista.getTab_seleccion().setConexion(con_sql);//conexion para seleccion con otra base
         set_lista.setSeleccionTabla("SELECT IDE_ABASTECIMIENTO_COMBUSTIBLE,PLACA_VEHICULO,DESCRIPCION_VEHICULO,NUMERO_VALE_ABASTECIMIENTO,GALONES,KILOMETRAJE,TOTAL,FECHA_ABASTECIMIENTO\n" +
-                "FROM MVABASTECIMIENTO_COMBUSTIBLE WHERE TIPO_MEDICION <> '2' AND IDE_ABASTECIMIENTO_COMBUSTIBLE=-1 order by FECHA_ABASTECIMIENTO", "IDE_ABASTECIMIENTO_COMBUSTIBLE");
+                "FROM MVABASTECIMIENTO_COMBUSTIBLE WHERE TIPO_MEDICION <> '2' AND TIPO_INGRESO ='K' and IDE_ABASTECIMIENTO_COMBUSTIBLE=-1 order by FECHA_ABASTECIMIENTO", "IDE_ABASTECIMIENTO_COMBUSTIBLE");
         set_lista.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
         set_lista.getTab_seleccion().setRows(10);
         set_lista.setRadio();
@@ -166,7 +166,10 @@ public class pre_abastecimiento_automotores extends Pantalla{
         tab_tabla.getColumna("fecha_actualizacion").setVisible(false);
         tab_tabla.getColumna("usu_actualizacion").setVisible(false);
         tab_tabla.getColumna("anio").setVisible(false);
+        tab_tabla.getColumna("tipo_ingreso").setVisible(false);
         tab_tabla.getColumna("periodo").setVisible(false);
+        tab_tabla.getColumna("TIPO_INGRESO").setValorDefecto("K");
+        tab_tabla.getColumna("TIPO_INGRESO").setVisible(false);
         tab_tabla.getColumna("usu_digitacion").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         tab_tabla.getColumna("fecha_digitacion").setValorDefecto(utilitario.getFechaActual());
         tab_tabla.getColumna("hora_digitacion").setValorDefecto(utilitario.getHoraActual());
@@ -186,15 +189,20 @@ public class pre_abastecimiento_automotores extends Pantalla{
     public void busPlaca(){
         TablaGenerica tab_dato =aCombustible.getVehiculo(tab_tabla.getValor("placa_vehiculo"));
         if (!tab_dato.isEmpty()) {
-            TablaGenerica tab_datoc = aCombustible.getConductores(tab_dato.getValor("MVE_CONDUCTOR"));
-            if (!tab_datoc.isEmpty()) {
-                tab_tabla.setValor("descripcion_vehiculo", tab_dato.getValor("descripcion"));
-                tab_tabla.setValor("conductor", tab_datoc.getValor("nombres"));
-                tab_tabla.setValor("ci_conductor", tab_datoc.getValor("cedula_pass"));
-                tab_tabla.setValor("ide_tipo_combustible", tab_dato.getValor("MVE_TIPO_COMBUSTIBLE"));
-                utilitario.addUpdate("tab_tabla");
+            if(tab_dato.getValor("MVE_TIPO_INGRESO").equals("K")){
+                TablaGenerica tab_datoc = aCombustible.getConductores(tab_dato.getValor("MVE_CONDUCTOR"));
+                if (!tab_datoc.isEmpty()) {
+                    tab_tabla.setValor("descripcion_vehiculo", tab_dato.getValor("descripcion"));
+                    tab_tabla.setValor("conductor", tab_datoc.getValor("nombres"));
+                    tab_tabla.setValor("ci_conductor", tab_datoc.getValor("cod_empleado"));
+                    tab_tabla.setValor("ide_tipo_combustible", tab_dato.getValor("MVE_TIPO_COMBUSTIBLE"));
+                    tab_tabla.setValor("tipo_ingreso", tab_dato.getValor("MVE_TIPO_INGRESO"));
+                    utilitario.addUpdate("tab_tabla");
+                }else{
+                    utilitario.agregarMensajeError("Conductor","No Disponible");
+                }
             }else{
-                utilitario.agregarMensajeError("Conductor","No Disponible");
+                utilitario.agregarMensajeError("Modulo solo para Vehiculos","");
             }
         }else{
             utilitario.agregarMensajeError("Vehiculo","No Se Encuentra Registrado");
@@ -206,7 +214,7 @@ public class pre_abastecimiento_automotores extends Pantalla{
         if (!tab_dato.isEmpty()) {
             Double valor1 = Double.valueOf(tab_dato.getValor("MVE_KILOMETRAJE"));
             Double valor2 = Double.valueOf(tab_tabla.getValor("kilometraje"));
-            if(valor2>valor1){
+            if(valor2>=valor1){
                 tab_tabla.getColumna("galones").setLectura(false);
                 utilitario.addUpdate("tab_calculo");
             }else{
@@ -224,7 +232,7 @@ public class pre_abastecimiento_automotores extends Pantalla{
         if (!tab_dato.isEmpty()) {
             Double valor1 = Double.valueOf(tab_dato.getValor("MVE_CAPACIDAD_TANQUE_COMBUSTIBLE"));
             Double valor2 = Double.valueOf(tab_tabla.getValor("galones"));
-            if(valor2<valor1){
+            if(valor2<=valor1){
                 utilitario.addUpdate("tab_tabla");
                         valor();
                                 carga();
