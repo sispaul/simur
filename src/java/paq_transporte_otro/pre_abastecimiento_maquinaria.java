@@ -150,6 +150,7 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
         tab_tabla.getColumna("galones").setMetodoChange("galones");
         tab_tabla.getColumna("tipo_medicion").setMetodoChange("activarCasilla");
         tab_tabla.getColumna("va_hora").setMetodoChange("cal_hora");
+        tab_tabla.getColumna("MVE_TIPO_INGRESO").setMetodoChange("M");
          List list = new ArrayList();
         Object fil1[] = {
             "1", "KILOMETROS"
