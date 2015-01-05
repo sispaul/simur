@@ -48,7 +48,7 @@ public class AntiSueldos {
     }
     
 //Busqueda en roles de datos de servidor que solicita por numero de cedula
-    public TablaGenerica empleadosCed(String cedula){
+    public TablaGenerica empleadosCed(String cedula,Integer anio,Integer mes){
         con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
         con_postgresql();
@@ -71,15 +71,15 @@ public class AntiSueldos {
                                 " inner join srh_cargos  as c  \n" +
                                 " on c.cod_cargo=e.cod_cargo  \n" +
                                 " where  \n" +
-                                " ano= "+utilitario.getAnio(utilitario.getFechaActual())+"  \n" +
-                                " and  id_distributivo_roles=1 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (14) and e.cedula_pass like '"+cedula+"' -- and valor>0  \n" +
+                                " ano= "+anio+"  \n" +
+                                " and  id_distributivo_roles=1 and ide_periodo="+mes+" and ide_columnas in (14) and e.cedula_pass like '"+cedula+"' -- and valor>0  \n" +
                                 " order by p.ide_funcion) AS aa  \n" +
                                 "   \n" +
                                 " left join  \n" +
                                 "   \n" +
                                 " (select E.COD_EMPLEADO,r.valor AS FONDOS_RESERVA from srh_roles as r, prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and  \n" +
-                                " ano= "+utilitario.getAnio(utilitario.getFechaActual())+"  \n" +
-                                " and  id_distributivo_roles=1 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (86)  and r.ide_programa=p.ide_programa and valor>0  \n" +
+                                " ano= "+anio+"  \n" +
+                                " and  id_distributivo_roles=1 and ide_periodo="+mes+" and ide_columnas in (86)  and r.ide_programa=p.ide_programa and valor>0  \n" +
                                 " order by p.ide_funcion) as a  \n" +
                                 " on aa.COD_EMPLEADO=a.COD_EMPLEADO  \n" +
                                 "   \n" +
@@ -88,65 +88,65 @@ public class AntiSueldos {
                                 " --100%+ 25%  \n" +
                                 " (select E.COD_EMPLEADO,sum(r.valor) AS HORAS_EXTRAS from srh_roles as r, prec_programas as  p, srh_empleado as e  \n" +
                                 " where e.cod_empleado=r.ide_empleado and  \n" +
-                                " ano= "+utilitario.getAnio(utilitario.getFechaActual())+"  \n" +
-                                " and  id_distributivo_roles=1 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (92,93)  and r.ide_programa=p.ide_programa and valor>0  \n" +
+                                " ano= "+anio+"  \n" +
+                                " and  id_distributivo_roles=1 and ide_periodo="+mes+" and ide_columnas in (92,93)  and r.ide_programa=p.ide_programa and valor>0  \n" +
                                 " group by E.COD_EMPLEADO) AS b  \n" +
                                 " on aa.COD_EMPLEADO=b.COD_EMPLEADO  \n" +
                                 "   \n" +
                                 " LEFT join  \n" +
                                 "   \n" +
                                 " (select E.COD_EMPLEADO,SUM(r.valor) AS OTROS_INGRESOS from srh_roles as r, prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and  \n" +
-                                " ano= "+utilitario.getAnio(utilitario.getFechaActual())+"  \n" +
-                                " and  id_distributivo_roles=1 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (19,18,20)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as c  \n" +
+                                " ano= "+anio+"  \n" +
+                                " and  id_distributivo_roles=1 and ide_periodo="+mes+" and ide_columnas in (19,18,20)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as c  \n" +
                                 " on aa.COD_EMPLEADO=c.COD_EMPLEADO  \n" +
                                 "   \n" +
                                 " LEFT join  \n" +
                                 "   \n" +
                                 " (select E.COD_EMPLEADO,SUM(r.valor) AS TOTAL_INGRESOS from srh_roles as r, prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and  \n" +
-                                " ano= "+utilitario.getAnio(utilitario.getFechaActual())+"  \n" +
-                                " and  id_distributivo_roles=1 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (86,14,92,93,19,18,20)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as d  \n" +
+                                " ano= "+anio+"  \n" +
+                                " and  id_distributivo_roles=1 and ide_periodo="+mes+" and ide_columnas in (86,14,92,93,19,18,20)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as d  \n" +
                                 " on aa.COD_EMPLEADO=d.COD_EMPLEADO  \n" +
                                 " --------------------------------------EGRESOS  \n" +
                                 " LEFT join  \n" +
                                 "   \n" +
                                 " (select E.COD_EMPLEADO,SUM(r.valor) AS APORTE_IESS from srh_roles as r, prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and  \n" +
-                                " ano= "+utilitario.getAnio(utilitario.getFechaActual())+"  \n" +
-                                " and  id_distributivo_roles=1and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (33)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as f  \n" +
+                                " ano= "+anio+"  \n" +
+                                " and  id_distributivo_roles=1and ide_periodo="+mes+" and ide_columnas in (33)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as f  \n" +
                                 " on aa.COD_EMPLEADO=f.COD_EMPLEADO  \n" +
                                 "   \n" +
                                 " LEFT join  \n" +
                                 "   \n" +
                                 " (select E.COD_EMPLEADO,SUM(r.valor) AS IMPUESTO_RENTA from srh_roles as r, prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and  \n" +
-                                " ano= "+utilitario.getAnio(utilitario.getFechaActual())+"  \n" +
-                                " and  id_distributivo_roles=1 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (22)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as g  \n" +
+                                " ano= "+anio+"  \n" +
+                                " and  id_distributivo_roles=1 and ide_periodo="+mes+" and ide_columnas in (22)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as g  \n" +
                                 " on aa.COD_EMPLEADO=g.COD_EMPLEADO  \n" +
                                 "   \n" +
                                 " LEFT join  \n" +
                                 "   \n" +
                                 " (select E.COD_EMPLEADO,SUM(r.valor) AS PRESTAMO_IESS from srh_roles as r, prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and  \n" +
-                                " ano= "+utilitario.getAnio(utilitario.getFechaActual())+"  \n" +
-                                " and  id_distributivo_roles=1 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (21)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as h  \n" +
+                                " ano= "+anio+"  \n" +
+                                " and  id_distributivo_roles=1 and ide_periodo="+mes+" and ide_columnas in (21)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as h  \n" +
                                 " on aa.COD_EMPLEADO=h.COD_EMPLEADO  \n" +
                                 "   \n" +
                                 " LEFT join  \n" +
                                 "   \n" +
                                 " (select E.COD_EMPLEADO,SUM(r.valor) AS ANTICIPOS from srh_roles as r, prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and  \n" +
-                                " ano= "+utilitario.getAnio(utilitario.getFechaActual())+"  \n" +
+                                " ano= "+anio+"  \n" +
                                 " and  id_distributivo_roles=1 and ide_periodo=6 and ide_columnas in (1)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as i  \n" +
                                 " on aa.COD_EMPLEADO=i.COD_EMPLEADO  \n" +
                                 "   \n" +
                                 " LEFT join  \n" +
                                 "   \n" +
                                 " (select E.COD_EMPLEADO,SUM(r.valor) AS OTROS_EGRESOS from srh_roles as r, prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and  \n" +
-                                " ano= "+utilitario.getAnio(utilitario.getFechaActual())+"  \n" +
-                                " and  id_distributivo_roles=1 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (7,4,8,6,9,5,2,13,39,3,11,10,111,12)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as j  \n" +
+                                " ano= "+anio+"  \n" +
+                                " and  id_distributivo_roles=1 and ide_periodo="+mes+" and ide_columnas in (7,4,8,6,9,5,2,13,39,3,11,10,111,12)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as j  \n" +
                                 " on aa.COD_EMPLEADO=j.COD_EMPLEADO  \n" +
                                 "   \n" +
                                 " LEFT join  \n" +
                                 "   \n" +
                                 " (select E.COD_EMPLEADO,SUM(r.valor) AS TOTAL_EGRESOS from srh_roles as r, prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and  \n" +
-                                " ano= "+utilitario.getAnio(utilitario.getFechaActual())+"  \n" +
-                                " and  id_distributivo_roles=1 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (33,22,21,1,7,4,8,6,9,5,2,13,39,3,11,10,111,12)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as k  \n" +
+                                " ano= "+anio+"  \n" +
+                                " and  id_distributivo_roles=1 and ide_periodo="+mes+" and ide_columnas in (33,22,21,1,7,4,8,6,9,5,2,13,39,3,11,10,111,12)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as k  \n" +
                                 " on aa.COD_EMPLEADO=k.COD_EMPLEADO) as m  \n" +
                                 " order by nombres");
         tab_funcionario.ejecutarSql();
@@ -156,7 +156,7 @@ public class AntiSueldos {
     }
     
     //trabajador por numero de cedulas
-    public TablaGenerica trabajadoresCed(String cedula){
+    public TablaGenerica trabajadoresCed(String cedula,Integer anio,Integer mes){
         con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
         con_postgresql();
@@ -174,16 +174,16 @@ public class AntiSueldos {
                         "on e.cod_empleado=r.ide_empleado\n" +
                         "inner join srh_cargos  as c\n" +
                         "on c.cod_cargo=e.cod_cargo\n" +
-                        "where ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (40) and e.cedula_pass like '"+cedula+"' -- and valor>0\n" +
+                        "where ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in (40) and e.cedula_pass like '"+cedula+"' -- and valor>0\n" +
                         "order by p.ide_funcion) AS aa\n" +
                         "\n" +
                         "left join\n" +
                         "\n" +
                         "(select E.COD_EMPLEADO,r.valor AS FONDOS_RESERVA from srh_roles as r, prec_programas\n" +
                         "as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (89)  and\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in (89)  and\n" +
                         "r.ide_programa=p.ide_programa and valor>0\n" +
                         "order by p.ide_funcion) as a\n" +
                         "on aa.COD_EMPLEADO=a.COD_EMPLEADO\n" +
@@ -194,8 +194,8 @@ public class AntiSueldos {
                         "(select E.COD_EMPLEADO,sum(r.valor) AS HORAS_EXTRAS from srh_roles as r,\n" +
                         "prec_programas as  p, srh_empleado as e\n" +
                         "where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (75,76)  and\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in (75,76)  and\n" +
                         "r.ide_programa=p.ide_programa and valor>0\n" +
                         "group by E.COD_EMPLEADO) AS b\n" +
                         "on aa.COD_EMPLEADO=b.COD_EMPLEADO\n" +
@@ -205,8 +205,8 @@ public class AntiSueldos {
                         "(select E.COD_EMPLEADO,sum(r.valor) AS SUB_FAMILIAR from srh_roles as r,\n" +
                         "prec_programas as  p, srh_empleado as e\n" +
                         "where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (98)  and\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in (98)  and\n" +
                         "r.ide_programa=p.ide_programa and valor>0\n" +
                         "group by E.COD_EMPLEADO) AS c\n" +
                         "on aa.COD_EMPLEADO=c.COD_EMPLEADO\n" +
@@ -216,8 +216,8 @@ public class AntiSueldos {
                         "(select E.COD_EMPLEADO,sum(r.valor) AS SUB_ANTIGUEDAD from srh_roles as r,\n" +
                         "prec_programas as  p, srh_empleado as e\n" +
                         "where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (99)  and\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in (99)  and\n" +
                         "r.ide_programa=p.ide_programa and valor>0\n" +
                         "group by E.COD_EMPLEADO) AS d\n" +
                         "on aa.COD_EMPLEADO=d.COD_EMPLEADO\n" +
@@ -227,8 +227,8 @@ public class AntiSueldos {
                         "(select E.COD_EMPLEADO,sum(r.valor) AS SUB_COMISARIATO from srh_roles as r,\n" +
                         "prec_programas as  p, srh_empleado as e\n" +
                         "where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (101)  and\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in (101)  and\n" +
                         "r.ide_programa=p.ide_programa and valor>0\n" +
                         "group by E.COD_EMPLEADO) AS e\n" +
                         "on aa.COD_EMPLEADO=e.COD_EMPLEADO\n" +
@@ -237,8 +237,8 @@ public class AntiSueldos {
                         "\n" +
                         "(select E.COD_EMPLEADO,SUM(r.valor) AS OTROS_INGRESOS from srh_roles as r,\n" +
                         "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (90,41,45,115)\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in (90,41,45,115)\n" +
                         "and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as f\n" +
                         "on aa.COD_EMPLEADO=f.COD_EMPLEADO\n" +
                         "\n" +
@@ -246,8 +246,8 @@ public class AntiSueldos {
                         "\n" +
                         "(select E.COD_EMPLEADO,SUM(r.valor) AS TOTAL_INGRESOS from srh_roles as r,\n" +
                         "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in\n" +
                         "(40,125,45,75,76,89,98,99,100,102,101,107,115)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY\n" +
                         "E.COD_EMPLEADO) as g\n" +
                         "on aa.COD_EMPLEADO=g.COD_EMPLEADO\n" +
@@ -256,8 +256,8 @@ public class AntiSueldos {
                         "\n" +
                         "(select E.COD_EMPLEADO,SUM(r.valor) AS APORTE_IESS from srh_roles as r,\n" +
                         "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (71)  and\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in (71)  and\n" +
                         "r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as h\n" +
                         "on aa.COD_EMPLEADO=h.COD_EMPLEADO\n" +
                         "\n" +
@@ -265,8 +265,8 @@ public class AntiSueldos {
                         "\n" +
                         "(select E.COD_EMPLEADO,SUM(r.valor) AS PRESTAMO_IESS from srh_roles as r,\n" +
                         "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (59)  and\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in (59)  and\n" +
                         "r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as i\n" +
                         "on aa.COD_EMPLEADO=i.COD_EMPLEADO\n" +
                         "\n" +
@@ -274,8 +274,8 @@ public class AntiSueldos {
                         "\n" +
                         "(select E.COD_EMPLEADO,SUM(r.valor) AS ANTICIPOS from srh_roles as r, prec_programas\n" +
                         "as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (46)  and\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in (46)  and\n" +
                         "r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as j\n" +
                         "on aa.COD_EMPLEADO=j.COD_EMPLEADO\n" +
                         "\n" +
@@ -283,8 +283,8 @@ public class AntiSueldos {
                         "\n" +
                         "(select E.COD_EMPLEADO,SUM(r.valor) AS OTROS_EGRESOS from srh_roles as r,\n" +
                         "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in\n" +
                         "(80,91,53,50,73,84,49,5,51,74,85,48,72,108)  and r.ide_programa=p.ide_programa and\n" +
                         "valor>0 GROUP BY E.COD_EMPLEADO) as k\n" +
                         "on aa.COD_EMPLEADO=k.COD_EMPLEADO\n" +
@@ -293,8 +293,8 @@ public class AntiSueldos {
                         "\n" +
                         "(select E.COD_EMPLEADO,SUM(r.valor) AS TOTAL_EGRESOS from srh_roles as r,\n" +
                         "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in\n" +
                         "(71,59,53,46,72,56,84,74,57,73,47,80,85,48,50,108,55,51,52,106,112,91,110)\n" +
                         "and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as l\n" +
                         "on aa.COD_EMPLEADO=l.COD_EMPLEADO\n" +
@@ -314,17 +314,17 @@ public class AntiSueldos {
         con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT\n" +
-                                "s.ide_empleado_solicitante,\n" +
-                                "s.ci_solicitante,\n" +
-                                "s.solicitante\n" +
-                                "FROM\n" +
-                                "srh_solicitud_anticipo s\n" +
-                                "INNER JOIN srh_calculo_anticipo c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
-                                "WHERE\n" +
-                                "s.ide_empleado_solicitante = "+codigo+" and s.ide_tipo_anticipo = "+tipo+"\n" +
-                                "and (c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO')OR\n" +
-                                "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'APROBADO')OR\n" +
-                                "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'PAGANDO'))");
+                "s.ide_empleado_solicitante,\n" +
+                "s.ci_solicitante,\n" +
+                "s.solicitante\n" +
+                "FROM\n" +
+                "srh_solicitud_anticipo s\n" +
+                "INNER JOIN srh_calculo_anticipo c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
+                "WHERE\n" +
+                "s.ide_empleado_solicitante = "+codigo+" and s.ide_tipo_anticipo = "+tipo+"\n" +
+                "and (c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO')OR\n" +
+                "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'APROBADO')OR\n" +
+                "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'PAGANDO'))");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
@@ -332,7 +332,7 @@ public class AntiSueldos {
     }
     
     //Busqueda de servidor por apellido
-    public TablaGenerica empleados(Integer codigo){
+    public TablaGenerica empleados(Integer codigo,Integer anio,Integer mes){
         con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
         con_postgresql();
@@ -355,15 +355,15 @@ public class AntiSueldos {
                                 "inner join srh_cargos  as c\n" +
                                 "on c.cod_cargo=e.cod_cargo\n" +
                                 "where\n" +
-                                "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                                "and  id_distributivo_roles=1 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (14) and e.cod_empleado ="+codigo+" -- and valor>0\n" +
+                                "ano="+anio+"\n" +
+                                "and  id_distributivo_roles=1 and ide_periodo="+mes+" and ide_columnas in (14) and e.cod_empleado ="+codigo+" -- and valor>0\n" +
                                 "order by p.ide_funcion) AS aa\n" +
                                 "\n" +
                                 "left join\n" +
                                 "\n" +
                                 "(select E.COD_EMPLEADO,r.valor AS FONDOS_RESERVA from srh_roles as r, prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                                "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                                "and  id_distributivo_roles=1 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (86)  and r.ide_programa=p.ide_programa and valor>0\n" +
+                                "ano="+anio+"\n" +
+                                "and  id_distributivo_roles=1 and ide_periodo="+mes+" and ide_columnas in (86)  and r.ide_programa=p.ide_programa and valor>0\n" +
                                 "order by p.ide_funcion) as a\n" +
                                 "on aa.COD_EMPLEADO=a.COD_EMPLEADO\n" +
                                 "\n" +
@@ -372,65 +372,65 @@ public class AntiSueldos {
                                 "--100%+ 25%\n" +
                                 "(select E.COD_EMPLEADO,sum(r.valor) AS HORAS_EXTRAS from srh_roles as r, prec_programas as  p, srh_empleado as e\n" +
                                 "where e.cod_empleado=r.ide_empleado and\n" +
-                                "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                                "and  id_distributivo_roles=1 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (92,93)  and r.ide_programa=p.ide_programa and valor>0\n" +
+                                "ano="+anio+"\n" +
+                                "and  id_distributivo_roles=1 and ide_periodo="+mes+" and ide_columnas in (92,93)  and r.ide_programa=p.ide_programa and valor>0\n" +
                                 "group by E.COD_EMPLEADO) AS b\n" +
                                 "on aa.COD_EMPLEADO=b.COD_EMPLEADO\n" +
                                 "\n" +
                                 "LEFT join\n" +
                                 "\n" +
                                 "(select E.COD_EMPLEADO,SUM(r.valor) AS OTROS_INGRESOS from srh_roles as r, prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                                "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                                "and  id_distributivo_roles=1 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (19,18,20)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as c\n" +
+                                "ano="+anio+"\n" +
+                                "and  id_distributivo_roles=1 and ide_periodo="+mes+" and ide_columnas in (19,18,20)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as c\n" +
                                 "on aa.COD_EMPLEADO=c.COD_EMPLEADO\n" +
                                 "\n" +
                                 "LEFT join\n" +
                                 "\n" +
                                 "(select E.COD_EMPLEADO,SUM(r.valor) AS TOTAL_INGRESOS from srh_roles as r, prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                                "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                                "and  id_distributivo_roles=1 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (86,14,92,93,19,18,20)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as d\n" +
+                                "ano="+anio+"\n" +
+                                "and  id_distributivo_roles=1 and ide_periodo="+mes+" and ide_columnas in (86,14,92,93,19,18,20)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as d\n" +
                                 "on aa.COD_EMPLEADO=d.COD_EMPLEADO\n" +
                                 "--------------------------------------EGRESOS\n" +
                                 "LEFT join\n" +
                                 "\n" +
                                 "(select E.COD_EMPLEADO,SUM(r.valor) AS APORTE_IESS from srh_roles as r, prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                                "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                                "and  id_distributivo_roles=1and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (33)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as f\n" +
+                                "ano="+anio+"\n" +
+                                "and  id_distributivo_roles=1and ide_periodo="+mes+" and ide_columnas in (33)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as f\n" +
                                 "on aa.COD_EMPLEADO=f.COD_EMPLEADO\n" +
                                 "\n" +
                                 "LEFT join\n" +
                                 "\n" +
                                 "(select E.COD_EMPLEADO,SUM(r.valor) AS IMPUESTO_RENTA from srh_roles as r, prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                                "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                                "and  id_distributivo_roles=1 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (22)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as g\n" +
+                                "ano="+anio+"\n" +
+                                "and  id_distributivo_roles=1 and ide_periodo="+mes+" and ide_columnas in (22)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as g\n" +
                                 "on aa.COD_EMPLEADO=g.COD_EMPLEADO\n" +
                                 "\n" +
                                 "LEFT join\n" +
                                 "\n" +
                                 "(select E.COD_EMPLEADO,SUM(r.valor) AS PRESTAMO_IESS from srh_roles as r, prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                                "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                                "and  id_distributivo_roles=1 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (21)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as h\n" +
+                                "ano="+anio+"\n" +
+                                "and  id_distributivo_roles=1 and ide_periodo="+mes+" and ide_columnas in (21)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as h\n" +
                                 "on aa.COD_EMPLEADO=h.COD_EMPLEADO\n" +
                                 "\n" +
                                 "LEFT join\n" +
                                 "\n" +
                                 "(select E.COD_EMPLEADO,SUM(r.valor) AS ANTICIPOS from srh_roles as r, prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                                "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                                "and  id_distributivo_roles=1 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (1)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as i\n" +
+                                "ano="+anio+"\n" +
+                                "and  id_distributivo_roles=1 and ide_periodo="+mes+" and ide_columnas in (1)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as i\n" +
                                 "on aa.COD_EMPLEADO=i.COD_EMPLEADO\n" +
                                 "\n" +
                                 "LEFT join\n" +
                                 "\n" +
                                 "(select E.COD_EMPLEADO,SUM(r.valor) AS OTROS_EGRESOS from srh_roles as r, prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                                "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                                "and  id_distributivo_roles=1 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (7,4,8,6,9,5,2,13,39,3,11,10,111,12)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as j\n" +
+                                "ano="+anio+"\n" +
+                                "and  id_distributivo_roles=1 and ide_periodo="+mes+" and ide_columnas in (7,4,8,6,9,5,2,13,39,3,11,10,111,12)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as j\n" +
                                 "on aa.COD_EMPLEADO=j.COD_EMPLEADO\n" +
                                 "\n" +
                                 "LEFT join\n" +
                                 "\n" +
                                 "(select E.COD_EMPLEADO,SUM(r.valor) AS TOTAL_EGRESOS from srh_roles as r, prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                                "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                                "and  id_distributivo_roles=1 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (33,22,21,1,7,4,8,6,9,5,2,13,39,3,11,10,111,12)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as k\n" +
+                                "ano="+anio+"\n" +
+                                "and  id_distributivo_roles=1 and ide_periodo="+mes+" and ide_columnas in (33,22,21,1,7,4,8,6,9,5,2,13,39,3,11,10,111,12)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as k\n" +
                                 "on aa.COD_EMPLEADO=k.COD_EMPLEADO) as m\n" +
                                 "order by nombres");
         tab_funcionario.ejecutarSql();
@@ -439,7 +439,7 @@ public class AntiSueldos {
         return tab_funcionario; 
     }
     
-    public TablaGenerica trabajadores(Integer codigo){
+    public TablaGenerica trabajadores(Integer codigo,Integer anio,Integer mes){
         con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
         con_postgresql();
@@ -457,16 +457,16 @@ public class AntiSueldos {
                         "on e.cod_empleado=r.ide_empleado\n" +
                         "inner join srh_cargos  as c\n" +
                         "on c.cod_cargo=e.cod_cargo\n" +
-                        "where ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (40) and e.cod_empleado ="+codigo+" -- and valor>0\n" +
+                        "where ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in (40) and e.cod_empleado ="+codigo+" -- and valor>0\n" +
                         "order by p.ide_funcion) AS aa\n" +
                         "\n" +
                         "left join\n" +
                         "\n" +
                         "(select E.COD_EMPLEADO,r.valor AS FONDOS_RESERVA from srh_roles as r, prec_programas\n" +
                         "as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (89)  and\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in (89)  and\n" +
                         "r.ide_programa=p.ide_programa and valor>0\n" +
                         "order by p.ide_funcion) as a\n" +
                         "on aa.COD_EMPLEADO=a.COD_EMPLEADO\n" +
@@ -477,8 +477,8 @@ public class AntiSueldos {
                         "(select E.COD_EMPLEADO,sum(r.valor) AS HORAS_EXTRAS from srh_roles as r,\n" +
                         "prec_programas as  p, srh_empleado as e\n" +
                         "where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (75,76)  and\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in (75,76)  and\n" +
                         "r.ide_programa=p.ide_programa and valor>0\n" +
                         "group by E.COD_EMPLEADO) AS b\n" +
                         "on aa.COD_EMPLEADO=b.COD_EMPLEADO\n" +
@@ -488,8 +488,8 @@ public class AntiSueldos {
                         "(select E.COD_EMPLEADO,sum(r.valor) AS SUB_FAMILIAR from srh_roles as r,\n" +
                         "prec_programas as  p, srh_empleado as e\n" +
                         "where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (98)  and\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in (98)  and\n" +
                         "r.ide_programa=p.ide_programa and valor>0\n" +
                         "group by E.COD_EMPLEADO) AS c\n" +
                         "on aa.COD_EMPLEADO=c.COD_EMPLEADO\n" +
@@ -499,8 +499,8 @@ public class AntiSueldos {
                         "(select E.COD_EMPLEADO,sum(r.valor) AS SUB_ANTIGUEDAD from srh_roles as r,\n" +
                         "prec_programas as  p, srh_empleado as e\n" +
                         "where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (99)  and\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in (99)  and\n" +
                         "r.ide_programa=p.ide_programa and valor>0\n" +
                         "group by E.COD_EMPLEADO) AS d\n" +
                         "on aa.COD_EMPLEADO=d.COD_EMPLEADO\n" +
@@ -510,8 +510,8 @@ public class AntiSueldos {
                         "(select E.COD_EMPLEADO,sum(r.valor) AS SUB_COMISARIATO from srh_roles as r,\n" +
                         "prec_programas as  p, srh_empleado as e\n" +
                         "where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (101)  and\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in (101)  and\n" +
                         "r.ide_programa=p.ide_programa and valor>0\n" +
                         "group by E.COD_EMPLEADO) AS e\n" +
                         "on aa.COD_EMPLEADO=e.COD_EMPLEADO\n" +
@@ -520,8 +520,8 @@ public class AntiSueldos {
                         "\n" +
                         "(select E.COD_EMPLEADO,SUM(r.valor) AS OTROS_INGRESOS from srh_roles as r,\n" +
                         "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (90,41,45,115)\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in (90,41,45,115)\n" +
                         "and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as f\n" +
                         "on aa.COD_EMPLEADO=f.COD_EMPLEADO\n" +
                         "\n" +
@@ -529,8 +529,8 @@ public class AntiSueldos {
                         "\n" +
                         "(select E.COD_EMPLEADO,SUM(r.valor) AS TOTAL_INGRESOS from srh_roles as r,\n" +
                         "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in\n" +
                         "(40,125,45,75,76,89,98,99,100,102,101,107,115)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY\n" +
                         "E.COD_EMPLEADO) as g\n" +
                         "on aa.COD_EMPLEADO=g.COD_EMPLEADO\n" +
@@ -539,8 +539,8 @@ public class AntiSueldos {
                         "\n" +
                         "(select E.COD_EMPLEADO,SUM(r.valor) AS APORTE_IESS from srh_roles as r,\n" +
                         "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (71)  and\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in (71)  and\n" +
                         "r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as h\n" +
                         "on aa.COD_EMPLEADO=h.COD_EMPLEADO\n" +
                         "\n" +
@@ -548,8 +548,8 @@ public class AntiSueldos {
                         "\n" +
                         "(select E.COD_EMPLEADO,SUM(r.valor) AS PRESTAMO_IESS from srh_roles as r,\n" +
                         "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (59)  and\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in (59)  and\n" +
                         "r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as i\n" +
                         "on aa.COD_EMPLEADO=i.COD_EMPLEADO\n" +
                         "\n" +
@@ -557,8 +557,8 @@ public class AntiSueldos {
                         "\n" +
                         "(select E.COD_EMPLEADO,SUM(r.valor) AS ANTICIPOS from srh_roles as r, prec_programas\n" +
                         "as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in (46)  and\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in (46)  and\n" +
                         "r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as j\n" +
                         "on aa.COD_EMPLEADO=j.COD_EMPLEADO\n" +
                         "\n" +
@@ -566,8 +566,8 @@ public class AntiSueldos {
                         "\n" +
                         "(select E.COD_EMPLEADO,SUM(r.valor) AS OTROS_EGRESOS from srh_roles as r,\n" +
                         "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in\n" +
                         "(80,91,53,50,73,84,49,5,51,74,85,48,72,108)  and r.ide_programa=p.ide_programa and\n" +
                         "valor>0 GROUP BY E.COD_EMPLEADO) as k\n" +
                         "on aa.COD_EMPLEADO=k.COD_EMPLEADO\n" +
@@ -576,8 +576,8 @@ public class AntiSueldos {
                         "\n" +
                         "(select E.COD_EMPLEADO,SUM(r.valor) AS TOTAL_EGRESOS from srh_roles as r,\n" +
                         "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n" +
-                        "ano="+utilitario.getAnio(utilitario.getFechaActual())+"\n" +
-                        "and  id_distributivo_roles=2 and ide_periodo="+(utilitario.getMes(utilitario.getFechaActual())-1)+" and ide_columnas in\n" +
+                        "ano="+anio+"\n" +
+                        "and  id_distributivo_roles=2 and ide_periodo="+mes+" and ide_columnas in\n" +
                         "(71,59,53,46,72,56,84,74,57,73,47,80,85,48,50,108,55,51,52,106,112,91,110)\n" +
                         "and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as l\n" +
                         "on aa.COD_EMPLEADO=l.COD_EMPLEADO\n" +
