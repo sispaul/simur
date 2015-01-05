@@ -629,7 +629,7 @@ public class pre_inventario_automores extends Pantalla{
     
     //COMPONENTES ADICIONALES ACTIVAR
     public void activarCasilla(){
-        if(tab_tabla.getValor("MVE_TIPOMEDICION").equals("HORAS")){
+        if(tab_tabla.getValor("MVE_TIPOMEDICION").equals("2")){
             tab_tabla.getColumna("MVE_KILOMETRAJE").setLectura(true);
             tab_tabla.getColumna("MVE_HOROMETRO").setLectura(false);
             tab_tabla.getColumna("MVE_RENDIMIENTO").setLectura(false);
