@@ -183,6 +183,7 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
         tab_tabla.getColumna("usu_digitacion").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         tab_tabla.getColumna("fecha_digitacion").setValorDefecto(String.valueOf(utilitario.getFechaActual()));
         tab_tabla.getColumna("hora_digitacion").setValorDefecto(String.valueOf(utilitario.getHoraActual()));
+        tab_tabla.getColumna("Va_HORa").setMascara("0099:99");
         tab_tabla.setTipoFormulario(true);
         tab_tabla.getGrid().setColumns(4);
         tab_tabla.dibujar();
@@ -302,6 +303,12 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
     }
     
     public void activarCasilla(){
+        TablaGenerica tab_dato =aCombustible.getKilometraje(tab_tabla.getValor("placa_vehiculo"));
+         if (!tab_dato.isEmpty()) {
+             
+         }else{
+             
+         }
         if(tab_tabla.getValor("TIPO_MEDICION").equals("2")){
             tab_tabla.getColumna("KILOMETRAJE").setLectura(true);
             tab_tabla.getColumna("VA_HORA").setLectura(false);
@@ -311,6 +318,7 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
             tab_tabla.getColumna("VA_HORA").setLectura(true);
             utilitario.addUpdate("tab_tabla");
         }
+        
     }
     
     public void carga(){

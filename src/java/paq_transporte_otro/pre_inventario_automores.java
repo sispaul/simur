@@ -308,15 +308,15 @@ public class pre_inventario_automores extends Pantalla{
         tab_tabla.getColumna("MVE_TIPOCODIGO").setMetodoChange("activarTipo");
         tab_tabla.getColumna("MVE_KILOMETRAJE").setMetodoChange("recorrido");
         tab_tabla.getColumna("MVE_HOROMETRO").setMetodoChange("recorrido");
-        tab_tabla.getColumna("MVE_HOROMETRO").setMascara("0099:99");
+        tab_tabla.getColumna("MVE_HOROMETRO").setMascara("9999:99");
         tab_tabla.getColumna("MVE_LOGININGRESO").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         tab_tabla.getColumna("MVE_FECHAINGRESO").setValorDefecto(utilitario.getFechaActual());
         List list = new ArrayList();
         Object fil1[] = {
-            "KILOMETROS", "KILOMETROS"
+            "1", "KILOMETROS"
         };
         Object fil2[] = {
-            "HORAS", "HORAS"
+            "2", "HORAS"
         };
         list.add(fil1);;
         list.add(fil2);;

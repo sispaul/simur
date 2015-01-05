@@ -176,6 +176,7 @@ public class AbastecimientoCombustible {
                 "MVE_SECUENCIAL,\n" +
                 "MVE_PLACA,\n" +
                 "MVE_KILOMETRAJE,\n" +
+                "MVE_TIPOMEDICION,\n" +
                 "MVE_TIPO_COMBUSTIBLE,\n" +
                 "MVE_HOROMETRO,\n" +
                 "MVE_CAPACIDAD_TANQUE_COMBUSTIBLE\n" +
