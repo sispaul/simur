@@ -438,6 +438,7 @@ public class pre_anticipo_sueldo extends Pantalla{
     
     //BUSCAR SOLICITANTE POR CEDULA
     public void llenarDatosE(){//SOLICITANTE
+        Integer anio=0,mes=0;
         TablaGenerica tab_dato = iAnticipos.VerifEmpleid(tab_anticipo.getValor("ci_solicitante"),Integer.parseInt(tab_anticipo.getValor("ide_tipo_anticipo")));
         if (!tab_dato.isEmpty()) {
             if(tab_dato.getValor("ide_tipo_anticipo").equals("1")){
@@ -446,8 +447,15 @@ public class pre_anticipo_sueldo extends Pantalla{
                 utilitario.agregarMensajeInfo("Solicitante Posee", "Anticipo ExtraOrdinario Pendiente");
             }
         }else {
-            if (utilitario.validarCedula(tab_anticipo.getValor("ci_solicitante"))) { 
-                TablaGenerica tab_dato1 = iAnticipos.empleadosCed(tab_anticipo.getValor("ci_solicitante"));//empleados
+            if(utilitario.getMes(utilitario.getFechaActual())!=1){
+                anio = utilitario.getAnio(utilitario.getFechaActual());
+                mes = utilitario.getMes(utilitario.getFechaActual())-1;
+            }else{
+                anio = utilitario.getAnio(utilitario.getFechaActual())-1;
+                mes = 12;
+            }
+            if (utilitario.validarCedula(tab_anticipo.getValor("ci_solicitante"))) {
+                TablaGenerica tab_dato1 = iAnticipos.empleadosCed(tab_anticipo.getValor("ci_solicitante"),anio,mes);//empleados
                 if (!tab_dato1.isEmpty()) {
                     Double rmu =Double.valueOf(tab_dato1.getValor("liquido_recibir"));
                     if(rmu>1){
@@ -468,7 +476,7 @@ public class pre_anticipo_sueldo extends Pantalla{
                         utilitario.agregarNotificacionInfo("SU REMUNERACION ANTERIOR NO LE PERMITE REALIZAR ANTICIPO",tab_dato1.getValor("liquido_recibir"));
                     }
                 }else {
-                    TablaGenerica tab_dato2 = iAnticipos.trabajadoresCed(tab_anticipo.getValor("ci_solicitante"));//trabajadores
+                    TablaGenerica tab_dato2 = iAnticipos.trabajadoresCed(tab_anticipo.getValor("ci_solicitante"),anio,mes);//trabajadores
                     if (!tab_dato2.isEmpty()) {
                         Double rmut =Double.valueOf(tab_dato2.getValor("liquido_recibir"));
                         if(rmut>1){
@@ -495,6 +503,7 @@ public class pre_anticipo_sueldo extends Pantalla{
             } else {
                 utilitario.agregarMensajeError("El Número de Cédula no es válido", "");
             }
+            
         }
     }
  
@@ -517,6 +526,7 @@ public class pre_anticipo_sueldo extends Pantalla{
     }
     
     public void aceptoSolicitante(){
+        Integer anio=0,mes=0;
         if (set_solicitante.getValorSeleccionado()!= null) {
             TablaGenerica tab_dato = iAnticipos.VerifEmpleCod(Integer.parseInt(set_solicitante.getValorSeleccionado()),Integer.parseInt(tab_anticipo.getValor("ide_tipo_anticipo")));
             if (!tab_dato.isEmpty()) {
@@ -526,7 +536,14 @@ public class pre_anticipo_sueldo extends Pantalla{
                     utilitario.agregarMensajeInfo("Solicitante Posee", "Anticipo ExtraOrdinario Pendiente");
                 }
             }else {
-                TablaGenerica tab_dato1 = iAnticipos.empleados(Integer.parseInt(set_solicitante.getValorSeleccionado()));//empleados
+                if(utilitario.getMes(utilitario.getFechaActual())!=1){
+                    anio = utilitario.getAnio(utilitario.getFechaActual());
+                    mes = utilitario.getMes(utilitario.getFechaActual())-1;
+                }else{
+                    anio = utilitario.getAnio(utilitario.getFechaActual())-1;
+                    mes = 12;
+                }
+                TablaGenerica tab_dato1 = iAnticipos.empleados(Integer.parseInt(set_solicitante.getValorSeleccionado()),anio,mes);//empleados
                 if (!tab_dato1.isEmpty()) {
                     if (!tab_dato1.isEmpty()) {
                         double rmu =0;
@@ -551,7 +568,7 @@ public class pre_anticipo_sueldo extends Pantalla{
                         }
                                 }
                 }else {
-                    TablaGenerica tab_dato2 = iAnticipos.trabajadores(Integer.parseInt(set_solicitante.getValorSeleccionado()));//trabajadores
+                    TablaGenerica tab_dato2 = iAnticipos.trabajadores(Integer.parseInt(set_solicitante.getValorSeleccionado()),anio,mes);//trabajadores
                     if (!tab_dato2.isEmpty()) {
                         double rmut = 0;
                         rmut=Double.valueOf(tab_dato2.getValor("liquido_recibir"));
