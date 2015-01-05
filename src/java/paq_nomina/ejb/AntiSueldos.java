@@ -630,7 +630,7 @@ public class AntiSueldos {
                 "WHERE\n" +
                 "e.estado = 1 AND\n" +
                 "e.cod_tipo = i.cod_tipo AND\n" +
-                "e.cod_tipo in (4,7,8,10)\n" +
+                "e.cod_tipo in (4,7,8,10,3)\n" +
                 "and e.cedula_pass like '"+ci+"'");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
@@ -645,7 +645,7 @@ public class AntiSueldos {
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT cod_empleado,cod_tipo \n" +
                                 "FROM srh_num_contratos\n" +
-                                "where cod_tipo in (4,7,8,10) and cod_empleado ="+ci);
+                                "where cod_tipo in (4,7,8,10,3) and cod_empleado ="+ci);
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
@@ -685,7 +685,7 @@ public class AntiSueldos {
         con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT cod_empleado,cedula_pass,nombres,id_distributivo,cod_tipo\n" +
-                "FROM srh_empleado WHERE estado = 1 AND cod_tipo IN (4,7,8) AND cod_empleado ="+empleado+" order by nombres ");
+                "FROM srh_empleado WHERE estado = 1 AND cod_tipo IN (4,7,8,3) AND cod_empleado ="+empleado+" order by nombres ");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
