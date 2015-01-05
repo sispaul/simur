@@ -150,7 +150,8 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
         tab_tabla.getColumna("galones").setMetodoChange("galones");
         tab_tabla.getColumna("tipo_medicion").setMetodoChange("activarCasilla");
         tab_tabla.getColumna("va_hora").setMetodoChange("cal_hora");
-        tab_tabla.getColumna("TIPO_INGRESO").setValorDefecto("M");
+//        tab_tabla.getColumna("FECHA_ABASTECIMIENTO").setMetodoChange("carga");
+//        tab_tabla.getColumna("TIPO_INGRESO").setValorDefecto("M");
          List list = new ArrayList();
         Object fil1[] = {
             "1", "KILOMETROS"
@@ -170,6 +171,7 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
         tab_tabla.getColumna("total").setLectura(true);
         tab_tabla.getColumna("titulo").setEtiqueta();
         tab_tabla.getColumna("ci_conductor").setVisible(false);
+        tab_tabla.getColumna("tipo_medicion").setVisible(false);
         tab_tabla.getColumna("fecha_digitacion").setVisible(false);
         tab_tabla.getColumna("hora_digitacion").setVisible(false);
         tab_tabla.getColumna("usu_digitacion").setVisible(false);
@@ -207,6 +209,7 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
                 tab_tabla.setValor("ci_conductor", tab_datoc.getValor("cedula_pass"));
                 tab_tabla.setValor("ide_tipo_combustible", tab_dato.getValor("MVE_TIPO_COMBUSTIBLE"));
                 utilitario.addUpdate("tab_tabla");
+                activarCasilla();
             }else{
                 utilitario.agregarMensajeError("Conductor","No Disponible");
             }
@@ -221,13 +224,13 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
             Double valor1 = Double.valueOf(tab_dato.getValor("MVE_KILOMETRAJE"));
             Double valor2 = Double.valueOf(tab_tabla.getValor("kilometraje"));
             if(valor2>valor1){
-                tab_tabla.getColumna("galones").setLectura(false);
-                utilitario.addUpdate("tab_calculo");
+                tab_tabla.getColumna("GALONES").setLectura(false);
+                utilitario.addUpdate("tab_tabla");
                 carga();
             }else{
                 utilitario.agregarMensajeError("Kilometraje","Por Debajo del Anterior");
                 tab_tabla.getColumna("galones").setLectura(true);
-                utilitario.addUpdate("tab_calculo");
+                utilitario.addUpdate("tab_tabla");
             }
         }else{
             utilitario.agregarMensajeError("Valor","No Se Encuentra Registrado");
@@ -245,7 +248,6 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
                 if(Integer.parseInt(valor2)>Integer.parseInt(valor1)){
                     tab_tabla.getColumna("galones").setLectura(false);
                     utilitario.addUpdate("tab_tabla");
-                    carga();
                 }else{
                     utilitario.agregarMensajeError("Horas","Por Debajo de la Anterior");
                     tab_tabla.getColumna("galones").setLectura(true);
@@ -264,9 +266,17 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
         if (!tab_dato.isEmpty()) {
             Double valor1 = Double.valueOf(tab_dato.getValor("MVE_CAPACIDAD_TANQUE_COMBUSTIBLE"));
             Double valor2 = Double.valueOf(tab_tabla.getValor("galones"));
-            if(valor2<valor1){
-                utilitario.addUpdate("tab_tabla");
-                        valor();
+            if(valor2<=valor1){
+                TablaGenerica tab_datov =aCombustible.getCombustible(Integer.parseInt(tab_tabla.getValor("ide_tipo_combustible")));
+                if (!tab_datov.isEmpty()) {
+                    Double valorr=0.0;
+                    valorr = (Double.parseDouble(tab_datov.getValor("valor_galon"))*Double.parseDouble(tab_tabla.getValor("galones")));
+                    tab_tabla.setValor("total", String.valueOf(Math.rint(valorr*100)/100));
+                    utilitario.addUpdate("tab_tabla");
+                    secuencial();
+                }else{
+                    utilitario.agregarMensajeError("Valor","No Se Encuentra Registrado");
+                }
             }else{
                 utilitario.agregarMensajeError("Galones","Exceden Capacidad de Vehiculo");
                 tab_tabla.setValor("galones", null);
@@ -277,22 +287,8 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
         }
     }
     
-    public void valor(){
-        TablaGenerica tab_dato =aCombustible.getCombustible(Integer.parseInt(tab_tabla.getValor("ide_tipo_combustible")));
-        if (!tab_dato.isEmpty()) {
-            Double valor;
-            valor = (Double.parseDouble(tab_dato.getValor("valor_galon"))*Double.parseDouble(tab_tabla.getValor("galones")));
-            tab_tabla.setValor("total", String.valueOf(Math.rint(valor*100)/100));
-            utilitario.addUpdate("tab_tabla");
-        }else{
-            utilitario.agregarMensajeError("Valor","No Se Encuentra Registrado");
-        }
-        secuencial();
-    }
-    
     public void secuencial(){
         if(tab_tabla.getValor("numero_abastecimiento")!=null && tab_tabla.getValor("numero_abastecimiento").toString().isEmpty() == false){
-
         }else{
             Integer numero = Integer.parseInt(aCombustible.listaMax(tab_tabla.getValor("placa_vehiculo"),String.valueOf(utilitario.getAnio(tab_tabla.getValor("fecha_abastecimiento"))),String.valueOf(utilitario.getMes(tab_tabla.getValor("fecha_abastecimiento")))));
             Integer cantidad=0;
@@ -304,27 +300,27 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
     
     public void activarCasilla(){
         TablaGenerica tab_dato =aCombustible.getKilometraje(tab_tabla.getValor("placa_vehiculo"));
-         if (!tab_dato.isEmpty()) {
-             
-         }else{
-             
-         }
-        if(tab_tabla.getValor("TIPO_MEDICION").equals("2")){
-            tab_tabla.getColumna("KILOMETRAJE").setLectura(true);
-            tab_tabla.getColumna("VA_HORA").setLectura(false);
-            utilitario.addUpdate("tab_tabla");
+        if (!tab_dato.isEmpty()) {
+            if(tab_dato.getValor("MVE_TIPOMEDICION").equals("1")){
+                tab_tabla.setValor("TIPO_MEDICION","1");
+                 tab_tabla.getColumna("KILOMETRAJE").setLectura(false);
+                 tab_tabla.getColumna("VA_HORA").setLectura(true);
+                 utilitario.addUpdate("tab_tabla");
+            }else{
+                tab_tabla.setValor("TIPO_MEDICION","2");
+                tab_tabla.getColumna("KILOMETRAJE").setLectura(true);
+                tab_tabla.getColumna("VA_HORA").setLectura(false);
+                utilitario.addUpdate("tab_tabla");
+            }
         }else{
-            tab_tabla.getColumna("KILOMETRAJE").setLectura(false);
-            tab_tabla.getColumna("VA_HORA").setLectura(true);
-            utilitario.addUpdate("tab_tabla");
-        }
-        
+             utilitario.agregarMensajeInfo("Vehiculo No Registrado", "");
+         }
     }
     
     public void carga(){
-       tab_tabla.setValor("anio", String.valueOf(utilitario.getAnio(tab_tabla.getValor("fecha_abastecimiento"))));
-       tab_tabla.setValor("periodo", String.valueOf(utilitario.getMes(tab_tabla.getValor("fecha_abastecimiento"))));
-       utilitario.addUpdate("tab_tabla");
+        tab_tabla.setValor("anio", String.valueOf(utilitario.getAnio(tab_tabla.getValor("fecha_abastecimiento"))));
+        tab_tabla.setValor("periodo", String.valueOf(utilitario.getMes(tab_tabla.getValor("fecha_abastecimiento"))));
+        utilitario.addUpdate("tab_tabla");
     }
     
     public void actuKilometrajes(){
