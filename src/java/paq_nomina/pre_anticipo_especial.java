@@ -549,7 +549,7 @@ public class pre_anticipo_especial extends Pantalla{
             utilitario.agregarMensaje("Garante No Disponible", "Se Encuentra En Otra Solicitud...");
         }else {
             if (utilitario.validarCedula(tab_garante.getValor("ci_garante"))) {
-                TablaGenerica tab_dato1 = iAnticipos.Garantemple(tab_garante.getValor("ci_garante"));
+                TablaGenerica tab_dato1 = iAnticipos.Garantemple1(tab_garante.getValor("ci_garante"));
                 if (!tab_dato1.isEmpty()) {
                     tab_garante.setValor("garante", tab_dato1.getValor("nombres"));
                     tab_garante.setValor("ide_empleado_garante", tab_dato1.getValor("cod_empleado"));
@@ -557,7 +557,7 @@ public class pre_anticipo_especial extends Pantalla{
                     tab_garante.setValor("id_distributivo", tab_dato1.getValor("id_distributivo"));
                     utilitario.addUpdate("tab_garante");
                 }else {
-                    TablaGenerica tab_dato2 = iAnticipos.GarNumConat(Integer.parseInt(tab_dato1.getValor("cod_empleado")));
+                    TablaGenerica tab_dato2 = iAnticipos.GarNumConat1(Integer.parseInt(tab_dato1.getValor("cod_empleado")));
                     if (!tab_dato2.isEmpty()) {
                     tab_garante.setValor("garante", tab_dato1.getValor("nombres"));
                     tab_garante.setValor("ide_empleado_garante", tab_dato2.getValor("cod_empleado"));

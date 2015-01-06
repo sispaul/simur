@@ -270,8 +270,18 @@ public class pre_anticipo_sueldo extends Pantalla{
     }
     
     public void actuPago(){
-        iAnticipos.ActualizaAnticipo();
-        verificaDetalle();
+        Integer anio=0,mes=0,esp=0;
+        if(utilitario.getMes(utilitario.getFechaActual())!=1){
+            anio = utilitario.getAnio(utilitario.getFechaActual());
+            esp = 0;
+            iAnticipos.ActualizaAnticipo(String.valueOf(anio),String.valueOf(esp));
+            verificaDetalle();
+        }else{
+            anio = utilitario.getAnio(utilitario.getFechaActual())-1;
+            mes = utilitario.getMes(utilitario.getFechaActual())+11;
+            iAnticipos.ActualizaAnticipo(String.valueOf(anio),String.valueOf(mes));
+            verificaDetalle();
+        }
     }
     
     public void verificaDetalle(){
@@ -281,6 +291,7 @@ public class pre_anticipo_sueldo extends Pantalla{
     
     public void verificarSolicitud(){
         iAnticipos.CamAnticipoSo();
+        utilitario.agregarMensaje("Cuotas Actualizadas", "");
     }
     //limpia y borrar el contenido de la pantalla
     private void limpiarPanel() {
