@@ -117,6 +117,7 @@ public class pre_solicitud_mantenimiento extends Pantalla{
         set_proveedor.getTab_seleccion().setConexion(con_postgres);
         set_proveedor.setSeleccionTabla("SELECT ide_proveedor,ruc,titular,domicilio,actividad,telefono1 FROM tes_proveedores", "ide_proveedor");
         set_proveedor.getTab_seleccion().getColumna("titular").setFiltro(true);
+        set_proveedor.getTab_seleccion().getColumna("ruc").setFiltro(true);
         set_proveedor.getTab_seleccion().setRows(10);
         set_proveedor.setRadio();
         set_proveedor.getBot_aceptar().setMetodo("acepProveedor");
@@ -212,6 +213,8 @@ public class pre_solicitud_mantenimiento extends Pantalla{
         tab_cabecera.getColumna("mca_tipo_mantenimiento").setCombo(lista);
         tab_cabecera.getColumna("mca_fechainman").setValorDefecto(utilitario.getFechaActual());
         tab_cabecera.getColumna("mca_secuencial").setVisible(false);
+        tab_cabecera.getColumna("mca_ruc_proveedor").setVisible(false);
+        tab_cabecera.getColumna("mca_cod_autorizado").setVisible(false);
         tab_cabecera.getColumna("mca_fechasoli").setVisible(false);
         tab_cabecera.getColumna("mca_fechasoli").setValorDefecto(utilitario.getHoraActual());
         tab_cabecera.getColumna("mca_fechasaman").setVisible(false);
@@ -289,6 +292,7 @@ public class pre_solicitud_mantenimiento extends Pantalla{
             TablaGenerica tab_dato =aprogramas.proveedor1(Integer.parseInt(set_proveedor.getValorSeleccionado()));
             if (!tab_dato.isEmpty()) {
                 tab_cabecera.setValor("mca_proveedor", tab_dato.getValor("titular")+"");
+                tab_cabecera.setValor("mca_ruc_proveedor", tab_dato.getValor("ruc")+"");
                 utilitario.addUpdate("tab_cabecera");
                 set_proveedor.cerrar();
             }
@@ -306,6 +310,7 @@ public class pre_solicitud_mantenimiento extends Pantalla{
             TablaGenerica tab_dato =aprogramas.empleadoCod(set_autorizador.getValorSeleccionado());
             if (!tab_dato.isEmpty()) {
                 tab_cabecera.setValor("mca_AUTORIZADO", tab_dato.getValor("nombres")+"");
+                tab_cabecera.setValor("MCA_COD_AUTORIZADO", tab_dato.getValor("cod_empleado")+"");
                 utilitario.addUpdate("tab_cabecera");
                 set_autorizador.cerrar();
                 estado();
