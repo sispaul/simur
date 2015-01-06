@@ -240,25 +240,9 @@ public class pre_abastecimiento_maquinaria extends Pantalla{
     public void cal_hora(){
         String horas =tab_tabla.getValor("va_hora").substring(0,4);
         String minutos =tab_tabla.getValor("va_hora").substring(5,7);
-        if(Integer.parseInt(minutos)<60){
-            TablaGenerica tab_dato =aCombustible.getKilometraje(tab_tabla.getValor("placa_vehiculo"));
-            if (!tab_dato.isEmpty()) {
-                String valor1 = tab_dato.getValor("MVE_HOROMETRO").substring(0,4);
-                String valor2 = tab_tabla.getValor("va_hora").substring(0,4);
-                if(Integer.parseInt(valor2)>Integer.parseInt(valor1)){
-                    tab_tabla.getColumna("galones").setLectura(false);
-                    utilitario.addUpdate("tab_tabla");
-                }else{
-                    utilitario.agregarMensajeError("Horas","Por Debajo de la Anterior");
-                    tab_tabla.getColumna("galones").setLectura(true);
-                    utilitario.addUpdate("tab_tabla");
-                }
-            }else{
-                utilitario.agregarMensajeError("Valor","No Se Encuentra Registrado");
-            }
-        }else{
-            utilitario.agregarMensaje("Minutos No Deben Ser Mayor", "60");
-        }
+        utilitario.agregarMensajeError("Horas","Por Debajo de la Anterior");
+        tab_tabla.getColumna("galones").setLectura(true);
+        utilitario.addUpdate("tab_tabla");
     }
     
     public void galones(){

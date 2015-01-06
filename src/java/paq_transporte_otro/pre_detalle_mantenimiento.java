@@ -157,7 +157,7 @@ public class pre_detalle_mantenimiento extends Pantalla{
         bot_busca.setExcluirLectura(true);
         bot_busca.setIcon("ui-icon-search");
         bot_busca.setMetodo("ing_articulos");
-        bar_botones.agregarBoton(bot_busca);
+//        bar_botones.agregarBoton(bot_busca);
         //para poder busca por apelllido el garante
         Grid gri_marcas = new Grid();
         gri_marcas.setColumns(6);
@@ -274,6 +274,7 @@ public class pre_detalle_mantenimiento extends Pantalla{
         tab_detalle.getColumna("MDE_CANTIDAD").setMetodoChange("total");
         tab_detalle.getColumna("MDE_FECHACOMP").setValorDefecto(utilitario.getFechaActual());
         tab_detalle.getColumna("MDE_COMPROBANTE").setVisible(false);
+        tab_detalle.getColumna("MAR_ARTICULO").setVisible(false);
         tab_detalle.getColumna("MDE_CANTIDAD_SOL").setVisible(false);
         tab_detalle.setRows(10);
         tab_detalle.dibujar();
@@ -312,6 +313,7 @@ public class pre_detalle_mantenimiento extends Pantalla{
         TablaGenerica tab_dato =aCombustible.getValor(tab_detalle.getValor("MAR_SECUENCIAL"));
          if (!tab_dato.isEmpty()) {
              tab_detalle.setValor("MDE_VALOR", tab_dato.getValor("MAR_VALOR"));
+             tab_detalle.setValor("MAR_ARTICULO", tab_dato.getValor("MAR_DESCRIPCION"));
              utilitario.addUpdate("tab_detalle");
          }
     }
