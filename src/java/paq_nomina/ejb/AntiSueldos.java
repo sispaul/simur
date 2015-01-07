@@ -908,15 +908,15 @@ public class AntiSueldos {
     }
     
     public void CamAnticipoF(){
-        String str_sql4 = "update srh_calculo_anticipo\n" +
-                            "SET ide_estado_anticipo = 4\n" +
-                            "from (\n" +
-                            "SELECT n1.pagado,n2.ide_anticipo\n" +
-                            "from (SELECT count(ide_anticipo) as pagado,ide_anticipo FROM srh_detalle_anticipo where ide_estado_cuota = 1 \n" +
-                            "GROUP BY ide_anticipo) n1\n" +
-                            "inner join (SELECT count(ide_anticipo) as pagando,ide_anticipo FROM srh_detalle_anticipo GROUP BY ide_anticipo) n2\n" +
-                            "on n1.ide_anticipo = n2.ide_anticipo and n1.pagado = n2.pagando ) d1\n" +
-                            "WHERE srh_calculo_anticipo.ide_solicitud_anticipo = d1.ide_anticipo";
+        String str_sql4 = "update srh_calculo_anticipo \n" +
+                "SET ide_estado_anticipo = 4 \n" +
+                "from ( \n" +
+                "SELECT n1.pagado,n2.ide_solicitud_anticipo\n" +
+                "from (SELECT count(ide_anticipo) as pagado,ide_anticipo FROM srh_detalle_anticipo where ide_estado_cuota = 1  \n" +
+                "GROUP BY ide_anticipo order by ide_anticipo) n1 \n" +
+                "inner join (select numero_cuotas_anticipo,ide_solicitud_anticipo from srh_calculo_anticipo order by ide_solicitud_anticipo) n2 \n" +
+                "on n1.ide_anticipo = n2.ide_solicitud_anticipo and n1.pagado = n2.numero_cuotas_anticipo) d1 \n" +
+                "WHERE srh_calculo_anticipo.ide_solicitud_anticipo = d1.ide_solicitud_anticipo";
         con_postgresql();
         con_postgres.ejecutarSql(str_sql4);
         con_postgres.desconectar();
