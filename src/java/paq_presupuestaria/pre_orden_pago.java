@@ -50,6 +50,8 @@ public class pre_orden_pago extends Pantalla{
         tab_orden.getColumna("tes_fecha").setVisible(false);
         tab_orden.getColumna("tes_ide_orden_pago").setVisible(false);
         tab_orden.getColumna("tes_ide_orden_pago").setVisible(false);
+        tab_orden.getColumna("tes_pagado").setVisible(false);
+        tab_orden.getColumna("tes_comprobante_egreso").setMetodoChange("estado");
         
         tab_orden.getColumna("tes_anio").setValorDefecto(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())));
         tab_orden.getColumna("tes_mes").setValorDefecto(String.valueOf(utilitario.getMes(utilitario.getFechaActual())));
@@ -107,6 +109,10 @@ public class pre_orden_pago extends Pantalla{
         utilitario.addUpdate("tab_orden");
     }
     
+    public void estado(){
+        tab_orden.setValor("tes_pagado", "S");
+        utilitario.addUpdate("tab_orden");
+    }
     public Conexion getCon_postgres() {
         return con_postgres;
     }
