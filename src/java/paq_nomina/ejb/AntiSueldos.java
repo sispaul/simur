@@ -831,35 +831,19 @@ public class AntiSueldos {
         con_postgres = null;
     }
     
-    public void ActualizaAnticipo(String anio,String especial){
-        String str_sql4 = "update srh_calculo_anticipo \n" +
-                " set valor_pagado =h.pagado, \n" +
-                " numero_cuotas_pagadas=cuota, \n" +
-                " ide_estado_anticipo = 3 \n" +
-                " from (select ide_anticipo,(confir1+confir2)as pagado,(confir3+confir4) as cuota from (\n" +
-                "select kj.*\n" +
-                ",(case when a.pagado is null then'0' when a.pagado>0 then a.pagado end)as confir1\n" +
-                ",(case when b.valor is null then'0' when b.valor>0 then b.valor end) as confir2\n" +
-                ",(case when a.cuota is null then'0' when a.cuota>0 then a.cuota end) as confir3\n" +
-                ",(case when b.cuotas is null then'0' when b.cuotas>0 then b.cuotas end) as confir4\n" +
-                "from (\n" +
-                "SELECT DISTINCT ide_anticipo\n" +
-                "FROM srh_detalle_anticipo\n" +
-                "where ide_estado_cuota = 1 and periodo <> '12' and anio = '"+anio+"') as kj\n" +
-                "left join \n" +
-                "(SELECT sum(valor) as pagado,(sum(valor)/valor) as cuota,ide_anticipo\n" +
-                "FROM srh_detalle_anticipo\n" +
-                "where ide_estado_cuota = 1 and periodo <> '12' and anio = '"+anio+"'\n" +
-                "GROUP BY valor,ide_anticipo) as a\n" +
-                "on kj.ide_anticipo = a.ide_anticipo\n" +
-                "left join \n" +
-                "(select valor, 1 as cuotas,ide_anticipo\n" +
-                "from srh_detalle_anticipo\n" +
-                "where periodo ='"+especial+"' and anio='"+anio+"' and ide_anticipo in (select ide_solicitud_anticipo from srh_calculo_anticipo\n" +
-                "where val_cuo_adi is not null) and ide_estado_cuota = 1 )as b\n" +
-                "on kj.ide_anticipo = b.ide_anticipo\n" +
-                ") as m) h \n" +
-                " where srh_calculo_anticipo.ide_solicitud_anticipo = h.ide_anticipo";
+    public void ActualizaAnticipo(String anio){
+        String str_sql4 = "update srh_calculo_anticipo  \n" +
+                "set valor_pagado =h.pagado, \n" +
+                "numero_cuotas_pagadas=cuota, \n" +
+                "ide_estado_anticipo = 3 \n" +
+                "from (SELECT ide_anticipo,sum(valor) as pagado,sum(ide_estado_cuota) as cuota\n" +
+                "FROM srh_detalle_anticipo \n" +
+                "where ide_estado_cuota = 1 and \n" +
+                "periodo in (select DISTINCT periodo from srh_detalle_anticipo \n" +
+                "where ide_estado_cuota = 1 and usu_pago_anticipado is null and fecha_pago_anticipado is null and anio = '"+anio+"' order by periodo)\n" +
+                "GROUP BY ide_anticipo\n" +
+                "order by ide_anticipo) h \n" +
+                "where srh_calculo_anticipo.ide_solicitud_anticipo = h.ide_anticipo";
         con_postgresql();
         con_postgres.ejecutarSql(str_sql4);
         con_postgres.desconectar();
