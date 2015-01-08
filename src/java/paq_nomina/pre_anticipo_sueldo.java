@@ -55,6 +55,7 @@ public class pre_anticipo_sueldo extends Pantalla{
     private Tabla set_colaborador = new Tabla();
     private Tabla set_solicitante = new Tabla();
     private Tabla set_solicitu = new Tabla();
+    private Tabla set_garante = new Tabla();
     private SeleccionTabla set_solicitud = new SeleccionTabla();
     
     //PARA ASIGNACION DE MES
@@ -75,16 +76,19 @@ public class pre_anticipo_sueldo extends Pantalla{
     private Dialogo dia_dialogoso = new Dialogo();
     private Dialogo dia_dialogosr = new Dialogo();
     private Dialogo dia_dialogoan = new Dialogo();
+    private Dialogo dia_dialogoga = new Dialogo();
     private Grid grid_d = new Grid();
     private Grid grid_ca = new Grid();
     private Grid grid_so = new Grid();
     private Grid grid_ds = new Grid();
     private Grid grid_an = new Grid();
+    private Grid grid_ga = new Grid();
     private Grid grid = new Grid();
     private Grid grids = new Grid();
     private Grid gridso = new Grid();
     private Grid gridr = new Grid();
     private Grid gridan = new Grid();
+    private Grid gridga= new Grid();
     
     //Contiene todos los elementos de la plantilla
     private Panel pan_opcion = new Panel();
@@ -207,12 +211,16 @@ public class pre_anticipo_sueldo extends Pantalla{
         Object fila2[] = {
             "2", "APELLIDO"
         };
+        Object fila3[] = {
+            "3", "GARANTE"
+        };
         lista1.add(fila1);;
         lista1.add(fila2);;
+        lista1.add(fila3);;
         cmb_seleccion.setCombo(lista1);
         
         dia_dialogoca.setId("dia_dialogoca");
-        dia_dialogoca.setTitle("SELECCIONAR TIPO DE BUSQUEDA"); //titulo
+        dia_dialogoca.setTitle("SELECCIONAR BUSQUEDA PARA SOLICITUD"); //titulo
         dia_dialogoca.setWidth("30%"); //siempre en porcentajes  ancho
         dia_dialogoca.setHeight("15%");//siempre porcentaje   alto
         dia_dialogoca.setResizable(false); //para que no se pueda cambiar el tamaño
@@ -246,6 +254,15 @@ public class pre_anticipo_sueldo extends Pantalla{
         dia_dialogoan.getBot_aceptar().setMetodo("Anular");
         grid_an.setColumns(4);
         agregarComponente(dia_dialogoan);
+        
+        dia_dialogoga.setId("dia_dialogoga");
+        dia_dialogoga.setTitle("VERIFICAR GARANTE"); //titulo
+        dia_dialogoga.setWidth("65%"); //siempre en porcentajes  ancho
+        dia_dialogoga.setHeight("60%");//siempre porcentaje   alto
+        dia_dialogoga.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogoga.getBot_aceptar().setDisabled(true);
+        grid_ga.setColumns(4);
+        agregarComponente(dia_dialogoga);
         
         dibujarSolicitud();
         
@@ -1872,13 +1889,46 @@ public class pre_anticipo_sueldo extends Pantalla{
           dia_dialogoso.dibujar();
      }
      
+    public void buscarGarantesoli(){
+        dia_dialogoga.Limpiar();
+        dia_dialogoga.setDialogo(gridga);
+        grid_ga.getChildren().add(set_garante);
+        set_garante.setId("set_garante");
+        set_garante.setConexion(con_postgres);
+        set_garante.setHeader("LISTADO DE GARANTES NO DISPONIBLES");
+        set_garante.setSql("SELECT\n" +
+                "ide_garante_anticipo,\n" +
+                "g.ci_garante as cedula,\n" +
+                "g.garante,\n" +
+                "s.ci_solicitante,\n" +
+                "s.solicitante,\n" +
+                "c.valor_anticipo,\n" +
+                "c.numero_cuotas_anticipo as plazo,\n" +
+                "c.fecha_anticipo,\n" +
+                "e.estado\n" +
+                "FROM \"public\".srh_solicitud_anticipo AS s\n" +
+                "INNER JOIN \"public\".srh_garante_anticipo AS \"g\" ON \"g\".ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
+                "INNER JOIN \"public\".srh_calculo_anticipo AS \"c\" ON \"c\".ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
+                "INNER JOIN \"public\".srh_estado_anticipo AS e ON \"e\".ide_estado_tipo = c.ide_estado_anticipo\n" +
+                "where c.ide_estado_anticipo in (1,3,2)");
+        set_garante.getColumna("cedula").setFiltro(true);
+        set_garante.getColumna("garante").setFiltro(true);
+        set_garante.setRows(10);
+        set_garante.setTipoSeleccion(false);
+        dia_dialogoga.setDialogo(grid_ga);
+        set_garante.dibujar();
+        dia_dialogoga.dibujar();
+    }
+    
     public void abrirBusqueda() {
         if(cmb_seleccion.getValue().equals("1")){
             set_solicitud.dibujar();
             tex_busqueda.limpiar();
             set_solicitud.getTab_seleccion().limpiar();
-        }else{
+        }else if(cmb_seleccion.getValue().equals("2")){
                 buscarSolicitud1();
+        }else {
+            buscarGarantesoli();
         }
     }
 
@@ -2190,6 +2240,14 @@ public class pre_anticipo_sueldo extends Pantalla{
 
     public void setTab_parametros(Tabla tab_parametros) {
         this.tab_parametros = tab_parametros;
+    }
+
+    public Tabla getSet_garante() {
+        return set_garante;
+    }
+
+    public void setSet_garante(Tabla set_garante) {
+        this.set_garante = set_garante;
     }
     
 }
