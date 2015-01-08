@@ -270,23 +270,21 @@ public class pre_anticipo_sueldo extends Pantalla{
     }
     
     public void actuPago(){
-        Integer anio=0,mes=0,esp=0;
+        Integer anio=0;
         if(utilitario.getMes(utilitario.getFechaActual())!=1){
             anio = utilitario.getAnio(utilitario.getFechaActual());
-            esp = 0;
-            iAnticipos.ActualizaAnticipo(String.valueOf(anio),String.valueOf(esp));
+            iAnticipos.ActualizaAnticipo(String.valueOf(anio));
             verificaDetalle();
         }else{
             anio = utilitario.getAnio(utilitario.getFechaActual())-1;
-            mes = utilitario.getMes(utilitario.getFechaActual())+11;
-            iAnticipos.ActualizaAnticipo(String.valueOf(anio),String.valueOf(mes));
+            iAnticipos.ActualizaAnticipo(String.valueOf(anio));
             verificaDetalle();
         }
     }
     
     public void verificaDetalle(){
         iAnticipos.CamAnticipoF();
-        verificarSolicitud();
+//        verificarSolicitud();
     }
     
     public void verificarSolicitud(){
