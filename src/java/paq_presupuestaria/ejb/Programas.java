@@ -837,7 +837,22 @@ public class Programas {
          ValorMax = tab_consulta.getValor("maximo");
          return ValorMax;
   }
- 
+   
+   public String maxComprobantes() {
+         con_postgresql();
+
+         String ValorMax;
+         TablaGenerica tab_consulta = new TablaGenerica();
+         con_postgresql();
+         tab_consulta.setConexion(con_postgres);
+         tab_consulta.setSql("select 0 as id ,\n" +
+                 "(case when max(tes_numero_orden) is null then '0' when max(tes_numero_orden)is not null then max(tes_numero_orden) end) AS maximo\n" +
+                 "from tes_orden_pago");
+         tab_consulta.ejecutarSql();
+         ValorMax = tab_consulta.getValor("maximo");
+         return ValorMax;
+  }
+   
     private void con_postgresql(){
         if(con_postgres == null){
             con_postgres = new Conexion();
