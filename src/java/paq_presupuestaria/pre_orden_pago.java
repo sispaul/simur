@@ -180,6 +180,7 @@ public class pre_orden_pago extends Pantalla{
             if (!tab_dato.isEmpty()) {
                 tab_orden.setValor("tes_proveedor", tab_dato.getValor("titular"));
                 tab_orden.getColumna("tes_cod_empleado").setLectura(true);
+                tab_orden.setValor("tes_empleado", null);
                 utilitario.addUpdate("tab_orden");//actualiza solo componentes
             }
         }else{
@@ -194,6 +195,7 @@ public class pre_orden_pago extends Pantalla{
             if (!tab_dato.isEmpty()) {
                 tab_orden.setValor("tes_empleado", tab_dato.getValor("nombres"));
                 tab_orden.getColumna("tes_id_proveedor").setLectura(true);
+                tab_orden.setValor("tes_proveedor", null);
                 utilitario.addUpdate("tab_orden");//actualiza solo componentes
             }
         }else{
