@@ -592,6 +592,44 @@ public class Programas {
     con_postgres.desconectar();
     con_postgres = null;
     }
+    public void actOrden(String tipo,Integer numero,String usu ) {
+        // Forma el sql para actualizacion
+        String str_sql2 = "update tes_orden_pago set tes_estado='A'\n" +
+                ",tes_nota='ANULADA'\n" +
+                ",tes_login_anu ='"+usu+"'\n" +
+                ",tes_fecha_anu ='"+utilitario.getFechaActual()+"'\n" +
+                "where tes_ide_orden_pago ="+numero+" and tes_numero_orden ='"+tipo+"'";
+        con_postgresql();
+    con_postgres.ejecutarSql(str_sql2);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+    
+    public void actOrdenTotal(String tipo,Integer numero,String asunto,Integer idp,String proveedor,Integer ide,String empleado
+            ,Double valor,String letras,String concepto,String acuerdo,String nota,String comprobante,String fecha,String estado,String usu) {
+        // Forma el sql para actualizacion
+        String str_sql2 = "update tes_orden_pago set\n" +
+                "tes_asunto ='"+asunto+"',\n" +
+                "tes_id_proveedor="+idp+",\n" +
+                "tes_proveedor='"+proveedor+"',\n" +
+                "tes_cod_empleado="+ide+",\n" +
+                "tes_empleado='"+empleado+"',\n" +
+                "tes_valor="+valor+",\n" +
+                "tes_valor_letras='"+letras+"',\n" +
+                "tes_concepto='"+concepto+"',\n" +
+                "tes_acuerdo='"+acuerdo+"',\n" +
+                "tes_nota='"+nota+"',\n" +
+                "tes_comprobante_egreso='"+comprobante+"',\n" +
+                "tes_fecha_comprobante='"+fecha+"',\n" +
+                "tes_estado='"+estado+"',\n" +
+                "tes_login_actu='"+usu+"',\n" +
+                "tes_fecha_actu='"+utilitario.getFechaActual()+"'\n" +
+                "where  tes_ide_orden_pago = "+numero+" and tes_numero_orden = '"+tipo+"'";
+        con_postgresql();
+    con_postgres.ejecutarSql(str_sql2);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
     
      public TablaGenerica periodo(Integer periodo){
         con_postgresql();
@@ -603,10 +641,33 @@ public class Programas {
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
-        
- }
+     }
      
-  public TablaGenerica banco(Integer banco){
+     public TablaGenerica getEmpleado(Integer periodo){
+        con_postgresql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        con_postgresql();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("select cod_empleado,nombres from srh_empleado where estado = 1 and cod_empleado="+periodo+" order by nombres");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+     }
+     
+     public TablaGenerica getProveedor(Integer periodo){
+        con_postgresql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        con_postgresql();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT ide_proveedor,titular FROM tes_proveedores where ruc <> '0' and ide_proveedor="+periodo+" order by titular");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+     }
+     
+     public TablaGenerica banco(Integer banco){
         con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
         con_postgresql();
@@ -616,10 +677,9 @@ public class Programas {
         con_postgres.desconectar();
         con_postgres = null;
         return tab_funcionario;
-        
- }
+     }
  
-  public TablaGenerica getTranferencia(Integer iden) {
+     public TablaGenerica getTranferencia(Integer iden) {
         //Busca a una empresa en la tabla maestra_ruc por ruc
         con_postgresql();
         TablaGenerica tab_persona = new TablaGenerica();
@@ -630,7 +690,7 @@ public class Programas {
         con_postgres.desconectar();
         con_postgres = null;
         return tab_persona;
-}
+     }
   
  public TablaGenerica item(Integer banco){
         con_postgresql();
