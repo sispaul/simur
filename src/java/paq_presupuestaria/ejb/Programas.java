@@ -605,13 +605,35 @@ public class Programas {
     con_postgres = null;
     }
     
-    public void actOrdenTotal(String tipo,Integer numero,String asunto,Integer idp,String proveedor,Integer ide,String empleado
+    public void actOrdenTotalPro(String tipo,Integer numero,String asunto,Integer idp,String proveedor
             ,Double valor,String letras,String concepto,String acuerdo,String nota,String comprobante,String fecha,String estado,String usu) {
         // Forma el sql para actualizacion
         String str_sql2 = "update tes_orden_pago set\n" +
                 "tes_asunto ='"+asunto+"',\n" +
                 "tes_id_proveedor="+idp+",\n" +
                 "tes_proveedor='"+proveedor+"',\n" +
+                "tes_valor="+valor+",\n" +
+                "tes_valor_letras='"+letras+"',\n" +
+                "tes_concepto='"+concepto+"',\n" +
+                "tes_acuerdo='"+acuerdo+"',\n" +
+                "tes_nota='"+nota+"',\n" +
+                "tes_comprobante_egreso='"+comprobante+"',\n" +
+                "tes_fecha_comprobante="+fecha+",\n" +
+                "tes_estado='"+estado+"',\n" +
+                "tes_login_actu='"+usu+"',\n" +
+                "tes_fecha_actu='"+utilitario.getFechaActual()+"'\n" +
+                "where  tes_ide_orden_pago = "+numero+" and tes_numero_orden = '"+tipo+"'";
+        con_postgresql();
+    con_postgres.ejecutarSql(str_sql2);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+    
+    public void actOrdenTotalEmp(String tipo,Integer numero,String asunto,Integer ide,String empleado
+            ,Double valor,String letras,String concepto,String acuerdo,String nota,String comprobante,String fecha,String estado,String usu) {
+        // Forma el sql para actualizacion
+        String str_sql2 = "update tes_orden_pago set\n" +
+                "tes_asunto ='"+asunto+"',\n" +
                 "tes_cod_empleado="+ide+",\n" +
                 "tes_empleado='"+empleado+"',\n" +
                 "tes_valor="+valor+",\n" +
@@ -620,7 +642,7 @@ public class Programas {
                 "tes_acuerdo='"+acuerdo+"',\n" +
                 "tes_nota='"+nota+"',\n" +
                 "tes_comprobante_egreso='"+comprobante+"',\n" +
-                "tes_fecha_comprobante='"+fecha+"',\n" +
+                "tes_fecha_comprobante="+fecha+",\n" +
                 "tes_estado='"+estado+"',\n" +
                 "tes_login_actu='"+usu+"',\n" +
                 "tes_fecha_actu='"+utilitario.getFechaActual()+"'\n" +
