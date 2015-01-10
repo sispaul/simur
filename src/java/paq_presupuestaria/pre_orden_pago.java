@@ -234,15 +234,27 @@ public class pre_orden_pago extends Pantalla{
     public void guardar() {
         if(tab_orden.getValor("tes_ide_orden_pago")!=null){
             if(tab_orden.getValor("tes_estado")!="A"){
-                String reg = new String();
-                programas.actOrdenTotal(tab_orden.getValor("tes_numero_orden"), Integer.parseInt(tab_orden.getValor("tes_ide_orden_pago")), tab_orden.getValor("tes_asunto"), Integer.parseInt(tab_orden.getValor("tes_id_proveedor")),
-                        tab_orden.getValor("tes_proveedor"), Integer.parseInt(tab_orden.getValor("tes_cod_empleado")),tab_orden.getValor("tes_empleado"), Double.valueOf(tab_orden.getValor("tes_valor")), tab_orden.getValor("tes_valor_letras")
-                        , tab_orden.getValor("tes_concepto"), tab_orden.getValor("tes_acuerdo"),tab_orden.getValor("tes_nota"), tab_orden.getValor("tes_comprobante_egreso"), tab_orden.getValor("tes_fecha_comprobante"), tab_orden.getValor("tes_estado"),tab_consulta.getValor("NICK_USUA"));
-                reg = tab_orden.getValorSeleccionado();
-                tab_detalle.actualizar();
-                tab_detalle.setFilaActual(reg);
-                tab_detalle.calcularPaginaActual();
-                utilitario.agregarMensaje("Registro Actualizado", "");
+                if(tab_orden.getValor("tes_cod_empleado")==null && tab_orden.getValor("tes_empleado")==null){
+                    String reg = new String();
+                    programas.actOrdenTotalPro(tab_orden.getValor("tes_numero_orden"), Integer.parseInt(tab_orden.getValor("tes_ide_orden_pago")), tab_orden.getValor("tes_asunto"), Integer.parseInt(tab_orden.getValor("tes_id_proveedor")),
+                            tab_orden.getValor("tes_proveedor"), Double.valueOf(tab_orden.getValor("tes_valor")), tab_orden.getValor("tes_valor_letras")
+                            , tab_orden.getValor("tes_concepto"), tab_orden.getValor("tes_acuerdo"),tab_orden.getValor("tes_nota"), tab_orden.getValor("tes_comprobante_egreso"), tab_orden.getValor("tes_fecha_comprobante"), tab_orden.getValor("tes_estado"),tab_consulta.getValor("NICK_USUA"));
+                    reg = tab_orden.getValorSeleccionado();
+                    tab_detalle.actualizar();
+                    tab_detalle.setFilaActual(reg);
+                    tab_detalle.calcularPaginaActual();
+                    utilitario.agregarMensaje("Registro Actualizado", "");
+                }else if(tab_orden.getValor("tes_id_proveedor")==null && tab_orden.getValor("tes_proveedor")==null){
+                    String reg = new String();
+                    programas.actOrdenTotalEmp(tab_orden.getValor("tes_numero_orden"), Integer.parseInt(tab_orden.getValor("tes_ide_orden_pago")), tab_orden.getValor("tes_asunto"), 
+                            Integer.parseInt(tab_orden.getValor("tes_cod_empleado")),tab_orden.getValor("tes_empleado"), Double.valueOf(tab_orden.getValor("tes_valor")), tab_orden.getValor("tes_valor_letras")
+                            , tab_orden.getValor("tes_concepto"), tab_orden.getValor("tes_acuerdo"),tab_orden.getValor("tes_nota"), tab_orden.getValor("tes_comprobante_egreso"), tab_orden.getValor("tes_fecha_comprobante"), tab_orden.getValor("tes_estado"),tab_consulta.getValor("NICK_USUA"));
+                    reg = tab_orden.getValorSeleccionado();
+                    tab_detalle.actualizar();
+                    tab_detalle.setFilaActual(reg);
+                    tab_detalle.calcularPaginaActual();
+                    utilitario.agregarMensaje("Registro Actualizado", "");
+                }
             }else{
                 utilitario.agregarMensajeInfo("Comprobante No Puede Ser Pagado", "Se Encuentra Anulado");
             }
