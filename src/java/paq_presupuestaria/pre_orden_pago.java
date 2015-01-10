@@ -337,6 +337,7 @@ public class pre_orden_pago extends Pantalla{
       public void aceptoOrden(){
         switch (rep_reporte.getNombre()) {
                case "IMPRIMIR ORDEN":
+                   p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
                     p_parametros.put("id_orden", tab_orden.getValor("tes_numero_orden")+"");
                     p_parametros.put("id_documento", Integer.parseInt(tab_orden.getValor("tes_ide_orden_pago")+""));
                     rep_reporte.cerrar();
