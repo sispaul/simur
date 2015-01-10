@@ -48,6 +48,7 @@ public class pre_abastecimiento_automotores extends Pantalla{
     
     public pre_abastecimiento_automotores() {
 
+        bar_botones.quitarBotonsNavegacion();
         //usuario actual del sistema
         tab_consulta.setId("tab_consulta");
         tab_consulta.setSql("SELECT u.IDE_USUA,u.NOM_USUA,u.NICK_USUA,u.IDE_PERF,p.NOM_PERF,p.PERM_UTIL_PERF\n" +
@@ -81,7 +82,15 @@ public class pre_abastecimiento_automotores extends Pantalla{
         bot_busca.setExcluirLectura(true);
         bot_busca.setIcon("ui-icon-search");
         bot_busca.setMetodo("lista");
-        bar_botones.agregarBoton(bot_busca);
+//        bar_botones.agregarBoton(bot_busca);
+        
+        bar_botones.agregarComponente(new Etiqueta("Año :"));
+        bar_botones.agregarComponente(cmb_anio);
+        bar_botones.agregarSeparador();
+        
+        bar_botones.agregarComponente(new Etiqueta("Periodo :"));
+        bar_botones.agregarComponente(cmb_periodo);
+        bar_botones.agregarSeparador();
         
         //Auto busqueda para, verificar solicitud
         aut_busca.setId("aut_busca");
@@ -391,6 +400,22 @@ public class pre_abastecimiento_automotores extends Pantalla{
 
     public void setSet_lista(SeleccionTabla set_lista) {
         this.set_lista = set_lista;
+    }
+
+    public Combo getCmb_anio() {
+        return cmb_anio;
+    }
+
+    public void setCmb_anio(Combo cmb_anio) {
+        this.cmb_anio = cmb_anio;
+    }
+
+    public Combo getCmb_periodo() {
+        return cmb_periodo;
+    }
+
+    public void setCmb_periodo(Combo cmb_periodo) {
+        this.cmb_periodo = cmb_periodo;
     }
     
 }
