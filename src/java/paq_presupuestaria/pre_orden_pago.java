@@ -186,7 +186,7 @@ public class pre_orden_pago extends Pantalla{
         dia_dialogm.setDialogo(grim);
         txt_motivo.setSize(50);
         grim.getChildren().add(new Etiqueta("INGRESE MOTIVO DE ANULACIÓN DE ORDEN :"));
-        grim.getChildren().add(new Etiqueta("_______________________________________________________"));
+        grim.getChildren().add(new Etiqueta("_____________________________________________________"));
         grim.getChildren().add(txt_motivo);
         dia_dialogm.setDialogo(grid_m);
         dia_dialogm.dibujar();
