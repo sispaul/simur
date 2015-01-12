@@ -606,7 +606,7 @@ public class Programas {
     }
     
     public void actOrdenTotalPro(String tipo,Integer numero,String asunto,Integer idp,String proveedor
-            ,Double valor,String letras,String concepto,String acuerdo,String nota,String comprobante,String fecha,String estado,String usu) {
+            ,Double valor,String letras,String concepto,String acuerdo,String nota,String comprobante,String fecha,String estado,String usu,String fechaen) {
         // Forma el sql para actualizacion
         String str_sql2 = "update tes_orden_pago set\n" +
                 "tes_asunto ='"+asunto+"',\n" +
@@ -621,6 +621,7 @@ public class Programas {
                 "tes_fecha_comprobante="+fecha+",\n" +
                 "tes_estado='"+estado+"',\n" +
                 "tes_login_actu='"+usu+"',\n" +
+                "tes_fecha_envio="+fechaen+",\n" +
                 "tes_fecha_actu='"+utilitario.getFechaActual()+"'\n" +
                 "where  tes_ide_orden_pago = "+numero+" and tes_numero_orden = '"+tipo+"'";
         con_postgresql();
@@ -630,7 +631,7 @@ public class Programas {
     }
     
     public void actOrdenTotalEmp(String tipo,Integer numero,String asunto,Integer ide,String empleado
-            ,Double valor,String letras,String concepto,String acuerdo,String nota,String comprobante,String fecha,String estado,String usu) {
+            ,Double valor,String letras,String concepto,String acuerdo,String nota,String comprobante,String fecha,String estado,String usu,String fechaen) {
         // Forma el sql para actualizacion
         String str_sql2 = "update tes_orden_pago set\n" +
                 "tes_asunto ='"+asunto+"',\n" +
@@ -645,6 +646,7 @@ public class Programas {
                 "tes_fecha_comprobante="+fecha+",\n" +
                 "tes_estado='"+estado+"',\n" +
                 "tes_login_actu='"+usu+"',\n" +
+                "tes_fecha_envio="+fechaen+",\n" +
                 "tes_fecha_actu='"+utilitario.getFechaActual()+"'\n" +
                 "where  tes_ide_orden_pago = "+numero+" and tes_numero_orden = '"+tipo+"'";
         con_postgresql();
