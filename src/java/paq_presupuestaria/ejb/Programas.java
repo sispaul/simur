@@ -592,11 +592,12 @@ public class Programas {
     con_postgres.desconectar();
     con_postgres = null;
     }
-    public void actOrden(String tipo,Integer numero,String usu ) {
+    public void actOrden(String tipo,Integer numero,String usu,String comentario) {
         // Forma el sql para actualizacion
-        String str_sql2 = "update tes_orden_pago set tes_estado='A'\n" +
+        String str_sql2 = "update tes_orden_pago set tes_estado='Anulada'\n" +
                 ",tes_nota='ANULADA'\n" +
                 ",tes_login_anu ='"+usu+"'\n" +
+                ",tes_comentario_anula ='"+comentario+"'\n" +
                 ",tes_fecha_anu ='"+utilitario.getFechaActual()+"'\n" +
                 "where tes_ide_orden_pago ="+numero+" and tes_numero_orden ='"+tipo+"'";
         con_postgresql();

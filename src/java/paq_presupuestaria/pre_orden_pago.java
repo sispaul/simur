@@ -8,11 +8,13 @@ import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
 import framework.componentes.Dialogo;
 import framework.componentes.Division;
+import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
+import framework.componentes.Texto;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
@@ -39,8 +41,14 @@ public class pre_orden_pago extends Pantalla{
     
     //Dialogo Busca 
     private Dialogo dia_dialogo = new Dialogo();
+    private Dialogo dia_dialogm = new Dialogo();
     private Grid grid_d = new Grid();
+    private Grid grid_m = new Grid();
     private Grid grid = new Grid();
+    private Grid grim = new Grid();
+    
+    //Texto de Ingreso
+    Texto txt_motivo = new Texto();
     
     @EJB
     private Programas programas =(Programas) utilitario.instanciarEJB(Programas.class);
@@ -63,9 +71,10 @@ public class pre_orden_pago extends Pantalla{
         tab_consulta.dibujar();
         
         Boton bot_anular = new Boton();
+        bot_anular.setValue("Anular");
         bot_anular.setExcluirLectura(true);
         bot_anular.setIcon("ui-icon-cancel");
-        bot_anular.setMetodo("anular");
+        bot_anular.setMetodo("quitar");
         bar_botones.agregarBoton(bot_anular);
         
         Boton bot_limpiar = new Boton();
@@ -106,7 +115,8 @@ public class pre_orden_pago extends Pantalla{
         tab_orden.getColumna("tes_fecha_anu").setVisible(false);
         tab_orden.getColumna("tes_login_actu").setVisible(false);
         tab_orden.getColumna("tes_fecha_actu").setVisible(false);
-        tab_orden.getColumna("tes_estado").setValorDefecto("P");
+        tab_orden.getColumna("tes_comentario_anula").setVisible(false);
+        tab_orden.getColumna("tes_estado").setValorDefecto("Pendiente");
         tab_orden.getColumna("tes_comprobante_egreso").setMetodoChange("estado");
         tab_orden.getColumna("tes_anio").setValorDefecto(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())));
         tab_orden.getColumna("tes_mes").setValorDefecto(String.valueOf(utilitario.getMes(utilitario.getFechaActual())));
@@ -120,14 +130,16 @@ public class pre_orden_pago extends Pantalla{
         
         tab_detalle.setId("tab_detalle");
         tab_detalle.setConexion(con_postgres);
-        tab_detalle.setSql("SELECT tes_ide_orden_pago,tes_numero_orden,tes_asunto,(case when tes_proveedor is null then tes_empleado when tes_proveedor is not null then tes_proveedor end) as beneficiario,\n" +
-                "tes_valor,tes_concepto,tes_acuerdo\n" +
+        tab_detalle.setSql("SELECT tes_ide_orden_pago,tes_numero_orden as numero_orden,tes_comprobante_egreso as numero_comprobante,\n" +
+                "(case when tes_proveedor is null then tes_empleado when tes_proveedor is not null then tes_proveedor end) AS beneficiario,\n" +
+                "tes_asunto as asunto,tes_valor as valor,tes_concepto as concepto,tes_acuerdo as acuerdo\n" +
                 "FROM tes_orden_pago where tes_anio='"+utilitario.getAnio(utilitario.getFechaActual())+"'");
         tab_detalle.getColumna("tes_ide_orden_pago").setVisible(false);
-        tab_detalle.getColumna("tes_numero_orden").setFiltroContenido();
+        tab_detalle.getColumna("numero_orden").setFiltroContenido();
         tab_detalle.getColumna("beneficiario").setFiltroContenido();
-        tab_detalle.getColumna("tes_acuerdo").setFiltroContenido();
-        tab_detalle.getColumna("tes_acuerdo").setLongitud(50);
+        tab_detalle.getColumna("acuerdo").setFiltroContenido();
+        tab_detalle.getColumna("numero_comprobante").setFiltroContenido();
+        tab_detalle.getColumna("acuerdo").setLongitud(50);
         tab_detalle.agregarRelacion(tab_orden);
         tab_detalle.setNumeroTabla(2);
         tab_detalle.setLectura(true);
@@ -156,8 +168,30 @@ public class pre_orden_pago extends Pantalla{
         sef_formato.setId("sef_formato");
         sef_formato.setConexion(con_postgres);
         agregarComponente(sef_formato);
+        
+        dia_dialogm.setId("dia_dialogm");
+        dia_dialogm.setTitle("¿ MOTIVO DE ANULACIÓN ?"); //titulo
+        dia_dialogm.setWidth("30%"); //siempre en porcentajes  ancho
+        dia_dialogm.setHeight("20%");//siempre porcentaje   alto
+        dia_dialogm.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogm.getBot_aceptar().setMetodo("anular");
+        grid_m.setColumns(4);
+        agregarComponente(dia_dialogm);
+        
     }
 
+       // METODOS PARA CANCELACION DE PLACA ASIGNADAS 
+    public void quitar (){
+        dia_dialogm.Limpiar();
+        dia_dialogm.setDialogo(grim);
+        txt_motivo.setSize(50);
+        grim.getChildren().add(new Etiqueta("INGRESE MOTIVO DE ANULACIÓN DE ORDEN :"));
+        grim.getChildren().add(new Etiqueta("_______________________________________________________"));
+        grim.getChildren().add(txt_motivo);
+        dia_dialogm.setDialogo(grid_m);
+        dia_dialogm.dibujar();
+    }
+    
     public void pendientes(){
         dia_dialogo.Limpiar();
         dia_dialogo.setDialogo(grid);
@@ -166,7 +200,7 @@ public class pre_orden_pago extends Pantalla{
         set_pendientes.setConexion(con_postgres);
         set_pendientes.setHeader("PENDIENTES");
         set_pendientes.setSql("SELECT tes_ide_orden_pago,tes_fecha_ingreso,tes_numero_orden,(case when tes_proveedor is null then tes_empleado when tes_proveedor is not null then tes_proveedor end) as beneficiario,tes_concepto,tes_valor,tes_asunto,tes_acuerdo\n" +
-                "FROM tes_orden_pago where tes_estado = 'P'");
+                "FROM tes_orden_pago where tes_estado = 'Pendiente'");
         set_pendientes.getColumna("tes_numero_orden").setFiltroContenido();
         set_pendientes.getColumna("beneficiario").setFiltroContenido();
         set_pendientes.getColumna("tes_acuerdo").setFiltroContenido();
@@ -216,18 +250,19 @@ public class pre_orden_pago extends Pantalla{
     }
     
     public void anular(){
-        if(tab_orden.getValor("tes_estado")!="C"){
+//        if(tab_orden.getValor("tes_estado")!="C"){
         String reg = new String();
-        programas.actOrden(tab_orden.getValor("tes_numero_orden"), Integer.parseInt(tab_orden.getValor("tes_ide_orden_pago")),tab_consulta.getValor("NICK_USUA"));
+        programas.actOrden(tab_orden.getValor("tes_numero_orden"), Integer.parseInt(tab_orden.getValor("tes_ide_orden_pago")),tab_consulta.getValor("NICK_USUA"),txt_motivo.getValue()+"");
         utilitario.addUpdate("tab_orden");
         utilitario.agregarMensaje("ORDEN ANULADA", "");
         reg = tab_orden.getValorSeleccionado();
         tab_detalle.actualizar();
         tab_detalle.setFilaActual(reg);
         tab_detalle.calcularPaginaActual(); 
-        }else{
-            utilitario.agregarMensajeInfo("Comprobante No Puede Anularse", "Se Encuentra Pagado");
-        }
+        dia_dialogo.cerrar();
+//        }else{
+//            utilitario.agregarMensajeInfo("Comprobante No Puede Anularse", "Se Encuentra Pagado");
+//        }
     }
     
     @Override
@@ -239,7 +274,7 @@ public class pre_orden_pago extends Pantalla{
     @Override
     public void guardar() {
         if(tab_orden.getValor("tes_ide_orden_pago")!=null){
-            if(tab_orden.getValor("tes_estado")!="A"){
+            if(tab_orden.getValor("tes_estado")!="Anulada"){
                 if(tab_orden.getValor("tes_cod_empleado")==null && tab_orden.getValor("tes_empleado")==null){
                     String reg = new String();
                     programas.actOrdenTotalPro(tab_orden.getValor("tes_numero_orden"), Integer.parseInt(tab_orden.getValor("tes_ide_orden_pago")), tab_orden.getValor("tes_asunto"), Integer.parseInt(tab_orden.getValor("tes_id_proveedor")),
@@ -312,9 +347,9 @@ public class pre_orden_pago extends Pantalla{
     }
     
     public void comprobante(){
-        if(tab_orden.getValor("tes_estado")!="A"){
+        if(tab_orden.getValor("tes_estado")!="Anulada"){
             if(tab_orden.getValor("tes_comprobante_egreso")!=null){
-            tab_orden.setValor("tes_estado", "C");
+            tab_orden.setValor("tes_estado", "Pagado");
             utilitario.addUpdate("tab_orden");
             }
         }else{
