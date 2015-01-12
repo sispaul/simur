@@ -21,6 +21,7 @@ import paq_presupuestaria.ejb.Letras_Numeros;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
+
 /**
  *
  * @author p-sistemas
@@ -30,6 +31,7 @@ public class pre_orden_pago extends Pantalla{
     //Conexion a base
     private Conexion con_postgres= new Conexion();
     
+    //Tabla Normal
     private Tabla tab_orden = new Tabla();
     private Tabla tab_detalle = new Tabla();
     private Tabla tab_consulta = new Tabla();
@@ -81,8 +83,10 @@ public class pre_orden_pago extends Pantalla{
         tab_orden.setConexion(con_postgres);
         tab_orden.setHeader("ORDENES DE PAGO");
         tab_orden.setTabla("tes_orden_pago", "tes_ide_orden_pago", 1);
-        tab_orden.getColumna("tes_id_proveedor").setCombo("SELECT ide_proveedor,titular FROM tes_proveedores where ruc <> '0' order by titular");
-        tab_orden.getColumna("tes_cod_empleado").setCombo("select cod_empleado,nombres from srh_empleado where estado = 1 order by nombres");
+        tab_orden.getColumna("tes_id_proveedor").setCombo("select ide_proveedor,titular from tes_proveedores  where ruc <> '0' order by titular");
+        tab_orden.getColumna("tes_id_proveedor").setFiltroContenido();
+        tab_orden.getColumna("tes_cod_empleado").setCombo("select cod_empleado,nombres from srh_empleado where estado = 1");
+        tab_orden.getColumna("tes_cod_empleado").setFiltroContenido();
         tab_orden.getColumna("tes_comprobante_egreso").setCombo("select comprobante as id, comprobante from tes_comprobante_pago order by comprobante");
         tab_orden.getColumna("tes_id_proveedor").setMetodoChange("proveedor");
         tab_orden.getColumna("tes_cod_empleado").setMetodoChange("empleado");
@@ -120,8 +124,9 @@ public class pre_orden_pago extends Pantalla{
                 "tes_valor,tes_concepto,tes_acuerdo\n" +
                 "FROM tes_orden_pago where tes_anio='"+utilitario.getAnio(utilitario.getFechaActual())+"'");
         tab_detalle.getColumna("tes_ide_orden_pago").setVisible(false);
-        tab_detalle.getColumna("tes_numero_orden").setFiltro(true);
-        tab_detalle.getColumna("beneficiario").setFiltro(true);
+        tab_detalle.getColumna("tes_numero_orden").setFiltroContenido();
+        tab_detalle.getColumna("beneficiario").setFiltroContenido();
+        tab_detalle.getColumna("tes_acuerdo").setFiltroContenido();
         tab_detalle.getColumna("tes_acuerdo").setLongitud(50);
         tab_detalle.agregarRelacion(tab_orden);
         tab_detalle.setNumeroTabla(2);
@@ -132,7 +137,7 @@ public class pre_orden_pago extends Pantalla{
         ptd.setPanelTabla(tab_detalle);
         
         Division div = new Division();
-        div.dividir2(pto, ptd, "45%", "h");
+        div.dividir2(pto, ptd, "55%", "h");
         agregarComponente(div);
         
         //para poder buscar por apellido el solicitante
@@ -162,8 +167,9 @@ public class pre_orden_pago extends Pantalla{
         set_pendientes.setHeader("PENDIENTES");
         set_pendientes.setSql("SELECT tes_ide_orden_pago,tes_fecha_ingreso,tes_numero_orden,(case when tes_proveedor is null then tes_empleado when tes_proveedor is not null then tes_proveedor end) as beneficiario,tes_concepto,tes_valor,tes_asunto,tes_acuerdo\n" +
                 "FROM tes_orden_pago where tes_estado = 'P'");
-        set_pendientes.getColumna("tes_numero_orden").setFiltro(true);
-        set_pendientes.getColumna("beneficiario").setFiltro(true);
+        set_pendientes.getColumna("tes_numero_orden").setFiltroContenido();
+        set_pendientes.getColumna("beneficiario").setFiltroContenido();
+        set_pendientes.getColumna("tes_acuerdo").setFiltroContenido();
         set_pendientes.getColumna("tes_acuerdo").setLongitud(35);
         set_pendientes.getColumna("beneficiario").setLongitud(50);
         set_pendientes.getColumna("tes_concepto").setLongitud(50);
@@ -179,7 +185,7 @@ public class pre_orden_pago extends Pantalla{
             TablaGenerica tab_dato = programas.getProveedor(Integer.parseInt(tab_orden.getValor("tes_id_proveedor")));
             if (!tab_dato.isEmpty()) {
                 tab_orden.setValor("tes_proveedor", tab_dato.getValor("titular"));
-                tab_orden.getColumna("tes_cod_empleado").setLectura(true);
+                tab_orden.setValor("tes_cod_empleado", null);
                 tab_orden.setValor("tes_empleado", null);
                 utilitario.addUpdate("tab_orden");//actualiza solo componentes
             }
@@ -194,7 +200,7 @@ public class pre_orden_pago extends Pantalla{
             TablaGenerica tab_dato = programas.getEmpleado(Integer.parseInt(tab_orden.getValor("tes_cod_empleado")));
             if (!tab_dato.isEmpty()) {
                 tab_orden.setValor("tes_empleado", tab_dato.getValor("nombres"));
-                tab_orden.getColumna("tes_id_proveedor").setLectura(true);
+                tab_orden.setValor("tes_id_proveedor", null);
                 tab_orden.setValor("tes_proveedor", null);
                 utilitario.addUpdate("tab_orden");//actualiza solo componentes
             }
@@ -238,7 +244,7 @@ public class pre_orden_pago extends Pantalla{
                     String reg = new String();
                     programas.actOrdenTotalPro(tab_orden.getValor("tes_numero_orden"), Integer.parseInt(tab_orden.getValor("tes_ide_orden_pago")), tab_orden.getValor("tes_asunto"), Integer.parseInt(tab_orden.getValor("tes_id_proveedor")),
                             tab_orden.getValor("tes_proveedor"), Double.valueOf(tab_orden.getValor("tes_valor")), tab_orden.getValor("tes_valor_letras")
-                            , tab_orden.getValor("tes_concepto"), tab_orden.getValor("tes_acuerdo"),tab_orden.getValor("tes_nota"), tab_orden.getValor("tes_comprobante_egreso"), tab_orden.getValor("tes_fecha_comprobante"), tab_orden.getValor("tes_estado"),tab_consulta.getValor("NICK_USUA"));
+                            , tab_orden.getValor("tes_concepto"), tab_orden.getValor("tes_acuerdo"),tab_orden.getValor("tes_nota"), tab_orden.getValor("tes_comprobante_egreso"), tab_orden.getValor("tes_fecha_comprobante"), tab_orden.getValor("tes_estado"),tab_consulta.getValor("NICK_USUA"),tab_orden.getValor("tes_fecha_envio"));
                     reg = tab_orden.getValorSeleccionado();
                     tab_detalle.actualizar();
                     tab_detalle.setFilaActual(reg);
@@ -248,7 +254,7 @@ public class pre_orden_pago extends Pantalla{
                     String reg = new String();
                     programas.actOrdenTotalEmp(tab_orden.getValor("tes_numero_orden"), Integer.parseInt(tab_orden.getValor("tes_ide_orden_pago")), tab_orden.getValor("tes_asunto"), 
                             Integer.parseInt(tab_orden.getValor("tes_cod_empleado")),tab_orden.getValor("tes_empleado"), Double.valueOf(tab_orden.getValor("tes_valor")), tab_orden.getValor("tes_valor_letras")
-                            , tab_orden.getValor("tes_concepto"), tab_orden.getValor("tes_acuerdo"),tab_orden.getValor("tes_nota"), tab_orden.getValor("tes_comprobante_egreso"), tab_orden.getValor("tes_fecha_comprobante"), tab_orden.getValor("tes_estado"),tab_consulta.getValor("NICK_USUA"));
+                            , tab_orden.getValor("tes_concepto"), tab_orden.getValor("tes_acuerdo"),tab_orden.getValor("tes_nota"), tab_orden.getValor("tes_comprobante_egreso"), tab_orden.getValor("tes_fecha_comprobante"), tab_orden.getValor("tes_estado"),tab_consulta.getValor("NICK_USUA"),tab_orden.getValor("tes_fecha_envio"));
                     reg = tab_orden.getValorSeleccionado();
                     tab_detalle.actualizar();
                     tab_detalle.setFilaActual(reg);
