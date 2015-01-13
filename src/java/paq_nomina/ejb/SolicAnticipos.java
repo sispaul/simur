@@ -1060,6 +1060,23 @@ public class SolicAnticipos {
         con_postgres = null;
         return tab_funcionario;
   }
+  
+   public TablaGenerica get_cuotadic(Integer lista){
+        con_postgresql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        con_postgresql();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT s.ide_solicitud_anticipo,c.val_cuo_adi\n" +
+                "FROM srh_solicitud_anticipo s\n" +
+                "INNER JOIN srh_calculo_anticipo c \n" +
+                "ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
+                "where s.ide_solicitud_anticipo ="+lista);
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+  }
+  
   public void migra_lista(String cedula,String usu){
       String nomina ="insert into srh_solicitud_anticipo (ci_solicitante,solicitante,rmu,id_distributivo,cod_cargo,login_ingre_solicitud,ip_ingre_solicitud,login_aprob_solicitud, \n" +
               "ip_aprob_solicitud,aprobado_solicitante,fecha_aprobacion,ide_listado,fecha_listado,anio,periodo,ide_tipo_anticipo) \n" +
