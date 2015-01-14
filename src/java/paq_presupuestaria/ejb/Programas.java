@@ -607,7 +607,7 @@ public class Programas {
     }
     
     public void actOrdenTotalPro(String tipo,Integer numero,String asunto,Integer idp,String proveedor
-            ,Double valor,String letras,String concepto,String acuerdo,String nota,String comprobante,String fecha,String estado,String usu,String fechaen) {
+            ,Double valor,String letras,String concepto,String acuerdo,String nota,String comprobante,String fecha,String estado,String usu,String fechaen,String tipoe) {
         // Forma el sql para actualizacion
         String str_sql2 = "update tes_orden_pago set\n" +
                 "tes_asunto ='"+asunto+"',\n" +
@@ -619,10 +619,33 @@ public class Programas {
                 "tes_acuerdo='"+acuerdo+"',\n" +
                 "tes_nota='"+nota+"',\n" +
                 "tes_comprobante_egreso='"+comprobante+"',\n" +
-                "tes_fecha_comprobante="+fecha+",\n" +
+                "tes_fecha_comprobante='"+fecha+"',\n" +
                 "tes_estado='"+estado+"',\n" +
                 "tes_login_actu='"+usu+"',\n" +
-                "tes_fecha_envio="+fechaen+",\n" +
+                "tipo_solicitantep='"+tipoe+"',\n" +
+                "tes_fecha_envio='"+fechaen+"',\n" +
+                "tes_fecha_actu='"+utilitario.getFechaActual()+"'\n" +
+                "where  tes_ide_orden_pago = "+numero+" and tes_numero_orden = '"+tipo+"'";
+        con_postgresql();
+    con_postgres.ejecutarSql(str_sql2);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+   
+        public void actOrdenTotalPro1(String tipo,Integer numero,String asunto,Integer idp,String proveedor
+            ,Double valor,String letras,String concepto,String acuerdo,String nota,String estado,String usu) {
+        // Forma el sql para actualizacion
+        String str_sql2 = "update tes_orden_pago set\n" +
+                "tes_asunto ='"+asunto+"',\n" +
+                "tes_id_proveedor="+idp+",\n" +
+                "tes_proveedor='"+proveedor+"',\n" +
+                "tes_valor="+valor+",\n" +
+                "tes_valor_letras='"+letras+"',\n" +
+                "tes_concepto='"+concepto+"',\n" +
+                "tes_acuerdo='"+acuerdo+"',\n" +
+                "tes_nota='"+nota+"',\n" +
+                "tes_estado='"+estado+"',\n" +
+                "tes_login_actu='"+usu+"',\n" +
                 "tes_fecha_actu='"+utilitario.getFechaActual()+"'\n" +
                 "where  tes_ide_orden_pago = "+numero+" and tes_numero_orden = '"+tipo+"'";
         con_postgresql();
@@ -632,7 +655,7 @@ public class Programas {
     }
     
     public void actOrdenTotalEmp(String tipo,Integer numero,String asunto,Integer ide,String empleado
-            ,Double valor,String letras,String concepto,String acuerdo,String nota,String comprobante,String fecha,String estado,String usu,String fechaen) {
+            ,Double valor,String letras,String concepto,String acuerdo,String nota,String comprobante,String fecha,String estado,String usu,String fechaen,String tipoa) {
         // Forma el sql para actualizacion
         String str_sql2 = "update tes_orden_pago set\n" +
                 "tes_asunto ='"+asunto+"',\n" +
@@ -644,16 +667,43 @@ public class Programas {
                 "tes_acuerdo='"+acuerdo+"',\n" +
                 "tes_nota='"+nota+"',\n" +
                 "tes_comprobante_egreso='"+comprobante+"',\n" +
-                "tes_fecha_comprobante="+fecha+",\n" +
+                "tes_fecha_comprobante='"+fecha+"',\n" +
                 "tes_estado='"+estado+"',\n" +
                 "tes_login_actu='"+usu+"',\n" +
-                "tes_fecha_envio="+fechaen+",\n" +
+                "tipo_solicitantep='"+tipoa+"',\n" +
+                "tes_fecha_envio='"+fechaen+"',\n" +
                 "tes_fecha_actu='"+utilitario.getFechaActual()+"'\n" +
                 "where  tes_ide_orden_pago = "+numero+" and tes_numero_orden = '"+tipo+"'";
         con_postgresql();
     con_postgres.ejecutarSql(str_sql2);
     con_postgres.desconectar();
     con_postgres = null;
+    }
+    
+        public void actOrdenTotalEmp1(String tipo,Integer numero,String asunto,Integer ide,String empleado
+            ,Double valor,String letras,String concepto,String acuerdo,String nota,String estado,String usu) {
+        // Forma el sql para actualizacion
+        String str_sql2 = "update tes_orden_pago set\n" +
+                "tes_asunto ='"+asunto+"',\n" +
+                "tes_cod_empleado="+ide+",\n" +
+                "tes_empleado='"+empleado+"',\n" +
+                "tes_valor="+valor+",\n" +
+                "tes_valor_letras='"+letras+"',\n" +
+                "tes_concepto='"+concepto+"',\n" +
+                "tes_acuerdo='"+acuerdo+"',\n" +
+                "tes_nota='"+nota+"',\n" +
+                "tes_estado='"+estado+"',\n" +
+                "tes_login_actu='"+usu+"',\n" +
+                "tes_fecha_actu='"+utilitario.getFechaActual()+"'\n" +
+                "where  tes_ide_orden_pago = "+numero+" and tes_numero_orden = '"+tipo+"'";
+        con_postgresql();
+    con_postgres.ejecutarSql(str_sql2);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+    
+    public void actuOrdenPag(){
+        
     }
     
      public TablaGenerica periodo(Integer periodo){
@@ -673,7 +723,7 @@ public class Programas {
         TablaGenerica tab_funcionario = new TablaGenerica();
         con_postgresql();
         tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("select cod_empleado,nombres from srh_empleado where estado = 1 and cod_empleado="+periodo+" order by nombres");
+        tab_funcionario.setSql("select cod_empleado,nombres from srh_empleado where estado = 1 or cod_empleado = 100 and cod_empleado="+periodo+" order by nombres");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
@@ -816,6 +866,18 @@ public class Programas {
         return tab_funcionario;
         
  }
+  
+  public TablaGenerica getorden_valida(String codigo){
+        con_postgresql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        con_postgresql();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT tes_ide_orden_pago,tes_numero_orden,tes_estado,tes_id_proveedor,tes_proveedor,tes_cod_empleado,tes_empleado FROM tes_orden_pago where tes_numero_orden ='"+codigo+"'");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+  }
   
    public TablaGenerica proveedor(String ruc){
         con_postgresql();
