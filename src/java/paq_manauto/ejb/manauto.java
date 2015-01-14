@@ -168,6 +168,8 @@ public class manauto {
        return tab_persona;
     }
     
+    /////clases para abastecimiento automotriz
+    
     //sentencia de conexion a base de datos
     private void con_sigag(){
         if (con_sql == null) {
