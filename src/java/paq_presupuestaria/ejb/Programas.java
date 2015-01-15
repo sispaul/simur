@@ -723,7 +723,7 @@ public class Programas {
         TablaGenerica tab_funcionario = new TablaGenerica();
         con_postgresql();
         tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("select cod_empleado,nombres from srh_empleado where estado = 1 or cod_empleado = 100 and cod_empleado="+periodo+" order by nombres");
+        tab_funcionario.setSql("select cod_empleado,nombres from srh_empleado where cod_empleado="+periodo+" order by nombres");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
