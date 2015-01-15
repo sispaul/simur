@@ -170,6 +170,85 @@ public class manauto {
     
     /////clases para abastecimiento automotriz
     
+    public TablaGenerica getVehiculo(Integer placa) {
+        con_postgresql();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT v.mve_secuencial,\n" +
+                "v.mve_placa,\n" +
+                "c.tipo_combustible_id,\n" +
+                "v.mve_conductor,\n" +
+                "v.mve_cod_conductor,\n" +
+                "v.mve_kilometros_actual,\n" +
+                "v.mve_capacidad_tanque,\n" +
+                "v.mve_numimr\n" +
+                "FROM mv_vehiculo AS v \n" +
+                "INNER JOIN  mvtipo_combustible AS c  \n" +
+                "ON v.tipo_combustible_id = c.tipo_combustible_id\n" +
+                "where v.mve_secuencial ="+placa);
+        tab_persona.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_persona;
+    }
+    
+    public String listaMax(Integer placa,String anio,String fecha) {
+         con_postgresql();
+         String ValorMax;
+         TablaGenerica tab_consulta = new TablaGenerica();
+         con_postgresql();
+         tab_consulta.setConexion(con_postgres);
+         tab_consulta.setSql("select 0 as id,\n" +
+                 "(case when count(abastecimiento_numero) is null then '0' when count(abastecimiento_numero)is not null then count(abastecimiento_numero) end) AS maximo\n" +
+                 "from mvabactecimiento_combustible\n" +
+                 "where mve_secuencial = "+placa+" and abastecimiento_anio = '"+anio+"' and abastecimiento_periodo ='"+fecha+"'");
+         tab_consulta.ejecutarSql();
+         ValorMax = tab_consulta.getValor("maximo");
+         return ValorMax;
+    }
+    
+    public TablaGenerica getCombustible(Integer tipo) {
+        con_postgresql();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT tipo_combustible_id,tipo_combustible_descripcion,tipo_valor_galon FROM mvtipo_combustible where tipo_combustible_id="+tipo);
+        tab_persona.ejecutarSql();
+       con_postgres.desconectar();
+       con_postgres = null;
+       return tab_persona;
+    }
+
+    public TablaGenerica setCombustible(Integer tipo) {
+        con_postgresql();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT abastecimiento_id, mve_secuencial FROM mvabactecimiento_combustible where abastecimiento_id ="+tipo);
+        tab_persona.ejecutarSql();
+       con_postgres.desconectar();
+       con_postgres = null;
+       return tab_persona;
+    }
+    
+    public void set_Actuabaste(Integer codigo,String vale,String fecha,String cod_cond,String conductor,Integer km,Double total,String gl,String anio,String periodo,String fechaac,String login,String time){
+    String au_sql="update mvabactecimiento_combustible set abastecimiento_numero_vale='"+vale+"', \n" +
+            "abastecimiento_fecha='"+fecha+"', \n" +
+            "abastecimiento_conductor='"+cod_cond+"', \n" +
+            "abastecimiento_cod_conductor='"+conductor+"', \n" +
+            "abastecimiento_kilometraje="+km+", \n" +
+            "abastecimiento_galones='"+gl+"', \n" +
+            "abastecimiento_total="+total+", \n" +
+            "abastecimiento_anio='"+anio+"', \n" +
+            "abastecimiento_periodo='"+periodo+"', \n" +
+            "abastecimiento_fechactu='"+fechaac+"', \n" +
+            "abastecimiento_loginactu='"+login+"', \n" +
+            "abastecimiento_horabas ='"+time+"'\n" +
+            "where abastecimiento_id ="+codigo;
+    con_postgresql();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+    
     //sentencia de conexion a base de datos
     private void con_sigag(){
         if (con_sql == null) {
