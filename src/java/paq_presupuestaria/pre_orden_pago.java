@@ -142,7 +142,7 @@ public class pre_orden_pago extends Pantalla{
         tab_detalle.agregarRelacion(tab_orden);
         tab_detalle.setNumeroTabla(2);
         tab_detalle.setLectura(true);
-        tab_detalle.setRows(8);
+        tab_detalle.setRows(7);
         tab_detalle.dibujar();
         PanelTabla ptd = new PanelTabla();
         ptd.setPanelTabla(tab_detalle);
