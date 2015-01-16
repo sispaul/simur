@@ -174,16 +174,16 @@ public class manauto {
         con_postgresql();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(con_postgres);
-        tab_persona.setSql("SELECT v.mve_secuencial,\n" +
-                "v.mve_placa,\n" +
-                "c.tipo_combustible_id,\n" +
-                "v.mve_conductor,\n" +
-                "v.mve_cod_conductor,\n" +
-                "v.mve_kilometros_actual,\n" +
-                "v.mve_capacidad_tanque,\n" +
-                "v.mve_numimr\n" +
-                "FROM mv_vehiculo AS v \n" +
-                "INNER JOIN  mvtipo_combustible AS c  \n" +
+        tab_persona.setSql("SELECT v.mve_secuencial, \n" +
+                "v.mve_placa, \n" +
+                "c.tipo_combustible_id, \n" +
+                "v.mve_conductor, \n" +
+                "v.mve_cod_conductor, \n" +
+                "(case when to_char(v.mve_kilometros_actual, '999999999.99') is null then v.mve_horometro when to_char(v.mve_kilometros_actual, '999999999.99') is not null then to_char(v.mve_kilometros_actual, '999999999.99') end) as rendimiento,\n" +
+                "v.mve_capacidad_tanque, \n" +
+                "v.mve_numimr \n" +
+                "FROM mv_vehiculo AS v  \n" +
+                "INNER JOIN  mvtipo_combustible AS c   \n" +
                 "ON v.tipo_combustible_id = c.tipo_combustible_id\n" +
                 "where v.mve_secuencial ="+placa);
         tab_persona.ejecutarSql();
@@ -249,6 +249,98 @@ public class manauto {
     con_postgres = null;
     }
     
+    //solictud de mantenimiento
+    public String Maxsolicitud() {
+         con_postgresql();
+         String ValorMax;
+         TablaGenerica tab_consulta = new TablaGenerica();
+         con_postgresql();
+         tab_consulta.setConexion(con_postgres);
+         tab_consulta.setSql("select 0 as id,\n" +
+                 "(case when max(mca_secuencial) is null then '0' when max(mca_secuencial)is not null then max(mca_secuencial) end) as maximo\n" +
+                 "from mvcab_mantenimiento");
+         tab_consulta.ejecutarSql();
+         ValorMax = tab_consulta.getValor("maximo");
+         return ValorMax;
+    }
+    
+    public String Maxsoli_vehiculo(Integer codigo) {
+         con_postgresql();
+         String ValorMax;
+         TablaGenerica tab_consulta = new TablaGenerica();
+         con_postgresql();
+         tab_consulta.setConexion(con_postgres);
+         tab_consulta.setSql("select 0 as id,\n" +
+                 "(case when max(mca_secuencial_sol) is null then '0' when max(mca_secuencial_sol)is not null then max(mca_secuencial_sol) end) as maximo\n" +
+                 "from mvcab_mantenimiento where mca_periodo='"+utilitario.getMes(utilitario.getFechaActual())+"' and mca_anio='"+utilitario.getAnio(utilitario.getFechaActual())+"' and mve_secuencial ="+codigo);
+         tab_consulta.ejecutarSql();
+         ValorMax = tab_consulta.getValor("maximo");
+         return ValorMax;
+    }
+    
+    public TablaGenerica getDetalleSol(Integer tipo) {
+        con_postgresql();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT mde_codigo,mca_codigo,mde_cod_articulo,mde_articulo FROM mvdetalle_mantenimiento where mca_codigo="+tipo);
+        tab_persona.ejecutarSql();
+       con_postgres.desconectar();
+       con_postgres = null;
+       return tab_persona;
+    }
+    
+    public void set_anulasolic(Integer codigo,String login,String motivo){
+    String au_sql="update mvcab_mantenimiento \n" +
+            "set mca_loginborrado ='"+login+"', mca_fechaborrado='"+utilitario.getFechaActual()+"', mca_motivo_anulacion='"+motivo+"',mca_estado_registro='Anulada'\n" +
+            "where mca_codigo="+codigo;
+    con_postgresql();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+    
+    public TablaGenerica getDatosSolicitud(Integer tipo,String secuencia) {
+        con_postgresql();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT mca_codigo,mve_secuencial,mca_responsable,mca_cod_responsable,mca_proveedor,mca_cod_proveedor,\n" +
+                "mca_autorizado,mca_cod_autoriza,mca_formapago,mca_detalle,mca_kmactual_hora,mca_observacion,mca_tipo_mantenimiento\n" +
+                "FROM mvcab_mantenimiento where mca_codigo = "+tipo+" and mca_secuencial='"+secuencia+"'");
+        tab_persona.ejecutarSql();
+       con_postgres.desconectar();
+       con_postgres = null;
+       return tab_persona;
+    }
+    
+    public void set_actusolic(Integer codigo,String secuencia,String eti_1,String eti_2,Integer cod_des,String descrip,String login){
+    String au_sql="update mvcab_mantenimiento set\n" +
+            ""+eti_1+"="+cod_des+",\n" +
+            ""+eti_2+"='"+descrip+"',\n" +
+            "mca_loginactuali='"+login+"',\n" +
+            "mca_fechactuali='"+utilitario.getFechaActual()+"'\n" +
+            "where mca_codigo="+codigo+" and mca_secuencial='"+secuencia+"'";
+    con_postgresql();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+    
+    //detalle de mantenimiento
+    public TablaGenerica getDetaArticulos(Integer tipo) {
+        con_postgresql();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT m.ide_mat_bodega,m.cod_material,m.des_material,a.costo_actual,e.und_medida\n" +
+                "FROM bodc_material m\n" +
+                "INNER JOIN bodt_articulos a ON a.ide_mat_bodega = m.ide_mat_bodega \n" +
+                "inner join valc_medida e on m.ide_medida = e.ide_medida\n" +
+                "where m.ide_mat_bodega ="+tipo);
+        tab_persona.ejecutarSql();
+       con_postgres.desconectar();
+       con_postgres = null;
+       return tab_persona;
+    }
+        
     //sentencia de conexion a base de datos
     private void con_sigag(){
         if (con_sql == null) {
