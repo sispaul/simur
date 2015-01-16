@@ -94,8 +94,9 @@ public class pre_orden_pago extends Pantalla{
         tab_orden.setTabla("tes_orden_pago", "tes_ide_orden_pago", 1);
         tab_orden.getColumna("tes_id_proveedor").setCombo("select ide_proveedor,titular from tes_proveedores  where ruc <> '0' order by titular");
         tab_orden.getColumna("tes_id_proveedor").setFiltroContenido();
-        tab_orden.getColumna("tes_cod_empleado").setCombo("select cod_empleado,nombres from srh_empleado where estado = 1 or cod_empleado = 100 order by nombres");
-        tab_orden.getColumna("tes_cod_empleado").setFiltroContenido();
+        tab_orden.getColumna("tes_cod_empleado").setCombo("select cod_empleado,nombres from srh_empleado where estado = 1 or cod_empleado = 100 order by cod_empleado");
+        tab_orden.getColumna("tes_id_proveedor").setFiltroContenido();
+        //        tab_orden.getColumna("tes_cod_empleado").setAutoCompletar();
         tab_orden.getColumna("tes_comprobante_egreso").setCombo("select comprobante as id, comprobante from tes_comprobante_pago order by comprobante");
         tab_orden.getColumna("tes_id_proveedor").setMetodoChange("proveedor");
         tab_orden.getColumna("tes_cod_empleado").setMetodoChange("empleado");
@@ -219,6 +220,7 @@ public class pre_orden_pago extends Pantalla{
                 tab_orden.setValor("tes_proveedor", tab_dato.getValor("titular"));
                 tab_orden.setValor("tes_cod_empleado", null);
                 tab_orden.setValor("tes_empleado", null);
+                tab_orden.getColumna("tes_cod_empleado").setLectura(true);
                 tab_orden.setValor("tes_estado","Pendiente");
                 tab_orden.setValor("tipo_solicitantep","2");
                 utilitario.addUpdate("tab_orden");//actualiza solo componentes
@@ -233,7 +235,9 @@ public class pre_orden_pago extends Pantalla{
         if(tab_orden.getValor("tes_cod_empleado")!=null){
             TablaGenerica tab_dato = programas.getEmpleado(Integer.parseInt(tab_orden.getValor("tes_cod_empleado")));
             if (!tab_dato.isEmpty()) {
+                System.out.println("Nombre de empleado>>>>>>"+tab_dato.getValor("nombres"));
                 tab_orden.setValor("tes_empleado", tab_dato.getValor("nombres"));
+                tab_orden.getColumna("tes_id_proveedor").setLectura(true);
                 tab_orden.setValor("tes_id_proveedor", null);
                 tab_orden.setValor("tes_proveedor", null);
                 tab_orden.setValor("tes_estado","Pendiente");
