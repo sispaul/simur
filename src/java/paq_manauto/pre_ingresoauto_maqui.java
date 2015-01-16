@@ -62,7 +62,6 @@ public class pre_ingresoauto_maqui extends Pantalla{
     private Texto tmodelo = new Texto();
     private Texto tversion = new Texto();
 
-    
     //buscar solicitud
     private AutoCompletar aut_busca = new AutoCompletar();
     
