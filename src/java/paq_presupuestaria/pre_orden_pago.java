@@ -261,7 +261,7 @@ public class pre_orden_pago extends Pantalla{
         tab_detalle.actualizar();
         tab_detalle.setFilaActual(reg);
         tab_detalle.calcularPaginaActual(); 
-        dia_dialogo.cerrar();
+        dia_dialogm.cerrar();
 //        }else{
 //            utilitario.agregarMensajeInfo("Comprobante No Puede Anularse", "Se Encuentra Pagado");
 //        }
