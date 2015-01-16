@@ -62,6 +62,7 @@ public class pre_detalle_mantenimiento extends Pantalla{
         tab_cabecera.getColumna("mca_cod_responsable").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where cod_cargo in (SELECT cod_cargo FROM srh_cargos WHERE nombre_cargo like '%CHOFER%') and estado = 1 order by nombres");
         tab_cabecera.getColumna("mca_codigo").setVisible(false);
         tab_cabecera.setTipoFormulario(true);
+        tab_cabecera.setLectura(true);
         tab_cabecera.getGrid().setColumns(4);
         tab_cabecera.agregarRelacion(tab_detalle);
         tab_cabecera.dibujar();
@@ -143,6 +144,9 @@ public class pre_detalle_mantenimiento extends Pantalla{
 
     @Override
     public void guardar() {
+        if (tab_detalle.guardar()) {
+            con_postgres.guardarPantalla();
+        }
     }
 
     @Override
