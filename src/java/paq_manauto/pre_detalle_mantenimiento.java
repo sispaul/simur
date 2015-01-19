@@ -108,8 +108,8 @@ public class pre_detalle_mantenimiento extends Pantalla{
     public void valor(){
         TablaGenerica tab_dato = aCombustible.getDetaArticulos(Integer.parseInt(tab_detalle.getValor("mde_cod_articulo")));
         if (!tab_dato.isEmpty()) {
-            String costo = tab_dato.getValor("costo_actual")+" /"+tab_dato.getValor("und_medida");
-            tab_detalle.setValor("mde_valor", costo);
+//            String costo = tab_dato.getValor("costo_actual")+" /"+tab_dato.getValor("und_medida");
+            tab_detalle.setValor("mde_valor", tab_dato.getValor("costo_actual"));
             utilitario.addUpdate("tab_detalle");
         }
     }
@@ -136,7 +136,12 @@ public class pre_detalle_mantenimiento extends Pantalla{
         ttotal.setValue(valor);
         utilitario.addUpdate("ttotal");
     }
-        
+    
+    public void termina(){
+        aCombustible.updateSolicitud(Integer.parseInt(tab_cabecera.getValor("mca_codigo")));
+        tab_cabecera.actualizar();
+    }
+    
     @Override
     public void insertar() {
         tab_detalle.insertar();
