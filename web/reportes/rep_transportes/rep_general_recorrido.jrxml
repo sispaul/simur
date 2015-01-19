@@ -12,7 +12,7 @@
 (select a.*,c.kilometros from
 (SELECT PLACA_VEHICULO,NUMERO_ABASTECIMIENTO
 FROM MVABASTECIMIENTO_COMBUSTIBLE
-where ANIO = $P{anio} and PERIODO = $P{periodo})as a
+where ANIO = 2014 and PERIODO = 11)as a
 left join
 (SELECT PLACA_VEHICULO,ROUND(((case when KILOMETRAJE is not null then KILOMETRAJE when KILOMETRAJE is null then ((substring(va_hora,0,5))*60+(substring(va_hora,6,7))) end )),2) as kilometros,NUMERO_ABASTECIMIENTO
 FROM MVABASTECIMIENTO_COMBUSTIBLE
