@@ -340,7 +340,17 @@ public class manauto {
        con_postgres = null;
        return tab_persona;
     }
-        
+    
+    public void updateSolicitud(Integer codigo){
+    String au_sql="update mvcab_mantenimiento\n" +
+            "set mca_estado_registro = 'Terminado'\n" +
+            "where mca_codigo ="+codigo;
+    con_postgresql();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+    
     //sentencia de conexion a base de datos
     private void con_sigag(){
         if (con_sql == null) {
