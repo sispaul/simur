@@ -220,7 +220,7 @@ public class pre_solicitud_mantenimiento extends Pantalla{
     }
     
     public void proveedor(){
-        TablaGenerica tab_dato = programas.getProveedor(Integer.parseInt(tab_tabla.getValor("mve_secuencial")));
+        TablaGenerica tab_dato = programas.getProveedor(Integer.parseInt(tab_tabla.getValor("mca_cod_proveedor")));
         if (!tab_dato.isEmpty()) {
             tab_tabla.setValor("mca_proveedor", tab_dato.getValor("titular"));
             utilitario.addUpdate("tab_tabla");//actualiza solo componentes
@@ -229,15 +229,23 @@ public class pre_solicitud_mantenimiento extends Pantalla{
     
     //busca datos de vehiculo que se selecciona
     public void caracteristicas(){
-        TablaGenerica tab_dato =aCombustible.getVehiculo(Integer.parseInt(tab_tabla.getValor("mve_secuencial")));
+        TablaGenerica tab_dato = aCombustible.getDatosSoli(Integer.parseInt(tab_tabla.getValor("mve_secuencial")));
         if (!tab_dato.isEmpty()) {
-                    tab_tabla.setValor("mca_responsable", tab_dato.getValor("mve_conductor"));
-                    tab_tabla.setValor("mca_cod_responsable", tab_dato.getValor("mve_cod_conductor"));
-                    tab_tabla.setValor("mca_kmactual_hora", tab_dato.getValor("rendimiento"));
-                    tab_tabla.setValor("mca_secuencial_sol",  String.valueOf(Integer.parseInt(aCombustible.Maxsoli_vehiculo(Integer.parseInt(tab_tabla.getValor("mve_secuencial"))))+1));
-                    utilitario.addUpdate("tab_tabla");
+            tab_tabla.getColumna("mca_tipo_mantenimiento").setLectura(true);
+            utilitario.addUpdate("tab_tabla");
+            utilitario.agregarMensaje("Aun Mantiene una Solictud Pendiente", "");
         }else{
-            utilitario.agregarMensajeError("No Se Encuentra Responsable","");
+            TablaGenerica tab_datoa =aCombustible.getVehiculo(Integer.parseInt(tab_tabla.getValor("mve_secuencial")));
+            if (!tab_datoa.isEmpty()) {
+                tab_tabla.getColumna("mca_tipo_mantenimiento").setLectura(false);
+                tab_tabla.setValor("mca_responsable", tab_datoa.getValor("mve_conductor"));
+                tab_tabla.setValor("mca_cod_responsable", tab_datoa.getValor("mve_cod_conductor"));
+                tab_tabla.setValor("mca_kmactual_hora", tab_datoa.getValor("rendimiento"));
+                tab_tabla.setValor("mca_secuencial_sol",  String.valueOf(Integer.parseInt(aCombustible.Maxsoli_vehiculo(Integer.parseInt(tab_tabla.getValor("mve_secuencial"))))+1));
+                utilitario.addUpdate("tab_tabla");
+            }else{
+                utilitario.agregarMensajeError("No Se Encuentra Responsable","");
+            }
         }
     }
     
@@ -288,8 +296,8 @@ public class pre_solicitud_mantenimiento extends Pantalla{
         
     @Override
     public void insertar() {
-        utilitario.getTablaisFocus().insertar();
-        secu_soli();
+            utilitario.getTablaisFocus().insertar();
+            secu_soli();
     }
 
     @Override

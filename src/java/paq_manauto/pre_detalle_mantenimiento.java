@@ -14,7 +14,6 @@ import framework.componentes.Tabla;
 import framework.componentes.Texto;
 import javax.ejb.EJB;
 import paq_manauto.ejb.manauto;
-import paq_presupuestaria.ejb.Programas;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
@@ -28,7 +27,6 @@ public class pre_detalle_mantenimiento extends Pantalla{
     private Conexion con_postgres= new Conexion();
     
     //Declaraciones de tablas
-    private Tabla tab_consulta = new Tabla();
     private Tabla tab_cabecera = new Tabla();
     private Tabla tab_detalle = new Tabla();
     
@@ -48,18 +46,21 @@ public class pre_detalle_mantenimiento extends Pantalla{
         
         tab_cabecera.setId("tab_cabecera");
         tab_cabecera.setConexion(con_postgres);
-        tab_cabecera.setSql("SELECT mca_codigo,mca_secuencial,mca_tipo_mantenimiento,mve_secuencial,mca_cod_responsable,mca_cod_proveedor,mca_cod_autoriza,mca_detalle,mca_observacion\n" +
-                "FROM mvcab_mantenimiento where mca_estado_registro ='Solicitud'");
-        tab_cabecera.getColumna("mve_secuencial").setCombo("SELECT v.mve_secuencial,\n" +
-                "(v.mve_placa||' / '||m.mvmarca_descripcion ||' / '||t.mvtipo_descripcion||' / '||o.mvmodelo_descripcion ||' / '||v.mve_ano) AS descripcion\n" +
-                "FROM mv_vehiculo AS v\n" +
-                "INNER JOIN mvmarca_vehiculo AS m ON v.mvmarca_id = m.mvmarca_id\n" +
-                "INNER JOIN mvmodelo_vehiculo AS o ON v.mvmodelo_id = o.mvmodelo_id\n" +
-                "INNER JOIN mvtipo_vehiculo t ON t.mvmarca_id = m.mvmarca_id\n" +
-                "ORDER BY v.mve_secuencial ASC");
-        tab_cabecera.getColumna("mca_cod_proveedor").setCombo("select ide_proveedor,titular from tes_proveedores  where ruc <> '0' order by titular");
-        tab_cabecera.getColumna("mca_cod_autoriza").setCombo("select cod_empleado,nombres from srh_empleado where estado = 1 or cod_empleado = 100 order by nombres");
-        tab_cabecera.getColumna("mca_cod_responsable").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where cod_cargo in (SELECT cod_cargo FROM srh_cargos WHERE nombre_cargo like '%CHOFER%') and estado = 1 order by nombres");
+        tab_cabecera.setSql("SELECT c.mca_codigo,c.mca_secuencial,c.mca_tipo_mantenimiento,'Codigo_Placa:  '||v.mve_placa||'; Marca:  '||m.mvmarca_descripcion||'; Tipo:  '||\n" +
+                "t.tipo_combustible_descripcion||'; Modelo:  '||\n" +
+                "o.mvmodelo_descripcion||'; Versión: '||\n" +
+                "r.mvversion_descripcion as descripcion,\n" +
+                "c.mca_autorizado,\n" +
+                "c.mca_proveedor,\n" +
+                "c.mca_responsable,\n" +
+                "c.mca_detalle,\n" +
+                "c.mca_observacion\n" +
+                "FROM mvcab_mantenimiento c,mv_vehiculo v\n" +
+                "INNER JOIN mvmarca_vehiculo m ON v.mvmarca_id = m.mvmarca_id\n" +
+                "INNER JOIN mvtipo_combustible t ON v.tipo_combustible_id = t.tipo_combustible_id\n" +
+                "INNER JOIN mvmodelo_vehiculo o ON v.mvmodelo_id = o.mvmodelo_id\n" +
+                "INNER JOIN mvversion_vehiculo r ON r.mvmodelo_id = o.mvmodelo_id AND v.mvversion_id = r.mvversion_id\n" +
+                "WHERE c.mca_estado_registro = 'Solicitud' and c.mve_secuencial = v.mve_secuencial");
         tab_cabecera.getColumna("mca_codigo").setVisible(false);
         tab_cabecera.setTipoFormulario(true);
         tab_cabecera.setLectura(true);
@@ -93,7 +94,6 @@ public class pre_detalle_mantenimiento extends Pantalla{
         tab_detalle.getColumna("mde_articulo").setVisible(false);
         tab_detalle.getColumna("mde_fechacomp").setVisible(false);
         tab_detalle.getColumna("mde_comprobante").setVisible(false);
-        tab_detalle.getColumna("mde_detalletrab").setVisible(false);
         tab_detalle.setRows(10);
         tab_detalle.dibujar();
         PanelTabla ptd = new PanelTabla();
@@ -108,7 +108,6 @@ public class pre_detalle_mantenimiento extends Pantalla{
     public void valor(){
         TablaGenerica tab_dato = aCombustible.getDetaArticulos(Integer.parseInt(tab_detalle.getValor("mde_cod_articulo")));
         if (!tab_dato.isEmpty()) {
-//            String costo = tab_dato.getValor("costo_actual")+" /"+tab_dato.getValor("und_medida");
             tab_detalle.setValor("mde_valor", tab_dato.getValor("costo_actual"));
             utilitario.addUpdate("tab_detalle");
         }
@@ -138,8 +137,13 @@ public class pre_detalle_mantenimiento extends Pantalla{
     }
     
     public void termina(){
-        aCombustible.updateSolicitud(Integer.parseInt(tab_cabecera.getValor("mca_codigo")));
-        tab_cabecera.actualizar();
+        TablaGenerica tab_dato = aCombustible.getDetaArticus(Integer.parseInt(tab_cabecera.getValor("mca_codigo")));
+        if (!tab_dato.isEmpty()) {
+            aCombustible.set_updateSolicitud(Integer.parseInt(tab_cabecera.getValor("mca_codigo")));
+            tab_cabecera.actualizar();
+        }else{
+            utilitario.agregarMensaje("Agregar al Menos Motivo de mantenimiento", "");
+        }
     }
     
     @Override
