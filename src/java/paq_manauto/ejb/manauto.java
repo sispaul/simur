@@ -289,6 +289,17 @@ public class manauto {
        return tab_persona;
     }
     
+    public TablaGenerica getDatosSoli(Integer tipo) {
+        con_postgresql();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT mca_codigo, mca_secuencial,mve_secuencial FROM mvcab_mantenimiento where mca_estado_registro = 'Solicitud' and mve_secuencial="+tipo);
+        tab_persona.ejecutarSql();
+       con_postgres.desconectar();
+       con_postgres = null;
+       return tab_persona;
+    }
+    
     public void set_anulasolic(Integer codigo,String login,String motivo){
     String au_sql="update mvcab_mantenimiento \n" +
             "set mca_loginborrado ='"+login+"', mca_fechaborrado='"+utilitario.getFechaActual()+"', mca_motivo_anulacion='"+motivo+"',mca_estado_registro='Anulada'\n" +
@@ -341,7 +352,20 @@ public class manauto {
        return tab_persona;
     }
     
-    public void updateSolicitud(Integer codigo){
+    public TablaGenerica getDetaArticus(Integer tipo) {
+        con_postgresql();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT mde_codigo,mca_codigo,mde_cod_articulo,mde_detalletrab,mde_cantidad,mde_valor,mde_total\n" +
+                "FROM mvdetalle_mantenimiento\n" +
+                "where mca_codigo = "+tipo);
+        tab_persona.ejecutarSql();
+       con_postgres.desconectar();
+       con_postgres = null;
+       return tab_persona;
+    }
+    
+    public void set_updateSolicitud(Integer codigo){
     String au_sql="update mvcab_mantenimiento\n" +
             "set mca_estado_registro = 'Terminado'\n" +
             "where mca_codigo ="+codigo;
