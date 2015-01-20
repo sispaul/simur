@@ -45,9 +45,9 @@ public class pre_reportes_abastecimiento extends Pantalla{
     private Combo cmb_periodo = new Combo();
     private Combo cmb_peri = new Combo();
     private Combo cmb_periodos = new Combo();
-    private Combo cmb_placa = new Combo();
     private Combo cmb_placa1 = new Combo();
     private Combo cmb_general = new Combo();
+    private Combo cmb_general1 = new Combo();
     
     //Dialogos
     private Dialogo dia_dialogo= new Dialogo();
@@ -85,18 +85,19 @@ public class pre_reportes_abastecimiento extends Pantalla{
         gri_search.setColumns(2);
         gri_search.getChildren().add(new Etiqueta("NIVEL INICIAL: "));
         
-        gri_search.getChildren().add(new Etiqueta("AÑO:"));
+        gri_search.getChildren().add(new Etiqueta("AÑO: "));
         cmb_anos.setId("cmb_anos");
         cmb_anos.setConexion(con_postgres);
         cmb_anos.setCombo("select ano_curso, ano_curso from conc_ano order by ano_curso");
         gri_search.getChildren().add(cmb_anos);
         
-        gri_search.getChildren().add(new Etiqueta("PERIODO:"));
+        gri_search.getChildren().add(new Etiqueta("PERIODO: "));
         cmb_periodos.setId("cmb_periodos");
         cmb_periodos.setConexion(con_postgres);
         cmb_periodos.setCombo("SELECT ide_periodo,per_descripcion FROM cont_periodo_actual ORDER BY ide_periodo");
         gri_search.getChildren().add(cmb_periodos);
         
+        gri_search.getChildren().add(new Etiqueta("TIPO: "));
         List lista = new ArrayList();
         Object filase1[] = {
             "K", "Automotores"
@@ -107,7 +108,6 @@ public class pre_reportes_abastecimiento extends Pantalla{
         lista.add(filase1);;
         lista.add(filase2);;
         cmb_general.setCombo(lista);
-        cmb_general.eliminarVacio();
         gri_search.getChildren().add(cmb_general);
         
         //para poder busca por apelllido el garante
@@ -173,6 +173,19 @@ public class pre_reportes_abastecimiento extends Pantalla{
         Grid gri_busca = new Grid();
         gri_busca.setColumns(2);
         
+        gri_busca.getChildren().add(new Etiqueta("TIPO: "));
+        List listas = new ArrayList();
+        Object filas1[] = {
+            "K", "Automotores"
+        };
+        Object filas2[] = {
+            "M", "Maquinaria"
+        };
+        listas.add(filas1);;
+        listas.add(filas2);;
+        cmb_general1.setCombo(lista);
+        gri_busca.getChildren().add(cmb_general1);
+        
         gri_busca.getChildren().add(new Etiqueta("AÑO:"));
         cmb_anio.setId("cmb_anio");
         cmb_anio.setConexion(con_postgres);
@@ -184,12 +197,6 @@ public class pre_reportes_abastecimiento extends Pantalla{
         cmb_periodo.setConexion(con_postgres);
         cmb_periodo.setCombo("SELECT ide_periodo,per_descripcion FROM cont_periodo_actual ORDER BY ide_periodo");
         gri_busca.getChildren().add(cmb_periodo);
-        
-        gri_busca.getChildren().add(new Etiqueta("PLACA :"));
-        cmb_placa.setId("cmb_placa");
-        cmb_placa.setConexion(con_postgres);
-        cmb_placa.setCombo("SELECT DISTINCT mve_placa,mve_placa FROM mv_vehiculo ORDER BY mve_placa");
-        gri_busca.getChildren().add(cmb_placa);
         
          //para poder busca por apelllido el garante
         dia_dialogoinvg.setId("dia_dialogoinvg");
@@ -216,11 +223,11 @@ public class pre_reportes_abastecimiento extends Pantalla{
                     dia_dialogo.Limpiar();
                     dia_dialogo.dibujar();
                     break;
-                case "REPORTE INDIVIDUAL ABASTECIMIENTO":
+                case "REPORTE INDIVIDUAL ABASTECIMIENTO/MANTENIMIENTO":
                     dia_dialogovgl.Limpiar();
                     dia_dialogovgl.dibujar();
                     break;
-                case "REPORTE INDIVIDUAL MANTENIMIENTO":
+                case "REPORTE GENERAL ABASTECIMIENTO/MANTENIMIENTO TEXTO":
                     dia_dialogoinvg.Limpiar();
                     dia_dialogoinvg.dibujar();
                     break;
@@ -230,7 +237,6 @@ public class pre_reportes_abastecimiento extends Pantalla{
         public void aceptarDialogo() {
             switch (rep_reporte.getNombre()) {
                 case "REPORTE GENERAL ABASTECIMIENTO/MANTENIMIENTO":
-                    System.err.println(cmb_periodos.getValue());
                     TablaGenerica tab_dato =aCombustible.getMes(Integer.parseInt(cmb_periodos.getValue()+""));
                    if (!tab_dato.isEmpty()) {
                     p_parametros.put("anio", cmb_anos.getValue()+"");
@@ -244,7 +250,7 @@ public class pre_reportes_abastecimiento extends Pantalla{
                        utilitario.agregarMensajeError("Usuario","No Disponible");
                    }
                     break;
-                case "REPORTE INDIVIDUAL ABASTECIMIENTO":
+                case "REPORTE INDIVIDUAL ABASTECIMIENTO/MANTENIMIENTO":
                     TablaGenerica tab_dato1 =aCombustible.getMes(Integer.parseInt(cmb_peri.getValue()+""));
                     if (!tab_dato1.isEmpty()) {
                         TablaGenerica tab_datov =aCombustible.getDesResporte(cmb_placa1.getValue()+"");
@@ -259,7 +265,6 @@ public class pre_reportes_abastecimiento extends Pantalla{
                             p_parametros.put("version", tab_datov.getValor("mvversion_descripcion")+"");
                             rep_reporte.cerrar();
                             sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                            System.err.println(p_parametros);
                             sef_formato.dibujar();
                         }else{
                             utilitario.agregarMensajeError("Placa","No Disponible");
@@ -268,26 +273,19 @@ public class pre_reportes_abastecimiento extends Pantalla{
                         utilitario.agregarMensajeError("Periodo","No Seleccionado");
                     }
                     break;
-                case "REPORTE INDIVIDUAL MANTENIMIENTO":
-                    TablaGenerica tab_dato2 =aCombustible.getMes(Integer.parseInt(cmb_periodo.getValue()+""));
-                    if (!tab_dato2.isEmpty()) {
-                        TablaGenerica tab_datov =aCombustible.getDesResporte(cmb_placa.getValue()+"");
-                        if (!tab_datov.isEmpty()) {
-                            p_parametros.put("anio", cmb_anio.getValue()+"");
-                            p_parametros.put("mes", tab_dato2.getValor("per_descripcion")+"");
-                            p_parametros.put("periodo", cmb_periodo.getValue()+"");
-                            p_parametros.put("placa", cmb_placa.getValue()+"");
-                            p_parametros.put("descripcion", tab_datov.getValor("descripcion")+"");
-                            rep_reporte.cerrar();
-                            sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                            System.err.println(p_parametros);
-                            sef_formato.dibujar();
-                        }else{
-                            utilitario.agregarMensajeError("Placa","No Disponible");
-                        }
+                case "REPORTE GENERAL ABASTECIMIENTO/MANTENIMIENTO TEXTO":
+                    TablaGenerica tab_dator =aCombustible.getMes(Integer.parseInt(cmb_periodo.getValue()+""));
+                   if (!tab_dator.isEmpty()) {
+                    p_parametros.put("anio", cmb_anio.getValue()+"");
+                    p_parametros.put("mes", tab_dator.getValor("per_descripcion")+"");
+                    p_parametros.put("periodo", cmb_periodo.getValue()+"");
+                    p_parametros.put("tipo", cmb_general1.getValue()+"");
+                    rep_reporte.cerrar();
+                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_formato.dibujar();
                     }else{
-                        utilitario.agregarMensajeError("Periodo","No Seleccionado");
-                    }
+                       utilitario.agregarMensajeError("Usuario","No Disponible");
+                   }
                     break;
             }
         }
