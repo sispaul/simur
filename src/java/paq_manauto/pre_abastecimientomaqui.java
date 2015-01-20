@@ -84,24 +84,26 @@ public class pre_abastecimientomaqui extends Pantalla{
                 "WHERE v.mve_tipo_ingreso = 'M'");
         tab_tabla.getColumna("mve_secuencial").setFiltroContenido();
         tab_tabla.getColumna("mve_secuencial").setMetodoChange("busPlaca");
+        tab_tabla.getColumna("abastecimiento_kilometraje").setMetodoChange("busPlaca");
         tab_tabla.getColumna("abastecimiento_valorhora").setMetodoChange("kilometraje");
         tab_tabla.getColumna("abastecimiento_galones").setMetodoChange("galones");
-        tab_tabla.getColumna("abastecimiento_tipo_ingreso").setValorDefecto("K");
         tab_tabla.getColumna("abastecimiento_estado").setValorDefecto("1");
-        tab_tabla.getColumna("abastecimiento_tipo_medicion").setValorDefecto("1");
+        tab_tabla.getColumna("abastecimiento_tipo_medicion").setMetodoChange("activarCasilla");
         tab_tabla.getColumna("abastecimiento_logining").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         tab_tabla.getColumna("abastecimiento_fechaing").setValorDefecto(utilitario.getFechaActual());
         tab_tabla.getColumna("abastecimiento_horaing").setValorDefecto(utilitario.getHoraActual());
         tab_tabla.getColumna("abastecimiento_conductor").setLongitud(70);
+        tab_tabla.getColumna("abastecimiento_galones").setLectura(true);
+        tab_tabla.getColumna("abastecimiento_valorhora").setLectura(true);
         tab_tabla.getColumna("tipo_combustible_id").setLectura(true);
         tab_tabla.getColumna("abastecimiento_numero").setLectura(true);
         tab_tabla.getColumna("abastecimiento_total").setLectura(true);
+        tab_tabla.getColumna("abastecimiento_kilometraje").setLectura(true);
         tab_tabla.getColumna("abastecimiento_cod_conductor").setVisible(false);
         tab_tabla.getColumna("abastecimiento_fechaing").setVisible(false);
         tab_tabla.getColumna("abastecimiento_titulo").setEtiqueta();
         tab_tabla.getColumna("abastecimiento_fechaing").setVisible(false);
         tab_tabla.getColumna("abastecimiento_logining").setVisible(false);
-        tab_tabla.getColumna("abastecimiento_kilometraje").setVisible(false);
         tab_tabla.getColumna("abastecimiento_estado").setVisible(false);
         tab_tabla.getColumna("abastecimiento_fechactu").setVisible(false);
         tab_tabla.getColumna("abastecimiento_loginactu").setVisible(false);
@@ -110,6 +112,7 @@ public class pre_abastecimientomaqui extends Pantalla{
         tab_tabla.getColumna("abastecimiento_periodo").setVisible(false);
         tab_tabla.getColumna("abastecimiento_horaing").setVisible(false);
         tab_tabla.getColumna("abastecimiento_id").setVisible(false);
+        tab_tabla.getColumna("abastecimiento_ingreso").setVisible(false);
         tab_tabla.setTipoFormulario(true);
         tab_tabla.getGrid().setColumns(4);
         tab_tabla.dibujar();
@@ -164,13 +167,14 @@ public class pre_abastecimientomaqui extends Pantalla{
     public void busPlaca(){
         TablaGenerica tab_dato =aCombustible.getVehiculo(Integer.parseInt(tab_tabla.getValor("mve_secuencial")));
         if (!tab_dato.isEmpty()) {
-            if(tab_dato.getValor("mve_numimr").equals("K")){
+            if(tab_dato.getValor("mve_numimr").equals("H")){
+                System.err.println(tab_dato.getValor("mve_conductor"));
                     tab_tabla.setValor("abastecimiento_conductor", tab_dato.getValor("mve_conductor"));
                     tab_tabla.setValor("abastecimiento_cod_conductor", tab_dato.getValor("mve_cod_conductor"));
                     tab_tabla.setValor("tipo_combustible_id", tab_dato.getValor("tipo_combustible_id"));
                     utilitario.addUpdate("tab_tabla");
             }else{
-                utilitario.agregarMensajeError("Modulo solo para Vehiculos","");
+                utilitario.agregarMensajeError("Modulo solo para Maquinaria","");
             }
         }else{
             utilitario.agregarMensajeError("Vehiculo","No Se Encuentra Registrado");
@@ -252,6 +256,21 @@ public class pre_abastecimientomaqui extends Pantalla{
        tab_tabla.setValor("abastecimiento_anio", String.valueOf(utilitario.getAnio(tab_tabla.getValor("abastecimiento_fecha"))));
        tab_tabla.setValor("abastecimiento_periodo", String.valueOf(utilitario.getMes(tab_tabla.getValor("abastecimiento_fecha"))));
        utilitario.addUpdate("tab_tabla");
+    }
+    
+    public void activarCasilla(){
+        
+        if(tab_tabla.getValor("abastecimiento_tipo_medicion").endsWith("1")){//kilometros
+            tab_tabla.getColumna("abastecimiento_kilometraje").setLectura(false);
+            tab_tabla.getColumna("abastecimiento_valorhora").setLectura(true);
+            tab_tabla.getColumna("abastecimiento_galones").setLectura(false);
+            utilitario.addUpdate("tab_tabla");
+        }else{
+            tab_tabla.getColumna("abastecimiento_kilometraje").setLectura(true);
+        tab_tabla.getColumna("abastecimiento_valorhora").setLectura(false);
+        tab_tabla.getColumna("abastecimiento_galones").setLectura(true);
+        utilitario.addUpdate("tab_tabla");
+        }
     }
         
     @Override

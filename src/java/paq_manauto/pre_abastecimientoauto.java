@@ -77,6 +77,7 @@ public class pre_abastecimientoauto extends Pantalla{
         tab_tabla.getColumna("abastecimiento_kilometraje").setMetodoChange("kilometraje");
         tab_tabla.getColumna("abastecimiento_galones").setMetodoChange("galones");
         tab_tabla.getColumna("abastecimiento_tipo_ingreso").setValorDefecto("K");
+        tab_tabla.getColumna("abastecimiento_ingreso").setValorDefecto("GL");
         tab_tabla.getColumna("abastecimiento_estado").setValorDefecto("1");
         tab_tabla.getColumna("abastecimiento_tipo_medicion").setValorDefecto("1");
         tab_tabla.getColumna("abastecimiento_logining").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
@@ -101,6 +102,7 @@ public class pre_abastecimientoauto extends Pantalla{
         tab_tabla.getColumna("abastecimiento_periodo").setVisible(false);
         tab_tabla.getColumna("abastecimiento_horaing").setVisible(false);
         tab_tabla.getColumna("abastecimiento_id").setVisible(false);
+        tab_tabla.getColumna("abastecimiento_ingreso").setVisible(false);
         tab_tabla.setTipoFormulario(true);
         tab_tabla.getGrid().setColumns(4);
         tab_tabla.dibujar();
@@ -126,7 +128,7 @@ public class pre_abastecimientoauto extends Pantalla{
         tab_tabla1.setLectura(true);
         tab_tabla1.getColumna("abastecimiento_numero_vale").setFiltro(true);
         tab_tabla1.getColumna("mve_placa").setFiltro(true);
-        tab_tabla1.agregarRelacion(tab_tabla);
+//        tab_tabla1.agregarRelacion(tab_tabla);
         tab_tabla1.setRows(15);
         tab_tabla1.dibujar();
         PanelTabla ptt1 = new PanelTabla();
