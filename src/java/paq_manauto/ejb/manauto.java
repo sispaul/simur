@@ -375,6 +375,41 @@ public class manauto {
     con_postgres = null;
     }
     
+    //Reportes
+    public TablaGenerica getDesResporte(String tipo) {
+        con_postgresql();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT DISTINCT\n" +
+"v.mve_secuencial,\n" +
+"v.mve_placa,\n" +
+"m.mvmarca_descripcion,\n" +
+"t.mvtipo_descripcion,\n" +
+"o.mvmodelo_descripcion,\n" +
+"r.mvversion_descripcion\n" +
+"FROM mv_vehiculo AS v\n" +
+"INNER JOIN mvmarca_vehiculo AS m ON v.mvmarca_id = m.mvmarca_id\n" +
+"INNER JOIN mvmodelo_vehiculo AS o ON v.mvmodelo_id = o.mvmodelo_id\n" +
+"INNER JOIN mvversion_vehiculo AS r ON r.mvmodelo_id = o.mvmodelo_id AND v.mvversion_id = r.mvversion_id\n" +
+"INNER JOIN mvtipo_vehiculo t ON t.mvmarca_id = m.mvmarca_id AND v.mvtipo_id = t.mvtipo_id AND o.mvtipo_id = t.mvtipo_id\n" +
+"where v.mve_placa ='"+tipo+"' ");
+        tab_persona.ejecutarSql();
+       con_postgres.desconectar();
+       con_postgres = null;
+       return tab_persona;
+    }
+    
+    public TablaGenerica getMes(Integer periodo) {
+        con_postgresql();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT ide_periodo,per_descripcion FROM cont_periodo_actual where ide_periodo = "+periodo);
+        tab_persona.ejecutarSql();
+       con_postgres.desconectar();
+       con_postgres = null;
+        return tab_persona;
+    }
+    
     //sentencia de conexion a base de datos
     private void con_sigag(){
         if (con_sql == null) {
