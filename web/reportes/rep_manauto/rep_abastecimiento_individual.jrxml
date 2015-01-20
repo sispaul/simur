@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_abastecimiento_individual" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="270190e0-d5df-42aa-8e68-d478dd9f9524">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[select * from
+(select a.numero,a.mve_placa,a.abastecimiento_total,a.abastecimiento_galones,
+(case when (b.abastecimiento_kilometraje-a.abastecimiento_kilometraje) > 0 THEN (b.abastecimiento_kilometraje-a.abastecimiento_kilometraje)
+when (b.abastecimiento_kilometraje-a.abastecimiento_kilometraje) is null THEN 0 end ) as kilometros from
+(select
+(SELECT count (*)
+FROM mvabactecimiento_combustible a1
+INNER JOIN mv_vehiculo v1 ON a1.mve_secuencial = v1.mve_secuencial
+where a1.abastecimiento_kilometraje <= a.abastecimiento_kilometraje and v1.mve_placa = 'PME0093'and a.abastecimiento_anio='2015' and a.abastecimiento_periodo='1') as numero,
+a.abastecimiento_kilometraje,v.mve_placa,a.abastecimiento_total,a.abastecimiento_galones
+FROM mvabactecimiento_combustible a
+INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
+where v.mve_placa = 'PME0093'and a.abastecimiento_anio='2015' and a.abastecimiento_periodo='1') as a
+LEFT JOIN
+(select
+(SELECT count (*)-1
+FROM mvabactecimiento_combustible a1
+INNER JOIN mv_vehiculo v1 ON a1.mve_secuencial = v1.mve_secuencial
+where a1.abastecimiento_kilometraje <= a.abastecimiento_kilometraje and v1.mve_placa = 'PME0093'and a.abastecimiento_anio='2015' and a.abastecimiento_periodo='1') as numero,
+a.abastecimiento_kilometraje,v.mve_placa
+FROM mvabactecimiento_combustible a
+INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
+where v.mve_placa = 'PME0093'and a.abastecimiento_anio='2015' and a.abastecimiento_periodo='1') as b
+on a.mve_placa=b.mve_placa and a.numero =b.numero
+) as p]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="98" splitType="Stretch">
+			<staticText>
+				<reportElement key="staticText" x="10" y="44" width="266" height="34" forecolor="#000000" backcolor="#FFFFFF" uuid="ea9951ed-e1ee-4a07-bcda-3b0ceafcf596"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[ABATECIMIENTO INDIVIDUAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" x="10" y="10" width="266" height="43" forecolor="#000000" backcolor="#FFFFFF" uuid="a140801b-9b1a-4b30-9ff7-016425216c18"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[GOBIERNO AUTÓNOMO DESCENTRALIZADO MUNICIPAL DEL CANTON RUMIÑAHUI]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="2" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="2" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="2" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="2" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="19" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="303" splitType="Stretch">
+			<lineChart>
+				<chart>
+					<reportElement x="0" y="0" width="802" height="303" uuid="65c71530-bea4-4f26-80a4-30268dc7547c"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset/>
+				<linePlot>
+					<plot/>
+					<categoryAxisFormat>
+						<axisFormat/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat/>
+					</valueAxisFormat>
+				</linePlot>
+			</lineChart>
+		</band>
+	</summary>
+</jasperReport>
