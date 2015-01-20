@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_abastecimiento_general" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8601b10b-34f0-454b-99ed-0388b805bbe7">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[select * from
+(select y.*,a.galones,b.total,c.kilometros from
+(select v.mve_placa
+FROM mvabactecimiento_combustible a
+INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
+where a.abastecimiento_anio = '2015' and a.abastecimiento_periodo ='1'
+GROUP BY v.mve_placa) as y
+left join
+(select round(sum(cast(a.abastecimiento_galones as NUMERIC)),2) as galones,v.mve_placa
+FROM mvabactecimiento_combustible a
+INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
+where a.abastecimiento_anio = '2015' and a.abastecimiento_periodo ='1'
+GROUP BY v.mve_placa) as a
+on y.mve_placa=a.mve_placa
+left join
+(select round(sum(abastecimiento_total),2) as total,v.mve_placa
+FROM mvabactecimiento_combustible a
+INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
+where a.abastecimiento_anio = '2015' and a.abastecimiento_periodo ='1'
+GROUP BY v.mve_placa) as b
+on y.mve_placa=b.mve_placa
+left join
+(select * from
+(select z.*,(b.kilometrajes-a.kilometraje) as kilometros from
+(select v.mve_placa
+FROM mvabactecimiento_combustible a
+INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
+where a.abastecimiento_anio = '2015' and a.abastecimiento_periodo ='1'
+GROUP BY v.mve_placa) as z
+left join
+(select round(min(a.abastecimiento_kilometraje),2) as kilometraje,v.mve_placa
+FROM mvabactecimiento_combustible a
+INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
+where a.abastecimiento_anio = '2015' and a.abastecimiento_periodo ='1'
+GROUP BY v.mve_placa) as a
+on z.mve_placa=a.mve_placa
+left JOIN
+(select round(max(a.abastecimiento_kilometraje),2) as kilometrajes,v.mve_placa
+FROM mvabactecimiento_combustible a
+INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
+where a.abastecimiento_anio = '2015' and a.abastecimiento_periodo ='1'
+GROUP BY v.mve_placa)as b
+on z.mve_placa=b.mve_placa
+) as p
+order by mve_placa) as c
+on y.mve_placa=c.mve_placa
+) as x
+order by mve_placa]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="98" splitType="Stretch">
+			<staticText>
+				<reportElement key="staticText" x="10" y="44" width="266" height="34" forecolor="#000000" backcolor="#FFFFFF" uuid="ca2d84d5-04b4-41ba-aa1b-2b50ee4a5cc0"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[ABASTECIMIENTO GENERAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" x="10" y="10" width="266" height="43" forecolor="#000000" backcolor="#FFFFFF" uuid="f0f7a99f-632c-43e2-bf70-e8fbbe69c39b"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[GOBIERNO AUTÓNOMO DESCENTRALIZADO MUNICIPAL DEL CANTON RUMIÑAHUI]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="2" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="2" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="2" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="2" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="19" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="303" splitType="Stretch">
+			<lineChart>
+				<chart>
+					<reportElement x="0" y="0" width="802" height="303" uuid="97a40def-9e62-488d-a15d-c383666a3dac"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset/>
+				<linePlot>
+					<plot/>
+					<categoryAxisFormat>
+						<axisFormat/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat/>
+					</valueAxisFormat>
+				</linePlot>
+			</lineChart>
+		</band>
+	</summary>
+</jasperReport>
