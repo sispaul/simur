@@ -251,6 +251,7 @@ public class pre_ingresoauto_maqui extends Pantalla{
         tab_tabla.getColumna("MVE_HOROMETRO").setMetodoChange("recorrido");
         tab_tabla.getColumna("MVE_TIPOCODIGO").setMetodoChange("activarTipo");
         tab_tabla.getColumna("MVE_HOROMETRO").setMascara("9999:99");
+        tab_tabla.getColumna("mve_rendimientogl_h").setMascara("9/9");
         tab_tabla.getColumna("MVE_LOGININGRESO").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         tab_tabla.getColumna("MVE_FECHAINGRESO").setValorDefecto(utilitario.getFechaActual());
         List list = new ArrayList();
@@ -291,7 +292,6 @@ public class pre_ingresoauto_maqui extends Pantalla{
         tab_tabla.getColumna("MVE_PLACA").setLectura(true);
         tab_tabla.getColumna("MVE_HOROMETRO").setLectura(true);
         tab_tabla.getColumna("mve_kilometros_actual").setLectura(true);
-        tab_tabla.getColumna("mve_rendimientogl_h").setLectura(true);
         tab_tabla.getColumna("mve_asignacion").setVisible(false);
         tab_tabla.getColumna("mve_observcaciones").setVisible(false);
         tab_tabla.getColumna("mve_tipo_ingreso").setVisible(false);
@@ -300,7 +300,7 @@ public class pre_ingresoauto_maqui extends Pantalla{
         tab_tabla.getColumna("mve_conductor").setVisible(false);
         tab_tabla.getColumna("mve_numimr").setVisible(false);
         tab_tabla.getColumna("mve_secuencial").setVisible(false);
-        tab_tabla.getColumna("mve_rendimientogl_h").setVisible(false);
+        tab_tabla.getColumna("mve_rendimientogl_h").setLectura(true);
         tab_tabla.agregarRelacion(tab_accesorios);
         tab_tabla.setTipoFormulario(true);
         tab_tabla.getGrid().setColumns(4);
@@ -592,14 +592,14 @@ public class pre_ingresoauto_maqui extends Pantalla{
             tab_tabla.getColumna("mve_horometro").setLectura(false);
             tab_tabla.setValor("mve_tipo_ingreso", "M");
             tab_tabla.setValor("MVE_NUMIMR", "H");
-//            tab_tabla.getColumna("mve_rendimientogl_h").setLectura(false);
+            tab_tabla.getColumna("mve_rendimientogl_h").setLectura(false);
             utilitario.addUpdate("tab_tabla");
         }else{
             tab_tabla.getColumna("mve_kilometros_actual").setLectura(false);
             tab_tabla.getColumna("mve_horometro").setLectura(true);
             tab_tabla.setValor("mve_tipo_ingreso", "A");
             tab_tabla.setValor("MVE_NUMIMR", "K");
-//            tab_tabla.getColumna("mve_rendimientogl_h").setLectura(true);
+            tab_tabla.getColumna("mve_rendimientogl_h").setLectura(true);
             utilitario.addUpdate("tab_tabla");
         }
     }
