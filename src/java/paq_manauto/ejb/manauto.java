@@ -410,6 +410,30 @@ public class manauto {
         return tab_persona;
     }
     
+    //acta entrega recepcio
+    public TablaGenerica getpedido(Integer periodo) {
+        con_postgresql();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT mav_secuencial,mve_secuencial,mav_departamento\n" +
+                "FROM mvasignar_vehiculo\n" +
+                "where mav_estado_tramite = 'Pedido' and mve_secuencial = "+periodo);
+        tab_persona.ejecutarSql();
+       con_postgres.desconectar();
+       con_postgres = null;
+        return tab_persona;
+    }
+    
+    public void set_updatepedido(Integer codigo){
+    String au_sql="update mvasignar_vehiculo\n" +
+            "set mav_estado_tramite = 'Terminado'\n" +
+            "where mav_estado_tramite = 'Pedido' and mve_secuencial ="+codigo;
+    con_postgresql();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+    
     //sentencia de conexion a base de datos
     private void con_sigag(){
         if (con_sql == null) {
