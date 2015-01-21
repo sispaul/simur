@@ -11,7 +11,11 @@ import framework.componentes.Etiqueta;
 import framework.componentes.Grupo;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
+import java.util.HashMap;
+import java.util.Map;
 import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
 import paq_manauto.ejb.manauto;
@@ -39,6 +43,11 @@ public class pre_des_asignacion extends Pantalla{
     
     @EJB
     private manauto aCombustible = (manauto) utilitario.instanciarEJB(manauto.class);
+    
+    ///REPORTES
+    private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
+    private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
+    private Map p_parametros = new HashMap();
     
     public pre_des_asignacion() {
         //datos de usuario actual del sistema
@@ -73,6 +82,12 @@ public class pre_des_asignacion extends Pantalla{
         agregarComponente(pan_opcion);
         
         dibujaIngreso();
+        /*         * CONFIGURACIÓN DE OBJETO REPORTE         */
+        bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
+        agregarComponente(rep_reporte); //2 agregar el listado de reportes
+        sef_formato.setId("sef_formato");
+        sef_formato.setConexion(con_postgres);
+        agregarComponente(sef_formato);
     }
 
     public void dibujaIngreso(){
@@ -216,6 +231,38 @@ public class pre_des_asignacion extends Pantalla{
     public void eliminar() {
     }
 
+    
+    /*CREACION DE REPORTES */
+    //llamada a reporte
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+    }
+    
+    @Override
+    public void aceptarReporte() {
+        rep_reporte.cerrar();
+        switch (rep_reporte.getNombre()) {
+           case "COMPROBANTE DE SALIDA":
+               abrirReporte();
+           break;
+        }
+    }
+    
+    public void abrirReporte() {
+        rep_reporte.cerrar();
+        switch (rep_reporte.getNombre()) {
+           case "COMPROBANTE DE SALIDA":
+               p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
+               p_parametros.put("codigo", Integer.parseInt(tab_tabla.getValor("mav_secuencial")+""));
+               p_parametros.put("placa", Integer.parseInt(tab_tabla.getValor("mve_secuencial")+""));
+               rep_reporte.cerrar();
+               sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+               sef_formato.dibujar();
+           break;
+        }
+    }
+    
     public Conexion getCon_postgres() {
         return con_postgres;
     }
@@ -238,6 +285,30 @@ public class pre_des_asignacion extends Pantalla{
 
     public void setAut_busca(AutoCompletar aut_busca) {
         this.aut_busca = aut_busca;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSef_formato() {
+        return sef_formato;
+    }
+
+    public void setSef_formato(SeleccionFormatoReporte sef_formato) {
+        this.sef_formato = sef_formato;
+    }
+
+    public Map getP_parametros() {
+        return p_parametros;
+    }
+
+    public void setP_parametros(Map p_parametros) {
+        this.p_parametros = p_parametros;
     }
     
 }
