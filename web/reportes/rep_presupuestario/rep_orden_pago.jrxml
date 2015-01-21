@@ -161,7 +161,7 @@ WHERE  tes_numero_orden = $P{id_orden} and tes_ide_orden_pago = $P{id_documento}
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="9d856dc7-e28c-4bcb-9e10-7f72a6758492" x="220" y="47" width="463" height="43"/>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="14" isUnderline="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{beneficiario}]]></textFieldExpression>
