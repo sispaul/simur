@@ -43,6 +43,7 @@ public class pre_aprobacion_anticipos extends Pantalla{
     private Tabla tab_listado = new Tabla();
     private Tabla tab_consulta = new Tabla();
     private Tabla set_pagos = new Tabla();
+    private Tabla set_pagos1 = new Tabla();
     private SeleccionTabla set_lista = new SeleccionTabla();
     
     //Conexion a base
@@ -58,6 +59,10 @@ public class pre_aprobacion_anticipos extends Pantalla{
     private Texto tcedula = new Texto();
     private Texto tnombre = new Texto();
     private Texto tsaldo = new Texto();
+    private Texto cvalor = new Texto();
+    private Texto ccedula = new Texto();
+    private Texto cnombre = new Texto();
+    private Texto csaldo = new Texto();
     
     private Calendario cal_fecha = new Calendario();
     private Calendario cal_fechad = new Calendario();
@@ -65,10 +70,16 @@ public class pre_aprobacion_anticipos extends Pantalla{
     //Dialogo Busca 
     private Dialogo dia_dialogo = new Dialogo();
     private Dialogo dia_dialogop = new Dialogo();
+    private Dialogo dia_dialogolc = new Dialogo();
+    private Dialogo dia_dialogopl = new Dialogo();
     private Grid grid_d = new Grid();
     private Grid grid_p = new Grid();
+    private Grid grid_lc = new Grid();
+    private Grid grid_pl = new Grid();
     private Grid grid = new Grid();
     private Grid gridp = new Grid();
+    private Grid gridlc = new Grid();
+    private Grid gridpl = new Grid();
     
     @EJB
     private SolicAnticipos iAnticipos = (SolicAnticipos) utilitario.instanciarEJB(SolicAnticipos.class);
@@ -96,6 +107,13 @@ public class pre_aprobacion_anticipos extends Pantalla{
         bot_limpiar.setIcon("ui-icon-contact");
         bot_limpiar.setMetodo("pago_anticipado");
         bar_botones.agregarBoton(bot_limpiar);
+        
+        Boton bot_pago = new Boton();
+        bot_pago.setValue("COBRO X LIQUIDACIÓN");
+        bot_pago.setExcluirLectura(true);
+        bot_pago.setIcon("ui-icon-comment");
+        bot_pago.setMetodo("cobro_liquidacion");
+        bar_botones.agregarBoton(bot_pago);
         
         pan_opcion.setId("pan_opcion");
         pan_opcion.setTransient(true);
@@ -288,6 +306,37 @@ public class pre_aprobacion_anticipos extends Pantalla{
         set_pagos.setTipoSeleccion(false);
         set_pagos.setRows(10);
         set_pagos.dibujar();
+        
+        //para poder busca por apelllido el garante
+        dia_dialogolc.setId("dia_dialogolc");
+        dia_dialogolc.setTitle("BUSCAR SOLICITUD DE ANTICIPO"); //titulo
+        dia_dialogolc.setWidth("40%"); //siempre en porcentajes  ancho
+        dia_dialogolc.setHeight("50%");//siempre porcentaje   alto
+        dia_dialogolc.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogolc.getBot_aceptar().setMetodo("cobro_anticipo");
+        grid_lc.setColumns(4);
+        agregarComponente(dia_dialogolc);
+        
+        set_pagos1.setId("set_pagos1");
+        set_pagos1.setConexion(con_postgres);
+        set_pagos1.setHeader("DIRECCIONES");
+        set_pagos1.setSql("SELECT s.ide_solicitud_anticipo,s.ci_solicitante,s.solicitante,(case when valor_pagado is null then valor_anticipo when valor_pagado is not null then (valor_anticipo-valor_pagado) end)as saldo\n" +
+                "FROM srh_solicitud_anticipo s INNER JOIN srh_calculo_anticipo c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
+                "where c.ide_estado_anticipo in (2,3)  order by s.ide_solicitud_anticipo");
+        set_pagos1.getColumna("ci_solicitante").setFiltro(true);
+        set_pagos1.getColumna("solicitante").setFiltro(true);
+        set_pagos1.setTipoSeleccion(false);
+        set_pagos1.setRows(10);
+        set_pagos1.dibujar();
+        
+        dia_dialogopl.setId("dia_dialogopl");
+        dia_dialogopl.setTitle("BUSCAR SOLICITUD DE ANTICIPO"); //titulo
+        dia_dialogopl.setWidth("40%"); //siempre en porcentajes  ancho
+        dia_dialogopl.setHeight("25%");//siempre porcentaje   alto
+        dia_dialogopl.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogopl.getBot_aceptar().setMetodo("cobro_liqui");
+        grid_pl.setColumns(4);
+        agregarComponente(dia_dialogopl);
     }   
     
     public void buscarColumna() {
@@ -381,6 +430,64 @@ public class pre_aprobacion_anticipos extends Pantalla{
             }else{
                 utilitario.agregarMensajeInfo("Opción para Pago Total", "");
             }
+        }else {
+            utilitario.agregarMensajeInfo("No se encuentra registro", "");
+        }
+    }
+    
+    public void cobro_liquidacion(){
+        dia_dialogolc.Limpiar();
+        dia_dialogolc.setDialogo(gridlc);
+        grid_lc.getChildren().add(set_pagos1);
+        dia_dialogolc.setDialogo(grid_lc);
+        set_pagos.dibujar();
+        dia_dialogolc.dibujar(); 
+    }
+    
+    public void cobro_anticipo(){
+//        dia_dialogo.cerrar();
+        if (set_pagos1.getValorSeleccionado() != null && set_pagos1.getValorSeleccionado().toString().isEmpty() == false ) {
+            TablaGenerica tab_dato = iAnticipos.getSolicitud(Integer.parseInt(set_pagos1.getValorSeleccionado()));
+            if (!tab_dato.isEmpty()) {
+                        dia_dialogopl.Limpiar();
+                        dia_dialogopl.setDialogo(gridpl);
+                        Grid gru_lis = new Grid();
+                        gru_lis.setColumns(4);
+                        ccedula.setSize(10);
+                        gru_lis.getChildren().add(new Etiqueta("CEDULA :"));
+                        gru_lis.getChildren().add(ccedula);
+                        cnombre.setSize(38);
+                        gru_lis.getChildren().add(new Etiqueta("NOMBRES :"));
+                        gru_lis.getChildren().add(cnombre);
+                        csaldo.setSize(8);
+                        gru_lis.getChildren().add(new Etiqueta("SALDO $ :"));
+                        gru_lis.getChildren().add(csaldo);
+                        gridpl.getChildren().add(gru_lis);
+                        cvalor.setSize(30);
+                        gridpl.getChildren().add(new Etiqueta("COMENTARIO DE COBRO :"));
+                        gridpl.getChildren().add(cvalor);
+                        dia_dialogopl.setDialogo(grid_pl);
+                        dia_dialogopl.dibujar();
+                        ccedula.setValue(tab_dato.getValor("ci_solicitante") +"");
+                        cnombre.setValue(tab_dato.getValor("solicitante") +"");
+                        csaldo.setValue(tab_dato.getValor("saldo") +"");
+                        utilitario.addUpdate("ccedula");
+                        utilitario.addUpdate("cnombre");
+                        utilitario.addUpdate("csaldo");
+            }else {
+                utilitario.agregarMensajeInfo("No se encuentra registro", "");
+            }
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar una registro", "");
+        }
+    }
+    public void cobro_liqui(){
+        TablaGenerica tab_dato = iAnticipos.getSoli_Detalle(ccedula.getValue()+"");
+        if (!tab_dato.isEmpty()) {
+            iAnticipos.set_ActDetalle_Pagoliq(Integer.parseInt(tab_dato.getValor("ide_solicitud_anticipo")), Integer.parseInt(utilitario.getMes(utilitario.getFechaActual())+""),utilitario.getVariable("NICK"),utilitario.getFechaActual());
+            iAnticipos.set_ActCalculo_Pagoliq(Integer.parseInt(tab_dato.getValor("ide_solicitud_anticipo")),Integer.parseInt(tab_dato.getValor("ide_calculo_anticipo")),utilitario.getVariable("NICK"),utilitario.getFechaActual(),cvalor.getValue()+"");
+            iAnticipos.set_ActSolicitud_Pagoliq(Integer.parseInt(tab_dato.getValor("ide_solicitud_anticipo")));
+            utilitario.agregarMensajeInfo("Registro realizado con exito", "");
         }else {
             utilitario.agregarMensajeInfo("No se encuentra registro", "");
         }
@@ -770,6 +877,14 @@ public class pre_aprobacion_anticipos extends Pantalla{
 
     public void setSet_pagos(Tabla set_pagos) {
         this.set_pagos = set_pagos;
+    }
+
+    public Tabla getSet_pagos1() {
+        return set_pagos1;
+    }
+
+    public void setSet_pagos1(Tabla set_pagos1) {
+        this.set_pagos1 = set_pagos1;
     }
     
 }

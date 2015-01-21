@@ -1412,7 +1412,20 @@ public class SolicAnticipos {
     con_postgres = null;
   }
   
-    public void set_ActCalculo_PagoAnti(Integer solic,Integer calcu,String usu,String fecha,String doc){
+  public void set_ActDetalle_Pagoliq(Integer ide,Integer periodo,String usu,String fecha){
+    String au_sql="update srh_detalle_anticipo\n" +
+            "set ide_periodo_descontado="+periodo+",\n" +
+            "ide_estado_cuota=1,\n" +
+            "usu_cobro_liquidacion='"+usu+"',\n" +
+            "fecha_cobro_liquidacion='"+fecha+"'\n" +
+            "where ide_periodo_descontado is null and ide_estado_cuota is null and ide_anticipo ="+ide;
+    con_postgresql();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+  }
+  
+  public void set_ActCalculo_PagoAnti(Integer solic,Integer calcu,String usu,String fecha,String doc){
     String au_sql="UPDATE srh_calculo_anticipo\n" +
             "SET ide_estado_anticipo =4,\n" +
             "usu_pago_anticipado='"+usu+"',\n" +
@@ -1424,8 +1437,21 @@ public class SolicAnticipos {
     con_postgres.desconectar();
     con_postgres = null;
   }
-    
-    public void set_ActSolicitud_PagoAnti(Integer solic){
+  
+  public void set_ActCalculo_Pagoliq(Integer solic,Integer calcu,String usu,String fecha,String doc){
+    String au_sql="UPDATE srh_calculo_anticipo\n" +
+            "SET ide_estado_anticipo =4,\n" +
+            "usu_cobra_liquidacion='"+usu+"',\n" +
+            "fecha_cobro_liquidacion='"+fecha+"',\n" +
+            "comentario_cobro ='"+doc+"'\n" +
+            "where ide_solicitud_anticipo = "+solic+" and ide_calculo_anticipo ="+calcu;
+    con_postgresql();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+  }
+  
+  public void set_ActSolicitud_PagoAnti(Integer solic){
     String au_sql="update srh_solicitud_anticipo\n" +
             "set aprobado_solicitante = 2\n" +
             "where ide_solicitud_anticipo = "+solic;
@@ -1434,7 +1460,17 @@ public class SolicAnticipos {
     con_postgres.desconectar();
     con_postgres = null;
     }    
-    
+  
+  public void set_ActSolicitud_Pagoliq(Integer solic){
+    String au_sql="update srh_solicitud_anticipo\n" +
+            "set aprobado_solicitante = 2\n" +
+            "where ide_solicitud_anticipo = "+solic;
+    con_postgresql();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+  
   public void actuaPerAnio15(Integer anti){
     String au_sql="update srh_detalle_anticipo\n" +
             "set periodo =d.periodo, \n" +
