@@ -181,6 +181,7 @@ public class manauto {
                 "v.mve_cod_conductor, \n" +
                 "(case when to_char(v.mve_kilometros_actual, '999999999.99') is null then v.mve_horometro when to_char(v.mve_kilometros_actual, '999999999.99') is not null then to_char(v.mve_kilometros_actual, '999999999.99') end) as rendimiento,\n" +
                 "v.mve_capacidad_tanque, \n" +
+                "v.mve_kilometros_actual, \n" +
                 "v.mve_numimr \n" +
                 "FROM mv_vehiculo AS v  \n" +
                 "INNER JOIN  mvtipo_combustible AS c   \n" +
@@ -228,6 +229,17 @@ public class manauto {
        con_postgres = null;
        return tab_persona;
     }
+    public TablaGenerica setguardar(String tipo,String anio,String mes,Integer placa) {
+        con_postgresql();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT abastecimiento_id, mve_secuencial FROM mvabactecimiento_combustible\n" +
+                "where abastecimiento_anio='"+anio+"' and mve_secuencial="+placa+" and abastecimiento_periodo='"+mes+"' and abastecimiento_numero='"+tipo+"'");
+        tab_persona.ejecutarSql();
+       con_postgres.desconectar();
+       con_postgres = null;
+       return tab_persona;
+    }
     
     public void set_Actuabaste(Integer codigo,String vale,String fecha,String cod_cond,String conductor,Integer km,Double total,String gl,String anio,String periodo,String fechaac,String login,String time){
     String au_sql="update mvabactecimiento_combustible set abastecimiento_numero_vale='"+vale+"', \n" +
@@ -243,6 +255,16 @@ public class manauto {
             "abastecimiento_loginactu='"+login+"', \n" +
             "abastecimiento_horabas ='"+time+"'\n" +
             "where abastecimiento_id ="+codigo;
+    con_postgresql();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+    
+    public void set_ActuaKM(Integer codigo,Integer km){
+    String au_sql="update mv_vehiculo\n" +
+            "set mve_kilometros_actual ="+km+"\n" +
+            "where mve_secuencial="+codigo;
     con_postgresql();
     con_postgres.ejecutarSql(au_sql);
     con_postgres.desconectar();
