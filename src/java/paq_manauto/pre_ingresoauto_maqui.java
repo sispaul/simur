@@ -251,7 +251,7 @@ public class pre_ingresoauto_maqui extends Pantalla{
         tab_tabla.getColumna("MVE_HOROMETRO").setMetodoChange("recorrido");
         tab_tabla.getColumna("MVE_TIPOCODIGO").setMetodoChange("activarTipo");
         tab_tabla.getColumna("MVE_HOROMETRO").setMascara("9999:99");
-        tab_tabla.getColumna("mve_rendimientogl_h").setMascara("9/9");
+        tab_tabla.getColumna("mve_rendimientogl_h").setMascara("9/1");
         tab_tabla.getColumna("MVE_LOGININGRESO").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         tab_tabla.getColumna("MVE_FECHAINGRESO").setValorDefecto(utilitario.getFechaActual());
         List list = new ArrayList();
