@@ -128,7 +128,7 @@ public class pre_abastecimientoauto extends Pantalla{
         tab_tabla1.setLectura(true);
         tab_tabla1.getColumna("abastecimiento_numero_vale").setFiltro(true);
         tab_tabla1.getColumna("mve_placa").setFiltro(true);
-//        tab_tabla1.agregarRelacion(tab_tabla);
+        tab_tabla1.agregarRelacion(tab_tabla);
         tab_tabla1.setRows(15);
         tab_tabla1.dibujar();
         PanelTabla ptt1 = new PanelTabla();
@@ -176,7 +176,7 @@ public class pre_abastecimientoauto extends Pantalla{
             if(tab_tabla.getValor("abastecimiento_numero")!=null && tab_tabla.getValor("abastecimiento_numero").toString().isEmpty() == false){
 
             }else{
-                Integer numero = Integer.parseInt(aCombustible.listaMax(Integer.parseInt(tab_tabla.getValor("tipo_combustible_id")),String.valueOf(utilitario.getAnio(tab_tabla.getValor("abastecimiento_fecha"))),String.valueOf(utilitario.getMes(tab_tabla.getValor("abastecimiento_fecha")))));
+                Integer numero = Integer.parseInt(aCombustible.listaMax(Integer.parseInt(tab_tabla.getValor("mve_secuencial")),String.valueOf(utilitario.getAnio(tab_tabla.getValor("abastecimiento_fecha"))),String.valueOf(utilitario.getMes(tab_tabla.getValor("abastecimiento_fecha")))));
                 Integer cantidad=0;
                 cantidad=numero +1;
                 tab_tabla.setValor("abastecimiento_numero", String.valueOf(cantidad));
@@ -257,7 +257,7 @@ public class pre_abastecimientoauto extends Pantalla{
     @Override
     public void guardar() {
         String reg = new String();
-        TablaGenerica tab_dato =aCombustible.getCombustible(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")));
+        TablaGenerica tab_dato =aCombustible.setguardar(tab_tabla.getValor("abastecimiento_numero"), tab_tabla.getValor("abastecimiento_anio"), tab_tabla.getValor("abastecimiento_periodo"),Integer.parseInt(tab_tabla.getValor("mve_secuencial")));
         if (!tab_dato.isEmpty()) {
             aCombustible.set_Actuabaste(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")), tab_tabla.getValor("abastecimiento_numero_vale"), tab_tabla.getValor("abastecimiento_fecha"), tab_tabla.getValor("abastecimiento_conductor"), 
                     tab_tabla.getValor("abastecimiento_cod_conductor"), Integer.parseInt(tab_tabla.getValor("abastecimiento_kilometraje")), Double.valueOf(tab_tabla.getValor("abastecimiento_total")), tab_tabla.getValor("abastecimiento_galones"), tab_tabla.getValor("abastecimiento_anio"), 
@@ -276,6 +276,7 @@ public class pre_abastecimientoauto extends Pantalla{
         tab_tabla1.actualizar();
         tab_tabla1.setFilaActual(reg);
         tab_tabla1.calcularPaginaActual();
+        actu();
     }
 
     @Override
@@ -283,6 +284,10 @@ public class pre_abastecimientoauto extends Pantalla{
         tab_tabla.eliminar();
     }
 
+      public void actu(){
+        aCombustible.set_ActuaKM(Integer.parseInt(tab_tabla.getValor("mve_secuencial")), Integer.parseInt(tab_tabla.getValor("abastecimiento_kilometraje")));
+    }
+    
     public Conexion getCon_postgres() {
         return con_postgres;
     }
