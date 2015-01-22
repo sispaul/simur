@@ -79,7 +79,7 @@ public class pre_placas_disponibles extends Pantalla{
         tab_placas.getColumna("FECHA_ENTREGA_FINAL").setVisible(false);
         tab_placas.setHeader("Inventario de Placas Disponibles");
         tab_placas.setLectura(true);
-        tab_placas.setRows(40);
+        tab_placas.setRows(30);
         tab_placas.dibujar();
         PanelTabla tbp_d=new PanelTabla(); 
         tbp_d.setPanelTabla(tab_placas);
