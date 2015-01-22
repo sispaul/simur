@@ -6,13 +6,14 @@ package paq_manauto;
 
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Division;
+import framework.componentes.Grupo;
+import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import javax.ejb.EJB;
 import paq_manauto.ejb.manauto;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
-
 
 /**
  *
@@ -28,12 +29,15 @@ public class pre_abastecimientoauto extends Pantalla{
     private Tabla tab_tabla = new Tabla();
     private Tabla tab_tabla1 = new Tabla();
     
+    //dibujar cuadros de panel
+    private Panel pan_opcion = new Panel();
+    
+    
     @EJB
     private manauto aCombustible = (manauto) utilitario.instanciarEJB(manauto.class);
     
     public pre_abastecimientoauto() {
-        
-         //desactiva botones de navegación
+        //desactiva botones de navegación
         bar_botones.quitarBotonsNavegacion();
         
         //datos de usuario actual del sistema
@@ -48,37 +52,48 @@ public class pre_abastecimientoauto extends Pantalla{
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         con_postgres.NOMBRE_MARCA_BASE = "postgres";
         
+        pan_opcion.setId("pan_opcion");
+        pan_opcion.setTransient(true);
+        pan_opcion.setHeader("ABASTECIMIENTO DE COMBUSTIBLE");
+        agregarComponente(pan_opcion);
+        
+        dibujaAbastecimiento();
+        
+    }
+
+       public void dibujaAbastecimiento(){
+        limpiarPanel();
         tab_tabla.setId("tab_tabla");
         tab_tabla.setConexion(con_postgres);
         tab_tabla.setTabla("mvabactecimiento_combustible", "abastecimiento_id", 1);
         //Metodos para buscar los datos a llenar en el formulario
-//        tab_tabla.getColumna("tipo_combustible_id").setCombo("SELECT tipo_combustible_id,(tipo_combustible_descripcion||'/'||tipo_valor_galon) as valor FROM mvtipo_combustible order by tipo_combustible_descripcion");
-//        tab_tabla.getColumna("mve_secuencial").setCombo("SELECT v.mve_secuencial, (v.mve_placa||'/'||m.mvmarca_descripcion ||'/'||o.mvmodelo_descripcion ||'/'||v.mve_ano)as descripcion\n" +"FROM mv_vehiculo v\n" +
-//                "INNER JOIN mvmarca_vehiculo m ON v.mvmarca_id = m.mvmarca_id\n" +
-//                "INNER JOIN mvmodelo_vehiculo o ON v.mvmodelo_id = o.mvmodelo_id\n" +
-//                "WHERE v.mve_tipo_ingreso = 'M'");
-//        tab_tabla.getColumna("mve_secuencial").setFiltroContenido();
-//        tab_tabla.getColumna("mve_secuencial").setMetodoChange("busPlaca");
-//        tab_tabla.getColumna("abastecimiento_galones").setMetodoChange("galones");
-//        tab_tabla.getColumna("abastecimiento_valorhora").setMetodoChange("valor");
-//        tab_tabla.getColumna("abastecimiento_valorhora").setMascara("99:99");
-//        tab_tabla.getColumna("abastecimiento_estado").setValorDefecto("1");
-//        tab_tabla.getColumna("abastecimiento_ingreso").setValorDefecto("H");
-//        tab_tabla.getColumna("abastecimiento_tipo_ingreso").setValorDefecto("M");
-//        tab_tabla.getColumna("abastecimiento_tipo_medicion").setValorDefecto("2");
-//        tab_tabla.getColumna("abastecimiento_logining").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
-//        tab_tabla.getColumna("abastecimiento_fechaing").setValorDefecto(utilitario.getFechaActual());
-//        tab_tabla.getColumna("abastecimiento_horaing").setValorDefecto(utilitario.getHoraActual());
+        tab_tabla.getColumna("tipo_combustible_id").setCombo("SELECT tipo_combustible_id,(tipo_combustible_descripcion||'/'||tipo_valor_galon) as valor FROM mvtipo_combustible order by tipo_combustible_descripcion");
+        tab_tabla.getColumna("mve_secuencial").setCombo("SELECT v.mve_secuencial, (v.mve_placa||'/'||m.mvmarca_descripcion ||'/'||o.mvmodelo_descripcion ||'/'||v.mve_ano)as descripcion\n" +"FROM mv_vehiculo v\n" +
+                "INNER JOIN mvmarca_vehiculo m ON v.mvmarca_id = m.mvmarca_id\n" +
+                "INNER JOIN mvmodelo_vehiculo o ON v.mvmodelo_id = o.mvmodelo_id\n" +
+                "WHERE v.mve_tipo_ingreso = 'A'");
+        tab_tabla.getColumna("mve_secuencial").setFiltroContenido();
+        tab_tabla.getColumna("mve_secuencial").setMetodoChange("busPlaca");
+        tab_tabla.getColumna("abastecimiento_kilometraje").setMetodoChange("kilometraje");
+        tab_tabla.getColumna("abastecimiento_galones").setMetodoChange("galones");
+        tab_tabla.getColumna("abastecimiento_tipo_ingreso").setValorDefecto("K");
+        tab_tabla.getColumna("abastecimiento_ingreso").setValorDefecto("GL");
+        tab_tabla.getColumna("abastecimiento_estado").setValorDefecto("1");
+        tab_tabla.getColumna("abastecimiento_tipo_medicion").setValorDefecto("1");
+        tab_tabla.getColumna("abastecimiento_logining").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
+        tab_tabla.getColumna("abastecimiento_fechaing").setValorDefecto(utilitario.getFechaActual());
+        tab_tabla.getColumna("abastecimiento_horaing").setValorDefecto(utilitario.getHoraActual());
         tab_tabla.getColumna("abastecimiento_conductor").setLongitud(70);
         tab_tabla.getColumna("tipo_combustible_id").setLectura(true);
         tab_tabla.getColumna("abastecimiento_numero").setLectura(true);
         tab_tabla.getColumna("abastecimiento_total").setLectura(true);
-        tab_tabla.getColumna("abastecimiento_kilometraje").setLectura(true);
         tab_tabla.getColumna("abastecimiento_cod_conductor").setVisible(false);
         tab_tabla.getColumna("abastecimiento_fechaing").setVisible(false);
-//        tab_tabla.getColumna("abastecimiento_titulo").setEtiqueta();
+        tab_tabla.getColumna("abastecimiento_titulo").setEtiqueta();
         tab_tabla.getColumna("abastecimiento_fechaing").setVisible(false);
         tab_tabla.getColumna("abastecimiento_logining").setVisible(false);
+        tab_tabla.getColumna("abastecimiento_tipo_medicion").setVisible(false);
+        tab_tabla.getColumna("abastecimiento_valorhora").setVisible(false);
         tab_tabla.getColumna("abastecimiento_estado").setVisible(false);
         tab_tabla.getColumna("abastecimiento_fechactu").setVisible(false);
         tab_tabla.getColumna("abastecimiento_loginactu").setVisible(false);
@@ -88,73 +103,67 @@ public class pre_abastecimientoauto extends Pantalla{
         tab_tabla.getColumna("abastecimiento_horaing").setVisible(false);
         tab_tabla.getColumna("abastecimiento_id").setVisible(false);
         tab_tabla.getColumna("abastecimiento_ingreso").setVisible(false);
-        tab_tabla.getColumna("abastecimiento_tipo_medicion").setVisible(false);
-        tab_tabla.getColumna("abastecimiento_kilometraje").setVisible(false);
         tab_tabla.setTipoFormulario(true);
         tab_tabla.getGrid().setColumns(4);
         tab_tabla.dibujar();
         PanelTabla ptt = new PanelTabla();
         ptt.setPanelTabla(tab_tabla);
         
-//        tab_tabla1.setId("tab_tabla1");
-//        tab_tabla1.setConexion(con_postgres);
-//        tab_tabla1.setSql("SELECT\n" +
-//                "a.abastecimiento_id,\n" +
-//                "a.abastecimiento_numero_vale,\n" +
-//                "v.mve_placa,\n" +
-//                "(m.mvmarca_descripcion||' '||t.mvtipo_descripcion||' '||o.mvmodelo_descripcion) AS descripcion,\n" +
-//                "a.abastecimiento_total,\n" +
-//                "a.abastecimiento_numero\n" +
-//                "FROM mvabactecimiento_combustible AS a\n" +
-//                "INNER JOIN mv_vehiculo AS v ON a.mve_secuencial = v.mve_secuencial\n" +
-//                "INNER JOIN mvmarca_vehiculo AS m ON v.mvmarca_id = m.mvmarca_id\n" +
-//                "INNER JOIN mvmodelo_vehiculo AS o ON v.mvmodelo_id = o.mvmodelo_id\n" +
-//                "INNER JOIN mvtipo_vehiculo t ON t.mvmarca_id = m.mvmarca_id AND v.mvtipo_id = t.mvtipo_id AND o.mvtipo_id = t.mvtipo_id\n" +
-//                "WHERE a.abastecimiento_tipo_ingreso = 'M'\n" +
-//                "ORDER BY a.abastecimiento_id DESC");
-//        tab_tabla1.setLectura(true);
-//        tab_tabla1.getColumna("abastecimiento_numero_vale").setFiltro(true);
-//        tab_tabla1.getColumna("mve_placa").setFiltro(true);
-////        tab_tabla1.agregarRelacion(tab_tabla);
-//        tab_tabla1.setRows(15);
-//        tab_tabla1.dibujar();
-//        PanelTabla ptt1 = new PanelTabla();
-//        ptt1.setPanelTabla(tab_tabla1);
+        tab_tabla1.setId("tab_tabla1");
+        tab_tabla1.setConexion(con_postgres);
+        tab_tabla1.setSql("SELECT\n" +
+                "a.abastecimiento_id,\n" +
+                "a.abastecimiento_numero_vale,\n" +
+                "v.mve_placa,\n" +
+                "(m.mvmarca_descripcion||' '||t.mvtipo_descripcion||' '||o.mvmodelo_descripcion) AS descripcion,\n" +
+                "a.abastecimiento_total,\n" +
+                "a.abastecimiento_numero\n" +
+                "FROM mvabactecimiento_combustible AS a\n" +
+                "INNER JOIN mv_vehiculo AS v ON a.mve_secuencial = v.mve_secuencial\n" +
+                "INNER JOIN mvmarca_vehiculo AS m ON v.mvmarca_id = m.mvmarca_id\n" +
+                "INNER JOIN mvmodelo_vehiculo AS o ON v.mvmodelo_id = o.mvmodelo_id\n" +
+                "INNER JOIN mvtipo_vehiculo t ON t.mvmarca_id = m.mvmarca_id AND v.mvtipo_id = t.mvtipo_id AND o.mvtipo_id = t.mvtipo_id\n" +
+                "WHERE a.abastecimiento_tipo_ingreso = 'K'\n" +
+                "ORDER BY a.abastecimiento_id DESC");
+        tab_tabla1.setLectura(true);
+        tab_tabla1.getColumna("abastecimiento_numero_vale").setFiltro(true);
+        tab_tabla1.getColumna("mve_placa").setFiltro(true);
+        tab_tabla1.agregarRelacion(tab_tabla);
+        tab_tabla1.setRows(15);
+        tab_tabla1.dibujar();
+        PanelTabla ptt1 = new PanelTabla();
+        ptt1.setPanelTabla(tab_tabla1);
+        
         Division div = new Division();
-//        div.dividir2(ptt,ptt1,"40%","H");
-        div.dividir1(ptt);
-        agregarComponente(div);
+        div.dividir2(ptt,ptt1,"40%","H");
+        Grupo gru = new Grupo();
+        gru.getChildren().add(div);
+        pan_opcion.getChildren().add(gru);    
+    }
+       //limpia y borrar el contenido de la pantalla
+    private void limpiarPanel() {
+        //borra el contenido de la división central central
+        pan_opcion.getChildren().clear();
     }
     
-    //verifica capacidad de tanque
-    public void galones(){
-        TablaGenerica tab_dato =aCombustible.getVehiculo(Integer.parseInt(tab_tabla.getValor("mve_secuencial")));
-        if (!tab_dato.isEmpty()) {
-            Double valor1 = Double.valueOf(tab_dato.getValor("mve_capacidad_tanque"));
-            Double valor2 = Double.valueOf(tab_tabla.getValor("abastecimiento_galones"));
-            if(valor2<=valor1){
-                utilitario.addUpdate("tab_tabla");
-            }else{
-                utilitario.agregarMensajeError("Galones","Exceden Capacidad del Tanque");
-                tab_tabla.setValor("abastecimiento_galones", null);
-                utilitario.addUpdate("tab_tabla");
-            }
-        }else{
-            utilitario.agregarMensajeError("Valor","No Se Encuentra Registrado");
-        }
+    public void limpiar() {
+//        aut_busca.limpiar();
+        utilitario.addUpdate("aut_busca");
+        limpiarPanel();
+        utilitario.addUpdate("pan_opcion");
     }
     
     //busca datos de vehiculo que se selecciona
     public void busPlaca(){
         TablaGenerica tab_dato =aCombustible.getVehiculo(Integer.parseInt(tab_tabla.getValor("mve_secuencial")));
         if (!tab_dato.isEmpty()) {
-            if(tab_dato.getValor("mve_numimr").equals("H")){
+            if(tab_dato.getValor("mve_numimr").equals("K")){
                     tab_tabla.setValor("abastecimiento_conductor", tab_dato.getValor("mve_conductor"));
                     tab_tabla.setValor("abastecimiento_cod_conductor", tab_dato.getValor("mve_cod_conductor"));
                     tab_tabla.setValor("tipo_combustible_id", tab_dato.getValor("tipo_combustible_id"));
                     utilitario.addUpdate("tab_tabla");
             }else{
-                utilitario.agregarMensajeError("Modulo solo para Maquinaria","");
+                utilitario.agregarMensajeError("Modulo solo para Vehiculos","");
             }
         }else{
             utilitario.agregarMensajeError("Vehiculo","No Se Encuentra Registrado");
@@ -180,7 +189,46 @@ public class pre_abastecimientoauto extends Pantalla{
         }
     }
     
-    //calculo de horas trabjadas por galon
+    //verifica el kilometraje del automotor
+    public void kilometraje(){
+        TablaGenerica tab_dato =aCombustible.getVehiculo(Integer.parseInt(tab_tabla.getValor("mve_secuencial")));
+        if (!tab_dato.isEmpty()) {
+            Double valor1 = Double.valueOf(tab_dato.getValor("mve_kilometros_actual"));
+            Double valor2 = Double.valueOf(tab_tabla.getValor("abastecimiento_kilometraje"));
+            if(valor2>=valor1){
+                tab_tabla.getColumna("abastecimiento_galones").setLectura(false);
+                utilitario.addUpdate("tab_calculo");
+            }else{
+                utilitario.agregarMensajeError("Kilometraje","Por Debajo del Anterior");
+                tab_tabla.getColumna("abastecimiento_galones").setLectura(true);
+                utilitario.addUpdate("tab_calculo");
+            }
+        }else{
+            utilitario.agregarMensajeError("Valor","No Se Encuentra Registrado");
+        }
+    }
+    
+    //verifica si la capacidad del abastecimiento es el correcto
+    public void galones(){
+        TablaGenerica tab_dato =aCombustible.getVehiculo(Integer.parseInt(tab_tabla.getValor("mve_secuencial")));
+        if (!tab_dato.isEmpty()) {
+            Double valor1 = Double.valueOf(tab_dato.getValor("mve_capacidad_tanque"));
+            Double valor2 = Double.valueOf(tab_tabla.getValor("abastecimiento_galones"));
+            if(valor2<=valor1){
+                utilitario.addUpdate("tab_tabla");
+                valor();
+                carga();
+                secuencial();
+            }else{
+                utilitario.agregarMensajeError("Galones","Exceden Capacidad de Vehiculo");
+                tab_tabla.setValor("abastecimiento_galones", null);
+                utilitario.addUpdate("tab_tabla");
+            }
+        }else{
+            utilitario.agregarMensajeError("Valor","No Se Encuentra Registrado");
+        }
+    }
+    
     public void valor(){
         TablaGenerica tab_dato =aCombustible.getCombustible(Integer.parseInt(tab_tabla.getValor("tipo_combustible_id")));
         if (!tab_dato.isEmpty()) {
@@ -188,8 +236,6 @@ public class pre_abastecimientoauto extends Pantalla{
             valor = (Double.parseDouble(tab_dato.getValor("tipo_valor_galon"))*Double.parseDouble(tab_tabla.getValor("abastecimiento_galones")));
             tab_tabla.setValor("abastecimiento_total", String.valueOf(Math.rint(valor*100)/100));
             utilitario.addUpdate("tab_tabla");
-            carga();
-            secuencial();
         }else{
             utilitario.agregarMensajeError("Valor","No Se Encuentra Registrado");
         }
@@ -200,29 +246,48 @@ public class pre_abastecimientoauto extends Pantalla{
        tab_tabla.setValor("abastecimiento_periodo", String.valueOf(utilitario.getMes(tab_tabla.getValor("abastecimiento_fecha"))));
        utilitario.addUpdate("tab_tabla");
     }
-    
+        
     @Override
     public void insertar() {
-         if (tab_tabla.isFocus()) {
+        if (tab_tabla.isFocus()) {
             tab_tabla.insertar();
         }
     }
-
+    
     @Override
     public void guardar() {
-//        String reg = new String();
-        tab_tabla.guardar();
-        con_postgres.guardarPantalla(); 
-//        reg = tab_tabla.getValorSeleccionado();
-//        tab_tabla1.actualizar();
-//        tab_tabla1.setFilaActual(reg);
-//        tab_tabla1.calcularPaginaActual();
+        String reg = new String();
+        TablaGenerica tab_dato =aCombustible.setguardar(tab_tabla.getValor("abastecimiento_numero"), tab_tabla.getValor("abastecimiento_anio"), tab_tabla.getValor("abastecimiento_periodo"),Integer.parseInt(tab_tabla.getValor("mve_secuencial")));
+        if (!tab_dato.isEmpty()) {
+            aCombustible.set_Actuabaste(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")), tab_tabla.getValor("abastecimiento_numero_vale"), tab_tabla.getValor("abastecimiento_fecha"), tab_tabla.getValor("abastecimiento_conductor"), 
+                    tab_tabla.getValor("abastecimiento_cod_conductor"), Integer.parseInt(tab_tabla.getValor("abastecimiento_kilometraje")), Double.valueOf(tab_tabla.getValor("abastecimiento_total")), tab_tabla.getValor("abastecimiento_galones"), tab_tabla.getValor("abastecimiento_anio"), 
+                    tab_tabla.getValor("abastecimiento_periodo"), utilitario.getFechaActual(), tab_consulta.getValor("NICK_USUA"), tab_tabla.getValor("abastecimiento_horabas"));
+            utilitario.agregarMensaje("Registro Actualizado ", "");
+            reg = tab_tabla.getValorSeleccionado();
+        }else{
+            if(tab_dato.getValor("abastecimiento_id")!=null){
+            }else{
+                if(tab_tabla.guardar()){
+                    con_postgres.guardarPantalla(); 
+                    reg = tab_tabla.getValorSeleccionado();
+                }
+            }
+        }
+        tab_tabla1.actualizar();
+        tab_tabla1.setFilaActual(reg);
+        tab_tabla1.calcularPaginaActual();
+        actu();
     }
 
     @Override
     public void eliminar() {
+        tab_tabla.eliminar();
     }
 
+      public void actu(){
+        aCombustible.set_ActuaKM(Integer.parseInt(tab_tabla.getValor("mve_secuencial")), Integer.parseInt(tab_tabla.getValor("abastecimiento_kilometraje")));
+    }
+    
     public Conexion getCon_postgres() {
         return con_postgres;
     }
