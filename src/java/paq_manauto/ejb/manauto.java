@@ -262,7 +262,7 @@ public class manauto {
     }
     
     public void set_ActuaKM(Integer codigo,Integer km,String des){
-    String au_sql="update mv_vehiculo\n" +
+    String au_sql="update mv_vehiculo set\n" +
             ""+des+" ="+km+"\n" +//set mve_kilometros_actual
             "where mve_secuencial="+codigo;
     con_postgresql();
@@ -272,7 +272,7 @@ public class manauto {
     }
     
     public void set_ActuaHR(Integer codigo,String hr,String des){
-    String au_sql="update mv_vehiculo\n" +
+    String au_sql="update mv_vehiculo set\n" +
             ""+des+" ='"+hr+"'\n" +//mve_horometro
             "where mve_secuencial="+codigo;
     con_postgresql();
