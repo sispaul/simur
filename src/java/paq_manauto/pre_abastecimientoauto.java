@@ -285,7 +285,7 @@ public class pre_abastecimientoauto extends Pantalla{
     }
 
       public void actu(){
-        aCombustible.set_ActuaKM(Integer.parseInt(tab_tabla.getValor("mve_secuencial")), Integer.parseInt(tab_tabla.getValor("abastecimiento_kilometraje")));
+        aCombustible.set_ActuaKM(Integer.parseInt(tab_tabla.getValor("mve_secuencial")), Integer.parseInt(tab_tabla.getValor("abastecimiento_kilometraje")),"set mve_kilometros_actual");
     }
     
     public Conexion getCon_postgres() {

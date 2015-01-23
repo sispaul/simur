@@ -169,28 +169,33 @@ public class pre_abastecimientomaquin extends Pantalla{
         if(tab_tabla.guardar()){
             con_postgres.guardarPantalla(); 
         }
+        hora_actu();
     }
     
     public void hora_actu(){
         Integer valor=0,horaa;
-        System.err.println(tab_tabla.getValor("mve_secuencial"));
         TablaGenerica tab_dato =aCombustible.getHorav(Integer.parseInt(tab_tabla.getValor("mve_secuencial")));
         if (!tab_dato.isEmpty()) {
+            String cadena;
             String minutos =tab_tabla.getValor("abastecimiento_valorhora").substring(3,5);
             String horas =tab_dato.getValor("mve_horometro").substring(0,4);
             String minutos1 =tab_dato.getValor("mve_horometro").substring(5,7);
             Integer suma = Integer.parseInt(minutos)+Integer.parseInt(minutos1);
-            if(suma>59){
-               valor = suma-60;
-               horaa=Integer.parseInt(horas)+1;
-               String cadena = String.valueOf(horaa)+":"+String.valueOf(valor);
-                System.err.println(cadena);
-            }else{
-                
+            if(suma>60){
+                valor = suma-60;
+                horaa=Integer.parseInt(horas)+1;
+                cadena = String.valueOf(horaa)+":"+String.valueOf(valor);
+                aCombustible.set_ActuaHR(Integer.parseInt(tab_tabla.getValor("mve_secuencial")),cadena, "mve_horometro");
+            }else if(suma==60){
+                horaa=Integer.parseInt(horas)+1;
+                cadena = String.valueOf(horaa)+":"+String.valueOf(suma);
+                aCombustible.set_ActuaHR(Integer.parseInt(tab_tabla.getValor("mve_secuencial")),cadena, "mve_horometro");
+            }else if(suma<60){
+                cadena = String.valueOf(horas)+":"+String.valueOf(suma);
+                aCombustible.set_ActuaHR(Integer.parseInt(tab_tabla.getValor("mve_secuencial")),cadena, "mve_horometro");
             }
-            
         }else{
-            
+            utilitario.agregarMensaje("no encuentra datos hora", "");
         }
     }
     
