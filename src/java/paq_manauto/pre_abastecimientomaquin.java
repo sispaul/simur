@@ -91,8 +91,33 @@ public class pre_abastecimientomaquin extends Pantalla{
         tab_tabla.dibujar();
         PanelTabla ptt = new PanelTabla();
         ptt.setPanelTabla(tab_tabla);
+        
+        tab_tabla1.setId("tab_tabla1");
+        tab_tabla1.setConexion(con_postgres);
+        tab_tabla1.setSql("SELECT\n" +
+                "a.abastecimiento_id,\n" +
+                "a.abastecimiento_numero_vale,\n" +
+                "v.mve_placa,\n" +
+                "(m.mvmarca_descripcion||' '||t.mvtipo_descripcion||' '||o.mvmodelo_descripcion) AS descripcion,\n" +
+                "a.abastecimiento_total,\n" +
+                "a.abastecimiento_numero\n" +
+                "FROM mvabactecimiento_combustible AS a\n" +
+                "INNER JOIN mv_vehiculo AS v ON a.mve_secuencial = v.mve_secuencial\n" +
+                "INNER JOIN mvmarca_vehiculo AS m ON v.mvmarca_id = m.mvmarca_id\n" +
+                "INNER JOIN mvmodelo_vehiculo AS o ON v.mvmodelo_id = o.mvmodelo_id\n" +
+                "INNER JOIN mvtipo_vehiculo t ON t.mvmarca_id = m.mvmarca_id AND v.mvtipo_id = t.mvtipo_id AND o.mvtipo_id = t.mvtipo_id\n" +
+                "WHERE a.abastecimiento_tipo_ingreso = 'H'\n" +
+                "ORDER BY a.abastecimiento_id DESC");
+        tab_tabla1.setLectura(true);
+        tab_tabla1.getColumna("abastecimiento_numero_vale").setFiltro(true);
+        tab_tabla1.getColumna("mve_placa").setFiltro(true);
+        tab_tabla1.agregarRelacion(tab_tabla);
+        tab_tabla1.setRows(15);
+        tab_tabla1.dibujar();
+        PanelTabla ptt1 = new PanelTabla();
+        ptt1.setPanelTabla(tab_tabla1);
         Division div = new Division();
-        div.dividir1(ptt);
+        div.dividir2(ptt,ptt1,"40%","H");
         agregarComponente(div);
     }
 
@@ -128,9 +153,7 @@ public class pre_abastecimientomaquin extends Pantalla{
                 valor = (Double.parseDouble(tab_dato.getValor("tipo_valor_galon"))*Double.parseDouble(tab_tabla.getValor("abastecimiento_galones")));
                 tab_tabla.setValor("abastecimiento_total", String.valueOf(Math.rint(valor*100)/100));
                 utilitario.addUpdate("tab_tabla");
-
                 secuencial();
-                hora_actu();
             }else{
                 utilitario.agregarMensajeError("Valor","No Se Encuentra Registrado");
             }
@@ -166,9 +189,14 @@ public class pre_abastecimientomaquin extends Pantalla{
 
     @Override
     public void guardar() {
+        String reg = new String();
         if(tab_tabla.guardar()){
             con_postgres.guardarPantalla(); 
+            reg = tab_tabla.getValorSeleccionado();
         }
+        tab_tabla1.actualizar();
+        tab_tabla1.setFilaActual(reg);
+        tab_tabla1.calcularPaginaActual();
         hora_actu();
     }
     
@@ -217,6 +245,14 @@ public class pre_abastecimientomaquin extends Pantalla{
 
     public void setTab_tabla(Tabla tab_tabla) {
         this.tab_tabla = tab_tabla;
+    }
+
+    public Tabla getTab_tabla1() {
+        return tab_tabla1;
+    }
+
+    public void setTab_tabla1(Tabla tab_tabla1) {
+        this.tab_tabla1 = tab_tabla1;
     }
 
 }
