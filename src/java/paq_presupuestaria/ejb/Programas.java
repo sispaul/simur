@@ -735,7 +735,7 @@ public class Programas {
         TablaGenerica tab_funcionario = new TablaGenerica();
         con_postgresql();
         tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT ide_proveedor,titular FROM tes_proveedores where ruc <> '0' and ide_proveedor="+periodo+" order by titular");
+        tab_funcionario.setSql("SELECT ide_proveedor,titular FROM tes_proveedores where ide_proveedor="+periodo+" order by titular");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
@@ -992,9 +992,8 @@ public class Programas {
          TablaGenerica tab_consulta = new TablaGenerica();
          con_postgresql();
          tab_consulta.setConexion(con_postgres);
-         tab_consulta.setSql("select 0 as id ,\n" +
-                 "(case when max(tes_numero_orden) is null then '0' when max(tes_numero_orden)is not null then max(tes_numero_orden) end) AS maximo\n" +
-                 "from tes_orden_pago");
+         tab_consulta.setSql("select 0 as id ,(case when max(tes_numero_orden) is null then '0' when max(tes_numero_orden)is not null then max(tes_numero_orden) end) AS maximo\n" +
+                 "from tes_orden_pago where tes_estado_doc = '1'");
          tab_consulta.ejecutarSql();
          ValorMax = tab_consulta.getValor("maximo");
          return ValorMax;
