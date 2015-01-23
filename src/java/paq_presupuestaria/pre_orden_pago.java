@@ -92,7 +92,7 @@ public class pre_orden_pago extends Pantalla{
         tab_orden.setConexion(con_postgres);
         tab_orden.setHeader("ORDENES DE PAGO");
         tab_orden.setTabla("tes_orden_pago", "tes_ide_orden_pago", 1);
-        tab_orden.getColumna("tes_id_proveedor").setCombo("select ide_proveedor,titular from tes_proveedores  where ruc <> '0' order by titular");
+        tab_orden.getColumna("tes_id_proveedor").setCombo("select ide_proveedor,titular from tes_proveedores order by titular");
         tab_orden.getColumna("tes_id_proveedor").setFiltroContenido();
         tab_orden.getColumna("tes_cod_empleado").setCombo("select cod_empleado,nombres from srh_empleado where estado = 1 or cod_empleado = 100 order by cod_empleado");
         tab_orden.getColumna("tes_id_proveedor").setFiltroContenido();
@@ -102,6 +102,7 @@ public class pre_orden_pago extends Pantalla{
         tab_orden.getColumna("tes_cod_empleado").setMetodoChange("empleado");
         tab_orden.getColumna("tes_valor").setMetodoChange("num_letras");
         tab_orden.getColumna("tes_comprobante_egreso").setMetodoChange("comprobante");
+        tab_orden.getColumna("tes_estado_doc").setValorDefecto("1");
         tab_orden.getColumna("tes_letrero").setEtiqueta();
         tab_orden.getColumna("tes_anio").setVisible(false);
         tab_orden.getColumna("tes_mes").setVisible(false);
@@ -109,6 +110,7 @@ public class pre_orden_pago extends Pantalla{
         tab_orden.getColumna("tes_ide_orden_pago").setVisible(false);
         tab_orden.getColumna("tes_ide_orden_pago").setVisible(false);
         tab_orden.getColumna("tes_proveedor").setVisible(false);
+        tab_orden.getColumna("tes_estado_doc").setVisible(false);
         tab_orden.getColumna("tes_empleado").setVisible(false);
         tab_orden.getColumna("tipo_solicitantep").setVisible(false);
         tab_orden.getColumna("tes_login_ing").setVisible(false);
@@ -132,7 +134,7 @@ public class pre_orden_pago extends Pantalla{
         tab_detalle.setSql("SELECT tes_ide_orden_pago,tes_numero_orden as numero_orden,tes_comprobante_egreso as numero_comprobante,\n" +
                 "(case when tes_proveedor is null then tes_empleado when tes_proveedor is not null then tes_proveedor end) AS beneficiario,\n" +
                 "tes_asunto as asunto,tes_valor as valor,tes_concepto as concepto,tes_acuerdo as acuerdo\n" +
-                "FROM tes_orden_pago where tes_anio='"+utilitario.getAnio(utilitario.getFechaActual())+"'");
+                "FROM tes_orden_pago where tes_estado_doc = '1' and tes_anio='"+utilitario.getAnio(utilitario.getFechaActual())+"'");
         tab_detalle.getColumna("tes_ide_orden_pago").setVisible(false);
         tab_detalle.getColumna("numero_orden").setFiltroContenido();
         tab_detalle.getColumna("beneficiario").setFiltroContenido();
@@ -217,6 +219,7 @@ public class pre_orden_pago extends Pantalla{
         if(tab_orden.getValor("tes_id_proveedor")!=null){
             TablaGenerica tab_dato = programas.getProveedor(Integer.parseInt(tab_orden.getValor("tes_id_proveedor")));
             if (!tab_dato.isEmpty()) {
+                System.out.println("Nombre de proveedor>>>>>>"+tab_dato.getValor("titular"));
                 tab_orden.setValor("tes_proveedor", tab_dato.getValor("titular"));
                 tab_orden.setValor("tes_cod_empleado", null);
                 tab_orden.setValor("tes_empleado", null);
