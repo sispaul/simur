@@ -456,6 +456,18 @@ public class manauto {
     con_postgres = null;
     }
     
+    //mantenimiento maquinarias
+    public TablaGenerica getHorav(Integer periodo) {
+        con_postgresql();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT mve_secuencial,mve_horometro FROM mv_vehiculo where mve_secuencial ="+periodo);
+        tab_persona.ejecutarSql();
+       con_postgres.desconectar();
+       con_postgres = null;
+        return tab_persona;
+    }
+    
     //sentencia de conexion a base de datos
     private void con_sigag(){
         if (con_sql == null) {
