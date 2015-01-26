@@ -124,7 +124,7 @@ public class pre_abastecimientoauto extends Pantalla{
                 "INNER JOIN mvmodelo_vehiculo AS o ON v.mvmodelo_id = o.mvmodelo_id\n" +
                 "INNER JOIN mvtipo_vehiculo t ON t.mvmarca_id = m.mvmarca_id AND v.mvtipo_id = t.mvtipo_id AND o.mvtipo_id = t.mvtipo_id\n" +
                 "WHERE a.abastecimiento_tipo_ingreso = 'K'\n" +
-                "ORDER BY a.abastecimiento_id DESC");
+                "ORDER BY a.abastecimiento_id DESC LIMIT 10");
         tab_tabla1.setLectura(true);
         tab_tabla1.getColumna("abastecimiento_numero_vale").setFiltro(true);
         tab_tabla1.getColumna("mve_placa").setFiltro(true);
