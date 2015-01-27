@@ -276,6 +276,14 @@ public class pre_anticipo_sueldo extends Pantalla{
         
     }
 
+    public void confirma_cuota(){
+        if(utilitario.getMes(utilitario.getFechaActual())!=1){
+            iAnticipos.InsertarAnticipo(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())), String.valueOf((utilitario.getMes(utilitario.getFechaActual())-1)));
+        }else{
+            iAnticipos.InsertarAnticipo(String.valueOf((utilitario.getAnio(utilitario.getFechaActual())-1)), String.valueOf((utilitario.getMes(utilitario.getFechaActual())+11)));
+        }
+    }
+    
     //proceso automatico que permita llenar los detalles de anticipos
     public void descontar(){
             if(utilitario.getMes(utilitario.getFechaActual())!=1){
@@ -438,6 +446,10 @@ public class pre_anticipo_sueldo extends Pantalla{
         tab_parametros.getColumna("usu_pago_anticipado").setVisible(false);
         tab_parametros.getColumna("fecha_pago_anticipado").setVisible(false);
         tab_parametros.getColumna("numero_documento_pago").setVisible(false);
+        tab_parametros.getColumna("usu_cobra_liquidacion").setVisible(false);
+        tab_parametros.getColumna("fecha_cobro_liquidacion").setVisible(false);
+        tab_parametros.getColumna("comentario_cobro").setVisible(false);
+        tab_parametros.getColumna("ide_empleado").setVisible(false);
         
         tab_parametros.setTipoFormulario(true);
         tab_parametros.getGrid().setColumns(6);
@@ -498,6 +510,8 @@ public class pre_anticipo_sueldo extends Pantalla{
                         tab_anticipo.setValor("cod_cuenta", tab_dato1.getValor("cod_cuenta"));
                         tab_anticipo.setValor("numero_cuenta", tab_dato1.getValor("numero_cuenta"));
                         utilitario.addUpdate("tab_anticipo");
+                        tab_parametros.setValor("ide_empleado", tab_dato1.getValor("COD_EMPLEADO"));
+                        utilitario.addUpdate("tab_parametros");
                     }else{
                         utilitario.agregarNotificacionInfo("SU REMUNERACION ANTERIOR NO LE PERMITE REALIZAR ANTICIPO",tab_dato1.getValor("liquido_recibir"));
                     }
@@ -519,6 +533,8 @@ public class pre_anticipo_sueldo extends Pantalla{
                             tab_anticipo.setValor("cod_cuenta", tab_dato2.getValor("cod_cuenta"));
                             tab_anticipo.setValor("numero_cuenta", tab_dato2.getValor("numero_cuenta"));
                             utilitario.addUpdate("tab_anticipo");
+                            tab_parametros.setValor("ide_empleado", tab_dato1.getValor("COD_EMPLEADO"));
+                            utilitario.addUpdate("tab_parametros");
                         }else{
                             utilitario.agregarNotificacionInfo("SU REMUNERACION ANTERIOR NO LE PERMITE REALIZAR ANTICIPO",tab_dato2.getValor("liquido_recibir"));
                         }
@@ -588,6 +604,8 @@ public class pre_anticipo_sueldo extends Pantalla{
                         tab_anticipo.setValor("cod_cuenta", tab_dato1.getValor("cod_cuenta"));
                         tab_anticipo.setValor("numero_cuenta", tab_dato1.getValor("numero_cuenta"));
                         utilitario.addUpdate("tab_anticipo");
+                        tab_parametros.setValor("ide_empleado", tab_dato1.getValor("COD_EMPLEADO"));
+                        utilitario.addUpdate("tab_parametros");
                         dia_dialogos.cerrar();
                         }else{
                             utilitario.agregarNotificacionInfo("SU REMUNERACION ANTERIOR NO LE PERMITE REALIZAR ANTICIPO",tab_dato1.getValor("liquido_recibir"));
@@ -612,6 +630,8 @@ public class pre_anticipo_sueldo extends Pantalla{
                             tab_anticipo.setValor("cod_cuenta", tab_dato2.getValor("cod_cuenta"));
                             tab_anticipo.setValor("numero_cuenta", tab_dato2.getValor("numero_cuenta"));
                             utilitario.addUpdate("tab_anticipo");
+                            tab_parametros.setValor("ide_empleado", tab_dato1.getValor("COD_EMPLEADO"));
+                            utilitario.addUpdate("tab_parametros");
                             dia_dialogos.cerrar();
                         }else{
                             utilitario.agregarNotificacionInfo("SU REMUNERACION ANTERIOR NO LE PERMITE REALIZAR ANTICIPO",tab_dato2.getValor("liquido_recibir"));}
