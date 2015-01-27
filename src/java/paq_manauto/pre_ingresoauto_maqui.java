@@ -266,10 +266,10 @@ public class pre_ingresoauto_maqui extends Pantalla{
         tab_tabla.getColumna("MVE_TIPOMEDICION").setRadio(list, " ");
         List lista = new ArrayList();
         Object fila1[] = {
-            "PLACA", "PLACA"
+            "1", "Automotor"
         };
         Object fila2[] = {
-            "CODIGO", "CODIGO"
+            "2", "Maquinaria"
         };
         lista.add(fila1);;
         lista.add(fila2);;
@@ -290,6 +290,7 @@ public class pre_ingresoauto_maqui extends Pantalla{
         listes.add(filase3);;
         tab_tabla.getColumna("MVE_ESTADO").setCombo(listes);
         tab_tabla.getColumna("MVE_PLACA").setLectura(true);
+        tab_tabla.getColumna("mve_codigo").setLectura(true);
         tab_tabla.getColumna("MVE_HOROMETRO").setLectura(true);
         tab_tabla.getColumna("mve_kilometros_actual").setLectura(true);
         tab_tabla.getColumna("mve_asignacion").setVisible(false);
@@ -527,13 +528,17 @@ public class pre_ingresoauto_maqui extends Pantalla{
         dibujaIngreso();
     }
     public void activarTipo(){
-        if(tab_tabla.getValor("MVE_TIPOCODIGO").equals("placa")){
+        if(tab_tabla.getValor("MVE_TIPOCODIGO").equals("1")){
             tab_tabla.getColumna("MVE_PLACA").setLectura(false);
             tab_tabla.setValor("MVE_PLACA", null);
+            tab_tabla.getColumna("mve_codigo").setLectura(false);
+            tab_tabla.setValor("mve_codigo", null);
             utilitario.addUpdate("tab_tabla");
         }else{
             tab_tabla.getColumna("MVE_PLACA").setLectura(false);
             tab_tabla.setValor("MVE_PLACA", null);
+            tab_tabla.getColumna("mve_codigo").setLectura(false);
+            tab_tabla.setValor("mve_codigo", null);
             utilitario.addUpdate("tab_tabla");
         }
     }
