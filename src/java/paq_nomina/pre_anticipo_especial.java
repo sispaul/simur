@@ -299,7 +299,6 @@ public class pre_anticipo_especial extends Pantalla{
         tab_anticipo.getColumna("usu_anulacion").setVisible(false);
         tab_anticipo.getColumna("comen_anulacion").setVisible(false);
         tab_anticipo.getColumna("fecha_anulacion").setVisible(false);
-        
         tab_anticipo.setTipoFormulario(true);
         tab_anticipo.agregarRelacion(tab_garante);
         tab_anticipo.agregarRelacion(tab_parametros);
@@ -355,6 +354,10 @@ public class pre_anticipo_especial extends Pantalla{
         tab_parametros.getColumna("usu_pago_anticipado").setVisible(false);
         tab_parametros.getColumna("fecha_pago_anticipado").setVisible(false);
         tab_parametros.getColumna("numero_documento_pago").setVisible(false);
+        tab_parametros.getColumna("usu_cobro_liquidacion").setVisible(false);
+        tab_parametros.getColumna("fecha_cobro_liquidacion").setVisible(false);
+        tab_parametros.getColumna("comentario_cobro").setVisible(false);
+        tab_parametros.getColumna("ide_empleado").setVisible(false);
         
         tab_parametros.setTipoFormulario(true);
         tab_parametros.getGrid().setColumns(6);
