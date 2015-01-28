@@ -277,13 +277,13 @@ public class pre_ingresoauto_maqui extends Pantalla{
         tab_tabla.getColumna("MVE_ESTADO_REGISTRO").setVisible(false);
         List listes = new ArrayList();
         Object filase1[] = {
-            "ACTIVO", "ACTIVO"
+            "BUENO", "BUENO"
         };
         Object filase2[] = {
-            "MANTENIMIENTO", "MANTENIMIENTO"
+            "REGULAR", "REGULAR"
         };
         Object filase3[] = {
-            "DE BAJA", "DE BAJA"
+            "DAÑADO", "DAÑADO"
         };
         listes.add(filase1);;
         listes.add(filase2);;
