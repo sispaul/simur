@@ -1599,14 +1599,14 @@ public class SolicAnticipos {
     con_postgres = null;
   }
   
-  public void llenarSolicitud(Integer anti,String cuota,Double valor,String obser,Integer perdes){
-    String au_sql="insert into srh_detalle_anticipo (ide_anticipo,cuota,valor,ide_periodo_descuento)\n" +
-            "values ("+anti+",'"+cuota+"',"+valor+","+perdes+")";
-    con_postgresql();
-    con_postgres.ejecutarSql(au_sql);
-    con_postgres.desconectar();
-    con_postgres = null;
-  }
+//  public void llenarSolicitud(Integer anti,String cuota,Double valor,String obser,Integer perdes){
+//    String au_sql="insert into srh_detalle_anticipo (ide_anticipo,cuota,valor,ide_periodo_descuento)\n" +
+//            "values ("+anti+",'"+cuota+"',"+valor+","+perdes+")";
+//    con_postgresql();
+//    con_postgres.ejecutarSql(au_sql);
+//    con_postgres.desconectar();
+//    con_postgres = null;
+//  }
   
   public TablaGenerica getUsuario(String iden) {
         //Busca a una empresa en la tabla maestra_ruc por ruc

@@ -30,6 +30,7 @@ import java.util.Map;
 import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
 import paq_nomina.ejb.AntiSueldos;
+import paq_nomina.ejb.SolicAnticipos;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
@@ -99,6 +100,7 @@ public class pre_anticipo_sueldo extends Pantalla{
     //Extrae datos adicionales, que se necesita, de una clase logica
     @EJB
     private AntiSueldos iAnticipos = (AntiSueldos) utilitario.instanciarEJB(AntiSueldos.class);
+    private SolicAnticipos aAnticipos = (SolicAnticipos) utilitario.instanciarEJB(SolicAnticipos.class);
     
     public pre_anticipo_sueldo() {
     
@@ -279,10 +281,32 @@ public class pre_anticipo_sueldo extends Pantalla{
     public void confirma_cuota(){
         if(utilitario.getMes(utilitario.getFechaActual())!=1){
             iAnticipos.InsertarAnticipo(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())), String.valueOf((utilitario.getMes(utilitario.getFechaActual())-1)));
+            TablaGenerica tab_dato = iAnticipos.VerificarCuota(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())), String.valueOf((utilitario.getMes(utilitario.getFechaActual())-1)));
+            if (!tab_dato.isEmpty()) {
+                utilitario.agregarMensaje("Cuotas Modificadas Por No Coincidir con el Descuento", "");
+                if(tab_dato.getValor("his_cuotas_faltantes").endsWith("1")){
+//                    aAnticipos.llenarSolicitud(Integer.SIZE, selec_mes, Double.NaN, Integer.SIZE);
+                    
+                }else{
+                    iAnticipos.ProrrogacionCuota(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())),  String.valueOf(utilitario.getMes(utilitario.getFechaActual())), String.valueOf((utilitario.getMes(utilitario.getFechaActual())-1)));
+                }
+            }
         }else{
             iAnticipos.InsertarAnticipo(String.valueOf((utilitario.getAnio(utilitario.getFechaActual())-1)), String.valueOf((utilitario.getMes(utilitario.getFechaActual())+11)));
+            TablaGenerica tab_dato = iAnticipos.VerificarCuota(String.valueOf((utilitario.getAnio(utilitario.getFechaActual())-1)), String.valueOf((utilitario.getMes(utilitario.getFechaActual())+11)));
+            if (!tab_dato.isEmpty()) {
+                utilitario.agregarMensaje("Cuotas Modificadas Por no Coincidir con el Descuento", "");
+                if(tab_dato.getValor("his_cuotas_faltantes").endsWith("1")){
+//                    aAnticipos.llenarSolicitud(Integer.SIZE, selec_mes, Double.NaN, Integer.SIZE);
+                    
+                }else{
+                    iAnticipos.ProrrogacionCuota(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())),  String.valueOf(utilitario.getMes(utilitario.getFechaActual())), String.valueOf((utilitario.getMes(utilitario.getFechaActual())+11)));
+                }
+            }
         }
+//        descontar();
     }
+    
     
     //proceso automatico que permita llenar los detalles de anticipos
     public void descontar(){

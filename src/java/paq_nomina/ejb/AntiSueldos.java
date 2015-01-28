@@ -793,119 +793,135 @@ public class AntiSueldos {
         return tab_funcionario;
     }
     
+    public TablaGenerica VerificarCuota(String anio,String periodo){
+        con_postgresql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        con_postgresql();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT his_codigo,his_ide_empleado,his_nombre,his_periodo,his_anio,his_cuota_roles,his_cuota_anticipo,his_cuota_nueva,\n" +
+                "his_cuotas_faltantes,his_cuotas_anticipo,his_cuotas_pagadas\n" +
+                "FROM srh_historial_cuotas_anticipos\n" +
+                "where his_anio='"+anio+"' and his_periodo='"+periodo+"'");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+    }    
+    
     public void InsertarAnticipo(String periodo,String anio){
         // Forma el sql para el ingreso
-        String str_sql3 = "insert into srh_historial_cuotas_anticipos (his_ide_solicitud,his_ide_empleado,his_nombre,his_periodo,his_anio,his_cuota_roles,\n" +
-"his_cuota_anticipo,his_cuota_nueva,his_cuotas_faltantes,his_cuotas_anticipo,his_cuotas_pagadas)\n" +
-"select ide_solicitud_anticipo,ide_empleado_solicitante,solicitante,periodo,anio,cuota_roles,cuota_anticipo,cuota_nueva,cuotas_faltan,numero_cuotas_anticipo,numero_cuotas_pagadas \n" +
-"from\n" +
-"(select aa.*,a.valor as cuota_roles,b.valor as cuota_anticipo,\n" +
-"cast((case when aa.cuotas_faltan =1 then b.valor \n" +
-"when aa.cuotas_faltan >=2 then ((b.valor-a.valor)/aa.cuotas_faltan) end )as numeric(5,2)) as cuota_nueva\n" +
-"from\n" +
-"(SELECT a.ide_solicitud_anticipo,\n" +
-"a.ide_empleado_solicitante,\n" +
-"a.solicitante,\n" +
-"d.periodo,\n" +
-"d.anio,\n" +
-"f.numero_cuotas_anticipo,\n" +
-"f.numero_cuotas_pagadas,\n" +
-"(f.numero_cuotas_anticipo-f.numero_cuotas_pagadas) as cuotas_faltan\n" +
-"from srh_detalle_anticipo d \n" +
-",srh_solicitud_anticipo a  \n" +
-",srh_calculo_anticipo as f\n" +
-"where d.ide_anticipo = a.ide_solicitud_anticipo  \n" +
-"and a.ide_solicitud_anticipo  = f.ide_solicitud_anticipo   \n" +
-"and d.periodo = '"+periodo+"'  \n" +
-"and d.ide_estado_cuota is null  \n" +
-"and d.anio = '"+anio+"'  \n" +
-"and f.ide_estado_anticipo in (2,3)\n" +
-"order by a.solicitante)as aa\n" +
-"left join \n" +
-"(SELECT \n" +
-"s.ide_solicitud_anticipo, \n" +
-"s.ide_empleado_solicitante, \n" +
-"s.solicitante, \n" +
-"r.ide_roles, \n" +
-"r.ide_empleado, \n" +
-"r.valor, \n" +
-"r.ide_periodo, \n" +
-"r.ano, \n" +
-"r.id_distributivo_roles \n" +
-"FROM  srh_solicitud_anticipo AS s , \n" +
-"srh_roles AS r, \n" +
-"srh_calculo_anticipo c \n" +
-"WHERE \n" +
-"s.ide_empleado_solicitante = r.ide_empleado AND \n" +
-"c.ide_solicitud_anticipo = s.ide_solicitud_anticipo and \n" +
-"r.ano = "+anio+" AND \n" +
-"r.ide_periodo = "+periodo+" AND \n" +
-"r.ide_columnas IN (1, 46)AND \n" +
-"c.ide_estado_anticipo in (2,3) \n" +
-"ORDER BY \n" +
-"r.id_distributivo_roles)as a\n" +
-"on aa.ide_empleado_solicitante= a.ide_empleado_solicitante\n" +
-"left join \n" +
-"(select cast (id_distributivo as int) \n" +
-",cast (anio as int) \n" +
-",(case when id_distributivo = 1 then 1 when id_distributivo = 2 then 46 end ) AS dist \n" +
-",cast (periodo as int) \n" +
-",valor,ci_solicitante \n" +
-",solicitante \n" +
-",ide_empleado \n" +
-",ide_empleado_solicitante  \n" +
-"from (  \n" +
-"select * from (  \n" +
-"SELECT a.id_distributivo \n" +
-",d.anio,sum(d.valor) as valor \n" +
-",a.ci_solicitante, a.solicitante \n" +
-",a.ide_empleado_solicitante as ide_empleado \n" +
-",a.ide_empleado_solicitante \n" +
-",d.periodo  \n" +
-"from srh_detalle_anticipo d \n" +
-",srh_solicitud_anticipo a  \n" +
-",srh_calculo_anticipo as f  \n" +
-"where d.ide_anticipo = a.ide_solicitud_anticipo  \n" +
-"and a.ide_solicitud_anticipo  = f.ide_solicitud_anticipo   \n" +
-"and d.periodo = '"+periodo+"'  \n" +
-"and d.ide_estado_cuota is null  \n" +
-"and d.anio = '"+anio+"'  \n" +
-"and f.ide_estado_anticipo <> 5  \n" +
-"group by a.ci_solicitante \n" +
-",a.id_distributivo \n" +
-",d.anio, a.solicitante \n" +
-",a.ide_empleado_solicitante \n" +
-",a.ide_empleado_solicitante \n" +
-",d.periodo  \n" +
-"having count(a.ci_solicitante)<=1 order by a.solicitante) as a  \n" +
-"union select * from (  \n" +
-"SELECT a.id_distributivo \n" +
-",d.anio \n" +
-",sum(d.valor) as valor \n" +
-",a.ci_solicitante \n" +
-",a.solicitante \n" +
-",a.ide_empleado_solicitante as ide_empleado \n" +
-",a.ide_empleado_solicitante  \n" +
-",d.periodo  \n" +
-"FROM srh_detalle_anticipo d \n" +
-",srh_solicitud_anticipo a \n" +
-",srh_calculo_anticipo as f  \n" +
-"WHERE d.ide_anticipo = a.ide_solicitud_anticipo  \n" +
-"and a.ide_solicitud_anticipo  = f.ide_solicitud_anticipo  \n" +
+        String str_sql3 = "insert into srh_historial_cuotas_anticipos(his_ide_solicitud,his_ide_empleado,his_nombre,his_periodo,his_anio,his_cuota_roles,\n" +
+"his_cuota_anticipo,his_cuota_nueva,his_cuotas_faltantes,his_cuotas_anticipo,his_cuotas_pagadas,his_periodo_descuento,his_mes_actual,his_anio_actual)\n" +
+"select ide_solicitud_anticipo,ide_empleado_solicitante,solicitante,periodo,anio,cuota_roles,cuota_anticipo,cuota_nueva,cuotas_faltan,numero_cuotas_anticipo,numero_cuotas_pagadas,ide_periodo_descuento  \n" +
+",extract(month from current_date) as mes,extract(year from current_date) as ano from \n" +
+"(select aa.*,a.valor as cuota_roles,b.valor as cuota_anticipo, \n" +
+"cast((case when aa.cuotas_faltan =1 then b.valor  \n" +
+"when aa.cuotas_faltan >=2 then ((b.valor-a.valor)/(aa.cuotas_faltan-1)) end )as numeric(5,2)) as cuota_nueva \n" +
+"from \n" +
+"(SELECT a.ide_solicitud_anticipo, \n" +
+"a.ide_empleado_solicitante, \n" +
+"a.solicitante, \n" +
+"d.periodo, \n" +
+"d.anio, \n" +
+"f.numero_cuotas_anticipo, \n" +
+"f.numero_cuotas_pagadas, \n" +
+"(f.numero_cuotas_anticipo-f.numero_cuotas_pagadas) as cuotas_faltan,\n" +
+"d.ide_periodo_descuento\n" +
+"from srh_detalle_anticipo d  \n" +
+",srh_solicitud_anticipo a   \n" +
+",srh_calculo_anticipo as f \n" +
+"where d.ide_anticipo = a.ide_solicitud_anticipo   \n" +
+"and a.ide_solicitud_anticipo  = f.ide_solicitud_anticipo    \n" +
 "and d.periodo = '"+periodo+"'   \n" +
-"and d.ide_estado_cuota is null  \n" +
-"and d.anio = '"+anio+"' \n" +
-"and f.ide_estado_anticipo <> 5  \n" +
-"group by a.ci_solicitante \n" +
-",a.id_distributivo \n" +
-",d.anio \n" +
-",a.solicitante \n" +
-",a.ide_empleado_solicitante \n" +
-",a.ide_empleado_solicitante \n" +
-",d.periodo  \n" +
-"having count(a.ci_solicitante)>1 order by a.solicitante) as b ) as c order by solicitante) as b\n" +
-"on aa.ide_empleado_solicitante= b.ide_empleado\n" +
-")as p";
+"and d.ide_estado_cuota is null   \n" +
+"and d.anio = '"+anio+"'   \n" +
+"and f.ide_estado_anticipo in (2,3) \n" +
+"order by a.solicitante)as aa \n" +
+"left join  \n" +
+"(SELECT  \n" +
+"s.ide_solicitud_anticipo,  \n" +
+"s.ide_empleado_solicitante,  \n" +
+"s.solicitante,  \n" +
+"r.ide_roles,  \n" +
+"r.ide_empleado,  \n" +
+"r.valor,  \n" +
+" r.ide_periodo,  \n" +
+" r.ano,  \n" +
+" r.id_distributivo_roles  \n" +
+" FROM  srh_solicitud_anticipo AS s ,  \n" +
+" srh_roles AS r,  \n" +
+" srh_calculo_anticipo c  \n" +
+" WHERE  \n" +
+" s.ide_empleado_solicitante = r.ide_empleado AND  \n" +
+" c.ide_solicitud_anticipo = s.ide_solicitud_anticipo and  \n" +
+" r.ano =  "+anio+"  AND  \n" +
+" r.ide_periodo =  "+periodo+"  AND  \n" +
+" r.ide_columnas IN (1, 46)AND  \n" +
+" c.ide_estado_anticipo in (2,3)  \n" +
+" ORDER BY  \n" +
+" r.id_distributivo_roles)as a \n" +
+" on aa.ide_empleado_solicitante= a.ide_empleado_solicitante \n" +
+" left join  \n" +
+" (select cast (id_distributivo as int)  \n" +
+" ,cast (anio as int)  \n" +
+" ,(case when id_distributivo = 1 then 1 when id_distributivo = 2 then 46 end ) AS dist  \n" +
+" ,cast (periodo as int)  \n" +
+" ,valor,ci_solicitante  \n" +
+" ,solicitante  \n" +
+" ,ide_empleado  \n" +
+" ,ide_empleado_solicitante   \n" +
+" from (   \n" +
+" select * from (   \n" +
+" SELECT a.id_distributivo  \n" +
+" ,d.anio,sum(d.valor) as valor  \n" +
+" ,a.ci_solicitante, a.solicitante  \n" +
+" ,a.ide_empleado_solicitante as ide_empleado  \n" +
+" ,a.ide_empleado_solicitante  \n" +
+" ,d.periodo   \n" +
+" from srh_detalle_anticipo d  \n" +
+" ,srh_solicitud_anticipo a   \n" +
+" ,srh_calculo_anticipo as f   \n" +
+" where d.ide_anticipo = a.ide_solicitud_anticipo   \n" +
+" and a.ide_solicitud_anticipo  = f.ide_solicitud_anticipo    \n" +
+" and d.periodo = '"+periodo+"'   \n" +
+" and d.ide_estado_cuota is null   \n" +
+" and d.anio = '"+anio+"'   \n" +
+" and f.ide_estado_anticipo <> 5   \n" +
+" group by a.ci_solicitante  \n" +
+" ,a.id_distributivo  \n" +
+" ,d.anio, a.solicitante  \n" +
+" ,a.ide_empleado_solicitante  \n" +
+" ,a.ide_empleado_solicitante  \n" +
+" ,d.periodo   \n" +
+" having count(a.ci_solicitante)<=1 order by a.solicitante) as a   \n" +
+" union select * from (   \n" +
+" SELECT a.id_distributivo  \n" +
+" ,d.anio  \n" +
+" ,sum(d.valor) as valor  \n" +
+" ,a.ci_solicitante  \n" +
+" ,a.solicitante  \n" +
+" ,a.ide_empleado_solicitante as ide_empleado  \n" +
+" ,a.ide_empleado_solicitante   \n" +
+" ,d.periodo   \n" +
+" FROM srh_detalle_anticipo d  \n" +
+" ,srh_solicitud_anticipo a  \n" +
+" ,srh_calculo_anticipo as f   \n" +
+" WHERE d.ide_anticipo = a.ide_solicitud_anticipo   \n" +
+" and a.ide_solicitud_anticipo  = f.ide_solicitud_anticipo   \n" +
+" and d.periodo = '"+periodo+"'    \n" +
+" and d.ide_estado_cuota is null   \n" +
+" and d.anio = '"+anio+"'  \n" +
+" and f.ide_estado_anticipo <> 5   \n" +
+" group by a.ci_solicitante  \n" +
+" ,a.id_distributivo  \n" +
+" ,d.anio  \n" +
+" ,a.solicitante  \n" +
+" ,a.ide_empleado_solicitante  \n" +
+" ,a.ide_empleado_solicitante  \n" +
+" ,d.periodo   \n" +
+" having count(a.ci_solicitante)>1 order by a.solicitante) as b ) as c order by solicitante) as b \n" +
+" on aa.ide_empleado_solicitante= b.ide_empleado \n" +
+" )as p";
         con_postgresql();
         con_postgres.ejecutarSql(str_sql3);
         con_postgres.desconectar();
@@ -1032,6 +1048,35 @@ public class AntiSueldos {
                 "inner join (SELECT count(ide_anticipo) as pagando,ide_anticipo FROM srh_detalle_anticipo GROUP BY ide_anticipo) n2\n" +
                 "on n1.ide_anticipo = n2.ide_anticipo and n1.pagado = n2.pagando ) d1\n" +
                 "WHERE srh_solicitud_anticipo.ide_solicitud_anticipo = d1.ide_anticipo";
+        con_postgresql();
+        con_postgres.ejecutarSql(str_sql4);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+    
+    public void ProrrogacionCuota(String anio,String periodo,String mes){
+        String str_sql4 = "update srh_detalle_anticipo\n" +
+"set valor =a.cuota_real\n" +
+"FROM\n" +
+"(SELECT\n" +
+"h.his_codigo,\n" +
+"h.his_cuota_nueva,\n" +
+"d.ide_anticipo,\n" +
+"d.ide_detalle_anticipo,\n" +
+"d.valor,\n" +
+"d.ide_periodo_descuento,\n" +
+"(d.valor+h.his_cuota_nueva)as cuota_real\n" +
+"FROM\n" +
+"srh_historial_cuotas_anticipos h ,\n" +
+"srh_detalle_anticipo d\n" +
+"WHERE\n" +
+"h.his_mes_actual = '"+periodo+"' \n" +
+"and h.his_anio_actual = '"+anio+"'\n" +
+"and h.his_ide_solicitud=d.ide_anticipo \n" +
+"and d.ide_estado_cuota is null \n" +
+"and d.ide_periodo_descuento <> '"+mes+"'\n" +
+"order by h.his_codigo) as a\n" +
+"where srh_detalle_anticipo.ide_detalle_anticipo = a.ide_detalle_anticipo";
         con_postgresql();
         con_postgres.ejecutarSql(str_sql4);
         con_postgres.desconectar();
