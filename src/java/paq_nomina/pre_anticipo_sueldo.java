@@ -284,24 +284,16 @@ public class pre_anticipo_sueldo extends Pantalla{
             TablaGenerica tab_dato = iAnticipos.VerificarCuota(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())), String.valueOf((utilitario.getMes(utilitario.getFechaActual())-1)));
             if (!tab_dato.isEmpty()) {
                 utilitario.agregarMensaje("Cuotas Modificadas Por No Coincidir con el Descuento", "");
-                if(tab_dato.getValor("his_cuotas_faltantes").endsWith("1")){
-//                    aAnticipos.llenarSolicitud(Integer.SIZE, selec_mes, Double.NaN, Integer.SIZE);
-                    
-                }else{
-                    iAnticipos.ProrrogacionCuota(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())),  String.valueOf(utilitario.getMes(utilitario.getFechaActual())), String.valueOf((utilitario.getMes(utilitario.getFechaActual())-1)));
-                }
+                iAnticipos.ProrrogacionCuota(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())),  String.valueOf(utilitario.getMes(utilitario.getFechaActual())), String.valueOf((utilitario.getMes(utilitario.getFechaActual())-1)));
+
+                //                if(tab_dato.getValor("his_cuotas_faltantes").endsWith("1")){                }else{                   }
             }
         }else{
             iAnticipos.InsertarAnticipo(String.valueOf((utilitario.getAnio(utilitario.getFechaActual())-1)), String.valueOf((utilitario.getMes(utilitario.getFechaActual())+11)));
             TablaGenerica tab_dato = iAnticipos.VerificarCuota(String.valueOf((utilitario.getAnio(utilitario.getFechaActual())-1)), String.valueOf((utilitario.getMes(utilitario.getFechaActual())+11)));
             if (!tab_dato.isEmpty()) {
                 utilitario.agregarMensaje("Cuotas Modificadas Por no Coincidir con el Descuento", "");
-                if(tab_dato.getValor("his_cuotas_faltantes").endsWith("1")){
-//                    aAnticipos.llenarSolicitud(Integer.SIZE, selec_mes, Double.NaN, Integer.SIZE);
-                    
-                }else{
-                    iAnticipos.ProrrogacionCuota(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())),  String.valueOf(utilitario.getMes(utilitario.getFechaActual())), String.valueOf((utilitario.getMes(utilitario.getFechaActual())+11)));
-                }
+                iAnticipos.ProrrogacionCuota(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())),  String.valueOf(utilitario.getMes(utilitario.getFechaActual())), String.valueOf((utilitario.getMes(utilitario.getFechaActual())+11)));
             }
         }
 //        descontar();
