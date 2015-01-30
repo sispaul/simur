@@ -68,10 +68,12 @@ public class pre_abastecimientoauto extends Pantalla{
         tab_tabla.setTabla("mvabactecimiento_combustible", "abastecimiento_id", 1);
         //Metodos para buscar los datos a llenar en el formulario
         tab_tabla.getColumna("tipo_combustible_id").setCombo("SELECT tipo_combustible_id,(tipo_combustible_descripcion||'/'||tipo_valor_galon) as valor FROM mvtipo_combustible order by tipo_combustible_descripcion");
-        tab_tabla.getColumna("mve_secuencial").setCombo("SELECT v.mve_secuencial, (v.mve_placa||'/'||m.mvmarca_descripcion ||'/'||o.mvmodelo_descripcion ||'/'||v.mve_ano)as descripcion\n" +"FROM mv_vehiculo v\n" +
-                "INNER JOIN mvmarca_vehiculo m ON v.mvmarca_id = m.mvmarca_id\n" +
-                "INNER JOIN mvmodelo_vehiculo o ON v.mvmodelo_id = o.mvmodelo_id\n" +
-                "WHERE v.mve_tipo_ingreso = 'A'");
+        tab_tabla.getColumna("mve_secuencial").setCombo("SELECT v.mve_secuencial, \n" +
+"((case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end )||'/'||m.mvmarca_descripcion ||'/'||o.mvmodelo_descripcion)as descripcion\n" +
+"FROM mv_vehiculo v\n" +
+"INNER JOIN mvmarca_vehiculo m ON v.mvmarca_id = m.mvmarca_id\n" +
+"INNER JOIN mvmodelo_vehiculo o ON v.mvmodelo_id = o.mvmodelo_id\n" +
+"WHERE v.mve_tipo_ingreso = 'A'");
         tab_tabla.getColumna("mve_secuencial").setFiltroContenido();
         tab_tabla.getColumna("mve_secuencial").setMetodoChange("busPlaca");
         tab_tabla.getColumna("abastecimiento_kilometraje").setMetodoChange("kilometraje");
