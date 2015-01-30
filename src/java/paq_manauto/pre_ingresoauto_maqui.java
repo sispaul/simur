@@ -214,7 +214,7 @@ public class pre_ingresoauto_maqui extends Pantalla{
         //Auto busqueda para, verificar solicitud
         aut_busca.setId("aut_busca");
         aut_busca.setConexion(con_postgres);
-        aut_busca.setAutoCompletar("SELECT v.MVE_SECUENCIAL,v.MVE_PLACA,m.MVMARCA_DESCRIPCION,o.MVMODELO_DESCRIPCION,v.MVE_CHASIS\n" +
+        aut_busca.setAutoCompletar("SELECT v.MVE_SECUENCIAL,v.MVE_PLACA,m.MVMARCA_DESCRIPCION,o.MVMODELO_DESCRIPCION,v.MVE_CHASIS,mve_codigo\n" +
                 "FROM MV_VEHICULO AS v ,mvmarca_vehiculo AS m ,mvmodelo_vehiculo o\n" +
                 "WHERE v.mvmarca_id = m.mvmarca_id and v.mvmodelo_id = o.mvmodelo_id");
         aut_busca.setMetodoChange("filtrarSolicitud");
@@ -244,7 +244,7 @@ public class pre_ingresoauto_maqui extends Pantalla{
         tab_tabla.getColumna("mvtipo_id").setMetodoChange("cargarModelo");
         tab_tabla.getColumna("mvmodelo_id").setMetodoChange("cargarVersion");
         tab_tabla.getColumna("mve_tipomedicion").setMetodoChange("activarCasilla");
-        tab_tabla.getColumna("mve_cod_conductor").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where cod_cargo in (SELECT cod_cargo FROM srh_cargos WHERE nombre_cargo like '%CHOFER%') and estado = 1 order by nombres");
+        tab_tabla.getColumna("mve_cod_conductor").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where estado = 1 order by nombres");
         tab_tabla.getColumna("mve_cod_conductor").setFiltroContenido();
         tab_tabla.getColumna("mve_cod_conductor").setMetodoChange("conductor");
         tab_tabla.getColumna("mve_kilometros_actual").setMetodoChange("recorrido");
