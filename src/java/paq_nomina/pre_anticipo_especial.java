@@ -354,7 +354,7 @@ public class pre_anticipo_especial extends Pantalla{
         tab_parametros.getColumna("usu_pago_anticipado").setVisible(false);
         tab_parametros.getColumna("fecha_pago_anticipado").setVisible(false);
         tab_parametros.getColumna("numero_documento_pago").setVisible(false);
-        tab_parametros.getColumna("usu_cobro_liquidacion").setVisible(false);
+        tab_parametros.getColumna("usu_cobra_liquidacion").setVisible(false);
         tab_parametros.getColumna("fecha_cobro_liquidacion").setVisible(false);
         tab_parametros.getColumna("comentario_cobro").setVisible(false);
         tab_parametros.getColumna("ide_empleado").setVisible(false);
