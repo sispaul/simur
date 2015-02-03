@@ -159,7 +159,7 @@ public class pre_anticipo_sueldo extends Pantalla{
         Boton bot_des = new Boton();
         bot_des.setValue("Descargo");
         bot_des.setIcon("ui-icon-closethick");
-        bot_des.setMetodo("descontar");
+        bot_des.setMetodo("confirma_cuotas");
         bar_botones.agregarBoton(bot_des);
         
         //Ingreso y busqueda de solicitudes 
@@ -280,24 +280,47 @@ public class pre_anticipo_sueldo extends Pantalla{
 
     public void confirma_cuota(){
         if(utilitario.getMes(utilitario.getFechaActual())!=1){
+            
+        }else{
+            
+        }
+    }
+    
+    public void confirma_cuotas(){
+        if(utilitario.getMes(utilitario.getFechaActual())!=1){
+            
             iAnticipos.InsertarAnticipo(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())), String.valueOf((utilitario.getMes(utilitario.getFechaActual())-1)));
+            
             TablaGenerica tab_dato = iAnticipos.VerificarCuota(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())), String.valueOf((utilitario.getMes(utilitario.getFechaActual())-1)));
             if (!tab_dato.isEmpty()) {
                 utilitario.agregarMensaje("Cuotas Modificadas Por No Coincidir con el Descuento", "");
+                iAnticipos.setCuota(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())), String.valueOf(utilitario.getMes(utilitario.getFechaActual())));
                 iAnticipos.ProrrogacionCuota(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())),  String.valueOf(utilitario.getMes(utilitario.getFechaActual())), String.valueOf((utilitario.getMes(utilitario.getFechaActual())-1)));
-
-                //                if(tab_dato.getValor("his_cuotas_faltantes").endsWith("1")){                }else{                   }
+                
+                if(tab_dato.getValor("his_cuotas_faltantes").endsWith("1")){
+                    System.err.println("ing1");
+                }else{
+                    System.err.println("ing2");
+                }
             }
         }else{
+            
             iAnticipos.InsertarAnticipo(String.valueOf((utilitario.getAnio(utilitario.getFechaActual())-1)), String.valueOf((utilitario.getMes(utilitario.getFechaActual())+11)));
+            
             TablaGenerica tab_dato = iAnticipos.VerificarCuota(String.valueOf((utilitario.getAnio(utilitario.getFechaActual())-1)), String.valueOf((utilitario.getMes(utilitario.getFechaActual())+11)));
             if (!tab_dato.isEmpty()) {
                 utilitario.agregarMensaje("Cuotas Modificadas Por no Coincidir con el Descuento", "");
+                iAnticipos.setCuota(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())), String.valueOf(utilitario.getMes(utilitario.getFechaActual())));
                 iAnticipos.ProrrogacionCuota(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())),  String.valueOf(utilitario.getMes(utilitario.getFechaActual())), String.valueOf((utilitario.getMes(utilitario.getFechaActual())+11)));
+                if(tab_dato.getValor("his_cuotas_faltantes").endsWith("1")){
+                    System.err.println("ing11");
+                }else{
+                     System.err.println("ing22");
+                }
             }
         }
-//        descontar();
     }
+
     
     
     //proceso automatico que permita llenar los detalles de anticipos
