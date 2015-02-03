@@ -214,9 +214,9 @@ public class pre_ingresoauto_maqui extends Pantalla{
         //Auto busqueda para, verificar solicitud
         aut_busca.setId("aut_busca");
         aut_busca.setConexion(con_postgres);
-        aut_busca.setAutoCompletar("SELECT v.MVE_SECUENCIAL,v.MVE_PLACA,m.MVMARCA_DESCRIPCION,o.MVMODELO_DESCRIPCION,v.MVE_CHASIS,mve_codigo\n" +
-                "FROM MV_VEHICULO AS v ,mvmarca_vehiculo AS m ,mvmodelo_vehiculo o\n" +
-                "WHERE v.mvmarca_id = m.mvmarca_id and v.mvmodelo_id = o.mvmodelo_id");
+        aut_busca.setAutoCompletar("SELECT v.MVE_SECUENCIAL,mve_codigo,v.MVE_PLACA,m.MVMARCA_DESCRIPCION,o.MVMODELO_DESCRIPCION,v.MVE_CHASIS\n" +
+"FROM MV_VEHICULO AS v ,mvmarca_vehiculo AS m ,mvmodelo_vehiculo o\n" +
+"WHERE v.mvmarca_id = m.mvmarca_id and v.mvmodelo_id = o.mvmodelo_id");
         aut_busca.setMetodoChange("filtrarSolicitud");
         aut_busca.setSize(70);
         bar_botones.agregarComponente(new Etiqueta("Buscar Solicitud:"));

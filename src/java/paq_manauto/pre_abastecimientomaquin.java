@@ -74,6 +74,9 @@ public class pre_abastecimientomaquin extends Pantalla{
         tab_tabla.getColumna("abastecimiento_ingreso").setValorDefecto("HT");
         
         tab_tabla.getColumna("abastecimiento_loginactu").setVisible(false);
+        
+        tab_tabla.getColumna("abastecimiento_titulo").setEtiqueta();
+        tab_tabla.getColumna("abastecimiento_id").setVisible(false);
         tab_tabla.getColumna("abastecimiento_fechactu").setVisible(false);
         tab_tabla.getColumna("abastecimiento_fechaing").setVisible(false);
         tab_tabla.getColumna("abastecimiento_horaing").setVisible(false);
@@ -140,9 +143,23 @@ public class pre_abastecimientomaquin extends Pantalla{
     
     public void carga(){
        tab_tabla.setValor("abastecimiento_anio", String.valueOf(utilitario.getAnio(tab_tabla.getValor("abastecimiento_fecha"))));
-       tab_tabla.setValor("abastecimiento_periodo", String.valueOf(utilitario.getMes(tab_tabla.getValor("abastecimiento_fecha"))));
        utilitario.addUpdate("tab_tabla");
+       TablaGenerica tab_dato =aCombustible.getVehiculo(Integer.parseInt(tab_tabla.getValor("mve_secuencial")));
+        if (!tab_dato.isEmpty()) {
+            Double valor1 = Double.valueOf(tab_dato.getValor("mve_capacidad_tanque"));
+            Double valor2 = Double.valueOf(tab_tabla.getValor("abastecimiento_galones"));
+            if(valor2<=valor1){
+                utilitario.addUpdate("tab_tabla");
+            }else{
+                utilitario.agregarMensajeError("Galones","Exceden Capacidad de Vehiculo");
+                tab_tabla.setValor("abastecimiento_galones", null);
+                utilitario.addUpdate("tab_tabla");
+            }
+        }else{
+            utilitario.agregarMensajeError("Valor","No Se Encuentra Registrado");
+        }
     }
+    
     
     public void valor(){
         String minutos =tab_tabla.getValor("abastecimiento_valorhora").substring(3,5);
