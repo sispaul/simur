@@ -143,6 +143,7 @@ public class pre_abastecimientomaquin extends Pantalla{
     
     public void carga(){
        tab_tabla.setValor("abastecimiento_anio", String.valueOf(utilitario.getAnio(tab_tabla.getValor("abastecimiento_fecha"))));
+       tab_tabla.setValor("abastecimiento_periodo", String.valueOf(utilitario.getMes(tab_tabla.getValor("abastecimiento_fecha"))));
        utilitario.addUpdate("tab_tabla");
        TablaGenerica tab_dato =aCombustible.getVehiculo(Integer.parseInt(tab_tabla.getValor("mve_secuencial")));
         if (!tab_dato.isEmpty()) {
