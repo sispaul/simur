@@ -4,6 +4,7 @@
  */
 package paq_nomina;
 
+import framework.aplicacion.Parametro;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
@@ -42,6 +43,8 @@ public class pre_anticipo_sueldo extends Pantalla{
 
     //Conexion a base
     private Conexion con_postgres= new Conexion();
+    
+    private List<Parametro> lis_parametros = new ArrayList<Parametro>();
     
     //REPORTES
     private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
