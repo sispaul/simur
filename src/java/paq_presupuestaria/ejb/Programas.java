@@ -621,10 +621,10 @@ public class Programas {
                 "tes_comprobante_egreso='"+comprobante+"',\n" +
                 "tes_fecha_comprobante='"+fecha+"',\n" +
                 "tes_estado='"+estado+"',\n" +
-                "tes_login_actu='"+usu+"',\n" +
+                "tes_login_envio='"+usu+"',\n" +
                 "tipo_solicitantep='"+tipoe+"',\n" +
-                "tes_fecha_envio='"+fechaen+"',\n" +
-                "tes_fecha_actu='"+utilitario.getFechaActual()+"'\n" +
+                "tes_fecha_envio='"+fechaen+"'\n" +
+//                "tes_fecha_actu='"+utilitario.getFechaActual()+"'\n" +
                 "where  tes_ide_orden_pago = "+numero+" and tes_numero_orden = '"+tipo+"'";
         con_postgresql();
     con_postgres.ejecutarSql(str_sql2);
@@ -645,8 +645,8 @@ public class Programas {
                 "tes_acuerdo='"+acuerdo+"',\n" +
                 "tes_nota='"+nota+"',\n" +
                 "tes_estado='"+estado+"',\n" +
-                "tes_login_actu='"+usu+"',\n" +
-                "tes_fecha_actu='"+utilitario.getFechaActual()+"'\n" +
+                "tes_login_mod='"+usu+"',\n" +
+                "tes_fecha_mod='"+utilitario.getFechaActual()+"'\n" +
                 "where  tes_ide_orden_pago = "+numero+" and tes_numero_orden = '"+tipo+"'";
         con_postgresql();
     con_postgres.ejecutarSql(str_sql2);
@@ -669,10 +669,10 @@ public class Programas {
                 "tes_comprobante_egreso='"+comprobante+"',\n" +
                 "tes_fecha_comprobante='"+fecha+"',\n" +
                 "tes_estado='"+estado+"',\n" +
-                "tes_login_actu='"+usu+"',\n" +
+                "tes_login_envio='"+usu+"',\n" +
                 "tipo_solicitantep='"+tipoa+"',\n" +
-                "tes_fecha_envio='"+fechaen+"',\n" +
-                "tes_fecha_actu='"+utilitario.getFechaActual()+"'\n" +
+                "tes_fecha_envio='"+fechaen+"'\n" +
+//                "tes_fecha_actu='"+utilitario.getFechaActual()+"'\n" +
                 "where  tes_ide_orden_pago = "+numero+" and tes_numero_orden = '"+tipo+"'";
         con_postgresql();
     con_postgres.ejecutarSql(str_sql2);
@@ -693,8 +693,8 @@ public class Programas {
                 "tes_acuerdo='"+acuerdo+"',\n" +
                 "tes_nota='"+nota+"',\n" +
                 "tes_estado='"+estado+"',\n" +
-                "tes_login_actu='"+usu+"',\n" +
-                "tes_fecha_actu='"+utilitario.getFechaActual()+"'\n" +
+                "tes_login_mod='"+usu+"',\n" +
+                "tes_fecha_mod='"+utilitario.getFechaActual()+"'\n" +
                 "where  tes_ide_orden_pago = "+numero+" and tes_numero_orden = '"+tipo+"'";
         con_postgresql();
     con_postgres.ejecutarSql(str_sql2);
