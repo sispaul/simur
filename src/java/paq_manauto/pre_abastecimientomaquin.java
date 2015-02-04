@@ -54,7 +54,8 @@ public class pre_abastecimientomaquin extends Pantalla{
         
         tab_tabla.getColumna("tipo_combustible_id").setCombo("SELECT tipo_combustible_id,(tipo_combustible_descripcion||'/'||tipo_valor_galon) as valor FROM mvtipo_combustible order by tipo_combustible_descripcion");
         tab_tabla.getColumna("abastecimiento_cod_conductor").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where cod_cargo in (SELECT cod_cargo FROM srh_cargos WHERE nombre_cargo like '%CHOFER%') and estado = 1 order by nombres");
-        tab_tabla.getColumna("mve_secuencial").setCombo("SELECT v.mve_secuencial, (v.mve_placa||'/'||m.mvmarca_descripcion ||'/'||o.mvmodelo_descripcion ||'/'||v.mve_ano)as descripcion\n" +"FROM mv_vehiculo v\n" +
+        tab_tabla.getColumna("mve_secuencial").setCombo("SELECT v.mve_secuencial, ((case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end )||'/'||m.mvmarca_descripcion ||'/'||o.mvmodelo_descripcion ||'/'||v.mve_ano)as descripcion\n" +
+                "FROM mv_vehiculo v\n" +
                 "INNER JOIN mvmarca_vehiculo m ON v.mvmarca_id = m.mvmarca_id\n" +
                 "INNER JOIN mvmodelo_vehiculo o ON v.mvmodelo_id = o.mvmodelo_id\n" +
                 "WHERE v.mve_tipo_ingreso = 'M'");
@@ -114,7 +115,7 @@ public class pre_abastecimientomaquin extends Pantalla{
         tab_tabla1.setLectura(true);
         tab_tabla1.getColumna("abastecimiento_numero_vale").setFiltro(true);
         tab_tabla1.getColumna("mve_placa").setFiltro(true);
-        tab_tabla1.agregarRelacion(tab_tabla);
+//        tab_tabla1.agregarRelacion(tab_tabla);
         tab_tabla1.setRows(15);
         tab_tabla1.dibujar();
         PanelTabla ptt1 = new PanelTabla();

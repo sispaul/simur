@@ -6,6 +6,7 @@ package paq_manauto;
 
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
+import framework.componentes.Boton;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grupo;
@@ -72,8 +73,14 @@ public class pre_des_asignacion extends Pantalla{
                 "where mav_estado_tramite = 'Pedido'");
         aut_busca.setMetodoChange("filtrarSolicitud");
         aut_busca.setSize(70);
-        bar_botones.agregarComponente(new Etiqueta("Buscar Solicitud:"));
+        bar_botones.agregarComponente(new Etiqueta("Buscar : "));
         bar_botones.agregarComponente(aut_busca);
+        
+        Boton bot_save = new Boton();
+        bot_save.setValue("ACCESORIOS");
+        bot_save.setIcon("ui-icon-extlink");
+        bot_save.setMetodo("lista");
+        bar_botones.agregarComponente(bot_save);
         
         //Elemento principal
         pan_opcion.setId("pan_opcion");
@@ -112,21 +119,11 @@ public class pre_des_asignacion extends Pantalla{
         tab_tabla.getColumna("mve_secuencial").setMetodoChange("vehiculo");
         tab_tabla.getColumna("mav_cod_conductor").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where cod_cargo in (SELECT cod_cargo FROM srh_cargos WHERE nombre_cargo like '%CHOFER%') and estado = 1 order by nombres");
         tab_tabla.getColumna("mav_cod_autoriza").setCombo("select cod_empleado,nombres from srh_empleado where estado = 1 or cod_empleado = 100 order by nombres");
-        tab_tabla.getColumna("mav_departamento").setCombo("SELECT DISTINCT srh_empleado.cod_direccion,srh_direccion.nombre_dir\n" +
-                "FROM srh_empleado, srh_direccion where srh_empleado.cod_direccion = srh_direccion.cod_direccion and srh_direccion.estado_dir= 'ACTIVA'\n" +
-                "order by srh_empleado.cod_direccion");
-        tab_tabla.getColumna("mav_departamento").setFiltroContenido();
-        tab_tabla.getColumna("mav_departamento").setMetodoChange("cargo");
-        tab_tabla.getColumna("mav_cargoemplea").setCombo("SELECT DISTINCT srh_empleado.cod_cargo,srh_cargos.nombre_cargo\n" +
-                "FROM srh_empleado\n" +
-                "INNER JOIN srh_cargos ON srh_empleado.cod_cargo = srh_cargos.cod_cargo\n" +
-                "order by srh_empleado.cod_cargo");
-        tab_tabla.getColumna("mav_cargoemplea").setFiltroContenido();
-        tab_tabla.getColumna("mav_cargoemplea").setMetodoChange("empleado");
-        tab_tabla.getColumna("mav_nomemplea").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where estado = 1");
-        tab_tabla.getColumna("mav_nomemplea").setFiltroContenido(); 
+        tab_tabla.getColumna("mav_cargoemplea").setEtiqueta();
+        tab_tabla.getColumna("mav_nombre_cond").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where estado = 1");
+        tab_tabla.getColumna("mav_nombre_cond").setFiltroContenido(); 
         
-        tab_tabla.getColumna("mav_nombre_cond").setVisible(false);
+        tab_tabla.getColumna("mav_nomemplea").setVisible(false);
         tab_tabla.getColumna("mav_telefono_cond").setVisible(false);
         tab_tabla.getColumna("mav_autoriza").setVisible(false);
         tab_tabla.getColumna("mav_fechactuali").setVisible(false);
@@ -177,6 +174,7 @@ public class pre_des_asignacion extends Pantalla{
             if (!tab_dato.isEmpty()) {
                 tab_tabla.setValor("mav_cod_conductor", tab_dato.getValor("mve_cod_conductor"));
                 tab_tabla.setValor("mav_nombre_cond", tab_dato.getValor("mve_conductor"));
+                tab_tabla.setValor("mav_departamento", tab_dato.getValor("mve_departamento"));
                 utilitario.addUpdate("tab_tabla");
             }else{
                 utilitario.agregarMensajeError("Vehiculo","No Se Encuentra Registrado");
@@ -186,6 +184,7 @@ public class pre_des_asignacion extends Pantalla{
             if (!tab_dato.isEmpty()) {
                 tab_tabla.setValor("mav_cod_conductor", tab_dato.getValor("mve_cod_conductor"));
                 tab_tabla.setValor("mav_nombre_cond", tab_dato.getValor("mve_conductor"));
+                tab_tabla.setValor("mav_departamento", tab_dato.getValor("mve_departamento"));
                 utilitario.addUpdate("tab_tabla");
             }else{
                 utilitario.agregarMensajeError("Vehiculo","No Se Encuentra Registrado");
@@ -193,22 +192,18 @@ public class pre_des_asignacion extends Pantalla{
         }
     }
     
-    public void cargo(){
-        tab_tabla.getColumna("mav_cargoemplea").setCombo("SELECT DISTINCT srh_empleado.cod_cargo,srh_cargos.nombre_cargo\n" +
-                "FROM srh_empleado\n" +
-                "INNER JOIN srh_cargos ON srh_empleado.cod_cargo = srh_cargos.cod_cargo\n" +
-                "where srh_empleado.cod_direccion = "+tab_tabla.getValor("mav_departamento")+" order by srh_empleado.cod_cargo");
-        utilitario.addUpdateTabla(tab_tabla,"mav_cargoemplea","");//actualiza solo componentes
-    }
-    
-    public void empleado(){
-        tab_tabla.getColumna("mav_nomemplea").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where estado = 1"
-                + "and cod_direccion = "+tab_tabla.getValor("mav_departamento")+" and cod_cargo = "+tab_tabla.getValor("mav_cargoemplea")+"");
-        utilitario.addUpdateTabla(tab_tabla,"mav_nomemplea","");//actualiza solo componentes
+    public void conductor(){
+            TablaGenerica tab_dato =aCombustible.getChofer(tab_tabla.getValor("mav_nombre_cond"));
+            if (!tab_dato.isEmpty()) {
+                tab_tabla.setValor("mav_nomemplea", tab_dato.getValor("nombres"));
+                utilitario.addUpdate("tab_tabla");
+            }else{
+                utilitario.agregarMensajeInfo("No existen Datos", "");
+            }
     }
     
     public void tramite(){
-        tab_tabla.setValor("mav_estado_tramite", "Pedido");
+        tab_tabla.setValor("mav_estado_tramite", "Cambio");
         utilitario.addUpdate("tab_tabla");
     }
     

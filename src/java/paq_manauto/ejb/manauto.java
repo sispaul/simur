@@ -182,6 +182,7 @@ public class manauto {
                 "(case when to_char(v.mve_kilometros_actual, '999999999.99') is null then v.mve_horometro when to_char(v.mve_kilometros_actual, '999999999.99') is not null then to_char(v.mve_kilometros_actual, '999999999.99') end) as rendimiento,\n" +
                 "v.mve_capacidad_tanque, \n" +
                 "v.mve_kilometros_actual, \n" +
+                "v.mve_departamento, \n" +
                 "v.mve_numimr \n" +
                 "FROM mv_vehiculo AS v  \n" +
                 "INNER JOIN  mvtipo_combustible AS c   \n" +
@@ -262,7 +263,7 @@ public class manauto {
     }
     
     public void set_ActuaKM(Integer codigo,Integer km,String des){
-    String au_sql="update mv_vehiculo set\n" +
+    String au_sql="update mv_vehiculo\n" +
             ""+des+" ="+km+"\n" +//set mve_kilometros_actual
             "where mve_secuencial="+codigo;
     con_postgresql();
