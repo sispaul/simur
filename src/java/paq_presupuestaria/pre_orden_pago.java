@@ -94,10 +94,10 @@ public class pre_orden_pago extends Pantalla{
         tab_orden.setTabla("tes_orden_pago", "tes_ide_orden_pago", 1);
         tab_orden.getColumna("tes_id_proveedor").setCombo("select ide_proveedor,titular from tes_proveedores order by titular");
         tab_orden.getColumna("tes_id_proveedor").setFiltroContenido();
-        tab_orden.getColumna("tes_cod_empleado").setCombo("select cod_empleado,nombres from srh_empleado where estado = 1 or cod_empleado = 100 order by cod_empleado");
-        tab_orden.getColumna("tes_id_proveedor").setFiltroContenido();
+        tab_orden.getColumna("tes_cod_empleado").setCombo("select cod_empleado,nombres from srh_empleado order by cod_empleado");
+        tab_orden.getColumna("tes_cod_empleado").setFiltroContenido();
         //        tab_orden.getColumna("tes_cod_empleado").setAutoCompletar();
-        tab_orden.getColumna("tes_comprobante_egreso").setCombo("select comprobante as id, comprobante from tes_comprobante_pago order by comprobante");
+//        tab_orden.getColumna("tes_comprobante_egreso").setCombo("select comprobante as id, comprobante from tes_comprobante_pago order by comprobante");
         tab_orden.getColumna("tes_id_proveedor").setMetodoChange("proveedor");
         tab_orden.getColumna("tes_cod_empleado").setMetodoChange("empleado");
         tab_orden.getColumna("tes_valor").setMetodoChange("num_letras");
@@ -118,7 +118,10 @@ public class pre_orden_pago extends Pantalla{
         tab_orden.getColumna("tes_fecha_anu").setVisible(false);
         tab_orden.getColumna("tes_login_actu").setVisible(false);
         tab_orden.getColumna("tes_fecha_actu").setVisible(false);
+        tab_orden.getColumna("tes_login_envio").setVisible(false);
         tab_orden.getColumna("tes_comentario_anula").setVisible(false);
+        tab_orden.getColumna("tes_login_mod").setVisible(false);
+        tab_orden.getColumna("tes_fecha_mod").setVisible(false);
         tab_orden.getColumna("tes_anio").setValorDefecto(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())));
         tab_orden.getColumna("tes_mes").setValorDefecto(String.valueOf(utilitario.getMes(utilitario.getFechaActual())));
         tab_orden.getColumna("tes_fecha_ingreso").setValorDefecto(utilitario.getFechaActual());
