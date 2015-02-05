@@ -70,7 +70,7 @@ public class pre_des_asignacion extends Pantalla{
                 "FROM mvasignar_vehiculo a\n" +
                 "INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial\n" +
                 "INNER JOIN mvmarca_vehiculo m ON v.mvmarca_id = m.mvmarca_id\n" +
-                "where mav_estado_tramite = 'Pedido'");
+                "where mav_estado_tramite = 'Cambio'");
         aut_busca.setMetodoChange("filtrarSolicitud");
         aut_busca.setSize(70);
         bar_botones.agregarComponente(new Etiqueta("Buscar : "));
@@ -117,14 +117,16 @@ public class pre_des_asignacion extends Pantalla{
                 "INNER JOIN mvmodelo_vehiculo o ON v.mvmodelo_id = o.mvmodelo_id");
         tab_tabla.getColumna("mve_secuencial").setFiltroContenido();
         tab_tabla.getColumna("mve_secuencial").setMetodoChange("vehiculo");
-        tab_tabla.getColumna("mav_cod_conductor").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where cod_cargo in (SELECT cod_cargo FROM srh_cargos WHERE nombre_cargo like '%CHOFER%') and estado = 1 order by nombres");
-        tab_tabla.getColumna("mav_cod_autoriza").setCombo("select cod_empleado,nombres from srh_empleado where estado = 1 or cod_empleado = 100 order by nombres");
-        tab_tabla.getColumna("mav_cargoemplea").setEtiqueta();
-        tab_tabla.getColumna("mav_nombre_cond").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where estado = 1");
-        tab_tabla.getColumna("mav_nombre_cond").setFiltroContenido(); 
+        tab_tabla.getColumna("mav_cod_conductor").setCombo("SELECT cod_empleado,nombres FROM srh_empleado order by nombres");
+        tab_tabla.getColumna("mav_cargoemplea").setCombo("select cod_empleado,nombres from srh_empleado order by nombres");
+        tab_tabla.getColumna("mav_cargoemplea").setFiltro(true);
+        tab_tabla.getColumna("mav_cargoemplea").setMetodoChange("conductor");
+            
+        tab_tabla.getColumna("mav_autoriza").setValorDefecto(tab_consulta.getValor("NOM_USUA"));
         
         tab_tabla.getColumna("mav_nomemplea").setVisible(false);
         tab_tabla.getColumna("mav_telefono_cond").setVisible(false);
+        tab_tabla.getColumna("mav_cod_autoriza").setVisible(false);
         tab_tabla.getColumna("mav_autoriza").setVisible(false);
         tab_tabla.getColumna("mav_fechactuali").setVisible(false);
         tab_tabla.getColumna("mav_loginactuali").setVisible(false);
@@ -193,7 +195,7 @@ public class pre_des_asignacion extends Pantalla{
     }
     
     public void conductor(){
-            TablaGenerica tab_dato =aCombustible.getChofer(tab_tabla.getValor("mav_nombre_cond"));
+            TablaGenerica tab_dato =aCombustible.getChofer(tab_tabla.getValor("mav_cargoemplea"));
             if (!tab_dato.isEmpty()) {
                 tab_tabla.setValor("mav_nomemplea", tab_dato.getValor("nombres"));
                 utilitario.addUpdate("tab_tabla");
@@ -253,6 +255,7 @@ public class pre_des_asignacion extends Pantalla{
                p_parametros.put("placa", Integer.parseInt(tab_tabla.getValor("mve_secuencial")+""));
                rep_reporte.cerrar();
                sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+               System.err.println(p_parametros);
                sef_formato.dibujar();
            break;
         }
