@@ -115,7 +115,7 @@ public class pre_abastecimientomaquin extends Pantalla{
         tab_tabla1.setLectura(true);
         tab_tabla1.getColumna("abastecimiento_numero_vale").setFiltro(true);
         tab_tabla1.getColumna("mve_placa").setFiltro(true);
-//        tab_tabla1.agregarRelacion(tab_tabla);
+        tab_tabla1.agregarRelacion(tab_tabla);
         tab_tabla1.setRows(15);
         tab_tabla1.dibujar();
         PanelTabla ptt1 = new PanelTabla();

@@ -7,20 +7,24 @@ package paq_manauto;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
+import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
+import framework.componentes.Grid;
 import framework.componentes.Grupo;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
+import framework.componentes.Texto;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
 import paq_manauto.ejb.manauto;
 import paq_sistema.aplicacion.Pantalla;
+import paq_transporte_otros.ejb.AbastecimientoCombustible;
 import persistencia.Conexion;
 
 /**
@@ -35,6 +39,7 @@ public class pre_des_asignacion extends Pantalla{
     //tablas
     private Tabla tab_consulta = new Tabla();
     private Tabla tab_tabla = new Tabla();
+    private Tabla set_accesorio = new Tabla();
     
     //buscar solicitud
     private AutoCompletar aut_busca = new AutoCompletar();
@@ -42,9 +47,21 @@ public class pre_des_asignacion extends Pantalla{
     //Contiene todos los elementos de la plantilla
     private Panel pan_opcion = new Panel();
     
+    //
+    private Dialogo dia_dialogoa = new Dialogo();
+    private Grid grid_a = new Grid();
+    private Grid grida = new Grid();
+    
+    //
+    private Texto taccesorio = new Texto();
+    private Texto txt_cantidad = new Texto();
+    private Texto txt_estado = new Texto();
+    private Texto tplaca = new Texto();
+    
     @EJB
     private manauto aCombustible = (manauto) utilitario.instanciarEJB(manauto.class);
-    
+     private AbastecimientoCombustible iCombustible = (AbastecimientoCombustible) utilitario.instanciarEJB(AbastecimientoCombustible.class);
+     
     ///REPORTES
     private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
     private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
@@ -79,7 +96,7 @@ public class pre_des_asignacion extends Pantalla{
         Boton bot_save = new Boton();
         bot_save.setValue("ACCESORIOS");
         bot_save.setIcon("ui-icon-extlink");
-        bot_save.setMetodo("lista");
+        bot_save.setMetodo("dibujar");
         bar_botones.agregarComponente(bot_save);
         
         //Elemento principal
@@ -95,6 +112,39 @@ public class pre_des_asignacion extends Pantalla{
         sef_formato.setId("sef_formato");
         sef_formato.setConexion(con_postgres);
         agregarComponente(sef_formato);
+        
+        //Para accesorios
+        Grid gri_accesorio = new Grid();
+        gri_accesorio.setColumns(6);
+        gri_accesorio.getChildren().add(new Etiqueta("Accesorio"));
+        gri_accesorio.getChildren().add(taccesorio);
+        txt_cantidad.setSize(2);
+        gri_accesorio.getChildren().add(new Etiqueta("Cantidad"));
+        gri_accesorio.getChildren().add(txt_cantidad);
+        txt_estado.setSize(10);
+        gri_accesorio.getChildren().add(new Etiqueta("Estado"));
+        gri_accesorio.getChildren().add(txt_estado);
+        Boton bot_accesoriog = new Boton();
+        bot_accesoriog.setValue("Guardar");
+        bot_accesoriog.setIcon("ui-icon-disk");
+        bot_accesoriog.setMetodo("insAccesorio");
+        bar_botones.agregarBoton(bot_accesoriog);
+        Boton bot_accesorioe = new Boton();
+        bot_accesorioe.setValue("Eliminar");
+        bot_accesorioe.setIcon("ui-icon-closethick");
+        bot_accesorioe.setMetodo("endAccesorio");
+        bar_botones.agregarBoton(bot_accesorioe);
+        gri_accesorio.getChildren().add(bot_accesoriog);
+        gri_accesorio.getChildren().add(bot_accesorioe);
+        dia_dialogoa.setId("dia_dialogoa");
+        dia_dialogoa.setTitle("ACCESORIOS DE AUTOMOTOR / MAQUINARIA"); //titulo
+        dia_dialogoa.setWidth("38%"); //siempre en porcentajes  ancho
+        dia_dialogoa.setHeight("40%");//siempre porcentaje   alto
+        dia_dialogoa.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogoa.getGri_cuerpo().setHeader(gri_accesorio);
+        grid_a.setColumns(4);
+        agregarComponente(dia_dialogoa);
+        
     }
 
     public void dibujaIngreso(){
@@ -118,12 +168,13 @@ public class pre_des_asignacion extends Pantalla{
         tab_tabla.getColumna("mve_secuencial").setFiltroContenido();
         tab_tabla.getColumna("mve_secuencial").setMetodoChange("vehiculo");
         tab_tabla.getColumna("mav_cod_conductor").setCombo("SELECT cod_empleado,nombres FROM srh_empleado order by nombres");
-        tab_tabla.getColumna("mav_cargoemplea").setCombo("select cod_empleado,nombres from srh_empleado order by nombres");
+        tab_tabla.getColumna("mav_cargoemplea").setCombo("select cod_empleado,nombres from srh_empleado where estado =1 order by nombres");
         tab_tabla.getColumna("mav_cargoemplea").setFiltro(true);
         tab_tabla.getColumna("mav_cargoemplea").setMetodoChange("conductor");
             
         tab_tabla.getColumna("mav_autoriza").setValorDefecto(tab_consulta.getValor("NOM_USUA"));
         
+        tab_tabla.getColumna("mav_nombre_cond").setVisible(false);
         tab_tabla.getColumna("mav_nomemplea").setVisible(false);
         tab_tabla.getColumna("mav_telefono_cond").setVisible(false);
         tab_tabla.getColumna("mav_cod_autoriza").setVisible(false);
@@ -209,6 +260,44 @@ public class pre_des_asignacion extends Pantalla{
         utilitario.addUpdate("tab_tabla");
     }
     
+    //Accesorios para asignacion
+    public void dibujar(){
+        dia_dialogoa.Limpiar();
+        dia_dialogoa.setDialogo(grida);
+        grid_a.getChildren().add(set_accesorio);
+        set_accesorio.setId("set_accesorio");
+        set_accesorio.setConexion(con_postgres);
+        set_accesorio.setSql("SELECT mdv_codigo,mdv_detalle,mdv_cantidad,mdv_estado\n" +
+                "FROM mvdetalle_vehiculo where mve_estado= '1' and mve_secuencial= "+tab_tabla.getValor("mve_secuencial"));
+        set_accesorio.getColumna("mdv_detalle").setFiltro(true);
+        set_accesorio.setRows(9);
+        set_accesorio.setTipoSeleccion(false);
+        dia_dialogoa.setDialogo(grid_a);
+        set_accesorio.dibujar();
+        dia_dialogoa.dibujar();
+    }
+    
+    public void insAccesorio(){
+        if(taccesorio.getValue()!= null && taccesorio.toString().isEmpty()==false){
+            if(txt_estado.getValue()!= null && txt_estado.toString().isEmpty()==false){
+                aCombustible.getParametacces(tab_tabla.getValor("mve_secuencial"), taccesorio.getValue()+"", Integer.parseInt(txt_cantidad.getValue()+""), txt_estado.getValue()+"");
+                taccesorio.limpiar();
+                utilitario.agregarMensaje("Registro Guardado", "Accesorio");
+                set_accesorio.actualizar();
+            }
+        }
+    }
+    
+    public void endAccesorio(){
+        if (set_accesorio.getValorSeleccionado() != null && set_accesorio.getValorSeleccionado().isEmpty() == false) {
+            aCombustible.deleteaccesorios(Integer.parseInt(set_accesorio.getValorSeleccionado()));
+            utilitario.agregarMensaje("Registro eliminado", "Accesorio");
+            set_accesorio.actualizar();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
+        }
+    }
+    
     @Override
     public void insertar() {
         if (tab_tabla.isFocus()) {
@@ -228,6 +317,9 @@ public class pre_des_asignacion extends Pantalla{
     public void eliminar() {
     }
 
+    public void actu_conductor(){
+        
+    }
     
     /*CREACION DE REPORTES */
     //llamada a reporte
@@ -307,6 +399,14 @@ public class pre_des_asignacion extends Pantalla{
 
     public void setP_parametros(Map p_parametros) {
         this.p_parametros = p_parametros;
+    }
+
+    public Tabla getSet_accesorio() {
+        return set_accesorio;
+    }
+
+    public void setSet_accesorio(Tabla set_accesorio) {
+        this.set_accesorio = set_accesorio;
     }
     
 }

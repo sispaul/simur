@@ -76,6 +76,14 @@ public class manauto {
         con_postgres.desconectar();
         con_postgres = null;
     }
+    public void getParametacces(String codigo,String nombre,Integer cantidad,String estado){
+        String parametro ="insert into mvdetalle_vehiculo(mdv_detalle,mdv_cantidad,mdv_estado,mve_secuencial,mve_estado)\n" +
+                "values ('"+nombre+"',"+cantidad+",'"+estado+"',"+codigo+",'1')";
+        con_postgresql();
+        con_postgres.ejecutarSql(parametro);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
     
     public void deleteTipos(Integer anti){
     String au_sql="delete from mvtipo_vehiculo where mvtipo_id ="+anti;
@@ -119,6 +127,14 @@ public class manauto {
     con_postgres.desconectar();
     con_postgres = null;
     }    
+    
+    public void deleteaccesorios(Integer anti){
+    String au_sql="update mvdetalle_vehiculo set mve_estado = '0' where mdv_codigo = "+anti;
+    con_postgresql();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
     
     public TablaGenerica get_DuplicaVersion(String nombre,Integer codigo) {
         con_postgresql();
