@@ -44,8 +44,6 @@ public class pre_anticipo_sueldo extends Pantalla{
     //Conexion a base
     private Conexion con_postgres= new Conexion();
     
-    private List<Parametro> lis_parametros = new ArrayList<Parametro>();
-    
     //REPORTES
     private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
     private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
@@ -103,7 +101,6 @@ public class pre_anticipo_sueldo extends Pantalla{
     //Extrae datos adicionales, que se necesita, de una clase logica
     @EJB
     private AntiSueldos iAnticipos = (AntiSueldos) utilitario.instanciarEJB(AntiSueldos.class);
-    private SolicAnticipos aAnticipos = (SolicAnticipos) utilitario.instanciarEJB(SolicAnticipos.class);
     
     public pre_anticipo_sueldo() {
     
