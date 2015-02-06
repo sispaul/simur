@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_solicitud_mantenimiento" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1ee4d97c-7614-4aa2-83a1-b475e6c15627">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="nom_resp" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["el que imprimio"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_orden" class="java.lang.String"/>
+	<parameter name="codigo" class="java.lang.Integer"/>
+	<parameter name="placa" class="java.lang.Integer"/>
+	<parameter name="numero" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT c.mca_fechainman,
+c.mca_responsable,
+c.mca_proveedor,
+c.mca_autorizado,
+c.mca_monto,
+c.mca_detalle,
+c.mca_kmactual_hora,
+c.mca_observacion,
+c.mca_acotaciones,
+(case when c.mca_tipo_mantenimiento = 'INTERNO' then 'Mecánica Municipal' when c.mca_tipo_mantenimiento = 'EXTERNO' then 'Otros Talleres' end ) AS trabajo,
+c.mca_anio,
+c.mca_periodo,
+v.mve_motor,
+v.mve_chasis,
+(m.mvmarca_descripcion||'  /  '||
+o.mvmodelo_descripcion) AS descripcion,
+(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa,
+v.mve_departamento,
+c.mca_secuencial
+FROM mvcab_mantenimiento AS c
+INNER JOIN mv_vehiculo AS v ON c.mve_secuencial = v.mve_secuencial
+INNER JOIN mvmarca_vehiculo AS m ON v.mvmarca_id = m.mvmarca_id
+INNER JOIN mvmodelo_vehiculo o ON v.mvmodelo_id = o.mvmodelo_id
+WHERE c.mca_codigo = $P{codigo} AND
+c.mve_secuencial = $P{placa} AND
+c.mca_secuencial = $P{numero}]]>
+	</queryString>
+	<field name="mca_fechainman" class="java.sql.Date"/>
+	<field name="mca_responsable" class="java.lang.String"/>
+	<field name="mca_proveedor" class="java.lang.String"/>
+	<field name="mca_autorizado" class="java.lang.String"/>
+	<field name="mca_monto" class="java.math.BigDecimal"/>
+	<field name="mca_detalle" class="java.lang.String"/>
+	<field name="mca_kmactual_hora" class="java.lang.String"/>
+	<field name="mca_observacion" class="java.lang.String"/>
+	<field name="mca_acotaciones" class="java.lang.String"/>
+	<field name="trabajo" class="java.lang.String"/>
+	<field name="mca_anio" class="java.lang.String"/>
+	<field name="mca_periodo" class="java.lang.String"/>
+	<field name="mve_motor" class="java.lang.String"/>
+	<field name="mve_chasis" class="java.lang.String"/>
+	<field name="descripcion" class="java.lang.String"/>
+	<field name="placa" class="java.lang.String"/>
+	<field name="mve_departamento" class="java.lang.String"/>
+	<field name="mca_secuencial" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="7b9a4017-a366-48a7-aaa8-4363829e4e59" key="staticText" x="12" y="10" width="273" height="34" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[GOBIERNO AUTONOMO DESCENTRALIZADO MUNICIPAL DEL CANTON RUMIÑAHUI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c8ace4a0-7868-48c7-9b1b-d86b871481b6" key="staticText" x="10" y="56" width="273" height="18" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[SOLICITUD DE MANTENIMIENTO]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="e8d9a502-1e40-4266-a21f-1c505ed81307" x="338" y="2" width="200" height="70"/>
+				<imageExpression><![CDATA["C:\\Users\\p-sistemas\\Documents\\NetBeansProjects\\simur\\web\\upload\\logos\\logo_rep_cordTransporte.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="aed97821-5665-4978-ac4e-a6ae3cff74ed" x="338" y="54" width="200" height="20"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CORDINACIÓN DE TRANSPORTES]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="182" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="6a8bde10-4e9c-45c7-8811-e867cf154a1e" x="15" y="40" width="280" height="121"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="a93d6fef-18ca-463e-9dc6-b34e9be6478f" x="295" y="40" width="259" height="121"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="c80fd72c-1265-4b59-b0c8-92e35a7b8a60" x="346" y="48" width="183" height="20"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[AUTOMOTOR/MAQUINARIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="26cf0499-7e74-4c31-a26f-5f0227777c25" x="317" y="100" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[No. Motor]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b96cf420-3334-4cba-9741-d3d105723ade" x="317" y="120" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[No. Chasis]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="84a6656b-a9f8-4cb7-8b38-543ad3c8e325" x="317" y="140" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Placas: ]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="8bfd9e42-d10c-42e9-837f-6f7f4aade717" x="346" y="67" width="183" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ab2bf798-125f-4f29-a2bd-554391f3b608" x="417" y="100" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{mve_motor}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="063968d7-c552-4344-9821-7b25eca17df6" x="417" y="120" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{mve_chasis}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9a80ba35-58f3-4969-a8c1-26ba880bd6d1" x="417" y="140" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{placa}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="004f2c3a-3124-4ff8-a536-4a45fb16a7bb" x="20" y="47" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lugar y Fecha:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5c50550b-c378-42bd-b375-1affb0b2ad2b" x="20" y="67" width="111" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Conductor/Operador:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5bbde29d-d47b-4c90-ba59-0b5e3c1c4d54" x="20" y="87" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dependencia]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e53109c1-5717-4ad3-b01f-9745c0c928fb" x="338" y="0" width="100" height="20"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[No. ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8e6be81b-6d4e-45e5-b239-388d2a7a5068" x="20" y="116" width="100" height="40"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Autorizado por Cordinacion de Tranportes]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="52d82bab-e3de-49db-9783-553df2726dee" x="131" y="68" width="152" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{mca_responsable}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a71bafdc-d693-4fc2-998c-5ecc6dbcb9f0" x="120" y="88" width="163" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{mve_departamento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bb14892d-5f45-4193-b1e6-f5808719fa03" x="385" y="0" width="100" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mca_secuencial}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="57cf34b8-4110-45d6-8549-f2b311ffc8d8" x="120" y="48" width="57" height="20"/>
+				<textElement/>
+				<text><![CDATA[Sangolqui, ]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="32cf45b6-dbf1-43e6-aae6-cc399e35bdab" x="177" y="48" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{fecha_orden}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="285" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="36a64d78-596e-4c15-a3f0-980d53b63372" x="56" y="22" width="498" height="69"/>
+				<textElement>
+					<font isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mca_detalle}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="e2705f75-939e-43eb-81d9-e43871f83074" x="56" y="216" width="498" height="69"/>
+				<textElement>
+					<font isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mca_acotaciones}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="5979d39b-14d1-4fb8-9fc9-4540cd3b49da" x="56" y="119" width="498" height="69"/>
+				<textElement>
+					<font isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mca_observacion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="e62b37b2-be99-4225-954b-b12fd48b0028" x="15" y="3" width="100" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INFORME TÉCNICO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="81272f98-fbd3-4a0f-b21e-9389ef6c1ce1" x="15" y="100" width="196" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DETALLE DE TRABAJO A REALIZAR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="459abc9f-8f36-4079-b0c0-2118a24ce5ed" x="15" y="197" width="214" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DETALLE DE RESPUESTOS A UTILIZAR]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<columnFooter>
+		<band height="165" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="61ba9255-8652-4189-bef1-36a1fd48a905" x="3" y="56" width="128" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Trabajo a Realizarce en:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="ff08755c-2da8-4181-8ed2-e40a89dbde01" x="129" y="56" width="217" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{trabajo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="8bc424ba-6113-4af5-bb34-6b5bcecd0bb6" x="218" y="29" width="128" height="20"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Mécanica Municipal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b7194ee4-3351-4f28-81be-1a8f7c371e0d" x="218" y="78" width="128" height="20"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Autorizado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="09de7fd5-177b-4a42-9af5-169094206ca1" x="218" y="145" width="128" height="20"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Jefe Servicios Generales]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="67df957d-3cab-4d76-ab28-d9626ba53cf0" x="166" y="29" width="230" height="1"/>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="7621246a-4b42-4c5d-8c1a-8bbc949aa47d" x="177" y="125" width="208" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{mca_autorizado}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="2f2c2975-fd0e-45fe-b7b8-f2417297f863" x="166" y="124" width="230" height="1"/>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="19" splitType="Stretch">
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="707d40a3-8169-4419-85d2-d8e1a240b11f" key="textField-5" x="10" y="3" width="92" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
+				<reportElement uuid="07462b6d-5539-4586-a361-1db520fb58e4" key="textField" x="512" y="3" width="36" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="543c331d-1062-4827-8188-49d7dce09caa" key="textField" x="342" y="3" width="170" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="b5edec81-5b29-4e2a-b3f4-a293efb0d8d5" key="textField-1" x="190" y="3" width="90" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nom_resp}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="3" splitType="Stretch"/>
+	</summary>
+</jasperReport>
