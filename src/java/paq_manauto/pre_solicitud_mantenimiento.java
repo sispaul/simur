@@ -157,21 +157,22 @@ public class pre_solicitud_mantenimiento extends Pantalla{
         } else {
             tab_tabla.setCondicion("mca_codigo=" + aut_busca.getValor());
         }
-        tab_tabla.getColumna("mve_secuencial").setCombo("SELECT v.mve_secuencial,\n" +
-                "(v.mve_placa||' / '||m.mvmarca_descripcion ||' / '||t.mvtipo_descripcion||' / '||o.mvmodelo_descripcion ||' / '||v.mve_ano) AS descripcion\n" +
-                "FROM mv_vehiculo AS v\n" +
-                "INNER JOIN mvmarca_vehiculo AS m ON v.mvmarca_id = m.mvmarca_id\n" +
-                "INNER JOIN mvmodelo_vehiculo AS o ON v.mvmodelo_id = o.mvmodelo_id\n" +
-                "INNER JOIN mvtipo_vehiculo t ON t.mvmarca_id = m.mvmarca_id\n" +
-                "ORDER BY v.mve_secuencial ASC");
-//        tab_tabla.getColumna("mca_cod_proveedor").setCombo("select ide_proveedor,titular from tes_proveedores  where ruc <> '0' order by titular");
+        tab_tabla.getColumna("mve_secuencial").setCombo("SELECT v.mve_secuencial, \n" +
+"((case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end )||' / '||m.mvmarca_descripcion ||' / '||t.mvtipo_descripcion||' / '||o.mvmodelo_descripcion ||' / '||v.mve_ano) AS descripcion \n" +
+"FROM mv_vehiculo AS v \n" +
+"INNER JOIN mvmarca_vehiculo AS m ON v.mvmarca_id = m.mvmarca_id \n" +
+"INNER JOIN mvmodelo_vehiculo AS o ON v.mvmodelo_id = o.mvmodelo_id \n" +
+"INNER JOIN mvtipo_vehiculo t ON t.mvmarca_id = m.mvmarca_id \n" +
+"ORDER BY v.mve_secuencial ASC");
+        tab_tabla.getColumna("mca_cod_proveedor").setCombo("select ide_proveedor,titular from tes_proveedores  where ruc <> '0' order by titular");
 //        tab_tabla.getColumna("mca_cod_autoriza").setCombo("select cod_empleado,nombres from srh_empleado where estado = 1 or cod_empleado = 100 order by nombres");
         tab_tabla.getColumna("mca_cod_responsable").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where cod_cargo in (SELECT cod_cargo FROM srh_cargos WHERE nombre_cargo like '%CHOFER%') and estado = 1 order by nombres");
                 
         tab_tabla.getColumna("mve_secuencial").setFiltroContenido();
         tab_tabla.getColumna("mca_cod_proveedor").setFiltroContenido();
         tab_tabla.getColumna("mca_cod_responsable").setFiltroContenido();
-
+        
+        tab_tabla.getColumna("mca_cod_proveedor").setLectura(true);
         tab_tabla.getColumna("mca_monto").setLectura(true);
         
         tab_tabla.getColumna("mca_fechainman").setValorDefecto(utilitario.getFechaActual());
@@ -180,6 +181,13 @@ public class pre_solicitud_mantenimiento extends Pantalla{
         tab_tabla.getColumna("mca_anio").setValorDefecto(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())));
         tab_tabla.getColumna("mca_periodo").setValorDefecto(String.valueOf(utilitario.getMes(utilitario.getFechaActual())));
         tab_tabla.getColumna("mca_tiposol").setValorDefecto("1");
+        
+        tab_tabla.getColumna("mca_tipo_mantenimiento").setMetodoChange("tipo_mantenimiento");
+        tab_tabla.getColumna("mve_secuencial").setMetodoChange("caracteristicas");
+        tab_tabla.getColumna("mca_cod_proveedor").setMetodoChange("proveedor");
+        tab_tabla.getColumna("mca_cod_autoriza").setMetodoChange("empleado");
+        tab_tabla.getColumna("mca_cod_responsable").setMetodoChange("responsable");
+        
         List lista = new ArrayList();
         Object fila1[] = {
             "INTERNO", "INTERNO"
@@ -189,23 +197,17 @@ public class pre_solicitud_mantenimiento extends Pantalla{
         };
         lista.add(fila1);;
         lista.add(fila2);;
-        tab_tabla.getColumna("mca_tipo_mantenimiento").setCombo(lista);
-        tab_tabla.getColumna("mca_tipo_mantenimiento").setMetodoChange("tipo_metodo");
-        tab_tabla.getColumna("mve_secuencial").setMetodoChange("caracteristicas");
-        tab_tabla.getColumna("mca_cod_proveedor").setMetodoChange("proveedor");
-        tab_tabla.getColumna("mca_cod_autoriza").setMetodoChange("empleado");
-        tab_tabla.getColumna("mca_cod_responsable").setMetodoChange("responsable");
+        tab_tabla.getColumna("mca_tipo_mantenimiento").setRadio(lista," ");
         
         tab_tabla.getColumna("mca_estado_tramite").setEtiqueta();
-        tab_tabla.getColumna("mca_cod_proveedor").setVisible(false);
         tab_tabla.getColumna("mca_formapago").setVisible(false);
+        tab_tabla.getColumna("mca_tipomedicion").setVisible(false);
         tab_tabla.getColumna("mca_cod_autoriza").setVisible(false);
         tab_tabla.getColumna("mca_tiposol").setVisible(false);
         tab_tabla.getColumna("mca_horasaman").setVisible(false);
         tab_tabla.getColumna("mca_horainman").setVisible(false);
         tab_tabla.getColumna("mca_fechasaman").setVisible(false);
         tab_tabla.getColumna("mca_kmanterior_hora").setVisible(false);
-        tab_tabla.getColumna("mca_acotaciones").setVisible(false);
         tab_tabla.getColumna("mca_loginingreso").setVisible(false);
         tab_tabla.getColumna("mca_loginactuali").setVisible(false);
         tab_tabla.getColumna("mca_fechactuali").setVisible(false);
@@ -329,12 +331,14 @@ public class pre_solicitud_mantenimiento extends Pantalla{
         }
     }
     
-    public void tipo_metodo(){
-        if(tab_tabla.getValor("mca_tipo_mantemimiemto").equals("INTERNO")){
-            tab_tabla.getColumna("mca_monto").setLectura(true);
+    public void tipo_mantenimiento(){
+        if(tab_tabla.getValor("mca_tipo_mantenimiento").equals("INTERNO")){
+            tab_tabla.getColumna("mca_monto").setLectura(false);
+            tab_tabla.getColumna("mca_cod_proveedor").setLectura(true);
             utilitario.addUpdate("tab_tabla");
         }else{
-            tab_tabla.getColumna("mca_monto").setLectura(false);
+            tab_tabla.getColumna("mca_monto").setLectura(true);
+            tab_tabla.getColumna("mca_cod_proveedor").setLectura(false);
             utilitario.addUpdate("tab_tabla");
         }
     }
