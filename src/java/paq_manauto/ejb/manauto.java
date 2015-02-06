@@ -136,6 +136,17 @@ public class manauto {
     con_postgres = null;
     }
     
+    public void setAccesorios(Integer anti,String cond,String nombre){
+    String au_sql="update mv_vehiculo\n" +
+"set mve_cod_conductor='"+cond+"',\n" +
+"mve_conductor='"+nombre+"'\n" +
+"where mve_secuencial ="+anti;
+    con_postgresql();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+    
     public TablaGenerica get_DuplicaVersion(String nombre,Integer codigo) {
         con_postgresql();
         TablaGenerica tab_persona = new TablaGenerica();

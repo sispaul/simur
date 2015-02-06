@@ -161,10 +161,10 @@ public class pre_des_asignacion extends Pantalla{
         tab_tabla.getColumna("mav_fechaingreso").setValorDefecto(utilitario.getFechaActual());
         tab_tabla.getColumna("mav_loginingreso").setValorDefecto(tab_consulta.getValor("NICK_USUA"));
         tab_tabla.getColumna("mve_secuencial").setCombo("SELECT v.mve_secuencial,\n" +
-                "(v.mve_placa||'/'||m.mvmarca_descripcion ||'/'||o.mvmodelo_descripcion ||'/'|| v.mve_color||'/'||v.mve_ano ) AS descripcion\n" +
-                "FROM mv_vehiculo v\n" +
-                "INNER JOIN mvmarca_vehiculo m ON v.mvmarca_id = m.mvmarca_id\n" +
-                "INNER JOIN mvmodelo_vehiculo o ON v.mvmodelo_id = o.mvmodelo_id");
+"((case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end )||'/'||m.mvmarca_descripcion ||'/'||o.mvmodelo_descripcion ||'/'|| v.mve_color||'/'||v.mve_ano ) AS descripcion\n" +
+"FROM mv_vehiculo v\n" +
+"INNER JOIN mvmarca_vehiculo m ON v.mvmarca_id = m.mvmarca_id\n" +
+"INNER JOIN mvmodelo_vehiculo o ON v.mvmodelo_id = o.mvmodelo_id");
         tab_tabla.getColumna("mve_secuencial").setFiltroContenido();
         tab_tabla.getColumna("mve_secuencial").setMetodoChange("vehiculo");
         tab_tabla.getColumna("mav_cod_conductor").setCombo("SELECT cod_empleado,nombres FROM srh_empleado order by nombres");
@@ -311,6 +311,7 @@ public class pre_des_asignacion extends Pantalla{
         if(tab_tabla.guardar()){
             con_postgres.guardarPantalla(); 
         }
+        actu_conductor();
     }
 
     @Override
@@ -318,7 +319,7 @@ public class pre_des_asignacion extends Pantalla{
     }
 
     public void actu_conductor(){
-        
+         aCombustible.setAccesorios(Integer.parseInt(tab_tabla.getValor("mve_secuencial")), tab_tabla.getValor("mav_cargoemplea"), tab_tabla.getValor("mav_nomemplea"));
     }
     
     /*CREACION DE REPORTES */
