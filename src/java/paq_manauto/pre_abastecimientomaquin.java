@@ -53,7 +53,7 @@ public class pre_abastecimientomaquin extends Pantalla{
         tab_tabla.setTabla("mvabactecimiento_combustible", "abastecimiento_id", 1);
         
         tab_tabla.getColumna("tipo_combustible_id").setCombo("SELECT tipo_combustible_id,(tipo_combustible_descripcion||'/'||tipo_valor_galon) as valor FROM mvtipo_combustible order by tipo_combustible_descripcion");
-        tab_tabla.getColumna("abastecimiento_cod_conductor").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where cod_cargo in (SELECT cod_cargo FROM srh_cargos WHERE nombre_cargo like '%CHOFER%') and estado = 1 order by nombres");
+        tab_tabla.getColumna("abastecimiento_cod_conductor").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where estado = 1 order by nombres");
         tab_tabla.getColumna("mve_secuencial").setCombo("SELECT v.mve_secuencial, ((case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end )||'/'||m.mvmarca_descripcion ||'/'||o.mvmodelo_descripcion ||'/'||v.mve_ano)as descripcion\n" +
                 "FROM mv_vehiculo v\n" +
                 "INNER JOIN mvmarca_vehiculo m ON v.mvmarca_id = m.mvmarca_id\n" +
@@ -98,23 +98,22 @@ public class pre_abastecimientomaquin extends Pantalla{
         
         tab_tabla1.setId("tab_tabla1");
         tab_tabla1.setConexion(con_postgres);
-        tab_tabla1.setSql("SELECT\n" +
-                "a.abastecimiento_id,\n" +
-                "a.abastecimiento_numero_vale,\n" +
-                "v.mve_placa,\n" +
-                "(m.mvmarca_descripcion||' '||t.mvtipo_descripcion||' '||o.mvmodelo_descripcion) AS descripcion,\n" +
-                "a.abastecimiento_total,\n" +
-                "a.abastecimiento_numero\n" +
-                "FROM mvabactecimiento_combustible AS a\n" +
-                "INNER JOIN mv_vehiculo AS v ON a.mve_secuencial = v.mve_secuencial\n" +
-                "INNER JOIN mvmarca_vehiculo AS m ON v.mvmarca_id = m.mvmarca_id\n" +
-                "INNER JOIN mvmodelo_vehiculo AS o ON v.mvmodelo_id = o.mvmodelo_id\n" +
-                "INNER JOIN mvtipo_vehiculo t ON t.mvmarca_id = m.mvmarca_id AND v.mvtipo_id = t.mvtipo_id AND o.mvtipo_id = t.mvtipo_id\n" +
-                "WHERE a.abastecimiento_tipo_ingreso = 'H'\n" +
-                "ORDER BY a.abastecimiento_id DESC LIMIT 10");
+        tab_tabla1.setSql("SELECT  a.abastecimiento_id, \n" +
+"a.abastecimiento_numero_vale, \n" +
+"(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as Placa, \n" +
+"(m.mvmarca_descripcion||' '||t.mvtipo_descripcion||' '||o.mvmodelo_descripcion) AS descripcion, \n" +
+"a.abastecimiento_total, \n" +
+"a.abastecimiento_numero \n" +
+"FROM mvabactecimiento_combustible AS a \n" +
+"INNER JOIN mv_vehiculo AS v ON a.mve_secuencial = v.mve_secuencial \n" +
+"INNER JOIN mvmarca_vehiculo AS m ON v.mvmarca_id = m.mvmarca_id \n" +
+"INNER JOIN mvmodelo_vehiculo AS o ON v.mvmodelo_id = o.mvmodelo_id \n" +
+"INNER JOIN mvtipo_vehiculo t ON t.mvmarca_id = m.mvmarca_id AND v.mvtipo_id = t.mvtipo_id AND o.mvtipo_id = t.mvtipo_id \n" +
+"WHERE a.abastecimiento_tipo_ingreso = 'H' \n" +
+"ORDER BY a.abastecimiento_id DESC --LIMIT 15");
         tab_tabla1.setLectura(true);
         tab_tabla1.getColumna("abastecimiento_numero_vale").setFiltro(true);
-        tab_tabla1.getColumna("mve_placa").setFiltro(true);
+        tab_tabla1.getColumna("Placa").setFiltro(true);
         tab_tabla1.agregarRelacion(tab_tabla);
         tab_tabla1.setRows(15);
         tab_tabla1.dibujar();
@@ -248,6 +247,7 @@ public class pre_abastecimientomaquin extends Pantalla{
     
     @Override
     public void eliminar() {
+        tab_tabla.eliminar();
     }
 
     public Conexion getCon_postgres() {
