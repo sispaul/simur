@@ -116,7 +116,7 @@ public class pre_abastecimientoauto extends Pantalla{
         tab_tabla1.setSql("SELECT\n" +
                 "a.abastecimiento_id,\n" +
                 "a.abastecimiento_numero_vale,\n" +
-                "v.mve_placa,\n" +
+                "(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as Placa,\n" +
                 "(m.mvmarca_descripcion||' '||t.mvtipo_descripcion||' '||o.mvmodelo_descripcion) AS descripcion,\n" +
                 "a.abastecimiento_total,\n" +
                 "a.abastecimiento_numero\n" +
@@ -126,10 +126,10 @@ public class pre_abastecimientoauto extends Pantalla{
                 "INNER JOIN mvmodelo_vehiculo AS o ON v.mvmodelo_id = o.mvmodelo_id\n" +
                 "INNER JOIN mvtipo_vehiculo t ON t.mvmarca_id = m.mvmarca_id AND v.mvtipo_id = t.mvtipo_id AND o.mvtipo_id = t.mvtipo_id\n" +
                 "WHERE a.abastecimiento_tipo_ingreso = 'K'\n" +
-                "ORDER BY a.abastecimiento_id DESC LIMIT 10");
+                "ORDER BY a.abastecimiento_id DESC --LIMIT 15");
         tab_tabla1.setLectura(true);
         tab_tabla1.getColumna("abastecimiento_numero_vale").setFiltro(true);
-        tab_tabla1.getColumna("mve_placa").setFiltro(true);
+        tab_tabla1.getColumna("Placa").setFiltro(true);
         tab_tabla1.agregarRelacion(tab_tabla);
         tab_tabla1.setRows(15);
         tab_tabla1.dibujar();

@@ -156,7 +156,9 @@ public class pre_reportes_abastecimiento extends Pantalla{
         gri_busca1.getChildren().add(new Etiqueta("PLACA :"));
         cmb_placa1.setId("cmb_placa1");
         cmb_placa1.setConexion(con_postgres);
-        cmb_placa1.setCombo("SELECT DISTINCT mve_placa,mve_placa FROM mv_vehiculo ORDER BY mve_placa");
+        cmb_placa1.setCombo("SELECT (case when mve_placa is NULL then mve_codigo when mve_placa is not null then mve_placa end ),\n" +
+                "(case when mve_placa is NULL then mve_codigo when mve_placa is not null then mve_placa end ) as Placa \n" +
+                "FROM mv_vehiculo ORDER BY mve_placa");
         gri_busca1.getChildren().add(cmb_placa1);
         
          //para poder busca por apelllido el garante
