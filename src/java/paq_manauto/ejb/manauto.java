@@ -494,12 +494,51 @@ public class manauto {
     con_postgres = null;
     }
     
+    public void set_updateValor(Integer codigo,Integer vehiculo,String vale,String descrip,String valor){
+    String au_sql="update mvabactecimiento_combustible\n" +
+            "set "+descrip+" ='"+valor+"'\n" +
+            "where abastecimiento_id ="+codigo+" and mve_secuencial="+vehiculo+" and abastecimiento_numero_vale='"+vale+"' and abastecimiento_ingreso = 'HT'";
+    con_postgresql();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+    
+    public void set_updateValor1(Integer codigo,Integer vehiculo,String vale,String descrip,Double valor){
+    String au_sql="update mvabactecimiento_combustible\n" +
+            "set "+descrip+" ="+valor+"\n" +
+            "where abastecimiento_id="+codigo+" and mve_secuencial="+vehiculo+" and abastecimiento_numero_vale='"+vale+"' and abastecimiento_ingreso = 'HT'";
+    con_postgresql();
+    con_postgres.ejecutarSql(au_sql);
+    con_postgres.desconectar();
+    con_postgres = null;
+    }
+        
     //mantenimiento maquinarias
     public TablaGenerica getHorav(Integer periodo) {
         con_postgresql();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(con_postgres);
         tab_persona.setSql("SELECT mve_secuencial,mve_horometro FROM mv_vehiculo where mve_secuencial ="+periodo);
+        tab_persona.ejecutarSql();
+       con_postgres.desconectar();
+       con_postgres = null;
+        return tab_persona;
+    }
+    
+    public TablaGenerica getActu(Integer codigo,Integer vehiculo,String vale) {
+        con_postgresql();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT abastecimiento_id,\n" +
+"mve_secuencial,\n" +
+"abastecimiento_numero_vale,\n" +
+"abastecimiento_fecha,\n" +
+"abastecimiento_galones,\n" +
+"abastecimiento_total,\n" +
+"abastecimiento_valorhora\n" +
+"FROM mvabactecimiento_combustible\n" +
+"where abastecimiento_id ="+codigo+" and mve_secuencial="+vehiculo+" and abastecimiento_numero_vale='"+vale+"' and abastecimiento_ingreso = 'HT'");
         tab_persona.ejecutarSql();
        con_postgres.desconectar();
        con_postgres = null;
