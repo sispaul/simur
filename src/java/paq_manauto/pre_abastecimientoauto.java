@@ -259,12 +259,18 @@ public class pre_abastecimientoauto extends Pantalla{
     @Override
     public void guardar() {
         String reg = new String();
-        TablaGenerica tab_dato =aCombustible.setguardar(tab_tabla.getValor("abastecimiento_numero"), tab_tabla.getValor("abastecimiento_anio"), tab_tabla.getValor("abastecimiento_periodo"),Integer.parseInt(tab_tabla.getValor("mve_secuencial")));
+        TablaGenerica tab_dato = aCombustible.getActu(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")), Integer.parseInt(tab_tabla.getValor("mve_secuencial")), tab_tabla.getValor("abastecimiento_numero_vale"));
         if (!tab_dato.isEmpty()) {
-            aCombustible.set_Actuabaste(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")), tab_tabla.getValor("abastecimiento_numero_vale"), tab_tabla.getValor("abastecimiento_fecha"), tab_tabla.getValor("abastecimiento_conductor"), 
-                    tab_tabla.getValor("abastecimiento_cod_conductor"), Integer.parseInt(tab_tabla.getValor("abastecimiento_kilometraje")), Double.valueOf(tab_tabla.getValor("abastecimiento_total")), tab_tabla.getValor("abastecimiento_galones"), tab_tabla.getValor("abastecimiento_anio"), 
-                    tab_tabla.getValor("abastecimiento_periodo"), utilitario.getFechaActual(), tab_consulta.getValor("NICK_USUA"), tab_tabla.getValor("abastecimiento_horabas"));
-            utilitario.agregarMensaje("Registro Actualizado ", "");
+            if(tab_tabla.getValor("abastecimiento_galones")!=null||tab_tabla.getValor("abastecimiento_galones").equals(tab_dato.getValor("abastecimiento_galones"))){
+                aCombustible.set_updateValor(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")), Integer.parseInt(tab_tabla.getValor("mve_secuencial")), tab_tabla.getValor("abastecimiento_numero_vale"), "abastecimiento_galones", tab_tabla.getValor("abastecimiento_galones"));
+            }
+            if(tab_tabla.getValor("abastecimiento_valorhora")!=null||tab_tabla.getValor("abastecimiento_valorhora").equals(tab_dato.getValor("abastecimiento_valorhora"))){
+                aCombustible.set_updateValor(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")), Integer.parseInt(tab_tabla.getValor("mve_secuencial")), tab_tabla.getValor("abastecimiento_numero_vale"), "abastecimiento_valorhora", tab_tabla.getValor("abastecimiento_valorhora"));
+            }
+            if(tab_tabla.getValor("abastecimiento_total")!=null||tab_tabla.getValor("abastecimiento_total").equals(tab_dato.getValor("abastecimiento_total"))){
+                aCombustible.set_updateValor1(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")), Integer.parseInt(tab_tabla.getValor("mve_secuencial")), tab_tabla.getValor("abastecimiento_numero_vale"), "abastecimiento_total", Double.valueOf(tab_tabla.getValor("abastecimiento_total")));
+            }
+            utilitario.agregarMensaje("Registro Actualizado", "");
             reg = tab_tabla.getValorSeleccionado();
         }else{
             if(tab_dato.getValor("abastecimiento_id")!=null){
