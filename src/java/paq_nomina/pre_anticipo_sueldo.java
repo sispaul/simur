@@ -159,7 +159,7 @@ public class pre_anticipo_sueldo extends Pantalla{
         Boton bot_des = new Boton();
         bot_des.setValue("Descargo");
         bot_des.setIcon("ui-icon-closethick");
-        bot_des.setMetodo("confirma_cuotas");
+        bot_des.setMetodo("descontar");
         bar_botones.agregarBoton(bot_des);
         
         //Ingreso y busqueda de solicitudes 
@@ -794,6 +794,7 @@ public class pre_anticipo_sueldo extends Pantalla{
                 tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
                 tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
                 utilitario.addUpdate("tab_parametros");
+                tab_parametros.getColumna("valor_cuota_mensual").setLectura(false);
                 utilitario.agregarMensaje("Ingrese Cuotas Para Cobro", "Por Mes");
             }else{
                 utilitario.agregarMensajeInfo("Monto Excede Remuneración", "");
@@ -805,6 +806,8 @@ public class pre_anticipo_sueldo extends Pantalla{
                 tab_parametros.setValor("val_cuo_adi", "NULL");
                 tab_parametros.setValor("ide_periodo_anticipo_inicial", "NULL");
                 tab_parametros.setValor("ide_periodo_anticipo_final", "NULL");
+                tab_parametros.getColumna("numero_cuotas_anticipo").setLectura(true);
+                tab_parametros.getColumna("valor_cuota_mensual").setLectura(true);
                 utilitario.addUpdate("tab_parametros");
             }
         }else{
