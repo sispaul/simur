@@ -526,6 +526,21 @@ public class manauto {
         return tab_persona;
     }
     
+    public TablaGenerica setAbasMes(Integer placa,String anio,String periodo) {
+        con_postgresql();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("SELECT abastecimiento_id,\n" +
+                "abastecimiento_horasmes\n" +
+                "FROM mvabactecimiento_combustible\n" +
+                "where mve_secuencial ="+placa+" and abastecimiento_anio='"+anio+"' and abastecimiento_periodo='"+periodo+"'\n" +
+                "order by abastecimiento_numero desc limit 1");
+        tab_persona.ejecutarSql();
+       con_postgres.desconectar();
+       con_postgres = null;
+        return tab_persona;
+    }
+    
     public TablaGenerica getActu(Integer codigo,Integer vehiculo,String vale) {
         con_postgresql();
         TablaGenerica tab_persona = new TablaGenerica();

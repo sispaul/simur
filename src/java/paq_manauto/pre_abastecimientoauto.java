@@ -105,6 +105,8 @@ public class pre_abastecimientoauto extends Pantalla{
         tab_tabla.getColumna("abastecimiento_horaing").setVisible(false);
         tab_tabla.getColumna("abastecimiento_id").setVisible(false);
         tab_tabla.getColumna("abastecimiento_ingreso").setVisible(false);
+        tab_tabla.getColumna("abastecimiento_horasto").setVisible(false);
+        tab_tabla.getColumna("abastecimiento_horasmes").setVisible(false);
         tab_tabla.setTipoFormulario(true);
         tab_tabla.getGrid().setColumns(4);
         tab_tabla.dibujar();
