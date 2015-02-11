@@ -10,7 +10,11 @@
 	<parameter name="tipo" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select * from
-(select y.*,a.galones,b.total,c.kilometros,d.mantenimiento from
+(select y.*,
+(case when a.galones is null then '0' when a.galones is not null then a.galones end) as galones,
+(case when b.total is null then '0' when b.total is not null then b.total end) as total,
+(case when c.kilometros is null then '0' when c.kilometros is not null then c.kilometros end) as recorrido,
+(case when d.mantenimiento is null then '0' when d.mantenimiento is not null then d.mantenimiento end) as valor_mantenimiento from
 (select v.mve_placa
 FROM mvabactecimiento_combustible a
 INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
@@ -32,21 +36,27 @@ GROUP BY v.mve_placa) as b
 on y.mve_placa=b.mve_placa
 left join
 (select * from
-(select z.*,(b.kilometrajes-a.kilometraje) as kilometros from
+(select z.*,(b.recorrido-a.recorrido) as kilometros from
 (select v.mve_placa
 FROM mvabactecimiento_combustible a
 INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
 where a.abastecimiento_anio = $P{anio} and a.abastecimiento_periodo =$P{periodo} and a.abastecimiento_tipo_ingreso =$P{tipo}
 GROUP BY v.mve_placa) as z
 left join
-(select round(min(a.abastecimiento_kilometraje),2) as kilometraje,v.mve_placa
+(select
+(case when min(a.abastecimiento_kilometraje) is null then round(EXTRACT(EPOCH FROM min(a.abastecimiento_valorhora) ::time))
+when min(a.abastecimiento_kilometraje) is not null then round(min(a.abastecimiento_kilometraje),2) end )as recorrido
+,v.mve_placa
 FROM mvabactecimiento_combustible a
 INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
 where a.abastecimiento_anio = $P{anio} and a.abastecimiento_periodo =$P{periodo} and a.abastecimiento_tipo_ingreso =$P{tipo}
 GROUP BY v.mve_placa) as a
 on z.mve_placa=a.mve_placa
 left JOIN
-(select round(max(a.abastecimiento_kilometraje),2) as kilometrajes,v.mve_placa
+(select
+(case when max(a.abastecimiento_kilometraje) is null then round(EXTRACT(EPOCH FROM max(a.abastecimiento_valorhora) ::time))
+when max(a.abastecimiento_kilometraje) is not null then round(max(a.abastecimiento_kilometraje),2) end )as recorrido
+,v.mve_placa
 FROM mvabactecimiento_combustible a
 INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
 where a.abastecimiento_anio = $P{anio} and a.abastecimiento_periodo =$P{periodo} and a.abastecimiento_tipo_ingreso =$P{tipo}
@@ -70,8 +80,8 @@ order by mve_placa]]>
 	<field name="mve_placa" class="java.lang.String"/>
 	<field name="galones" class="java.math.BigDecimal"/>
 	<field name="total" class="java.math.BigDecimal"/>
-	<field name="kilometros" class="java.math.BigDecimal"/>
-	<field name="mantenimiento" class="java.math.BigDecimal"/>
+	<field name="recorrido" class="java.lang.Double"/>
+	<field name="valor_mantenimiento" class="java.math.BigDecimal"/>
 	<variable name="SUMA" class="java.math.BigDecimal" resetType="Column" incrementType="Column">
 		<variableExpression><![CDATA[$F{total}+$F{mantenimiento}]]></variableExpression>
 	</variable>
@@ -200,7 +210,7 @@ order by mve_placa]]>
 				<textElement textAlignment="Right">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{kilometros}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{recorrido}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="4594eb05-82f4-486a-93e4-2f81264459d1" x="4" y="0" width="73" height="20"/>
