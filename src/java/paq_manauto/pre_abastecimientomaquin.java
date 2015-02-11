@@ -90,6 +90,8 @@ public class pre_abastecimientomaquin extends Pantalla{
         tab_tabla.getColumna("abastecimiento_anio").setVisible(false);
         tab_tabla.getColumna("abastecimiento_periodo").setVisible(false);
         tab_tabla.getColumna("abastecimiento_ingreso").setVisible(false);
+        tab_tabla.getColumna("abastecimiento_horasto").setVisible(false);
+        tab_tabla.getColumna("abastecimiento_horasmes").setVisible(false);
         tab_tabla.setTipoFormulario(true);
         tab_tabla.getGrid().setColumns(4);
         tab_tabla.dibujar();
@@ -114,7 +116,7 @@ public class pre_abastecimientomaquin extends Pantalla{
         tab_tabla1.setLectura(true);
         tab_tabla1.getColumna("abastecimiento_numero_vale").setFiltro(true);
         tab_tabla1.getColumna("Placa").setFiltro(true);
-//        tab_tabla1.agregarRelacion(tab_tabla);
+        tab_tabla1.agregarRelacion(tab_tabla);
         tab_tabla1.setRows(15);
         tab_tabla1.dibujar();
         PanelTabla ptt1 = new PanelTabla();
@@ -239,19 +241,19 @@ public class pre_abastecimientomaquin extends Pantalla{
                     tab_tabla.setValor("abastecimiento_horasto", cadena);
                 } else if(vt_hora>=10 && vt_hora<=99){
                     num = "00"+String.valueOf(vt_hora);
-                    cadena = num+":"+String.valueOf(valor);
+                    cadena = num+":"+"00";
                     tab_tabla.setValor("abastecimiento_horasto", cadena);
                 }else if(vt_hora>=100 && vt_hora<=999){
                     num = "0"+String.valueOf(vt_hora);
-                    cadena = num+":"+String.valueOf(valor);
+                    cadena = num+":"+"00";
                     tab_tabla.setValor("abastecimiento_horasto", cadena);
                 }else if(vt_hora>=1000 && vt_hora<=9999){
                     num = String.valueOf(vt_hora);
-                    cadena = num+":"+String.valueOf(valor);
+                    cadena = num+":"+"00";
                     tab_tabla.setValor("abastecimiento_horasto", cadena);
                 }
             }else if(suma<60){
-                valor = Integer.parseInt(minutos);
+                valor = Integer.parseInt(minutos)+Integer.parseInt(minutos1);
                 vt_hora=Integer.parseInt(horas)+Integer.parseInt(horaa);
                 if(vt_hora>=0 && vt_hora<=9){
                     num = "000"+String.valueOf(vt_hora);
@@ -275,8 +277,107 @@ public class pre_abastecimientomaquin extends Pantalla{
         }else{
             utilitario.agregarMensaje("no encuentra datos hora", "");
         }
+        horas_mes();
     }
-       
+    
+    public void horas_mes(){
+        Integer valor=0,vt_hora;
+        String num,cadena,horas,minutos1;
+        TablaGenerica tab_dato =aCombustible.setAbasMes(Integer.parseInt(tab_tabla.getValor("mve_secuencial")), tab_tabla.getValor("abastecimiento_anio"), tab_tabla.getValor("abastecimiento_periodo"));
+        if (!tab_dato.isEmpty()) {
+
+            String horaa =tab_tabla.getValor("abastecimiento_valorhora").substring(0,2);
+            String minutos =tab_tabla.getValor("abastecimiento_valorhora").substring(3,5);
+            
+            if(tab_dato.getValor("abastecimiento_horasmes")!=null && tab_tabla.getValor("abastecimiento_horasmes").toString().isEmpty() == false){
+                horas =tab_dato.getValor("abastecimiento_horasmes").substring(0,4);
+                minutos1 =tab_dato.getValor("abastecimiento_horasmes").substring(5,7);
+            }else{
+                horas ="0000";
+                minutos1 ="00";
+            }
+            
+            Integer suma = Integer.parseInt(minutos)+Integer.parseInt(minutos1);
+            if(suma>60){
+                valor = suma-60;
+                vt_hora=Integer.parseInt(horas)+1+Integer.parseInt(horaa);
+                if(vt_hora>=0 && vt_hora<=9){
+                    num = "000"+String.valueOf(vt_hora);
+                    cadena = num+":"+String.valueOf(valor);
+                    tab_tabla.setValor("abastecimiento_horasmes", cadena);
+                } else if(vt_hora>=10 && vt_hora<=99){
+                    num = "00"+String.valueOf(vt_hora);
+                    cadena = num+":"+String.valueOf(valor);
+                    tab_tabla.setValor("abastecimiento_horasmes", cadena);
+                }else if(vt_hora>=100 && vt_hora<=999){
+                    num = "0"+String.valueOf(vt_hora);
+                    cadena = num+":"+String.valueOf(valor);
+                    tab_tabla.setValor("abastecimiento_horasmes", cadena);
+                }else if(vt_hora>=1000 && vt_hora<=9999){
+                    num = String.valueOf(vt_hora);
+                    cadena = num+":"+String.valueOf(valor);
+                    tab_tabla.setValor("abastecimiento_horasmes", cadena);
+                }
+            }else if(suma==60){
+                vt_hora=Integer.parseInt(horas)+1+Integer.parseInt(horaa);
+                if(vt_hora>=0 && vt_hora<=9){
+                    num = "000"+String.valueOf(vt_hora);
+                    cadena = num+":"+"00";
+                    tab_tabla.setValor("abastecimiento_horasmes", cadena);
+                } else if(vt_hora>=10 && vt_hora<=99){
+                    num = "00"+String.valueOf(vt_hora);
+                    cadena = num+":"+"00";
+                    tab_tabla.setValor("abastecimiento_horasmes", cadena);
+                }else if(vt_hora>=100 && vt_hora<=999){
+                    num = "0"+String.valueOf(vt_hora);
+                    cadena = num+":"+"00";
+                    tab_tabla.setValor("abastecimiento_horasmes", cadena);
+                }else if(vt_hora>=1000 && vt_hora<=9999){
+                    num = String.valueOf(vt_hora);
+                    cadena = num+":"+"00";
+                    tab_tabla.setValor("abastecimiento_horasmes", cadena);
+                }
+            }else if(suma<60){
+                valor = Integer.parseInt(minutos)+Integer.parseInt(minutos1);
+                vt_hora=Integer.parseInt(horas)+Integer.parseInt(horaa);
+                if(vt_hora>=0 && vt_hora<=9){
+                    num = "000"+String.valueOf(vt_hora);
+                    cadena = num+":"+String.valueOf(valor);
+                    tab_tabla.setValor("abastecimiento_horasmes", cadena);
+                } else if(vt_hora>=10 && vt_hora<=99){
+                    num = "00"+String.valueOf(vt_hora);
+                    cadena = num+":"+String.valueOf(valor);
+                    tab_tabla.setValor("abastecimiento_horasmes", cadena);
+                }else if(vt_hora>=100 && vt_hora<=999){
+                    num = "0"+String.valueOf(vt_hora);
+                    cadena = num+":"+String.valueOf(valor);
+                    tab_tabla.setValor("abastecimiento_horasmes", cadena);
+                }else if(vt_hora>=1000 && vt_hora<=9999){
+                    num = String.valueOf(vt_hora);
+                    cadena = num+":"+String.valueOf(valor);
+                    tab_tabla.setValor("abastecimiento_horasmes", cadena);
+                }
+            }
+            utilitario.addUpdate("tab_tabla");
+            
+        }else{
+            if(tab_dato.getValor("abastecimiento_horasmes")!=null && tab_tabla.getValor("abastecimiento_horasmes").toString().isEmpty() == false){
+                horas =tab_dato.getValor("abastecimiento_horasmes").substring(0,4);
+                minutos1 =tab_dato.getValor("abastecimiento_horasmes").substring(5,7);
+            }else{
+                horas ="0000";
+                minutos1 ="00";
+            }
+            String horaa =tab_tabla.getValor("abastecimiento_valorhora").substring(0,2);
+            String minutos =tab_tabla.getValor("abastecimiento_valorhora").substring(3,5);
+            Integer suma = Integer.parseInt(minutos)+Integer.parseInt(minutos1);
+            vt_hora=Integer.parseInt(horas)+Integer.parseInt(horaa);
+            num =  "000"+String.valueOf(vt_hora);
+            cadena = num+":"+String.valueOf(suma);
+            tab_tabla.setValor("abastecimiento_horasmes", cadena);
+        }
+    }
+    
     @Override
     public void insertar() {
         if (tab_tabla.isFocus()) {
@@ -287,28 +388,28 @@ public class pre_abastecimientomaquin extends Pantalla{
     @Override
     public void guardar() {
         String reg = new String();
-//        TablaGenerica tab_dato = aCombustible.getActu(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")), Integer.parseInt(tab_tabla.getValor("mve_secuencial")), tab_tabla.getValor("abastecimiento_numero_vale"));
-//        if (!tab_dato.isEmpty()) {
-//            if(tab_tabla.getValor("abastecimiento_galones")!=null||tab_tabla.getValor("abastecimiento_galones").equals(tab_dato.getValor("abastecimiento_galones"))){
-//                aCombustible.set_updateValor(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")), Integer.parseInt(tab_tabla.getValor("mve_secuencial")), tab_tabla.getValor("abastecimiento_numero_vale"), "abastecimiento_galones", tab_tabla.getValor("abastecimiento_galones"));
-//            }
-//            if(tab_tabla.getValor("abastecimiento_valorhora")!=null||tab_tabla.getValor("abastecimiento_valorhora").equals(tab_dato.getValor("abastecimiento_valorhora"))){
-//                aCombustible.set_updateValor(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")), Integer.parseInt(tab_tabla.getValor("mve_secuencial")), tab_tabla.getValor("abastecimiento_numero_vale"), "abastecimiento_valorhora", tab_tabla.getValor("abastecimiento_valorhora"));
-//            }
-//            if(tab_tabla.getValor("abastecimiento_total")!=null||tab_tabla.getValor("abastecimiento_total").equals(tab_dato.getValor("abastecimiento_total"))){
-//                aCombustible.set_updateValor1(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")), Integer.parseInt(tab_tabla.getValor("mve_secuencial")), tab_tabla.getValor("abastecimiento_numero_vale"), "abastecimiento_total", Double.valueOf(tab_tabla.getValor("abastecimiento_total")));
-//            }
-//            utilitario.agregarMensaje("Registro Actualizado", "");
-//            reg = tab_tabla.getValorSeleccionado();
-//        }else{
-//            if(tab_dato.getValor("abastecimiento_id")!=null){
-//            }else{
+        TablaGenerica tab_dato = aCombustible.getActu(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")), Integer.parseInt(tab_tabla.getValor("mve_secuencial")), tab_tabla.getValor("abastecimiento_numero_vale"));
+        if (!tab_dato.isEmpty()) {
+            if(tab_tabla.getValor("abastecimiento_galones")!=null||tab_tabla.getValor("abastecimiento_galones").equals(tab_dato.getValor("abastecimiento_galones"))){
+                aCombustible.set_updateValor(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")), Integer.parseInt(tab_tabla.getValor("mve_secuencial")), tab_tabla.getValor("abastecimiento_numero_vale"), "abastecimiento_galones", tab_tabla.getValor("abastecimiento_galones"));
+            }
+            if(tab_tabla.getValor("abastecimiento_valorhora")!=null||tab_tabla.getValor("abastecimiento_valorhora").equals(tab_dato.getValor("abastecimiento_valorhora"))){
+                aCombustible.set_updateValor(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")), Integer.parseInt(tab_tabla.getValor("mve_secuencial")), tab_tabla.getValor("abastecimiento_numero_vale"), "abastecimiento_valorhora", tab_tabla.getValor("abastecimiento_valorhora"));
+            }
+            if(tab_tabla.getValor("abastecimiento_total")!=null||tab_tabla.getValor("abastecimiento_total").equals(tab_dato.getValor("abastecimiento_total"))){
+                aCombustible.set_updateValor1(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")), Integer.parseInt(tab_tabla.getValor("mve_secuencial")), tab_tabla.getValor("abastecimiento_numero_vale"), "abastecimiento_total", Double.valueOf(tab_tabla.getValor("abastecimiento_total")));
+            }
+            utilitario.agregarMensaje("Registro Actualizado", "");
+            reg = tab_tabla.getValorSeleccionado();
+        }else{
+            if(tab_dato.getValor("abastecimiento_id")!=null){
+            }else{
                 if(tab_tabla.guardar()){
                     con_postgres.guardarPantalla(); 
                     reg = tab_tabla.getValorSeleccionado();
                 }
-//            }
-//        }
+            }
+        }
         tab_tabla1.actualizar();
         tab_tabla1.setFilaActual(reg);
         tab_tabla1.calcularPaginaActual();
