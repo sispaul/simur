@@ -166,7 +166,7 @@ public class pre_solicitud_mantenimiento extends Pantalla{
 "ORDER BY v.mve_secuencial ASC");
         tab_tabla.getColumna("mca_cod_proveedor").setCombo("select ide_proveedor,titular from tes_proveedores order by titular");
 //        tab_tabla.getColumna("mca_cod_autoriza").setCombo("select cod_empleado,nombres from srh_empleado where estado = 1 or cod_empleado = 100 order by nombres");
-        tab_tabla.getColumna("mca_cod_responsable").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where cod_cargo in (SELECT cod_cargo FROM srh_cargos WHERE nombre_cargo like '%CHOFER%') and estado = 1 order by nombres");
+        tab_tabla.getColumna("mca_cod_responsable").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where estado = 1 order by nombres");
                 
         tab_tabla.getColumna("mve_secuencial").setFiltroContenido();
         tab_tabla.getColumna("mca_cod_proveedor").setFiltroContenido();
