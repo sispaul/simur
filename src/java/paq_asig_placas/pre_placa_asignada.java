@@ -499,13 +499,13 @@ public class pre_placa_asignada extends Pantalla{
 
     @Override
     public void guardar() {
-        if (tab_solicitud.guardar()) {
-               utilitario.addUpdate("tab_solicitud");
+//        if (tab_solicitud.guardar()) {
+//               utilitario.addUpdate("tab_solicitud");
                if (tab_detalle.guardar()) {
                       guardarPantalla();
                       utilitario.addUpdate("tab_detalle");
                  }
-            }
+//            }
     }
     
     @Override
