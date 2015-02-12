@@ -15,72 +15,74 @@
 (case when b.total is null then '0' when b.total is not null then b.total end) as total,
 (case when c.kilometros is null then '0' when c.kilometros is not null then c.kilometros end) as recorrido,
 (case when d.mantenimiento is null then '0' when d.mantenimiento is not null then d.mantenimiento end) as valor_mantenimiento from
-(select v.mve_placa
+(select(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa
 FROM mvabactecimiento_combustible a
 INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
 where a.abastecimiento_anio = $P{anio} and a.abastecimiento_periodo =$P{periodo} and a.abastecimiento_tipo_ingreso =$P{tipo}
-GROUP BY v.mve_placa) as y
+GROUP BY v.mve_placa,v.mve_codigo) as y
 left join
-(select round(sum(cast(a.abastecimiento_galones as NUMERIC)),2) as galones,v.mve_placa
+(select round(sum(cast(a.abastecimiento_galones as NUMERIC)),2) as galones,(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa
 FROM mvabactecimiento_combustible a
 INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
 where a.abastecimiento_anio = $P{anio} and a.abastecimiento_periodo =$P{periodo} and a.abastecimiento_tipo_ingreso =$P{tipo}
-GROUP BY v.mve_placa) as a
-on y.mve_placa=a.mve_placa
+GROUP BY v.mve_placa,v.mve_codigo) as a
+on y.placa=a.placa
 left join
-(select round(sum(abastecimiento_total),2) as total,v.mve_placa
+(select round(sum(abastecimiento_total),2) as total,(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa
 FROM mvabactecimiento_combustible a
 INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
 where a.abastecimiento_anio = $P{anio} and a.abastecimiento_periodo =$P{periodo} and a.abastecimiento_tipo_ingreso =$P{tipo}
-GROUP BY v.mve_placa) as b
-on y.mve_placa=b.mve_placa
+GROUP BY v.mve_placa,v.mve_codigo) as b
+on y.placa=b.placa
 left join
 (select * from
-(select z.*,(b.recorrido-a.recorrido) as kilometros from
-(select v.mve_placa
+(select z.*,
+(case when a.recorrido is null then cast(substring(b.recorrido,0,5) as numeric) when a.recorrido is not null then (cast(b.recorrido as numeric)-cast(a.recorrido as numeric)) end)
+ as kilometros
+from
+(select (case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa
 FROM mvabactecimiento_combustible a
 INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
 where a.abastecimiento_anio = $P{anio} and a.abastecimiento_periodo =$P{periodo} and a.abastecimiento_tipo_ingreso =$P{tipo}
-GROUP BY v.mve_placa) as z
+GROUP BY v.mve_placa,v.mve_codigo) as z
 left join
 (select
-(case when min(a.abastecimiento_kilometraje) is null then round(EXTRACT(EPOCH FROM min(a.abastecimiento_valorhora) ::time))
-when min(a.abastecimiento_kilometraje) is not null then round(min(a.abastecimiento_kilometraje),2) end )as recorrido
-,v.mve_placa
+(case when a.abastecimiento_tipo_ingreso ='K' then round(min(a.abastecimiento_kilometraje),2) end) as recorrido
+,(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa
 FROM mvabactecimiento_combustible a
 INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
 where a.abastecimiento_anio = $P{anio} and a.abastecimiento_periodo =$P{periodo} and a.abastecimiento_tipo_ingreso =$P{tipo}
-GROUP BY v.mve_placa) as a
-on z.mve_placa=a.mve_placa
+GROUP BY v.mve_placa,v.mve_codigo,a.abastecimiento_tipo_ingreso) as a
+on z.placa=a.placa
 left JOIN
 (select
-(case when max(a.abastecimiento_kilometraje) is null then round(EXTRACT(EPOCH FROM max(a.abastecimiento_valorhora) ::time))
-when max(a.abastecimiento_kilometraje) is not null then round(max(a.abastecimiento_kilometraje),2) end )as recorrido
-,v.mve_placa
+(case when max(a.abastecimiento_kilometraje) is null then max(a.abastecimiento_horasto)
+when max(a.abastecimiento_kilometraje) is not null then cast(round(max(a.abastecimiento_kilometraje),2)as varchar) end )as recorrido
+,(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa
 FROM mvabactecimiento_combustible a
 INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
 where a.abastecimiento_anio = $P{anio} and a.abastecimiento_periodo =$P{periodo} and a.abastecimiento_tipo_ingreso =$P{tipo}
-GROUP BY v.mve_placa)as b
-on z.mve_placa=b.mve_placa
+GROUP BY v.mve_placa,v.mve_codigo)as b
+on z.placa=b.placa
 ) as p
-order by mve_placa) as c
-on y.mve_placa=c.mve_placa
+order by placa) as c
+on y.placa=c.placa
 left join
 (SELECT round(sum(cast(d.mde_valor as NUMERIC)),2)
-as mantenimiento,v.mve_placa
+as mantenimiento,(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa
 FROM mvdetalle_mantenimiento d
 INNER JOIN mvcab_mantenimiento c ON d.mca_codigo = c.mca_codigo
 INNER JOIN mv_vehiculo v ON c.mve_secuencial = v.mve_secuencial
 where c.mca_anio = $P{anio} and c.mca_periodo = $P{periodo}
-GROUP BY v.mve_placa) as d
-on y.mve_placa=d.mve_placa
+GROUP BY v.mve_placa,v.mve_codigo) as d
+on y.placa=d.placa
 ) as x
-order by mve_placa]]>
+order by placa]]>
 	</queryString>
-	<field name="mve_placa" class="java.lang.String"/>
+	<field name="placa" class="java.lang.String"/>
 	<field name="galones" class="java.math.BigDecimal"/>
 	<field name="total" class="java.math.BigDecimal"/>
-	<field name="recorrido" class="java.lang.Double"/>
+	<field name="recorrido" class="java.math.BigDecimal"/>
 	<field name="valor_mantenimiento" class="java.math.BigDecimal"/>
 	<background>
 		<band splitType="Stretch"/>
@@ -88,7 +90,7 @@ order by mve_placa]]>
 	<title>
 		<band height="98" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="ca2d84d5-04b4-41ba-aa1b-2b50ee4a5cc0" key="staticText" x="10" y="44" width="266" height="34" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="staticText" x="10" y="44" width="266" height="34" forecolor="#000000" backcolor="#FFFFFF" uuid="ca2d84d5-04b4-41ba-aa1b-2b50ee4a5cc0"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -101,7 +103,7 @@ order by mve_placa]]>
 				<text><![CDATA[ABASTECIMIENTO GENERAL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="f0f7a99f-632c-43e2-bf70-e8fbbe69c39b" key="staticText" x="10" y="10" width="266" height="43" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="staticText" x="10" y="10" width="266" height="43" forecolor="#000000" backcolor="#FFFFFF" uuid="f0f7a99f-632c-43e2-bf70-e8fbbe69c39b"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -114,7 +116,7 @@ order by mve_placa]]>
 				<text><![CDATA[GOBIERNO AUTÓNOMO DESCENTRALIZADO MUNICIPAL DEL CANTON RUMIÑAHUI]]></text>
 			</staticText>
 			<image>
-				<reportElement uuid="445d6533-21f7-44ca-8b3c-46f7d6326f08" x="506" y="0" width="200" height="98"/>
+				<reportElement x="513" y="0" width="169" height="98" uuid="3d413508-de59-463a-bc59-19a76e3798f6"/>
 				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
 			</image>
 		</band>
@@ -134,7 +136,7 @@ order by mve_placa]]>
 	<pageFooter>
 		<band height="19" splitType="Stretch">
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement uuid="bbad5a25-0e25-4c78-a2bc-f2e1fe96ade6" key="textField-5" x="10" y="0" width="115" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="textField-5" x="10" y="0" width="115" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="bbad5a25-0e25-4c78-a2bc-f2e1fe96ade6"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -147,7 +149,7 @@ order by mve_placa]]>
 				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement uuid="c6814f92-5d52-4338-8a28-9ea8536637c8" key="textField" x="567" y="0" width="170" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="textField" x="567" y="0" width="170" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="c6814f92-5d52-4338-8a28-9ea8536637c8"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -160,7 +162,7 @@ order by mve_placa]]>
 				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
-				<reportElement uuid="3983b149-9447-439e-a6f7-e88ce6382714" key="textField" x="737" y="0" width="36" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="textField" x="737" y="0" width="36" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="3983b149-9447-439e-a6f7-e88ce6382714"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -178,30 +180,30 @@ order by mve_placa]]>
 		<band height="303" splitType="Stretch">
 			<lineChart>
 				<chart>
-					<reportElement uuid="97a40def-9e62-488d-a15d-c383666a3dac" x="0" y="15" width="802" height="287"/>
+					<reportElement x="0" y="15" width="802" height="287" uuid="97a40def-9e62-488d-a15d-c383666a3dac"/>
 					<chartTitle position="Right"/>
 					<chartSubtitle/>
 					<chartLegend position="Right"/>
 				</chart>
 				<categoryDataset>
 					<categorySeries>
-						<seriesExpression><![CDATA["Kilometros"]]></seriesExpression>
-						<categoryExpression><![CDATA[$F{mve_placa}]]></categoryExpression>
+						<seriesExpression><![CDATA["Kilometros/Horas"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{placa}]]></categoryExpression>
 						<valueExpression><![CDATA[$F{recorrido}]]></valueExpression>
 					</categorySeries>
 					<categorySeries>
 						<seriesExpression><![CDATA["Galones"]]></seriesExpression>
-						<categoryExpression><![CDATA[$F{mve_placa}]]></categoryExpression>
+						<categoryExpression><![CDATA[$F{placa}]]></categoryExpression>
 						<valueExpression><![CDATA[$F{galones}]]></valueExpression>
 					</categorySeries>
 					<categorySeries>
 						<seriesExpression><![CDATA["Total"]]></seriesExpression>
-						<categoryExpression><![CDATA[$F{mve_placa}]]></categoryExpression>
+						<categoryExpression><![CDATA[$F{placa}]]></categoryExpression>
 						<valueExpression><![CDATA[$F{total}]]></valueExpression>
 					</categorySeries>
 					<categorySeries>
 						<seriesExpression><![CDATA["Mantenimiento"]]></seriesExpression>
-						<categoryExpression><![CDATA[$F{mve_placa}]]></categoryExpression>
+						<categoryExpression><![CDATA[$F{placa}]]></categoryExpression>
 						<valueExpression><![CDATA[$F{valor_mantenimiento}]]></valueExpression>
 					</categorySeries>
 				</categoryDataset>
@@ -216,18 +218,15 @@ order by mve_placa]]>
 				</linePlot>
 			</lineChart>
 			<textField>
-				<reportElement uuid="f9c36be6-d514-4681-927b-636e9706653b" x="384" y="1" width="100" height="20"/>
-				<textElement/>
+				<reportElement x="384" y="1" width="100" height="20" uuid="f9c36be6-d514-4681-927b-636e9706653b"/>
 				<textFieldExpression><![CDATA[$P{anio}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="d8a8b920-c0e3-4564-be1c-c4461d7b0acb" x="318" y="1" width="100" height="20"/>
-				<textElement/>
+				<reportElement x="318" y="1" width="100" height="20" uuid="d8a8b920-c0e3-4564-be1c-c4461d7b0acb"/>
 				<textFieldExpression><![CDATA[$P{mes}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="69a0109d-4fcb-4ad8-80f0-429f0e7545cb" x="377" y="1" width="33" height="20"/>
-				<textElement/>
+				<reportElement x="377" y="1" width="33" height="20" uuid="69a0109d-4fcb-4ad8-80f0-429f0e7545cb"/>
 				<text><![CDATA[/]]></text>
 			</staticText>
 		</band>

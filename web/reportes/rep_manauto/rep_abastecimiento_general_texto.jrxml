@@ -15,75 +15,77 @@
 (case when b.total is null then '0' when b.total is not null then b.total end) as total,
 (case when c.kilometros is null then '0' when c.kilometros is not null then c.kilometros end) as recorrido,
 (case when d.mantenimiento is null then '0' when d.mantenimiento is not null then d.mantenimiento end) as valor_mantenimiento from
-(select v.mve_placa
+(select(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa
 FROM mvabactecimiento_combustible a
 INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
 where a.abastecimiento_anio = $P{anio} and a.abastecimiento_periodo =$P{periodo} and a.abastecimiento_tipo_ingreso =$P{tipo}
-GROUP BY v.mve_placa) as y
+GROUP BY v.mve_placa,v.mve_codigo) as y
 left join
-(select round(sum(cast(a.abastecimiento_galones as NUMERIC)),2) as galones,v.mve_placa
+(select round(sum(cast(a.abastecimiento_galones as NUMERIC)),2) as galones,(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa
 FROM mvabactecimiento_combustible a
 INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
 where a.abastecimiento_anio = $P{anio} and a.abastecimiento_periodo =$P{periodo} and a.abastecimiento_tipo_ingreso =$P{tipo}
-GROUP BY v.mve_placa) as a
-on y.mve_placa=a.mve_placa
+GROUP BY v.mve_placa,v.mve_codigo) as a
+on y.placa=a.placa
 left join
-(select round(sum(abastecimiento_total),2) as total,v.mve_placa
+(select round(sum(abastecimiento_total),2) as total,(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa
 FROM mvabactecimiento_combustible a
 INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
 where a.abastecimiento_anio = $P{anio} and a.abastecimiento_periodo =$P{periodo} and a.abastecimiento_tipo_ingreso =$P{tipo}
-GROUP BY v.mve_placa) as b
-on y.mve_placa=b.mve_placa
+GROUP BY v.mve_placa,v.mve_codigo) as b
+on y.placa=b.placa
 left join
 (select * from
-(select z.*,(b.recorrido-a.recorrido) as kilometros from
-(select v.mve_placa
+(select z.*,
+(case when a.recorrido is null then cast(substring(b.recorrido,0,5) as numeric) when a.recorrido is not null then (cast(b.recorrido as numeric)-cast(a.recorrido as numeric)) end)
+ as kilometros
+from
+(select (case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa
 FROM mvabactecimiento_combustible a
 INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
 where a.abastecimiento_anio = $P{anio} and a.abastecimiento_periodo =$P{periodo} and a.abastecimiento_tipo_ingreso =$P{tipo}
-GROUP BY v.mve_placa) as z
+GROUP BY v.mve_placa,v.mve_codigo) as z
 left join
 (select
-(case when min(a.abastecimiento_kilometraje) is null then round(EXTRACT(EPOCH FROM min(a.abastecimiento_valorhora) ::time))
-when min(a.abastecimiento_kilometraje) is not null then round(min(a.abastecimiento_kilometraje),2) end )as recorrido
-,v.mve_placa
+(case when a.abastecimiento_tipo_ingreso ='K' then round(min(a.abastecimiento_kilometraje),2) end) as recorrido
+,(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa
 FROM mvabactecimiento_combustible a
 INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
 where a.abastecimiento_anio = $P{anio} and a.abastecimiento_periodo =$P{periodo} and a.abastecimiento_tipo_ingreso =$P{tipo}
-GROUP BY v.mve_placa) as a
-on z.mve_placa=a.mve_placa
+GROUP BY v.mve_placa,v.mve_codigo,a.abastecimiento_tipo_ingreso) as a
+on z.placa=a.placa
 left JOIN
 (select
-(case when max(a.abastecimiento_kilometraje) is null then round(EXTRACT(EPOCH FROM max(a.abastecimiento_valorhora) ::time))
-when max(a.abastecimiento_kilometraje) is not null then round(max(a.abastecimiento_kilometraje),2) end )as recorrido
-,v.mve_placa
+(case when max(a.abastecimiento_kilometraje) is null then max(a.abastecimiento_horasto)
+when max(a.abastecimiento_kilometraje) is not null then cast(round(max(a.abastecimiento_kilometraje),2)as varchar) end )as recorrido
+,(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa
 FROM mvabactecimiento_combustible a
 INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
 where a.abastecimiento_anio = $P{anio} and a.abastecimiento_periodo =$P{periodo} and a.abastecimiento_tipo_ingreso =$P{tipo}
-GROUP BY v.mve_placa)as b
-on z.mve_placa=b.mve_placa
+GROUP BY v.mve_placa,v.mve_codigo)as b
+on z.placa=b.placa
 ) as p
-order by mve_placa) as c
-on y.mve_placa=c.mve_placa
+order by placa) as c
+on y.placa=c.placa
 left join
 (SELECT round(sum(cast(d.mde_valor as NUMERIC)),2)
-as mantenimiento,v.mve_placa
+as mantenimiento,(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa
 FROM mvdetalle_mantenimiento d
 INNER JOIN mvcab_mantenimiento c ON d.mca_codigo = c.mca_codigo
 INNER JOIN mv_vehiculo v ON c.mve_secuencial = v.mve_secuencial
 where c.mca_anio = $P{anio} and c.mca_periodo = $P{periodo}
-GROUP BY v.mve_placa) as d
-on y.mve_placa=d.mve_placa
+GROUP BY v.mve_placa,v.mve_codigo) as d
+on y.placa=d.placa
 ) as x
-order by mve_placa]]>
+order by placa]]>
 	</queryString>
-	<field name="mve_placa" class="java.lang.String"/>
+	<field name="placa" class="java.lang.String"/>
 	<field name="galones" class="java.math.BigDecimal"/>
 	<field name="total" class="java.math.BigDecimal"/>
-	<field name="recorrido" class="java.lang.Double"/>
+	<field name="recorrido" class="java.math.BigDecimal"/>
 	<field name="valor_mantenimiento" class="java.math.BigDecimal"/>
 	<variable name="SUMA" class="java.math.BigDecimal" resetType="Column" incrementType="Column">
-		<variableExpression><![CDATA[$F{total}+$F{mantenimiento}]]></variableExpression>
+		<variableExpression><![CDATA[$F{total}+$F{valor_mantenimiento}]]></variableExpression>
 	</variable>
 	<background>
 		<band splitType="Stretch"/>
@@ -91,7 +93,7 @@ order by mve_placa]]>
 	<title>
 		<band height="98" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="73c4ee69-0525-468d-a880-247d7e8a51c1" key="staticText" x="10" y="44" width="266" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="staticText" x="10" y="44" width="266" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="73c4ee69-0525-468d-a880-247d7e8a51c1"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -104,7 +106,7 @@ order by mve_placa]]>
 				<text><![CDATA[CONSUMO TOTAL POR MES]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e90c5dd2-b80d-4033-ba3b-014460e445fb" key="staticText" x="10" y="10" width="266" height="43" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="staticText" x="10" y="10" width="266" height="43" forecolor="#000000" backcolor="#FFFFFF" uuid="e90c5dd2-b80d-4033-ba3b-014460e445fb"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -117,22 +119,19 @@ order by mve_placa]]>
 				<text><![CDATA[GOBIERNO AUTÓNOMO DESCENTRALIZADO MUNICIPAL DEL CANTON RUMIÑAHUI]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="86e09dcc-52bf-456a-b1fc-71cb61d21e3a" x="82" y="64" width="100" height="20"/>
-				<textElement/>
+				<reportElement x="82" y="64" width="100" height="20" uuid="86e09dcc-52bf-456a-b1fc-71cb61d21e3a"/>
 				<textFieldExpression><![CDATA[$P{anio}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="6427a16b-1f99-4ce3-89a4-8bf596dce941" x="16" y="64" width="100" height="20"/>
-				<textElement/>
+				<reportElement x="16" y="64" width="100" height="20" uuid="6427a16b-1f99-4ce3-89a4-8bf596dce941"/>
 				<textFieldExpression><![CDATA[$P{mes}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="aff62807-8ca1-46b2-8ea1-23fd452a7aaf" x="75" y="64" width="33" height="20"/>
-				<textElement/>
+				<reportElement x="75" y="64" width="33" height="20" uuid="aff62807-8ca1-46b2-8ea1-23fd452a7aaf"/>
 				<text><![CDATA[/]]></text>
 			</staticText>
 			<image>
-				<reportElement uuid="b2b158d0-f7f5-4e5a-bab3-37f97e606361" x="332" y="0" width="169" height="98"/>
+				<reportElement x="332" y="0" width="169" height="98" uuid="b2b158d0-f7f5-4e5a-bab3-37f97e606361"/>
 				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
 			</image>
 		</band>
@@ -143,45 +142,45 @@ order by mve_placa]]>
 	<columnHeader>
 		<band height="28" splitType="Stretch">
 			<rectangle>
-				<reportElement uuid="7aa0c158-0d44-45b6-a0b1-f2076c442612" x="4" y="6" width="549" height="20" backcolor="#666666"/>
+				<reportElement x="4" y="6" width="549" height="20" backcolor="#666666" uuid="7aa0c158-0d44-45b6-a0b1-f2076c442612"/>
 			</rectangle>
 			<staticText>
-				<reportElement uuid="bb5b1840-52c4-4bf9-9ee7-ea9f88b7067e" x="4" y="5" width="73" height="20" forecolor="#FFFFFF"/>
+				<reportElement x="4" y="5" width="73" height="20" forecolor="#FFFFFF" uuid="bb5b1840-52c4-4bf9-9ee7-ea9f88b7067e"/>
 				<textElement>
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[PLACA/CODIGO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="579b1625-f06e-438c-892c-ab887ad06488" x="75" y="5" width="100" height="20" forecolor="#FFFFFF"/>
+				<reportElement x="75" y="5" width="100" height="20" forecolor="#FFFFFF" uuid="579b1625-f06e-438c-892c-ab887ad06488"/>
 				<textElement textAlignment="Right">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TOTAL KM]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="0d67a331-2847-4a54-ad12-800d6ae98bd5" x="147" y="5" width="100" height="20" forecolor="#FFFFFF"/>
+				<reportElement x="147" y="5" width="100" height="20" forecolor="#FFFFFF" uuid="0d67a331-2847-4a54-ad12-800d6ae98bd5"/>
 				<textElement textAlignment="Right">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TOTAL GL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="ad1802b9-e7ef-4f93-af2d-ab86f4e8226e" x="248" y="5" width="100" height="20" forecolor="#FFFFFF"/>
+				<reportElement x="248" y="5" width="100" height="20" forecolor="#FFFFFF" uuid="ad1802b9-e7ef-4f93-af2d-ab86f4e8226e"/>
 				<textElement textAlignment="Right">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TOTAL CONSUMO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="b2880075-8bbf-4a8b-b6ad-4cb95aaaf15d" x="357" y="5" width="114" height="20" forecolor="#FFFFFF"/>
+				<reportElement x="357" y="5" width="114" height="20" forecolor="#FFFFFF" uuid="b2880075-8bbf-4a8b-b6ad-4cb95aaaf15d"/>
 				<textElement textAlignment="Right">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TOTAL MANTENIMIENTO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="a1771d0e-ebfd-44c1-9629-cd69647cd4bf" x="476" y="5" width="77" height="20" forecolor="#FFFFFF"/>
+				<reportElement x="476" y="5" width="77" height="20" forecolor="#FFFFFF" uuid="a1771d0e-ebfd-44c1-9629-cd69647cd4bf"/>
 				<textElement textAlignment="Right">
 					<font size="9" isBold="true"/>
 				</textElement>
@@ -192,49 +191,49 @@ order by mve_placa]]>
 	<detail>
 		<band height="21" splitType="Stretch">
 			<textField>
-				<reportElement uuid="283f1942-315f-4f80-97a7-adab82c7a9bc" x="147" y="0" width="100" height="20" forecolor="#000000"/>
+				<reportElement x="147" y="0" width="100" height="20" forecolor="#000000" uuid="283f1942-315f-4f80-97a7-adab82c7a9bc"/>
 				<textElement textAlignment="Right">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{galones}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="b55cafcd-88db-4eef-85aa-115ffc297a85" x="248" y="0" width="100" height="20" forecolor="#000000"/>
+				<reportElement x="248" y="0" width="100" height="20" forecolor="#000000" uuid="b55cafcd-88db-4eef-85aa-115ffc297a85"/>
 				<textElement textAlignment="Right">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="621948b2-0aae-410b-8e98-0615f66d699a" x="75" y="0" width="100" height="20" forecolor="#000000"/>
+				<reportElement x="75" y="0" width="100" height="20" forecolor="#000000" uuid="621948b2-0aae-410b-8e98-0615f66d699a"/>
 				<textElement textAlignment="Right">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{recorrido}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="4594eb05-82f4-486a-93e4-2f81264459d1" x="4" y="0" width="73" height="20"/>
+				<reportElement x="4" y="0" width="73" height="20" uuid="4594eb05-82f4-486a-93e4-2f81264459d1"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{mve_placa}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{placa}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="e6aefa85-3e44-4689-9d39-89a26aea63e9" x="357" y="0" width="114" height="20"/>
+				<reportElement x="357" y="0" width="114" height="20" uuid="e6aefa85-3e44-4689-9d39-89a26aea63e9"/>
 				<textElement textAlignment="Right">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{mantenimiento}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{valor_mantenimiento}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="4de13659-7ad5-4caa-9ee0-ef30c14e5c09" x="476" y="1" width="77" height="20"/>
+				<reportElement x="476" y="1" width="77" height="20" uuid="4de13659-7ad5-4caa-9ee0-ef30c14e5c09"/>
 				<textElement textAlignment="Right">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{SUMA}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement uuid="e40cc3eb-911d-4b92-af38-07bb9665e251" x="10" y="19" width="543" height="1"/>
+				<reportElement x="10" y="19" width="543" height="1" uuid="e40cc3eb-911d-4b92-af38-07bb9665e251"/>
 				<graphicElement>
 					<pen lineStyle="Dashed"/>
 				</graphicElement>
@@ -247,7 +246,7 @@ order by mve_placa]]>
 	<pageFooter>
 		<band height="26" splitType="Stretch">
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement uuid="6f165202-a9ea-4ea4-bc58-6e33ff55d645" key="textField" x="351" y="4" width="170" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="textField" x="351" y="4" width="170" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="6f165202-a9ea-4ea4-bc58-6e33ff55d645"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -260,7 +259,7 @@ order by mve_placa]]>
 				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement uuid="4a90fa6f-596e-4420-b907-feb84cbd11fd" key="textField-5" x="0" y="4" width="115" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="textField-5" x="0" y="4" width="115" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="4a90fa6f-596e-4420-b907-feb84cbd11fd"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -273,7 +272,7 @@ order by mve_placa]]>
 				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
-				<reportElement uuid="036f2bce-07cf-4080-97cf-ea743dfa7397" key="textField" x="521" y="4" width="36" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="textField" x="521" y="4" width="36" height="19" forecolor="#000000" backcolor="#FFFFFF" uuid="036f2bce-07cf-4080-97cf-ea743dfa7397"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
