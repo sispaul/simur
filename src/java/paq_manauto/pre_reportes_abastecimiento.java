@@ -83,8 +83,7 @@ public class pre_reportes_abastecimiento extends Pantalla{
         
         Grid gri_search = new Grid();
         gri_search.setColumns(2);
-        gri_search.getChildren().add(new Etiqueta("NIVEL INICIAL: "));
-        
+               
         gri_search.getChildren().add(new Etiqueta("AÑO: "));
         cmb_anos.setId("cmb_anos");
         cmb_anos.setConexion(con_postgres);
@@ -103,7 +102,7 @@ public class pre_reportes_abastecimiento extends Pantalla{
             "K", "Automotores"
         };
         Object filase2[] = {
-            "M", "Maquinaria"
+            "H", "Maquinaria"
         };
         lista.add(filase1);;
         lista.add(filase2);;
@@ -181,7 +180,7 @@ public class pre_reportes_abastecimiento extends Pantalla{
             "K", "Automotores"
         };
         Object filas2[] = {
-            "M", "Maquinaria"
+            "H", "Maquinaria"
         };
         listas.add(filas1);;
         listas.add(filas2);;
@@ -245,6 +244,11 @@ public class pre_reportes_abastecimiento extends Pantalla{
                     p_parametros.put("mes", tab_dato.getValor("per_descripcion")+"");
                     p_parametros.put("periodo", cmb_periodos.getValue()+"");
                     p_parametros.put("tipo", cmb_general.getValue()+"");
+                    if(cmb_general.getValue().equals("H")){
+                        p_parametros.put("tipo_desc","MAQUINARIAS");
+                    }else{
+                        p_parametros.put("tipo_desc", "AUTOMOTORES");
+                    }
                     rep_reporte.cerrar();
                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                     sef_formato.dibujar();
@@ -282,6 +286,16 @@ public class pre_reportes_abastecimiento extends Pantalla{
                     p_parametros.put("mes", tab_dator.getValor("per_descripcion")+"");
                     p_parametros.put("periodo", cmb_periodo.getValue()+"");
                     p_parametros.put("tipo", cmb_general1.getValue()+"");
+                    if(cmb_general1.getValue().equals("H")){
+                        p_parametros.put("tipo_desc","MAQUINARIAS");
+                    }else{
+                        p_parametros.put("tipo_desc", "AUTOMOTORES");
+                    }
+                    if(cmb_general1.getValue().equals("H")){
+                        p_parametros.put("medida","HORAS");
+                    }else{
+                        p_parametros.put("medida", "KM");
+                    }
                     rep_reporte.cerrar();
                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                     sef_formato.dibujar();
