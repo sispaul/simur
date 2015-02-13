@@ -769,6 +769,25 @@ public class AntiSueldos {
         return tab_funcionario;
     }
     
+    public TablaGenerica getCedula(Integer id ){
+        con_postgresql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        con_postgresql();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT\n" +
+"c.ide_empleado,\n" +
+"s.ci_solicitante,\n" +
+"s.solicitante,\n" +
+"s.ide_solicitud_anticipo\n" +
+"FROM srh_calculo_anticipo c\n" +
+"INNER JOIN srh_solicitud_anticipo s ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
+"where c.ide_calculo_anticipo = "+id);
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+    }
+    
     public TablaGenerica pagosAndelantados(String cedula){
         con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
