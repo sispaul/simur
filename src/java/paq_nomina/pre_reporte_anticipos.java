@@ -4,10 +4,17 @@
  */
 package paq_nomina;
 
+import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
 import framework.componentes.Division;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
+import java.util.HashMap;
+import java.util.Map;
+import javax.ejb.EJB;
+import paq_nomina.ejb.AntiSueldos;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
@@ -22,6 +29,16 @@ public class pre_reporte_anticipos extends Pantalla{
     
     private Tabla tab_tabla1 = new Tabla();
     private Tabla tab_tabla2 = new Tabla();
+    private Tabla tab_consulta = new Tabla();
+    
+    //Declaración para reportes
+    private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
+    private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
+    private Map p_parametros = new HashMap();
+    
+    @EJB
+    private AntiSueldos iAnticipos = (AntiSueldos) utilitario.instanciarEJB(AntiSueldos.class);
+    
     
     public pre_reporte_anticipos() {
         
@@ -31,6 +48,13 @@ public class pre_reporte_anticipos extends Pantalla{
         bot_busca.setIcon("ui-icon-search");
         bot_busca.setMetodo("Actualizarlista");
         bar_botones.agregarBoton(bot_busca);
+        
+        //Para capturar el usuario que se encuntra utilizando la opción
+        tab_consulta.setId("tab_consulta");
+        tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
+        tab_consulta.setCampoPrimaria("IDE_USUA");
+        tab_consulta.setLectura(true);
+        tab_consulta.dibujar();
         
         //cadena de conexión para otra base de datos
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
@@ -71,6 +95,13 @@ public class pre_reporte_anticipos extends Pantalla{
         div_division.setId("div_division");
         div_division.dividir2(pat_panel1,pat_panel2, "28%", "V");
         agregarComponente(div_division);
+        
+        /*         * CONFIGURACIÓN DE OBJETO REPORTE         */
+        bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
+        agregarComponente(rep_reporte); //2 agregar el listado de reportes
+        sef_formato.setId("sef_formato");
+        sef_formato.setConexion(con_postgres);
+        agregarComponente(sef_formato);
     }
 
     public void Actualizarlista(){
@@ -109,6 +140,40 @@ public class pre_reporte_anticipos extends Pantalla{
     public void eliminar() {
     }
 
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+
+    }
+    
+    @Override
+    public void aceptarReporte() {
+        rep_reporte.cerrar();
+        switch (rep_reporte.getNombre()) {
+           case "VER ANTICIPO":
+               aceptoAnticipo();
+          break;
+        }
+    } 
+    
+      public void aceptoAnticipo(){
+        switch (rep_reporte.getNombre()) {
+               case "VER ANTICIPO":
+                    TablaGenerica tab_dato = iAnticipos.getCedula(Integer.parseInt(tab_tabla2.getValorSeleccionado()));
+                    if (!tab_dato.isEmpty()) {
+                    p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
+                    p_parametros.put("identificacion", tab_dato.getValor("ci_solicitante")+"");
+                    p_parametros.put("codigo", Integer.parseInt(tab_dato.getValor("ide_solicitud_anticipo")+""));
+                    rep_reporte.cerrar();
+                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_formato.dibujar();
+                    }else{
+                        utilitario.agregarMensaje("No puede Mostrar Reporte", "Datos no encontrados");
+                    }
+               break;
+        }
+    }
+    
     public Tabla getTab_tabla1() {
         return tab_tabla1;
     }
@@ -131,6 +196,30 @@ public class pre_reporte_anticipos extends Pantalla{
 
     public void setTab_tabla2(Tabla tab_tabla2) {
         this.tab_tabla2 = tab_tabla2;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSef_formato() {
+        return sef_formato;
+    }
+
+    public void setSef_formato(SeleccionFormatoReporte sef_formato) {
+        this.sef_formato = sef_formato;
+    }
+
+    public Map getP_parametros() {
+        return p_parametros;
+    }
+
+    public void setP_parametros(Map p_parametros) {
+        this.p_parametros = p_parametros;
     }
     
 }
