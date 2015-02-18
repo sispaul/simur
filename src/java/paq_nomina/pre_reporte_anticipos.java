@@ -153,6 +153,9 @@ public class pre_reporte_anticipos extends Pantalla{
            case "VER ANTICIPO":
                aceptoAnticipo();
           break;
+           case "CONSOLIDADO DE  ANTICIPO":
+               aceptoAnticipo();
+               break;
         }
     } 
     
@@ -171,6 +174,11 @@ public class pre_reporte_anticipos extends Pantalla{
                         utilitario.agregarMensaje("No puede Mostrar Reporte", "Datos no encontrados");
                     }
                break;
+               case "CONSOLIDADO DE  ANTICIPO":
+                   p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
+                   sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                   sef_formato.dibujar();
+                   break;
         }
     }
     
