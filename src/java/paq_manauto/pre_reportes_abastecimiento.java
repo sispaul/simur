@@ -14,6 +14,7 @@ import framework.componentes.Imagen;
 import framework.componentes.Panel;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
+import framework.componentes.Tabla;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,9 +29,10 @@ import persistencia.Conexion;
  * @author p-sistemas
  */
 public class pre_reportes_abastecimiento extends Pantalla{
+            
     //Conexion a base
     private Conexion con_postgres= new Conexion();
-    
+    private Tabla tab_consulta = new Tabla();
     private Panel pan_opcion = new Panel();
     
     //Declaración para reportes
@@ -66,6 +68,13 @@ public class pre_reportes_abastecimiento extends Pantalla{
         quinde.setValue("imagenes/logo_transporte.png");
         agregarComponente(quinde);
  
+        //datos de usuario actual del sistema
+        tab_consulta.setId("tab_consulta");
+        tab_consulta.setSql("SELECT u.IDE_USUA,u.NOM_USUA,u.NICK_USUA,u.IDE_PERF,p.NOM_PERF,p.PERM_UTIL_PERF\n" +
+                "FROM SIS_USUARIO u,SIS_PERFIL p where u.IDE_PERF = p.IDE_PERF and IDE_USUA="+utilitario.getVariable("IDE_USUA"));
+        tab_consulta.setCampoPrimaria("IDE_USUA");
+        tab_consulta.setLectura(true);
+        tab_consulta.dibujar();
         
         //cadena de conexión para base de datos en postgres/produccion2014
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
@@ -285,6 +294,7 @@ public class pre_reportes_abastecimiento extends Pantalla{
                     p_parametros.put("anio", cmb_anio.getValue()+"");
                     p_parametros.put("mes", tab_dator.getValor("per_descripcion")+"");
                     p_parametros.put("periodo", cmb_periodo.getValue()+"");
+                    p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
                     p_parametros.put("tipo", cmb_general1.getValue()+"");
                     if(cmb_general1.getValue().equals("H")){
                         p_parametros.put("tipo_desc","MAQUINARIAS");
