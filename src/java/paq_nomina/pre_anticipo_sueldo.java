@@ -337,11 +337,11 @@ public class pre_anticipo_sueldo extends Pantalla{
         Integer anio=0;
         if(utilitario.getMes(utilitario.getFechaActual())!=1){
             anio = utilitario.getAnio(utilitario.getFechaActual());
-            iAnticipos.ActualizaAnticipo(String.valueOf(anio));
+            iAnticipos.ActualizaAnticipo(String.valueOf(anio),String.valueOf(anio-1));
             verificaDetalle();
         }else{
             anio = utilitario.getAnio(utilitario.getFechaActual())-1;
-            iAnticipos.ActualizaAnticipo(String.valueOf(anio));
+            iAnticipos.ActualizaAnticipo(String.valueOf(anio),String.valueOf(anio));
             verificaDetalle();
         }
     }

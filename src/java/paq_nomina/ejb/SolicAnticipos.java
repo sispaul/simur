@@ -1399,12 +1399,14 @@ public class SolicAnticipos {
         return tab_persona;
   }
   
-  public void set_ActDetalle_PagoAnti(Integer ide,Integer periodo,String usu,String fecha){
-    String au_sql="update srh_detalle_anticipo\n" +
-            "set ide_periodo_descontado="+periodo+",\n" +
-            "ide_estado_cuota=1,\n" +
-            "usu_pago_anticipado='"+usu+"',\n" +
-            "fecha_pago_anticipado='"+fecha+"'\n" +
+  public void set_ActDetalle_PagoAnti(Integer ide,String periodo,String anio,String usu,String fecha){
+    String au_sql="update srh_detalle_anticipo \n" +
+            "set ide_periodo_descontado=a.ide_periodo_anticipo, \n" +
+            "ide_estado_cuota=1, \n" +
+            "usu_pago_anticipado='"+usu+"', \n" +
+            "fecha_pago_anticipado='"+fecha+"' \n" +
+            "from (select ide_periodo_anticipo,periodo from srh_periodo_anticipo\n" +
+            "where periodo = '"+periodo+"' and anio='"+anio+"') as a\n" +
             "where ide_periodo_descontado is null and ide_estado_cuota is null and ide_anticipo ="+ide;
     con_postgresql();
     con_postgres.ejecutarSql(au_sql);
