@@ -226,7 +226,7 @@ public class pre_orden_pago extends Pantalla{
                 tab_orden.setValor("tes_proveedor", tab_dato.getValor("titular"));
                 tab_orden.setValor("tes_cod_empleado", null);
                 tab_orden.setValor("tes_empleado", null);
-                tab_orden.getColumna("tes_cod_empleado").setLectura(true);
+//                tab_orden.getColumna("tes_cod_empleado").setLectura(true);
                 tab_orden.setValor("tes_estado","Pendiente");
                 tab_orden.setValor("tipo_solicitantep","2");
                 utilitario.addUpdate("tab_orden");//actualiza solo componentes
@@ -243,7 +243,7 @@ public class pre_orden_pago extends Pantalla{
             if (!tab_dato.isEmpty()) {
                 System.out.println("Nombre de empleado>>>>>>"+tab_dato.getValor("nombres"));
                 tab_orden.setValor("tes_empleado", tab_dato.getValor("nombres"));
-                tab_orden.getColumna("tes_id_proveedor").setLectura(true);
+//                tab_orden.getColumna("tes_id_proveedor").setLectura(true);
                 tab_orden.setValor("tes_id_proveedor", null);
                 tab_orden.setValor("tes_proveedor", null);
                 tab_orden.setValor("tes_estado","Pendiente");
