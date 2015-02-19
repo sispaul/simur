@@ -31,7 +31,6 @@ import java.util.Map;
 import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
 import paq_nomina.ejb.AntiSueldos;
-import paq_nomina.ejb.SolicAnticipos;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
