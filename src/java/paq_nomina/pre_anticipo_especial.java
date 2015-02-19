@@ -1581,40 +1581,40 @@ public class pre_anticipo_especial extends Pantalla{
     public String meses(Integer numero){
         switch (numero){
             case 12:
-                selec_mes = "Diciembre";
+                selec_mes = "DICIEMBRE";
                 break;
             case 11:
-                selec_mes = "Noviembre";
+                selec_mes = "NOVIEMBRE";
                 break;
             case 10:
-                selec_mes = "Octubre";
+                selec_mes = "OCTUBRE";
                 break;
             case 9:
-                selec_mes = "Septiembre";
+                selec_mes = "SEPTIEMBRE";
                 break;
             case 8:
-                selec_mes = "Agosto";
+                selec_mes = "AGOSTO";
                 break;
             case 7:
-                selec_mes = "Julio";
+                selec_mes = "JULIO";
                 break;
             case 6:
-                selec_mes = "Junio";
+                selec_mes = "JUNIO";
                 break;
             case 5:
-                selec_mes = "Mayo";
+                selec_mes = "MAYO";
                 break;
             case 4:
-                selec_mes = "Abril";
+                selec_mes = "ABRIL";
                 break;
             case 3:
-                selec_mes = "Marzo";
+                selec_mes = "MARZO";
                 break;
             case 2:
-                selec_mes = "Febrero";
+                selec_mes = "FEBRERO";
                 break;
             case 1:
-                selec_mes = "Enero";
+                selec_mes = "ENERO";
                 break;
         }
         return selec_mes;
