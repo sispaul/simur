@@ -827,6 +827,55 @@ public class AntiSueldos {
         return tab_funcionario;
     }    
     
+    public TablaGenerica getTotalAnt(String anio){
+        con_postgresql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        con_postgresql();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("select a.id,a.anticipo,b.descontar,(a.anticipo-b.descontar)as saldo from\n" +
+"(SELECT 0 as id,\n" +
+"sum(c.valor_anticipo) as anticipo\n" +
+"FROM srh_calculo_anticipo AS c\n" +
+"INNER JOIN srh_solicitud_anticipo s ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n" +
+"WHERE substring(cast(c.fecha_anticipo as varchar) from 0 for 5) = '"+anio+"') as a\n" +
+"left join\n" +
+"(select 0 as id,sum(((case when a.descontado is null then 0 when a.descontado is not null then a.descontado end)+\n" +
+"(case when b.anticipado is null then 0 when b.anticipado is not null then b.anticipado end)+\n" +
+"(case when c.liquidacion is null then 0 when c.liquidacion is not null then c.liquidacion end ))) as descontar from\n" +
+"(SELECT\n" +
+"sum(d.valor) as descontado,\n" +
+"s.id_distributivo\n" +
+"FROM\n" +
+"srh_detalle_anticipo d\n" +
+"INNER JOIN srh_solicitud_anticipo s ON d.ide_anticipo = s.ide_solicitud_anticipo\n" +
+"WHERE d.anio = '"+anio+"' AND\n" +
+"d.ide_estado_cuota = 1 AND\n" +
+"usu_pago_anticipado is null AND\n" +
+"usu_cobro_liquidacion is null\n" +
+"GROUP BY s.id_distributivo)as a\n" +
+"left join\n" +
+"(SELECT sum(d.valor) as anticipado,\n" +
+"s.id_distributivo\n" +
+"FROM srh_detalle_anticipo d\n" +
+"INNER JOIN srh_solicitud_anticipo s ON d.ide_anticipo = s.ide_solicitud_anticipo\n" +
+"WHERE d.ide_estado_cuota = 1  AND substring(cast(d.fecha_pago_anticipado as varchar) from 0 for 5) = '"+anio+"'\n" +
+"GROUP BY s.id_distributivo) as b\n" +
+"on a.id_distributivo = b.id_distributivo\n" +
+"left join\n" +
+"(SELECT sum(d.valor) as liquidacion,\n" +
+"s.id_distributivo\n" +
+"FROM srh_detalle_anticipo d\n" +
+"INNER JOIN srh_solicitud_anticipo s ON d.ide_anticipo = s.ide_solicitud_anticipo\n" +
+"WHERE d.ide_estado_cuota = 1  AND substring(cast(d.fecha_cobro_liquidacion as varchar) from 0 for 5) = '"+anio+"'\n" +
+"GROUP BY s.id_distributivo) as c\n" +
+"on a.id_distributivo = c.id_distributivo) as b\n" +
+"on a.id = b.id");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+    }
+    
     public void InsertarAnticipo(String anio,String periodo){
         // Forma el sql para el ingreso
         String str_sql3 = "insert into srh_historial_cuotas_anticipos (his_ide_empleado,his_nombre,his_periodo,his_anio,his_cuota_roles,his_cuota_anticipo,his_cuota_nueva,his_cuotas_faltantes\n" +

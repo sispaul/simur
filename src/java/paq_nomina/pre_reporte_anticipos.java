@@ -6,12 +6,18 @@ package paq_nomina;
 
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
+import framework.componentes.Combo;
+import framework.componentes.Dialogo;
 import framework.componentes.Division;
+import framework.componentes.Etiqueta;
+import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import paq_nomina.ejb.AntiSueldos;
@@ -35,6 +41,19 @@ public class pre_reporte_anticipos extends Pantalla{
     private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
     private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
     private Map p_parametros = new HashMap();
+    
+    //Combos de Selección
+    private Combo cmb_anos = new Combo();
+    private Combo cmb_mesin = new Combo();
+    private Combo cmb_mesfin = new Combo();
+    
+    //Dialogos
+    private Dialogo dia_dialogo= new Dialogo();
+    private Dialogo dia_dialogovgl= new Dialogo();
+    private Dialogo dia_dialogoinvg = new Dialogo();
+    private Grid grid_g = new Grid();
+    private Grid grid_vgl = new Grid();
+    private Grid grid_invg = new Grid();
     
     @EJB
     private AntiSueldos iAnticipos = (AntiSueldos) utilitario.instanciarEJB(AntiSueldos.class);
@@ -102,8 +121,48 @@ public class pre_reporte_anticipos extends Pantalla{
         sef_formato.setId("sef_formato");
         sef_formato.setConexion(con_postgres);
         agregarComponente(sef_formato);
+        
+        
+         Grid gri_search = new Grid();
+        gri_search.setColumns(2);
+               
+        gri_search.getChildren().add(new Etiqueta("AÑO: "));
+        cmb_anos.setId("cmb_anos");
+        cmb_anos.setConexion(con_postgres);
+        cmb_anos.setCombo("select ano_curso, ano_curso from conc_ano order by ano_curso");
+        cmb_anos.setMetodo("comp_anio");
+        gri_search.getChildren().add(cmb_anos);
+        
+        gri_search.getChildren().add(new Etiqueta("Periodo Inicial: "));
+        cmb_mesin.setId("cmb_mesin");
+        cmb_mesin.setConexion(con_postgres);
+        cmb_mesin.setCombo("SELECT per_descripcion,per_descripcion as mes FROM cont_periodo_actual ORDER BY ide_periodo");
+        gri_search.getChildren().add(cmb_mesin);
+        
+        gri_search.getChildren().add(new Etiqueta("Periodo final: "));
+        cmb_mesfin.setId("cmb_mesfin");
+        cmb_mesfin.setConexion(con_postgres);
+        cmb_mesfin.setCombo("SELECT per_descripcion,per_descripcion as mes FROM cont_periodo_actual ORDER BY ide_periodo");
+        gri_search.getChildren().add(cmb_mesfin);
+        
+        //para poder busca por apelllido el garante
+        dia_dialogo.setId("dia_dialogo");
+        dia_dialogo.setTitle("SELECCIONAR PARAMETROS PARA REPORTE"); //titulo
+        dia_dialogo.setWidth("30%"); //siempre en porcentajes  ancho
+        dia_dialogo.setHeight("25%");//siempre porcentaje   alto
+        dia_dialogo.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogo.getGri_cuerpo().setHeader(gri_search);
+        dia_dialogo.getBot_aceptar().setMetodo("aceptoAnticipo");
+        grid_g.setColumns(4);
+        agregarComponente(dia_dialogo);
     }
 
+    public void comp_anio(){
+        if(Integer.parseInt(cmb_anos.getValue()+"")<=2014){
+            utilitario.agregarMensaje("Detalle No Disponible Para Año Seleccionado", "Escoga otro ???");
+        }
+    }
+    
     public void Actualizarlista(){
         if (!getFiltrosAcceso().isEmpty()) {
             tab_tabla2.setCondicion(getFiltrosAcceso());
@@ -154,7 +213,8 @@ public class pre_reporte_anticipos extends Pantalla{
                aceptoAnticipo();
           break;
            case "CONSOLIDADO DE  ANTICIPO":
-               aceptoAnticipo();
+               dia_dialogo.Limpiar();
+               dia_dialogo.dibujar();
                break;
         }
     } 
@@ -175,9 +235,21 @@ public class pre_reporte_anticipos extends Pantalla{
                     }
                break;
                case "CONSOLIDADO DE  ANTICIPO":
-                   p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
-                   sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                   sef_formato.dibujar();
+                   TablaGenerica tab_dato1 = iAnticipos.getTotalAnt(String.valueOf(Integer.parseInt(cmb_anos.getValue()+"")-1));
+                   if (!tab_dato1.isEmpty()) {
+                       p_parametros.put("anio_anterior", String.valueOf(Integer.parseInt(cmb_anos.getValue()+"")-1));
+                       p_parametros.put("mes", cmb_mesin.getValue()+"");
+                       p_parametros.put("mes1", cmb_mesfin.getValue()+"");
+                       p_parametros.put("anio_actual",cmb_anos.getValue()+"");
+                       p_parametros.put("anticipo", Double.valueOf(tab_dato1.getValor("anticipo")+""));
+                       p_parametros.put("descuento", Double.valueOf(tab_dato1.getValor("descontar")+""));
+                       p_parametros.put("saldo", Double.valueOf(tab_dato1.getValor("saldo")+""));
+                       p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
+                       sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                       sef_formato.dibujar();
+                   }else{
+                       utilitario.agregarMensaje("No puede Mostrar Reporte", "Detalle No encontrado");
+                   }
                    break;
         }
     }
