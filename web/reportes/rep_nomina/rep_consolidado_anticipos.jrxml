@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_consolidado_anticipos" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d787051e-e3d7-4359-aefb-b6fb14727974">
+	<property name="ireport.zoom" value="1.1000000000000005"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="32"/>
+	<parameter name="nom_resp" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["el que imprimio"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\p-sistemas\\Documents\\NetBeansProjects\\simur\\web\\reportes\\rep_nomina\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="anio_anterior" class="java.lang.String"/>
+	<parameter name="mes" class="java.lang.String"/>
+	<parameter name="anio_actual" class="java.lang.String"/>
+	<parameter name="anticipo" class="java.lang.Double"/>
+	<parameter name="descuento" class="java.lang.Double"/>
+	<parameter name="saldo" class="java.lang.Double"/>
+	<parameter name="mes1" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select
+(case when a.id_distributivo =1 then 'Empleado' when a.id_distributivo =2 then 'Trabajador' end) as servidor
+,a.mes,a.anticipo,
+(case when b.descontar is null then 0 when b.descontar is not null then b.descontar end) as descontado,(a.anticipo-(case when b.descontar is null then 0 when b.descontar is not null then b.descontar end))as saldo from
+(SELECT sum(c.valor_anticipo) as anticipo,
+s.id_distributivo,
+c.ide_periodo_anticipo_inicial,
+p.mes
+FROM srh_calculo_anticipo as c
+INNER JOIN srh_solicitud_anticipo as s ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo
+INNER JOIN srh_periodo_anticipo as p ON c.ide_periodo_anticipo_inicial = p.ide_periodo_anticipo
+WHERE substring(cast(c.fecha_anticipo as varchar) from 0 for 5) = $P{anio_actual}
+GROUP BY s.id_distributivo,
+c.ide_periodo_anticipo_inicial,p.mes
+ORDER BY c.ide_periodo_anticipo_inicial ASC) as a
+left join
+(select a.id_distributivo,a.ide_periodo_descuento,
+((case when a.descontado is null then 0 when a.descontado is not null then a.descontado end)+
+(case when b.anticipado is null then 0 when b.anticipado is not null then b.anticipado end)+
+(case when c.liquidacion is null then 0 when c.liquidacion is not null then c.liquidacion end )) as descontar
+FROM
+(SELECT
+sum(d.valor) AS descontado,
+s.id_distributivo,
+d.ide_periodo_descuento
+FROM
+srh_detalle_anticipo d
+INNER JOIN srh_solicitud_anticipo s ON d.ide_anticipo = s.ide_solicitud_anticipo
+WHERE d.anio = $P{anio_actual} AND
+d.ide_estado_cuota = 1 AND
+usu_pago_anticipado is null AND
+usu_cobro_liquidacion is null
+GROUP BY s.id_distributivo,d.ide_periodo_descuento
+order by ide_periodo_descuento)as a
+left join
+(SELECT
+sum(d.valor) AS anticipado,
+s.id_distributivo,
+d.ide_periodo_descontado
+FROM srh_detalle_anticipo d
+INNER JOIN srh_solicitud_anticipo s ON d.ide_anticipo = s.ide_solicitud_anticipo
+WHERE d.ide_estado_cuota = 1  AND substring(cast(d.fecha_pago_anticipado as varchar) from 0 for 5) = $P{anio_actual}
+GROUP BY s.id_distributivo,d.ide_periodo_descontado)as b
+on a.ide_periodo_descuento = b.ide_periodo_descontado and a.id_distributivo=b.id_distributivo
+left join
+(SELECT
+sum(d.valor) AS liquidacion,
+s.id_distributivo,
+d.ide_periodo_descontado
+FROM srh_detalle_anticipo d
+INNER JOIN srh_solicitud_anticipo s ON d.ide_anticipo = s.ide_solicitud_anticipo
+WHERE d.ide_estado_cuota = 1  AND substring(cast(d.fecha_cobro_liquidacion as varchar) from 0 for 5) = $P{anio_actual}
+GROUP BY s.id_distributivo,d.ide_periodo_descontado)as c
+on a.ide_periodo_descuento = c.ide_periodo_descontado and a.id_distributivo=c.id_distributivo) as b
+on a.id_distributivo=b.id_distributivo and a.ide_periodo_anticipo_inicial=b.ide_periodo_descuento
+where a.mes BETWEEN $P{mes}and $P{mes1}
+ORDER BY servidor]]>
+	</queryString>
+	<field name="servidor" class="java.lang.String"/>
+	<field name="mes" class="java.lang.String"/>
+	<field name="anticipo" class="java.math.BigDecimal"/>
+	<field name="descontado" class="java.math.BigDecimal"/>
+	<field name="saldo" class="java.math.BigDecimal"/>
+	<variable name="sum_anticipo" class="java.math.BigDecimal" resetType="Group" resetGroup="Tipo_Servidor" calculation="Sum">
+		<variableExpression><![CDATA[$F{anticipo}]]></variableExpression>
+	</variable>
+	<variable name="sum_descontado" class="java.math.BigDecimal" resetType="Group" resetGroup="Tipo_Servidor" calculation="Sum">
+		<variableExpression><![CDATA[$F{descontado}]]></variableExpression>
+	</variable>
+	<variable name="sum_saldo" class="java.math.BigDecimal" resetType="Group" resetGroup="Tipo_Servidor" calculation="Sum">
+		<variableExpression><![CDATA[$F{saldo}]]></variableExpression>
+	</variable>
+	<variable name="suma_anticipo" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{anticipo}]]></variableExpression>
+	</variable>
+	<variable name="suma_descontado" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{descontado}]]></variableExpression>
+	</variable>
+	<variable name="suma_saldo" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{saldo}]]></variableExpression>
+	</variable>
+	<group name="Tipo_Servidor">
+		<groupExpression><![CDATA[$F{servidor}]]></groupExpression>
+		<groupHeader>
+			<band height="55">
+				<rectangle>
+					<reportElement uuid="d1a3fd63-7f2e-4d51-b72a-ec4a482df314" x="2" y="33" width="548" height="21" backcolor="#666666"/>
+				</rectangle>
+				<staticText>
+					<reportElement uuid="13e73525-f8fd-458f-a495-5601b5c32dc3" x="0" y="0" width="100" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Tipo de Servidor :]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="eec82918-469a-4d57-bf0a-3c40d337934e" x="101" y="0" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{servidor}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="d2bb216b-4f25-45c4-9b85-37b3d47ba10d" x="6" y="33" width="100" height="20" forecolor="#FFFFFF"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Periodo/Mes]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="e27113cc-8545-424d-a784-c63b758dc88b" x="133" y="33" width="114" height="20" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Justified">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Anticipo Concedidos]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="9a6d2ac6-0768-4196-9387-ebe7bcce9a62" x="282" y="33" width="100" height="20" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Justified">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total Descontado]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="4171b26e-51c3-4e60-b606-a30d3a85a303" x="444" y="33" width="100" height="20" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Justified">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Valor x Cobrar]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="30">
+				<staticText>
+					<reportElement uuid="8a861bc2-2c2f-460b-ae25-93e8c1847e25" x="6" y="7" width="100" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Sub Total:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="c870b720-f101-4c82-85dc-1d3230cbe8a3" x="147" y="7" width="100" height="20"/>
+					<textElement textAlignment="Right">
+						<font isUnderline="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sum_anticipo}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="7db823d5-4f3c-48f2-9c9e-ee55c5fe1900" x="287" y="10" width="100" height="20"/>
+					<textElement textAlignment="Right">
+						<font isUnderline="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sum_descontado}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="5f0722a3-6d37-49fd-94a2-3ec3a1f74aac" x="430" y="7" width="100" height="20"/>
+					<textElement textAlignment="Right">
+						<font isUnderline="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sum_saldo}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="99b2cff5-4673-4f09-a43d-0b644dd4bd9c" key="staticText" x="10" y="10" width="352" height="25" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Gobierno Autónomo Descentralizado del Cantón Rumiñahui]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2a88074f-24e8-4a8f-b648-af4b18a83da2" key="staticText-1" x="10" y="31" width="377" height="18" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[REPORTE CONSOLIDADO DE ANTICIPOS DE REMUNERACIONS]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="139" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="738fd13f-fc58-419f-93e7-75b08cf41351" x="25" y="4" width="525" height="135"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="d5cf58ae-498f-47ae-8a90-3d5ea9e5ba25" x="30" y="7" width="200" height="20"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Saldo De Anticipo de Año Anterior]]></text>
+			</staticText>
+			<subreport>
+				<reportElement uuid="263f572b-3a32-4c2d-8a6f-9b2643081d93" x="10" y="27" width="534" height="100"/>
+				<subreportParameter name="anio_anterior">
+					<subreportParameterExpression><![CDATA[$P{anio_anterior}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_nomina/rep_saldo_anterior.jasper"]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement uuid="6d3e8dff-491d-4a72-b74f-25027d8ba329" x="230" y="7" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{anio_anterior}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="58ac3087-7ac1-4ffb-828c-c7ee653deb70" x="2" y="6" width="100" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Año en Vigencia]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="65c68182-ed65-43e6-90ca-f7a530624d3c" x="106" y="6" width="100" height="20"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{anio_actual}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<textField>
+				<reportElement uuid="06736c4f-73c6-4a8d-a8a4-1312f5851ea2" x="134" y="2" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{anticipo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2466400f-23ac-40ff-803a-86c8f9bb1807" x="268" y="2" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{descontado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="194dcd06-03bb-47e1-bb9d-3155c0a02ecc" x="414" y="2" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{saldo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d8d0e6e9-a892-4236-9d0a-61e667e7cb98" x="6" y="2" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{mes}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="bcdd31ee-74f4-4c56-8c0f-a209f460a2f4" x="2" y="22" width="548" height="1"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="5" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="15" splitType="Stretch">
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="4b90e1d2-2d46-4544-8bbd-b2124aee8397" key="textField-1" x="188" y="0" width="90" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nom_resp}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="536c3df7-0401-4ded-aae5-e8ffa222e319" key="textField-5" x="8" y="0" width="92" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="7fec14de-79e6-4e53-942b-f7dea8f1ceda" key="textField" x="338" y="0" width="170" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
+				<reportElement uuid="0a11b2e9-a314-46fe-a056-6bcbe1c0943b" key="textField" x="512" y="0" width="36" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="52" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="e2438199-72b1-4169-926b-54b6dea9081d" x="37" y="0" width="464" height="50" backcolor="#999999"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="50b20d2e-8ea0-4a36-a771-bf921827f9f9" x="-9" y="28" width="100" height="20" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="f015c172-18be-4f3c-b8ad-a1279b3f3639" x="100" y="28" width="100" height="20" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom"/>
+				<textFieldExpression><![CDATA[$V{suma_anticipo}+$P{anticipo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7590a7ed-73c7-4c64-a4da-3c9698b86af8" x="240" y="28" width="100" height="20" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom"/>
+				<textFieldExpression><![CDATA[$P{descuento}+$V{suma_descontado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7578bb5a-36d1-4643-a949-9b997283d772" x="383" y="28" width="100" height="20" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom"/>
+				<textFieldExpression><![CDATA[$P{saldo}+$V{suma_saldo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="06fd7486-49bb-4cdc-a86c-8a39cc99a440" x="100" y="0" width="100" height="28" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Anticipos Concedidos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b3869587-13fa-4c6f-acea-19de03528d95" x="240" y="0" width="100" height="28" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Anticipos Descontado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a32179aa-8f62-49a1-a4a9-7320de9d73fc" x="383" y="0" width="100" height="28" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor x Cobrar de Anticipos]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>
