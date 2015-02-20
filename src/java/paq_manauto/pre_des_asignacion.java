@@ -24,7 +24,6 @@ import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
 import paq_manauto.ejb.manauto;
 import paq_sistema.aplicacion.Pantalla;
-import paq_transporte_otros.ejb.AbastecimientoCombustible;
 import persistencia.Conexion;
 
 /**
@@ -60,7 +59,6 @@ public class pre_des_asignacion extends Pantalla{
     
     @EJB
     private manauto aCombustible = (manauto) utilitario.instanciarEJB(manauto.class);
-     private AbastecimientoCombustible iCombustible = (AbastecimientoCombustible) utilitario.instanciarEJB(AbastecimientoCombustible.class);
      
     ///REPORTES
     private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
