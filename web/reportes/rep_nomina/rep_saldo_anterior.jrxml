@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_saldo_anterior" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="0" bottomMargin="0" uuid="92a04dd5-bca9-4256-92d9-d70ccd9d818b">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="anio_anterior" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select (case when a.id_distributivo =1 then 'Empleado' when a.id_distributivo =2 then 'Trabajador' end) as servidor, a.anticipo,b.descontar,(a.anticipo-b.descontar)as saldo from
+(SELECT
+sum(c.valor_anticipo) as anticipo,
+s.id_distributivo
+FROM srh_calculo_anticipo AS c
+INNER JOIN srh_solicitud_anticipo s ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo
+WHERE substring(cast(c.fecha_anticipo as varchar) from 0 for 5) = $P{anio_anterior}
+GROUP BY s.id_distributivo) as a
+left join
+(select a.id_distributivo,((case when a.descontado is null then 0 when a.descontado is not null then a.descontado end)+
+(case when b.anticipado is null then 0 when b.anticipado is not null then b.anticipado end)+
+(case when c.liquidacion is null then 0 when c.liquidacion is not null then c.liquidacion end )) as descontar from
+(SELECT
+sum(d.valor) as descontado,
+s.id_distributivo
+FROM
+srh_detalle_anticipo d
+INNER JOIN srh_solicitud_anticipo s ON d.ide_anticipo = s.ide_solicitud_anticipo
+WHERE d.anio = $P{anio_anterior} AND
+d.ide_estado_cuota = 1 AND
+usu_pago_anticipado is null AND
+usu_cobro_liquidacion is null
+GROUP BY s.id_distributivo)as a
+left join
+(SELECT sum(d.valor) as anticipado,
+s.id_distributivo
+FROM srh_detalle_anticipo d
+INNER JOIN srh_solicitud_anticipo s ON d.ide_anticipo = s.ide_solicitud_anticipo
+WHERE d.ide_estado_cuota = 1  AND substring(cast(d.fecha_pago_anticipado as varchar) from 0 for 5) = $P{anio_anterior}
+GROUP BY s.id_distributivo) as b
+on a.id_distributivo = b.id_distributivo
+left join
+(SELECT sum(d.valor) as liquidacion,
+s.id_distributivo
+FROM srh_detalle_anticipo d
+INNER JOIN srh_solicitud_anticipo s ON d.ide_anticipo = s.ide_solicitud_anticipo
+WHERE d.ide_estado_cuota = 1  AND substring(cast(d.fecha_cobro_liquidacion as varchar) from 0 for 5) = $P{anio_anterior}
+GROUP BY s.id_distributivo) as c
+on a.id_distributivo = c.id_distributivo) as b
+on a.id_distributivo = b.id_distributivo]]>
+	</queryString>
+	<field name="servidor" class="java.lang.String"/>
+	<field name="anticipo" class="java.math.BigDecimal"/>
+	<field name="descontar" class="java.math.BigDecimal"/>
+	<field name="saldo" class="java.math.BigDecimal"/>
+	<variable name="suma_anticipo" class="java.math.BigDecimal" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{anticipo}]]></variableExpression>
+	</variable>
+	<variable name="suma_cobrado" class="java.math.BigDecimal" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{descontar}]]></variableExpression>
+	</variable>
+	<variable name="suma_saldo" class="java.math.BigDecimal" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{saldo}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="25" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="32a46c43-3a57-4354-b251-5f12ed9777db" x="7" y="3" width="512" height="21" backcolor="#666666"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="f59b5c99-afac-4039-8f72-21fe13ed2d15" x="16" y="3" width="100" height="20" forecolor="#FFFFFF"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo de Servidor]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8691be67-f44e-4ff3-9344-2c91768ff5f0" x="441" y="3" width="74" height="20" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Justified">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor x Cobrar]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="43dc4180-ceb0-4e84-b713-cdce70ecac00" x="283" y="3" width="100" height="20" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Justified">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Descontado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c70508b9-c949-4c6d-9709-821f181e63cb" x="134" y="3" width="114" height="20" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Justified">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Anticipo Concedidos]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="29" splitType="Stretch">
+			<textField>
+				<reportElement uuid="3af4e32e-9ac0-4da7-a746-124a3911266c" x="16" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{servidor}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f7d7c0a1-1d5f-4a8a-a7e3-2a5ddc785d54" x="266" y="0" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{descontar}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e873630e-4396-4dc2-9740-538d09389fab" x="415" y="0" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{saldo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a0efafde-ade8-4875-9b5a-30d33fa038cf" x="131" y="0" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{anticipo}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="154544d7-accc-42fe-9418-e7073884c7ef" x="16" y="20" width="503" height="1"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+		</band>
+	</detail>
+	<summary>
+		<band height="20">
+			<staticText>
+				<reportElement uuid="c28343ef-6328-41e8-ad96-e5037b180766" x="16" y="0" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Año:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="8aaeeb48-5c5e-4c9a-af67-7b3a1f56115a" x="131" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{suma_anticipo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="db8b7596-5f7f-49fa-b73f-9cdfa60b8c79" x="283" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{suma_cobrado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0bbfd4f5-eec1-4367-8011-d7507308d733" x="415" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{suma_saldo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
