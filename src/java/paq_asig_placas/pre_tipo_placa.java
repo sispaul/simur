@@ -13,13 +13,13 @@ import paq_sistema.aplicacion.Pantalla;
  *
  * @author KEJA
  */
-public class pre_tipo_placa extends Pantalla{
+public class pre_tipo_placa extends Pantalla {
 
     private Tabla tab_tabla = new Tabla();
-    
+
     public pre_tipo_placa() {
         tab_tabla.setId("tab_tabla");
-        tab_tabla.setTabla("trans_tipo_placa", "ide_tipo_placa",1);
+        tab_tabla.setTabla("trans_tipo_placa", "ide_tipo_placa", 1);
         tab_tabla.setHeader("TIPOS DE PLACA");
         tab_tabla.getColumna("descripcion_placa").setMayusculas(true);
         tab_tabla.dibujar();
@@ -55,5 +55,4 @@ public class pre_tipo_placa extends Pantalla{
     public void setTab_tabla(Tabla tab_tabla) {
         this.tab_tabla = tab_tabla;
     }
-    
 }
