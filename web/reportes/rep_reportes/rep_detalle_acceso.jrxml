@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_detalle_acceso" language="groovy" pageWidth="595" pageHeight="842" columnWidth="575" leftMargin="0" rightMargin="20" topMargin="20" bottomMargin="0" uuid="5628f724-9f4b-41f5-b81f-5a105a22abf9">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="solicitud" class="java.lang.Integer"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+s.id_solicitud_acceso,
+s.nombre_solicitante,
+s.nombre_usuario,
+s.direccion_usuario,
+s.funciones_usuario,
+s.observaciones_perfil_usuario,
+s.fecha_acceso_usuario,
+s.login_acceso_usuario,
+s.password_acceso_usuario,
+s.nombre_asigna_acceso,
+s.fechaing_solicitante,
+s.estado_solicitud,
+s.lectura_perfil_usuario,
+s.actualizacion_perfil_usuario,
+s.ingreso_perfil_usuario,
+i.nombre_sistema,
+p.nombre_perfil,
+p.detalle_perfil,
+m.nombre_modulo,
+d.nombre_dir,
+c.nombre_cargo,
+a.nombre_cargo AS cargo_usu,
+s.cedula_solicitante,
+s.cedula_usuario,
+s.memorando_acceso_usuario
+FROM sca_solicitud_acceso AS s
+INNER JOIN sca_sistemas AS i ON s.id_sistema = i.id_sistema
+INNER JOIN sca_perfiles AS p ON s.id_perfil = p.id_perfil
+INNER JOIN sca_modulos AS m ON m.id_sistema = i.id_sistema AND s.id_modulo = m.id_modulo AND p.id_modulo = m.id_modulo
+INNER JOIN srh_direccion as d ON d.cod_direccion = cast(s.direccion_solicitante as int4)
+INNER JOIN srh_cargos as c ON c.cod_cargo = cast(s.cargo_solicitante as int4)
+INNER JOIN srh_cargos as a ON a.cod_cargo = cast(s.cargo_usuario as int4)
+where s.id_solicitud_acceso = $P{solicitud}]]>
+	</queryString>
+	<field name="id_solicitud_acceso" class="java.lang.Integer"/>
+	<field name="nombre_solicitante" class="java.lang.String"/>
+	<field name="nombre_usuario" class="java.lang.String"/>
+	<field name="direccion_usuario" class="java.lang.String"/>
+	<field name="funciones_usuario" class="java.lang.String"/>
+	<field name="observaciones_perfil_usuario" class="java.lang.String"/>
+	<field name="fecha_acceso_usuario" class="java.sql.Date"/>
+	<field name="login_acceso_usuario" class="java.lang.String"/>
+	<field name="password_acceso_usuario" class="java.lang.String"/>
+	<field name="nombre_asigna_acceso" class="java.lang.String"/>
+	<field name="fechaing_solicitante" class="java.sql.Date"/>
+	<field name="estado_solicitud" class="java.lang.String"/>
+	<field name="lectura_perfil_usuario" class="java.lang.Boolean"/>
+	<field name="actualizacion_perfil_usuario" class="java.lang.Boolean"/>
+	<field name="ingreso_perfil_usuario" class="java.lang.Boolean"/>
+	<field name="nombre_sistema" class="java.lang.String"/>
+	<field name="nombre_perfil" class="java.lang.String"/>
+	<field name="detalle_perfil" class="java.lang.String"/>
+	<field name="nombre_modulo" class="java.lang.String"/>
+	<field name="nombre_dir" class="java.lang.String"/>
+	<field name="nombre_cargo" class="java.lang.String"/>
+	<field name="cargo_usu" class="java.lang.String">
+		<fieldDescription><![CDATA[cargo_usu]]></fieldDescription>
+	</field>
+	<field name="cedula_solicitante" class="java.lang.String"/>
+	<field name="cedula_usuario" class="java.lang.String"/>
+	<field name="memorando_acceso_usuario" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="66">
+			<image>
+				<reportElement uuid="5b4133e3-1716-4ed9-9bd2-47c83f7b019d" x="178" y="0" width="310" height="66"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_sistema.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="391" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="e856e8b7-dd06-44bf-8a90-e1c74cec521c" x="0" y="66" width="522" height="324"/>
+				<textElement textAlignment="Justified">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[• El sistema ofrece a los usuarios una cuenta para ser utilizada bajo las condiciones que se establecen en el presente reglamento y por tiempo en que se mantenga su condición de tal en la institución.
+
+• El usuario deberá cambiar su contraseña periódicamente y no debe divulgar a ningún otro miembro de la municipalidad ni persona no perteneciente a la misma.
+
+• No utilizar la opción “Remember Password” que los navegadores de Internet proveen para facilitar recordar usuarios y contraseñas.
+
+• El usuario se obliga a no acceder a los contenidos del servicio por otros medios que no sea su interfaz de usuario.
+
+• El usuario reconoce y acepta que la utilización de este Sistema será con fines profesionales y privados. Quedando expresamente prohibido, que el usuario autorice a terceros el uso, total o parcial, del Sistema.
+
+• No puede intentar obtener acceso no autorizado a otras cuentas, sistemas informáticos o redes conectadas, mediante actos de intrusión (hacking), descifre de contraseñas (password mining) ni por cualquier otro medio.
+
+• Usted no utilizará el Sistema para ningún propósito que sea ilícito o esté prohibido por estos términos, condiciones o avisos.
+
+• Nunca escriba el password en papel. Si es fácil de recordar, no debe ser necesario anotarlo; pero si no quiere correr el riesgo de olvidarlo puede guardarlo en un archivo de computador si y solo si 1) Ud. tiene control directo y personal sobre la máquina, la cual no comparte con nadie, y 2) la información es grabada en forma criptográfica usando un sistema confiable (por ejemplo PGP o Password Safe).
+
+
+• Es una buena práctica cambiar su password periódicamente, por ejemplo cada 3 o 6 meses.
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="aa12138b-33b5-447f-9e44-65bd34998183" x="0" y="30" width="291" height="20"/>
+				<textElement>
+					<font size="10" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Condiciones y Recomendaciones Generales de Uso]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<summary>
+		<band height="130" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="fad49b6c-817d-410d-9877-43b531dc3a17" x="31" y="11" width="100" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Acepta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="755da013-0e27-4289-8a36-c36951a1f6c9" x="47" y="65" width="100" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Usuario:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2f9e14f3-7ec5-4574-92a8-ec3fbcddddc3" x="47" y="85" width="100" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[C.I. :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4bc5d8de-d0c1-46f2-80e6-2de4286966e3" x="47" y="105" width="100" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Fecha :]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="848c358c-79de-45d0-8041-6ccf00de4663" x="96" y="65" width="240" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_usuario}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a9964b58-a07f-4061-b8ae-6c281ae2201c" x="78" y="85" width="100" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cedula_usuario}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="7a8b9722-f149-4a89-b36f-7ae985780396" x="47" y="64" width="289" height="1"/>
+			</line>
+		</band>
+	</summary>
+</jasperReport>

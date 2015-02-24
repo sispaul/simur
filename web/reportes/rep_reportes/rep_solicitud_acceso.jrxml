@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_solicitud_acceso" language="groovy" pageWidth="595" pageHeight="842" columnWidth="541" leftMargin="34" rightMargin="20" topMargin="0" bottomMargin="20" uuid="fe8236fd-e961-457c-939e-7655f19ada20">
+	<property name="ireport.zoom" value="1.331000000000001"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="fecha" class="java.lang.String"/>
+	<parameter name="solicitud" class="java.lang.Integer"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+s.id_solicitud_acceso,
+s.nombre_solicitante,
+s.nombre_usuario,
+s.direccion_usuario,
+s.funciones_usuario,
+s.observaciones_perfil_usuario,
+s.fecha_acceso_usuario,
+s.login_acceso_usuario,
+s.password_acceso_usuario,
+s.nombre_asigna_acceso,
+s.fechaing_solicitante,
+s.estado_solicitud,
+s.lectura_perfil_usuario,
+s.actualizacion_perfil_usuario,
+s.ingreso_perfil_usuario,
+i.nombre_sistema,
+p.nombre_perfil,
+p.detalle_perfil,
+m.nombre_modulo,
+d.nombre_dir,
+c.nombre_cargo,
+a.nombre_cargo AS cargo_usu,
+s.cedula_solicitante,
+s.cedula_usuario,
+s.memorando_acceso_usuario
+FROM sca_solicitud_acceso AS s
+INNER JOIN sca_sistemas AS i ON s.id_sistema = i.id_sistema
+INNER JOIN sca_perfiles AS p ON s.id_perfil = p.id_perfil
+INNER JOIN sca_modulos AS m ON m.id_sistema = i.id_sistema AND s.id_modulo = m.id_modulo AND p.id_modulo = m.id_modulo
+INNER JOIN srh_direccion as d ON d.cod_direccion = cast(s.direccion_solicitante as int4)
+INNER JOIN srh_cargos as c ON c.cod_cargo = cast(s.cargo_solicitante as int4)
+INNER JOIN srh_cargos as a ON a.cod_cargo = cast(s.cargo_usuario as int4)
+where s.id_solicitud_acceso = $P{solicitud}]]>
+	</queryString>
+	<field name="id_solicitud_acceso" class="java.lang.Integer"/>
+	<field name="nombre_solicitante" class="java.lang.String"/>
+	<field name="nombre_usuario" class="java.lang.String"/>
+	<field name="direccion_usuario" class="java.lang.String"/>
+	<field name="funciones_usuario" class="java.lang.String"/>
+	<field name="observaciones_perfil_usuario" class="java.lang.String"/>
+	<field name="fecha_acceso_usuario" class="java.sql.Date"/>
+	<field name="login_acceso_usuario" class="java.lang.String"/>
+	<field name="password_acceso_usuario" class="java.lang.String"/>
+	<field name="nombre_asigna_acceso" class="java.lang.String"/>
+	<field name="fechaing_solicitante" class="java.sql.Date"/>
+	<field name="estado_solicitud" class="java.lang.String"/>
+	<field name="lectura_perfil_usuario" class="java.lang.Boolean"/>
+	<field name="actualizacion_perfil_usuario" class="java.lang.Boolean"/>
+	<field name="ingreso_perfil_usuario" class="java.lang.Boolean"/>
+	<field name="nombre_sistema" class="java.lang.String"/>
+	<field name="nombre_perfil" class="java.lang.String"/>
+	<field name="detalle_perfil" class="java.lang.String"/>
+	<field name="nombre_modulo" class="java.lang.String"/>
+	<field name="nombre_dir" class="java.lang.String"/>
+	<field name="nombre_cargo" class="java.lang.String"/>
+	<field name="cargo_usu" class="java.lang.String">
+		<fieldDescription><![CDATA[cargo_usu]]></fieldDescription>
+	</field>
+	<field name="cedula_solicitante" class="java.lang.String"/>
+	<field name="cedula_usuario" class="java.lang.String"/>
+	<field name="memorando_acceso_usuario" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="145">
+			<staticText>
+				<reportElement uuid="f1104ee0-491f-4934-b4b2-1644630da24c" x="7" y="104" width="100" height="40"/>
+				<textElement/>
+				<text><![CDATA[Señores
+Dirección de TIC
+Presente.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a381aa3f-5b0d-4d96-9eb9-a33213fea637" x="55" y="59" width="444" height="18"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SOLICITUD DE CLAVE DE ACCESO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7f38bbf3-ae22-44c7-920f-7c6319443915" x="329" y="77" width="52" height="20"/>
+				<textElement/>
+				<text><![CDATA[Sangolquí,]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="81c3c5e1-9a93-474a-b627-cf77b08bbe15" x="381" y="77" width="158" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{fecha}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement uuid="b9f7a734-24dd-443a-abc5-c8c4f0c67259" x="202" y="2" width="321" height="57"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_sistema.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="118" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="83818f2b-b970-4f26-a20c-07da568dedca" x="7" y="0" width="534" height="118"/>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Yo,                                                                                 con cargo                                                                                                    de la
+Dirección 				          Jefe inmediato del Sr (a)(t)
+con cargo			   	                  que realiza funciones de
+
+
+solicito, el ingreso como usuario del Sistema 			                módulo de
+con perfil de 			                              solicitado mediante Memorando N°
+
+Declaramos conocer y aceptamos expresamente las Condiciones de Uso que más abajo se anuncian y que firmamos
+de total conformidad]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="80796b93-4f9a-43ef-869c-03a2be9c9929" x="27" y="1" width="238" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_solicitante}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ee2dfab9-c86d-4262-9714-82258f00f0e5" x="265" y="1" width="216" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_cargo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0482178d-a417-4858-b3ce-6be668d02f0c" x="356" y="13" width="183" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_usuario}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="95f46acd-95d7-4dee-8c91-9116d76d0a66" x="62" y="13" width="182" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_dir}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8996eaad-65a6-4508-b46f-9c6d51866cb9" x="55" y="23" width="179" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cargo_usu}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4ec7e850-0cb4-471b-89ce-904400b8d9e2" x="355" y="25" width="182" height="26"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{funciones_usuario}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e3b5d878-15aa-4fb5-a370-7e5c66e283d6" x="204" y="58" width="125" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_sistema}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="92151109-a2cc-4a16-b535-d6adc6b95772" x="381" y="57" width="154" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_modulo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4226265d-0313-4ed5-8eab-65c0d125f745" x="65" y="69" width="166" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_perfil}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f065b84a-bfee-4dd2-b5c5-0eca01d7fbc5" x="383" y="69" width="158" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{memorando_acceso_usuario}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="153" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="ce9f1f79-6d6c-4ab6-968c-8ba6f903ad80" x="7" y="26" width="534" height="32"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[El Sistema				ha adoptado los niveles de seguridad de protección de datos
+requeridos y ha instalado los medios y medidas con el objeto de evitar su pérdida, mal uso, lateración y acceso no autorizado.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2a30a26f-465c-4c20-90ca-7bbcc52ea873" x="7" y="2" width="102" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Condiciones de Uso]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="1055e451-0d8c-431c-91c5-7487dfcdf513" x="58" y="26" width="186" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_sistema}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="a3a4bd7d-79c4-4156-a309-628e1e228d7f" x="7" y="69" width="530" height="83"/>
+				<textElement textAlignment="Justified">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Se compromete en cambiar la contraseña adjudicada, que modificará el usuario en el primer ingreso al sistema.
+Es completa responsabilidad del usuario mantener la confidencialidad de la contraseña y de la cuenta. Además, el usuario es completamente responsable de todas y cada una de las actividades que se realicen bajo la cuenta. Se compromete a notificar inmediatamente cualquier uso no autorizado de su cuenta u otra infracción de seguridad. La Dirección de Tecnologías de la Información y Comunicaciones del GADMUR no será responsable por ningún daño o perjuicio de toda naturaleza en el que pueda incurrir como consecuencia de que terceros no autorizados usen su contraseña o cuenta, tanto con su conocimiento como sin él. De igual manera por ningún motivo puede utilizar la cuenta de otra persona.
+]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="364">
+			<staticText>
+				<reportElement uuid="e0a09446-e004-4750-846b-e8ffac5e1480" x="7" y="31" width="60" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Solicitante:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="25f4bd37-dfee-4268-bd64-8ae6e46a8cb9" x="292" y="31" width="60" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Usuario: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="152e0dcf-2ed0-48b4-a844-8a570a63b91d" x="7" y="47" width="60" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[C.I.:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a925ac4d-1cac-4d09-81d2-0c9da93afda6" x="292" y="47" width="60" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[C.I.:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="6a4c1c45-9620-44f5-8015-dda3f17d6706" x="67" y="31" width="188" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_solicitante}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f86bcf78-8feb-4217-869c-1eda172bfd83" x="31" y="47" width="100" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cedula_solicitante}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e6633290-6365-4ad5-acdc-6e0f91310d7a" x="338" y="31" width="203" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_usuario}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a25b73e0-b858-4e4b-95db-1108d8480aae" x="316" y="47" width="100" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cedula_usuario}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="f0a92efd-08fd-47c6-9a35-2765ff4f0e2d" x="7" y="31" width="247" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="ac52a5a1-c634-4b2f-bada-a043ad8cd6ca" x="292" y="31" width="245" height="1"/>
+			</line>
+			<rectangle>
+				<reportElement uuid="ea867582-e6e4-43a4-97ec-c12502611ce6" x="7" y="96" width="534" height="105"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="4273d07f-7789-4c84-b17e-9a8b3b46c5f0" x="7" y="78" width="131" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Información para DTIC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d093ec14-146c-460d-86d6-553abb632ca6" mode="Transparent" x="7" y="98" width="464" height="20"/>
+				<textElement>
+					<font size="9" isBold="false" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[DATOS DE CREACIÓN ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="03b931c7-b694-482c-9601-6372fe3c0bf2" x="9" y="118" width="100" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Creado por	:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b551b209-16ed-4559-a9b8-2c6658e9b6a9" x="9" y="134" width="100" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha de Creación :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62eb8c51-cdc0-4125-90f4-1487dc15c0eb" x="9" y="150" width="100" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Usuario	:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="714d7b88-b4b1-4356-a5a6-ecce695709c2" x="9" y="166" width="100" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Password	:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0d3428b1-3b74-4911-8acd-33ab9d7d13fd" x="9" y="181" width="100" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Perfil	:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a6403932-1fef-409d-a26c-6d87fa6a69f4" x="109" y="118" width="252" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_asigna_acceso}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="75031853-dd70-470b-ac74-190bd93f1e80" x="109" y="134" width="46" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_acceso_usuario}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="2576ae14-e58a-42c7-9abf-88feb876daf0" x="109" y="150" width="130" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{login_acceso_usuario}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="be78da63-0e3e-4897-a44b-b53ae8938daf" x="109" y="166" width="130" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{password_acceso_usuario}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="e376b202-478a-4e3c-a88a-492ec43882a3" x="109" y="181" width="130" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_perfil}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="02cb732e-6e9f-42a7-a949-f8456ed3fd1c" x="11" y="204" width="528" height="38"/>
+				<textElement textAlignment="Justified">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Por su seguridad la contraseña que se da en este formulario es sólo a modo de primer ingreso al sistema, luego de lo cual deberá modificarla. Cada usuario es el único responsable de la administración, gestión y resguardo de su contraseña de acceso, la cual es personal e intransferible, siendo que su divulgación será de su exclusiva responsabilidad.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="88e08299-d6f4-4383-af51-6ce332baff04" x="84" y="256" width="100" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ENTREGA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="82dcaf2f-b402-472c-bc01-5962108eee68" x="373" y="256" width="100" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RECIBE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9202b679-6c03-450c-bfa1-67ff8c4ac033" x="21" y="326" width="100" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[C.I. :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1342d840-1f19-4bf1-ade7-b7abe13ba048" x="21" y="342" width="100" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8c1bfd6b-56b7-4c42-b1a2-9bdf8493a35e" x="21" y="310" width="100" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7ae9af88-635a-4bab-9f56-ce9e05a48879" x="303" y="342" width="100" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="78da424a-dc41-478b-8e7f-f40d457f8339" x="303" y="310" width="100" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ad77c38f-7983-4b1f-be8c-c00684758919" x="303" y="326" width="100" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[C.I. :]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="55218502-9da9-4cd7-88fb-9f8e0d1066a6" x="352" y="310" width="189" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_usuario}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="76fa69b4-cfea-4e58-b3ff-a7c934f59d9b" x="333" y="326" width="100" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cedula_usuario}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="e1be92db-b44f-4f99-a88d-a2438ee0df8c" x="303" y="309" width="234" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="7b229d35-b796-428c-86f0-e2eaaa0506a3" x="20" y="308" width="234" height="1"/>
+			</line>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="12">
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="3157c546-a730-42f4-9a5c-5ca4c6c2a6c2" key="textField" x="329" y="0" width="170" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER} + " /"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
+				<reportElement uuid="b3fd00aa-e8ad-47db-852d-7ab9605f1eb9" key="textField" x="503" y="0" width="36" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="CP1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="59" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="18f5ddb8-ce6c-4e8d-a011-3bd3b1686f11" x="0" y="26" width="541" height="33"/>
+				<subreportParameter name="solicitud">
+					<subreportParameterExpression><![CDATA[$P{solicitud}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"/reportes/rep_reportes/rep_detalle_acceso.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</summary>
+</jasperReport>
