@@ -147,6 +147,7 @@ public class pre_solicitud_acceso extends Pantalla{
         tab_solicitud.getColumna("logining_acceso_usuario").setVisible(false);
         tab_solicitud.getColumna("fechact_acceso_usuario").setVisible(false);
         tab_solicitud.getColumna("loginact_acceso_usuario").setVisible(false);
+        tab_solicitud.getColumna("memorando_acceso_usuario").setVisible(false);
         
         tab_solicitud.getColumna("logining_solicitante").setValorDefecto(utilitario.getVariable("NICK"));
         
