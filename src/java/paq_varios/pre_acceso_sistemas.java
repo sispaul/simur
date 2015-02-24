@@ -14,30 +14,29 @@ import persistencia.Conexion;
  *
  * @author p-sistemas
  */
-public class pre_acceso_sistemas extends Pantalla{
-    
+public class pre_acceso_sistemas extends Pantalla {
+
     //Conexion a base
-    private Conexion con_postgres= new Conexion();
-    
+    private Conexion con_postgres = new Conexion();
     //Tablas
     private Tabla tab_sistemas = new Tabla();
     private Tabla tab_modulos = new Tabla();
     private Tabla tab_perfiles = new Tabla();
     private Tabla tab_consulta = new Tabla();
-    
+
     public pre_acceso_sistemas() {
-        
+
         //Para capturar el usuario que se encuntra utilizando la opción
         tab_consulta.setId("tab_consulta");
-        tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
+        tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA=" + utilitario.getVariable("IDE_USUA"));
         tab_consulta.setCampoPrimaria("IDE_USUA");
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
-        
+
         //cadena de conexión para otra base de datos
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         con_postgres.NOMBRE_MARCA_BASE = "postgres";
-        
+
         tab_sistemas.setId("tab_sistemas");
         tab_sistemas.setConexion(con_postgres);
         tab_sistemas.setTabla("sca_sistemas", "id_sistema", 1);
@@ -46,7 +45,7 @@ public class pre_acceso_sistemas extends Pantalla{
         PanelTabla tps = new PanelTabla();
         tps.setMensajeWarn("SISTEMAS DISPONIBLES");
         tps.setPanelTabla(tab_sistemas);
-        
+
         tab_modulos.setId("tab_modulos");
         tab_modulos.setConexion(con_postgres);
         tab_modulos.setTabla("sca_modulos", "id_modulo", 2);
@@ -55,7 +54,7 @@ public class pre_acceso_sistemas extends Pantalla{
         PanelTabla tpm = new PanelTabla();
         tpm.setMensajeWarn("MODULOS DEL SISTEMA");
         tpm.setPanelTabla(tab_modulos);
-        
+
         tab_perfiles.setId("tab_perfiles");
         tab_perfiles.setConexion(con_postgres);
         tab_perfiles.setTabla("sca_perfiles", "id_perfil", 3);
@@ -63,7 +62,7 @@ public class pre_acceso_sistemas extends Pantalla{
         PanelTabla tpp = new PanelTabla();
         tpp.setMensajeWarn("PERFILES DE LOS MODULOS DEL SISTEMA");
         tpp.setPanelTabla(tab_perfiles);
-        
+
         Division div_division = new Division();
         div_division.setId("div_division");
         div_division.dividir3(tps, tpm, tpp, "30%", "35%", "H");
@@ -122,5 +121,4 @@ public class pre_acceso_sistemas extends Pantalla{
     public void setTab_perfiles(Tabla tab_perfiles) {
         this.tab_perfiles = tab_perfiles;
     }
-    
 }
