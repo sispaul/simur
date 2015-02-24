@@ -28,11 +28,10 @@ import persistencia.Conexion;
  *
  * @author p-sistemas
  */
-public class pre_ingresoauto_maqui extends Pantalla{
+public class pre_ingresoauto_maqui extends Pantalla {
 
     //conexion a base de datos
     private Conexion con_postgres = new Conexion();
-    
     //para dibujar pantalla
     private Tabla set_marca = new Tabla();
     private Tabla set_tipo = new Tabla();
@@ -41,7 +40,6 @@ public class pre_ingresoauto_maqui extends Pantalla{
     private Tabla tab_tabla = new Tabla();
     private Tabla tab_consulta = new Tabla();
     private Tabla tab_accesorios = new Tabla();
-    
     //Dialogo de Ingreso de tablas
     private Dialogo dia_dialogo = new Dialogo();
     private Dialogo dia_dialogot = new Dialogo();
@@ -55,42 +53,38 @@ public class pre_ingresoauto_maqui extends Pantalla{
     private Grid gridt = new Grid();
     private Grid gridm = new Grid();
     private Grid gridv = new Grid();
-    
     //DECLARACION OBJETO TEXTO
     private Texto tmarca = new Texto();
     private Texto ttipo = new Texto();
     private Texto tmodelo = new Texto();
     private Texto tversion = new Texto();
-
     //buscar solicitud
     private AutoCompletar aut_busca = new AutoCompletar();
-    
     //Contiene todos los elementos de la plantilla
     private Panel pan_opcion = new Panel();
-    
     @EJB
     private manauto aCombustible = (manauto) utilitario.instanciarEJB(manauto.class);
-    
+
     public pre_ingresoauto_maqui() {
-        
+
         //permite utilizar los datos del usuario conectado 
         tab_consulta.setId("tab_consulta");
-        tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
+        tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA=" + utilitario.getVariable("IDE_USUA"));
         tab_consulta.setCampoPrimaria("IDE_USUA");
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
-        
+
         //cadena de conexión para otra base de datos
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         con_postgres.NOMBRE_MARCA_BASE = "postgres";
-        
+
         //ingreso de paramestros de vehiculo
         Boton bot_marca = new Boton();
         bot_marca.setValue("INSERTAR MARCA");
         bot_marca.setIcon("ui-icon-gear");
         bot_marca.setMetodo("ing_marcas");
         bar_botones.agregarBoton(bot_marca);
-        
+
         //para marca,tipo,modelo,version
         Grid gri_marcas = new Grid();
         gri_marcas.setColumns(6);
@@ -117,7 +111,7 @@ public class pre_ingresoauto_maqui extends Pantalla{
         dia_dialogo.getBot_aceptar().setMetodo("acep_marcas");
         grid_o.setColumns(4);
         agregarComponente(dia_dialogo);
-        
+
         set_marca.setId("set_marca");
         set_marca.setConexion(con_postgres);
         set_marca.setSql("SELECT mvmarca_id, mvmarca_descripcion FROM mvmarca_vehiculo order by mvmarca_descripcion");
@@ -125,7 +119,7 @@ public class pre_ingresoauto_maqui extends Pantalla{
         set_marca.setTipoSeleccion(false);
         set_marca.setRows(10);
         set_marca.dibujar();
-        
+
         Grid gri_tipos = new Grid();
         gri_tipos.setColumns(6);
         gri_tipos.getChildren().add(new Etiqueta("Ingrese Tipo"));
@@ -151,7 +145,7 @@ public class pre_ingresoauto_maqui extends Pantalla{
         dia_dialogot.getBot_aceptar().setMetodo("acepta_tipo");
         grid_t.setColumns(4);
         agregarComponente(dia_dialogot);
-        
+
         Grid gri_modelos = new Grid();
         gri_modelos.setColumns(6);
         gri_modelos.getChildren().add(new Etiqueta("Ingreso Modelo"));
@@ -177,7 +171,7 @@ public class pre_ingresoauto_maqui extends Pantalla{
         dia_dialogom.getBot_aceptar().setMetodo("acepta_modelo");
         grid_m.setColumns(4);
         agregarComponente(dia_dialogom);
-        
+
         Grid gri_versions = new Grid();
         gri_versions.setColumns(6);
         gri_versions.getChildren().add(new Etiqueta("Ingreso Versión"));
@@ -202,21 +196,21 @@ public class pre_ingresoauto_maqui extends Pantalla{
         dia_dialogov.getGri_cuerpo().setHeader(gri_versions);
         grid_v.setColumns(4);
         agregarComponente(dia_dialogov);
-        
+
         //Elemento principal
         pan_opcion.setId("pan_opcion");
         pan_opcion.setTransient(true);
         pan_opcion.setHeader("INGRESO DE VEHICULOS/MAQUINARIA");
         agregarComponente(pan_opcion);
-        
+
         dibujaIngreso();
-        
+
         //Auto busqueda para, verificar solicitud
         aut_busca.setId("aut_busca");
         aut_busca.setConexion(con_postgres);
-        aut_busca.setAutoCompletar("SELECT v.MVE_SECUENCIAL,mve_codigo,v.MVE_PLACA,m.MVMARCA_DESCRIPCION,o.MVMODELO_DESCRIPCION,v.MVE_CHASIS\n" +
-"FROM MV_VEHICULO AS v ,mvmarca_vehiculo AS m ,mvmodelo_vehiculo o\n" +
-"WHERE v.mvmarca_id = m.mvmarca_id and v.mvmodelo_id = o.mvmodelo_id");
+        aut_busca.setAutoCompletar("SELECT v.MVE_SECUENCIAL,mve_codigo,v.MVE_PLACA,m.MVMARCA_DESCRIPCION,o.MVMODELO_DESCRIPCION,v.MVE_CHASIS\n"
+                + "FROM MV_VEHICULO AS v ,mvmarca_vehiculo AS m ,mvmodelo_vehiculo o\n"
+                + "WHERE v.mvmarca_id = m.mvmarca_id and v.mvmodelo_id = o.mvmodelo_id");
         aut_busca.setMetodoChange("filtrarSolicitud");
         aut_busca.setSize(70);
         bar_botones.agregarComponente(new Etiqueta("Buscar Solicitud:"));
@@ -224,7 +218,7 @@ public class pre_ingresoauto_maqui extends Pantalla{
     }
 
     //PANTALLA DE REGISTRO DE INFORMACIÓN
-    public void dibujaIngreso(){
+    public void dibujaIngreso() {
         limpiarPanel();
         tab_tabla.setId("tab_tabla");
         tab_tabla.setConexion(con_postgres);
@@ -308,7 +302,7 @@ public class pre_ingresoauto_maqui extends Pantalla{
         tab_tabla.dibujar();
         PanelTabla tpg = new PanelTabla();
         tpg.setPanelTabla(tab_tabla);
-        
+
         tab_accesorios.setId("tab_accesorios");
         tab_accesorios.setConexion(con_postgres);
         tab_accesorios.setHeader("Accesorios");
@@ -335,14 +329,14 @@ public class pre_ingresoauto_maqui extends Pantalla{
         tab_accesorios.dibujar();
         PanelTabla tpa = new PanelTabla();
         tpa.setPanelTabla(tab_accesorios);
-        
+
         Division div = new Division();
         div.dividir2(tpg, tpa, "60%", "H");
         Grupo gru = new Grupo();
         gru.getChildren().add(div);
         pan_opcion.getChildren().add(gru);
     }
-    
+
     //limpia y borrar el contenido de la pantalla
     private void limpiarPanel() {
         //borra el contenido de la división central central
@@ -355,10 +349,10 @@ public class pre_ingresoauto_maqui extends Pantalla{
         limpiarPanel();
         utilitario.addUpdate("pan_opcion");
     }
-    
+
     //PARAMETROS PARA VEHICULO
     //MARCA
-    public void ing_marcas(){
+    public void ing_marcas() {
         dia_dialogo.Limpiar();
         dia_dialogo.setDialogo(grid);
         grid_o.getChildren().add(set_marca);
@@ -366,14 +360,14 @@ public class pre_ingresoauto_maqui extends Pantalla{
         set_marca.dibujar();
         dia_dialogo.dibujar();
     }
-    
-    public void insMarca(){
-            TablaGenerica tab_dato =aCombustible.get_DuplicaMarca(tmarca.getValue()+"");
-            if (!tab_dato.isEmpty()) {
-                utilitario.agregarMensaje("Marca ya se Encuentra Registrada", "");
-            }else{
-                if(tmarca.getValue()!= null && tmarca.toString().isEmpty()==false){
-                aCombustible.set_marca(tmarca.getValue()+"",utilitario.getVariable("NICK"));
+
+    public void insMarca() {
+        TablaGenerica tab_dato = aCombustible.get_DuplicaMarca(tmarca.getValue() + "");
+        if (!tab_dato.isEmpty()) {
+            utilitario.agregarMensaje("Marca ya se Encuentra Registrada", "");
+        } else {
+            if (tmarca.getValue() != null && tmarca.toString().isEmpty() == false) {
+                aCombustible.set_marca(tmarca.getValue() + "", utilitario.getVariable("NICK"));
                 tmarca.limpiar();
                 utilitario.agregarMensaje("Registro Guardado", "Marca");
                 set_marca.actualizar();
@@ -381,25 +375,26 @@ public class pre_ingresoauto_maqui extends Pantalla{
             }
         }
     }
-    
-    public void endMarca(){
+
+    public void endMarca() {
         if (set_marca.getValorSeleccionado() != null && set_marca.getValorSeleccionado().isEmpty() == false) {
-                aCombustible.deleteMarcas(Integer.parseInt(set_marca.getValorSeleccionado()));
-                utilitario.agregarMensaje("Registro eliminado", "Marca");
-                set_marca.actualizar();
+            aCombustible.deleteMarcas(Integer.parseInt(set_marca.getValorSeleccionado()));
+            utilitario.agregarMensaje("Registro eliminado", "Marca");
+            set_marca.actualizar();
         } else {
             utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
         }
     }
     //TIPO
-    public void acep_marcas(){
+
+    public void acep_marcas() {
         if (set_marca.getValorSeleccionado() != null && set_marca.getValorSeleccionado().isEmpty() == false) {
             dia_dialogot.Limpiar();
             dia_dialogot.setDialogo(gridt);
             grid_t.getChildren().add(set_tipo);
             set_tipo.setId("set_tipo");
             set_tipo.setConexion(con_postgres);
-            set_tipo.setSql("SELECT mvtipo_id,mvtipo_descripcion FROM mvtipo_vehiculo where mvmarca_id ="+set_marca.getValorSeleccionado()+" order by mvtipo_descripcion");
+            set_tipo.setSql("SELECT mvtipo_id,mvtipo_descripcion FROM mvtipo_vehiculo where mvmarca_id =" + set_marca.getValorSeleccionado() + " order by mvtipo_descripcion");
             set_tipo.getColumna("mvtipo_descripcion").setFiltro(true);
             set_tipo.setTipoSeleccion(false);
             set_tipo.setRows(10);
@@ -410,22 +405,22 @@ public class pre_ingresoauto_maqui extends Pantalla{
             utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
         }
     }
-    
-    public void insTipo(){
-        TablaGenerica tab_dato1 =aCombustible.get_DuplicaTipo(ttipo.getValue()+"",Integer.parseInt(set_marca.getValorSeleccionado()));
+
+    public void insTipo() {
+        TablaGenerica tab_dato1 = aCombustible.get_DuplicaTipo(ttipo.getValue() + "", Integer.parseInt(set_marca.getValorSeleccionado()));
         if (!tab_dato1.isEmpty()) {
             utilitario.agregarMensaje("Tipo ya se Encuentra Registrado", "");
-        }else{
-            if(ttipo.getValue()!= null && ttipo.toString().isEmpty()==false){
-                aCombustible.setTipo(ttipo.getValue()+"", utilitario.getVariable("NICK"), Integer.parseInt(set_marca.getValorSeleccionado()));
+        } else {
+            if (ttipo.getValue() != null && ttipo.toString().isEmpty() == false) {
+                aCombustible.setTipo(ttipo.getValue() + "", utilitario.getVariable("NICK"), Integer.parseInt(set_marca.getValorSeleccionado()));
                 ttipo.limpiar();
                 utilitario.agregarMensaje("Registro Guardado", "Tipo");
                 set_tipo.actualizar();
             }
         }
     }
-        
-    public void endTipo(){
+
+    public void endTipo() {
         if (set_tipo.getValorSeleccionado() != null && set_tipo.getValorSeleccionado().isEmpty() == false) {
             aCombustible.deleteTipos(Integer.parseInt(set_tipo.getValorSeleccionado()));
             utilitario.agregarMensaje("Registro eliminado", "Tipo");
@@ -435,91 +430,94 @@ public class pre_ingresoauto_maqui extends Pantalla{
         }
     }
     //MODELO
-    public void acepta_tipo(){
+
+    public void acepta_tipo() {
         if (set_tipo.getValorSeleccionado() != null && set_tipo.getValorSeleccionado().isEmpty() == false) {
             dia_dialogom.Limpiar();
             dia_dialogom.setDialogo(gridm);
             grid_m.getChildren().add(set_modelo);
             set_modelo.setId("set_modelo");
             set_modelo.setConexion(con_postgres);
-            set_modelo.setSql("SELECT mvmodelo_id,mvmodelo_descripcion FROM mvmodelo_vehiculo where mvtipo_id ="+set_tipo.getValorSeleccionado()+"  order by mvmodelo_descripcion");
+            set_modelo.setSql("SELECT mvmodelo_id,mvmodelo_descripcion FROM mvmodelo_vehiculo where mvtipo_id =" + set_tipo.getValorSeleccionado() + "  order by mvmodelo_descripcion");
             set_modelo.getColumna("mvmodelo_descripcion").setFiltro(true);
             set_modelo.setTipoSeleccion(false);
             set_modelo.setRows(10);
-            set_modelo.dibujar();dia_dialogom.setDialogo(grid_m);
+            set_modelo.dibujar();
+            dia_dialogom.setDialogo(grid_m);
             dia_dialogom.dibujar();
-        }else {
+        } else {
             utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
         }
     }
-    
-    public void insModelo(){
-        TablaGenerica tab_dato2 =aCombustible.get_DuplicaModelo(tmodelo.getValue()+"", Integer.parseInt(set_tipo.getValorSeleccionado()));
+
+    public void insModelo() {
+        TablaGenerica tab_dato2 = aCombustible.get_DuplicaModelo(tmodelo.getValue() + "", Integer.parseInt(set_tipo.getValorSeleccionado()));
         if (!tab_dato2.isEmpty()) {
             utilitario.agregarMensaje("Modelo ya se Encuentra Registrado", "");
-        }else{
-            if(tmodelo.getValue()!= null && tmodelo.toString().isEmpty()==false){
-                aCombustible.setModelo(tmodelo.getValue()+"",utilitario.getVariable("NICK"),Integer.parseInt(set_tipo.getValorSeleccionado()));
+        } else {
+            if (tmodelo.getValue() != null && tmodelo.toString().isEmpty() == false) {
+                aCombustible.setModelo(tmodelo.getValue() + "", utilitario.getVariable("NICK"), Integer.parseInt(set_tipo.getValorSeleccionado()));
                 tmodelo.limpiar();
                 utilitario.agregarMensaje("Registro Guardado", "Modelo");
                 set_modelo.actualizar();
             }
         }
     }
-    
-    public void endModelo(){
+
+    public void endModelo() {
         if (set_modelo.getValorSeleccionado() != null && set_modelo.getValorSeleccionado().isEmpty() == false) {
-                        aCombustible.deleteModelos(Integer.parseInt(set_modelo.getValorSeleccionado()));
-                        utilitario.agregarMensaje("Registro eliminado", "Modelo");
-                        set_modelo.actualizar();
+            aCombustible.deleteModelos(Integer.parseInt(set_modelo.getValorSeleccionado()));
+            utilitario.agregarMensaje("Registro eliminado", "Modelo");
+            set_modelo.actualizar();
         } else {
             utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
-        } 
+        }
     }
     //VERSIÓN
-    public void acepta_modelo(){
+
+    public void acepta_modelo() {
         if (set_modelo.getValorSeleccionado() != null && set_modelo.getValorSeleccionado().isEmpty() == false) {
             dia_dialogov.Limpiar();
             dia_dialogov.setDialogo(gridv);
             grid_v.getChildren().add(set_version);
             set_version.setId("set_version");
             set_version.setConexion(con_postgres);
-            set_version.setSql("SELECT mvversion_id,mvversion_descripcion FROM mvversion_vehiculo where mvmodelo_id ="+set_modelo.getValorSeleccionado()+" order by mvversion_descripcion");
+            set_version.setSql("SELECT mvversion_id,mvversion_descripcion FROM mvversion_vehiculo where mvmodelo_id =" + set_modelo.getValorSeleccionado() + " order by mvversion_descripcion");
             set_version.getColumna("mvversion_descripcion").setFiltro(true);
             set_version.setTipoSeleccion(false);
             set_version.setRows(10);
             set_version.dibujar();
             dia_dialogov.setDialogo(grid_v);
             dia_dialogov.dibujar();
-        }else {
-            utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
-        }
-    }
-    
-    public void insVersion(){
-            TablaGenerica tab_dato3 =aCombustible.get_DuplicaVersion(tversion.getValue()+"", Integer.parseInt(set_modelo.getValorSeleccionado()));
-            if (!tab_dato3.isEmpty()) {
-                utilitario.agregarMensaje("Modelo ya se Encuentra Registrado", "");
-            }else{
-                if(tversion.getValue()!= null && tversion.toString().isEmpty()==false){
-                    aCombustible.setVersion(tversion.getValue()+"",utilitario.getVariable("NICK"),Integer.parseInt(set_modelo.getValorSeleccionado()));
-                    tversion.limpiar();
-                    utilitario.agregarMensaje("Registro Guardado", "Versión");
-                    set_version.actualizar();
-                }
-            }
-    }
-    
-    public void endVersion(){
-        if (set_version.getValorSeleccionado() != null && set_version.getValorSeleccionado().isEmpty() == false) {
-                            aCombustible.deleteversion(Integer.parseInt(set_version.getValorSeleccionado()));
-                            utilitario.agregarMensaje("Registro eliminado", "Versión");
-                            set_version.actualizar();
         } else {
             utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
         }
     }
-    
+
+    public void insVersion() {
+        TablaGenerica tab_dato3 = aCombustible.get_DuplicaVersion(tversion.getValue() + "", Integer.parseInt(set_modelo.getValorSeleccionado()));
+        if (!tab_dato3.isEmpty()) {
+            utilitario.agregarMensaje("Modelo ya se Encuentra Registrado", "");
+        } else {
+            if (tversion.getValue() != null && tversion.toString().isEmpty() == false) {
+                aCombustible.setVersion(tversion.getValue() + "", utilitario.getVariable("NICK"), Integer.parseInt(set_modelo.getValorSeleccionado()));
+                tversion.limpiar();
+                utilitario.agregarMensaje("Registro Guardado", "Versión");
+                set_version.actualizar();
+            }
+        }
+    }
+
+    public void endVersion() {
+        if (set_version.getValorSeleccionado() != null && set_version.getValorSeleccionado().isEmpty() == false) {
+            aCombustible.deleteversion(Integer.parseInt(set_version.getValorSeleccionado()));
+            utilitario.agregarMensaje("Registro eliminado", "Versión");
+            set_version.actualizar();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
+        }
+    }
+
     //BUSQUEDA DE REGISTRO
     public void filtrarSolicitud(SelectEvent evt) {
         //Filtra el cliente seleccionado en el autocompletar
@@ -527,14 +525,15 @@ public class pre_ingresoauto_maqui extends Pantalla{
         aut_busca.onSelect(evt);
         dibujaIngreso();
     }
-    public void activarTipo(){
-        if(tab_tabla.getValor("MVE_TIPOCODIGO").equals("1")){
+
+    public void activarTipo() {
+        if (tab_tabla.getValor("MVE_TIPOCODIGO").equals("1")) {
             tab_tabla.getColumna("MVE_PLACA").setLectura(false);
             tab_tabla.setValor("MVE_PLACA", null);
             tab_tabla.getColumna("mve_codigo").setLectura(false);
             tab_tabla.setValor("mve_codigo", null);
             utilitario.addUpdate("tab_tabla");
-        }else{
+        } else {
             tab_tabla.getColumna("MVE_PLACA").setLectura(false);
             tab_tabla.setValor("MVE_PLACA", null);
             tab_tabla.getColumna("mve_codigo").setLectura(false);
@@ -542,64 +541,63 @@ public class pre_ingresoauto_maqui extends Pantalla{
             utilitario.addUpdate("tab_tabla");
         }
     }
-    
-    public void recorrido(){
-        if(tab_tabla.getValor("mve_kilometros_actual")!=null){
+
+    public void recorrido() {
+        if (tab_tabla.getValor("mve_kilometros_actual") != null) {
             utilitario.addUpdate("tab_tabla");
-       }else{
-        String minutos =tab_tabla.getValor("MVE_HOROMETRO").substring(5,7);
-        if(Integer.parseInt(minutos)<60){
-            utilitario.addUpdate("tab_tabla");
-        }else{
-            utilitario.agregarMensaje("Minutos No Deben Ser Mayor", "60");
-        }
+        } else {
+            String minutos = tab_tabla.getValor("MVE_HOROMETRO").substring(5, 7);
+            if (Integer.parseInt(minutos) < 60) {
+                utilitario.addUpdate("tab_tabla");
+            } else {
+                utilitario.agregarMensaje("Minutos No Deben Ser Mayor", "60");
+            }
         }
     }
-    
+
     //ACTUALIZAR COMBOS
-    public void cargarMarca(){
+    public void cargarMarca() {
         tab_tabla.getColumna("mvmarca_id").setCombo("SELECT MVMARCA_ID,MVMARCA_DESCRIPCION FROM mvmarca_vehiculo order by MVMARCA_DESCRIPCION");
-        utilitario.addUpdateTabla(tab_tabla,"mvmarca_id","");//actualiza solo componentes
+        utilitario.addUpdateTabla(tab_tabla, "mvmarca_id", "");//actualiza solo componentes
     }
-    
-    public void cargarTipo(){
-        tab_tabla.getColumna("mvtipo_id").setCombo("SELECT MVTIPO_ID,MVTIPO_DESCRIPCION FROM mvtipo_vehiculo where mvmarca_id ='"+tab_tabla.getValor("mvmarca_id")+"'");
-        utilitario.addUpdateTabla(tab_tabla,"mvtipo_id","");//actualiza solo componentes
+
+    public void cargarTipo() {
+        tab_tabla.getColumna("mvtipo_id").setCombo("SELECT MVTIPO_ID,MVTIPO_DESCRIPCION FROM mvtipo_vehiculo where mvmarca_id ='" + tab_tabla.getValor("mvmarca_id") + "'");
+        utilitario.addUpdateTabla(tab_tabla, "mvtipo_id", "");//actualiza solo componentes
     }
-    
-    public void cargarModelo(){
-        tab_tabla.getColumna("mvmodelo_id").setCombo("SELECT MVMODELO_ID,MVMODELO_DESCRIPCION FROM mvmodelo_vehiculo where mvtipo_id ='"+tab_tabla.getValor("mvtipo_id")+"'");
-        utilitario.addUpdateTabla(tab_tabla,"mvmodelo_id","");//actualiza solo componentes
+
+    public void cargarModelo() {
+        tab_tabla.getColumna("mvmodelo_id").setCombo("SELECT MVMODELO_ID,MVMODELO_DESCRIPCION FROM mvmodelo_vehiculo where mvtipo_id ='" + tab_tabla.getValor("mvtipo_id") + "'");
+        utilitario.addUpdateTabla(tab_tabla, "mvmodelo_id", "");//actualiza solo componentes
     }
-    
-    public void cargarVersion(){
-        tab_tabla.getColumna("mvversion_id").setCombo("SELECT mvversion_id,mvversion_descripcion FROM mvversion_vehiculo where mvmodelo_id='"+tab_tabla.getValor("mvmodelo_id")+"'");
-        utilitario.addUpdateTabla(tab_tabla,"mvversion_id","");//actualiza solo componentes
+
+    public void cargarVersion() {
+        tab_tabla.getColumna("mvversion_id").setCombo("SELECT mvversion_id,mvversion_descripcion FROM mvversion_vehiculo where mvmodelo_id='" + tab_tabla.getValor("mvmodelo_id") + "'");
+        utilitario.addUpdateTabla(tab_tabla, "mvversion_id", "");//actualiza solo componentes
     }
 
     //DATOS PARA CONDUCTOR
-    
-    public void conductor(){
-            TablaGenerica tab_dato =aCombustible.getChofer(tab_tabla.getValor("mve_cod_conductor"));
-            if (!tab_dato.isEmpty()) {
-                tab_tabla.setValor("mve_conductor", tab_dato.getValor("nombres"));
-                tab_tabla.setValor("mve_asignacion", tab_dato.getValor("activo"));
-                utilitario.addUpdate("tab_tabla");
-            }else{
-                utilitario.agregarMensajeInfo("No existen Datos", "");
-            }
+    public void conductor() {
+        TablaGenerica tab_dato = aCombustible.getChofer(tab_tabla.getValor("mve_cod_conductor"));
+        if (!tab_dato.isEmpty()) {
+            tab_tabla.setValor("mve_conductor", tab_dato.getValor("nombres"));
+            tab_tabla.setValor("mve_asignacion", tab_dato.getValor("activo"));
+            utilitario.addUpdate("tab_tabla");
+        } else {
+            utilitario.agregarMensajeInfo("No existen Datos", "");
+        }
     }
-    
+
     //COMPONENTES ADICIONALES ACTIVAR
-    public void activarCasilla(){
-        if(tab_tabla.getValor("mve_tipomedicion").equals("2")){
+    public void activarCasilla() {
+        if (tab_tabla.getValor("mve_tipomedicion").equals("2")) {
             tab_tabla.getColumna("mve_kilometros_actual").setLectura(true);
             tab_tabla.getColumna("mve_horometro").setLectura(false);
             tab_tabla.setValor("mve_tipo_ingreso", "M");
             tab_tabla.setValor("MVE_NUMIMR", "H");
             tab_tabla.getColumna("mve_rendimientogl_h").setLectura(false);
             utilitario.addUpdate("tab_tabla");
-        }else{
+        } else {
             tab_tabla.getColumna("mve_kilometros_actual").setLectura(false);
             tab_tabla.getColumna("mve_horometro").setLectura(true);
             tab_tabla.setValor("mve_tipo_ingreso", "A");
@@ -608,7 +606,7 @@ public class pre_ingresoauto_maqui extends Pantalla{
             utilitario.addUpdate("tab_tabla");
         }
     }
-    
+
     @Override
     public void insertar() {
         utilitario.getTablaisFocus().insertar();
@@ -616,9 +614,9 @@ public class pre_ingresoauto_maqui extends Pantalla{
 
     @Override
     public void guardar() {
-        if(tab_tabla.guardar()){
-            if(tab_accesorios.guardar()){
-                con_postgres.guardarPantalla(); 
+        if (tab_tabla.guardar()) {
+            if (tab_accesorios.guardar()) {
+                con_postgres.guardarPantalla();
             }
         }
     }
@@ -690,5 +688,4 @@ public class pre_ingresoauto_maqui extends Pantalla{
     public void setTab_accesorios(Tabla tab_accesorios) {
         this.tab_accesorios = tab_accesorios;
     }
-    
 }

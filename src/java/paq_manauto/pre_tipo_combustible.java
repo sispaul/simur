@@ -14,29 +14,28 @@ import persistencia.Conexion;
  *
  * @author p-sistemas
  */
-public class pre_tipo_combustible extends Pantalla{
+public class pre_tipo_combustible extends Pantalla {
 
     //conexion a base de datos
     private Conexion con_postgres = new Conexion();
-    
     //referencia de tabla
-    private Tabla  tab_tabla = new Tabla();
-    
+    private Tabla tab_tabla = new Tabla();
+
     public pre_tipo_combustible() {
         //cadena de conexión para otra base de datos
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         con_postgres.NOMBRE_MARCA_BASE = "postgres";
-        
+
         tab_tabla.setId("tab_tabla");
         tab_tabla.setConexion(con_postgres);
         tab_tabla.setTabla("mvtipo_combustible", "tipo_combustible_id", 1);
         tab_tabla.setHeader("TIPO DE COMBUSTIBLE / VALOR");
         tab_tabla.setTipoFormulario(true);
         tab_tabla.dibujar();
-        
+
         PanelTabla ptt = new PanelTabla();
         ptt.setPanelTabla(tab_tabla);
-        
+
         Division div = new Division();
         div.dividir1(ptt);
         agregarComponente(div);
@@ -73,5 +72,4 @@ public class pre_tipo_combustible extends Pantalla{
     public void setTab_tabla(Tabla tab_tabla) {
         this.tab_tabla = tab_tabla;
     }
-    
 }
