@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_acceso" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="208b57c6-1d21-49b3-a4b9-8ff323e9de54">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\p-sistemas\\Documents\\NetBeansProjects\\simur\\web\\reportes\\rep_reportes\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+s.id_solicitud_acceso,
+s.nombre_solicitante,
+s.nombre_usuario,
+s.direccion_usuario,
+s.funciones_usuario,
+s.observaciones_perfil_usuario,
+s.fecha_acceso_usuario,
+s.login_acceso_usuario,
+s.password_acceso_usuario,
+s.nombre_asigna_acceso,
+s.fechaing_solicitante,
+s.estado_solicitud,
+s.lectura_perfil_usuario,
+s.actualizacion_perfil_usuario,
+s.ingreso_perfil_usuario,
+i.nombre_sistema,
+"p".nombre_perfil,
+"p".detalle_perfil,
+"m".nombre_modulo,
+d.nombre_dir,
+"c".nombre_cargo,
+"a".nombre_cargo AS cargo_usu,
+s.cedula_solicitante,
+s.cedula_usuario
+FROM sca_solicitud_acceso AS s
+INNER JOIN sca_sistemas AS i ON s.id_sistema = i.id_sistema
+INNER JOIN sca_perfiles AS p ON s.id_perfil = p.id_perfil
+INNER JOIN sca_modulos AS m ON m.id_sistema = i.id_sistema AND s.id_modulo = m.id_modulo AND p.id_modulo = m.id_modulo
+INNER JOIN srh_direccion as d ON d.cod_direccion = cast(s.direccion_solicitante as int4)
+INNER JOIN srh_cargos as c ON c.cod_cargo = cast(s.cargo_solicitante as int4)
+INNER JOIN srh_cargos as a ON a.cod_cargo = cast(s.cargo_usuario as int4)
+]]>
+	</queryString>
+	<field name="id_solicitud_acceso" class="java.lang.Integer"/>
+	<field name="nombre_solicitante" class="java.lang.String"/>
+	<field name="nombre_usuario" class="java.lang.String"/>
+	<field name="direccion_usuario" class="java.lang.String"/>
+	<field name="funciones_usuario" class="java.lang.String"/>
+	<field name="observaciones_perfil_usuario" class="java.lang.String"/>
+	<field name="fecha_acceso_usuario" class="java.sql.Date"/>
+	<field name="login_acceso_usuario" class="java.lang.String"/>
+	<field name="password_acceso_usuario" class="java.lang.String"/>
+	<field name="nombre_asigna_acceso" class="java.lang.String"/>
+	<field name="fechaing_solicitante" class="java.sql.Date"/>
+	<field name="estado_solicitud" class="java.lang.String"/>
+	<field name="lectura_perfil_usuario" class="java.lang.Boolean"/>
+	<field name="actualizacion_perfil_usuario" class="java.lang.Boolean"/>
+	<field name="ingreso_perfil_usuario" class="java.lang.Boolean"/>
+	<field name="nombre_sistema" class="java.lang.String"/>
+	<field name="nombre_perfil" class="java.lang.String"/>
+	<field name="detalle_perfil" class="java.lang.String"/>
+	<field name="nombre_modulo" class="java.lang.String"/>
+	<field name="nombre_dir" class="java.lang.String"/>
+	<field name="nombre_cargo" class="java.lang.String"/>
+	<field name="cargo_usu" class="java.lang.String">
+		<fieldDescription><![CDATA[cargo_usu]]></fieldDescription>
+	</field>
+	<field name="cedula_solicitante" class="java.lang.String"/>
+	<field name="cedula_usuario" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="209" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="b810c477-525b-490f-9ed7-70ffd235967f" x="0" y="166" width="555" height="39"/>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "rep_solicitud_acceso.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement uuid="b52dc9cf-53ae-429a-b3ea-7f2a119e3e3a" x="74" y="25" width="398" height="24"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SOLICITUD DE CLAVE DE ACCESO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="73bcdadc-46f9-40f8-a890-6353b2c77a01" x="29" y="94" width="147" height="49"/>
+				<textElement textAlignment="Justified"/>
+				<text><![CDATA[Señores
+Dirección de TIC
+Presente.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="892749aa-6301-4748-94a3-351180fb9ad4" x="350" y="49" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Sangolquí,]]></text>
+			</staticText>
+		</band>
+	</title>
+	<summary>
+		<band height="86" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="a08e420f-b4fb-4026-9473-05454c38fe60" x="0" y="0" width="555" height="86"/>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "rep_detalle_acceso.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</summary>
+</jasperReport>
