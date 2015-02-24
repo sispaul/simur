@@ -25,38 +25,37 @@ import paq_sistema.aplicacion.Pantalla;
  *
  * @author p-sistemas
  */
-public class pre_licencia_anual extends Pantalla{
+public class pre_licencia_anual extends Pantalla {
     //declaracion de tablas
-private Tabla tab_establecimiento = new Tabla();
-private Tabla tab_licencia = new Tabla();
-private Tabla tab_consulta = new Tabla();
+    private Tabla tab_establecimiento = new Tabla();
+    private Tabla tab_licencia = new Tabla();
+    private Tabla tab_consulta = new Tabla();
 //autocompletar datos
-private SeleccionCalendario sec_rango = new SeleccionCalendario();
-private AutoCompletar aut_busca = new AutoCompletar();
+    private SeleccionCalendario sec_rango = new SeleccionCalendario();
+    private AutoCompletar aut_busca = new AutoCompletar();
 //configuracion reporte
-private Reporte rep_reporte = new Reporte();
-private SeleccionFormatoReporte sef_reporte = new SeleccionFormatoReporte();
+    private Reporte rep_reporte = new Reporte();
+    private SeleccionFormatoReporte sef_reporte = new SeleccionFormatoReporte();
+    private Panel pan_opcion = new Panel();
+    private Efecto efecto = new Efecto();
 
-private Panel pan_opcion = new Panel();
-private Efecto efecto = new Efecto();
-    
     public pre_licencia_anual() {
-        
+
         aut_busca.setId("aut_busca");
-        aut_busca.setAutoCompletar("SELECT e.CODIGO_ESTAB,e.IDENTIFICACION_ESTAB,e.CLAVE_CATASTRAL,e.NOMBRE_ESTAB,t.DESCRIPCION_TIPO\n" +
-                                    "FROM TUR_ESTABLECIMIENTOS e\n" +
-                                    "LEFT JOIN TUR_TIPO_ESTABLECIMIENTO t ON e.CODIGO_TIPO = t.CODIGO_TIPO\n" +
-                                    "LEFT JOIN TUR_LICENCIA l ON l.CODIGO_ESTAB = e.CODIGO_ESTAB AND l.CODIGO_TIPO = t.CODIGO_TIPO");
+        aut_busca.setAutoCompletar("SELECT e.CODIGO_ESTAB,e.IDENTIFICACION_ESTAB,e.CLAVE_CATASTRAL,e.NOMBRE_ESTAB,t.DESCRIPCION_TIPO\n"
+                + "FROM TUR_ESTABLECIMIENTOS e\n"
+                + "LEFT JOIN TUR_TIPO_ESTABLECIMIENTO t ON e.CODIGO_TIPO = t.CODIGO_TIPO\n"
+                + "LEFT JOIN TUR_LICENCIA l ON l.CODIGO_ESTAB = e.CODIGO_ESTAB AND l.CODIGO_TIPO = t.CODIGO_TIPO");
         aut_busca.setMetodoChange("buscarPersona");
         aut_busca.setSize(100);
-        
+
         rep_reporte.setId("rep_reporte");
-        rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");       
+        rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
         agregarComponente(rep_reporte);
-        
+
         bar_botones.agregarComponente(new Etiqueta("Buscador Personas:"));
         bar_botones.agregarComponente(aut_busca);
-        
+
         Boton bot_limpiar = new Boton();
         bot_limpiar.setIcon("ui-icon-cancel");
         bot_limpiar.setMetodo("limpiar");
@@ -65,7 +64,7 @@ private Efecto efecto = new Efecto();
         sef_reporte.setId("sef_reporte");
         agregarComponente(sef_reporte);
         bar_botones.agregarReporte();
-        
+
         tab_establecimiento.setId("tab_establecimiento");
         tab_establecimiento.setTabla("TUR_ESTABLECIMIENTOS", "CODIGO_ESTAB", 1);
         tab_establecimiento.getColumna("CODIGO_TIPO").setCombo("select CODIGO_TIPO,DESCRIPCION_TIPO from TUR_TIPO_ESTABLECIMIENTO");
@@ -86,13 +85,13 @@ private Efecto efecto = new Efecto();
         tab_establecimiento.setTipoFormulario(true);
         tab_establecimiento.getGrid().setColumns(6);
         tab_establecimiento.dibujar();
-        tab_establecimiento.agregarRelacion(tab_licencia); 
+        tab_establecimiento.agregarRelacion(tab_licencia);
         PanelTabla tabp = new PanelTabla();
         tabp.setMensajeWarn("DIRECCIÓN DE TURISMO");
         tabp.setPanelTabla(tab_establecimiento);
         tab_establecimiento.setStyle(null);
         tabp.setStyle("width:100%;overflow: auto;");
-        
+
         tab_licencia.setId("tab_licencia");
 //        tab_licencia.setHeader("LICENCIA ANUAL DE FUNCIONAMIENTO");
         tab_licencia.setTabla("TUR_LICENCIA", "CODIGO_LICEN", 2);
@@ -118,16 +117,16 @@ private Efecto efecto = new Efecto();
         quinde.setValue("imagenes/logo.png");
         tabp1.setWidth("100%");
         tabp1.getChildren().add(quinde);
-        
+
         pan_opcion.setId("pan_opcion");
         pan_opcion.setStyle("font-size:12px;color:black;text-align:left;");
-	pan_opcion.setTransient(true);
+        pan_opcion.setTransient(true);
         pan_opcion.setHeader("LICENCIA ANUAL DE FUNCIONAMIENTO");
-	efecto.setType("drop");
-	efecto.setSpeed(150);
-	efecto.setPropiedad("mode", "'show'");
-	efecto.setEvent("load");
-       
+        efecto.setType("drop");
+        efecto.setSpeed(150);
+        efecto.setPropiedad("mode", "'show'");
+        efecto.setEvent("load");
+
         pan_opcion.getChildren().add(efecto);
 //        pan_opcion.getChildren().add(quinde);
         pan_opcion.getChildren().add(tabp1);
@@ -136,7 +135,7 @@ private Efecto efecto = new Efecto();
 
         agregarComponente(div);
         tab_consulta.setId("tab_consulta");
-        tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
+        tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA=" + utilitario.getVariable("IDE_USUA"));
         tab_consulta.setCampoPrimaria("IDE_USUA");
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
@@ -145,30 +144,30 @@ private Efecto efecto = new Efecto();
 //        tab_licencia.getColumna("CODIGO_TIPO").setCombo("select CODIGO_TIPO,DESCRIPCION_TIPO from TUR_TIPO_ESTABLECIMIENTO WHERE CODIGO_TIPO ="+tab_establecimiento.getValor("CODIGO_TIPO"));
 //        utilitario.addUpdateTabla(tab_licencia,"CODIGO_TIPO","");//actualiza solo componentes
 //    }
-@Override
+    @Override
     public void aceptarReporte() {
-              //los parametros de este reporte
-             Map p_parametros = new HashMap();
+        //los parametros de este reporte
+        Map p_parametros = new HashMap();
         if (rep_reporte.getReporteSelecionado().equals("LICENCIA ANUAL DE FUNCIONAMIENTO")) {
             if (tab_establecimiento.getValorSeleccionado() != null) {
-                    p_parametros.put("clave", tab_establecimiento.getValor("CLAVE_CATASTRAL"));
-                    p_parametros.put("id",tab_establecimiento.getValor("IDENTIFICACION_ESTAB"));
-                    p_parametros.put("p_nomresp", tab_consulta.getValor("NICK_USUA")+"");
-                    rep_reporte.cerrar();
-                    sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                    sef_reporte.dibujar();
-                } else {
+                p_parametros.put("clave", tab_establecimiento.getValor("CLAVE_CATASTRAL"));
+                p_parametros.put("id", tab_establecimiento.getValor("IDENTIFICACION_ESTAB"));
+                p_parametros.put("p_nomresp", tab_consulta.getValor("NICK_USUA") + "");
+                rep_reporte.cerrar();
+                sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                sef_reporte.dibujar();
+            } else {
                 utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
             }
         }
-        
+
     }
-    
+
     @Override
     public void abrirListaReportes() {
         rep_reporte.dibujar();
-    }    
-    
+    }
+
     public void buscarPersona(SelectEvent evt) {
         aut_busca.onSelect(evt);
         if (aut_busca.getValor() != null) {
@@ -176,15 +175,16 @@ private Efecto efecto = new Efecto();
             utilitario.addUpdate("tab_establecimiento");
         }
     }
-        public void limpiar() {
+
+    public void limpiar() {
         aut_busca.limpiar();
         utilitario.addUpdate("aut_busca");
     }
 
     @Override
-    public void insertar() {    
+    public void insertar() {
         utilitario.getTablaisFocus().insertar();
-        
+
     }
 
     @Override
@@ -252,5 +252,4 @@ private Efecto efecto = new Efecto();
     public void setSef_reporte(SeleccionFormatoReporte sef_reporte) {
         this.sef_reporte = sef_reporte;
     }
-    
 }

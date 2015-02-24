@@ -34,34 +34,34 @@ public class pre_funcionamiento extends Pantalla {
     private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
 //obejto tabla usuario
     private Tabla tab_consulta = new Tabla();
-    
+
     public pre_funcionamiento() {
-             
+
         sec_rango.setId("sec_rango");
         sec_rango.getBot_aceptar().setMetodo("aceptarReporte");
         sec_rango.setFechaActual();
         agregarComponente(sec_rango);
 
         aut_busca.setId("aut_busca");
-        aut_busca.setAutoCompletar("SELECT\n" +
-                                                "CODIGO_FUN,\n" +
-                                                "CEDULA_REPRESENTANTE,\n" +
-                                                "CLAVE_CATASTRAL,\n" +
-                                                "NOMBRE_ESTABLECIMIENTO,\n" +
-                                                "REPRESENTANTE\n" +
-                                                "\n" +
-                                                "FROM\n" +
-                                                "TUR_FUNCIONAMIENTO_ANUAL");
+        aut_busca.setAutoCompletar("SELECT\n"
+                + "CODIGO_FUN,\n"
+                + "CEDULA_REPRESENTANTE,\n"
+                + "CLAVE_CATASTRAL,\n"
+                + "NOMBRE_ESTABLECIMIENTO,\n"
+                + "REPRESENTANTE\n"
+                + "\n"
+                + "FROM\n"
+                + "TUR_FUNCIONAMIENTO_ANUAL");
         aut_busca.setMetodoChange("buscarPersona");
         aut_busca.setSize(70);
-        
+
         rep_reporte.setId("rep_reporte");
-        rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");       
+        rep_reporte.getBot_aceptar().setMetodo("aceptarReporte");
         agregarComponente(rep_reporte);
-        
+
         bar_botones.agregarComponente(new Etiqueta("Buscador Personas:"));
         bar_botones.agregarComponente(aut_busca);
-        
+
         Boton bot_limpiar = new Boton();
         bot_limpiar.setIcon("ui-icon-cancel");
         bot_limpiar.setMetodo("limpiar");
@@ -85,7 +85,7 @@ public class pre_funcionamiento extends Pantalla {
         tab_tabla1.setTipoFormulario(true);
         tab_tabla1.getGrid().setColumns(4);
         tab_tabla1.dibujar();
-               
+
         PanelTabla pat_panel1 = new PanelTabla();
         pat_panel1.setMensajeWarn("LICENCIA ANUAL DE FUNCIONAMIENTO");
         pat_panel1.setPanelTabla(tab_tabla1);
@@ -95,46 +95,45 @@ public class pre_funcionamiento extends Pantalla {
         quinde.setValue("imagenes/logo.png");
         pat_panel1.setWidth("100%");
         pat_panel1.getChildren().add(quinde);
-        
+
         Division div_division = new Division();
         div_division.setId("div_division");
         div_division.dividir1(pat_panel1);
         agregarComponente(div_division);
-        
+
         //agregar usuario actual
-        bar_botones.agregarReporte();      
+        bar_botones.agregarReporte();
         tab_consulta.setId("tab_consulta");
-        tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
+        tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA=" + utilitario.getVariable("IDE_USUA"));
         tab_consulta.setCampoPrimaria("IDE_USUA");
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
 
 
     }
-    
-@Override
+
+    @Override
     public void aceptarReporte() {
-              //los parametros de este reporte
-             Map p_parametros = new HashMap();
+        //los parametros de este reporte
+        Map p_parametros = new HashMap();
         if (rep_reporte.getReporteSelecionado().equals("LICENCIA ANUAL")) {
             if (tab_tabla1.getValorSeleccionado() != null) {
-                    p_parametros.put("clave", tab_tabla1.getValor("CLAVE_CATASTRAL"));
-                    p_parametros.put("p_nomresp", tab_consulta.getValor("NICK_USUA")+"");
-                    rep_reporte.cerrar();
-                    sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                    sef_reporte.dibujar();
-                } else {
+                p_parametros.put("clave", tab_tabla1.getValor("CLAVE_CATASTRAL"));
+                p_parametros.put("p_nomresp", tab_consulta.getValor("NICK_USUA") + "");
+                rep_reporte.cerrar();
+                sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                sef_reporte.dibujar();
+            } else {
                 utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
             }
         }
-        
+
     }
-    
+
     @Override
     public void abrirListaReportes() {
         rep_reporte.dibujar();
     }
-
 
     public void buscarPersona(SelectEvent evt) {
         aut_busca.onSelect(evt);
@@ -142,7 +141,7 @@ public class pre_funcionamiento extends Pantalla {
 
             tab_tabla1.setFilaActual(aut_busca.getValor());
             utilitario.addUpdate("tab_tabla1");
-         
+
         }
     }
 
@@ -232,5 +231,4 @@ public class pre_funcionamiento extends Pantalla {
     public void setSec_rango(SeleccionCalendario sec_rango) {
         this.sec_rango = sec_rango;
     }
-    
 }

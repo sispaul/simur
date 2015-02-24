@@ -9,24 +9,24 @@ import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import paq_sistema.aplicacion.Pantalla;
 
-
 /**
  *
  * @author p-sistemas
  */
-public class pre_ingresocon extends Pantalla{
-private Tabla tab_categoria = new Tabla();
-private Tabla tab_tipo = new Tabla();
+public class pre_ingresocon extends Pantalla {
+
+    private Tabla tab_categoria = new Tabla();
+    private Tabla tab_tipo = new Tabla();
 
     public pre_ingresocon() {
-        
+
         tab_categoria.setId("tab_categoria");
         tab_categoria.setTabla("TUR_CATEGORIA", "ID_CATEGORIA", 1);
         tab_categoria.setHeader("CATEGORIAS DE ESTABLECIMIENTOS");
         tab_categoria.getColumna("ID_CATEGORIA").setNombreVisual("ID");
         tab_categoria.getColumna("DESCRIPCION_CATEG").setNombreVisual("DESCRIPCIÓN");
         tab_categoria.setTipoFormulario(true);
-        tab_categoria.agregarRelacion(tab_tipo);   
+        tab_categoria.agregarRelacion(tab_tipo);
         tab_categoria.dibujar();
         PanelTabla tabp = new PanelTabla();
         tabp.setPanelTabla(tab_categoria);
@@ -42,7 +42,7 @@ private Tabla tab_tipo = new Tabla();
 
         Division div = new Division();
         div.dividir2(tabp, tabp1, "40%", "h");
-        agregarComponente(div); 
+        agregarComponente(div);
     }
 
     @Override
@@ -52,8 +52,8 @@ private Tabla tab_tipo = new Tabla();
 
     @Override
     public void guardar() {
-       tab_categoria.guardar();
-       tab_tipo.guardar();
+        tab_categoria.guardar();
+        tab_tipo.guardar();
         guardarPantalla();
     }
 
@@ -77,5 +77,4 @@ private Tabla tab_tipo = new Tabla();
     public void setTab_tipo(Tabla tab_tipo) {
         this.tab_tipo = tab_tipo;
     }
-
 }
