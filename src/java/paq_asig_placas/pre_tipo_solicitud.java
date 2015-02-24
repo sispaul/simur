@@ -13,15 +13,15 @@ import paq_sistema.aplicacion.Pantalla;
  *
  * @author KEJA
  */
-public class pre_tipo_solicitud extends Pantalla{
+public class pre_tipo_solicitud extends Pantalla {
 
     private Tabla tab_tabla = new Tabla();
-    
+
     public pre_tipo_solicitud() {
         //Tabla
         //id a la tabla
         tab_tabla.setId("tab_tabla");
-        tab_tabla.setTabla("TRANS_TIPO_SOLICTUD", "IDE_TIPO_SOLICTUD",1);
+        tab_tabla.setTabla("TRANS_TIPO_SOLICTUD", "IDE_TIPO_SOLICTUD", 1);
         tab_tabla.setHeader("TIPOS DE SOLICTUD");
         tab_tabla.getColumna("DESCRIPCION_SOLICITUD").setMayusculas(true);
         tab_tabla.dibujar();
@@ -57,5 +57,4 @@ public class pre_tipo_solicitud extends Pantalla{
     public void setTab_tabla(Tabla tab_tabla) {
         this.tab_tabla = tab_tabla;
     }
-    
 }
