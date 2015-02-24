@@ -23,7 +23,8 @@ import persistencia.Conexion;
  * @author Paolo
  */
 public class pre_report extends Pantalla {
-    private Conexion con_postgres= new Conexion();
+
+    private Conexion con_postgres = new Conexion();
     private SeleccionTabla set_tabla = new SeleccionTabla();
     private SeleccionTabla set_tablaMat = new SeleccionTabla();
     private SeleccionTabla set_tablaDes = new SeleccionTabla();
@@ -34,21 +35,19 @@ public class pre_report extends Pantalla {
     private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
     private Map p_parametros = new HashMap();
     private Tabla tab_consulta = new Tabla();
-    
     @EJB
     private ServicioSeguridad ser_user = (ServicioSeguridad) utilitario.instanciarEJB(ServicioSeguridad.class);
 
-    
     public pre_report() {
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
-        con_postgres.NOMBRE_MARCA_BASE="postgres";
-        
+        con_postgres.NOMBRE_MARCA_BASE = "postgres";
+
         bar_botones.limpiar(); /// deja en blanco la barra de botones
         tex_busca.setId("tex_busca");
-        
+
         ///configurar el seleccion tabla Grupos
         set_tabla.setId("set_tabla");
-        
+
         Grid gri_busca = new Grid();
         gri_busca.setColumns(3);
         gri_busca.getChildren().add(tex_busca);
@@ -64,7 +63,7 @@ public class pre_report extends Pantalla {
         gri_busca.getChildren().add(bot_ver);
 
         set_tabla.getGri_cuerpo().setHeader(gri_busca);
-        
+
         set_tabla.setTitle("SELECCIONE GRUPO");
         set_tabla.setSeleccionTabla("SELECT id_grupo,descripcion from bodc_grupo", "id_grupo");
         //set_tabla.getTab_seleccion().getColumna("descripcion").setFiltro(true);
@@ -123,8 +122,8 @@ public class pre_report extends Pantalla {
         set_tablaDes.getBot_aceptar().setMetodo("aceptarReporte");
         agregarComponente(set_tablaDes);
 
-        
-         /**
+
+        /**
          * CONFIGURACIÓN DE ONJETO REPORTE
          */
         bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
@@ -132,14 +131,13 @@ public class pre_report extends Pantalla {
 
         sef_formato.setId("sef_formato");
         agregarComponente(sef_formato);
-        
+
         /**
          * PERSONA RESPONSABLE
          */
         //ser_user.getUsuario(utilitario.getVariable("IDE_USUA")).getValor("NICK_USUA");
-        
         tab_consulta.setId("tab_consulta");
-        tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
+        tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA=" + utilitario.getVariable("IDE_USUA"));
         tab_consulta.setCampoPrimaria("IDE_USUA");
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
@@ -169,11 +167,11 @@ public class pre_report extends Pantalla {
                     set_tabla.dibujar();
                 } else if (set_tabla.isVisible()) {
                     //los parametros de este reporte
-                    if (set_tabla.getValorSeleccionado() != null) {     
+                    if (set_tabla.getValorSeleccionado() != null) {
                         p_parametros = new HashMap();
                         //p_parametros.put("p_grupo", set_tabla.getSeleccionados());
                         p_parametros.put("p_grupo", set_tabla.getValorSeleccionado());
-                        p_parametros.put("p_nomresp", tab_consulta.getValor("NICK_USUA")+"");
+                        p_parametros.put("p_nomresp", tab_consulta.getValor("NICK_USUA") + "");
                         set_tabla.cerrar();
                         sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                         sef_formato.dibujar();
@@ -186,7 +184,7 @@ public class pre_report extends Pantalla {
                 if (rep_reporte.isVisible()) {
                     //los parametros de este reporte
                     p_parametros = new HashMap();
-                    p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
+                    p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA") + "");
                     rep_reporte.cerrar();
                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                     sef_formato.dibujar();
@@ -197,20 +195,20 @@ public class pre_report extends Pantalla {
                     rep_reporte.cerrar();
                     set_tabla.dibujar();
                 } else if (set_tabla.isVisible()) {
-                    if (set_tabla.getValorSeleccionado() != null) {     
-                    //los parametros de este reporte
-                    p_parametros = new HashMap();
-                    p_parametros.put("pide_grupo", set_tabla.getValorSeleccionado());
-                    p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA")+"");
-                    //utilitario.agregarMensaje("Reporte", rep_reporte.getPath());
-                    set_tabla.cerrar();
-                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                    sef_formato.dibujar();
+                    if (set_tabla.getValorSeleccionado() != null) {
+                        //los parametros de este reporte
+                        p_parametros = new HashMap();
+                        p_parametros.put("pide_grupo", set_tabla.getValorSeleccionado());
+                        p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA") + "");
+                        //utilitario.agregarMensaje("Reporte", rep_reporte.getPath());
+                        set_tabla.cerrar();
+                        sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                        sef_formato.dibujar();
                     } else {
                         utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
                     }
                 }
-             case "LISTA DE STOCK DE MATERIALES POR GRUPO(TODOS)":
+            case "LISTA DE STOCK DE MATERIALES POR GRUPO(TODOS)":
                 if (rep_reporte.isVisible()) {
                     //los parametros de este reporte
                     p_parametros = new HashMap();
@@ -220,26 +218,26 @@ public class pre_report extends Pantalla {
                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                     sef_formato.dibujar();
                 }
-                case "MOVIMIENTOS POR DESTINO":
+            case "MOVIMIENTOS POR DESTINO":
                 if (rep_reporte.isVisible()) {
                     rep_reporte.cerrar();
                     set_tablaDes.dibujar();
                 } else if (set_tablaDes.isVisible()) {
-                    if (set_tablaDes.getValorSeleccionado() != null) {     
-                    //los parametros de este reporte
-                    p_parametros = new HashMap();
-                    p_parametros.put("pdestino", Integer.parseInt(set_tablaDes.getValorSeleccionado()));
-                    p_parametros.put("pfec_inicial", "01/01/2013");
-                    p_parametros.put("pfec_final", "31/12/2013");
-                    p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA"));
-                    set_tablaDes.cerrar();
-                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                    sef_formato.dibujar();
+                    if (set_tablaDes.getValorSeleccionado() != null) {
+                        //los parametros de este reporte
+                        p_parametros = new HashMap();
+                        p_parametros.put("pdestino", Integer.parseInt(set_tablaDes.getValorSeleccionado()));
+                        p_parametros.put("pfec_inicial", "01/01/2013");
+                        p_parametros.put("pfec_final", "31/12/2013");
+                        p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA"));
+                        set_tablaDes.cerrar();
+                        sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                        sef_formato.dibujar();
                     } else {
                         utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
                     }
                 }
-             case "LISTA 2":
+            case "LISTA 2":
                 if (rep_reporte.isVisible()) {
                     //los parametros de este reporte
                     p_parametros = new HashMap();
@@ -249,11 +247,10 @@ public class pre_report extends Pantalla {
                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                     sef_formato.dibujar();
                 }
-               break;
+                break;
         }
     }
 
-  
     public Tabla getTab_consulta() {
         return tab_consulta;
     }
@@ -262,7 +259,6 @@ public class pre_report extends Pantalla {
         this.tab_consulta = tab_consulta;
     }
 
-    
     public Map getP_parametros() {
         return p_parametros;
     }
@@ -286,7 +282,7 @@ public class pre_report extends Pantalla {
 
     }
 
-      public void abrirSeleccionTabla() {
+    public void abrirSeleccionTabla() {
         set_tabla.dibujar();
     }
 

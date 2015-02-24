@@ -86,7 +86,7 @@ public class pre_recalcular extends Pantalla {
 //            System.out.println(i);
         }
         utilitario.agregarMensaje("se recalcularon las Existencias de", tab_articulos.getTotalFilas() + " articulos");
-        
+
     }
 
     @Override

@@ -14,25 +14,26 @@ import persistencia.Conexion;
  * @author Paolo
  */
 public class pre_auxi extends Pantalla {
-    private Conexion con_postgres= new Conexion();
+
+    private Conexion con_postgres = new Conexion();
     private Tabla tab_tabla = new Tabla();
 
     public pre_auxi() {
         //Persistencia a la postgres.
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
-        con_postgres.NOMBRE_MARCA_BASE="postgres";
-        
+        con_postgres.NOMBRE_MARCA_BASE = "postgres";
+
         tab_tabla.setId("tab_tabla");
         tab_tabla.setConexion(con_postgres);
         tab_tabla.setTabla("bodt_auxi", "codigo1", 1);
         tab_tabla.setHeader("AUXI - BODEGA");
         tab_tabla.dibujar();
-        
-        PanelTabla pat_panel=new PanelTabla();
+
+        PanelTabla pat_panel = new PanelTabla();
         pat_panel.setPanelTabla(tab_tabla);
-        
+
         agregarComponente(pat_panel);
-        
+
     }
 
     public Conexion getCon_postgres() {
@@ -58,8 +59,7 @@ public class pre_auxi extends Pantalla {
     public void eliminar() {
         tab_tabla.eliminar();
     }
-    
-    
+
     public Tabla getTab_tabla() {
         return tab_tabla;
     }
@@ -67,6 +67,4 @@ public class pre_auxi extends Pantalla {
     public void setTab_tabla(Tabla tab_tabla) {
         this.tab_tabla = tab_tabla;
     }
-    
-    
 }

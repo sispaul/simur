@@ -22,7 +22,8 @@ import persistencia.Conexion;
  * @author Administrador
  */
 public class pre_repvarios extends Pantalla {
-    private Conexion con_postgres= new Conexion();
+
+    private Conexion con_postgres = new Conexion();
     ///REPORTES
     private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
     private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
@@ -35,19 +36,18 @@ public class pre_repvarios extends Pantalla {
     //combo año
     private Combo cmb_anio = new Combo();
     //dialogos
-    private Dialogo dia_repmat= new Dialogo();
-    private Dialogo dia_karart= new Dialogo();
-    private Dialogo dia_iimat= new Dialogo();
+    private Dialogo dia_repmat = new Dialogo();
+    private Dialogo dia_karart = new Dialogo();
+    private Dialogo dia_iimat = new Dialogo();
     //Grids
     private Grid grid_anio = new Grid();
-    
 
     public pre_repvarios() {
-        
+
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
-        con_postgres.NOMBRE_MARCA_BASE="postgres";
+        con_postgres.NOMBRE_MARCA_BASE = "postgres";
         bar_botones.limpiar(); /// deja en blanco la barra de botones
-        
+
         Grid grid_pant = new Grid();
         grid_pant.setColumns(1);
         grid_pant.setStyle("text-align:center;position:absolute;top:270px;left:400px;");
@@ -60,7 +60,7 @@ public class pre_repvarios extends Pantalla {
         bot_lista.setMetodo("abrirListaReportes");
         grid_pant.getChildren().add(bot_lista);
         agregarComponente(grid_pant);
-        
+
         //Combo año
         cmb_anio.setId("cmb_anio");
         cmb_anio.setConexion(con_postgres);
@@ -70,7 +70,7 @@ public class pre_repvarios extends Pantalla {
         grid_anio.setWidth("300px");
         grid_anio.getChildren().add(new Etiqueta("Año Curso"));
         grid_anio.getChildren().add(cmb_anio);
-        
+
         ///configurar tabla Materiales
         set_tablaMat.setId("set_tablaMat");
         set_tablaMat.setConexion(con_postgres);
@@ -80,7 +80,7 @@ public class pre_repvarios extends Pantalla {
         set_tablaMat.setRows(10);
         set_tablaMat.setTipoSeleccion(false);
         set_tablaMat.dibujar();
-        
+
         //Configurando el dialogo REPORTE DE MATERIALES
         dia_repmat.setId("dia_repmat");
         dia_repmat.setTitle("BODEGA - REPORTE DE MATERIALES"); //titulo
@@ -88,21 +88,10 @@ public class pre_repvarios extends Pantalla {
         dia_repmat.setHeight("25%");//siempre porcentaje   alto
         dia_repmat.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_repmat.getBot_aceptar().setMetodo("aceptoDialogo");
-        
+
         agregarComponente(dia_repmat);
-        
-        
-         //Configurando el dialogo KARDEX DE ARTICULOS
-        dia_karart.setId("dia_karart");
-        dia_karart.setTitle("BODEGA - KARDEX DE ARTICULOS"); //titulo
-        dia_karart.setWidth("70%"); //siempre en porcentajes  ancho
-        dia_karart.setHeight("60%");//siempre porcentaje   alto
-        dia_karart.setResizable(false); //para que no se pueda cambiar el tamaño
-        dia_karart.getBot_aceptar().setMetodo("aceptoDialogo");
-        
-        agregarComponente(dia_karart);
-        
-        
+
+
         //Configurando el dialogo KARDEX DE ARTICULOS
         dia_karart.setId("dia_karart");
         dia_karart.setTitle("BODEGA - KARDEX DE ARTICULOS"); //titulo
@@ -110,22 +99,33 @@ public class pre_repvarios extends Pantalla {
         dia_karart.setHeight("60%");//siempre porcentaje   alto
         dia_karart.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_karart.getBot_aceptar().setMetodo("aceptoDialogo");
-        
+
         agregarComponente(dia_karart);
-        
-        
-         //Configurando el dialogo KARDEX DE ARTICULOS
+
+
+        //Configurando el dialogo KARDEX DE ARTICULOS
+        dia_karart.setId("dia_karart");
+        dia_karart.setTitle("BODEGA - KARDEX DE ARTICULOS"); //titulo
+        dia_karart.setWidth("70%"); //siempre en porcentajes  ancho
+        dia_karart.setHeight("60%");//siempre porcentaje   alto
+        dia_karart.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_karart.getBot_aceptar().setMetodo("aceptoDialogo");
+
+        agregarComponente(dia_karart);
+
+
+        //Configurando el dialogo KARDEX DE ARTICULOS
         dia_iimat.setId("dia_iimat");
         dia_iimat.setTitle("BODEGA - KARDEX DE ARTICULOS"); //titulo
         dia_iimat.setWidth("30%"); //siempre en porcentajes  ancho
         dia_iimat.setHeight("25%");//siempre porcentaje   alto
         dia_iimat.setResizable(false); //para que no se pueda cambiar el tamaño
         dia_iimat.getBot_aceptar().setMetodo("aceptoDialogo");
-        
+
         agregarComponente(dia_iimat);
-        
-        
-          /**
+
+
+        /**
          * CONFIGURACIÓN DE OBJETO REPORTE
          */
         bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
@@ -134,18 +134,18 @@ public class pre_repvarios extends Pantalla {
         sef_formato.setId("sef_formato");
         sef_formato.setConexion(con_postgres);
         agregarComponente(sef_formato);
-        
-        
-        
+
+
+
         /**
          * PERSONA RESPONSABLE
          */
         tab_consulta.setId("tab_consulta");
-        tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA="+utilitario.getVariable("IDE_USUA"));
+        tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA=" + utilitario.getVariable("IDE_USUA"));
         tab_consulta.setCampoPrimaria("IDE_USUA");
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
-        
+
         /**
          * PERSONA AÑO ACTUAL
          */
@@ -165,7 +165,7 @@ public class pre_repvarios extends Pantalla {
                 Etiqueta eti0 = new Etiqueta();
                 eti0.setStyle("font-size:18px;color:blue");
                 eti0.setValue("SELECCIONE AÑO");
-                cmb_anio.setValue(tab_consulta_ano.getValor("ano_curso")+"");
+                cmb_anio.setValue(tab_consulta_ano.getValor("ano_curso") + "");
                 dia_repmat.setDialogo(eti0);
                 dia_repmat.setDialogo(grid_anio);
                 dia_repmat.dibujar();
@@ -175,7 +175,7 @@ public class pre_repvarios extends Pantalla {
                 Etiqueta eti1 = new Etiqueta();
                 eti1.setStyle("font-size:18px;color:blue");
                 eti1.setValue("SELECCIONE AÑO");
-                cmb_anio.setValue(tab_consulta_ano.getValor("ano_curso")+"");
+                cmb_anio.setValue(tab_consulta_ano.getValor("ano_curso") + "");
                 dia_karart.setDialogo(eti1);
                 dia_karart.setDialogo(grid_anio);
                 Etiqueta eti2 = new Etiqueta();
@@ -191,7 +191,7 @@ public class pre_repvarios extends Pantalla {
                 Etiqueta eti3 = new Etiqueta();
                 eti3.setStyle("font-size:18px;color:blue");
                 eti3.setValue("SELECCIONE AÑO");
-                cmb_anio.setValue(tab_consulta_ano.getValor("ano_curso")+"");
+                cmb_anio.setValue(tab_consulta_ano.getValor("ano_curso") + "");
                 dia_iimat.setDialogo(eti3);
                 dia_iimat.setDialogo(grid_anio);
                 dia_iimat.dibujar();
@@ -216,109 +216,108 @@ public class pre_repvarios extends Pantalla {
                 break;
         }
     }
-    
-    
+
     public void aceptoDialogo() {
-        
+
         switch (rep_reporte.getNombre()) {
             case "Reporte de Materiales":
-                  //los parametros de este reporte
-                    if (cmb_anio.getValue() != null) {     
-                        p_parametros = new HashMap();
-                        //p_parametros.put("p_grupo", set_tabla.getSeleccionados());
-                        p_parametros.put("pide_ano", Integer.parseInt(cmb_anio.getValue()+""));
-                        dia_repmat.cerrar();
-                        sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                        sef_formato.dibujar();
-                    } else {
-                        utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
-                    }
-                
+                //los parametros de este reporte
+                if (cmb_anio.getValue() != null) {
+                    p_parametros = new HashMap();
+                    //p_parametros.put("p_grupo", set_tabla.getSeleccionados());
+                    p_parametros.put("pide_ano", Integer.parseInt(cmb_anio.getValue() + ""));
+                    dia_repmat.cerrar();
+                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_formato.dibujar();
+                } else {
+                    utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
+                }
+
                 break;
             case "Kardex de artículo":
 //                    /los parametros de este reporte
-                    if ((cmb_anio.getValue() != null) && (set_tablaMat.getValorSeleccionado() != null)) {     
-                        p_parametros = new HashMap();
-                        //p_parametros.put("p_grupo", set_tabla.getSeleccionados());
-                        p_parametros.put("pide_ano", Integer.parseInt(cmb_anio.getValue()+""));
-                        p_parametros.put("pide_mat_articulo", Integer.parseInt(set_tablaMat.getValorSeleccionado()+""));
-                        dia_karart.cerrar();
-                        sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                        sef_formato.dibujar();
-                    } else {
-                        utilitario.agregarMensaje("No se a seleccionado ningun registro", "");
-                    }
+                if ((cmb_anio.getValue() != null) && (set_tablaMat.getValorSeleccionado() != null)) {
+                    p_parametros = new HashMap();
+                    //p_parametros.put("p_grupo", set_tabla.getSeleccionados());
+                    p_parametros.put("pide_ano", Integer.parseInt(cmb_anio.getValue() + ""));
+                    p_parametros.put("pide_mat_articulo", Integer.parseInt(set_tablaMat.getValorSeleccionado() + ""));
+                    dia_karart.cerrar();
+                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_formato.dibujar();
+                } else {
+                    utilitario.agregarMensaje("No se a seleccionado ningun registro", "");
+                }
                 break;
             case "Inventario inicial de materiales":
-                    //los parametros de este reporte
-                    if (cmb_anio.getValue() != null) {     
-                        p_parametros = new HashMap();
-                        //p_parametros.put("p_grupo", set_tabla.getSeleccionados());
-                        p_parametros.put("pide_ano", Integer.parseInt(cmb_anio.getValue()+""));
-                        dia_iimat.cerrar();
-                        sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                        sef_formato.dibujar();
-                    } else {
-                        utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
-                    }
-                
-                break;
-             case "KARDEX GENERAL":
-                    //los parametros de este reporte
+                //los parametros de este reporte
+                if (cmb_anio.getValue() != null) {
                     p_parametros = new HashMap();
-                    p_parametros.put("pide_ano", Integer.parseInt(tab_consulta_ano.getValor("ano_curso"+"")));
-                    rep_reporte.cerrar();
+                    //p_parametros.put("p_grupo", set_tabla.getSeleccionados());
+                    p_parametros.put("pide_ano", Integer.parseInt(cmb_anio.getValue() + ""));
+                    dia_iimat.cerrar();
                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                     sef_formato.dibujar();
+                } else {
+                    utilitario.agregarMensaje("No se a seleccionado ningun registro ", "");
+                }
+
+                break;
+            case "KARDEX GENERAL":
+                //los parametros de este reporte
+                p_parametros = new HashMap();
+                p_parametros.put("pide_ano", Integer.parseInt(tab_consulta_ano.getValor("ano_curso" + "")));
+                rep_reporte.cerrar();
+                sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                sef_formato.dibujar();
                 break;
             case "DETALLE DE INGRESO POR CUENTAS":
-                    //los parametros de este reporte
-                    p_parametros = new HashMap();
-                    rep_reporte.cerrar();
-                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                    sef_formato.dibujar();
+                //los parametros de este reporte
+                p_parametros = new HashMap();
+                rep_reporte.cerrar();
+                sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                sef_formato.dibujar();
                 break;
             case "DETALLE DE INGRESOS":
-                    //los parametros de este reporte
-                    p_parametros = new HashMap();
-                    rep_reporte.cerrar();
-                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                    sef_formato.dibujar();
+                //los parametros de este reporte
+                p_parametros = new HashMap();
+                rep_reporte.cerrar();
+                sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                sef_formato.dibujar();
                 break;
             case "DETALLE DE EGRESOS":
-                    //los parametros de este reporte
-                    p_parametros = new HashMap();
-                    rep_reporte.cerrar();
-                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                    sef_formato.dibujar();
+                //los parametros de este reporte
+                p_parametros = new HashMap();
+                rep_reporte.cerrar();
+                sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                sef_formato.dibujar();
                 break;
             case "DETALLE GRUPOS DE MATERIALES":
-                    //los parametros de este reporte
-                    p_parametros = new HashMap();
-                    p_parametros.put("p_ano", Integer.parseInt(tab_consulta_ano.getValor("ano_curso"+"")));
-                    rep_reporte.cerrar();
-                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                    sef_formato.dibujar();
+                //los parametros de este reporte
+                p_parametros = new HashMap();
+                p_parametros.put("p_ano", Integer.parseInt(tab_consulta_ano.getValor("ano_curso" + "")));
+                rep_reporte.cerrar();
+                sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                sef_formato.dibujar();
                 break;
             case "TOTAL GRUPOS DE MATERIAL":
-                    //los parametros de este reporte
-                    p_parametros = new HashMap();
-                    p_parametros.put("p_ano", Integer.parseInt(tab_consulta_ano.getValor("ano_curso"+"")));
-                    rep_reporte.cerrar();
-                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                    sef_formato.dibujar();
+                //los parametros de este reporte
+                p_parametros = new HashMap();
+                p_parametros.put("p_ano", Integer.parseInt(tab_consulta_ano.getValor("ano_curso" + "")));
+                rep_reporte.cerrar();
+                sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                sef_formato.dibujar();
                 break;
-             
+
         }
-        
+
     }
-    
+
     @Override
     public void abrirListaReportes() {
         rep_reporte.dibujar();
 
     }
-    
+
     public Conexion getCon_postgres() {
         return con_postgres;
     }
@@ -386,5 +385,4 @@ public class pre_repvarios extends Pantalla {
     public void setCmb_anio(Combo cmb_anio) {
         this.cmb_anio = cmb_anio;
     }
-    
 }

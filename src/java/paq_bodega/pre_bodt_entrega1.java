@@ -20,32 +20,32 @@ import persistencia.Conexion;
  *
  * @author Administrador
  */
-public final class pre_bodt_entrega1 extends Pantalla{
-    
+public final class pre_bodt_entrega1 extends Pantalla {
+
     private Conexion con_postgres = new Conexion();
     private Tabla tab_cab_cons = new Tabla();
     private Tabla tab_det_egre = new Tabla();
     private Tabla tab_material = new Tabla();
     private Grid grid = new Grid();
     //Dialogos
-    private Dialogo dia_dialogo= new Dialogo();
+    private Dialogo dia_dialogo = new Dialogo();
     //private ListaSeleccion lista_seleccio = new ListaSeleccion();
-     @EJB
+    @EJB
     private bodt_egreso egr_bodega = (bodt_egreso) utilitario.instanciarEJB(bodt_egreso.class);
-    
+
     public pre_bodt_entrega1() {
-         //Persistencia a la postgres.
+        //Persistencia a la postgres.
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         con_postgres.NOMBRE_MARCA_BASE = "postgres";
-        
-                /**
+
+        /**
          * PERSONA AÑO ACTUAL
          */
-        TablaGenerica tab_consulta_ano=new TablaGenerica();
+        TablaGenerica tab_consulta_ano = new TablaGenerica();
         tab_consulta_ano.setConexion(con_postgres);
         tab_consulta_ano.setSql("select ano_curso,ano_curso from conc_ano where actual='A'");
         tab_consulta_ano.ejecutarSql();
-        
+
         grid.setColumns(4);
         tab_cab_cons.setId("tab_cab_cons");
         tab_cab_cons.setConexion(con_postgres);
@@ -76,10 +76,10 @@ public final class pre_bodt_entrega1 extends Pantalla{
         tab_cab_cons.agregarRelacion(tab_det_egre); ///relación        
         tab_cab_cons.getGrid().setColumns(4);
         tab_cab_cons.dibujar();
-        
+
         PanelTabla tabp = new PanelTabla();
         tabp.setPanelTabla(tab_cab_cons);
-        
+
         tab_det_egre.setId("tab_det_egre");
         tab_det_egre.setConexion(con_postgres);
         //tab_det_egre.setTabla("bodt_egreso", "ide_bod_egreso", 2);
@@ -110,26 +110,26 @@ public final class pre_bodt_entrega1 extends Pantalla{
         agregarComponente(div);
 //        tab_cab_cons.setFocus();
 //        insertar();
-      
+
     }
 
     public void buscaMaterial(SelectEvent evt) {
         //aut_busca.onSelect(evt);
-        if (tab_det_egre.getValor("material")!= null) {
+        if (tab_det_egre.getValor("material") != null) {
             TablaGenerica tab_consulta = new TablaGenerica();
             tab_consulta.setConexion(con_postgres);
-            tab_consulta.setSql("select ide_bodt_articulo, bodc_material.ide_mat_bodega, bodc_material.ide_mat_bodega as material, ((existencia_inicial + ingreso_material) - egreso_material) as existencia, costo_actual from bodc_material INNER JOIN bodt_articulos on (bodc_material.ide_mat_bodega='"+ tab_det_egre.getValor("material") +"' and bodc_material.ide_mat_bodega=bodt_articulos.ide_mat_bodega)");
+            tab_consulta.setSql("select ide_bodt_articulo, bodc_material.ide_mat_bodega, bodc_material.ide_mat_bodega as material, ((existencia_inicial + ingreso_material) - egreso_material) as existencia, costo_actual from bodc_material INNER JOIN bodt_articulos on (bodc_material.ide_mat_bodega='" + tab_det_egre.getValor("material") + "' and bodc_material.ide_mat_bodega=bodt_articulos.ide_mat_bodega)");
             tab_consulta.ejecutarSql();
             tab_det_egre.setValor("ide_mat_bodega", tab_consulta.getValor("ide_mat_bodega"));
             tab_det_egre.setValor("existencia", tab_consulta.getValor("existencia"));
             tab_det_egre.setValor("costo_actual", tab_consulta.getValor("costo_actual"));
             //tab_establecimiento.setFilaActual(aut_busca.getValor());
-        }else{
+        } else {
             tab_det_egre.setValor("existencia", "");
         }
         utilitario.addUpdate("tab_det_egre");
     }
-    
+
     public Tabla getTab_cab_cons() {
         return tab_cab_cons;
     }
@@ -145,13 +145,12 @@ public final class pre_bodt_entrega1 extends Pantalla{
     public void setTab_det_egre(Tabla tab_det_egre) {
         this.tab_det_egre = tab_det_egre;
     }
-    
-    
+
     @Override
     public void insertar() {
         utilitario.getTablaisFocus().insertar();
-        tab_cab_cons.setValor("doc_egreso",egr_bodega.egresoMax());
-        
+        tab_cab_cons.setValor("doc_egreso", egr_bodega.egresoMax());
+
 //        if (tab_cab_cons.isFocus()){
 //            tab_cab_cons.insertar();
 //            tab_cab_cons.setValor("doc_egreso",egr_bodega.egresoMax());
@@ -170,7 +169,7 @@ public final class pre_bodt_entrega1 extends Pantalla{
 
     @Override
     public void guardar() {
-        
+
         //tab_cab_cons.guardar();
         //tab_det_egre.guardar();
         guardarPantalla();
@@ -180,5 +179,4 @@ public final class pre_bodt_entrega1 extends Pantalla{
     public void eliminar() {
         utilitario.getTablaisFocus().eliminar();
     }
-    
 }
