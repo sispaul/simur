@@ -6,6 +6,7 @@ package paq_presupuestaria.ejb;
 
 import javax.ejb.Stateless;
 import java.util.regex.Pattern;
+
 /**
  *
  * @author p-sistemas
@@ -15,29 +16,29 @@ public class Letras_Numeros {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
-private final String[] UNIDADES = {"", "un ", "dos ", "tres ", "cuatro ", "cinco ", "seis ", "siete ", "ocho ", "nueve "};
+    private final String[] UNIDADES = {"", "un ", "dos ", "tres ", "cuatro ", "cinco ", "seis ", "siete ", "ocho ", "nueve "};
     private final String[] DECENAS = {"diez ", "once ", "doce ", "trece ", "catorce ", "quince ", "dieciseis ",
         "diecisiete ", "dieciocho ", "diecinueve", "veinte ", "treinta ", "cuarenta ",
         "cincuenta ", "sesenta ", "setenta ", "ochenta ", "noventa "};
     private final String[] CENTENAS = {"", "ciento ", "doscientos ", "trecientos ", "cuatrocientos ", "quinientos ", "seiscientos ",
         "setecientos ", "ochocientos ", "novecientos "};
 
-   public Letras_Numeros() {
-   }
+    public Letras_Numeros() {
+    }
 
     public String Convertir(String numero, boolean mayusculas) {
         String literal = "";
-        String parte_decimal;    
+        String parte_decimal;
         //si el numero utiliza (.) en lugar de (,) -> se reemplaza
         numero = numero.replace(".", ",");
         //si el numero no tiene parte decimal, se le agrega ,00
-        if(numero.indexOf(",")==-1){
+        if (numero.indexOf(",") == -1) {
             numero = numero + ",00";
         }
         //se valida formato de entrada -> 0,00 y 999 999 999,00
         if (Pattern.matches("\\d{1,9},\\d{1,2}", numero)) {
             //se divide el numero 0000000,00 -> entero y decimal
-            String Num[] = numero.split(",");            
+            String Num[] = numero.split(",");
             //de da formato al numero decimal
             parte_decimal = Num[1] + "/100";
             //se convierte el numero a literal
@@ -66,7 +67,6 @@ private final String[] UNIDADES = {"", "un ", "dos ", "tres ", "cuatro ", "cinco
     }
 
     /* funciones para convertir los numeros a literales */
-
     private String getUnidades(String numero) {// 1 - 9
         //si tuviera algun 0 antes se lo quita -> 09 = 9 o 009=9
         String num = numero.substring(numero.length() - 1);
@@ -90,16 +90,16 @@ private final String[] UNIDADES = {"", "un ", "dos ", "tres ", "cuatro ", "cinco
     }
 
     private String getCentenas(String num) {// 999 o 099
-        if( Integer.parseInt(num)>99 ){//es centena
+        if (Integer.parseInt(num) > 99) {//es centena
             if (Integer.parseInt(num) == 100) {//caso especial
                 return " cien ";
             } else {
-                 return CENTENAS[Integer.parseInt(num.substring(0, 1))] + getDecenas(num.substring(1));
-            } 
-        }else{//por Ej. 099 
+                return CENTENAS[Integer.parseInt(num.substring(0, 1))] + getDecenas(num.substring(1));
+            }
+        } else {//por Ej. 099 
             //se quita el 0 antes de convertir a decenas
-            return getDecenas(Integer.parseInt(num)+"");            
-        }        
+            return getDecenas(Integer.parseInt(num) + "");
+        }
     }
 
     private String getMiles(String numero) {// 999 999
@@ -107,10 +107,10 @@ private final String[] UNIDADES = {"", "un ", "dos ", "tres ", "cuatro ", "cinco
         String c = numero.substring(numero.length() - 3);
         //obtiene los miles
         String m = numero.substring(0, numero.length() - 3);
-        String n="";
+        String n = "";
         //se comprueba que miles tenga valor entero
         if (Integer.parseInt(m) > 0) {
-            n = getCentenas(m);           
+            n = getCentenas(m);
             return n + "mil " + getCentenas(c);
         } else {
             return "" + getCentenas(c);
@@ -124,12 +124,11 @@ private final String[] UNIDADES = {"", "un ", "dos ", "tres ", "cuatro ", "cinco
         //se obtiene los millones
         String millon = numero.substring(0, numero.length() - 6);
         String n = "";
-        if(millon.length()>1){
+        if (millon.length() > 1) {
             n = getCentenas(millon) + "millones ";
-        }else{
+        } else {
             n = getUnidades(millon) + "millon ";
         }
-        return n + getMiles(miles);        
+        return n + getMiles(miles);
     }
-    
 }
