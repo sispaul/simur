@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_detalle_acceso" language="groovy" pageWidth="595" pageHeight="842" columnWidth="575" leftMargin="0" rightMargin="20" topMargin="20" bottomMargin="0" uuid="5628f724-9f4b-41f5-b81f-5a105a22abf9">
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="29"/>
 	<parameter name="solicitud" class="java.lang.Integer"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<queryString>
@@ -80,9 +80,9 @@ where s.id_solicitud_acceso = $P{solicitud}]]>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="391" splitType="Stretch">
+		<band height="433" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="e856e8b7-dd06-44bf-8a90-e1c74cec521c" x="0" y="66" width="522" height="324"/>
+				<reportElement uuid="e856e8b7-dd06-44bf-8a90-e1c74cec521c" x="0" y="66" width="522" height="367"/>
 				<textElement textAlignment="Justified">
 					<font size="9"/>
 				</textElement>
@@ -107,9 +107,9 @@ where s.id_solicitud_acceso = $P{solicitud}]]>
 ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="aa12138b-33b5-447f-9e44-65bd34998183" x="0" y="30" width="291" height="20"/>
+				<reportElement uuid="aa12138b-33b5-447f-9e44-65bd34998183" x="0" y="30" width="357" height="20"/>
 				<textElement>
-					<font size="10" isBold="true" isUnderline="true"/>
+					<font fontName="SansSerif" size="12" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Condiciones y Recomendaciones Generales de Uso]]></text>
 			</staticText>
@@ -120,42 +120,42 @@ where s.id_solicitud_acceso = $P{solicitud}]]>
 			<staticText>
 				<reportElement uuid="fad49b6c-817d-410d-9877-43b531dc3a17" x="31" y="11" width="100" height="20"/>
 				<textElement>
-					<font size="9" isBold="true"/>
+					<font size="11" isBold="true" isItalic="true" isUnderline="false"/>
 				</textElement>
 				<text><![CDATA[Acepta]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="755da013-0e27-4289-8a36-c36951a1f6c9" x="47" y="65" width="100" height="20"/>
 				<textElement>
-					<font size="9"/>
+					<font size="10" isBold="true" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[Usuario:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="2f9e14f3-7ec5-4574-92a8-ec3fbcddddc3" x="47" y="85" width="100" height="20"/>
 				<textElement>
-					<font size="9"/>
+					<font size="10" isBold="true" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[C.I. :]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="4bc5d8de-d0c1-46f2-80e6-2de4286966e3" x="47" y="105" width="100" height="20"/>
 				<textElement>
-					<font size="9"/>
+					<font size="10" isBold="true" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[Fecha :]]></text>
 			</staticText>
 			<textField>
 				<reportElement uuid="848c358c-79de-45d0-8041-6ccf00de4663" x="96" y="65" width="240" height="20"/>
 				<textElement>
-					<font size="9"/>
+					<font size="9" isUnderline="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombre_usuario}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="a9964b58-a07f-4061-b8ae-6c281ae2201c" x="78" y="85" width="100" height="20"/>
 				<textElement>
-					<font size="9"/>
+					<font size="9" isUnderline="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cedula_usuario}]]></textFieldExpression>
 			</textField>
