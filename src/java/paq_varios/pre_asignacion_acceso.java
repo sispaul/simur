@@ -121,7 +121,7 @@ public class pre_asignacion_acceso extends Pantalla {
         set_solicitud.setSeleccionTabla("SELECT id_solicitud_acceso,fechaing_solicitante as fecha_solicitud,nombre_solicitante,direccion_solicitante,nombre_usuario\n"
                 + "FROM sca_solicitud_acceso\n"
                 + "where id_solicitud_acceso=-1\n"
-                + "ORDER BY fechaing_solicitante", "id_solicitud_acceso");
+                + "ORDER BY id_solicitud_acceso desc", "id_solicitud_acceso");
         set_solicitud.getTab_seleccion().getColumna("nombre_usuario").setLongitud(50);
         set_solicitud.getTab_seleccion().getColumna("nombre_solicitante").setLongitud(50);
         set_solicitud.getTab_seleccion().getColumna("fecha_solicitud").setLongitud(30);
@@ -155,7 +155,7 @@ public class pre_asignacion_acceso extends Pantalla {
         if (cmb_documento.getValue() != null && cmb_documento.getValue().toString().isEmpty() == false) {
             set_solicitud.getTab_seleccion().setSql("SELECT id_solicitud_acceso,fechaing_solicitante,nombre_solicitante,direccion_solicitante,nombre_usuario,id_sistema,id_modulo\n"
                     + "FROM sca_solicitud_acceso\n"
-                    + "where estado_solicitud = '" + cmb_documento.getValue() + "'");
+                    + "where estado_solicitud = '" + cmb_documento.getValue() + "' ORDER BY id_solicitud_acceso desc");
             set_solicitud.getTab_seleccion().ejecutarSql();
         } else {
             utilitario.agregarMensajeInfo("Debe seleccionar un opción", "");
@@ -208,8 +208,10 @@ public class pre_asignacion_acceso extends Pantalla {
         tab_solicitud.getColumna("estado_solicitud").setVisible(false);
         tab_solicitud.getColumna("cedula_solicitante").setVisible(false);
         tab_solicitud.getColumna("nombre_solicitante").setVisible(false);
-        tab_solicitud.getColumna("cedula_usuario").setVisible(false);
+//        tab_solicitud.getColumna("cedula_usuario").setVisible(false);
         tab_solicitud.getColumna("nombre_usuario").setVisible(false);
+//        tab_solicitud.getColumna("memorando_acceso_usuario").setVisible(false);
+        
         tab_solicitud.getColumna("codigo_asigna_acceso").setMetodoChange("datosUsuario");
 
         tab_solicitud.getColumna("bandera_solicitante").setEtiqueta();
