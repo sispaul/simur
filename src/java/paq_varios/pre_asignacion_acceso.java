@@ -199,7 +199,7 @@ public class pre_asignacion_acceso extends Pantalla {
         tab_solicitud.getColumna("loginact_solcitante").setVisible(false);
         tab_solicitud.getColumna("fechact_acceso_usuario").setVisible(false);
         tab_solicitud.getColumna("loginact_acceso_usuario").setVisible(false);
-        tab_solicitud.getColumna("fecha_acceso_usuario").setVisible(false);
+//        tab_solicitud.getColumna("fecha_acceso_usuario").setVisible(false);
         tab_solicitud.getColumna("logining_acceso_usuario").setVisible(false);
         tab_solicitud.getColumna("direccion_usuario").setVisible(false);
         tab_solicitud.getColumna("direccion_usuario").setVisible(false);
@@ -211,7 +211,7 @@ public class pre_asignacion_acceso extends Pantalla {
 //        tab_solicitud.getColumna("cedula_usuario").setVisible(false);
         tab_solicitud.getColumna("nombre_usuario").setVisible(false);
 //        tab_solicitud.getColumna("memorando_acceso_usuario").setVisible(false);
-        
+
         tab_solicitud.getColumna("codigo_asigna_acceso").setMetodoChange("datosUsuario");
 
         tab_solicitud.getColumna("bandera_solicitante").setEtiqueta();
@@ -256,7 +256,7 @@ public class pre_asignacion_acceso extends Pantalla {
             tab_solicitud.setValor("cedula_asigna_acceso", tab_dato.getValor("cedula_pass"));
             tab_solicitud.setValor("nombre_asigna_acceso", tab_dato.getValor("nombres"));
             tab_solicitud.setValor("logining_acceso_usuario", utilitario.getVariable("NICK"));
-            tab_solicitud.setValor("fecha_acceso_usuario", utilitario.getFechaActual());
+//            tab_solicitud.setValor("fecha_acceso_usuario", utilitario.getFechaActual());
             utilitario.addUpdate("tab_solicitud");
         } else {
             utilitario.agregarMensaje("Usuario Sin Datos", "");
@@ -300,7 +300,7 @@ public class pre_asignacion_acceso extends Pantalla {
         switch (rep_reporte.getNombre()) {
             case "SOLICITUD ACCESO":
                 p_parametros.put("solicitud", Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso") + ""));
-                p_parametros.put("fecha", utilitario.getFechaLarga(tab_solicitud.getValor("fecha_acceso_usuario") + ""));
+                p_parametros.put("fecha", utilitario.getFechaLarga(tab_solicitud.getValor("fechaing_solicitante") + ""));
                 rep_reporte.cerrar();
                 sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                 sef_formato.dibujar();
