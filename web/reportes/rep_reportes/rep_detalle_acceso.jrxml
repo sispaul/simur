@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_detalle_acceso" language="groovy" pageWidth="595" pageHeight="842" columnWidth="575" leftMargin="0" rightMargin="20" topMargin="20" bottomMargin="0" uuid="5628f724-9f4b-41f5-b81f-5a105a22abf9">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="29"/>
+	<property name="ireport.y" value="221"/>
 	<parameter name="solicitud" class="java.lang.Integer"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<queryString>
@@ -80,11 +80,11 @@ where s.id_solicitud_acceso = $P{solicitud}]]>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="433" splitType="Stretch">
+		<band height="452" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="e856e8b7-dd06-44bf-8a90-e1c74cec521c" x="0" y="66" width="522" height="367"/>
+				<reportElement uuid="e856e8b7-dd06-44bf-8a90-e1c74cec521c" x="0" y="66" width="522" height="386"/>
 				<textElement textAlignment="Justified">
-					<font size="9"/>
+					<font size="10"/>
 				</textElement>
 				<text><![CDATA[• El sistema ofrece a los usuarios una cuenta para ser utilizada bajo las condiciones que se establecen en el presente reglamento y por tiempo en que se mantenga su condición de tal en la institución.
 
