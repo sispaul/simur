@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_solicitud_acceso" language="groovy" pageWidth="595" pageHeight="842" columnWidth="541" leftMargin="34" rightMargin="20" topMargin="0" bottomMargin="20" uuid="fe8236fd-e961-457c-939e-7655f19ada20">
 	<property name="ireport.zoom" value="1.331000000000001"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="480"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="fecha" class="java.lang.String"/>
 	<parameter name="solicitud" class="java.lang.Integer"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
@@ -91,7 +91,7 @@ Presente.]]></text>
 				<text><![CDATA[SOLICITUD DE CLAVE DE ACCESO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="7f38bbf3-ae22-44c7-920f-7c6319443915" x="309" y="96" width="57" height="20"/>
+				<reportElement uuid="7f38bbf3-ae22-44c7-920f-7c6319443915" x="302" y="96" width="64" height="20"/>
 				<textElement verticalAlignment="Middle">
 					<font size="11"/>
 				</textElement>
@@ -101,8 +101,8 @@ Presente.]]></text>
 				<reportElement uuid="b9f7a734-24dd-443a-abc5-c8c4f0c67259" x="202" y="2" width="321" height="57"/>
 				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_sistema.png"]]></imageExpression>
 			</image>
-			<textField>
-				<reportElement uuid="01d43868-da38-4f47-8fec-8bbdd8395510" x="366" y="96" width="175" height="20"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="01d43868-da38-4f47-8fec-8bbdd8395510" positionType="Float" x="359" y="96" width="182" height="20"/>
 				<textElement verticalAlignment="Middle">
 					<font size="11"/>
 				</textElement>
