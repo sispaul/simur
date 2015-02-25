@@ -212,6 +212,7 @@ public class pre_solicitud_mantenimiento extends Pantalla {
         tab_tabla.getColumna("mca_responsable").setVisible(false);
         tab_tabla.getColumna("mca_motivo_anulacion").setVisible(false);
         tab_tabla.getColumna("mca_secuencial_sol").setVisible(false);
+        tab_tabla.getColumna("mca_tipo_registro").setVisible(false);
         tab_tabla.setTipoFormulario(true);
         tab_tabla.getGrid().setColumns(2);
         tab_tabla.dibujar();
@@ -269,6 +270,7 @@ public class pre_solicitud_mantenimiento extends Pantalla {
                 tab_tabla.setValor("mca_responsable", tab_datoa.getValor("mve_conductor"));
                 tab_tabla.setValor("mca_cod_responsable", tab_datoa.getValor("mve_cod_conductor"));
                 tab_tabla.setValor("mca_kmactual_hora", tab_datoa.getValor("rendimiento"));
+                tab_tabla.setValor("mca_tipo_registro", tab_datoa.getValor("mve_numimr"));
                 tab_tabla.setValor("mca_secuencial_sol", String.valueOf(Integer.parseInt(aCombustible.Maxsoli_vehiculo(Integer.parseInt(tab_tabla.getValor("mve_secuencial")))) + 1));
                 utilitario.addUpdate("tab_tabla");
             } else {
@@ -378,6 +380,7 @@ public class pre_solicitud_mantenimiento extends Pantalla {
 
     @Override
     public void eliminar() {
+        utilitario.getTablaisFocus().eliminar();
     }
 
     //    *CREACION DE REPORTES */
