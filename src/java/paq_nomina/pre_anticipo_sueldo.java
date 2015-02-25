@@ -334,6 +334,7 @@ public class pre_anticipo_sueldo extends Pantalla {
 
     public void verificaDetalle() {
         iAnticipos.CamAnticipoF();
+        utilitario.agregarMensaje("Cuotas Actualizadas", "");
 //        verificarSolicitud();
     }
 

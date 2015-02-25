@@ -303,7 +303,7 @@ public class pre_descuento extends Pantalla {
             Integer id_distributivo_roles;
             Integer ide_columna;
             tab_consulta.setConexion(con_postgres);
-            tab_consulta.setSql("select ano,ide_periodo,id_distributivo_roles,ide_columna from srh_descuento");
+            tab_consulta.setSql("select DISTINCT ano,ide_periodo,id_distributivo_roles,ide_columna from srh_descuento");
             tab_consulta.ejecutarSql();
             ano = Integer.parseInt(tab_consulta.getValor("ano"));
             ide_periodo = Integer.parseInt(tab_consulta.getValor("ide_periodo"));
