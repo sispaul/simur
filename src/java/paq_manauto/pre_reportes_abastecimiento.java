@@ -256,6 +256,7 @@ public class pre_reportes_abastecimiento extends Pantalla {
                     }
                     rep_reporte.cerrar();
                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    System.err.println(p_parametros);
                     sef_formato.dibujar();
                 } else {
                     utilitario.agregarMensajeError("Usuario", "No Disponible");
@@ -276,6 +277,7 @@ public class pre_reportes_abastecimiento extends Pantalla {
                         p_parametros.put("version", tab_datov.getValor("mvversion_descripcion") + "");
                         rep_reporte.cerrar();
                         sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                        System.err.println(p_parametros);
                         sef_formato.dibujar();
                     } else {
                         utilitario.agregarMensajeError("Placa", "No Disponible");
@@ -304,6 +306,7 @@ public class pre_reportes_abastecimiento extends Pantalla {
                     }
                     rep_reporte.cerrar();
                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    System.err.println(p_parametros);
                     sef_formato.dibujar();
                 } else {
                     utilitario.agregarMensajeError("Usuario", "No Disponible");
