@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_solicitud_acceso" language="groovy" pageWidth="595" pageHeight="842" columnWidth="541" leftMargin="34" rightMargin="20" topMargin="0" bottomMargin="20" uuid="fe8236fd-e961-457c-939e-7655f19ada20">
 	<property name="ireport.zoom" value="1.331000000000001"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="432"/>
 	<parameter name="fecha" class="java.lang.String"/>
 	<parameter name="solicitud" class="java.lang.Integer"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
@@ -90,23 +90,16 @@ Presente.]]></text>
 				</textElement>
 				<text><![CDATA[SOLICITUD DE CLAVE DE ACCESO]]></text>
 			</staticText>
-			<staticText>
-				<reportElement uuid="7f38bbf3-ae22-44c7-920f-7c6319443915" x="302" y="96" width="64" height="20"/>
-				<textElement verticalAlignment="Middle">
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Sangolquí,]]></text>
-			</staticText>
 			<image>
 				<reportElement uuid="b9f7a734-24dd-443a-abc5-c8c4f0c67259" x="202" y="2" width="321" height="57"/>
 				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_sistema.png"]]></imageExpression>
 			</image>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="01d43868-da38-4f47-8fec-8bbdd8395510" positionType="Float" x="359" y="96" width="182" height="20"/>
+				<reportElement uuid="01d43868-da38-4f47-8fec-8bbdd8395510" positionType="Float" x="303" y="96" width="238" height="20"/>
 				<textElement verticalAlignment="Middle">
 					<font size="11"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{fecha}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Sangolquí, "+$P{fecha}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -150,61 +143,33 @@ Es completa responsabilidad del usuario mantener la confidencialidad de la contr
 	</columnHeader>
 	<detail>
 		<band height="368">
-			<staticText>
-				<reportElement uuid="e0a09446-e004-4750-846b-e8ffac5e1480" x="7" y="31" width="87" height="20"/>
-				<textElement>
-					<font fontName="SansSerif" size="11" isBold="true" isItalic="true" isUnderline="false"/>
-				</textElement>
-				<text><![CDATA[Solicitante:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="25f4bd37-dfee-4268-bd64-8ae6e46a8cb9" x="292" y="31" width="60" height="20"/>
-				<textElement>
-					<font fontName="SansSerif" size="11" isBold="true" isItalic="true" isUnderline="false"/>
-				</textElement>
-				<text><![CDATA[Usuario: ]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="152e0dcf-2ed0-48b4-a844-8a570a63b91d" x="7" y="47" width="60" height="20"/>
-				<textElement>
-					<font fontName="SansSerif" size="11" isBold="true" isItalic="true" isUnderline="false"/>
-				</textElement>
-				<text><![CDATA[C.I.:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="a925ac4d-1cac-4d09-81d2-0c9da93afda6" x="292" y="47" width="60" height="20"/>
-				<textElement>
-					<font fontName="SansSerif" size="11" isBold="true" isItalic="true" isUnderline="false"/>
-				</textElement>
-				<text><![CDATA[C.I.:]]></text>
-			</staticText>
 			<textField>
-				<reportElement uuid="6a4c1c45-9620-44f5-8015-dda3f17d6706" x="87" y="31" width="171" height="20"/>
+				<reportElement uuid="6a4c1c45-9620-44f5-8015-dda3f17d6706" x="7" y="33" width="247" height="20"/>
 				<textElement>
 					<font size="9" isBold="true" isUnderline="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{nombre_solicitante}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Solicitante: "+$F{nombre_solicitante}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="f86bcf78-8feb-4217-869c-1eda172bfd83" x="40" y="47" width="100" height="20"/>
+				<reportElement uuid="f86bcf78-8feb-4217-869c-1eda172bfd83" x="7" y="47" width="124" height="20"/>
 				<textElement>
-					<font size="9" isBold="true" isUnderline="false"/>
+					<font size="10" isBold="true" isUnderline="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cedula_solicitante}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["C.I.: "+$F{cedula_solicitante}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="e6633290-6365-4ad5-acdc-6e0f91310d7a" x="355" y="31" width="185" height="20"/>
+				<reportElement uuid="e6633290-6365-4ad5-acdc-6e0f91310d7a" x="292" y="33" width="245" height="20"/>
 				<textElement>
 					<font size="9" isBold="true" isUnderline="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{nombre_usuario}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Usuario: "+$F{nombre_usuario}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="a25b73e0-b858-4e4b-95db-1108d8480aae" x="325" y="47" width="100" height="20"/>
+				<reportElement uuid="a25b73e0-b858-4e4b-95db-1108d8480aae" x="292" y="47" width="123" height="20"/>
 				<textElement>
-					<font size="9" isBold="true" isUnderline="false"/>
+					<font size="10" isBold="true" isUnderline="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cedula_usuario}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["C.I.: "+$F{cedula_usuario}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement uuid="f0a92efd-08fd-47c6-9a35-2765ff4f0e2d" x="7" y="31" width="247" height="1"/>
@@ -229,75 +194,40 @@ Es completa responsabilidad del usuario mantener la confidencialidad de la contr
 				</textElement>
 				<text><![CDATA[DATOS DE CREACIÓN ]]></text>
 			</staticText>
-			<staticText>
-				<reportElement uuid="03b931c7-b694-482c-9601-6372fe3c0bf2" x="9" y="142" width="100" height="20"/>
-				<textElement>
-					<font fontName="SansSerif" size="12" isBold="true" isItalic="true" isUnderline="false"/>
-				</textElement>
-				<text><![CDATA[Creado por	:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="b551b209-16ed-4559-a9b8-2c6658e9b6a9" x="9" y="158" width="127" height="20"/>
-				<textElement>
-					<font fontName="SansSerif" size="12" isBold="true" isItalic="true" isUnderline="false"/>
-				</textElement>
-				<text><![CDATA[Fecha de Creación :]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="62eb8c51-cdc0-4125-90f4-1487dc15c0eb" x="9" y="174" width="100" height="20"/>
-				<textElement>
-					<font fontName="SansSerif" size="12" isBold="true" isItalic="true" isUnderline="false"/>
-				</textElement>
-				<text><![CDATA[Usuario	:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="714d7b88-b4b1-4356-a5a6-ecce695709c2" x="9" y="190" width="100" height="20"/>
-				<textElement>
-					<font fontName="SansSerif" size="12" isBold="true" isItalic="true" isUnderline="false"/>
-				</textElement>
-				<text><![CDATA[Password	:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="0d3428b1-3b74-4911-8acd-33ab9d7d13fd" x="9" y="205" width="100" height="20"/>
-				<textElement>
-					<font fontName="SansSerif" size="12" isBold="true" isItalic="true" isUnderline="false"/>
-				</textElement>
-				<text><![CDATA[Perfil	:]]></text>
-			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="a6403932-1fef-409d-a26c-6d87fa6a69f4" x="109" y="142" width="252" height="20"/>
+				<reportElement uuid="a6403932-1fef-409d-a26c-6d87fa6a69f4" x="11" y="142" width="529" height="20"/>
 				<textElement>
-					<font size="9" isBold="true" isUnderline="false"/>
+					<font size="11" isBold="true" isUnderline="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{nombre_asigna_acceso}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Creado por	: "+$F{nombre_asigna_acceso}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="75031853-dd70-470b-ac74-190bd93f1e80" x="136" y="158" width="46" height="20"/>
+				<reportElement uuid="75031853-dd70-470b-ac74-190bd93f1e80" x="11" y="158" width="191" height="20"/>
 				<textElement>
-					<font size="9" isBold="true" isUnderline="false"/>
+					<font size="11" isBold="true" isUnderline="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{fecha_acceso_usuario}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Fecha de Creación      : "+$F{fecha_acceso_usuario}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="2576ae14-e58a-42c7-9abf-88feb876daf0" x="109" y="174" width="145" height="20"/>
+				<reportElement uuid="2576ae14-e58a-42c7-9abf-88feb876daf0" x="11" y="174" width="422" height="20"/>
 				<textElement>
-					<font size="9" isBold="true" isUnderline="false"/>
+					<font size="11" isBold="true" isUnderline="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{login_acceso_usuario}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Usuario	: "+$F{login_acceso_usuario}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="be78da63-0e3e-4897-a44b-b53ae8938daf" x="109" y="190" width="149" height="20"/>
+				<reportElement uuid="be78da63-0e3e-4897-a44b-b53ae8938daf" x="11" y="190" width="426" height="20"/>
 				<textElement>
-					<font size="9" isBold="true" isUnderline="false"/>
+					<font size="11" isBold="true" isUnderline="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{password_acceso_usuario}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Password	: "+$F{password_acceso_usuario}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="e376b202-478a-4e3c-a88a-492ec43882a3" x="109" y="205" width="130" height="20"/>
+				<reportElement uuid="e376b202-478a-4e3c-a88a-492ec43882a3" x="11" y="205" width="530" height="20"/>
 				<textElement>
-					<font size="9" isBold="true" isUnderline="false"/>
+					<font size="11" isBold="true" isUnderline="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{nombre_perfil}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Perfil	: "+$F{nombre_perfil}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="02cb732e-6e9f-42a7-a949-f8456ed3fd1c" x="11" y="229" width="525" height="55"/>
@@ -348,33 +278,19 @@ Es completa responsabilidad del usuario mantener la confidencialidad de la contr
 				</textElement>
 				<text><![CDATA[Fecha :]]></text>
 			</staticText>
-			<staticText>
-				<reportElement uuid="78da424a-dc41-478b-8e7f-f40d457f8339" x="303" y="323" width="100" height="20"/>
-				<textElement>
-					<font fontName="SansSerif" size="11" isBold="true" isItalic="true" isUnderline="false"/>
-				</textElement>
-				<text><![CDATA[Nombre: ]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="ad77c38f-7983-4b1f-be8c-c00684758919" x="303" y="336" width="100" height="20"/>
-				<textElement>
-					<font fontName="SansSerif" size="11" isBold="true" isItalic="true" isUnderline="false"/>
-				</textElement>
-				<text><![CDATA[C.I. :]]></text>
-			</staticText>
 			<textField>
-				<reportElement uuid="55218502-9da9-4cd7-88fb-9f8e0d1066a6" x="363" y="323" width="176" height="20"/>
+				<reportElement uuid="55218502-9da9-4cd7-88fb-9f8e0d1066a6" x="303" y="323" width="236" height="20"/>
 				<textElement>
-					<font fontName="SansSerif" size="9" isBold="true" isUnderline="false"/>
+					<font fontName="SansSerif" size="10" isBold="true" isUnderline="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{nombre_usuario}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Nombre:  "+$F{nombre_usuario}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="76fa69b4-cfea-4e58-b3ff-a7c934f59d9b" x="338" y="336" width="100" height="20"/>
+				<reportElement uuid="76fa69b4-cfea-4e58-b3ff-a7c934f59d9b" x="303" y="336" width="135" height="20"/>
 				<textElement>
-					<font fontName="SansSerif" size="9" isBold="true" isUnderline="false"/>
+					<font fontName="SansSerif" size="10" isBold="true" isUnderline="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cedula_usuario}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["C.I. : "+$F{cedula_usuario}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement uuid="e1be92db-b44f-4f99-a88d-a2438ee0df8c" x="303" y="321" width="234" height="1"/>
