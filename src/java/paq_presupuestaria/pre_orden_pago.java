@@ -137,7 +137,7 @@ public class pre_orden_pago extends Pantalla{
         tab_detalle.setSql("SELECT tes_ide_orden_pago,tes_numero_orden as numero_orden,tes_comprobante_egreso as numero_comprobante,\n" +
                 "(case when tes_proveedor is null then tes_empleado when tes_proveedor is not null then tes_proveedor end) AS beneficiario,\n" +
                 "tes_asunto as asunto,tes_valor as valor,tes_concepto as concepto,tes_acuerdo as acuerdo\n" +
-                "FROM tes_orden_pago where tes_estado_doc = '1' and tes_anio='"+utilitario.getAnio(utilitario.getFechaActual())+"'");
+                "FROM tes_orden_pago where tes_estado_doc = '1' and tes_anio='"+utilitario.getAnio(utilitario.getFechaActual())+"' order by  numero_orden desc");
         tab_detalle.getColumna("tes_ide_orden_pago").setVisible(false);
         tab_detalle.getColumna("numero_orden").setFiltroContenido();
         tab_detalle.getColumna("beneficiario").setFiltroContenido();
