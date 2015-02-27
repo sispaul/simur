@@ -5,6 +5,7 @@
 package paq_manauto;
 
 import framework.aplicacion.TablaGenerica;
+import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
@@ -30,6 +31,9 @@ public class pre_detalle_mantenimiento extends Pantalla {
     private Tabla tab_detalle = new Tabla();
     //Declaracion Texto
     private Texto ttotal = new Texto();
+    //buscar solicitud
+    private AutoCompletar aut_busca = new AutoCompletar();
+    
     @EJB
     private manauto aCombustible = (manauto) utilitario.instanciarEJB(manauto.class);
 
@@ -40,24 +44,67 @@ public class pre_detalle_mantenimiento extends Pantalla {
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         con_postgres.NOMBRE_MARCA_BASE = "postgres";
 
+         //Auto busqueda para, verificar solicitud
+        aut_busca.setId("aut_busca");
+        aut_busca.setConexion(con_postgres);
+        aut_busca.setAutoCompletar("SELECT m.mca_codigo,v.mve_placa,a.mvmarca_descripcion,t.mvtipo_descripcion,o.mvmodelo_descripcion\n"
+                + "FROM mvcab_mantenimiento m\n"
+                + "INNER JOIN mv_vehiculo v ON m.mve_secuencial = v.mve_secuencial\n"
+                + "INNER JOIN mvmarca_vehiculo a ON v.mvmarca_id = a.mvmarca_id\n"
+                + "INNER JOIN mvmodelo_vehiculo o ON v.mvmodelo_id = o.mvmodelo_id\n"
+                + "INNER JOIN mvtipo_vehiculo t ON t.mvmarca_id = a.mvmarca_id \n"
+                + "AND v.mvtipo_id = t.mvtipo_id \n"
+                + "AND o.mvtipo_id = t.mvtipo_id\n"
+                + "WHERE m.mca_estado_registro = 'Solicitud'");
+        aut_busca.setMetodoChange("filtrarSolicitud");
+        aut_busca.setSize(70);
+        bar_botones.agregarComponente(new Etiqueta("Buscar Solicitud:"));
+        bar_botones.agregarComponente(aut_busca);
+        
+        
         tab_cabecera.setId("tab_cabecera");
         tab_cabecera.setConexion(con_postgres);
-        tab_cabecera.setSql("SELECT c.mca_codigo,c.mca_secuencial,c.mca_tipo_mantenimiento,'Codigo_Placa:  '||v.mve_placa||'; Marca:  '||m.mvmarca_descripcion||'; Tipo:  '||\n"
-                + "t.tipo_combustible_descripcion||'; Modelo:  '||\n"
-                + "o.mvmodelo_descripcion||'; Versión: '||\n"
-                + "r.mvversion_descripcion as descripcion,\n"
-                + "c.mca_autorizado,\n"
-                + "c.mca_proveedor,\n"
-                + "c.mca_responsable,\n"
-                + "c.mca_detalle,\n"
-                + "c.mca_observacion\n"
-                + "FROM mvcab_mantenimiento c,mv_vehiculo v\n"
-                + "INNER JOIN mvmarca_vehiculo m ON v.mvmarca_id = m.mvmarca_id\n"
-                + "INNER JOIN mvtipo_combustible t ON v.tipo_combustible_id = t.tipo_combustible_id\n"
-                + "INNER JOIN mvmodelo_vehiculo o ON v.mvmodelo_id = o.mvmodelo_id\n"
-                + "INNER JOIN mvversion_vehiculo r ON r.mvmodelo_id = o.mvmodelo_id AND v.mvversion_id = r.mvversion_id\n"
-                + "WHERE c.mca_estado_registro = 'Solicitud' and c.mve_secuencial = v.mve_secuencial");
-        tab_cabecera.getColumna("mca_codigo").setVisible(false);
+//        tab_cabecera.setSql("SELECT c.mca_codigo,c.mca_secuencial,c.mca_tipo_mantenimiento,'Codigo_Placa:  '||v.mve_placa||'; Marca:  '||m.mvmarca_descripcion||'; Tipo:  '||\n"
+//                + "t.tipo_combustible_descripcion||'; Modelo:  '||\n"
+//                + "o.mvmodelo_descripcion||'; Versión: '||\n"
+//                + "r.mvversion_descripcion as descripcion,\n"
+//                + "c.mca_autorizado,\n"
+//                + "c.mca_proveedor,\n"
+//                + "c.mca_responsable,\n"
+//                + "c.mca_detalle,\n"
+//                + "c.mca_observacion\n"
+//                + "FROM mvcab_mantenimiento c,mv_vehiculo v\n"
+//                + "INNER JOIN mvmarca_vehiculo m ON v.mvmarca_id = m.mvmarca_id\n"
+//                + "INNER JOIN mvtipo_combustible t ON v.tipo_combustible_id = t.tipo_combustible_id\n"
+//                + "INNER JOIN mvmodelo_vehiculo o ON v.mvmodelo_id = o.mvmodelo_id\n"
+//                + "INNER JOIN mvversion_vehiculo r ON r.mvmodelo_id = o.mvmodelo_id AND v.mvversion_id = r.mvversion_id\n"
+//                + "WHERE c.mca_estado_registro = 'Solicitud' and c.mve_secuencial = v.mve_secuencial");
+//        tab_cabecera.getColumna("mca_codigo").setVisible(false);
+        tab_cabecera.setTabla("mvcab_mantenimiento", "mca_codigo", 1);
+        tab_cabecera.getColumna("mca_motivo_anulacion").setVisible(false);
+        tab_cabecera.getColumna("mca_periodo").setVisible(false);
+        tab_cabecera.getColumna("mca_anio").setVisible(false);
+        tab_cabecera.getColumna("mca_fechaborrado").setVisible(false);
+        tab_cabecera.getColumna("mca_loginborrado").setVisible(false);
+        tab_cabecera.getColumna("mca_estado_registro").setVisible(false);
+        tab_cabecera.getColumna("mca_fechactuali").setVisible(false);
+        tab_cabecera.getColumna("mca_loginactuali").setVisible(false);
+        tab_cabecera.getColumna("mca_loginingreso").setVisible(false);
+        tab_cabecera.getColumna("mca_tipo_registro").setVisible(false);
+        tab_cabecera.getColumna("mca_acotaciones").setVisible(false);
+        tab_cabecera.getColumna("mca_tipomedicion").setVisible(false);
+        tab_cabecera.getColumna("mca_kmanterior_hora").setVisible(false);
+        tab_cabecera.getColumna("mca_horainman").setVisible(false);
+        tab_cabecera.getColumna("mca_fechasaman").setVisible(false);
+        tab_cabecera.getColumna("mca_horasaman").setVisible(false);
+        tab_cabecera.getColumna("mca_secuencial").setVisible(false);
+        tab_cabecera.getColumna("mca_estado_tramite").setVisible(false);
+        tab_cabecera.getColumna("mca_secuencial_sol").setVisible(false);
+        tab_cabecera.getColumna("mca_monto").setVisible(false);
+        tab_cabecera.getColumna("mca_tiposol").setVisible(false);
+        tab_cabecera.getColumna("mca_cod_responsable").setVisible(false);
+        tab_cabecera.getColumna("mca_cod_proveedor").setVisible(false);
+        tab_cabecera.getColumna("mca_cod_autoriza").setVisible(false);
         tab_cabecera.setTipoFormulario(true);
         tab_cabecera.setLectura(true);
         tab_cabecera.getGrid().setColumns(4);
@@ -79,7 +126,7 @@ public class pre_detalle_mantenimiento extends Pantalla {
         gri_total.getChildren().add(ttotal);
         tab_detalle.setId("tab_detalle");
         tab_detalle.setConexion(con_postgres);
-        tab_detalle.setTabla("mvdetalle_mantenimiento", "mde_codigo", 1);
+        tab_detalle.setTabla("mvdetalle_mantenimiento", "mde_codigo", 2);
         tab_detalle.getColumna("mde_cod_articulo").setCombo("SELECT m.ide_mat_bodega,m.cod_material,m.des_material,a.costo_actual,e.und_medida \n" + "FROM bodc_material m\n"
                 + "INNER JOIN bodt_articulos a ON a.ide_mat_bodega = m.ide_mat_bodega \n"
                 + "inner join valc_medida e on m.ide_medida = e.ide_medida\n"
@@ -181,4 +228,13 @@ public class pre_detalle_mantenimiento extends Pantalla {
     public void setTab_detalle(Tabla tab_detalle) {
         this.tab_detalle = tab_detalle;
     }
+
+    public AutoCompletar getAut_busca() {
+        return aut_busca;
+    }
+
+    public void setAut_busca(AutoCompletar aut_busca) {
+        this.aut_busca = aut_busca;
+    }
+    
 }
