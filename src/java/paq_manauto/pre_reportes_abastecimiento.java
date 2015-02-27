@@ -274,7 +274,6 @@ public class pre_reportes_abastecimiento extends Pantalla {
                         p_parametros.put("descripcion", tab_datov.getValor("mvmarca_descripcion") + "");
                         p_parametros.put("tipo", tab_datov.getValor("mvtipo_descripcion") + "");
                         p_parametros.put("modelo", tab_datov.getValor("mvmodelo_descripcion") + "");
-                        p_parametros.put("version", tab_datov.getValor("mvversion_descripcion") + "");
                         rep_reporte.cerrar();
                         sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                         System.err.println(p_parametros);
