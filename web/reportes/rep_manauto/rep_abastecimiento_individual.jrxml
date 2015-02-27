@@ -11,57 +11,141 @@
 	<parameter name="mes" class="java.lang.String"/>
 	<parameter name="tipo" class="java.lang.String"/>
 	<parameter name="modelo" class="java.lang.String"/>
-	<parameter name="version" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select * from
-(select a.numero,a.mve_placa,a.abastecimiento_total,cast(a.abastecimiento_galones as numeric) as galones,
-(case when (b.abastecimiento_kilometraje-a.abastecimiento_kilometraje) > 0 THEN (b.abastecimiento_kilometraje-a.abastecimiento_kilometraje)
-when (b.abastecimiento_kilometraje-a.abastecimiento_kilometraje) is null THEN 0 end ) as kilometros,
-c.mde_total
-from
-(select
+		<![CDATA[select cast(a.abastecimiento_numero as numeric),
+a.mve_placa,
+a.mve_codigo,
+a.mvtipo_descripcion,
+a.mvmarca_descripcion,
+a.mvmodelo_descripcion,
+(case when cast(b.abastecimiento_total as numeric) is null then 0 when cast(b.abastecimiento_total as numeric) is not null then  cast(b.abastecimiento_total as numeric) end)  as total,
+(case when cast(c.abastecimiento_galones as numeric) is null then 0 when cast(c.abastecimiento_galones as numeric) is not null then  cast(c.abastecimiento_galones as numeric) end)  as galones,
+(case when cast(d.mde_total as numeric) is null then 0 when cast(d.mde_total as numeric) is not null then  cast(d.mde_total as numeric) end)  as mantenimiento,
+(case when cast (e.promedio as numeric) is null then 0 when cast (e.promedio as numeric) is not null then  cast (e.promedio as numeric) end)  as recorrido from
+(SELECT
+a.abastecimiento_numero,
+v.mve_placa,
+v.mve_codigo,
+t.mvtipo_descripcion,
+m.mvmarca_descripcion,
+o.mvmodelo_descripcion
+FROM mvabactecimiento_combustible AS a
+INNER JOIN mv_vehiculo AS v ON a.mve_secuencial = v.mve_secuencial
+INNER JOIN mvtipo_vehiculo t ON v.mvtipo_id = t.mvtipo_id
+INNER JOIN mvmarca_vehiculo m ON v.mvmarca_id = m.mvmarca_id AND t.mvmarca_id = m.mvmarca_id
+INNER JOIN mvmodelo_vehiculo o ON o.mvtipo_id = t.mvtipo_id AND v.mvmodelo_id = o.mvmodelo_id
+WHERE (case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) = $P{placa}
+and a.abastecimiento_anio=$P{anio} and a.abastecimiento_periodo=$P{periodo}
+ORDER BY a.abastecimiento_numero ASC) as a
+left join
+(SELECT
 (SELECT count (*)
 FROM mvabactecimiento_combustible a1
 INNER JOIN mv_vehiculo v1 ON a1.mve_secuencial = v1.mve_secuencial
-where a1.abastecimiento_kilometraje <= a.abastecimiento_kilometraje and v1.mve_placa = $P{placa} and a.abastecimiento_anio=$P{anio} and a.abastecimiento_periodo=$P{periodo}) as numero,
-a.abastecimiento_kilometraje,v.mve_placa,a.abastecimiento_total,a.abastecimiento_galones
+where (case when v1.mve_placa is NULL then v1.mve_codigo when v1.mve_placa is not null then v1.mve_placa end )= $P{placa}
+and a1.abastecimiento_anio=$P{anio} and a1.abastecimiento_periodo=$P{periodo} and a1.abastecimiento_numero<=a.abastecimiento_numero) as numero,
+a.abastecimiento_total,(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa
 FROM mvabactecimiento_combustible a
 INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
-where v.mve_placa = $P{placa} and a.abastecimiento_anio=$P{anio} and a.abastecimiento_periodo=$P{periodo}) as a
-LEFT JOIN
-(select
-(SELECT count (*)-1
+where (case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) = $P{placa}
+and a.abastecimiento_anio=$P{anio} and a.abastecimiento_periodo=$P{periodo}
+order by numero) as b
+on (case when a.mve_placa is NULL then a.mve_codigo when a.mve_placa is not null then a.mve_placa end )=b.placa
+and a.abastecimiento_numero= cast(b.numero as varchar)
+left join
+(SELECT
+(SELECT count (*)
 FROM mvabactecimiento_combustible a1
 INNER JOIN mv_vehiculo v1 ON a1.mve_secuencial = v1.mve_secuencial
-where a1.abastecimiento_kilometraje <= a.abastecimiento_kilometraje and v1.mve_placa = $P{placa} and a.abastecimiento_anio=$P{anio} and a.abastecimiento_periodo=$P{periodo}) as numero,
-a.abastecimiento_kilometraje,v.mve_placa
+where (case when v1.mve_placa is NULL then v1.mve_codigo when v1.mve_placa is not null then v1.mve_placa end )= $P{placa}
+and a1.abastecimiento_anio=$P{anio} and a1.abastecimiento_periodo=$P{periodo} and a1.abastecimiento_numero<=a.abastecimiento_numero) as numero,
+a.abastecimiento_galones,(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa
 FROM mvabactecimiento_combustible a
 INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
-where v.mve_placa = $P{placa} and a.abastecimiento_anio=$P{anio} and a.abastecimiento_periodo=$P{periodo}) as b
-on a.mve_placa=b.mve_placa and a.numero =b.numero
+where (case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) = $P{placa}
+and a.abastecimiento_anio=$P{anio} and a.abastecimiento_periodo=$P{periodo}
+order by numero) as c
+on (case when a.mve_placa is NULL then a.mve_codigo when a.mve_placa is not null then a.mve_placa end )=c.placa
+and a.abastecimiento_numero= cast(c.numero as varchar)
 left join
 (select
 (SELECT count (*)
 FROM mvdetalle_mantenimiento d
 INNER JOIN mvcab_mantenimiento c ON d.mca_codigo = c.mca_codigo
 INNER JOIN mv_vehiculo v ON c.mve_secuencial = v.mve_secuencial
-where d.mde_total <= d1.mde_total and v.mve_placa = $P{placa} and c.mca_anio=$P{anio} and c.mca_periodo=$P{periodo}) as numero,
-d1.mde_total,v1.mve_placa
+where (case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) = $P{placa}
+and c.mca_anio=$P{anio} and c.mca_periodo=$P{periodo} and
+d.mde_total <= d1.mde_total
+) as numero,
+d1.mde_total,(case when v1.mve_placa is NULL then v1.mve_codigo when v1.mve_placa is not null then v1.mve_placa end ) as placa
 FROM mvdetalle_mantenimiento d1
 INNER JOIN mvcab_mantenimiento c1 ON d1.mca_codigo = c1.mca_codigo
 INNER JOIN mv_vehiculo v1 ON c1.mve_secuencial = v1.mve_secuencial
-where v1.mve_placa = $P{placa} and c1.mca_anio=$P{anio} and c1.mca_periodo=$P{periodo}
-order by numero) as c
-on a.mve_placa=c.mve_placa and a.numero =c.numero
-) as p
-order by numero]]>
+where (case when v1.mve_placa is NULL then v1.mve_codigo when v1.mve_placa is not null then v1.mve_placa end ) = $P{placa} and c1.mca_anio=$P{anio} and c1.mca_periodo=$P{periodo}
+order by numero) as d
+on (case when a.mve_placa is NULL then a.mve_codigo when a.mve_placa is not null then a.mve_placa end )=d.placa
+and a.abastecimiento_numero= cast(d.numero as varchar)
+left join
+(select a.numero,a.placa,
+(case when (cast(b.recorrido as numeric)-cast(a.recorrido as numeric)) is null then 0 when (cast(b.recorrido as numeric)-cast(a.recorrido as numeric)) is not null then (cast(b.recorrido as numeric)-cast(a.recorrido as numeric)) end ) as promedio
+from
+(select
+(SELECT count (*)
+FROM mvabactecimiento_combustible a1
+INNER JOIN mv_vehiculo v1 ON a1.mve_secuencial = v1.mve_secuencial
+where (case when a1.abastecimiento_kilometraje is null then a1.abastecimiento_horasto
+when a1.abastecimiento_kilometraje is not null then cast(a1.abastecimiento_kilometraje as varchar) end ) <= (case when a.abastecimiento_kilometraje is null then a.abastecimiento_horasto
+when a.abastecimiento_kilometraje is not null then cast(a.abastecimiento_kilometraje as varchar) end )
+and  (case when v1.mve_placa is NULL then v1.mve_codigo when v1.mve_placa is not null then v1.mve_placa end ) = $P{placa}
+and a.abastecimiento_anio=$P{anio} and a.abastecimiento_periodo=$P{periodo}) as numero,
+(case when a.abastecimiento_kilometraje is null then substring(a.abastecimiento_horasto,0,5)
+when a.abastecimiento_kilometraje is not null then cast(a.abastecimiento_kilometraje as varchar) end ) as recorrido,
+(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) AS placa
+FROM mvabactecimiento_combustible a
+INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
+where  (case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) = $P{placa}
+and a.abastecimiento_anio=$P{anio} and a.abastecimiento_periodo=$P{periodo})as a
+left join
+(select
+(SELECT count (*) -1
+FROM mvabactecimiento_combustible a1
+INNER JOIN mv_vehiculo v1 ON a1.mve_secuencial = v1.mve_secuencial
+where (case when a1.abastecimiento_kilometraje is null then a1.abastecimiento_horasto
+when a1.abastecimiento_kilometraje is not null then cast(a1.abastecimiento_kilometraje as varchar) end ) <= (case when a.abastecimiento_kilometraje is null then a.abastecimiento_horasto
+when a.abastecimiento_kilometraje is not null then cast(a.abastecimiento_kilometraje as varchar) end )
+and  (case when v1.mve_placa is NULL then v1.mve_codigo when v1.mve_placa is not null then v1.mve_placa end ) = $P{placa}
+and a.abastecimiento_anio=$P{anio} and a.abastecimiento_periodo=$P{periodo}) as numero,
+(case when a.abastecimiento_kilometraje is null then substring(a.abastecimiento_horasto,0,5)
+when a.abastecimiento_kilometraje is not null then cast(a.abastecimiento_kilometraje as varchar) end ) as recorrido,
+(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) AS placa
+FROM mvabactecimiento_combustible a
+INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
+where  (case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) = $P{placa}
+and a.abastecimiento_anio=$P{anio} and a.abastecimiento_periodo=$P{periodo}
+and (SELECT count (*) -1
+FROM mvabactecimiento_combustible a1
+INNER JOIN mv_vehiculo v1 ON a1.mve_secuencial = v1.mve_secuencial
+where (case when a1.abastecimiento_kilometraje is null then a1.abastecimiento_horasto
+when a1.abastecimiento_kilometraje is not null then cast(a1.abastecimiento_kilometraje as varchar) end ) <= (case when a.abastecimiento_kilometraje is null then a.abastecimiento_horasto
+when a.abastecimiento_kilometraje is not null then cast(a.abastecimiento_kilometraje as varchar) end )
+and  (case when v1.mve_placa is NULL then v1.mve_codigo when v1.mve_placa is not null then v1.mve_placa end ) = $P{placa}
+and a.abastecimiento_anio=$P{anio} and a.abastecimiento_periodo=$P{periodo}) >0
+order by numero )as b
+on a.placa= b.placa and a.numero = b.numero) as e
+on (case when a.mve_placa is NULL then a.mve_codigo when a.mve_placa is not null then a.mve_placa end )=e.placa
+and a.abastecimiento_numero= cast(e.numero as varchar)
+order by 1]]>
 	</queryString>
-	<field name="numero" class="java.lang.Long"/>
+	<field name="abastecimiento_numero" class="java.math.BigDecimal"/>
 	<field name="mve_placa" class="java.lang.String"/>
-	<field name="abastecimiento_total" class="java.math.BigDecimal"/>
+	<field name="mve_codigo" class="java.lang.String"/>
+	<field name="mvtipo_descripcion" class="java.lang.String"/>
+	<field name="mvmarca_descripcion" class="java.lang.String"/>
+	<field name="mvmodelo_descripcion" class="java.lang.String"/>
+	<field name="total" class="java.math.BigDecimal"/>
 	<field name="galones" class="java.math.BigDecimal"/>
-	<field name="kilometros" class="java.math.BigDecimal"/>
-	<field name="mde_total" class="java.math.BigDecimal"/>
+	<field name="mantenimiento" class="java.math.BigDecimal"/>
+	<field name="recorrido" class="java.math.BigDecimal"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -94,7 +178,7 @@ order by numero]]>
 				<text><![CDATA[GOBIERNO AUTÓNOMO DESCENTRALIZADO MUNICIPAL DEL CANTON RUMIÑAHUI]]></text>
 			</staticText>
 			<image>
-				<reportElement uuid="d3fc7079-173d-4882-8177-c9d59cd6ac8e" x="500" y="0" width="200" height="98"/>
+				<reportElement uuid="8d83fcb0-8d6a-45fa-a946-c3e511bf0cd7" x="464" y="0" width="163" height="98"/>
 				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
 			</image>
 		</band>
@@ -166,23 +250,23 @@ order by numero]]>
 				<categoryDataset>
 					<categorySeries>
 						<seriesExpression><![CDATA["Kilometros"]]></seriesExpression>
-						<categoryExpression><![CDATA[$F{numero}]]></categoryExpression>
-						<valueExpression><![CDATA[$F{kilometros}]]></valueExpression>
+						<categoryExpression><![CDATA[$F{abastecimiento_numero}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{recorrido}]]></valueExpression>
 					</categorySeries>
 					<categorySeries>
 						<seriesExpression><![CDATA["Total"]]></seriesExpression>
-						<categoryExpression><![CDATA[$F{numero}]]></categoryExpression>
-						<valueExpression><![CDATA[$F{abastecimiento_total}]]></valueExpression>
+						<categoryExpression><![CDATA[$F{abastecimiento_numero}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{total}]]></valueExpression>
 					</categorySeries>
 					<categorySeries>
 						<seriesExpression><![CDATA["Galones"]]></seriesExpression>
-						<categoryExpression><![CDATA[$F{numero}]]></categoryExpression>
+						<categoryExpression><![CDATA[$F{abastecimiento_numero}]]></categoryExpression>
 						<valueExpression><![CDATA[$F{galones}]]></valueExpression>
 					</categorySeries>
 					<categorySeries>
 						<seriesExpression><![CDATA["Mantenimiento"]]></seriesExpression>
-						<categoryExpression><![CDATA[$F{numero}]]></categoryExpression>
-						<valueExpression><![CDATA[$F{mde_total}]]></valueExpression>
+						<categoryExpression><![CDATA[$F{abastecimiento_numero}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{mantenimiento}]]></valueExpression>
 					</categorySeries>
 				</categoryDataset>
 				<linePlot>
@@ -195,76 +279,36 @@ order by numero]]>
 					</valueAxisFormat>
 				</linePlot>
 			</lineChart>
-			<staticText>
-				<reportElement uuid="7e8791a8-7a49-40c7-82a1-88cf7084e8a0" x="10" y="5" width="100" height="20"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[PLACA:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="4c8504c4-a087-4b8f-a850-c60232a54d61" x="664" y="2" width="100" height="20"/>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="9cadba8f-62ea-4cc1-93d5-c2c88b48b429" x="0" y="1" width="125" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["PLACA: "+$F{mve_placa}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="7dc66110-cd28-4133-a58e-eca85e364155" x="258" y="0" width="159" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["MARCA: "+$F{mvmarca_descripcion}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="dbef11a0-53bd-4122-97a8-fc8f748d05a2" x="700" y="0" width="102" height="20"/>
 				<textElement/>
-				<text><![CDATA[MES:]]></text>
-			</staticText>
-			<textField>
-				<reportElement uuid="9cadba8f-62ea-4cc1-93d5-c2c88b48b429" x="59" y="1" width="100" height="20"/>
+				<textFieldExpression><![CDATA["MES: "+$P{mes}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="4888c4cc-625a-4dc7-a4d2-deba25491bd9" x="422" y="0" width="117" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{placa}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["TIPO: "+$F{mvtipo_descripcion}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="7dc66110-cd28-4133-a58e-eca85e364155" x="174" y="2" width="116" height="20"/>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="d66fba14-3f47-4125-b92e-4f6880ca0b48" x="544" y="0" width="155" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{descripcion}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["MODELO: "+$F{mvmodelo_descripcion}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="dbef11a0-53bd-4122-97a8-fc8f748d05a2" x="711" y="2" width="91" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$P{mes}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="4888c4cc-625a-4dc7-a4d2-deba25491bd9" x="291" y="1" width="80" height="20"/>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="d325d9e9-4b18-488f-ade2-5719045130bf" x="125" y="1" width="125" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{tipo}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["CODIGO: "+$F{mve_codigo}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="d66fba14-3f47-4125-b92e-4f6880ca0b48" x="408" y="2" width="120" height="20"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{modelo}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="fa0c7d77-2b43-401f-8753-6ea742d4e006" x="559" y="2" width="106" height="20"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{version}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement uuid="5a78a51d-9cf4-436f-ab54-3898f189755d" x="125" y="5" width="100" height="20"/>
-				<textElement verticalAlignment="Top">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[MARCA:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="d712b318-46ba-4ad1-9105-bd5f947fb2fb" x="261" y="5" width="60" height="20"/>
-				<textElement verticalAlignment="Top">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[TIPO:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="ca7ce94c-294d-4136-ba93-411ba453a07b" x="352" y="5" width="100" height="20"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[MODELO:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="69660f67-51da-47c9-8736-580ab7f97ec0" x="500" y="5" width="100" height="20"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[VERSIÓN:]]></text>
-			</staticText>
 		</band>
 	</summary>
 </jasperReport>
