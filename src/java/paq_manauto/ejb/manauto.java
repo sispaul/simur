@@ -440,19 +440,18 @@ public class manauto {
         con_postgresql();
         TablaGenerica tab_persona = new TablaGenerica();
         tab_persona.setConexion(con_postgres);
-        tab_persona.setSql("SELECT DISTINCT\n"
+        tab_persona.setSql("SELECT\n"
                 + "v.mve_secuencial,\n"
                 + "v.mve_placa,\n"
                 + "m.mvmarca_descripcion,\n"
                 + "t.mvtipo_descripcion,\n"
                 + "o.mvmodelo_descripcion,\n"
-                + "r.mvversion_descripcion\n"
-                + "FROM mv_vehiculo AS v\n"
-                + "INNER JOIN mvmarca_vehiculo AS m ON v.mvmarca_id = m.mvmarca_id\n"
-                + "INNER JOIN mvmodelo_vehiculo AS o ON v.mvmodelo_id = o.mvmodelo_id\n"
-                + "INNER JOIN mvversion_vehiculo AS r ON r.mvmodelo_id = o.mvmodelo_id AND v.mvversion_id = r.mvversion_id\n"
-                + "INNER JOIN mvtipo_vehiculo t ON t.mvmarca_id = m.mvmarca_id AND v.mvtipo_id = t.mvtipo_id AND o.mvtipo_id = t.mvtipo_id\n"
-                + "where v.mve_placa ='" + tipo + "' ");
+                + "v.mve_codigo\n"
+                + "FROM mv_vehiculo v\n"
+                + "INNER JOIN mvmarca_vehiculo m ON v.mvmarca_id = m.mvmarca_id\n"
+                + "INNER JOIN mvtipo_vehiculo t ON t.mvmarca_id = m.mvmarca_id AND v.mvtipo_id = t.mvtipo_id\n"
+                + "INNER JOIN mvmodelo_vehiculo o ON o.mvtipo_id = t.mvtipo_id AND v.mvmodelo_id = o.mvmodelo_id\n"
+                + "WHERE v.mve_placa  = '" + tipo + "'or v.mve_codigo = '" + tipo + "'");
         tab_persona.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
