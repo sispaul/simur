@@ -76,7 +76,7 @@ on z.placa=b.placa
 order by placa) as c
 on (case when y.mve_placa is NULL then y.mve_codigo when y.mve_placa is not null then y.mve_placa end )=c.placa
 left join
-(SELECT round(sum(cast(d.mde_valor as NUMERIC)),2)
+(SELECT round(sum(cast(d.mde_total as NUMERIC)),2)
 as mantenimiento,(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa
 FROM mvdetalle_mantenimiento d
 INNER JOIN mvcab_mantenimiento c ON d.mca_codigo = c.mca_codigo
