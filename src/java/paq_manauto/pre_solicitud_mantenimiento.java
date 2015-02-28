@@ -397,6 +397,30 @@ public class pre_solicitud_mantenimiento extends Pantalla {
             case "SOLICITUD DE MANTENIMIENTO":
                 abrirReporte();
                 break;
+            case "ORDEN DE TRABAJO":
+                Grid gri_seleccion = new Grid();
+                gri_seleccion.setColumns(2);
+                cmb_impresion.setId("cmb_impresion");
+                List listar = new ArrayList();
+                Object filai1[] = {
+                    "0", "NO"
+                };
+                Object filai2[] = {
+                    "1", "SI"
+                };
+                listar.add(filai1);
+                ;
+                listar.add(filai2);
+                ;
+                cmb_impresion.setCombo(listar);
+                gri_seleccion.getChildren().add(new Etiqueta(" RE IMPRESION :"));
+                gri_seleccion.getChildren().add(cmb_impresion);
+                dia_dialogod.Limpiar();
+                dia_dialogod.setDialogo(gridd);
+                grid_de.getChildren().add(gri_seleccion);
+                dia_dialogod.setDialogo(grid_de);
+                dia_dialogod.dibujar();
+                break;
         }
     }
 
@@ -412,6 +436,29 @@ public class pre_solicitud_mantenimiento extends Pantalla {
                 rep_reporte.cerrar();
                 sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                 sef_formato.dibujar();
+                break;
+            case "ORDEN DE TRABAJO":
+                TablaGenerica tab_datod = mDescuento.Direc_Asist(Integer.parseInt("229"));
+                if (!tab_datod.isEmpty()) {
+                    if (cmb_impresion.getValue().equals("0")) {
+                        p_parametros.put("numero", "0");
+                    } else {
+                        p_parametros.put("numero", "1");
+                    }
+                    p_parametros.put("codigo", Integer.parseInt(tab_tabla.getValor("mca_codigo") + ""));
+                    p_parametros.put("secuencial", tab_tabla.getValor("mca_secuencial") + "");
+                    p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA") + "");
+                    p_parametros.put("fecha_orden", utilitario.getFechaLarga(utilitario.getFechaActual()) + "");
+                    p_parametros.put("id", Integer.parseInt(tab_tabla.getValor("mve_secuencial") + ""));
+                    p_parametros.put("director", tab_datod.getValor("nombres") + "");
+                    rep_reporte.cerrar();
+                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    System.err.println(p_parametros);
+                    System.err.println(rep_reporte.getPath());
+                    sef_formato.dibujar();
+                } else {
+                    utilitario.agregarMensaje("Director No Disponible", "");
+                }
                 break;
         }
     }
