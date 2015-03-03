@@ -163,8 +163,8 @@ public class pre_solicitud_mantenimiento extends Pantalla {
         tab_tabla.getColumna("mca_cod_proveedor").setFiltroContenido();
         tab_tabla.getColumna("mca_cod_responsable").setFiltroContenido();
 
-        tab_tabla.getColumna("mca_cod_proveedor").setLectura(true);
-        tab_tabla.getColumna("mca_monto").setLectura(true);
+        tab_tabla.getColumna("mca_cod_proveedor").setVisible(false);
+//        tab_tabla.getColumna("mca_monto").setLectura(true);
 
         tab_tabla.getColumna("mca_fechainman").setValorDefecto(utilitario.getFechaActual());
         tab_tabla.getColumna("mca_horainman").setValorDefecto(String.valueOf(utilitario.getHoraActual()));
@@ -173,7 +173,7 @@ public class pre_solicitud_mantenimiento extends Pantalla {
         tab_tabla.getColumna("mca_periodo").setValorDefecto(String.valueOf(utilitario.getMes(utilitario.getFechaActual())));
         tab_tabla.getColumna("mca_tiposol").setValorDefecto("1");
 
-        tab_tabla.getColumna("mca_tipo_mantenimiento").setMetodoChange("tipo_mantenimiento");
+//        tab_tabla.getColumna("mca_tipo_mantenimiento").setMetodoChange("tipo_mantenimiento");
         tab_tabla.getColumna("mve_secuencial").setMetodoChange("caracteristicas");
         tab_tabla.getColumna("mca_cod_proveedor").setMetodoChange("proveedor");
         tab_tabla.getColumna("mca_cod_autoriza").setMetodoChange("empleado");
@@ -251,6 +251,7 @@ public class pre_solicitud_mantenimiento extends Pantalla {
     public void proveedor() {
         TablaGenerica tab_dato = programas.getProveedor(Integer.parseInt(tab_tabla.getValor("mca_cod_proveedor")));
         if (!tab_dato.isEmpty()) {
+            System.out.println(tab_dato.getValor("titular"));
             tab_tabla.setValor("mca_proveedor", tab_dato.getValor("titular"));
             utilitario.addUpdate("tab_tabla");//actualiza solo componentes
         }
@@ -352,10 +353,16 @@ public class pre_solicitud_mantenimiento extends Pantalla {
                             "mca_responsable", Integer.parseInt(tab_tabla.getValor("mca_cod_responsable")), tab_tabla.getValor("mca_responsable"),
                             tab_consulta.getValor("NICK_USUA"));
                 }
-                if (Integer.parseInt(tab_tabla.getValor("mca_cod_proveedor")) != Integer.parseInt(tab_dato.getValor("mca_cod_proveedor"))) {
+                if(tab_dato.getValor("mca_cod_proveedor")==null){
                     aCombustible.set_actusolic(Integer.parseInt(tab_tabla.getValor("mca_codigo")), tab_tabla.getValor("mca_secuencial"), "mca_cod_proveedor",
                             "mca_proveedor", Integer.parseInt(tab_tabla.getValor("mca_cod_proveedor")), tab_tabla.getValor("mca_proveedor"),
                             tab_consulta.getValor("NICK_USUA"));
+                }else {
+                    if (Integer.parseInt(tab_tabla.getValor("mca_cod_proveedor")) != Integer.parseInt(tab_dato.getValor("mca_cod_proveedor"))) {
+                    aCombustible.set_actusolic(Integer.parseInt(tab_tabla.getValor("mca_codigo")), tab_tabla.getValor("mca_secuencial"), "mca_cod_proveedor",
+                            "mca_proveedor", Integer.parseInt(tab_tabla.getValor("mca_cod_proveedor")), tab_tabla.getValor("mca_proveedor"),
+                            tab_consulta.getValor("NICK_USUA"));
+                    }
                 }
                 if (Integer.parseInt(tab_tabla.getValor("mca_cod_autoriza")) != Integer.parseInt(tab_dato.getValor("mca_cod_autoriza"))) {
                     aCombustible.set_actusolic(Integer.parseInt(tab_tabla.getValor("mca_codigo")), tab_tabla.getValor("mca_secuencial"), "mca_cod_autoriza",
