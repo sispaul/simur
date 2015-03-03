@@ -1206,7 +1206,7 @@ public class SolicAnticipos {
                 + "c.nombre_cargo\n"
                 + "FROM srh_empleado e\n"
                 + "INNER JOIN srh_cargos c ON e.cod_cargo = c.cod_cargo\n"
-                + "WHERE e.cod_cargo = 391 AND e.estado = 1");
+                + "WHERE  e.cedula_pass = '1702785849' AND e.estado = 1");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;

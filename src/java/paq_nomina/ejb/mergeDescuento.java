@@ -59,14 +59,14 @@ public class mergeDescuento {
         con_postgres = null;
     }
 
-    public void migrarDescuento(Integer ano, Integer ide_periodo, Integer id_distributivo_roles, Integer ide_columna, String nombre) {
+    public void migrarDescuento(String empleado, Integer ide_periodo, Integer id_distributivo_roles, Integer ide_columna, String nombre) {
         // Forma el sql para el ingreso
 
         String str_sql4 = "update SRH_ROLES set valor_egreso=srh_descuento.descuento"
                 + ", valor=srh_descuento.descuento,ip_responsable='" + utilitario.getIp() + "',nom_responsable='" + nombre + "',fecha_responsable='" + utilitario.getFechaActual() + "'  from srh_descuento"//MODIFICACION
                 + " WHERE SRH_ROLES.ANO=" + utilitario.getAnio(utilitario.getFechaActual()) + " AND SRH_ROLES.IDE_PERIODO=" + utilitario.getMes(utilitario.getFechaActual()) + " AND"
                 + " SRH_ROLES.ID_DISTRIBUTIVO_ROLES=" + id_distributivo_roles + " AND SRH_ROLES.IDE_COLUMNAS=" + ide_columna + " and "
-                + "srh_roles.ide_empleado=srh_descuento.ide_empleado";
+                + "srh_roles.ide_empleado='" + empleado + "'";
         con_postgresql();
         con_postgres.ejecutarSql(str_sql4);
         con_postgres.desconectar();
@@ -167,6 +167,41 @@ public class mergeDescuento {
         con_postgres = null;
     }
 
+    public void setSubsidioFamiliar(Integer tipo, Double porcentaje) {
+        // Forma el sql para el ingreso
+        String str_sql3 = "insert into srh_descuento(id_distributivo_roles,ano,ide_columna,ide_periodo,descuento,cedula,nombres,ide_empleado,ide_empleado_rol)\n"
+                + "select a.id_distributivo," + utilitario.getAnio(utilitario.getFechaActual()) + " as anio," + tipo + " as columna," + utilitario.getMes(utilitario.getFechaActual()) + " as periodo,"
+                + "cast(to_char((((a.sueldo_basico*" + porcentaje + ")/100)*b.numero_hijos),'99G999.99') as numeric) as descuento,a.cedula_pass,a.nombres,a.cod_empleado,b.cod_empleado as id_empleado\n"
+                + "from \n"
+                + "(SELECT\n"
+                + "cedula_pass,\n"
+                + "nombres,\n"
+                + "id_distributivo,\n"
+                + "cod_empleado,\n"
+                + "sueldo_basico,\n"
+                + "estado\n"
+                + "from srh_empleado\n"
+                + ")as a\n"
+                + "inner join(\n"
+                + "select count(p.cod_empleado) as numero_hijos,p.cod_empleado from (\n"
+                + "SELECT DISTINCT\n"
+                + "nombres_apellidos,\n"
+                + "parentesco,\n"
+                + "fecha_nacimiento,\n"
+                + "cod_empleado\n"
+                + "from srh_cargas\n"
+                + "where cast((select to_char(age(fecha_nacimiento::date),'YY'))as numeric)<18\n"
+                + "order by cod_empleado ) as p\n"
+                + "GROUP BY p.cod_empleado) as b\n"
+                + "on a.cod_empleado =b.cod_empleado\n"
+                + "where a.id_distributivo = 2 and a.estado = 1\n"
+                + "order by a.nombres";
+        con_postgresql();
+        con_postgres.ejecutarSql(str_sql3);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+
     public TablaGenerica sumaPeriodo() {
         con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
@@ -195,6 +230,18 @@ public class mergeDescuento {
         con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT ide_periodo,per_descripcion FROM cont_periodo_actual where ide_periodo=" + periodo);
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+    }
+
+    public TablaGenerica getColumnas(Integer periodo) {
+        con_postgresql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        con_postgresql();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT ide_col,descripcion_col,distributivo,porcentaje_subsidio from srh_columnas where ide_col = " + periodo);
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
@@ -263,6 +310,20 @@ public class mergeDescuento {
                 + "FROM srh_cargos c\n"
                 + "INNER JOIN srh_empleado e ON e.cod_cargo = c.cod_cargo\n"
                 + "WHERE c.cod_cargo =" + codigo);//299
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+    }
+
+    public TablaGenerica getConfirmaDatos(String anio, Integer codigo, String empleado, Integer distributivo) {
+        con_postgresql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        con_postgresql();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT ide_roles,ide_empleado,id_distributivo_roles\n"
+                + "FROM srh_roles\n"
+                + "where ano = '" + anio + "' and ide_periodo = " + codigo + " and ide_empleado = '" + empleado + "' and id_distributivo_roles = " + distributivo);
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
