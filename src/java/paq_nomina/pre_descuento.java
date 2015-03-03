@@ -309,7 +309,7 @@ public class pre_descuento extends Pantalla {
             ide_periodo = Integer.parseInt(tab_consulta.getValor("ide_periodo"));
             id_distributivo_roles = Integer.parseInt(tab_consulta.getValor("id_distributivo_roles"));
             ide_columna = Integer.parseInt(tab_consulta.getValor("ide_columna"));
-            mDescuento.migrarDescuento(ano, ide_periodo, id_distributivo_roles, ide_columna, tab_usuario.getValor("NICK_USUA") + "");
+//            mDescuento.migrarDescuento(ano, ide_periodo, id_distributivo_roles, ide_columna, tab_usuario.getValor("NICK_USUA") + "");
             utilitario.agregarMensaje("PROCESO REALIZADO CON EXITO", " ");
             dia_dialogoe.cerrar();
         } else {
