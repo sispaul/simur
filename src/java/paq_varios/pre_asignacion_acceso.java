@@ -269,9 +269,34 @@ public class pre_asignacion_acceso extends Pantalla {
 
     @Override
     public void guardar() {
-        estadoAcceso();
-        if (tab_solicitud.guardar()) {
-            con_postgres.guardarPantalla();
+        if (tab_solicitud.getValor("estado_solicitud").equals("Asignada")) {
+            TablaGenerica tab_dato = datosEmpledo.getSolicitudAcceso(Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
+            if (!tab_dato.isEmpty()) {
+                if (tab_dato.getValor("login_acceso_usuario")!= tab_solicitud.getValor("login_acceso_usuario")) {
+                    datosEmpledo.setAccesoSistemas("login_acceso_usuario", tab_solicitud.getValor("login_acceso_usuario"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
+                }
+                if (tab_dato.getValor("password_acceso_usuario")!= tab_solicitud.getValor("password_acceso_usuario")) {
+                    datosEmpledo.setAccesoSistemas("password_acceso_usuario",tab_solicitud.getValor("password_acceso_usuario"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
+                }
+                if (tab_dato.getValor("fecha_acceso_usuario")!= tab_solicitud.getValor("fecha_acceso_usuario")) {
+                    datosEmpledo.setAccesoSistemas("fecha_acceso_usuario", tab_solicitud.getValor("fecha_acceso_usuario"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
+                }
+                if (tab_dato.getValor("cedula_asigna_acceso")!= tab_solicitud.getValor("cedula_asigna_acceso")) {
+                    datosEmpledo.setAccesoSistemas("cedula_asigna_acceso", tab_solicitud.getValor("cedula_asigna_acceso"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
+                }
+                if (tab_dato.getValor("codigo_asigna_acceso")!= tab_solicitud.getValor("codigo_asigna_acceso")) {
+                    datosEmpledo.setAccesoSistemas("codigo_asigna_acceso", tab_solicitud.getValor("codigo_asigna_acceso"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
+                }
+                if (tab_dato.getValor("nombre_asigna_acceso")!= tab_solicitud.getValor("nombre_asigna_acceso")) {
+                    datosEmpledo.setAccesoSistemas("nombre_asigna_acceso", tab_solicitud.getValor("nombre_asigna_acceso"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
+                }
+                utilitario.agregarMensaje("Registro Guardado", null);
+            }
+        } else {
+            estadoAcceso();
+            if (tab_solicitud.guardar()) {
+                con_postgres.guardarPantalla();
+            }
         }
     }
 
