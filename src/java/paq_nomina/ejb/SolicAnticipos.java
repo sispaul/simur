@@ -1422,18 +1422,18 @@ public class SolicAnticipos {
         con_postgres = null;
     }
 
-    public void set_ActCalculo_PagoAnti(Integer solic, Integer calcu, String usu, String fecha, String doc,double valor) {
+    public void set_ActCalculo_PagoAnti(Integer solic, Integer calcu, String usu, String fecha, String doc, double valor) {
         String au_sql = "UPDATE srh_calculo_anticipo \n"
                 + "SET ide_estado_anticipo =4, \n"
-                + "usu_pago_anticipado='"+usu+"', \n"
-                + "fecha_pago_anticipado='"+fecha+"', \n"
-                + "numero_documento_pago ='"+doc+"',\n"
+                + "usu_pago_anticipado='" + usu + "', \n"
+                + "fecha_pago_anticipado='" + fecha + "', \n"
+                + "numero_documento_pago ='" + doc + "',\n"
                 + "numero_cuotas_pagadas= a.numero_cuotas_anticipo,\n"
-                + "valor_pagado =(a.valor_pagado+("+valor+") )\n"
+                + "valor_pagado =(a.valor_pagado+(" + valor + ") )\n"
                 + "from (SELECT ide_calculo_anticipo,numero_cuotas_anticipo,valor_pagado,numero_cuotas_pagadas\n"
                 + "from srh_calculo_anticipo\n"
-                + "where ide_solicitud_anticipo = "+solic+") as a\n"
-                + "where srh_calculo_anticipo.ide_solicitud_anticipo = "+solic+" and srh_calculo_anticipo.ide_calculo_anticipo ="+calcu;
+                + "where ide_solicitud_anticipo = " + solic + ") as a\n"
+                + "where srh_calculo_anticipo.ide_solicitud_anticipo = " + solic + " and srh_calculo_anticipo.ide_calculo_anticipo =" + calcu;
         con_postgresql();
         con_postgres.ejecutarSql(au_sql);
         con_postgres.desconectar();

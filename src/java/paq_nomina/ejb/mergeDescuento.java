@@ -202,6 +202,32 @@ public class mergeDescuento {
         con_postgres = null;
     }
 
+    public void setSubsidioAntiguedad(Integer columna, Double porcentaje,Integer codigo,Integer dis) {
+        // Forma el sql para el ingreso
+        String str_sql3 = "insert into srh_descuento (id_distributivo_roles,ano,ide_columna,ide_periodo,descuento,cedula,nombres,ide_empleado,ide_empleado_rol)\n"
+                + "SELECT \n"
+                + "e.id_distributivo,\n"
+                + ""+utilitario.getAnio(utilitario.getFechaActual())+" as anio,\n"
+                + ""+columna+" as columna,\n"
+                + ""+utilitario.getMes(utilitario.getFechaActual())+" as periodo,\n"
+                + "cast(to_char((((cast(e.remuneracion as numeric)*0.25)/100)*cast((select extract(year from age('"+utilitario.getFechaActual()+"'::date ,n.fecha_contrato::date)))as numeric)),'99G999.99')as numeric) as valor,\n"
+                + "e.cedula_pass,\n"
+                + "e.nombres,\n"
+                + "e.cod_empleado,\n"
+                + "n.cod_empleado as id_empleado\n"
+                + "FROM srh_empleado e\n"
+                + "INNER JOIN srh_num_contratos n ON n.cod_empleado = e.cod_empleado\n"
+                + "WHERE e.estado = 1 AND\n"
+                + "e.id_distributivo = "+dis+" AND\n"
+                + "n.fecha_contrato > '2005-01-01' and n.fecha_contrato <'"+utilitario.getAnio(utilitario.getFechaActual())+"-01-01'\n"
+                + "and e.cod_empleado = "+codigo+"\n"
+                + "ORDER BY e.nombres limit 1";
+        con_postgresql();
+        con_postgres.ejecutarSql(str_sql3);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+
     public TablaGenerica sumaPeriodo() {
         con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
@@ -242,6 +268,20 @@ public class mergeDescuento {
         con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT ide_col,descripcion_col,distributivo,porcentaje_subsidio from srh_columnas where ide_col = " + periodo);
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+    }
+
+    public TablaGenerica getTrabajadores(Integer periodo) {
+        con_postgresql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        con_postgresql();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT cedula_pass,nombres,cod_empleado\n"
+                + "from srh_empleado\n"
+                + "where estado=1 and id_distributivo = " + periodo);
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;

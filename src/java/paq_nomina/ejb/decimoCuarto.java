@@ -103,6 +103,16 @@ public class decimoCuarto {
         con_postgres = null;
     }
 
+    public void setAccesoSistemas(String desc,String iden, Integer solic) {
+        String decimo = "update sca_solicitud_acceso\n"
+                + "set "+desc+"='"+iden+"' \n"
+                + "where id_solicitud_acceso = " + solic;
+        con_postgresql();
+        con_postgres.ejecutarSql(decimo);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+
     public void borrarDecimo() {
         // Forma el sql para el ingreso
 
@@ -189,6 +199,20 @@ public class decimoCuarto {
         con_postgresql();
         tab_funcionario.setConexion(con_postgres);
         tab_funcionario.setSql("SELECT ide_col,descripcion_col FROM SRH_COLUMNAS WHERE ide_col=" + colum);
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+    }
+
+    public TablaGenerica getSolicitudAcceso(Integer colum) {
+        con_postgresql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        con_postgresql();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT id_solicitud_acceso,login_acceso_usuario,password_acceso_usuario,fecha_acceso_usuario,cedula_asigna_acceso,codigo_asigna_acceso,nombre_asigna_acceso\n"
+                + "from sca_solicitud_acceso\n"
+                + "where id_solicitud_acceso = " + colum);
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
