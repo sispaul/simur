@@ -202,15 +202,15 @@ public class mergeDescuento {
         con_postgres = null;
     }
 
-    public void setSubsidioAntiguedad(Integer columna, Double porcentaje,Integer codigo,Integer dis) {
+    public void setSubsidioAntiguedad(Integer columna, Double porcentaje, Integer codigo, Integer dis) {
         // Forma el sql para el ingreso
         String str_sql3 = "insert into srh_descuento (id_distributivo_roles,ano,ide_columna,ide_periodo,descuento,cedula,nombres,ide_empleado,ide_empleado_rol)\n"
                 + "SELECT \n"
                 + "e.id_distributivo,\n"
-                + ""+utilitario.getAnio(utilitario.getFechaActual())+" as anio,\n"
-                + ""+columna+" as columna,\n"
-                + ""+utilitario.getMes(utilitario.getFechaActual())+" as periodo,\n"
-                + "cast(to_char((((cast(e.remuneracion as numeric)*0.25)/100)*cast((select extract(year from age('"+utilitario.getFechaActual()+"'::date ,n.fecha_contrato::date)))as numeric)),'99G999.99')as numeric) as valor,\n"
+                + "" + utilitario.getAnio(utilitario.getFechaActual()) + " as anio,\n"
+                + "" + columna + " as columna,\n"
+                + "" + utilitario.getMes(utilitario.getFechaActual()) + " as periodo,\n"
+                + "cast(to_char((((cast(e.remuneracion as numeric)*" + porcentaje + ")/100)*cast((select extract(year from age('" + utilitario.getFechaActual() + "'::date ,n.fecha_contrato::date)))as numeric)),'99G999.99')as numeric) as valor,\n"
                 + "e.cedula_pass,\n"
                 + "e.nombres,\n"
                 + "e.cod_empleado,\n"
@@ -218,10 +218,41 @@ public class mergeDescuento {
                 + "FROM srh_empleado e\n"
                 + "INNER JOIN srh_num_contratos n ON n.cod_empleado = e.cod_empleado\n"
                 + "WHERE e.estado = 1 AND\n"
-                + "e.id_distributivo = "+dis+" AND\n"
-                + "n.fecha_contrato > '2005-01-01' and n.fecha_contrato <'"+utilitario.getAnio(utilitario.getFechaActual())+"-01-01'\n"
-                + "and e.cod_empleado = "+codigo+"\n"
+                + "e.id_distributivo = " + dis + " AND\n"
+                + "n.fecha_contrato > '2005-01-01' and n.fecha_contrato <'" + utilitario.getAnio(utilitario.getFechaActual()) + "-01-01'\n"
+                + "and e.cod_empleado = " + codigo + "\n"
                 + "ORDER BY e.nombres limit 1";
+        con_postgresql();
+        con_postgres.ejecutarSql(str_sql3);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+
+    public void setFondosReserva(Integer columna, Double porcentaje, Integer codigo, Integer dis) {
+        // Forma el sql para el ingreso
+        String str_sql3 = "insert into srh_descuento(id_distributivo_roles,ano,ide_columna,ide_periodo,descuento,cedula,nombres,ide_empleado,ide_empleado_rol)\n"
+                + "select a.id_distributivo, " + utilitario.getAnio(utilitario.getFechaActual()) + " as anio, " + columna + " as columna," + utilitario.getMes(utilitario.getFechaActual()) + " as periodo, cast(to_char((((a.remuneracion+b.valor)*" + porcentaje + ")/100),'99G999.99') as numeric) as fondo_reserva\n"
+                + ",a.cedula_pass,a.nombres,a.cod_empleado,b.ide_empleado from \n"
+                + "(SELECT\n"
+                + "cedula_pass,\n"
+                + "nombres,\n"
+                + "cod_empleado,\n"
+                + "id_distributivo,\n"
+                + "remuneracion\n"
+                + "from srh_empleado\n"
+                + "where estado =1 and id_distributivo = " + dis + "\n"
+                + "order by nombres\n"
+                + ") as a\n"
+                + "left join \n"
+                + "(SELECT\n"
+                + "ide_roles,\n"
+                + "ide_empleado,\n"
+                + "valor\n"
+                + "from srh_roles\n"
+                + "where ano = " + utilitario.getAnio(utilitario.getFechaActual()) + " and ide_periodo=" + utilitario.getMes(utilitario.getFechaActual()) + " and ide_columnas =" + columna + "\n"
+                + ") as b\n"
+                + "on a.cod_empleado = b.ide_empleado\n"
+                + "order by a.nombres";
         con_postgresql();
         con_postgres.ejecutarSql(str_sql3);
         con_postgres.desconectar();
