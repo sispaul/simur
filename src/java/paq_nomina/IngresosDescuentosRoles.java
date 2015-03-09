@@ -305,7 +305,6 @@ public class IngresosDescuentosRoles extends Pantalla {
                 tabTabla.actualizar();
                 comboDistributivo.getConexion().desconectar();
             }
-        } else {
         }
     }
 
