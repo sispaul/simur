@@ -98,6 +98,56 @@ public class mergeDescuento {
         con_postgres = null;
     }
 
+    public void setHoras100_50(String cedula, Integer colum, Integer dis, Double valor, Double parametro) {
+        String str_sql4 = "update srh_descuento \n"
+                + "set id_distributivo_roles =d1.id_distributivo , \n"
+                + "ano = '" + utilitario.getAnio(utilitario.getFechaActual()) + "', \n"
+                + "ide_columna =" + colum + " , \n"
+                + "ide_periodo = '" + utilitario.getMes(utilitario.getFechaActual()) + "', \n"
+                + "ide_empleado = d1.cod_empleado, \n"
+                + "ide_empleado_rol =d1.indentificacion_empleado,\n"
+                + "descuento = (" + valor + "*((d1.remuneracion/240)*" + parametro + "))\n"
+                + "from (SELECT\n"
+                + "id_distributivo,\n"
+                + "cedula_pass,\n"
+                + "nombres,\n"
+                + "cod_empleado,\n"
+                + "cod_empleado AS indentificacion_empleado,\n"
+                + "remuneracion\n"
+                + "FROM  srh_empleado"
+                + " where cedula_pass ='" + cedula + "') d1 \n"
+                + "where srh_descuento.cedula = d1.cedula_pass and d1.id_distributivo =" + dis;
+        con_postgresql();
+        con_postgres.ejecutarSql(str_sql4);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+
+    public void setHoras25(String cedula, Integer colum, Integer dis, Double valor) {
+        String str_sql4 = "update srh_descuento \n"
+                + "set id_distributivo_roles =d1.id_distributivo , \n"
+                + "ano = '" + utilitario.getAnio(utilitario.getFechaActual()) + "', \n"
+                + "ide_columna =" + colum + " , \n"
+                + "ide_periodo = '" + utilitario.getMes(utilitario.getFechaActual()) + "', \n"
+                + "ide_empleado = d1.cod_empleado, \n"
+                + "ide_empleado_rol =d1.indentificacion_empleado,\n"
+                + "descuento = (" + valor + "*((((d1.remuneracion/240)*25)/100)+(d1.remuneracion/240)))\n"
+                + "from (SELECT\n"
+                + "id_distributivo,\n"
+                + "cedula_pass,\n"
+                + "nombres,\n"
+                + "cod_empleado,\n"
+                + "cod_empleado AS indentificacion_empleado,\n"
+                + "remuneracion\n"
+                + "FROM  srh_empleado"
+                + " where cedula_pass ='" + cedula + "') d1 \n"
+                + "where srh_descuento.cedula = d1.cedula_pass and d1.id_distributivo =" + dis;
+        con_postgresql();
+        con_postgres.ejecutarSql(str_sql4);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+
     public void InsertarAnticipo(Integer tipo) {
         // Forma el sql para el ingreso
         String str_sql3 = "insert into srh_descuento (id_distributivo_roles,ano,ide_columna,ide_periodo,descuento,cedula,nombres,ide_empleado,ide_empleado_rol) \n"
@@ -167,11 +217,11 @@ public class mergeDescuento {
         con_postgres = null;
     }
 
-    public void setSubsidioFamiliar(Integer tipo, Double porcentaje) {
+    public void setSubsidioFamiliar(Integer tipo, Double porcentaje, Double sueldo) {
         // Forma el sql para el ingreso
         String str_sql3 = "insert into srh_descuento(id_distributivo_roles,ano,ide_columna,ide_periodo,descuento,cedula,nombres,ide_empleado,ide_empleado_rol)\n"
                 + "select a.id_distributivo," + utilitario.getAnio(utilitario.getFechaActual()) + " as anio," + tipo + " as columna," + utilitario.getMes(utilitario.getFechaActual()) + " as periodo,"
-                + "cast(to_char((((a.sueldo_basico*" + porcentaje + ")/100)*b.numero_hijos),'99G999.99') as numeric) as descuento,a.cedula_pass,a.nombres,a.cod_empleado,b.cod_empleado as id_empleado\n"
+                + "cast(to_char((((" + sueldo + "*" + porcentaje + ")/100)*b.numero_hijos),'99G999.99') as numeric) as descuento,a.cedula_pass,a.nombres,a.cod_empleado,b.cod_empleado as id_empleado\n"
                 + "from \n"
                 + "(SELECT\n"
                 + "cedula_pass,\n"
@@ -228,31 +278,39 @@ public class mergeDescuento {
         con_postgres = null;
     }
 
-    public void setFondosReserva(Integer columna, Double porcentaje, Integer codigo, Integer dis) {
+    public void setFondosReserva(Integer columna, Double porcentaje, Integer dis, String col, Integer col1, Integer col2,Integer codigo) {
         // Forma el sql para el ingreso
         String str_sql3 = "insert into srh_descuento(id_distributivo_roles,ano,ide_columna,ide_periodo,descuento,cedula,nombres,ide_empleado,ide_empleado_rol)\n"
-                + "select a.id_distributivo, " + utilitario.getAnio(utilitario.getFechaActual()) + " as anio, " + columna + " as columna," + utilitario.getMes(utilitario.getFechaActual()) + " as periodo, cast(to_char((((a.remuneracion+b.valor)*" + porcentaje + ")/100),'99G999.99') as numeric) as fondo_reserva\n"
-                + ",a.cedula_pass,a.nombres,a.cod_empleado,b.ide_empleado from \n"
-                + "(SELECT\n"
-                + "cedula_pass,\n"
-                + "nombres,\n"
-                + "cod_empleado,\n"
-                + "id_distributivo,\n"
-                + "remuneracion\n"
-                + "from srh_empleado\n"
-                + "where estado =1 and id_distributivo = " + dis + "\n"
-                + "order by nombres\n"
-                + ") as a\n"
+                + "select id_distributivo," + utilitario.getAnio(utilitario.getFechaActual()) + "," + columna + "," + utilitario.getMes(utilitario.getFechaActual()) + ",cast(to_char((((RMU+HORAS_EXTRAS+SUB_ROGACION)*" + porcentaje + ")/100),'99G999.99')as numeric) as valor,cedula_pass,nombres,cod_empleado,cod_empleado from \n"
+                + "(select aa.*,\n"
+                + "(case when a.HORAS_EXTRAS is NULL then '0' when a.HORAS_EXTRAS > 0 then a.HORAS_EXTRAS end ) as HORAS_EXTRAS\n"
+                + ",(case when b.SUB_ROGACION is NULL then '0' when b.SUB_ROGACION > 0 then b.SUB_ROGACION end ) as SUB_ROGACION\n"
+                + "from \n"
+                + "(select DISTINCT e.id_distributivo,e.cod_empleado,e.cedula_pass,e.nombres,r.valor AS RMU\n"
+                + "from srh_roles as r inner join prec_programas as  p\n"
+                + "on r.ide_programa=p.ide_programa\n"
+                + "inner join srh_empleado as e\n"
+                + "on e.cod_empleado=r.ide_empleado\n"
+                + "inner join srh_cargos  as c\n"
+                + "on c.cod_cargo=e.cod_cargo\n"
+                + "where ano='" + utilitario.getAnio(utilitario.getFechaActual()) + "'\n"
+                + "and  id_distributivo_roles=" + dis + " and ide_periodo in(" + utilitario.getMes(utilitario.getFechaActual()) + ") and ide_columnas in (" + col2 + ")\n"
+                + ") as aa\n"
                 + "left join \n"
-                + "(SELECT\n"
-                + "ide_roles,\n"
-                + "ide_empleado,\n"
-                + "valor\n"
-                + "from srh_roles\n"
-                + "where ano = " + utilitario.getAnio(utilitario.getFechaActual()) + " and ide_periodo=" + utilitario.getMes(utilitario.getFechaActual()) + " and ide_columnas =" + columna + "\n"
-                + ") as b\n"
-                + "on a.cod_empleado = b.ide_empleado\n"
-                + "order by a.nombres";
+                + "(select E.COD_EMPLEADO,SUM(r.valor) AS HORAS_EXTRAS from srh_roles as r,\n"
+                + "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n"
+                + "ano='" + utilitario.getAnio(utilitario.getFechaActual()) + "' and  id_distributivo_roles=" + dis + " and ide_periodo in(" + utilitario.getMes(utilitario.getFechaActual()) + ") and ide_columnas in (" + col + ")\n"
+                + "and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as a\n"
+                + "on aa.COD_EMPLEADO=a.COD_EMPLEADO \n"
+                + "left join\n"
+                + "(select E.COD_EMPLEADO,SUM(r.valor) AS SUB_ROGACION  from srh_roles as r,\n"
+                + "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n"
+                + "ano='" + utilitario.getAnio(utilitario.getFechaActual()) + "' and  id_distributivo_roles=" + dis + " and ide_periodo in(" + utilitario.getMes(utilitario.getFechaActual()) + ") and ide_columnas in (" + col1 + ") \n"
+                + "and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as b\n"
+                + "on aa.COD_EMPLEADO=b.COD_EMPLEADO \n"
+                + ") as m\n"
+                + "where cod_empleado = "+codigo+"\n"
+                + "order by nombres";
         con_postgresql();
         con_postgres.ejecutarSql(str_sql3);
         con_postgres.desconectar();
