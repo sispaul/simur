@@ -238,9 +238,9 @@ public class IngresosDescuentosRoles extends Pantalla {
     }
 
     public void setAceptoDescuento() {
-        if (setRoles.getValorSeleccionado().equals("99")) {//subsidio antiguedad
-            TablaGenerica tabDato = mDescuento.getColumnas(Integer.parseInt(setRoles.getValorSeleccionado()));
-            if (!tabDato.isEmpty()) {
+        TablaGenerica tabDato = mDescuento.getColumnas(Integer.parseInt(setRoles.getValorSeleccionado()));
+        if (!tabDato.isEmpty()) {
+            if (setRoles.getValorSeleccionado().equals("99")) {//subsidio antiguedad
                 TablaGenerica tabDato1 = mDescuento.getTrabajadores(Integer.parseInt(comboDistributivo.getValue() + ""));
                 if (!tabDato1.isEmpty()) {
                     for (int i = 0; i < tabDato1.getTotalFilas(); i++) {
@@ -249,26 +249,63 @@ public class IngresosDescuentosRoles extends Pantalla {
                     }
                 }
                 tabTabla.actualizar();
-            }
-        } else if (setRoles.getValorSeleccionado().equals("98")) {//subsidio familiar
-            TablaGenerica tabDato = mDescuento.getColumnas(Integer.parseInt(setRoles.getValorSeleccionado()));
-            if (!tabDato.isEmpty()) {
-                mDescuento.setSubsidioFamiliar(Integer.parseInt(setRoles.getValorSeleccionado()), Double.valueOf(tabDato.getValor("porcentaje_subsidio")));
+            } else if (setRoles.getValorSeleccionado().equals("98")) {//subsidio familiar
+                int a = 0;
+                if (comboDistributivo.getValue().equals("1")) {
+                    a = 25;
+                } else {
+                    a = 70;
+                }
+                TablaGenerica tabDato1 = mDescuento.getColumnas(a);
+                if (!tabDato1.isEmpty()) {
+                    mDescuento.setSubsidioFamiliar(Integer.parseInt(setRoles.getValorSeleccionado()), Double.valueOf(tabDato.getValor("porcentaje_subsidio")), Double.valueOf(tabDato1.getValor("porcentaje_subsidio")));
+                    tabTabla.actualizar();
+                }
+            } else if (setRoles.getValorSeleccionado().equals("86")) {// fondos empleado
+                TablaGenerica tabDato1 = mDescuento.getTrabajadores(Integer.parseInt(comboDistributivo.getValue() + ""));
+                if (!tabDato1.isEmpty()) {
+                    for (int i = 0; i < tabDato1.getTotalFilas(); i++) {//92,93,18,14
+                        mDescuento.setFondosReserva(Integer.parseInt(setRoles.getValorSeleccionado()), Double.valueOf(tabDato.getValor("porcentaje_subsidio")), Integer.parseInt(comboDistributivo.getValue() + ""), "92,93", 18, 14, Integer.parseInt(tabDato1.getValor(i, "cod_empleado")));
+                    }
+                }
                 tabTabla.actualizar();
+            } else if (setRoles.getValorSeleccionado().equals("89")) {// fondos trabajador
+                TablaGenerica tabDato1 = mDescuento.getTrabajadores(Integer.parseInt(comboDistributivo.getValue() + ""));
+                if (!tabDato1.isEmpty()) {
+                    for (int i = 0; i < tabDato1.getTotalFilas(); i++) {//75,76,0,40
+                        mDescuento.setFondosReserva(Integer.parseInt(setRoles.getValorSeleccionado()), Double.valueOf(tabDato.getValor("porcentaje_subsidio")), Integer.parseInt(comboDistributivo.getValue() + ""), "75,76", 0, 40, Integer.parseInt(tabDato1.getValor(i, "cod_empleado")));
+                    }
+                }
+                tabTabla.actualizar();
+            } else if (setRoles.getValorSeleccionado().equals("92")) {// horas ext 100 empleado
+                for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
+                    mDescuento.setHoras100_50(tabTabla.getValor(i, "cedula"), Integer.parseInt(setRoles.getValorSeleccionado()), Integer.parseInt(comboDistributivo.getValue() + ""), Double.parseDouble(tabTabla.getValor(i, "valor")), Double.parseDouble("2"));
+                }
+                tabTabla.actualizar();
+            } else if (setRoles.getValorSeleccionado().equals("75")) {// horas ext 100 trabajador
+                for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
+                    mDescuento.setHoras100_50(tabTabla.getValor(i, "cedula"), Integer.parseInt(setRoles.getValorSeleccionado()), Integer.parseInt(comboDistributivo.getValue() + ""), Double.parseDouble(tabTabla.getValor(i, "valor")), Double.parseDouble("2"));
+                }
+                tabTabla.actualizar();
+            } else if (setRoles.getValorSeleccionado().equals("93")) {// horas ext 25 empleado
+                for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
+                    mDescuento.setHoras25(tabTabla.getValor(i, "cedula"), Integer.parseInt(setRoles.getValorSeleccionado()), Integer.parseInt(comboDistributivo.getValue() + ""), Double.parseDouble(tabTabla.getValor(i, "valor")));
+                }
+                tabTabla.actualizar();
+            } else if (setRoles.getValorSeleccionado().equals("76")) {// horas ext 50 trabajador
+                for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
+                    mDescuento.setHoras100_50(tabTabla.getValor(i, "cedula"), Integer.parseInt(setRoles.getValorSeleccionado()), Integer.parseInt(comboDistributivo.getValue() + ""), Double.parseDouble(tabTabla.getValor(i, "valor")), Double.parseDouble("1.5"));
+                }
+                tabTabla.actualizar();
+            } else {
+                for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
+                    mDescuento.ActualizaDatos(tabTabla.getValor(i, "cedula"), Integer.parseInt(setRoles.getValorSeleccionado()), Integer.parseInt(comboDistributivo.getValue() + ""));
+                }
+                setRoles.cerrar();
+                tabTabla.actualizar();
+                comboDistributivo.getConexion().desconectar();
             }
-        } else if (setRoles.getValorSeleccionado().equals("86")) {// fondos empleado
-        } else if (setRoles.getValorSeleccionado().equals("89")) {// fondos trabajador
-        } else if (setRoles.getValorSeleccionado().equals("92")) {// horas ext 100 empleado
-        } else if (setRoles.getValorSeleccionado().equals("75")) {// horas ext 100 trabajador
-        } else if (setRoles.getValorSeleccionado().equals("93")) {// horas ext 25 empleado
-        } else if (setRoles.getValorSeleccionado().equals("76")) {// horas ext 50 trabajador
         } else {
-            for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
-                mDescuento.ActualizaDatos(tabTabla.getValor(i, "cedula"), Integer.parseInt(setRoles.getValorSeleccionado()), Integer.parseInt(comboDistributivo.getValue() + ""));
-            }
-            setRoles.cerrar();
-            tabTabla.actualizar();
-            comboDistributivo.getConexion().desconectar();
         }
     }
 
