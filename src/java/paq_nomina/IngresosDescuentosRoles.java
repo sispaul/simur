@@ -215,6 +215,12 @@ public class IngresosDescuentosRoles extends Pantalla {
     public void setMigraRoles() {
         TablaGenerica tabDato = mDescuento.VerificarRol();
 //        if (!tabDato.isEmpty()) {
+        if(comboDistributivo.getValue().equals("1")){
+            
+        }else{
+            
+        }
+        
         for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
             if (tabTabla.getValor(i, "fondos_reserva").compareTo("true") == 0) {
                 
@@ -232,6 +238,7 @@ public class IngresosDescuentosRoles extends Pantalla {
         }
         utilitario.agregarMensaje("PROCESO REALIZADO CON EXITO", " ");
         dialogoMigrar.cerrar();
+        
 //        } else {
 //            utilitario.agregarMensaje("Descuento No Puede Ser Subido a Rol", "Rol Perteneciente a Periodo Aun No Esta Creado");
 //        }
