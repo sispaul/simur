@@ -110,6 +110,7 @@ public class IngresosDescuentosRoles extends Pantalla {
         tabTabla.setId("tabTabla");
         tabTabla.setConexion(conPostgres);
         tabTabla.setTabla("srh_descuento", "ide_descuento", 1);
+        tabTabla.getColumna("fondos_reserva").setCheck();
         tabTabla.dibujar();
         PanelTabla panPanel = new PanelTabla();
         panPanel.setPanelTabla(tabTabla);
@@ -213,8 +214,11 @@ public class IngresosDescuentosRoles extends Pantalla {
 
     public void setMigraRoles() {
         TablaGenerica tabDato = mDescuento.VerificarRol();
-        if (!tabDato.isEmpty()) {
-            for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
+//        if (!tabDato.isEmpty()) {
+        for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
+            if (tabTabla.getValor(i, "fondos_reserva").compareTo("true") == 0) {
+                
+            } else {
                 TablaGenerica tabDatos = mDescuento.getConfirmaDatos(tabTabla.getValor(i, "ano"), Integer.parseInt(tabTabla.getValor(i, "ide_periodo")),
                         tabTabla.getValor(i, "ide_empleado"), Integer.parseInt(tabTabla.getValor(i, "id_distributivo_roles")));
                 if (!tabDatos.isEmpty()) {
@@ -225,11 +229,12 @@ public class IngresosDescuentosRoles extends Pantalla {
                     utilitario.agregarMensaje("Datos No Concuerdan en el Rol", tabTabla.getValor(i, "nombres"));
                 }
             }
-            utilitario.agregarMensaje("PROCESO REALIZADO CON EXITO", " ");
-            dialogoMigrar.cerrar();
-        } else {
-            utilitario.agregarMensaje("Descuento No Puede Ser Subido a Rol", "Rol Perteneciente a Periodo Aun No Esta Creado");
         }
+        utilitario.agregarMensaje("PROCESO REALIZADO CON EXITO", " ");
+        dialogoMigrar.cerrar();
+//        } else {
+//            utilitario.agregarMensaje("Descuento No Puede Ser Subido a Rol", "Rol Perteneciente a Periodo Aun No Esta Creado");
+//        }
     }
 
     public void setBorrarTabla() {
