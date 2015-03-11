@@ -12,10 +12,14 @@ import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import paq_nomina.ejb.mergeDescuento;
 import paq_sistema.aplicacion.Pantalla;
@@ -27,19 +31,28 @@ import persistencia.Conexion;
  */
 public class IngresosDescuentosRoles extends Pantalla {
     //atributo para conexion a base de datos
-
     private Conexion conPostgres = new Conexion();
     //atributos para combo
     private Combo comboParametros = new Combo();
     private Combo comboDistributivo = new Combo();
     private Combo comboAcciones = new Combo();
+    private Combo cmbAnio = new Combo();
+    private Combo cmbPeriodo = new Combo();
+    private Combo cmbDescripcion = new Combo();
     //atributo para pantalla tipo tabla
     private Tabla tabTabla = new Tabla();
     private Tabla tabConsulta = new Tabla();
     private SeleccionTabla setRoles = new SeleccionTabla();
+    private SeleccionTabla setRol = new SeleccionTabla();
     //atributo para dialogo
     private Dialogo dialogoMigrar = new Dialogo();
+    private Dialogo dialogoRol = new Dialogo();
     private Grid gridDe = new Grid();
+    private Grid gridRol = new Grid();
+    ///REPORTES
+    private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
+    private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
+    private Map p_parametros = new HashMap();
     //1.-
     @EJB
     private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(mergeDescuento.class);
@@ -131,13 +144,46 @@ public class IngresosDescuentosRoles extends Pantalla {
         setRoles.setHeader("SELECCIONE PARAMETROS PARA DESCUENTO");
         agregarComponente(setRoles);
 
+        /*CONFIGURACIÓN DE COMBOS*/
+        Grid gri_busca = new Grid();
+        gri_busca.setColumns(2);
+
+        gri_busca.getChildren().add(new Etiqueta("AÑO:"));
+        cmbAnio.setId("cmbAnio");
+        cmbAnio.setConexion(conPostgres);
+        cmbAnio.setCombo("select ano_curso, ano_curso from conc_ano order by ano_curso");
+        gri_busca.getChildren().add(cmbAnio);
+
+        gri_busca.getChildren().add(new Etiqueta("PERIODO:"));
+        cmbPeriodo.setId("cmbPeriodo");
+        cmbPeriodo.setConexion(conPostgres);
+        cmbPeriodo.setCombo("SELECT ide_periodo,per_descripcion FROM cont_periodo_actual ORDER BY ide_periodo");
+        gri_busca.getChildren().add(cmbPeriodo);
+
+        gri_busca.getChildren().add(new Etiqueta("DESCRIPCIÓN:"));
+        cmbDescripcion.setId("cmbDescripcion");
+        cmbDescripcion.setConexion(conPostgres);
+        cmbDescripcion.setCombo("SELECT id_distributivo,descripcion FROM srh_tdistributivo ORDER BY id_distributivo");
+        cmbDescripcion.setMetodo("buscarColumna");
+        gri_busca.getChildren().add(cmbDescripcion);
+        setRol.setId("setRol");
+        setRol.getTab_seleccion().setConexion(conPostgres);//conexion para seleccion con otra base
+        setRol.setSeleccionTabla("SELECT ide_col,descripcion_col FROM SRH_COLUMNAS WHERE ide_col=-1", "ide_col");
+        setRol.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
+        setRol.getTab_seleccion().setRows(12);
+        setRol.setRadio();
+        setRol.getGri_cuerpo().setHeader(gri_busca);
+        setRol.getBot_aceptar().setMetodo("aceptoDescuentos");
+        setRol.setHeader("REPORTES DE DESCUENTOS - SELECCIONE PARAMETROS");
+        agregarComponente(setRol);
+
         //DIALOGO DE CONFIRMACIÓN DE ACCIÓN -DESCUENTOS  
         dialogoMigrar.setId("DialogoMigrar");
         dialogoMigrar.setTitle("CONFIRMAR SUBIDA A ROL"); //titulo
         dialogoMigrar.setWidth("27%"); //siempre en porcentajes  ancho
         dialogoMigrar.setHeight("18%");//siempre porcentaje   alto 
         dialogoMigrar.setResizable(false); //para que no se pueda cambiar el tamaño
-        dialogoMigrar.getBot_aceptar().setMetodo("migrar");
+        dialogoMigrar.getBot_aceptar().setMetodo("setMigraRoles");
         dialogoMigrar.getBot_cancelar().setMetodo("cancelarValores");
         gridDe.setColumns(4);
         Etiqueta eti = new Etiqueta();
@@ -169,6 +215,28 @@ public class IngresosDescuentosRoles extends Pantalla {
         dialogoMigrar.setDialogo(eti3);
         utilitario.addUpdate("tab_tabla");
         agregarComponente(dialogoMigrar);
+
+        //DIALOGO DE CONFIRMACIÓN DE ACCIÓN -DESCUENTOS  
+        dialogoRol.setId("dialogoRol");
+        dialogoRol.setTitle("REPORTES DE ROL - EMPLEADOS"); //titulo
+        dialogoRol.setWidth("35%"); //siempre en porcentajes  ancho
+        dialogoRol.setHeight("20%");//siempre porcentaje   alto 
+        dialogoRol.setResizable(false); //para que no se pueda cambiar el tamaño
+        dialogoRol.getBot_aceptar().setMetodo("aceptoDescuentos");
+        gridRol.setColumns(4);
+        agregarComponente(dialogoRol);
+
+        /*         * CONFIGURACIÓN DE OBJETO REPORTE         */
+        bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
+        agregarComponente(rep_reporte); //2 agregar el listado de reportes
+        sef_formato.setId("sef_formato");
+        sef_formato.setConexion(conPostgres);
+        agregarComponente(sef_formato);
+
+    }
+
+    public void abrirDialogo() {
+        dialogoMigrar.dibujar();
     }
 
     public void mostrarColumna1() {
@@ -183,7 +251,7 @@ public class IngresosDescuentosRoles extends Pantalla {
                 buscaColumna();
             }
         } else if (comboAcciones.getValue().equals("2")) {//Subida a Roles
-            setMigraRoles();
+            abrirDialogo();
         } else {//Elimina Datos
             setBorrarTabla();
         }
@@ -208,40 +276,39 @@ public class IngresosDescuentosRoles extends Pantalla {
         }
     }
 
-    public void abrirDialogo() {
-        dialogoMigrar.dibujar();
-    }
-
     public void setMigraRoles() {
         TablaGenerica tabDato = mDescuento.VerificarRol();
-//        if (!tabDato.isEmpty()) {
-        if(comboDistributivo.getValue().equals("1")){
-            
-        }else{
-            
-        }
-        
-        for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
-            if (tabTabla.getValor(i, "fondos_reserva").compareTo("true") == 0) {
-                
-            } else {
-                TablaGenerica tabDatos = mDescuento.getConfirmaDatos(tabTabla.getValor(i, "ano"), Integer.parseInt(tabTabla.getValor(i, "ide_periodo")),
-                        tabTabla.getValor(i, "ide_empleado"), Integer.parseInt(tabTabla.getValor(i, "id_distributivo_roles")));
-                if (!tabDatos.isEmpty()) {
-                    mDescuento.migrarDescuento(tabTabla.getValor(i, "ide_empleado"), Integer.parseInt(tabTabla.getValor(i, "ide_periodo")),
-                            Integer.parseInt(tabTabla.getValor(i, "id_distributivo_roles")), Integer.parseInt(tabTabla.getValor(i, "ide_empleado")), tabConsulta.getValor("NICK_USUA") + "");
-                    utilitario.agregarMensaje("REGISTRO SUBIDO CON EXITO A ROLES", " ");
-                } else {
-                    utilitario.agregarMensaje("Datos No Concuerdan en el Rol", tabTabla.getValor(i, "nombres"));
+        if (!tabDato.isEmpty()) {
+            if (comboParametros.getValue().equals("1")) {//ingresos
+                for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
+                    TablaGenerica tabDatos = mDescuento.getConfirmaDatos(tabTabla.getValor(i, "ano"), Integer.parseInt(tabTabla.getValor(i, "ide_periodo")),
+                            tabTabla.getValor(i, "ide_empleado"), Integer.parseInt(tabTabla.getValor(i, "id_distributivo_roles")));
+                    if (!tabDatos.isEmpty()) {
+                        mDescuento.setmigrarDescuento(tabTabla.getValor(i, "ide_empleado"), Integer.parseInt(tabTabla.getValor(i, "ide_periodo")), Integer.parseInt(tabTabla.getValor(i, "id_distributivo_roles")), Integer.parseInt(tabTabla.getValor(i, "ide_columna")), tabConsulta.getValor("NICK_USUA"), "valor_ingreso", Integer.parseInt(tabTabla.getValor(i, "ano")));
+                        utilitario.agregarMensaje("REGISTRO SUBIDO CON EXITO A ROLES", " ");
+                    } else {
+                        utilitario.agregarMensaje("Datos No Concuerdan en el Rol", tabTabla.getValor(i, "nombres"));
+                    }
                 }
+            } else if (comboParametros.getValue().equals("2")) {//descuentos
+                for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
+                    TablaGenerica tabDatos = mDescuento.getConfirmaDatos(tabTabla.getValor(i, "ano"), Integer.parseInt(tabTabla.getValor(i, "ide_periodo")),
+                            tabTabla.getValor(i, "ide_empleado"), Integer.parseInt(tabTabla.getValor(i, "id_distributivo_roles")));
+                    if (!tabDatos.isEmpty()) {
+                        mDescuento.setmigrarDescuento(tabTabla.getValor(i, "ide_empleado"), Integer.parseInt(tabTabla.getValor(i, "ide_periodo")), Integer.parseInt(tabTabla.getValor(i, "id_distributivo_roles")), Integer.parseInt(tabTabla.getValor(i, "ide_columna")), tabConsulta.getValor("NICK_USUA"), "valor_egreso", Integer.parseInt(tabTabla.getValor(i, "ano")));
+                        utilitario.agregarMensaje("REGISTRO SUBIDO CON EXITO A ROLES", " ");
+                    } else {
+                        utilitario.agregarMensaje("Datos No Concuerdan en el Rol", tabTabla.getValor(i, "nombres"));
+                    }
+                }
+            } else {
+                utilitario.agregarMensaje("Parametro Debe ser Diferente de Descuento", null);
             }
+            dialogoMigrar.cerrar();
+
+        } else {
+            utilitario.agregarMensaje("Descuento No Puede Ser Subido a Rol", "Rol Perteneciente a Periodo Aun No Esta Creado");
         }
-        utilitario.agregarMensaje("PROCESO REALIZADO CON EXITO", " ");
-        dialogoMigrar.cerrar();
-        
-//        } else {
-//            utilitario.agregarMensaje("Descuento No Puede Ser Subido a Rol", "Rol Perteneciente a Periodo Aun No Esta Creado");
-//        }
     }
 
     public void setBorrarTabla() {
@@ -337,6 +404,112 @@ public class IngresosDescuentosRoles extends Pantalla {
         utilitario.getTablaisFocus().eliminar();
     }
 
+    /*CREACION DE REPORTES */
+    //llamada a reporte
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+
+    }
+
+    //llamado para seleccionar el reporte
+    @Override
+    public void aceptarReporte() {
+        rep_reporte.cerrar();
+        switch (rep_reporte.getNombre()) {
+            case "INCONSISTENCIA EN DESCUENTOS":
+                aceptoDescuentos();
+                break;
+            case "DESCUENTOS ANIO Y PERIODO":
+                setRol.dibujar();
+                setRol.getTab_seleccion().limpiar();
+                break;
+            case "ROL DE PAGOS EMPLEADOS - POR MES":
+                dialogoRol.Limpiar();
+                gridRol.getChildren().add(new Etiqueta("AÑO :"));
+                gridRol.getChildren().add(cmbAnio);
+                gridRol.getChildren().add(new Etiqueta("PERIODO :"));
+                gridRol.getChildren().add(cmbPeriodo);
+                gridRol.getChildren().add(new Etiqueta("DISTRIBUTIVO :"));
+                gridRol.getChildren().add(cmbDescripcion);
+                dialogoRol.setDialogo(gridRol);
+                dialogoRol.dibujar();
+                break;
+            case "VERIFICAR SUBIDA A ROL":
+                aceptoDescuentos();
+                break;
+
+        }
+    }
+
+    // dibujo de reporte y envio de parametros
+    public void aceptoDescuentos() {
+        switch (rep_reporte.getNombre()) {
+            case "INCONSISTENCIA EN DESCUENTOS":
+                p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
+                rep_reporte.cerrar();
+                sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                sef_formato.dibujar();
+                break;
+            case "DESCUENTOS ANIO Y PERIODO":
+                if (setRol.getValorSeleccionado() != null) {
+                    TablaGenerica tab_dato = mDescuento.periodo(Integer.parseInt(cmbPeriodo.getValue() + ""));
+                    if (!tab_dato.isEmpty()) {
+                        TablaGenerica tab_dato1 = mDescuento.distibutivo(Integer.parseInt(cmbDescripcion.getValue() + ""));
+                        if (!tab_dato1.isEmpty()) {
+                            TablaGenerica tab_dato2 = mDescuento.columnas(Integer.parseInt(setRol.getValorSeleccionado() + ""));
+                            if (!tab_dato2.isEmpty()) {
+                                p_parametros = new HashMap();
+                                p_parametros.put("pide_ano", Integer.parseInt(cmbAnio.getValue() + ""));
+                                p_parametros.put("periodo", Integer.parseInt(cmbPeriodo.getValue() + ""));
+                                p_parametros.put("p_nombre", tab_dato.getValor("per_descripcion") + "");
+                                p_parametros.put("distributivo", Integer.parseInt(cmbDescripcion.getValue() + ""));
+                                p_parametros.put("descripcion", tab_dato1.getValor("descripcion") + "");
+                                p_parametros.put("columnas", Integer.parseInt(setRol.getValorSeleccionado() + ""));
+                                p_parametros.put("descrip", tab_dato2.getValor("descripcion_col") + "");
+                                p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
+                                rep_reporte.cerrar();
+                                sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                                sef_formato.dibujar();
+                                setRol.cerrar();
+                            } else {
+                                utilitario.agregarMensajeInfo("no existe en la base de datos", "");
+                            }
+                        } else {
+                            utilitario.agregarMensajeInfo("no existe en la base de datos", "");
+                        }
+                    } else {
+                        utilitario.agregarMensajeInfo("no existe en la base de datos", "");
+                    }
+                } else {
+                    utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
+                }
+                break;
+            case "ROL DE PAGOS EMPLEADOS - POR MES":
+                TablaGenerica tab_dato1 = mDescuento.distibutivo(Integer.parseInt(cmbDescripcion.getValue() + ""));
+                if (!tab_dato1.isEmpty()) {
+                    p_parametros = new HashMap();
+                    p_parametros.put("anio", Integer.parseInt(cmbAnio.getValue() + ""));
+                    p_parametros.put("periodo", Integer.parseInt(cmbPeriodo.getValue() + ""));
+                    p_parametros.put("distributivo", Integer.parseInt(cmbDescripcion.getValue() + ""));
+                    p_parametros.put("nom_distri", tab_dato1.getValor("descripcion") + "");
+                    p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
+                    rep_reporte.cerrar();
+                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_formato.dibujar();
+                } else {
+                    utilitario.agregarMensajeInfo("no existe en la base de datos", "");
+                }
+                break;
+            case "VERIFICAR SUBIDA A ROL":
+                p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
+                rep_reporte.cerrar();
+                sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                sef_formato.dibujar();
+                break;
+        }
+    }
+
     public Conexion getConPostgres() {
         return conPostgres;
     }
@@ -359,5 +532,29 @@ public class IngresosDescuentosRoles extends Pantalla {
 
     public void setSetRoles(SeleccionTabla setRoles) {
         this.setRoles = setRoles;
+    }
+
+    public SeleccionTabla getSetRol() {
+        return setRol;
+    }
+
+    public void setSetRol(SeleccionTabla setRol) {
+        this.setRol = setRol;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSef_formato() {
+        return sef_formato;
+    }
+
+    public void setSef_formato(SeleccionFormatoReporte sef_formato) {
+        this.sef_formato = sef_formato;
     }
 }
