@@ -73,6 +73,28 @@ public class mergeDescuento {
         con_postgres = null;
     }
 
+    public void setmigrarDescuento(String empleado, Integer ide_periodo, Integer id_distributivo_roles, Integer ide_columna, 
+            String nombre,String desc,Integer anio) {
+        // Forma el sql para el ingreso
+
+        String str_sql4 = "update srh_roles \n"
+                + "set "+desc+"=srh_descuento.descuento\n"
+                + ",valor=srh_descuento.descuento\n"
+                + ",ip_responsable='" + utilitario.getIp() + "'\n"
+                + ",nom_responsable='" + nombre + "'\n"
+                + ",fecha_responsable='" + utilitario.getFechaActual() + "'\n"
+                + "from srh_descuento\n"
+                + "WHERE srh_roles.ano="+anio+"\n"
+                + "AND srh_roles.ide_periodo="+ide_periodo+"\n"
+                + "AND srh_roles.id_distributivo_roles=" + id_distributivo_roles + "\n"
+                + "AND srh_roles.ide_columnas=" + ide_columna + "\n"
+                + "AND srh_roles.ide_empleado='" + empleado + "'";
+        con_postgresql();
+        con_postgres.ejecutarSql(str_sql4);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+
     public void ActualizaDatos(String cedula, Integer colum, Integer dis) {
         String str_sql4 = "update srh_descuento\n"
                 + "set id_distributivo_roles =d1.id_distributivo ,\n"
@@ -278,7 +300,7 @@ public class mergeDescuento {
         con_postgres = null;
     }
 
-    public void setFondosReserva(Integer columna, Double porcentaje, Integer dis, String col, Integer col1, Integer col2,Integer codigo) {
+    public void setFondosReserva(Integer columna, Double porcentaje, Integer dis, String col, Integer col1, Integer col2, Integer codigo) {
         // Forma el sql para el ingreso
         String str_sql3 = "insert into srh_descuento(id_distributivo_roles,ano,ide_columna,ide_periodo,descuento,cedula,nombres,ide_empleado,ide_empleado_rol)\n"
                 + "select id_distributivo," + utilitario.getAnio(utilitario.getFechaActual()) + "," + columna + "," + utilitario.getMes(utilitario.getFechaActual()) + ",cast(to_char((((RMU+HORAS_EXTRAS+SUB_ROGACION)*" + porcentaje + ")/100),'99G999.99')as numeric) as valor,cedula_pass,nombres,cod_empleado,cod_empleado from \n"
@@ -309,7 +331,7 @@ public class mergeDescuento {
                 + "and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as b\n"
                 + "on aa.COD_EMPLEADO=b.COD_EMPLEADO \n"
                 + ") as m\n"
-                + "where cod_empleado = "+codigo+"\n"
+                + "where cod_empleado = " + codigo + "\n"
                 + "order by nombres";
         con_postgresql();
         con_postgres.ejecutarSql(str_sql3);
