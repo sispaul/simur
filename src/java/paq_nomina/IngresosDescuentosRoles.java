@@ -103,6 +103,7 @@ public class IngresosDescuentosRoles extends Pantalla {
         lista.add(fila1);;
         lista.add(fila2);;
         lista.add(fila3);;
+//        lista.add(fila4);;
         comboParametros.setCombo(lista);
         bar_botones.agregarComponente(new Etiqueta("Seleccione Parametro : "));
         bar_botones.agregarComponente(comboParametros);
@@ -241,25 +242,29 @@ public class IngresosDescuentosRoles extends Pantalla {
 
     public void mostrarColumna1() {
         if (comboAcciones.getValue().equals("1")) {//Información que se subira
-            if (comboParametros.getValue().equals("1") && comboDistributivo.getValue() != null) {//Ingresos
+            if (comboParametros.getValue().equals("1")) {//Ingresos
                 buscaColumna();
-            } else if (comboParametros.getValue().equals("2") && comboDistributivo.getValue() != null) {//Descuentos
+            } else if (comboParametros.getValue().equals("2")) {//Descuentos
                 buscaColumna();
-            } else if (comboParametros.getValue().equals("3") && comboDistributivo.getValue() != null) {//Anticipos
+            } else if (comboParametros.getValue().equals("3")) {//Anticipos
                 getAnticipo();
-            } else if (comboParametros.getValue().equals("4") && comboDistributivo.getValue() != null) {//Fondos Reserva
-                buscaColumna();
+            } else if (comboParametros.getValue().equals("4")) {//Fondos Reserva
+                setAceptoDescuento();
+            }else{
+                utilitario.agregarMensaje("Debe elegir un parametro", "");
             }
         } else if (comboAcciones.getValue().equals("2")) {//Subida a Roles
             abrirDialogo();
-        } else {//Elimina Datos
+        } else if (comboAcciones.getValue().equals("3")) {//Elimina Datos
             setBorrarTabla();
+        } else {
+            utilitario.agregarMensaje("Debe escoger una Acción a realizar", "");
         }
     }
 
     public void buscaColumna() {
         if (comboDistributivo.getValue() != null && comboDistributivo.getValue().toString().isEmpty() == false) {
-            setRoles.getTab_seleccion().setSql("SELECT ide_col,descripcion_col FROM srh_columnas WHERE ingreso_descuento = " + comboParametros.getValue() + " and distributivo=" + comboDistributivo.getValue());
+            setRoles.getTab_seleccion().setSql("SELECT ide_col,descripcion_col FROM srh_columnas WHERE ingreso_descuento = "+comboParametros.getValue()+" and distributivo=" + comboDistributivo.getValue());
             setRoles.getTab_seleccion().ejecutarSql();
             setRoles.dibujar();
         } else {
