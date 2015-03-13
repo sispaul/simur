@@ -4,7 +4,10 @@
  */
 package paq_nomina;
 
+import framework.componentes.Boton;
+import framework.componentes.Combo;
 import framework.componentes.Division;
+import framework.componentes.Etiqueta;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import java.util.ArrayList;
@@ -16,16 +19,30 @@ import persistencia.Conexion;
  *
  * @author p-sistemas
  */
-public class ParametrosIngresosDescuentos extends Pantalla{
+public class ParametrosIngresosDescuentos extends Pantalla {
 
     private Conexion conPostgres = new Conexion();
     private Tabla tabParametros = new Tabla();
-    
+    private Combo comboDistributivo = new Combo();
+
     public ParametrosIngresosDescuentos() {
-        
+
         conPostgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         conPostgres.NOMBRE_MARCA_BASE = "postgres";
-        
+
+        Boton botBuscar = new Boton();
+        botBuscar.setValue("Buscar");
+        botBuscar.setExcluirLectura(true);
+        botBuscar.setIcon("ui-icon-search");
+        botBuscar.setMetodo("ActualizarLista");
+        bar_botones.agregarBoton(botBuscar);
+
+        comboDistributivo.setId("comboDistributivo");
+        comboDistributivo.setConexion(conPostgres);
+        comboDistributivo.setCombo("SELECT id_distributivo,descripcion FROM srh_tdistributivo ORDER BY id_distributivo");
+        bar_botones.agregarComponente(new Etiqueta("Distributivo : "));
+        bar_botones.agregarComponente(comboDistributivo);
+
         tabParametros.setId("tabParametros");
         tabParametros.setConexion(conPostgres);
         tabParametros.setTabla("srh_columnas", "ide_col", 1);
@@ -62,12 +79,32 @@ public class ParametrosIngresosDescuentos extends Pantalla{
         divDivision.setId("divDivision");
         divDivision.dividir1(panPanel);
         agregarComponente(divDivision);
-        
+
+    }
+
+    public void ActualizarLista() {
+        if (!getFiltrosAcceso().isEmpty()) {
+            tabParametros.setCondicion(getFiltrosAcceso());
+            tabParametros.ejecutarSql();
+            utilitario.addUpdate("tabParametros");
+        }
+    }
+
+    private String getFiltrosAcceso() {
+        String srtFiltros = "";
+        if (comboDistributivo.getValue() != null) {
+            srtFiltros = "distributivo="
+                    + String.valueOf(comboDistributivo.getValue());
+
+        } else {
+            utilitario.agregarMensajeInfo("Filtros no válidos",
+                    "Debe ingresar los fitros de vehiculo y servicio");
+        }
+        return srtFiltros;
     }
 
     @Override
     public void insertar() {
-        
     }
 
     @Override
@@ -79,7 +116,6 @@ public class ParametrosIngresosDescuentos extends Pantalla{
 
     @Override
     public void eliminar() {
-
     }
 
     public Conexion getConPostgres() {
@@ -97,5 +133,4 @@ public class ParametrosIngresosDescuentos extends Pantalla{
     public void setTabParametros(Tabla tabParametros) {
         this.tabParametros = tabParametros;
     }
-    
 }
