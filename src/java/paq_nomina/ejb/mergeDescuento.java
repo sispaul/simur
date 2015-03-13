@@ -74,12 +74,12 @@ public class mergeDescuento {
     }
 
     public void setmigrarDescuento(String empleado, Integer ide_periodo, Integer id_distributivo_roles, Integer ide_columna, 
-            String nombre,String desc,Integer anio) {
+            String nombre,String desc,Integer anio,Double valor) {
         // Forma el sql para el ingreso
 
         String str_sql4 = "update srh_roles \n"
-                + "set "+desc+"=srh_descuento.descuento\n"
-                + ",valor=srh_descuento.descuento\n"
+                + "set "+desc+"="+valor+"\n"
+                + ",valor="+valor+"\n"
                 + ",ip_responsable='" + utilitario.getIp() + "'\n"
                 + ",nom_responsable='" + nombre + "'\n"
                 + ",fecha_responsable='" + utilitario.getFechaActual() + "'\n"
