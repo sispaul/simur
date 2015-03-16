@@ -60,6 +60,12 @@ public class IngresosDescuentosRoles extends Pantalla {
 
     public IngresosDescuentosRoles() {
 
+        tabConsulta.setId("tabConsulta");
+        tabConsulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA=" + utilitario.getVariable("IDE_USUA"));
+        tabConsulta.setCampoPrimaria("IDE_USUA");
+        tabConsulta.setLectura(true);
+        tabConsulta.dibujar();
+        
         conPostgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         conPostgres.NOMBRE_MARCA_BASE = "postgres";
 
@@ -241,6 +247,15 @@ public class IngresosDescuentosRoles extends Pantalla {
         dialogoMigrar.dibujar();
     }
 
+    public void buscarColumna() {
+        if (cmbDescripcion.getValue() != null && cmbDescripcion.getValue().toString().isEmpty() == false) {
+            setRol.getTab_seleccion().setSql("SELECT ide_col,descripcion_col FROM SRH_COLUMNAS WHERE DISTRIBUTIVO=" + cmbDescripcion.getValue());
+            setRol.getTab_seleccion().ejecutarSql();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar un tipo", "");
+        }
+    }
+    
     public void mostrarColumna1() {
         if (comboAcciones.getValue().equals("1")) {//Información que se subira
             if (comboParametros.getValue().equals("1")) {//Ingresos
