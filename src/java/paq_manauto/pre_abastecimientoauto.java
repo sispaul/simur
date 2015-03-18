@@ -257,29 +257,29 @@ public class pre_abastecimientoauto extends Pantalla {
     @Override
     public void guardar() {
         String reg = new String();
-        TablaGenerica tab_dato = aCombustible.getActu(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")), Integer.parseInt(tab_tabla.getValor("mve_secuencial")), tab_tabla.getValor("abastecimiento_numero_vale"));
-        if (!tab_dato.isEmpty()) {
-            if (tab_tabla.getValor("abastecimiento_galones") != null || tab_tabla.getValor("abastecimiento_galones").equals(tab_dato.getValor("abastecimiento_galones"))) {
-                aCombustible.set_updateValor(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")), Integer.parseInt(tab_tabla.getValor("mve_secuencial")), tab_tabla.getValor("abastecimiento_numero_vale"), "abastecimiento_galones", tab_tabla.getValor("abastecimiento_galones"));
-            }
-            if (tab_tabla.getValor("abastecimiento_valorhora") != null || tab_tabla.getValor("abastecimiento_valorhora").equals(tab_dato.getValor("abastecimiento_valorhora"))) {
-                aCombustible.set_updateValor(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")), Integer.parseInt(tab_tabla.getValor("mve_secuencial")), tab_tabla.getValor("abastecimiento_numero_vale"), "abastecimiento_valorhora", tab_tabla.getValor("abastecimiento_valorhora"));
-            }
-            if (tab_tabla.getValor("abastecimiento_total") != null || tab_tabla.getValor("abastecimiento_total").equals(tab_dato.getValor("abastecimiento_total"))) {
-                aCombustible.set_updateValor1(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")), Integer.parseInt(tab_tabla.getValor("mve_secuencial")), tab_tabla.getValor("abastecimiento_numero_vale"), "abastecimiento_total", Double.valueOf(tab_tabla.getValor("abastecimiento_total")));
-            }
-            utilitario.agregarMensaje("Registro Actualizado", "");
-            reg = tab_tabla.getValorSeleccionado();
+//        TablaGenerica tab_dato = aCombustible.getActu(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")), Integer.parseInt(tab_tabla.getValor("mve_secuencial")), tab_tabla.getValor("abastecimiento_numero_vale"));
+//        if (!tab_dato.isEmpty()) {
+//            if (tab_tabla.getValor("abastecimiento_galones") != null || tab_tabla.getValor("abastecimiento_galones").equals(tab_dato.getValor("abastecimiento_galones"))) {
+//                aCombustible.set_updateValor(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")), Integer.parseInt(tab_tabla.getValor("mve_secuencial")), tab_tabla.getValor("abastecimiento_numero_vale"), "abastecimiento_galones", tab_tabla.getValor("abastecimiento_galones"));
+//            }
+//            if (tab_tabla.getValor("abastecimiento_valorhora") != null || tab_tabla.getValor("abastecimiento_valorhora").equals(tab_dato.getValor("abastecimiento_valorhora"))) {
+//                aCombustible.set_updateValor(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")), Integer.parseInt(tab_tabla.getValor("mve_secuencial")), tab_tabla.getValor("abastecimiento_numero_vale"), "abastecimiento_valorhora", tab_tabla.getValor("abastecimiento_valorhora"));
+//            }
+//            if (tab_tabla.getValor("abastecimiento_total") != null || tab_tabla.getValor("abastecimiento_total").equals(tab_dato.getValor("abastecimiento_total"))) {
+//                aCombustible.set_updateValor1(Integer.parseInt(tab_tabla.getValor("abastecimiento_id")), Integer.parseInt(tab_tabla.getValor("mve_secuencial")), tab_tabla.getValor("abastecimiento_numero_vale"), "abastecimiento_total", Double.valueOf(tab_tabla.getValor("abastecimiento_total")));
+//            }
+//            utilitario.agregarMensaje("Registro Actualizado", "");
+//            reg = tab_tabla.getValorSeleccionado();
 
-        } else {
-            if (tab_dato.getValor("abastecimiento_id") != null) {
-            } else {
+//        } else {
+//            if (tab_dato.getValor("abastecimiento_id") != null) {
+//            } else {
                 if (tab_tabla.guardar()) {
                     con_postgres.guardarPantalla();
                     reg = tab_tabla.getValorSeleccionado();
                 }
-            }
-        }
+//            }
+//        }
         tab_tabla1.actualizar();
         tab_tabla1.setFilaActual(reg);
         tab_tabla1.calcularPaginaActual();

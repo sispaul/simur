@@ -52,7 +52,7 @@ public class mergeDescuento {
     public void borrarDescuento() {
         // Forma el sql para el ingreso
 
-        String str_sql3 = "DELETE FROM srh_descuento";
+        String str_sql3 = "delete from srh_descuento";
         con_postgresql();
         con_postgres.ejecutarSql(str_sql3);
         con_postgres.desconectar();
@@ -73,19 +73,33 @@ public class mergeDescuento {
         con_postgres = null;
     }
 
-    public void setmigrarDescuento(String empleado, Integer ide_periodo, Integer id_distributivo_roles, Integer ide_columna, 
-            String nombre,String desc,Integer anio,Double valor) {
+    public void setActuHisFondos(Integer anio, Integer periodo, Integer persona, Double descuento, String nombre) {
+        // Forma el sql para el ingreso
+
+        String str_sql4 = "update srh_valor_roles_historial\n"
+                + "set \n"
+                + "descuento =" + descuento + ",\n"
+                + "fondos_reserva ='" + nombre + "' \n"
+                + "where ano =" + anio + " and ide_periodo =" + periodo + " and ide_empleado =" + persona;
+        con_postgresql();
+        con_postgres.ejecutarSql(str_sql4);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+
+    public void setmigrarDescuento(String empleado, Integer ide_periodo, Integer id_distributivo_roles, Integer ide_columna,
+            String nombre, String desc, Integer anio, Double valor) {
         // Forma el sql para el ingreso
 
         String str_sql4 = "update srh_roles \n"
-                + "set "+desc+"="+valor+"\n"
-                + ",valor="+valor+"\n"
+                + "set " + desc + "=" + valor + "\n"
+                + ",valor=" + valor + "\n"
                 + ",ip_responsable='" + utilitario.getIp() + "'\n"
                 + ",nom_responsable='" + nombre + "'\n"
                 + ",fecha_responsable='" + utilitario.getFechaActual() + "'\n"
                 + "from srh_descuento\n"
-                + "WHERE srh_roles.ano="+anio+"\n"
-                + "AND srh_roles.ide_periodo="+ide_periodo+"\n"
+                + "WHERE srh_roles.ano=" + anio + "\n"
+                + "AND srh_roles.ide_periodo=" + ide_periodo + "\n"
                 + "AND srh_roles.id_distributivo_roles=" + id_distributivo_roles + "\n"
                 + "AND srh_roles.ide_columnas=" + ide_columna + "\n"
                 + "AND srh_roles.ide_empleado='" + empleado + "'";
@@ -300,6 +314,19 @@ public class mergeDescuento {
         con_postgres = null;
     }
 
+    public void setHistoricoFondos(Integer codigo, String fondos) {
+        // Forma el sql para el ingreso
+        String str_sql3 = "insert into srh_valor_roles_historial (id_distributivo_roles,ano,ide_columna,ide_periodo,valor,descuento,cedula,nombres,ide_empleado,ide_empleado_rol,fondos_reserva)\n"
+                + "SELECT id_distributivo_roles,ano,ide_columna,ide_periodo,valor,descuento,cedula,nombres,ide_empleado,ide_empleado_rol," + fondos + "\n"
+                + "from srh_descuento\n"
+                + "where ide_empleado =" + codigo;
+        con_postgresql();
+        con_postgres.ejecutarSql(str_sql3);
+//        System.err.println(str_sql3);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+
     public void setFondosReserva(Integer columna, Double porcentaje, Integer dis, String col, Integer col1, Integer col2, Integer codigo) {
         // Forma el sql para el ingreso
         String str_sql3 = "insert into srh_descuento(id_distributivo_roles,ano,ide_columna,ide_periodo,descuento,cedula,nombres,ide_empleado,ide_empleado_rol)\n"
@@ -475,6 +502,20 @@ public class mergeDescuento {
         tab_funcionario.setSql("SELECT ide_roles,ide_empleado,id_distributivo_roles\n"
                 + "FROM srh_roles\n"
                 + "where ano = '" + anio + "' and ide_periodo = " + codigo + " and ide_empleado = '" + empleado + "' and id_distributivo_roles = " + distributivo);
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+    }
+
+    public TablaGenerica getConfirmaFondos(String anio, Integer codigo, String empleado) {
+        con_postgresql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        con_postgresql();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT ano,ide_periodo,descuento,cedula,nombres,ide_empleado,fondos_reserva\n"
+                + "from srh_valor_roles_historial\n"
+                + "where ide_periodo=" + codigo + " and ano = '" + anio + "' and ide_empleado= '" + empleado + "'");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
