@@ -65,7 +65,7 @@ public class IngresosDescuentosRoles extends Pantalla {
         tabConsulta.setCampoPrimaria("IDE_USUA");
         tabConsulta.setLectura(true);
         tabConsulta.dibujar();
-        
+
         conPostgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         conPostgres.NOMBRE_MARCA_BASE = "postgres";
 
@@ -103,14 +103,9 @@ public class IngresosDescuentosRoles extends Pantalla {
             "3", "ANTICIPOS"
         };
 
-        Object fila4[] = {
-            "4", "FONDOS RESERVA"
-        };
-
         lista.add(fila1);;
         lista.add(fila2);;
         lista.add(fila3);;
-//        lista.add(fila4);;
         comboParametros.setCombo(lista);
         bar_botones.agregarComponente(new Etiqueta("Seleccione Parametro : "));
         bar_botones.agregarComponente(comboParametros);
@@ -131,7 +126,22 @@ public class IngresosDescuentosRoles extends Pantalla {
         tabTabla.setId("tabTabla");
         tabTabla.setConexion(conPostgres);
         tabTabla.setTabla("srh_descuento", "ide_descuento", 1);
-        tabTabla.getColumna("fondos_reserva").setCheck();
+        List listas = new ArrayList();
+        Object filass1[] = {
+            "1", "ROL"
+        };
+
+        Object filass2[] = {
+            "2", "ACU"
+        };
+
+        Object filass3[] = {
+            "3", "NO"
+        };
+        listas.add(filass1);;
+        listas.add(filass2);;
+        listas.add(filass3);;
+        tabTabla.getColumna("fondos_reserva").setRadio(listas, null);
         tabTabla.dibujar();
         PanelTabla panPanel = new PanelTabla();
         panPanel.setPanelTabla(tabTabla);
@@ -146,7 +156,7 @@ public class IngresosDescuentosRoles extends Pantalla {
         setRoles.getTab_seleccion().setConexion(conPostgres);//conexion para seleccion con otra base
         setRoles.setSeleccionTabla("SELECT ide_col,descripcion_col FROM SRH_COLUMNAS WHERE ide_col=-1", "ide_col");
         setRoles.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
-        setRoles.getTab_seleccion().setRows(14);
+        setRoles.getTab_seleccion().setRows(11);
         setRoles.setRadio();
         setRoles.getBot_aceptar().setMetodo("setAceptoDescuento");
         setRoles.setHeader("SELECCIONE PARAMETROS PARA DESCUENTO");
@@ -178,7 +188,7 @@ public class IngresosDescuentosRoles extends Pantalla {
         setRol.getTab_seleccion().setConexion(conPostgres);//conexion para seleccion con otra base
         setRol.setSeleccionTabla("SELECT ide_col,descripcion_col FROM SRH_COLUMNAS WHERE ide_col=-1", "ide_col");
         setRol.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
-        setRol.getTab_seleccion().setRows(12);
+        setRol.getTab_seleccion().setRows(11);
         setRol.setRadio();
         setRol.getGri_cuerpo().setHeader(gri_busca);
         setRol.getBot_aceptar().setMetodo("aceptoDescuentos");
@@ -255,7 +265,7 @@ public class IngresosDescuentosRoles extends Pantalla {
             utilitario.agregarMensajeInfo("Debe seleccionar un tipo", "");
         }
     }
-    
+
     public void mostrarColumna1() {
         if (comboAcciones.getValue().equals("1")) {//Información que se subira
             if (comboParametros.getValue().equals("1")) {//Ingresos
@@ -280,7 +290,7 @@ public class IngresosDescuentosRoles extends Pantalla {
 
     public void buscaColumna() {
         if (comboDistributivo.getValue() != null && comboDistributivo.getValue().toString().isEmpty() == false) {
-            setRoles.getTab_seleccion().setSql("SELECT ide_col,descripcion_col FROM srh_columnas WHERE ingreso_descuento = " + comboParametros.getValue() + " and distributivo=" + comboDistributivo.getValue());
+            setRoles.getTab_seleccion().setSql("SELECT ide_col,descripcion_col FROM srh_columnas WHERE ingreso_descuento in( " + comboParametros.getValue() + ",3) and distributivo=" + comboDistributivo.getValue());
             setRoles.getTab_seleccion().ejecutarSql();
             setRoles.dibujar();
         } else {
@@ -303,25 +313,37 @@ public class IngresosDescuentosRoles extends Pantalla {
             if (comboParametros.getValue().equals("1")) {//ingresos
                 for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
                     if (tabTabla.getValor(i, "ide_columna").equals("86") || tabTabla.getValor(i, "ide_columna").equals("89")) {
-                        try {
-                            String d = tabTabla.getValor(i, "fondos_reserva");
-                            if (d.compareTo("true") == 0) {
-                                TablaGenerica tabDatos = mDescuento.getConfirmaDatos(tabTabla.getValor(i, "ano"), Integer.parseInt(tabTabla.getValor(i, "ide_periodo")),
-                                        tabTabla.getValor(i, "ide_empleado"), Integer.parseInt(tabTabla.getValor(i, "id_distributivo_roles")));
-                                if (!tabDatos.isEmpty()) {
-                                    mDescuento.setmigrarDescuento(tabTabla.getValor(i, "ide_empleado"), Integer.parseInt(tabTabla.getValor(i, "ide_periodo")), Integer.parseInt(tabTabla.getValor(i, "id_distributivo_roles")), Integer.parseInt(tabTabla.getValor(i, "ide_columna")), tabConsulta.getValor("NICK_USUA"), "valor_ingreso", Integer.parseInt(tabTabla.getValor(i, "ano")), Double.valueOf(tabTabla.getValor(i, "descuento")));
+                        TablaGenerica tabDatos = mDescuento.getConfirmaDatos(tabTabla.getValor(i, "ano"), Integer.parseInt(tabTabla.getValor(i, "ide_periodo")),
+                                tabTabla.getValor(i, "ide_empleado"), Integer.parseInt(tabTabla.getValor(i, "id_distributivo_roles")));
+                        if (!tabDatos.isEmpty()) {
+                            if (tabTabla.getValor(i, "fondos_reserva").compareTo("1") == 0) {
+                                mDescuento.setmigrarDescuento(tabTabla.getValor(i, "ide_empleado"), Integer.parseInt(tabTabla.getValor(i, "ide_periodo")), Integer.parseInt(tabTabla.getValor(i, "id_distributivo_roles")), Integer.parseInt(tabTabla.getValor(i, "ide_columna")), tabConsulta.getValor("NICK_USUA"), "valor_ingreso", Integer.parseInt(tabTabla.getValor(i, "ano")), Double.valueOf(tabTabla.getValor(i, "descuento")));
+                            } else if (tabTabla.getValor(i, "fondos_reserva").compareTo("2") == 0) {
+                                TablaGenerica tabFondosa = mDescuento.getConfirmaFondos(tabTabla.getValor(i, "ano"), Integer.parseInt(tabTabla.getValor(i, "ide_periodo")), tabTabla.getValor(i, "ide_empleado"));
+                                if (!tabFondosa.isEmpty()) {
+                                    mDescuento.setActuHisFondos(Integer.parseInt(tabTabla.getValor(i, "ano")), Integer.parseInt(tabTabla.getValor(i, "ide_periodo")), Integer.parseInt(tabTabla.getValor(i, "ide_empleado")), Double.parseDouble(tabTabla.getValor(i, "descuento")), tabTabla.getValor(i, "fondos_reserva"));
                                 } else {
-                                    utilitario.agregarMensaje("Datos No Concuerdan en el Rol", tabTabla.getValor(i, "nombres"));
+                                    mDescuento.setHistoricoFondos(Integer.parseInt(tabTabla.getValor(i, "ide_empleado")), tabTabla.getValor(i, "fondos_reserva"));
                                 }
-
                             }
-                        } catch (Exception e) {
+                            if (tabTabla.getValor(i, "fondos_reserva").compareTo("3") == 0) {
+                                TablaGenerica tabFondosa = mDescuento.getConfirmaFondos(tabTabla.getValor(i, "ano"), Integer.parseInt(tabTabla.getValor(i, "ide_periodo")), tabTabla.getValor(i, "ide_empleado"));
+                                if (!tabFondosa.isEmpty()) {
+                                    mDescuento.setActuHisFondos(Integer.parseInt(tabTabla.getValor(i, "ano")), Integer.parseInt(tabTabla.getValor(i, "ide_periodo")), Integer.parseInt(tabTabla.getValor(i, "ide_empleado")), Double.parseDouble(tabTabla.getValor(i, "descuento")), tabTabla.getValor(i, "fondos_reserva"));
+                                } else {
+                                    mDescuento.setHistoricoFondos(Integer.parseInt(tabTabla.getValor(i, "ide_empleado")), tabTabla.getValor(i, "fondos_reserva"));
+                                }
+                            }
+                            utilitario.agregarMensaje("REGISTRO SUBIDO CON EXITO A ROLES", " ");
+                        } else {
+                            utilitario.agregarMensaje("Datos No Concuerdan en el Rol", tabTabla.getValor(i, "nombres"));
                         }
                     } else {
                         TablaGenerica tabDatos = mDescuento.getConfirmaDatos(tabTabla.getValor(i, "ano"), Integer.parseInt(tabTabla.getValor(i, "ide_periodo")),
                                 tabTabla.getValor(i, "ide_empleado"), Integer.parseInt(tabTabla.getValor(i, "id_distributivo_roles")));
                         if (!tabDatos.isEmpty()) {
                             mDescuento.setmigrarDescuento(tabTabla.getValor(i, "ide_empleado"), Integer.parseInt(tabTabla.getValor(i, "ide_periodo")), Integer.parseInt(tabTabla.getValor(i, "id_distributivo_roles")), Integer.parseInt(tabTabla.getValor(i, "ide_columna")), tabConsulta.getValor("NICK_USUA"), "valor_ingreso", Integer.parseInt(tabTabla.getValor(i, "ano")), Double.valueOf(tabTabla.getValor(i, "descuento")));
+                            utilitario.agregarMensaje("REGISTRO SUBIDO CON EXITO A ROLES", " ");
                         } else {
                             utilitario.agregarMensaje("Datos No Concuerdan en el Rol", tabTabla.getValor(i, "nombres"));
                         }
@@ -334,11 +356,11 @@ public class IngresosDescuentosRoles extends Pantalla {
                             tabTabla.getValor(i, "ide_empleado"), Integer.parseInt(tabTabla.getValor(i, "id_distributivo_roles")));
                     if (!tabDatos.isEmpty()) {
                         mDescuento.setmigrarDescuento(tabTabla.getValor(i, "ide_empleado"), Integer.parseInt(tabTabla.getValor(i, "ide_periodo")), Integer.parseInt(tabTabla.getValor(i, "id_distributivo_roles")), Integer.parseInt(tabTabla.getValor(i, "ide_columna")), tabConsulta.getValor("NICK_USUA"), "valor_egreso", Integer.parseInt(tabTabla.getValor(i, "ano")), Double.valueOf(tabTabla.getValor(i, "descuento")));
-//                        utilitario.agregarMensaje("REGISTRO SUBIDO CON EXITO A ROLES", " ");
                     } else {
                         utilitario.agregarMensaje("Datos No Concuerdan en el Rol", tabTabla.getValor(i, "nombres"));
                     }
                 }
+                utilitario.agregarMensaje("REGISTRO SUBIDO CON EXITO A ROLES", " ");
             } else {
                 utilitario.agregarMensaje("Parametro Debe ser Diferente de Descuento", null);
             }
@@ -365,7 +387,6 @@ public class IngresosDescuentosRoles extends Pantalla {
                                 Integer.parseInt(tabDato1.getValor(i, "cod_empleado")), Integer.parseInt(comboDistributivo.getValue() + ""));
                     }
                 }
-                tabTabla.actualizar();
             } else if (setRoles.getValorSeleccionado().equals("98")) {//subsidio familiar
                 int a = 0;
                 if (comboDistributivo.getValue().equals("1")) {
@@ -376,7 +397,6 @@ public class IngresosDescuentosRoles extends Pantalla {
                 TablaGenerica tabDato1 = mDescuento.getColumnas(a);
                 if (!tabDato1.isEmpty()) {
                     mDescuento.setSubsidioFamiliar(Integer.parseInt(setRoles.getValorSeleccionado()), Double.valueOf(tabDato.getValor("porcentaje_subsidio")), Double.valueOf(tabDato1.getValor("porcentaje_subsidio")));
-                    tabTabla.actualizar();
                 }
             } else if (setRoles.getValorSeleccionado().equals("86")) {// fondos empleado
                 TablaGenerica tabDato1 = mDescuento.getTrabajadores(Integer.parseInt(comboDistributivo.getValue() + ""));
@@ -385,7 +405,6 @@ public class IngresosDescuentosRoles extends Pantalla {
                         mDescuento.setFondosReserva(Integer.parseInt(setRoles.getValorSeleccionado()), Double.valueOf(tabDato.getValor("porcentaje_subsidio")), Integer.parseInt(comboDistributivo.getValue() + ""), "92,93", 18, 14, Integer.parseInt(tabDato1.getValor(i, "cod_empleado")));
                     }
                 }
-                tabTabla.actualizar();
             } else if (setRoles.getValorSeleccionado().equals("89")) {// fondos trabajador
                 TablaGenerica tabDato1 = mDescuento.getTrabajadores(Integer.parseInt(comboDistributivo.getValue() + ""));
                 if (!tabDato1.isEmpty()) {
@@ -393,22 +412,18 @@ public class IngresosDescuentosRoles extends Pantalla {
                         mDescuento.setFondosReserva(Integer.parseInt(setRoles.getValorSeleccionado()), Double.valueOf(tabDato.getValor("porcentaje_subsidio")), Integer.parseInt(comboDistributivo.getValue() + ""), "75,76", 0, 40, Integer.parseInt(tabDato1.getValor(i, "cod_empleado")));
                     }
                 }
-                tabTabla.actualizar();
             } else if (setRoles.getValorSeleccionado().equals("92")) {// horas ext 100 empleado
                 for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
                     mDescuento.setHoras100_50(tabTabla.getValor(i, "cedula"), Integer.parseInt(setRoles.getValorSeleccionado()), Integer.parseInt(comboDistributivo.getValue() + ""), Double.parseDouble(tabTabla.getValor(i, "valor")), Double.parseDouble("2"));
                 }
-                tabTabla.actualizar();
             } else if (setRoles.getValorSeleccionado().equals("75")) {// horas ext 100 trabajador
                 for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
                     mDescuento.setHoras100_50(tabTabla.getValor(i, "cedula"), Integer.parseInt(setRoles.getValorSeleccionado()), Integer.parseInt(comboDistributivo.getValue() + ""), Double.parseDouble(tabTabla.getValor(i, "valor")), Double.parseDouble("2"));
                 }
-                tabTabla.actualizar();
             } else if (setRoles.getValorSeleccionado().equals("93")) {// horas ext 25 empleado
                 for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
                     mDescuento.setHoras25(tabTabla.getValor(i, "cedula"), Integer.parseInt(setRoles.getValorSeleccionado()), Integer.parseInt(comboDistributivo.getValue() + ""), Double.parseDouble(tabTabla.getValor(i, "valor")));
                 }
-                tabTabla.actualizar();
             } else if (setRoles.getValorSeleccionado().equals("76")) {// horas ext 50 trabajador
                 for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
                     mDescuento.setHoras100_50(tabTabla.getValor(i, "cedula"), Integer.parseInt(setRoles.getValorSeleccionado()), Integer.parseInt(comboDistributivo.getValue() + ""), Double.parseDouble(tabTabla.getValor(i, "valor")), Double.parseDouble("1.5"));
@@ -418,11 +433,10 @@ public class IngresosDescuentosRoles extends Pantalla {
                 for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
                     mDescuento.ActualizaDatos(tabTabla.getValor(i, "cedula"), Integer.parseInt(setRoles.getValorSeleccionado()), Integer.parseInt(comboDistributivo.getValue() + ""));
                 }
-                setRoles.cerrar();
-                tabTabla.actualizar();
-                comboDistributivo.getConexion().desconectar();
             }
         }
+        setRoles.cerrar();
+        tabTabla.actualizar();
     }
 
     @Override
