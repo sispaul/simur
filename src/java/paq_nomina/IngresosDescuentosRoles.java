@@ -38,6 +38,7 @@ public class IngresosDescuentosRoles extends Pantalla {
     private Combo comboDistributivo = new Combo();
     private Combo comboAcciones = new Combo();
     private Combo cmbAnio = new Combo();
+    private Combo cmbFondos = new Combo();
     private Combo cmbPeriodo = new Combo();
     private Combo cmbDescripcion = new Combo();
     //atributo para pantalla tipo tabla
@@ -198,7 +199,7 @@ public class IngresosDescuentosRoles extends Pantalla {
         //DIALOGO DE CONFIRMACIÓN DE ACCIÓN -DESCUENTOS  
         dialogoMigrar.setId("DialogoMigrar");
         dialogoMigrar.setTitle("CONFIRMAR SUBIDA A ROL"); //titulo
-        dialogoMigrar.setWidth("27%"); //siempre en porcentajes  ancho
+        dialogoMigrar.setWidth("30%"); //siempre en porcentajes  ancho
         dialogoMigrar.setHeight("18%");//siempre porcentaje   alto 
         dialogoMigrar.setResizable(false); //para que no se pueda cambiar el tamaño
         dialogoMigrar.getBot_aceptar().setMetodo("setMigraRoles");
@@ -243,6 +244,20 @@ public class IngresosDescuentosRoles extends Pantalla {
         dialogoRol.getBot_aceptar().setMetodo("aceptoDescuentos");
         gridRol.setColumns(4);
         agregarComponente(dialogoRol);
+
+        cmbFondos.setId("cmbFondos");
+        List listt = new ArrayList();
+        Object fillas2[] = {
+            "2", "ACUMULADOS"
+        };
+
+        Object fillas3[] = {
+            "3", "NO PAGADOS"
+        };
+        listt.add(fillas2);;
+        listt.add(fillas3);;
+        cmbFondos.setCombo(listt);
+
 
         /*         * CONFIGURACIÓN DE OBJETO REPORTE         */
         bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
@@ -502,7 +517,19 @@ public class IngresosDescuentosRoles extends Pantalla {
             case "VERIFICAR SUBIDA A ROL":
                 aceptoDescuentos();
                 break;
-
+            case "FONDOS DE RESERVA ACUMULADOS":
+                dialogoRol.Limpiar();
+                gridRol.getChildren().add(new Etiqueta("AÑO :"));
+                gridRol.getChildren().add(cmbAnio);
+                gridRol.getChildren().add(new Etiqueta("PERIODO :"));
+                gridRol.getChildren().add(cmbPeriodo);
+                gridRol.getChildren().add(new Etiqueta("DISTRIBUTIVO :"));
+                gridRol.getChildren().add(cmbDescripcion);
+                gridRol.getChildren().add(new Etiqueta("FONDOS RESERVA :"));
+                gridRol.getChildren().add(cmbFondos);
+                dialogoRol.setDialogo(gridRol);
+                dialogoRol.dibujar();
+                break;
         }
     }
 
@@ -570,6 +597,27 @@ public class IngresosDescuentosRoles extends Pantalla {
                 rep_reporte.cerrar();
                 sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                 sef_formato.dibujar();
+                break;
+            case "FONDOS DE RESERVA ACUMULADOS":
+                TablaGenerica tab_datod = mDescuento.distibutivo(Integer.parseInt(cmbDescripcion.getValue() + ""));
+                if (!tab_datod.isEmpty()) {
+                    p_parametros.put("anio", Integer.parseInt(cmbAnio.getValue() + ""));
+                    p_parametros.put("periodo", Integer.parseInt(cmbPeriodo.getValue() + ""));
+                    p_parametros.put("distributivo", Integer.parseInt(cmbDescripcion.getValue() + ""));
+                    p_parametros.put("desDistributivo", tab_datod.getValor("descripcion") + "");
+                    p_parametros.put("fondos", cmbFondos.getValue() + "");
+                    if (cmbFondos.getValue().equals("2")) {
+                        p_parametros.put("fondosDes", "ACUMULADOS");
+                    } else {
+                        p_parametros.put("fondosDes", "NO SE PAGA");
+                    }
+                    p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
+                    rep_reporte.cerrar();
+                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_formato.dibujar();
+                } else {
+                    utilitario.agregarMensajeInfo("no existe en la base de datos", "");
+                }
                 break;
         }
     }
