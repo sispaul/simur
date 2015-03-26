@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_pie_financiamiento" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="0" bottomMargin="0" uuid="a06aa3e5-75f0-4be4-bdf4-6f41f0831cbd">
+	<property name="ireport.zoom" value="1.3310000000000004"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[select
+(case when Left(Right(b.partida_cuenta,10),2)>= Right(Left(b.partida_cuenta,5),2)then Left(Right(b.partida_cuenta,10),2)
+when Left(Right(b.partida_cuenta,10),2)<Right(Left(b.partida_cuenta,5),2)then Right(Left(b.partida_cuenta,5),2) end ) as partida,
+sum(a.codificado)as codificado,
+sum(a.compromiso)as compromiso,
+sum(a.obligacion) as devengado,
+sum(a.SALDO_COMPROMISO) as saldo_compromiso,
+sum(a.SALDO_OBLIGACION) as saldo_obligacion
+from
+(select a.proyectos_COD_PROYECTO,
+a.proyectos_COD_PARTIDA,
+a.proyectos_PROY_TOTAL as codificado,
+b.compromiso,
+b.obligacion,
+a.proyectos_PROY_TOTAL-b.compromiso AS SALDO_COMPROMISO,
+a.proyectos_PROY_TOTAL-b.obligacion AS SALDO_OBLIGACION
+ from(
+SELECT p.proyectos_COD_PROYECTO,
+p.proyectos_COD_PARTIDA,
+p.proyectos_PROY_TOTAL
+FROM finan_proyectos AS p) as a
+inner join (SELECT p.pago_cod_partida,
+p.pago_cod_proyecto,
+Sum(p.pago_compromiso) AS compromiso,
+Sum(p.pago_obligacion) AS obligacion
+FROM finan_pagos AS p
+INNER JOIN finan_PROYECTO AS r ON p.pago_cod_proyecto = r.proyecto_codigo
+GROUP BY p.pago_COD_PARTIDA, p.pago_COD_PROYECTO) as b
+on a.proyectos_COD_PROYECTO =b.pago_cod_proyecto and a.proyectos_COD_PARTIDA =b.pago_cod_partida
+)as a
+inner join
+(SELECT
+p.partida_codigo,
+o.proyecto_codigo,
+upper(p.partida_nombre) as partida_nombre,
+o.proyecto_financiamiento,
+o.proyecto_financiamiento1,
+o.proyecto_nombre,
+p.partida_cuenta
+FROM FINAN_PARTIDA p
+INNER JOIN FINAN_PROYECTOS r ON r.proyectos_cod_partida = p.partida_codigo
+INNER JOIN FINAN_PROYECTO o ON r.proyectos_cod_proyecto = o.proyecto_codigo) as b
+on a.proyectos_COD_PARTIDA = b.partida_codigo and a.proyectos_COD_PROYECTO= b.proyecto_codigo
+where b.proyecto_financiamiento like '%PRESUPUESTO GENERAL%'
+GROUP BY (case when Left(Right(b.partida_cuenta,10),2)>= Right(Left(b.partida_cuenta,5),2)then Left(Right(b.partida_cuenta,10),2)
+when Left(Right(b.partida_cuenta,10),2)<Right(Left(b.partida_cuenta,5),2)then Right(Left(b.partida_cuenta,5),2) end )]]>
+	</queryString>
+	<field name="partida" class="java.lang.String"/>
+	<field name="codificado" class="java.math.BigDecimal"/>
+	<field name="compromiso" class="java.math.BigDecimal"/>
+	<field name="devengado" class="java.math.BigDecimal"/>
+	<field name="saldo_compromiso" class="java.math.BigDecimal"/>
+	<field name="saldo_obligacion" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="26" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="0cbc35c4-c866-48c5-bafc-6007a69bf470" x="295" y="4" width="507" height="20"/>
+			</rectangle>
+			<textField>
+				<reportElement uuid="57a624e3-9b4a-465d-8de1-936588bd021f" x="295" y="4" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{partida}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="50006993-0e63-4c51-abb9-a34d4b7eb2f8" x="378" y="4" width="100" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$F{codificado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1d9b55df-8e73-4116-afbe-3ecf1b29c18d" x="457" y="4" width="100" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$F{compromiso}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="aaadc6f9-8748-4eee-89cb-8e3ef66a8f8b" x="536" y="4" width="100" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$F{devengado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bf3e6340-e4c8-4f50-bc92-6b7b59f49f9a" x="614" y="4" width="100" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$F{saldo_compromiso}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b1ebb695-b034-4be9-9359-619b8ecc9c7d" x="691" y="4" width="100" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$F{saldo_obligacion}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

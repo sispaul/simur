@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_financiamiento_proyectos" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="eeb2c56b-2e0e-4dcb-919e-651986b0394e">
+	<property name="ireport.zoom" value="1.2418426461183103"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="nom_resp" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["el que imprimio"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\p-sistemas\\Documents\\NetBeansProjects\\simur\\web\\reportes\\rep_presupuestario\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from
+(select a.proyectos_COD_PROYECTO,
+a.proyectos_COD_PARTIDA,
+a.proyectos_PROY_TOTAL as codificado,
+b.compromiso,
+b.obligacion,
+a.proyectos_PROY_TOTAL-b.compromiso AS SALDO_COMPROMISO,
+a.proyectos_PROY_TOTAL-b.obligacion AS SALDO_OBLIGACION
+ from(
+SELECT p.proyectos_COD_PROYECTO,
+p.proyectos_COD_PARTIDA,
+p.proyectos_PROY_TOTAL
+FROM finan_proyectos AS p) as a
+inner join (SELECT p.pago_cod_partida,
+p.pago_cod_proyecto,
+Sum(p.pago_compromiso) AS compromiso,
+Sum(p.pago_obligacion) AS obligacion
+FROM finan_pagos AS p
+INNER JOIN finan_PROYECTO AS r ON p.pago_cod_proyecto = r.proyecto_codigo
+GROUP BY p.pago_COD_PARTIDA, p.pago_COD_PROYECTO) as b
+on a.proyectos_COD_PROYECTO =b.pago_cod_proyecto and a.proyectos_COD_PARTIDA =b.pago_cod_partida
+)as a
+inner join
+(SELECT
+p.partida_codigo,
+o.proyecto_codigo,
+upper(p.partida_nombre) as partida_nombre,
+o.proyecto_financiamiento,
+o.proyecto_financiamiento1,
+o.proyecto_nombre,
+p.partida_cuenta
+FROM FINAN_PARTIDA p
+INNER JOIN FINAN_PROYECTOS r ON r.proyectos_cod_partida = p.partida_codigo
+INNER JOIN FINAN_PROYECTO o ON r.proyectos_cod_proyecto = o.proyecto_codigo) as b
+on a.proyectos_COD_PARTIDA = b.partida_codigo and a.proyectos_COD_PROYECTO= b.proyecto_codigo
+where b.proyecto_financiamiento like '%PRESUPUESTO GENERAL%']]>
+	</queryString>
+	<field name="proyectos_COD_PROYECTO" class="java.lang.Long"/>
+	<field name="proyectos_COD_PARTIDA" class="java.lang.Long"/>
+	<field name="codificado" class="java.math.BigDecimal"/>
+	<field name="compromiso" class="java.math.BigDecimal"/>
+	<field name="obligacion" class="java.math.BigDecimal"/>
+	<field name="SALDO_COMPROMISO" class="java.math.BigDecimal"/>
+	<field name="SALDO_OBLIGACION" class="java.math.BigDecimal"/>
+	<field name="partida_codigo" class="java.lang.Long"/>
+	<field name="proyecto_codigo" class="java.lang.Long"/>
+	<field name="partida_nombre" class="java.lang.String"/>
+	<field name="proyecto_financiamiento" class="java.lang.String"/>
+	<field name="proyecto_financiamiento1" class="java.lang.String"/>
+	<field name="proyecto_nombre" class="java.lang.String"/>
+	<field name="partida_cuenta" class="java.lang.String"/>
+	<variable name="variable1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{codificado}]]></variableExpression>
+	</variable>
+	<variable name="variable2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{compromiso}]]></variableExpression>
+	</variable>
+	<variable name="variable3" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{obligacion}]]></variableExpression>
+	</variable>
+	<variable name="variable4" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{SALDO_COMPROMISO}]]></variableExpression>
+	</variable>
+	<variable name="variable5" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{SALDO_OBLIGACION}]]></variableExpression>
+	</variable>
+	<group name="proyecto">
+		<groupExpression><![CDATA[$F{proyecto_nombre}]]></groupExpression>
+		<groupHeader>
+			<band height="18">
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="a51484dd-16a0-4cbf-a69a-c4b1b347daa6" x="32" y="0" width="513" height="16"/>
+					<textElement>
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{proyecto_nombre}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="2"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="4aaab0cc-4b18-4784-8d2b-2db6589a0983" x="7" y="0" width="439" height="37"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PROYECTOS CON FINANCIAMIENTO POR PARTIDAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="eaf4b6fd-f290-4d41-8979-d5e99b4de788" x="7" y="37" width="100" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AÑO]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="3fd88cd8-043d-4f6e-b295-dbbe512ba09b" x="1" y="65" width="800" height="1"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineStyle="Double"/>
+				</graphicElement>
+			</line>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="31" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="a14fb882-f0a1-479b-8f29-0b83bc46dfbe" x="702" y="2" width="100" height="29"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SALDO DEVENGADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="56089919-5fa1-4f58-a45b-0c2d5569d2a1" x="626" y="2" width="100" height="29"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SALDO COMPROMISO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="890587be-85a2-43e2-823d-83eeb06f5135" x="3" y="2" width="44" height="29"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CUENTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e57eb08a-e0a9-452c-a324-dd6b146ec998" x="545" y="2" width="100" height="29"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DEVENGADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a4f0c299-5a71-4e35-99c4-df10f40c7272" x="457" y="2" width="100" height="29"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[COMPROMISO]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="2" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="40f4ac5a-bee2-4422-be6d-80026baa5aeb" x="457" y="2" width="100" height="16"/>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{compromiso}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8c328966-f4a9-431c-9561-24c5690fcbc1" x="545" y="2" width="100" height="16"/>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{obligacion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6a1d95a7-5d4b-44de-953f-c7cb37576e08" x="626" y="2" width="100" height="16"/>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SALDO_COMPROMISO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0ddaba42-0155-4525-a8ae-4d1261c6b6d7" x="702" y="2" width="100" height="16"/>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SALDO_OBLIGACION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a0b24c89-37fb-4d75-8cfd-57c836f76ce0" x="368" y="2" width="100" height="16"/>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codificado}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="66ef79c8-6131-409f-97f5-758e9815288f" x="79" y="2" width="309" height="16"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{partida_nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="479ba9e7-dc7e-433b-8aa2-9c3973e39963" x="0" y="2" width="100" height="16"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{partida_cuenta}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="1de7625a-033e-4c4d-afe8-2e8495575e18" x="0" y="19" width="800" height="1"/>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="2" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="19" splitType="Stretch">
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
+				<reportElement uuid="e0aa0197-0a8c-4dd3-bbe1-439de520f0f5" key="textField" x="764" y="0" width="36" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="fe448f20-9d7b-43d6-9e2d-0424ac107c85" key="textField" x="594" y="0" width="170" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="a21e7966-d501-4fd5-aa63-d637d94bdad7" key="textField-1" x="323" y="0" width="90" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nom_resp}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="c51c78d3-70e7-4292-bfcc-92495e0c0fe1" key="textField-5" x="7" y="0" width="115" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="68" splitType="Stretch">
+			<textField>
+				<reportElement uuid="5b019bb4-99c8-436c-988f-ea606c78a3f4" x="702" y="2" width="100" height="16"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{variable5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a386f4ae-2158-4392-a6e5-a8c8aac4356d" x="545" y="2" width="100" height="16"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{variable3}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="18b0673a-167f-49d0-9ed6-949528416ae7" x="368" y="2" width="100" height="16"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{variable1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="068c52a6-afc7-411c-a033-4222dd808c8d" x="626" y="2" width="100" height="16"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{variable4}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="68811cdf-13f9-4dfa-a866-1ecc31705f93" x="457" y="2" width="100" height="16"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{variable2}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="fa572c1d-2631-41b2-b66e-00f6228efaef" x="246" y="2" width="122" height="16"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL PROYECTOS:]]></text>
+			</staticText>
+			<subreport>
+				<reportElement uuid="a87d2a73-66aa-4ada-8934-1bb6047d3362" x="3" y="32" width="626" height="36"/>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "rep_pie_financiamiento.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</summary>
+</jasperReport>
