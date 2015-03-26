@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_fondos_acumulados" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="70c68bca-5077-4d42-b4a2-d6c9f6ef8d2a">
+	<property name="ireport.zoom" value="1.4641000000000015"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="nom_resp" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["el que imprimio"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="distributivo" class="java.lang.Integer"/>
+	<parameter name="anio" class="java.lang.Integer"/>
+	<parameter name="periodo" class="java.lang.Integer"/>
+	<parameter name="fondos" class="java.lang.String"/>
+	<parameter name="fondosDes" class="java.lang.String"/>
+	<parameter name="desDistributivo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select cod_empleado,cedula_pass,nombres,nombre_cargo,partida_pres,descuento from
+(select e.cod_empleado,e.cedula_pass,e.nombres,c.nombre_cargo,e.partida_pres
+from srh_empleado e
+inner join srh_cargos c on e.cod_cargo = c.cod_cargo
+where e.estado=1 and e.id_distributivo = $P{distributivo}
+order by e.partida_pres,e.nombres) as a
+left join
+(select ide_empleado,descuento,ano,ide_periodo from srh_valor_roles_historial
+where fondos_reserva=$P{fondos})as b
+on a.cod_empleado = b.ide_empleado
+where ano = $P{anio} and ide_periodo=$P{periodo}]]>
+	</queryString>
+	<field name="cod_empleado" class="java.lang.Long"/>
+	<field name="cedula_pass" class="java.lang.String"/>
+	<field name="nombres" class="java.lang.String"/>
+	<field name="nombre_cargo" class="java.lang.String"/>
+	<field name="partida_pres" class="java.lang.String"/>
+	<field name="descuento" class="java.math.BigDecimal"/>
+	<variable name="sum_partida" class="java.math.BigDecimal" resetType="Group" resetGroup="partidas_presupuestarias" calculation="Sum">
+		<variableExpression><![CDATA[$F{descuento}]]></variableExpression>
+	</variable>
+	<variable name="sum_total" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{descuento}]]></variableExpression>
+	</variable>
+	<group name="partidas_presupuestarias">
+		<groupExpression><![CDATA[$F{partida_pres}]]></groupExpression>
+		<groupHeader>
+			<band height="39">
+				<textField>
+					<reportElement uuid="1c02bf99-5296-4f3f-a8e4-6e7e995b0c19" x="142" y="0" width="100" height="15"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{partida_pres}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="e831d726-44b5-483b-9932-77e3cd3c665d" x="0" y="23" width="49" height="15"/>
+					<textElement>
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Codigo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="c5464e85-3d18-434e-8929-2de4e22c059d" x="38" y="23" width="68" height="15"/>
+					<textElement>
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Cedula]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="169e8265-4850-42ca-8949-e5fa3d1f0a2e" x="107" y="23" width="179" height="15"/>
+					<textElement>
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Apellidos y Nombres]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="9c9747ea-6f8e-41c3-ac85-bb67d925550f" x="286" y="23" width="213" height="15"/>
+					<textElement>
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Cargo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="44bd399c-f12e-472f-a7c3-71df1ce5be2b" x="499" y="23" width="56" height="15"/>
+					<textElement textAlignment="Right">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Valor]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="b32f9757-2ba2-4a9f-8c1b-98c54a7810d8" x="0" y="0" width="142" height="15"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Partida Presupuestaria: ]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="15">
+				<staticText>
+					<reportElement uuid="265cc69a-d23c-4519-b614-fd6448ef030f" x="347" y="0" width="100" height="15"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total Por Partida:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="f1665ff1-7720-4ad1-a2f2-66b7267cf3e4" x="447" y="0" width="100" height="15"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$V{sum_partida}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="87" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="d713c59b-37f0-4ebf-bac5-c7dc5d994648" key="staticText" x="46" y="5" width="273" height="34" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[GOBIERNO AUTONOMO DESCENTRALIZADO MUNICIPAL DEL CANTON RUMIÑAHUI]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="7380b114-e4bb-49cd-85ac-ba029215d73d" x="372" y="0" width="163" height="87"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement uuid="6fd53f95-a580-493b-a6e5-3be788b03102" x="2" y="47" width="360" height="20"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["PLANILLA DE VALORES FONDOS DE RESERVA : "+$P{fondosDes}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7094c3dd-dac3-472f-9989-998261a85dff" x="2" y="67" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{desDistributivo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="18" splitType="Stretch">
+			<textField>
+				<reportElement uuid="5cd02bb9-e1c7-41b5-b2ef-f7b8f67b4106" x="0" y="1" width="49" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cod_empleado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4dea0a14-9497-4dce-a716-160ddc1ad9d7" x="39" y="1" width="68" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cedula_pass}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bd11a36d-f8d5-4cdb-902d-84e6fef42255" x="106" y="1" width="180" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombres}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="567ec9af-d860-4d2d-899e-42a4974b0291" x="286" y="1" width="213" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_cargo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0efc5968-5882-40d9-9853-3b39a039f02a" x="499" y="1" width="55" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descuento}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="17" splitType="Stretch">
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="c36fcd3a-ae04-4373-825b-d0cbb15d97eb" key="textField" x="347" y="0" width="170" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
+				<reportElement uuid="e874b39e-7575-45f6-8ea3-da4307de8a19" key="textField" x="517" y="0" width="36" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="b8d8ada3-ce32-42cf-9d05-74dd585cc3e0" key="textField-5" x="2" y="0" width="115" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="c18f59f4-26d7-4d8c-961c-3bda8cbe5561" key="textField-1" x="196" y="0" width="90" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="9" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nom_resp}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="16" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="80fff1d5-671c-4c1e-9e89-5da068a24b99" x="184" y="0" width="153" height="15"/>
+				<textElement verticalAlignment="Bottom">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Fondo Fondos Reserva:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="5cb46eb5-0aaa-4c6b-a7f8-73e8811c7b80" x="330" y="0" width="100" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom"/>
+				<textFieldExpression><![CDATA[$V{sum_total}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
