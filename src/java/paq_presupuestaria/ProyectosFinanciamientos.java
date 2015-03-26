@@ -5,6 +5,7 @@
 package paq_presupuestaria;
 
 import framework.componentes.AutoCompletar;
+import framework.componentes.Boton;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grupo;
@@ -28,7 +29,7 @@ public class ProyectosFinanciamientos extends Pantalla {
     private AutoCompletar autCompleta = new AutoCompletar();
 
     public ProyectosFinanciamientos() {
-
+        
         conSqlProy4.setUnidad_persistencia(utilitario.getPropiedad("poolSqlProyectos4"));
         conSqlProy4.NOMBRE_MARCA_BASE = "sqlserver";
 
@@ -46,28 +47,23 @@ public class ProyectosFinanciamientos extends Pantalla {
         bar_botones.agregarComponente(new Etiqueta("Buscar Proyecto"));
         bar_botones.agregarComponente(autCompleta);
 
-        dibujarPantalla();
-    }
+        Boton botLimpiar = new Boton();
+        botLimpiar.setIcon("ui-icon-cancel");
+        botLimpiar.setMetodo("limpiar1");
+        bar_botones.agregarBoton(botLimpiar);
 
-    public void dibujarPantalla() {
-        limpiarPanel();
         tabTablaPro.setId("tabTablaPro");
         tabTablaPro.setConexion(conSqlProy4);
         tabTablaPro.setTabla("finan_proyecto", "proyecto_codigo", 1);
-        /*Filtro estatico para los datos a mostrar*/
-        if (autCompleta.getValue() == null) {
-            tabTablaPro.setCondicion("proyecto_codigo=-1");
-        } else {
-            tabTablaPro.setCondicion("proyecto_codigo=" + autCompleta.getValor());
-        }
         tabTablaPro.getColumna("proyecto_arrastre").setVisible(false);
         tabTablaPro.getColumna("proyecto_contratista1").setVisible(false);
         tabTablaPro.getColumna("proyecto_contratista2").setVisible(false);
         tabTablaPro.getColumna("proyecto_validacion").setVisible(false);
         tabTablaPro.getColumna("proyecto_asig_inicial1").setVisible(false);
-        tabTablaPro.getColumna("proyecto_financiamiento1").setVisible(false);
         tabTablaPro.getColumna("proyecto_asig_inicial").setVisible(false);
-        tabTablaPro.getColumna("proyecto_financiamiento").setVisible(false);
+        tabTablaPro.getColumna("proyecto_total_asig").setLectura(true);
+        tabTablaPro.getColumna("proyecto_nombre").setLectura(true);
+        tabTablaPro.getColumna("proyecto_direccion").setLectura(true);
         tabTablaPro.agregarRelacion(tabTablaFin);
         tabTablaPro.setTipoFormulario(true);
         tabTablaPro.getGrid().setColumns(2);
@@ -86,30 +82,25 @@ public class ProyectosFinanciamientos extends Pantalla {
         pntf.setPanelTabla(tabTablaFin);
 
         Division div = new Division();
-        div.dividir2(pntp, pntf, "25%", "H");
+        div.dividir2(pntp, pntf, "35%", "H");
         Grupo gru = new Grupo();
         gru.getChildren().add(div);
         panOpcion.getChildren().add(gru);
-
-    }
-
-    private void limpiarPanel() {
-        //borra el contenido de la división central central
-        panOpcion.getChildren().clear();
-    }
-
-    public void limpiar() {
-        autCompleta.limpiar();
-        utilitario.addUpdate("autCompleta");
-        limpiarPanel();
-        utilitario.addUpdate("panOpcion");
     }
 
     public void filtroRegistro(SelectEvent evt) {
         //Filtra el cliente seleccionado en el autocompletar
-        limpiar();
         autCompleta.onSelect(evt);
-        dibujarPantalla();
+        if (autCompleta.getValor() != null) {
+            tabTablaPro.setFilaActual(autCompleta.getValor());
+            utilitario.addUpdate("tabTablaPro");
+        }
+
+    }
+
+    public void limpiar1() {
+        autCompleta.limpiar();
+        utilitario.addUpdate("autCompleta");
     }
 
     @Override
@@ -124,6 +115,7 @@ public class ProyectosFinanciamientos extends Pantalla {
                 conSqlProy4.guardarPantalla();
             }
         }
+
     }
 
     @Override
