@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_gasto_rol_incinsistencia" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="f895bc07-deaa-488e-946e-4cc8229218d3">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_gasto_rol_inconsistencia" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="f895bc07-deaa-488e-946e-4cc8229218d3">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.0"/>
@@ -12,9 +12,8 @@
 	<parameter name="nom_resp" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT id_distributivo_roles,ano,ide_columna,ide_periodo,
-num_descuento,descuento,cedula,nombres,ide_descuento,
+valor,descuento,cedula,nombres,ide_descuento,
 ide_empleado,ide_empleado_rol
-
 FROM srh_descuento
 where ide_empleado_rol is null and
 ide_empleado is null or
@@ -25,7 +24,9 @@ ORDER BY nombres]]>
 	<field name="ano" class="java.lang.Integer"/>
 	<field name="ide_columna" class="java.lang.Integer"/>
 	<field name="ide_periodo" class="java.lang.Integer"/>
-	<field name="num_descuento" class="java.lang.Integer"/>
+	<field name="valor" class="java.lang.Integer">
+		<fieldDescription><![CDATA[VALOR]]></fieldDescription>
+	</field>
 	<field name="descuento" class="java.math.BigDecimal"/>
 	<field name="cedula" class="java.lang.String"/>
 	<field name="nombres" class="java.lang.String"/>
@@ -240,7 +241,7 @@ ORDER BY nombres]]>
 				<textElement textAlignment="Center">
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{num_descuento}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
 				<reportElement uuid="70a45ac2-655c-466b-81e6-ada1db0afdc0" key="textField" x="64" y="1" width="49" height="12" forecolor="#000000" backcolor="#FFFFFF"/>

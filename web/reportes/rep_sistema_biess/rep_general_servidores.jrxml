@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_general_servidores" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e6943b07-718d-45b9-8753-d6d37a1e90b9">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT e.cod_empleado,
+e.cedula_pass,
+e.nombres,
+(case when e.id_distributivo = 1  then 'Empleado' when e.id_distributivo = 2  then 'Trabajador' end),
+'Av. Montufar 251 y Espejo' as direccion,
+e.cod_area,
+e.partida_pres,
+e.remuneracion,
+e.partida_indv,
+d.nombre_dir,
+c.nombre_cargo,
+e.lugar_trab
+FROM srh_empleado e
+INNER JOIN srh_direccion d ON e.cod_direccion = d.cod_direccion
+INNER JOIN srh_cargos c ON e.cod_cargo = c.cod_cargo
+WHERE e.estado = 1
+ORDER BY e.nombres ASC
+]]>
+	</queryString>
+	<field name="cod_empleado" class="java.lang.Long"/>
+	<field name="cedula_pass" class="java.lang.String"/>
+	<field name="nombres" class="java.lang.String"/>
+	<field name="case" class="java.lang.String"/>
+	<field name="direccion" class="java.lang.String"/>
+	<field name="cod_area" class="java.lang.Integer"/>
+	<field name="partida_pres" class="java.lang.String"/>
+	<field name="remuneracion" class="java.math.BigDecimal"/>
+	<field name="partida_indv" class="java.lang.String"/>
+	<field name="nombre_dir" class="java.lang.String"/>
+	<field name="nombre_cargo" class="java.lang.String"/>
+	<field name="lugar_trab" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="17" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="37edaa75-dbc6-428f-9513-12ef523529c1" x="0" y="1" width="58" height="16"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Cedula]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="29eda531-3250-4259-9f5d-ba0e204cf690" x="58" y="1" width="200" height="16"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Apellidos y Nombres]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0ae32036-4bf6-4f1d-8f5b-74c3b315d9dd" x="258" y="1" width="175" height="16"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Puesto Institucional]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="131e03a0-f9dd-4461-82fd-7451ad757691" x="433" y="1" width="163" height="16"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Unidad a la Que Pertenece]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a5cb7123-413b-4e6b-8306-5b54d99c47c3" x="596" y="1" width="121" height="16"/>
+				<textElement/>
+				<text><![CDATA[Dirección Institucional]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="30b284ba-b68e-494e-84f8-0be890789940" x="717" y="1" width="85" height="16"/>
+				<textElement/>
+				<text><![CDATA[Ciudad en la que Labora]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="04830934-3bb5-4faf-b70c-6396f700fe10" positionType="Float" x="0" y="0" width="58" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cedula_pass}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="693d8e07-a7ed-47fa-8fc9-9a36f57eaba0" positionType="Float" x="58" y="0" width="200" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombres}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="ae58b41e-c492-4eff-8b63-d5a30f43257b" positionType="Float" x="258" y="0" width="175" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_cargo}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="91bb4ead-a6a2-44ad-a88d-672041bf07e3" positionType="Float" x="433" y="0" width="163" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_dir}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="7184a0cd-579e-4143-bd8c-7e170992a8b8" positionType="Float" x="596" y="0" width="121" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{direccion}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="97650fc2-e82e-4517-87ab-972d18f20e74" positionType="Float" x="717" y="0" width="85" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{lugar_trab}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
