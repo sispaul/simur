@@ -3,6 +3,7 @@
 	<property name="ireport.zoom" value="1.3310000000000004"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<parameter name="financiamiento" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select
 (case when Left(Right(b.partida_cuenta,10),2)>= Right(Left(b.partida_cuenta,5),2)then Left(Right(b.partida_cuenta,10),2)
@@ -47,7 +48,7 @@ FROM FINAN_PARTIDA p
 INNER JOIN FINAN_PROYECTOS r ON r.proyectos_cod_partida = p.partida_codigo
 INNER JOIN FINAN_PROYECTO o ON r.proyectos_cod_proyecto = o.proyecto_codigo) as b
 on a.proyectos_COD_PARTIDA = b.partida_codigo and a.proyectos_COD_PROYECTO= b.proyecto_codigo
-where b.proyecto_financiamiento like '%PRESUPUESTO GENERAL%'
+where b.proyecto_financiamiento like $P{financiamiento}
 GROUP BY (case when Left(Right(b.partida_cuenta,10),2)>= Right(Left(b.partida_cuenta,5),2)then Left(Right(b.partida_cuenta,10),2)
 when Left(Right(b.partida_cuenta,10),2)<Right(Left(b.partida_cuenta,5),2)then Right(Left(b.partida_cuenta,5),2) end )]]>
 	</queryString>
