@@ -4,7 +4,6 @@
  */
 package paq_nomina;
 
-import framework.aplicacion.Parametro;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
