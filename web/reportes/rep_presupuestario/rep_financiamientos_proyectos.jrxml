@@ -6,13 +6,13 @@
 	<parameter name="nom_resp" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["el que imprimio"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["C:\\Users\\p-sistemas\\Documents\\NetBeansProjects\\simur\\web\\reportes\\rep_presupuestario\\"]]></defaultValueExpression>
-	</parameter>
 	<parameter name="financiamiento" class="java.lang.String"/>
 	<parameter name="titulo" class="java.lang.String"/>
 	<parameter name="titulo_1" class="java.lang.String"/>
 	<parameter name="anio" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\p-sistemas\\Documents\\NetBeansProjects\\simur\\web\\reportes\\rep_sistema_biess\\"]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[select * from
 (select a.proyectos_COD_PROYECTO,
@@ -354,12 +354,12 @@ where b.proyecto_financiamiento like $P{financiamiento}]]>
 				<text><![CDATA[TOTAL PROYECTOS:]]></text>
 			</staticText>
 			<subreport>
-				<reportElement uuid="985136ea-188e-4662-bd81-0fc89cd598d9" x="0" y="22" width="726" height="35"/>
+				<reportElement uuid="acf155b6-804b-4a3e-9ad2-f5aef16590b2" x="1" y="18" width="787" height="26"/>
 				<subreportParameter name="financiamiento">
 					<subreportParameterExpression><![CDATA[$P{financiamiento}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_presupuestario/rep_pie_financiamiento.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema_biess/rep_pie_financiamiento.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</summary>
