@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_financiamiento_proyectos" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="eeb2c56b-2e0e-4dcb-919e-651986b0394e">
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="1.1586575189467514"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="nom_resp" class="java.lang.String" isForPrompting="false">
@@ -9,6 +9,9 @@
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["C:\\Users\\p-sistemas\\Documents\\NetBeansProjects\\simur\\web\\reportes\\rep_presupuestario\\"]]></defaultValueExpression>
 	</parameter>
+	<parameter name="financiamiento" class="java.lang.String"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="titulo_1" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select * from
 (select a.proyectos_COD_PROYECTO,
@@ -45,7 +48,7 @@ FROM FINAN_PARTIDA p
 INNER JOIN FINAN_PROYECTOS r ON r.proyectos_cod_partida = p.partida_codigo
 INNER JOIN FINAN_PROYECTO o ON r.proyectos_cod_proyecto = o.proyecto_codigo) as b
 on a.proyectos_COD_PARTIDA = b.partida_codigo and a.proyectos_COD_PROYECTO= b.proyecto_codigo
-where b.proyecto_financiamiento like '%PRESUPUESTO GENERAL%']]>
+where b.proyecto_financiamiento like $P{financiamiento}]]>
 	</queryString>
 	<field name="proyectos_COD_PROYECTO" class="java.lang.Long"/>
 	<field name="proyectos_COD_PARTIDA" class="java.lang.Long"/>
@@ -97,20 +100,34 @@ where b.proyecto_financiamiento like '%PRESUPUESTO GENERAL%']]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="72" splitType="Stretch">
-			<staticText>
-				<reportElement uuid="4aaab0cc-4b18-4784-8d2b-2db6589a0983" x="7" y="0" width="439" height="37"/>
-				<textElement>
-					<font size="16" isBold="true"/>
-				</textElement>
-				<text><![CDATA[PROYECTOS CON FINANCIAMIENTO POR PARTIDAS]]></text>
-			</staticText>
+		<band height="63" splitType="Stretch">
 			<line>
-				<reportElement uuid="3fd88cd8-043d-4f6e-b295-dbbe512ba09b" x="1" y="65" width="800" height="1"/>
+				<reportElement uuid="3fd88cd8-043d-4f6e-b295-dbbe512ba09b" x="1" y="55" width="800" height="1"/>
 				<graphicElement>
 					<pen lineWidth="2.0" lineStyle="Double"/>
 				</graphicElement>
 			</line>
+			<textField>
+				<reportElement uuid="b3805f9d-1cc5-48fa-b594-a4d36bf48489" x="0" y="0" width="663" height="25"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{titulo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="2569619e-c173-4a95-8a44-4d236117b126" x="0" y="25" width="172" height="30"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{titulo_1}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="5bc4adc5-8355-4b3f-9bd2-b02968b6812c" x="172" y="25" width="491" height="30"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{financiamiento}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
@@ -271,7 +288,7 @@ where b.proyecto_financiamiento like '%PRESUPUESTO GENERAL%']]>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="74" splitType="Stretch">
+		<band height="61" splitType="Stretch">
 			<textField>
 				<reportElement uuid="5b019bb4-99c8-436c-988f-ea606c78a3f4" x="702" y="2" width="100" height="16"/>
 				<textElement textAlignment="Right" verticalAlignment="Bottom">
@@ -315,9 +332,12 @@ where b.proyecto_financiamiento like '%PRESUPUESTO GENERAL%']]>
 				<text><![CDATA[TOTAL PROYECTOS:]]></text>
 			</staticText>
 			<subreport>
-				<reportElement uuid="8dc6c409-eea3-456a-9e2f-053c9541cf9d" x="7" y="36" width="746" height="37"/>
+				<reportElement uuid="985136ea-188e-4662-bd81-0fc89cd598d9" x="0" y="22" width="726" height="35"/>
+				<subreportParameter name="financiamiento">
+					<subreportParameterExpression><![CDATA[$P{financiamiento}]]></subreportParameterExpression>
+				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "rep_pie_financiamiento.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_presupuestario/rep_pie_financiamiento.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</summary>
