@@ -77,8 +77,9 @@ public class ReporteFinanciamientoProyecto extends Pantalla {
     public void conexion() {
         if (comboAnio.getValue() != null) {
             conSqlProy.setUnidad_persistencia(utilitario.getPropiedad("poolSqlProyectos" + comboAnio.getValue()));
+//            System.err.println(utilitario.getPropiedad("poolSqlProyectos" + comboAnio.getValue()));
             conSqlProy.NOMBRE_MARCA_BASE = "sqlserver";
-
+//            System.err.println(conSqlProy);
             comboParametros.setId("comboParametros");
             comboParametros.setConexion(conSqlProy);
             comboParametros.setCombo("SELECT DISTINCT\n"
@@ -123,10 +124,11 @@ public class ReporteFinanciamientoProyecto extends Pantalla {
                 p_parametros.put("titulo_1", "FINANCIAMIENTO : ");
                 p_parametros.put("financiamiento", comboParametros.getValue() + "");
                 p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
+                p_parametros.put("anio", comboAnio.getValue() + "");
                 rep_reporte.cerrar();
                 sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-                System.err.println(p_parametros);
-                System.out.println(rep_reporte.getPath());
+//                System.err.println(p_parametros);
+//                System.out.println(rep_reporte.getPath());
                 sef_formato.dibujar();
                 break;
         }
