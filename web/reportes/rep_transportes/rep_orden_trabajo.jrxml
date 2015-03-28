@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_orden_trabajo" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c3f997f9-86ce-4c7d-9c71-b0df9be4f8db">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="87"/>
+	<property name="ireport.y" value="48"/>
 	<parameter name="nom_resp" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["el que imprimio"]]></defaultValueExpression>
 	</parameter>
@@ -77,10 +77,6 @@ WHERE v.MVE_MODELO = o.MVMODELO_ID and v.MVE_PLACA =$P{placa} AND c.MCA_SECUENCI
 				</textElement>
 				<text><![CDATA[ORDEN DE TRABAJO]]></text>
 			</staticText>
-			<image>
-				<reportElement uuid="7737e9cb-e09a-4aff-b024-f392c4896ce3" x="336" y="4" width="200" height="70"/>
-				<imageExpression><![CDATA["C:\\Users\\p-sistemas\\Documents\\NetBeansProjects\\simur\\web\\upload\\logos\\logo_rep_cordTransporte.png"]]></imageExpression>
-			</image>
 		</band>
 	</title>
 	<pageHeader>
