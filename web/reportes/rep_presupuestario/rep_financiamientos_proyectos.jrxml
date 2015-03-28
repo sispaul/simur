@@ -12,6 +12,7 @@
 	<parameter name="financiamiento" class="java.lang.String"/>
 	<parameter name="titulo" class="java.lang.String"/>
 	<parameter name="titulo_1" class="java.lang.String"/>
+	<parameter name="anio" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select * from
 (select a.proyectos_COD_PROYECTO,
@@ -100,9 +101,9 @@ where b.proyecto_financiamiento like $P{financiamiento}]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="63" splitType="Stretch">
+		<band height="76" splitType="Stretch">
 			<line>
-				<reportElement uuid="3fd88cd8-043d-4f6e-b295-dbbe512ba09b" x="1" y="55" width="800" height="1"/>
+				<reportElement uuid="3fd88cd8-043d-4f6e-b295-dbbe512ba09b" x="1" y="71" width="800" height="1"/>
 				<graphicElement>
 					<pen lineWidth="2.0" lineStyle="Double"/>
 				</graphicElement>
@@ -127,6 +128,20 @@ where b.proyecto_financiamiento like $P{financiamiento}]]>
 					<font size="16" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{financiamiento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="c6f8026f-296c-4efb-a879-c6f2c90b8d6b" x="664" y="0" width="52" height="25"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AÑO : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="b134a2d5-e869-4509-ba37-7adca59686d8" x="716" y="0" width="86" height="25"/>
+				<textElement textAlignment="Right">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{anio}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -166,6 +181,13 @@ where b.proyecto_financiamiento like $P{financiamiento}]]>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[COMPROMISO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="932f089b-3045-430c-918d-5e270ac4404e" x="388" y="2" width="80" height="29"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CODIFICADO]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
