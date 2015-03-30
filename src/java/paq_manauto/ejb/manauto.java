@@ -85,6 +85,15 @@ public class manauto {
         con_postgres = null;
     }
 
+        public void setDependencias(String nombre) {
+        String parametro = "insert into mvtipo_dependencias(dependencia_descripcion)\n"
+                + "values ('" + nombre + "')";
+        con_postgresql();
+        con_postgres.ejecutarSql(parametro);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+    
     public void deleteTipos(Integer anti) {
         String au_sql = "delete from mvtipo_vehiculo where mvtipo_id =" + anti;
         con_postgresql();
@@ -128,6 +137,14 @@ public class manauto {
         con_postgres = null;
     }
 
+        public void deleteDependencias(Integer anti) {
+        String au_sql = "delete from mvtipo_dependencias where dependencia_codigo =" + anti;
+        con_postgresql();
+        con_postgres.ejecutarSql(au_sql);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+    
     public void deleteaccesorios(Integer anti) {
         String au_sql = "update mvdetalle_vehiculo set mve_estado = '0' where mdv_codigo = " + anti;
         con_postgresql();
