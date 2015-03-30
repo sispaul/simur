@@ -7,8 +7,12 @@
 		<defaultValueExpression><![CDATA["el que imprimio"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["C:\\Users\\p-sistemas\\Documents\\NetBeansProjects\\simur\\web\\reportes\\rep_presupuestario\\"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["C:\\Users\\p-sistemas\\Documents\\NetBeansProjects\\simur\\web\\"]]></defaultValueExpression>
 	</parameter>
+	<parameter name="financiamiento" class="java.lang.String"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="titulo_1" class="java.lang.String"/>
+	<parameter name="anio" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select * from
 (select a.proyectos_COD_PROYECTO,
@@ -97,20 +101,48 @@ where b.proyecto_financiamiento like '%PRESUPUESTO GENERAL%']]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="72" splitType="Stretch">
-			<staticText>
-				<reportElement uuid="4aaab0cc-4b18-4784-8d2b-2db6589a0983" x="7" y="0" width="439" height="37"/>
-				<textElement>
-					<font size="16" isBold="true"/>
-				</textElement>
-				<text><![CDATA[PROYECTOS CON FINANCIAMIENTO POR PARTIDAS]]></text>
-			</staticText>
+		<band height="86" splitType="Stretch">
 			<line>
-				<reportElement uuid="3fd88cd8-043d-4f6e-b295-dbbe512ba09b" x="1" y="65" width="800" height="1"/>
+				<reportElement uuid="3fd88cd8-043d-4f6e-b295-dbbe512ba09b" x="2" y="80" width="800" height="1"/>
 				<graphicElement>
 					<pen lineWidth="2.0" lineStyle="Double"/>
 				</graphicElement>
 			</line>
+			<staticText>
+				<reportElement uuid="7b55ae3f-6302-42e7-8569-4ede141fda60" x="665" y="5" width="52" height="25"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AÑO : ]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="cb9eec26-200c-4748-ad80-26dd54df9812" x="173" y="30" width="491" height="30"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{financiamiento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5e47f7c7-7b8f-46f6-ab28-540822d46f66" x="1" y="5" width="663" height="25"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{titulo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b29b2d6c-f31f-4caf-8094-603696f7c9ce" x="1" y="30" width="172" height="30"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{titulo_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="eca78f01-2f1f-460b-84de-d12cf6b6a70c" x="717" y="5" width="86" height="25"/>
+				<textElement textAlignment="Right">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{anio}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
@@ -271,7 +303,7 @@ where b.proyecto_financiamiento like '%PRESUPUESTO GENERAL%']]>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="74" splitType="Stretch">
+		<band height="57" splitType="Stretch">
 			<textField>
 				<reportElement uuid="5b019bb4-99c8-436c-988f-ea606c78a3f4" x="702" y="2" width="100" height="16"/>
 				<textElement textAlignment="Right" verticalAlignment="Bottom">
@@ -315,9 +347,12 @@ where b.proyecto_financiamiento like '%PRESUPUESTO GENERAL%']]>
 				<text><![CDATA[TOTAL PROYECTOS:]]></text>
 			</staticText>
 			<subreport>
-				<reportElement uuid="8dc6c409-eea3-456a-9e2f-053c9541cf9d" x="7" y="36" width="746" height="37"/>
+				<reportElement uuid="9c17c725-384b-4051-85ce-4c61acc27b31" x="0" y="18" width="726" height="30"/>
+				<subreportParameter name="financiamiento">
+					<subreportParameterExpression><![CDATA[$P{financiamiento}]]></subreportParameterExpression>
+				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "rep_pie_financiamiento.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema_biess/rep_pie_financiamiento.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</summary>
