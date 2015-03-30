@@ -71,9 +71,8 @@ public class pre_abastecimientomaquin extends Pantalla {
         tab_tabla.getColumna("abastecimiento_tipo_medicion").setValorDefecto("2");
         tab_tabla.getColumna("abastecimiento_ingreso").setValorDefecto("HT");
 
-        tab_tabla.getColumna("abastecimiento_loginactu").setVisible(false);
-
         tab_tabla.getColumna("abastecimiento_titulo").setEtiqueta();
+        tab_tabla.getColumna("abastecimiento_loginactu").setVisible(false);
         tab_tabla.getColumna("abastecimiento_id").setVisible(false);
         tab_tabla.getColumna("abastecimiento_fechactu").setVisible(false);
         tab_tabla.getColumna("abastecimiento_fechaing").setVisible(false);
