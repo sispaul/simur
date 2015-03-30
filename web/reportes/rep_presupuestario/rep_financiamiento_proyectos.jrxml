@@ -49,7 +49,7 @@ FROM FINAN_PARTIDA p
 INNER JOIN FINAN_PROYECTOS r ON r.proyectos_cod_partida = p.partida_codigo
 INNER JOIN FINAN_PROYECTO o ON r.proyectos_cod_proyecto = o.proyecto_codigo) as b
 on a.proyectos_COD_PARTIDA = b.partida_codigo and a.proyectos_COD_PROYECTO= b.proyecto_codigo
-where b.proyecto_financiamiento like '%PRESUPUESTO GENERAL%']]>
+where b.proyecto_financiamiento like $P{financiamiento}]]>
 	</queryString>
 	<field name="proyectos_COD_PROYECTO" class="java.lang.Long"/>
 	<field name="proyectos_COD_PARTIDA" class="java.lang.Long"/>
