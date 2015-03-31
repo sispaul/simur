@@ -320,7 +320,7 @@ public class AbastecimientoMaquinarias extends Pantalla {
                     Double valor;
                     valor = (Double.parseDouble(tab_dato.getValor("tipo_valor_galon")) * Double.parseDouble(tabTabla.getValor("abastecimiento_galones")));
                     tabTabla.setValor("abastecimiento_total", String.valueOf(Math.rint(valor * 100) / 100));
-                    utilitario.addUpdate("tabTabla");
+//                    utilitario.addUpdate("tabTabla");
                     secuencial();
                 } else {
                     utilitario.agregarMensajeError("Valor", "No Se Encuentra Registrado");
@@ -334,7 +334,7 @@ public class AbastecimientoMaquinarias extends Pantalla {
                 Double valor;
                 valor = (Double.parseDouble(tab_dato.getValor("tipo_valor_galon")) * Double.parseDouble(tabTabla.getValor("abastecimiento_galones")));
                 tabTabla.setValor("abastecimiento_total", String.valueOf(Math.rint(valor * 100) / 100));
-                utilitario.addUpdate("tabTabla");
+//                utilitario.addUpdate("tabTabla");
                 secuencial();
             } else {
                 utilitario.agregarMensajeError("Valor", "No Se Encuentra Registrado");
@@ -346,12 +346,19 @@ public class AbastecimientoMaquinarias extends Pantalla {
         if (tabTabla.getValor("abastecimiento_fecha") != null && tabTabla.getValor("abastecimiento_fecha").toString().isEmpty() == false) {
             if (tabTabla.getValor("abastecimiento_numero") != null && tabTabla.getValor("abastecimiento_numero").toString().isEmpty() == false) {
             } else {
-                Integer numero = Integer.parseInt(aCombustible.listaMax(Integer.parseInt(tabTabla.getValor("mve_secuencial")), String.valueOf(utilitario.getAnio(tabTabla.getValor("abastecimiento_fecha"))), String.valueOf(utilitario.getMes(tabTabla.getValor("abastecimiento_fecha")))));
-                Integer cantidad = 0;
-                cantidad = numero + 1;
-                tabTabla.setValor("abastecimiento_numero", String.valueOf(cantidad));
-                utilitario.addUpdate("tabTabla");
-                hora_actu();
+                if (tabTabla.getValor("abastecimiento_titulo").equals("1")) {
+                    Integer numero = Integer.parseInt(aCombustible.listaMax(Integer.parseInt(tabTabla.getValor("mve_secuencial")), String.valueOf(utilitario.getAnio(tabTabla.getValor("abastecimiento_fecha"))), String.valueOf(utilitario.getMes(tabTabla.getValor("abastecimiento_fecha")))));
+                    Integer cantidad = 0;
+                    cantidad = numero + 1;
+                    tabTabla.setValor("abastecimiento_numero", String.valueOf(cantidad));
+                    utilitario.addUpdate("tabTabla");
+                } else {
+                    Integer numero = Integer.parseInt(aCombustible.listaMax(Integer.parseInt(tabTabla.getValor("abastecimiento_cod_dependencia")), String.valueOf(utilitario.getAnio(tabTabla.getValor("abastecimiento_fecha"))), String.valueOf(utilitario.getMes(tabTabla.getValor("abastecimiento_fecha")))));
+                    Integer cantidad = 0;
+                    cantidad = numero + 1;
+                    tabTabla.setValor("abastecimiento_numero", String.valueOf(cantidad));
+                    utilitario.addUpdate("tabTabla");
+                }
             }
         } else {
             tabTabla.setValor("abastecimiento_numero_vale", null);
@@ -619,11 +626,18 @@ public class AbastecimientoMaquinarias extends Pantalla {
         if (tabTabla.guardar()) {
             conPostgres.guardarPantalla();
         }
+        hora_actu1();
     }
 
     @Override
     public void eliminar() {
         tabTabla.eliminar();
+    }
+
+    public void hora_actu1() {
+        if (tabTabla.getValor("abastecimiento_titulo").equals("1")) {
+            aCombustible.set_ActuaHR(Integer.parseInt(tabTabla.getValor("mve_secuencial")), tabTabla.getValor("abastecimiento_horasto"), "mve_horometro");
+        }
     }
 
     public Conexion getConPostgres() {
