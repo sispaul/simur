@@ -68,14 +68,15 @@ public class AbastecimientoAutomotores extends Pantalla {
 
         autCompleta.setId("autCompleta");
         autCompleta.setConexion(conPostgres);
-        autCompleta.setAutoCompletar("SELECT a.abastecimiento_id,\n"
-                + "a.abastecimiento_fecha,\n"
-                + "a.abastecimiento_numero_vale,\n"
-                + "(case when a.mve_secuencial is not null then v.mve_placa when a.mve_secuencial is null then d.dependencia_descripcion end )\n"
-                + "FROM mvabactecimiento_combustible AS a\n"
-                + "left JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial \n"
-                + "left join mvtipo_dependencias d on a.abastecimiento_cod_dependencia = d.dependencia_codigo\n"
-                + "WHERE a.abastecimiento_tipo_ingreso = 'K' OR a.abastecimiento_tipo_ingreso = 'A'\n"
+        autCompleta.setAutoCompletar("SELECT a.abastecimiento_id,  \n"
+                + "a.abastecimiento_fecha,  \n"
+                + "a.abastecimiento_numero_vale,  \n"
+                + "(case when a.mve_secuencial is not null then (case when v.mve_placa is not null then v.mve_placa when v.mve_placa is null then v.mve_codigo end )  \n"
+                + "when a.mve_secuencial is null then d.dependencia_descripcion end )  \n"
+                + "FROM mvabactecimiento_combustible AS a  \n"
+                + "left JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial   \n"
+                + "left join mvtipo_dependencias d on a.abastecimiento_cod_dependencia = d.dependencia_codigo  \n"
+                + "WHERE a.abastecimiento_tipo_ingreso = 'H' OR a.abastecimiento_tipo_ingreso = 'A' and a.abastecimiento_ingreso = 'GL'\n"
                 + "ORDER BY a.abastecimiento_fecha ASC, a.abastecimiento_numero_vale ASC");
         autCompleta.setMetodoChange("filtrarSolicitud");
         autCompleta.setSize(70);
