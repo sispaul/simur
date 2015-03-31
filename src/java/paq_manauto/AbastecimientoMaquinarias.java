@@ -554,7 +554,7 @@ public class AbastecimientoMaquinarias extends Pantalla {
                     + "FROM mvabactecimiento_combustible AS a \n"
                     + "left JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial  \n"
                     + "left join mvtipo_dependencias d on a.abastecimiento_cod_dependencia = d.dependencia_codigo \n"
-                    + "WHERE a.abastecimiento_tipo_ingreso = 'H' OR a.abastecimiento_tipo_ingreso = 'A'\n"
+                    + "WHERE a.abastecimiento_ingreso = 'HT'\n"
                     + "and a.abastecimiento_fecha BETWEEN '" + calFechaInicio.getFecha() + "'and'" + calFechaFin.getFecha() + "'\n"
                     + "ORDER BY a.abastecimiento_fecha,a.abastecimiento_numero_vale");
             setTabla.getTab_seleccion().ejecutarSql();
