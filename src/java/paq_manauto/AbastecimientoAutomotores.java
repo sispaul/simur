@@ -458,6 +458,7 @@ public class AbastecimientoAutomotores extends Pantalla {
         if (tabTabla.guardar()) {
             conPostgres.guardarPantalla();
         }
+        actu();
     }
 
     @Override
@@ -466,7 +467,9 @@ public class AbastecimientoAutomotores extends Pantalla {
     }
 
     public void actu() {
-        aCombustible.set_ActuaKM(Integer.parseInt(tabTabla.getValor("mve_secuencial")), Integer.parseInt(tabTabla.getValor("abastecimiento_kilometraje")), "set mve_kilometros_actual");
+        if (tabTabla.getValor("abastecimiento_titulo").equals("1")) {
+            aCombustible.set_ActuaKM(Integer.parseInt(tabTabla.getValor("mve_secuencial")), Integer.parseInt(tabTabla.getValor("abastecimiento_kilometraje")), "set mve_kilometros_actual");
+        }
     }
 
     public Conexion getConPostgres() {
