@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_financiamientos_partidas_general" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7cd1845e-fc4b-49bb-b5ac-cada8db72537">
+	<property name="ireport.zoom" value="1.5026296018031553"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="nom_resp" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["el que imprimio"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\p-sistemas\\Documents\\NetBeansProjects\\simur\\web\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="anio" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select
+(case when Left(Right(partida_cuenta,10),2)>= Right(Left(partida_cuenta,5),2) and Left(Right(partida_cuenta,10),2)>= Right(Left(partida_cuenta,8),2)
+then Left(Right(partida_cuenta,10),2)
+when Left(Right(partida_cuenta,10),2)<Right(Left(partida_cuenta,5),2) then Right(Left(partida_cuenta,5),2)
+when Right(Left(partida_cuenta,8),2)> Left(Right(partida_cuenta,10),2)and Right(Left(partida_cuenta,8),2)> Right(Left(partida_cuenta,5),2) then Right(Left(partida_cuenta,8),2)
+end ) as partida,
+sum((case when a.codificado is null then 0 when a.codificado is not null then a.codificado end )) as codificado,
+sum((case when b.compromiso is null then 0 when b.compromiso is not null then b.compromiso end )) as compromiso,
+sum((case when b.obligacion is null then 0 when b.obligacion is not null then b.obligacion end )) as devengado,
+sum(((case when a.codificado is null then 0 when a.codificado is not null then a.codificado end )-(case when b.compromiso is null then 0 when b.compromiso is not null then b.compromiso end ))) as saldo_compromiso,
+sum(((case when a.codificado is null then 0 when a.codificado is not null then a.codificado end )-(case when b.obligacion is null then 0 when b.obligacion is not null then b.obligacion end ))) as saldo_devengado
+ from (
+SELECT
+f.partida_cuenta,
+Sum(p.proyectos_proy_total) AS codificado,
+f.partida_codigo
+FROM dbo.FINAN_PARTIDA f
+left JOIN dbo.FINAN_PROYECTOS p ON p.proyectos_cod_partida = f.partida_codigo
+GROUP BY f.partida_cuenta,f.partida_codigo ) as a
+left join
+(SELECT p.pago_cod_partida,
+Sum(p.pago_compromiso) AS compromiso,
+Sum(p.pago_obligacion) AS obligacion
+FROM finan_pagos AS p
+INNER JOIN finan_PROYECTO AS r ON p.pago_cod_proyecto = r.proyecto_codigo
+GROUP BY p.pago_COD_PARTIDA) as b
+on a.partida_codigo = b.pago_cod_partida
+GROUP BY (case when Left(Right(partida_cuenta,10),2)>= Right(Left(partida_cuenta,5),2) and Left(Right(partida_cuenta,10),2)>= Right(Left(partida_cuenta,8),2)
+then Left(Right(partida_cuenta,10),2)
+when Left(Right(partida_cuenta,10),2)<Right(Left(partida_cuenta,5),2) then Right(Left(partida_cuenta,5),2)
+when Right(Left(partida_cuenta,8),2)> Left(Right(partida_cuenta,10),2)and Right(Left(partida_cuenta,8),2)> Right(Left(partida_cuenta,5),2) then Right(Left(partida_cuenta,8),2)
+end )
+order by partida]]>
+	</queryString>
+	<field name="partida" class="java.lang.String"/>
+	<field name="codificado" class="java.math.BigDecimal"/>
+	<field name="compromiso" class="java.math.BigDecimal"/>
+	<field name="devengado" class="java.math.BigDecimal"/>
+	<field name="saldo_compromiso" class="java.math.BigDecimal"/>
+	<field name="saldo_devengado" class="java.math.BigDecimal"/>
+	<variable name="variable1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{codificado}]]></variableExpression>
+	</variable>
+	<variable name="variable2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{compromiso}]]></variableExpression>
+	</variable>
+	<variable name="variable3" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{devengado}]]></variableExpression>
+	</variable>
+	<variable name="variable4" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{saldo_compromiso}]]></variableExpression>
+	</variable>
+	<variable name="variable5" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{saldo_devengado}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="d2515f49-a2cd-43b1-acf9-4b625e1343e9" x="0" y="0" width="271" height="38"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL DE PARTIDAS DE PROYECTOS FINANCIADOS]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="43515b7f-987c-44df-a66c-fc79b7a25cbc" x="0" y="38" width="142" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["AÑO : "+$P{anio}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement uuid="a80e98d4-bd58-4a10-baac-2f7ce63d5291" x="349" y="0" width="183" height="79"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="3" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="31" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="cadbcafa-d0f5-4326-b2cd-e31f548f88a9" x="0" y="2" width="555" height="27" backcolor="#999999"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="e13cede2-b2f2-4cab-8896-c40ee118c25f" x="8" y="3" width="47" height="26" forecolor="#FFFFFF" backcolor="#666666"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[PARTIDA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="356c5d44-e65e-4b2b-8b13-046b30869f01" x="155" y="3" width="100" height="26" forecolor="#FFFFFF" backcolor="#666666"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[COMPROMISO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f86ac3e4-7ff4-4ce7-81c9-cedb3da61ce6" x="255" y="3" width="100" height="26" forecolor="#FFFFFF" backcolor="#666666"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DEVENGADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0ed2a759-921c-4fa3-9038-18e346ef7617" x="355" y="3" width="100" height="26" forecolor="#FFFFFF" backcolor="#666666"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SALDO COMPROMISO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f38cebe9-97bd-4c8e-bf77-e0dc33efe80d" x="55" y="3" width="100" height="26" forecolor="#FFFFFF" backcolor="#666666"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CODIFICADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="77605cb6-9009-4847-9cc1-f333ce6f9074" x="455" y="3" width="100" height="26" forecolor="#FFFFFF" backcolor="#666666"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SALDO DEVENGADO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement uuid="78001ed3-e019-42e0-a02b-019d3379d44e" x="14" y="0" width="47" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{partida}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a073bccb-0872-428f-a036-807215b98289" x="55" y="0" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{codificado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3ff6a735-3e35-41e8-9326-339893081dd4" x="255" y="0" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{devengado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="efaa1094-a9b7-46ab-8526-22ab095c13e3" x="355" y="0" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{saldo_compromiso}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="41f0ae6e-39d3-4c9c-9b51-8dcacb59997f" x="155" y="0" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{compromiso}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b306e3e8-a6ae-458d-b410-4161f24754b1" x="455" y="0" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{saldo_devengado}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="8b2ae1c4-58c3-45c4-b617-2b5f189d72b4" x="0" y="19" width="550" height="1"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="2" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="19" splitType="Stretch">
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="88239d42-e814-43cd-99a7-a42054c23921" key="textField-5" x="0" y="0" width="115" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="232b5547-3135-42cc-a6e2-e31180ebf160" key="textField" x="349" y="0" width="170" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
+				<reportElement uuid="99731928-3953-41be-9393-91d171ffd4be" key="textField" x="519" y="0" width="36" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="43a934f8-63c0-4c7e-81f6-1a126a0da65f" x="201" y="0" width="100" height="19"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{nom_resp}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="23" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="693d6c44-c052-4d5c-a5ec-e4a5a8079113" x="0" y="0" width="555" height="22" backcolor="#999999"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="56d17fd8-7b03-4957-ac33-050982c5a9fd" x="0" y="1" width="55" height="20" forecolor="#FFFFFF" backcolor="#666666"/>
+				<textElement/>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="5225a307-a4b4-4164-98cc-2db2473fe30f" x="55" y="1" width="100" height="20" forecolor="#FFFFFF" backcolor="#666666"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{variable1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="179b3c3c-a18f-4aea-ac2b-b8f3a4af0eec" x="155" y="1" width="100" height="20" forecolor="#FFFFFF" backcolor="#666666"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{variable2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a7bb6c9a-1a45-46d6-84ab-b22e2fb5767d" x="255" y="1" width="100" height="20" forecolor="#FFFFFF" backcolor="#666666"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{variable3}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f4ecbe93-0d15-40b5-8ab2-c2ee631952a0" x="355" y="1" width="100" height="20" forecolor="#FFFFFF" backcolor="#666666"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{variable4}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="91f7f550-8599-4a34-b2d1-7975258e243f" x="455" y="1" width="100" height="20" forecolor="#FFFFFF" backcolor="#666666"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{variable5}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

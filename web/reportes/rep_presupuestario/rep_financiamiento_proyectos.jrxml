@@ -182,6 +182,13 @@ where b.proyecto_financiamiento like $P{financiamiento}]]>
 				</textElement>
 				<text><![CDATA[COMPROMISO]]></text>
 			</staticText>
+			<staticText>
+				<reportElement uuid="7e2fb5cf-bfcd-48d3-8881-26dfa7963738" x="368" y="2" width="100" height="29"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CODIFICADO]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
 	<columnHeader>
