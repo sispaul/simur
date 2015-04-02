@@ -290,6 +290,12 @@ public class pre_asignacion_acceso extends Pantalla {
                 if (tab_dato.getValor("nombre_asigna_acceso")!= tab_solicitud.getValor("nombre_asigna_acceso")) {
                     datosEmpledo.setAccesoSistemas("nombre_asigna_acceso", tab_solicitud.getValor("nombre_asigna_acceso"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
                 }
+                if (tab_dato.getValor("cargo_solicitante")!= tab_solicitud.getValor("cargo_solicitante")) {
+                    datosEmpledo.setAccesoSistemas("cargo_solicitante", tab_solicitud.getValor("cargo_solicitante"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
+                }
+                if (tab_dato.getValor("direccion_solicitante")!= tab_solicitud.getValor("direccion_solicitante")) {
+                    datosEmpledo.setAccesoSistemas("direccion_solicitante", tab_solicitud.getValor("direccion_solicitante"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
+                }
                 utilitario.agregarMensaje("Registro Guardado", null);
             }
         } else {
