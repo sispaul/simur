@@ -64,8 +64,8 @@ public class ReporteFinanciamientoProyecto extends Pantalla {
 
         diaParametros.setId("diaParametros");
         diaParametros.setTitle("SELECCIONAR FINANCIAMIENTO"); //titulo
-        diaParametros.setWidth("65%"); //siempre en porcentajes  ancho
-        diaParametros.setHeight("10%");//siempre porcentaje   alto
+        diaParametros.setWidth("70%"); //siempre en porcentajes  ancho
+        diaParametros.setHeight("20%");//siempre porcentaje   alto
         diaParametros.setResizable(false); //para que no se pueda cambiar el tamaño
         diaParametros.getBot_aceptar().setMetodo("mostrarReporte");
         gridPa.setColumns(4);
@@ -86,7 +86,7 @@ public class ReporteFinanciamientoProyecto extends Pantalla {
                     + "proyecto_financiamiento,\n"
                     + "proyecto_financiamiento as financiamiento\n"
                     + "from FINAN_PROYECTO\n"
-                    + "where proyecto_financiamiento is not null\n"
+                    //                    + "where proyecto_financiamiento is not null\n"
                     + "order by proyecto_financiamiento");
 
             sef_formato.setConexion(conSqlProy);
@@ -114,6 +114,19 @@ public class ReporteFinanciamientoProyecto extends Pantalla {
                 diaParametros.setDialogo(gridPa);
                 diaParametros.dibujar();
                 break;
+            case "REPORTE TOTAL POR PARTIDAS":
+                mostrarReporte();
+                break;
+            case "REPORTE TOTAL FINANCIAMIENTO Y PARTIDAS":
+                diaParametros.Limpiar();
+                gridPa.getChildren().add(new Etiqueta("FINANCIAMIENTO :"));
+                gridPa.getChildren().add(comboParametros);
+                diaParametros.setDialogo(gridPa);
+                diaParametros.dibujar();
+                break;
+            case "REPORTE GENERAL PROYECTOS POR PARTIDAS":
+                mostrarReporte();
+                break;
         }
     }
 
@@ -127,8 +140,28 @@ public class ReporteFinanciamientoProyecto extends Pantalla {
                 p_parametros.put("anio", comboAnio.getValue() + "");
                 rep_reporte.cerrar();
                 sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
-//                System.err.println(p_parametros);
-//                System.out.println(rep_reporte.getPath());
+                sef_formato.dibujar();
+                break;
+            case "REPORTE TOTAL POR PARTIDAS":
+                p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
+                p_parametros.put("anio", comboAnio.getValue() + "");
+                rep_reporte.cerrar();
+                sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                sef_formato.dibujar();
+                break;
+            case "REPORTE TOTAL FINANCIAMIENTO Y PARTIDAS":
+                p_parametros.put("financiamiento", comboParametros.getValue() + "");
+                p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
+                p_parametros.put("anio", comboAnio.getValue() + "");
+                rep_reporte.cerrar();
+                sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                sef_formato.dibujar();
+                break;
+            case "REPORTE GENERAL PROYECTOS POR PARTIDAS":
+                p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
+                p_parametros.put("anio", comboAnio.getValue() + "");
+                rep_reporte.cerrar();
+                sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                 sef_formato.dibujar();
                 break;
         }
