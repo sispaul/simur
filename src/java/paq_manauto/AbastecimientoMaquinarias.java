@@ -624,7 +624,20 @@ public class AbastecimientoMaquinarias extends Pantalla {
 
     @Override
     public void guardar() {
-        if (tabTabla.guardar()) {
+        TablaGenerica tab_dato = aCombustible.getActu(Integer.parseInt(tabTabla.getValor("abastecimiento_id")), Integer.parseInt(tabTabla.getValor("mve_secuencial")), tabTabla.getValor("abastecimiento_numero_vale"));
+        if (!tab_dato.isEmpty()) {
+            if (tabTabla.getValor("abastecimiento_galones") != null || tabTabla.getValor("abastecimiento_galones").equals(tab_dato.getValor("abastecimiento_galones"))) {
+                aCombustible.set_updateValor(Integer.parseInt(tabTabla.getValor("abastecimiento_id")), Integer.parseInt(tabTabla.getValor("mve_secuencial")), tabTabla.getValor("abastecimiento_numero_vale"), "abastecimiento_galones", tabTabla.getValor("abastecimiento_galones"));
+            }
+            if (tabTabla.getValor("abastecimiento_valorhora") != null || tabTabla.getValor("abastecimiento_valorhora").equals(tab_dato.getValor("abastecimiento_valorhora"))) {
+                aCombustible.set_updateValor(Integer.parseInt(tabTabla.getValor("abastecimiento_id")), Integer.parseInt(tabTabla.getValor("mve_secuencial")), tabTabla.getValor("abastecimiento_numero_vale"), "abastecimiento_valorhora", tabTabla.getValor("abastecimiento_valorhora"));
+            }
+            if (tabTabla.getValor("abastecimiento_total") != null || tabTabla.getValor("abastecimiento_total").equals(tab_dato.getValor("abastecimiento_total"))) {
+                aCombustible.set_updateValor1(Integer.parseInt(tabTabla.getValor("abastecimiento_id")), Integer.parseInt(tabTabla.getValor("mve_secuencial")), tabTabla.getValor("abastecimiento_numero_vale"), "abastecimiento_total", Double.valueOf(tabTabla.getValor("abastecimiento_total")));
+            }
+            utilitario.agregarMensaje("Registro Actualizado", "");
+        } else if (tab_dato.getValor("abastecimiento_id") != null) {
+        } else if (tabTabla.guardar()) {
             conPostgres.guardarPantalla();
         }
         hora_actu1();
