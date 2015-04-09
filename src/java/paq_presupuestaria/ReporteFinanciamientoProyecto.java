@@ -117,12 +117,11 @@ public class ReporteFinanciamientoProyecto extends Pantalla {
             case "REPORTE TOTAL POR PARTIDAS":
                 mostrarReporte();
                 break;
-            case "REPORTE TOTAL FINANCIAMIENTO Y PARTIDAS":
-                diaParametros.Limpiar();
-                gridPa.getChildren().add(new Etiqueta("FINANCIAMIENTO :"));
-                gridPa.getChildren().add(comboParametros);
-                diaParametros.setDialogo(gridPa);
-                diaParametros.dibujar();
+            case "REPORTE TOTAL FINANCIAMIENTO Y PARTIDAS AÑO 2014":
+                mostrarReporte();
+                break;
+            case "REPORTE TOTAL POR PARTIDAS AÑO 2014":
+                mostrarReporte();
                 break;
             case "REPORTE GENERAL PROYECTOS POR PARTIDAS":
                 mostrarReporte();
@@ -132,7 +131,7 @@ public class ReporteFinanciamientoProyecto extends Pantalla {
 
     public void mostrarReporte() {
         switch (rep_reporte.getNombre()) {
-            case "REPORTE POR FINANCIAMIENTOS":
+            case "REPORTE POR FINANCIAMIENTOS"://
                 p_parametros.put("titulo", "PROYECTO CON PARTIDA");
                 p_parametros.put("titulo_1", "FINANCIAMIENTO : ");
                 p_parametros.put("financiamiento", comboParametros.getValue() + "");
@@ -142,22 +141,34 @@ public class ReporteFinanciamientoProyecto extends Pantalla {
                 sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                 sef_formato.dibujar();
                 break;
-            case "REPORTE TOTAL POR PARTIDAS":
+            case "REPORTE TOTAL POR PARTIDAS"://
                 p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
                 p_parametros.put("anio", comboAnio.getValue() + "");
                 rep_reporte.cerrar();
                 sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                 sef_formato.dibujar();
                 break;
-            case "REPORTE TOTAL FINANCIAMIENTO Y PARTIDAS":
-                p_parametros.put("financiamiento", comboParametros.getValue() + "");
+            case "REPORTE TOTAL FINANCIAMIENTO Y PARTIDAS AÑO 2014":
+                if (comboAnio.getValue().equals("2014")) {
+                    p_parametros.put("fecha", "31/07/" + comboAnio.getValue() + "");
+                }
                 p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
                 p_parametros.put("anio", comboAnio.getValue() + "");
                 rep_reporte.cerrar();
                 sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                 sef_formato.dibujar();
                 break;
-            case "REPORTE GENERAL PROYECTOS POR PARTIDAS":
+            case "REPORTE TOTAL POR PARTIDAS AÑO 2014":
+                if (comboAnio.getValue().equals("2014")) {
+                    p_parametros.put("fecha", "31/07/" + comboAnio.getValue() + "");
+                }
+                p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
+                p_parametros.put("anio", comboAnio.getValue() + "");
+                rep_reporte.cerrar();
+                sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                sef_formato.dibujar();
+                break;
+            case "REPORTE GENERAL PROYECTOS POR PARTIDAS"://
                 p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
                 p_parametros.put("anio", comboAnio.getValue() + "");
                 rep_reporte.cerrar();
