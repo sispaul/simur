@@ -118,10 +118,10 @@ public class pre_asignacion_acceso extends Pantalla {
 
         set_solicitud.setId("set_solicitud");
         set_solicitud.getTab_seleccion().setConexion(con_postgres);
-        set_solicitud.setSeleccionTabla("SELECT id_solicitud_acceso,fechaing_solicitante as fecha_solicitud,nombre_solicitante,direccion_solicitante,nombre_usuario\n"
+        set_solicitud.setSeleccionTabla("SELECT id_solicitud_acceso,fechaing_solicitante as fecha_solicitud,nombre_usuario,nombre_solicitante,direccion_solicitante\n"
                 + "FROM sca_solicitud_acceso\n"
                 + "where id_solicitud_acceso=-1\n"
-                + "ORDER BY id_solicitud_acceso desc", "id_solicitud_acceso");
+                + "ORDER BY id_solicitud_acceso desc, id_solicitud_acceso", "id_solicitud_acceso");
         set_solicitud.getTab_seleccion().getColumna("nombre_usuario").setLongitud(50);
         set_solicitud.getTab_seleccion().getColumna("nombre_solicitante").setLongitud(50);
         set_solicitud.getTab_seleccion().getColumna("fecha_solicitud").setLongitud(30);
@@ -133,7 +133,7 @@ public class pre_asignacion_acceso extends Pantalla {
         set_solicitud.setWidth("80%");
         set_solicitud.getGri_cuerpo().setHeader(gri_acceso);
         set_solicitud.getBot_aceptar().setMetodo("aceptarBusqueda");
-        set_solicitud.setHeader("BUSCAR SOLICITUD DE ACCESO A SISTEMAS");
+        set_solicitud.setHeader("SOLICITUD DE ACCESO A SISTEMAS");
         agregarComponente(set_solicitud);
 
         dibujarSolicitud();
@@ -272,28 +272,28 @@ public class pre_asignacion_acceso extends Pantalla {
         if (tab_solicitud.getValor("estado_solicitud").equals("Asignada")) {
             TablaGenerica tab_dato = datosEmpledo.getSolicitudAcceso(Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
             if (!tab_dato.isEmpty()) {
-                if (tab_dato.getValor("login_acceso_usuario")!= tab_solicitud.getValor("login_acceso_usuario")) {
+                if (tab_dato.getValor("login_acceso_usuario") != tab_solicitud.getValor("login_acceso_usuario")) {
                     datosEmpledo.setAccesoSistemas("login_acceso_usuario", tab_solicitud.getValor("login_acceso_usuario"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
                 }
-                if (tab_dato.getValor("password_acceso_usuario")!= tab_solicitud.getValor("password_acceso_usuario")) {
-                    datosEmpledo.setAccesoSistemas("password_acceso_usuario",tab_solicitud.getValor("password_acceso_usuario"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
+                if (tab_dato.getValor("password_acceso_usuario") != tab_solicitud.getValor("password_acceso_usuario")) {
+                    datosEmpledo.setAccesoSistemas("password_acceso_usuario", tab_solicitud.getValor("password_acceso_usuario"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
                 }
-                if (tab_dato.getValor("fecha_acceso_usuario")!= tab_solicitud.getValor("fecha_acceso_usuario")) {
+                if (tab_dato.getValor("fecha_acceso_usuario") != tab_solicitud.getValor("fecha_acceso_usuario")) {
                     datosEmpledo.setAccesoSistemas("fecha_acceso_usuario", tab_solicitud.getValor("fecha_acceso_usuario"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
                 }
-                if (tab_dato.getValor("cedula_asigna_acceso")!= tab_solicitud.getValor("cedula_asigna_acceso")) {
+                if (tab_dato.getValor("cedula_asigna_acceso") != tab_solicitud.getValor("cedula_asigna_acceso")) {
                     datosEmpledo.setAccesoSistemas("cedula_asigna_acceso", tab_solicitud.getValor("cedula_asigna_acceso"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
                 }
-                if (tab_dato.getValor("codigo_asigna_acceso")!= tab_solicitud.getValor("codigo_asigna_acceso")) {
+                if (tab_dato.getValor("codigo_asigna_acceso") != tab_solicitud.getValor("codigo_asigna_acceso")) {
                     datosEmpledo.setAccesoSistemas("codigo_asigna_acceso", tab_solicitud.getValor("codigo_asigna_acceso"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
                 }
-                if (tab_dato.getValor("nombre_asigna_acceso")!= tab_solicitud.getValor("nombre_asigna_acceso")) {
+                if (tab_dato.getValor("nombre_asigna_acceso") != tab_solicitud.getValor("nombre_asigna_acceso")) {
                     datosEmpledo.setAccesoSistemas("nombre_asigna_acceso", tab_solicitud.getValor("nombre_asigna_acceso"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
                 }
-                if (tab_dato.getValor("cargo_solicitante")!= tab_solicitud.getValor("cargo_solicitante")) {
+                if (tab_dato.getValor("cargo_solicitante") != tab_solicitud.getValor("cargo_solicitante")) {
                     datosEmpledo.setAccesoSistemas("cargo_solicitante", tab_solicitud.getValor("cargo_solicitante"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
                 }
-                if (tab_dato.getValor("direccion_solicitante")!= tab_solicitud.getValor("direccion_solicitante")) {
+                if (tab_dato.getValor("direccion_solicitante") != tab_solicitud.getValor("direccion_solicitante")) {
                     datosEmpledo.setAccesoSistemas("direccion_solicitante", tab_solicitud.getValor("direccion_solicitante"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
                 }
                 utilitario.agregarMensaje("Registro Guardado", null);
