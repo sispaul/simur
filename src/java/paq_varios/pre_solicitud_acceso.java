@@ -13,7 +13,6 @@ import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Upload;
-import framework.correo.EnviarCorreo;
 import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
 import paq_nomina.ejb.decimoCuarto;
@@ -38,8 +37,6 @@ public class pre_solicitud_acceso extends Pantalla{
     
     //Contiene todos los elementos de la plantilla
     private Panel pan_opcion = new Panel();
-    
-    private Upload upl_adjuntos = new Upload();
     
     @EJB
     private decimoCuarto datosEmpledo = (decimoCuarto) utilitario.instanciarEJB(decimoCuarto.class);
@@ -247,14 +244,6 @@ public class pre_solicitud_acceso extends Pantalla{
             utilitario.agregarMensaje("Solicitud Se Encuentra en Ejecución", null);
         }
 //        envioMail();
-    }
-
-    public void envioMail(){
-        EnviarCorreo correo = new EnviarCorreo();
-        String str_msj = correo.enviar("paul.chumana@ruminahui.gob.ec", "Solicitud de Acceso a Sistemas", "Solicitud # Pedido", upl_adjuntos.getArchivos());
-        if (!str_msj.isEmpty()) {
-            utilitario.agregarMensajeInfo("Mensajes generados", str_msj);
-        }
     }
     
     @Override
