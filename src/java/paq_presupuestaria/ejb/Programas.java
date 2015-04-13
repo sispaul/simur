@@ -18,12 +18,15 @@ public class Programas {
 
     private Conexion con_postgres;
     private Utilitario utilitario = new Utilitario();
+
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     /*
      * GENERAL
      */
     //borrar tabla conc_cedula_presupuestaria_fechas
+    public Programas() {
+    }
 
     public void actualizacionPrograma() {
         String str_sqlr = "insert into conc_cedula_presupuestaria_fechas (ide_clasificador,pre_codigo,con_ide_clasificador,pre_descripcion,tipo,nivel,ide_funcion,des_funcion,cod_funcion)\n"
@@ -609,6 +612,26 @@ public class Programas {
         con_postgres = null;
     }
 
+    public void setOrdenPago(String tipo, Integer numero, String etiqueta, String campo) {
+        String str_sql = "update tes_orden_pago\n"
+                + "set " + etiqueta + "=" + campo + " \n"
+                + "where tes_ide_orden_pago = " + numero + " and tes_numero_orden = '" + tipo + "'";
+        con_postgresql();
+        con_postgres.ejecutarSql(str_sql);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+
+    public void setOrdenPagos(String tipo, Integer numero, String etiqueta, Double campo) {
+        String str_sql = "update tes_orden_pago\n"
+                + "set " + etiqueta + "=" + campo + " \n"
+                + "where tes_ide_orden_pago = " + numero + " and tes_numero_orden = '" + tipo + "'";
+        con_postgresql();
+        con_postgres.ejecutarSql(str_sql);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+
     public void actOrdenTotalPro(String tipo, Integer numero, String asunto, Integer idp, String proveedor, Double valor, String letras, String concepto, String acuerdo, String nota, String comprobante, String fecha, String estado, String usu, String fechaen, String tipoe) {
         // Forma el sql para actualizacion
         String str_sql2 = "update tes_orden_pago set\n"
@@ -868,7 +891,9 @@ public class Programas {
         TablaGenerica tab_funcionario = new TablaGenerica();
         con_postgresql();
         tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT tes_ide_orden_pago,tes_numero_orden,tes_estado,tes_id_proveedor,tes_proveedor,tes_cod_empleado,tes_empleado FROM tes_orden_pago where tes_numero_orden ='" + codigo + "'");
+        tab_funcionario.setSql("SELECT tes_ide_orden_pago,tes_numero_orden,tes_estado,tes_id_proveedor,tes_proveedor,"
+                + "tes_cod_empleado,tes_empleado,tes_fecha_envio,tes_fecha_comprobante,tes_comprobante_egreso\n"
+                + "FROM tes_orden_pago where tes_numero_orden ='" + codigo + "'");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
