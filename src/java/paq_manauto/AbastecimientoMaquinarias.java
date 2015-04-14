@@ -635,6 +635,9 @@ public class AbastecimientoMaquinarias extends Pantalla {
             if (tabTabla.getValor("abastecimiento_total") != null || tabTabla.getValor("abastecimiento_total").equals(tab_dato.getValor("abastecimiento_total"))) {
                 aCombustible.set_updateValor1(Integer.parseInt(tabTabla.getValor("abastecimiento_id")), Integer.parseInt(tabTabla.getValor("mve_secuencial")), tabTabla.getValor("abastecimiento_numero_vale"), "abastecimiento_total", Double.valueOf(tabTabla.getValor("abastecimiento_total")));
             }
+            if (tabTabla.getValor("abastecimiento_numero") != null || tabTabla.getValor("abastecimiento_numero").equals(tab_dato.getValor("abastecimiento_numero"))) {
+                aCombustible.set_updateValor(Integer.parseInt(tabTabla.getValor("abastecimiento_id")), Integer.parseInt(tabTabla.getValor("mve_secuencial")), tabTabla.getValor("abastecimiento_numero_vale"), "abastecimiento_numero", tabTabla.getValor("abastecimiento_numero"));
+            }
             utilitario.agregarMensaje("Registro Actualizado", "");
         } else if (tab_dato.getValor("abastecimiento_id") != null) {
         } else if (tabTabla.guardar()) {
