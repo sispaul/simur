@@ -153,7 +153,7 @@ public class pre_asignacion_acceso extends Pantalla {
 
     public void aceptarRegistro() {
         if (cmb_documento.getValue() != null && cmb_documento.getValue().toString().isEmpty() == false) {
-            set_solicitud.getTab_seleccion().setSql("SELECT id_solicitud_acceso,fechaing_solicitante,nombre_solicitante,direccion_solicitante,nombre_usuario,id_sistema,id_modulo\n"
+            set_solicitud.getTab_seleccion().setSql("SELECT id_solicitud_acceso,fechaing_solicitante as fecha_solicitud,nombre_usuario,nombre_solicitante,direccion_solicitante\n"
                     + "FROM sca_solicitud_acceso\n"
                     + "where estado_solicitud = '" + cmb_documento.getValue() + "' ORDER BY id_solicitud_acceso desc");
             set_solicitud.getTab_seleccion().ejecutarSql();
