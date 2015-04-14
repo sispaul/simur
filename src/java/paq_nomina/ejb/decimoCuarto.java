@@ -247,6 +247,18 @@ public class decimoCuarto {
         return tab_funcionario;
     }
 
+    public TablaGenerica getDatoEmpleados(String cedula) {
+        con_postgresql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        con_postgresql();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT cod_empleado,cedula_pass,nombres FROM srh_empleado where nombres = '"+cedula+"' and estado = 1 order by nombres");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+    }
+
     private void con_postgresql() {
         if (con_postgres == null) {
             con_postgres = new Conexion();
