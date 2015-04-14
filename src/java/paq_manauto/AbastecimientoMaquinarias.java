@@ -245,7 +245,7 @@ public class AbastecimientoMaquinarias extends Pantalla {
             utilitario.addUpdate("tabTabla");
         } else {
             tabTabla.getColumna("mve_secuencial").setLectura(true);
-            tabTabla.getColumna("abastecimiento_valorhora").setLectura(true);
+            tabTabla.getColumna("abastecimiento_valorhora").setLectura(false);
             tabTabla.getColumna("abastecimiento_cod_dependencia").setLectura(false);
             tabTabla.getColumna("abastecimiento_comentario").setLectura(false);
             tabTabla.getColumna("tipo_combustible_id").setLectura(false);
