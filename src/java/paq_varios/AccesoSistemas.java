@@ -51,9 +51,6 @@ public class AccesoSistemas extends Pantalla {
     private Map p_parametros = new HashMap();
     private Calendario calFechaInicio = new Calendario();
     private Calendario calFechaFin = new Calendario();
-    private Dialogo dialogoa = new Dialogo();
-    private Grid grid = new Grid();
-    private Grid grida = new Grid();
 
     public AccesoSistemas() {
         //Para capturar el usuario que se encuntra utilizando la opción
@@ -152,7 +149,7 @@ public class AccesoSistemas extends Pantalla {
         if (calFechaInicio.getValue() != null && calFechaFin.getValue() != null) {
             setTabla.getTab_seleccion().setSql("SELECT id_solicitud_acceso,fechaing_solicitante as fecha_solicitud,nombre_usuario,nombre_solicitante,direccion_solicitante\n"
                     + "FROM sca_solicitud_acceso\n"
-                    + "where fechaing_solicitante between '" + calFechaInicio.getValue() + "' and '" + calFechaFin.getValue() + "' ORDER BY id_solicitud_acceso desc");
+                    + "where fechaing_solicitante between '" + calFechaInicio.getFecha()+ "' and '" + calFechaFin.getFecha() + "' ORDER BY id_solicitud_acceso desc");
             setTabla.getTab_seleccion().getColumna("direccion_solicitante").setCombo("select cod_direccion,nombre_dir from srh_direccion");
             setTabla.getTab_seleccion().getColumna("direccion_solicitante").setLongitud(40);
             setTabla.getTab_seleccion().getColumna("nombre_usuario").setLongitud(40);
@@ -198,7 +195,7 @@ public class AccesoSistemas extends Pantalla {
         tab_solicitud.getColumna("cargo_solicitante").setCombo("select cod_cargo,nombre_cargo from srh_cargos order by nombre_cargo");
         tab_solicitud.getColumna("cargo_usuario").setCombo("select cod_cargo,nombre_cargo from srh_cargos order by nombre_cargo");
         tab_solicitud.getColumna("codigo_solicitante").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where estado = 1 order by nombres");
-
+        tab_solicitud.getColumna("codigo_asigna_acceso").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where estado = 1 order by nombres");
         tab_solicitud.getColumna("ingreso_perfil_usuario").setCheck();
         tab_solicitud.getColumna("actualizacion_perfil_usuario").setCheck();
         tab_solicitud.getColumna("lectura_perfil_usuario").setCheck();
@@ -237,7 +234,6 @@ public class AccesoSistemas extends Pantalla {
         tab_solicitud.getColumna("loginact_acceso_usuario").setVisible(false);
 
         tab_solicitud.getColumna("logining_solicitante").setValorDefecto(utilitario.getVariable("NICK"));
-        tab_solicitud.getColumna("codigo_asigna_acceso").setValorDefecto(tab_consulta.getValor("NOM_USUA") + "");
         tab_solicitud.setTipoFormulario(true);
         tab_solicitud.dibujar();
         PanelTabla tps = new PanelTabla();
@@ -300,7 +296,8 @@ public class AccesoSistemas extends Pantalla {
             tab_solicitud.setValor("nombre_solicitante", tab_dato.getValor("nombres"));
             tab_solicitud.setValor("cargo_solicitante", tab_dato.getValor("cod_cargo"));
             tab_solicitud.setValor("direccion_solicitante", tab_dato.getValor("cod_direccion"));
-            utilitario.addUpdate("tab_solicitud");
+//            utilitario.addUpdate("tab_solicitud");
+            datosUsuarioAcc();
         } else {
             utilitario.agregarMensaje("Solicitante Sin Datos", "");
         }
@@ -318,6 +315,18 @@ public class AccesoSistemas extends Pantalla {
         utilitario.addUpdate("tab_solicitud");
     }
 
+    public void datosUsuarioAcc() {
+        TablaGenerica tab_dato = datosEmpledo.getDatoEmpleados(tab_consulta.getValor("NOM_USUA"));
+        if (!tab_dato.isEmpty()) {
+            tab_solicitud.setValor("cedula_asigna_acceso", tab_dato.getValor("cedula_pass"));
+            tab_solicitud.setValor("nombre_asigna_acceso", tab_dato.getValor("nombres"));
+            tab_solicitud.setValor("codigo_asigna_acceso", tab_dato.getValor("cod_empleado"));
+            utilitario.addUpdate("tab_solicitud");
+        } else {
+            utilitario.agregarMensaje("Usuario Sin Datos", "");
+        }
+    }
+
     @Override
     public void insertar() {
         utilitario.getTablaisFocus().insertar();
@@ -325,7 +334,7 @@ public class AccesoSistemas extends Pantalla {
 
     @Override
     public void guardar() {
-                if (tab_solicitud.getValor("estado_solicitud").equals("Asignada")) {
+        if (tab_solicitud.getValor("estado_solicitud").equals("Asignada")) {
             TablaGenerica tab_dato = datosEmpledo.getSolicitudAcceso(Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
             if (!tab_dato.isEmpty()) {
                 if (tab_dato.getValor("login_acceso_usuario") != tab_solicitud.getValor("login_acceso_usuario")) {
