@@ -4,6 +4,7 @@
  */
 package paq_controlEquipos;
 
+import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import paq_sistema.aplicacion.Pantalla;
 
@@ -14,24 +15,40 @@ import paq_sistema.aplicacion.Pantalla;
 public class TipoPerfil extends Pantalla {
 
     private Tabla tabPerfil = new Tabla();
-    
+
     public TipoPerfil() {
         tabPerfil.setId("tabPerfil");
+        tabPerfil.setTabla("cei_tipo_perfil", "perfil_codigo", 1);
+        tabPerfil.setHeader("TIPO DE PERFIL");
+        tabPerfil.dibujar();
+        PanelTabla ptp = new PanelTabla();
+        ptp.setPanelTabla(tabPerfil);
+
+        agregarComponente(ptp);
     }
 
     @Override
     public void insertar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        utilitario.getTablaisFocus().insertar();
     }
 
     @Override
     public void guardar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        tabPerfil.guardar();
+        guardarPantalla();
     }
 
     @Override
     public void eliminar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        utilitario.getTablaisFocus().eliminar();
+    }
+
+    public Tabla getTabPerfil() {
+        return tabPerfil;
+    }
+
+    public void setTabPerfil(Tabla tabPerfil) {
+        this.tabPerfil = tabPerfil;
     }
     
 }
