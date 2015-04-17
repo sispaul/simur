@@ -77,8 +77,10 @@ public class OrdenPago extends Pantalla {
         tabOrden.setTabla("tes_orden_pago", "tes_ide_orden_pago", 1);
         tabOrden.getColumna("tes_id_proveedor").setCombo("select ide_proveedor,titular from tes_proveedores order by titular");
         tabOrden.getColumna("tes_id_proveedor").setFiltroContenido();
+        tabOrden.getColumna("tes_id_proveedor").setMetodoChange("proveedor");
         tabOrden.getColumna("tes_cod_empleado").setCombo("select cod_empleado,nombres from srh_empleado order by nombres");
         tabOrden.getColumna("tes_cod_empleado").setFiltroContenido();
+        tabOrden.getColumna("tes_cod_empleado").setMetodoChange("empleado");
         tabOrden.getColumna("tes_estado_doc").setValorDefecto("1");
         tabOrden.getColumna("tes_letrero").setEtiqueta();
         tabOrden.getColumna("tes_anio").setVisible(false);
@@ -104,8 +106,6 @@ public class OrdenPago extends Pantalla {
         tabOrden.getColumna("tes_fecha_ingreso").setValorDefecto(utilitario.getFechaActual());
         tabOrden.getColumna("tes_login_ing").setValorDefecto(tabConsulta.getValor("NICK_USUA"));
         tabOrden.getColumna("tes_valor").setMetodoChange("numLetras");
-        tabOrden.getColumna("tes_id_proveedor").setMetodoChange("proveedor");
-        tabOrden.getColumna("tes_cod_empleado").setMetodoChange("empleado");
         tabOrden.getColumna("tes_comprobante_egreso").setMetodoChange("comprobante");
         tabOrden.setTipoFormulario(true);
         tabOrden.getGrid().setColumns(4);
@@ -125,10 +125,33 @@ public class OrdenPago extends Pantalla {
 
         tabDetalle.setId("tabDetalle");
         tabDetalle.setConexion(conPostgres);
-        tabDetalle.setSql("SELECT tes_ide_orden_pago,tes_numero_orden as numero_orden,tes_comprobante_egreso as numero_comprobante,\n"
-                + "(case when tes_id_proveedor is null then tes_empleado when tes_id_proveedor is not null then tes_proveedor end) AS beneficiario,\n"
-                + "tes_asunto as asunto,tes_valor as valor,tes_concepto as concepto,tes_acuerdo as acuerdo\n"
-                + "FROM tes_orden_pago where tes_estado_doc = '1' and tes_anio='" + utilitario.getAnio(utilitario.getFechaActual()) + "' order by  numero_orden desc");
+        tabDetalle.setSql("select \n"
+                + "a.tes_ide_orden_pago,\n"
+                + "a.numero_orden,\n"
+                + "a.numero_comprobante,\n"
+                + "(case when b.titular is not null then b.titular when b.titular is null then c.nombres end ) as beneficiario,\n"
+                + "a.asunto,\n"
+                + "a.valor,\n"
+                + "a.concepto,\n"
+                + "a.acuerdo\n"
+                + "from (\n"
+                + "SELECT \n"
+                + "tes_numero_orden AS numero_orden,\n"
+                + "tes_comprobante_egreso AS numero_comprobante,\n"
+                + "tes_asunto AS asunto,\n"
+                + "tes_valor AS valor,\n"
+                + "tes_concepto AS concepto,\n"
+                + "tes_acuerdo AS acuerdo,\n"
+                + "tes_ide_orden_pago,\n"
+                + "(case when tes_id_proveedor is null then tes_cod_empleado when tes_id_proveedor is not null then tes_id_proveedor end) as cod_benefi\n"
+                + "FROM tes_orden_pago where tes_estado_doc = '1' and tes_anio='" + utilitario.getAnio(utilitario.getFechaActual()) + "') as a\n"
+                + "left join \n"
+                + "(SELECT ide_proveedor,titular FROM tes_proveedores) as b\n"
+                + "on a.cod_benefi = b.ide_proveedor\n"
+                + "left join \n"
+                + "(SELECT cedula_pass,nombres,cod_empleado FROM srh_empleado) as c\n"
+                + "on a.cod_benefi = c.cod_empleado\n"
+                + "order by numero_orden desc");
         tabDetalle.getColumna("tes_ide_orden_pago").setVisible(false);
         tabDetalle.getColumna("numero_orden").setFiltroContenido();
         tabDetalle.getColumna("beneficiario").setFiltroContenido();
@@ -168,12 +191,12 @@ public class OrdenPago extends Pantalla {
                 Thread.sleep(1000);
                 if (!tab_dato.isEmpty()) {
                     tabOrden.setValor("tes_proveedor", tab_dato.getValor("titular"));
-                    System.out.println("Nombre de proveedor>>>>>>\n" + tab_dato.getValor("titular"));
                     tabOrden.setValor("tes_cod_empleado", null);
                     tabOrden.setValor("tes_empleado", null);
                     tabOrden.setValor("tes_estado", "Pendiente");
                     tabOrden.setValor("tipo_solicitantep", "2");
                     utilitario.addUpdate("tabOrden");//actualiza solo componente
+                    System.out.println("Nombre de proveedor>>>>>>\t" + tabOrden.getValor("tes_proveedor"));
                 }
             } catch (InterruptedException ex) {
                 Thread.currentThread().interrupt();
@@ -191,12 +214,12 @@ public class OrdenPago extends Pantalla {
                 Thread.sleep(1000);
                 if (!tab_dato.isEmpty()) {
                     tabOrden.setValor("tes_empleado", tab_dato.getValor("nombres"));
-                    System.out.println("Nombre de empleado>>>>>>\n" + tab_dato.getValor("nombres"));
                     tabOrden.setValor("tes_id_proveedor", null);
                     tabOrden.setValor("tes_proveedor", null);
                     tabOrden.setValor("tes_estado", "Pendiente");
                     tabOrden.setValor("tipo_solicitantep", "1");
                     utilitario.addUpdate("tabOrden");//actualiza solo componentes
+                    System.out.println("Nombre de empleado>>>>>>\t" + tabOrden.getValor("tes_empleado"));
                 }
             } catch (InterruptedException ex) {
                 Thread.currentThread().interrupt();
@@ -294,6 +317,8 @@ public class OrdenPago extends Pantalla {
                 }
                 try {
                     if (tabOrden.getValor("tes_empleado") != null || tabOrden.getValor("tes_empleado").equals(tabDato.getValor("tes_empleado"))) {
+                        utilitario.addUpdate("tabOrden");//actualiza solo componentes
+                        System.out.println("Nombre de empleado>>>>>>\t" + tabOrden.getValor("tes_empleado"));
                         programas.setOrdenPago(tabOrden.getValor("tes_numero_orden"), Integer.parseInt(tabOrden.getValor("tes_ide_orden_pago")), "tes_empleado", "'" + tabOrden.getValor("tes_empleado") + "'");
                     }
                 } catch (NullPointerException ex) {
@@ -308,7 +333,8 @@ public class OrdenPago extends Pantalla {
                 }
                 try {
                     if (tabOrden.getValor("tes_proveedor") != null || tabOrden.getValor("tes_proveedor").equals(tabDato.getValor("tes_proveedor"))) {
-                        System.err.println(tabOrden.getValor("tes_proveedor"));
+                        utilitario.addUpdate("tabOrden");//actualiza solo componente
+                        System.out.println("Nombre de proveedor>>>>>>\t" + tabOrden.getValor("tes_proveedor"));
                         programas.setOrdenPago(tabOrden.getValor("tes_numero_orden"), Integer.parseInt(tabOrden.getValor("tes_ide_orden_pago")), "tes_proveedor", "'" + tabOrden.getValor("tes_proveedor") + "'");
                     }
                 } catch (NullPointerException ex) {
@@ -323,7 +349,7 @@ public class OrdenPago extends Pantalla {
                 }
                 try {
                     if (tabOrden.getValor("tes_comprobante_egreso") != null || tabOrden.getValor("tes_comprobante_egreso").equals(tabDato.getValor("tes_comprobante_egreso"))) {
-                        programas.setOrdenPago(tabOrden.getValor("tes_numero_orden"), Integer.parseInt(tabOrden.getValor("tes_ide_orden_pago")), "tes_comprobante_egreso", "'" + tabOrden.getValor("tes_comprobante_egreso")+ "'");
+                        programas.setOrdenPago(tabOrden.getValor("tes_numero_orden"), Integer.parseInt(tabOrden.getValor("tes_ide_orden_pago")), "tes_comprobante_egreso", "'" + tabOrden.getValor("tes_comprobante_egreso") + "'");
                     }
                 } catch (NullPointerException ex) {
                     System.err.println(tabOrden.getValor("tes_comprobante_egreso"));
