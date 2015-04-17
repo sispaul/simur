@@ -478,7 +478,14 @@ public class AbastecimientoAutomotores extends Pantalla {
 
     @Override
     public void eliminar() {
-        tabTabla.eliminar();
+         TablaGenerica tab_dato = aCombustible.setRegistroAbas(Integer.parseInt(tabTabla.getValor("mve_secuencial")));
+            if (!tab_dato.isEmpty()) {
+                aCombustible.set_ActuaKM(Integer.parseInt(tabTabla.getValor("mve_secuencial")), Integer.parseInt(tab_dato.getValor("abastecimiento_kilometraje")), "set mve_kilometros_actual");
+                aCombustible.setDeleteAbast(Integer.parseInt(tabTabla.getValor("abastecimiento_id")));
+                limpiar();
+            }else{
+                utilitario.agregarMensaje("Solo puede eliminar ultimo registro ingresado", null);
+            }
     }
 
     public void actu() {
