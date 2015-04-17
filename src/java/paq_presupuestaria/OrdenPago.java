@@ -35,14 +35,14 @@ public class OrdenPago extends Pantalla {
     private Tabla tabDetalle = new Tabla();
     private Tabla tabConsulta = new Tabla();
     //Dialogo Busca 
-    private Dialogo dialogo = new Dialogo();
-    private Dialogo dialogm = new Dialogo();
-    private Grid gridd = new Grid();
-    private Grid gridm = new Grid();
+    private Dialogo dia_dialogo = new Dialogo();
+    private Dialogo dia_dialogm = new Dialogo();
+    private Grid grid_d = new Grid();
+    private Grid grid_m = new Grid();
     private Grid grid = new Grid();
     private Grid grim = new Grid();
     //Texto de Ingreso
-    Texto textMotivo = new Texto();
+    Texto txt_motivo = new Texto();
     @EJB
     private Programas programas = (Programas) utilitario.instanciarEJB(Programas.class);
     //REPORTES
@@ -114,15 +114,6 @@ public class OrdenPago extends Pantalla {
         pto.setPanelTabla(tabOrden);
         agregarComponente(pto);
 
-        //para poder buscar por apellido el solicitante
-        dialogm.setId("dia_dialogm");
-        dialogm.setTitle("¿ MOTIVO DE ANULACIÓN ?"); //titulo
-        dialogm.setWidth("30%"); //siempre en porcentajes  ancho
-        dialogm.setHeight("20%");//siempre porcentaje   alto
-        dialogm.setResizable(false); //para que no se pueda cambiar el tamaño
-        dialogm.getBot_aceptar().setMetodo("anular");
-        gridm.setColumns(4);
-
         tabDetalle.setId("tabDetalle");
         tabDetalle.setConexion(conPostgres);
         tabDetalle.setSql("select \n"
@@ -176,6 +167,16 @@ public class OrdenPago extends Pantalla {
         sef_formato.setId("sef_formato");
         sef_formato.setConexion(conPostgres);
         agregarComponente(sef_formato);
+        
+        dia_dialogo.setId("dia_dialogo");
+        dia_dialogo.setTitle("¿ MOTIVO DE ANULACIÓN ?"); //titulo
+        dia_dialogo.setWidth("30%"); //siempre en porcentajes  ancho
+        dia_dialogo.setHeight("20%");//siempre porcentaje   alto
+        dia_dialogo.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogo.getBot_aceptar().setMetodo("anular");
+        grid_d.setColumns(4);
+        agregarComponente(dia_dialogo);
+
     }
 
     public void numLetras() {
@@ -231,26 +232,26 @@ public class OrdenPago extends Pantalla {
     }
 
     public void quitar() {
-        dialogm.Limpiar();
-        dialogm.setDialogo(grim);
-        textMotivo.setSize(50);
+        dia_dialogo.Limpiar();
+        dia_dialogo.setDialogo(grid);
+        txt_motivo.setSize(50);
         grim.getChildren().add(new Etiqueta("INGRESE MOTIVO DE ANULACIÓN DE ORDEN :"));
-        grim.getChildren().add(new Etiqueta("_____________________________________________________"));
-        grim.getChildren().add(textMotivo);
-        dialogm.setDialogo(gridm);
-        dialogm.dibujar();
+        grid.getChildren().add(new Etiqueta("_____________________________________________________"));
+        grid.getChildren().add(txt_motivo);
+        dia_dialogo.setDialogo(grid_d);
+        dia_dialogo.dibujar();
     }
 
     public void anular() {
         String reg = new String();
-        programas.actOrden(tabOrden.getValor("tes_numero_orden"), Integer.parseInt(tabOrden.getValor("tes_ide_orden_pago")), tabConsulta.getValor("NICK_USUA"), textMotivo.getValue() + "");
+        programas.actOrden(tabOrden.getValor("tes_numero_orden"), Integer.parseInt(tabOrden.getValor("tes_ide_orden_pago")), tabConsulta.getValor("NICK_USUA"), txt_motivo.getValue() + "");
         utilitario.addUpdate("tabOrden");
         utilitario.agregarMensaje("ORDEN ANULADA", "");
         reg = tabOrden.getValorSeleccionado();
         tabDetalle.actualizar();
         tabDetalle.setFilaActual(reg);
         tabDetalle.calcularPaginaActual();
-        dialogm.cerrar();
+        dia_dialogo.cerrar();
     }
 
     public void numero() {
