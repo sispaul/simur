@@ -4,6 +4,7 @@
  */
 package paq_controlEquipos;
 
+import framework.aplicacion.TablaGenerica;
 import framework.componentes.Division;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
@@ -15,17 +16,19 @@ import paq_sistema.aplicacion.Pantalla;
  *
  * @author p-sistemas
  */
-public class CatalogoEquipos extends Pantalla {
+public class InventarioEquipos extends Pantalla {
 
     private Tabla tabEquipo = new Tabla();
     private Tabla tabAccesorio = new Tabla();
     @EJB
     private Procesos accesoDatos = (Procesos) utilitario.instanciarEJB(Procesos.class);
 
-    public CatalogoEquipos() {
+    public InventarioEquipos() {
 
         tabEquipo.setId("tabEquipo");
         tabEquipo.setTabla("cei_descripcion_equipos", "desc_codigo", 1);
+        tabEquipo.getColumna("tipo_codigo").setCombo("SELECT TIPO_CODIGO,TIPO_DESCRIPCION FROM CEI_TIPO_EQUIPOS");
+        tabEquipo.getColumna("desc_ultimo_mantenimiento").setLectura(true);
         tabEquipo.getColumna("desc_serie").setMetodoChange("infEquipo");
         tabEquipo.agregarRelacion(tabAccesorio);
         tabEquipo.setTipoFormulario(true);
@@ -36,6 +39,7 @@ public class CatalogoEquipos extends Pantalla {
 
         tabAccesorio.setId("tabAccesorio");
         tabAccesorio.setTabla("cei_accesorios", "acce_codigo", 2);
+        tabAccesorio.getColumna("acce_serie").setMetodoChange("infAccesorio");
         tabAccesorio.dibujar();
         PanelTabla pta = new PanelTabla();
         pta.setPanelTabla(tabAccesorio);
@@ -48,6 +52,31 @@ public class CatalogoEquipos extends Pantalla {
     }
 
     public void infEquipo() {
+        TablaGenerica tabDato = accesoDatos.getInfoActivo(tabEquipo.getValor("desc_serie"));
+        if (!tabDato.isEmpty()) {
+            tabEquipo.setValor("desc_codigo_activo", tabDato.getValor("codigo"));
+            tabEquipo.setValor("desc_marca", tabDato.getValor("marca"));
+            tabEquipo.setValor("desc_modelo", tabDato.getValor("modelo"));
+            tabEquipo.setValor("desc_estado", tabDato.getValor("estado"));
+            tabEquipo.setValor("desc_descripcion", tabDato.getValor("des_activo"));
+            utilitario.addUpdate("tabEquipo");
+        } else {
+            utilitario.agregarMensaje("Equipo No Localizado en la Base de Activos", null);
+        }
+    }
+
+    public void infAccesorio() {
+        TablaGenerica tabDato = accesoDatos.getInfoActivo(tabAccesorio.getValor("desc_serie"));
+        if (!tabDato.isEmpty()) {
+            tabAccesorio.setValor("acce_codigo_activo", tabDato.getValor("codigo"));
+            tabAccesorio.setValor("acce_marca", tabDato.getValor("marca"));
+            tabAccesorio.setValor("acce_modelo", tabDato.getValor("modelo"));
+            tabAccesorio.setValor("acce_estado", tabDato.getValor("estado"));
+            tabAccesorio.setValor("acce_descripcion", tabDato.getValor("des_activo"));
+            utilitario.addUpdate("tabAccesorio");
+        } else {
+            utilitario.agregarMensaje("Accesorio No Localizado en la Base de Activos", null);
+        }
     }
 
     @Override

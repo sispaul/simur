@@ -19,7 +19,7 @@ import paq_sistema.aplicacion.Pantalla;
 public class Programas extends Pantalla {
 
     private Tabla tabProgramas = new Tabla();
-    private Tabla tabLicencias = new Tabla();
+    private Tabla tabLicencia = new Tabla();
     @EJB
     private Procesos accesoDatos = (Procesos) utilitario.instanciarEJB(Procesos.class);
 
@@ -27,51 +27,50 @@ public class Programas extends Pantalla {
         tabProgramas.setId("tabProgramas");
         tabProgramas.setTabla("cei_programas", "progs_codigo", 1);
         tabProgramas.setHeader("LISTADO DE PROGRAMAS");
-        tabProgramas.agregarRelacion(tabLicencias);
+        tabProgramas.agregarRelacion(tabLicencia);
         tabProgramas.dibujar();
         PanelTabla ptp = new PanelTabla();
         ptp.setPanelTabla(tabProgramas);
 
-        tabLicencias.setId("tabLicencias");
-        tabLicencias.setTabla("cei_licencia_programas", "licen_codigo", 2);
-        tabLicencias.setHeader("LISTADO DE LICENCIAS POR PROGRAMAS");
-        tabLicencias.getColumna("tipo_licencia_codigo").setCombo("select tipo_licencia_codigo,tipo_licencia_descripcion from cei_tipo_licencia");
-        tabLicencias.getColumna("tipo_licencia_codigo").setMetodoChange("Parametros");
-        tabLicencias.getColumna("licen_fecha_compra").setLectura(true);
-        tabLicencias.getColumna("licen_numero_licencia").setLectura(true);
-        tabLicencias.getColumna("licen_tiempo_vigencia").setLectura(true);
-        tabLicencias.getColumna("licen_cantidad").setLectura(true);
-        tabLicencias.dibujar();
+        tabLicencia.setId("tabLicencia");
+        tabLicencia.setTabla("cei_licencia_programas", "licen_codigo", 2);
+        tabLicencia.setHeader("LISTADO DE LICENCIAS POR PROGRAMAS");
+        tabLicencia.getColumna("tipo_licencia_codigo").setCombo("SELECT TIPO_LICENCIA_CODIGO,TIPO_LICENCIA_DESCRIPCION FROM CEI_TIPO_LICENCIA");
+        tabLicencia.getColumna("tipo_licencia_codigo").setMetodoChange("ActiCasillas");
+        tabLicencia.getColumna("licen_fecha_compra").setValorDefecto(utilitario.getFechaActual());
+        tabLicencia.getColumna("licen_fecha_compra").setLectura(true);
+        tabLicencia.getColumna("licen_numero_licencia").setLectura(true);
+        tabLicencia.getColumna("licen_tiempo_vigencia").setLectura(true);
+        tabLicencia.getColumna("licen_cantidad").setLectura(true);
+        tabLicencia.setTipoFormulario(true);
+        tabLicencia.dibujar();
         PanelTabla ptl = new PanelTabla();
-        ptl.setPanelTabla(tabLicencias);
+        ptl.setPanelTabla(tabLicencia);
 
-        Division divTablas = new Division();
-        divTablas.setId("divTablas");
-        divTablas.dividir2(ptp, ptl, "55%", "H");
-        agregarComponente(divTablas);
+        Division div = new Division();
+        div.dividir2(ptp, ptl, "55%", "H");
+        agregarComponente(div);
 
     }
 
-    public void Parametros() {
-        TablaGenerica tabDato = accesoDatos.getTipoLicencia(Integer.parseInt(tabLicencias.getValor("tipo_licencia_codigo")));
-        if (!tabDato.isEmpty()) {
-            System.err.println(tabDato.getValor("tipo_licencia_descripcion"));
-            if (tabDato.getValor("tipo_licencia_descripcion").equals("PAGADA")) {
-                tabLicencias.getColumna("licen_fecha_compra").setLectura(false);
-                tabLicencias.getColumna("licen_numero_licencia").setLectura(false);
-                tabLicencias.getColumna("licen_tiempo_vigencia").setLectura(false);
-                tabLicencias.getColumna("licen_cantidad").setLectura(false);
-                utilitario.addUpdate("tabLicencias");
-            } else {
-                tabLicencias.getColumna("licen_fecha_compra").setLectura(true);
-                tabLicencias.getColumna("licen_numero_licencia").setLectura(true);
-                tabLicencias.getColumna("licen_tiempo_vigencia").setLectura(true);
-                tabLicencias.getColumna("licen_cantidad").setLectura(true);
-                utilitario.addUpdate("tabLicencias");
-            }
+    public void ActiCasillas() {
+        
+        
+        if (tabLicencia.getValor("tipo_licencia_codigo").equals("4")) {
+            tabLicencia.getColumna("licen_fecha_compra").setLectura(false);
+            tabLicencia.getColumna("licen_numero_licencia").setLectura(false);
+            tabLicencia.getColumna("licen_tiempo_vigencia").setLectura(false);
+            tabLicencia.getColumna("licen_cantidad").setLectura(false);
+            utilitario.addUpdate("tabLicencia");
         } else {
-            utilitario.agregarMensaje("Tipo de Licencia no encontrada", null);
+            tabLicencia.getColumna("licen_fecha_compra").setLectura(true);
+            tabLicencia.getColumna("licen_numero_licencia").setLectura(true);
+            tabLicencia.getColumna("licen_tiempo_vigencia").setLectura(true);
+            tabLicencia.getColumna("licen_cantidad").setLectura(true);
+            utilitario.addUpdate("tabLicencia");
         }
+        
+        
     }
 
     @Override
@@ -82,7 +81,7 @@ public class Programas extends Pantalla {
     @Override
     public void guardar() {
         if (tabProgramas.guardar()) {
-            if (tabLicencias.guardar()) {
+            if (tabLicencia.guardar()) {
                 guardarPantalla();
             }
         }
@@ -101,11 +100,11 @@ public class Programas extends Pantalla {
         this.tabProgramas = tabProgramas;
     }
 
-    public Tabla getTabLicencias() {
-        return tabLicencias;
+    public Tabla getTabLicencia() {
+        return tabLicencia;
     }
 
-    public void setTabLicencias(Tabla tabLicencias) {
-        this.tabLicencias = tabLicencias;
+    public void setTabLicencia(Tabla tabLicencia) {
+        this.tabLicencia = tabLicencia;
     }
 }
