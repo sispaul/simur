@@ -632,14 +632,14 @@ public class pre_anticipo_especial extends Pantalla {
         dato3 = (Double.parseDouble(tab_anticipo.getValor("rmu")) / 2);
         if (Integer.parseInt(tab_anticipo.getValor("ide_tipo_anticipo")) != 1) {
             if ((dato1 / dato2) <= 1) {
-                tab_parametros.setValor("numero_cuotas_anticipo", "2");
-                utilitario.addUpdate("tab_parametros");
-                utilitario.agregarMensajeInfo("Anticipo, Hasta una Remuneracion", "Plazo Maximo de Cobro, 2 Meses");
-                if (tab_parametros.getValor("numero_cuotas_anticipo").equals("2")) {
-                    llenarFecha();
-                    cuotas();
-                }
-                tab_parametros.getColumna("numero_cuotas_anticipo").setLectura(true);
+//                tab_parametros.setValor("numero_cuotas_anticipo", "2");
+//                utilitario.addUpdate("tab_parametros");
+//                utilitario.agregarMensajeInfo("Anticipo, Hasta una Remuneracion", "Plazo Maximo de Cobro, 2 Meses");
+//                if (tab_parametros.getValor("numero_cuotas_anticipo").equals("2")) {
+//                    llenarFecha();
+//                    cuotas();
+//                }
+//                tab_parametros.getColumna("numero_cuotas_anticipo").setLectura(true);
             } else if ((dato1 / dato2) > 1 && (dato1 / dato2) <= 3) {//HASTA 3 REMUNERACIONES 
                 tab_parametros.getColumna("numero_cuotas_anticipo").setLectura(false);
                 tab_parametros.setValor("numero_cuotas_anticipo", "NULL");
@@ -1316,8 +1316,12 @@ public class pre_anticipo_especial extends Pantalla {
                         rango = Integer.parseInt(tab_dato.getValor("periodo")) + Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo")) - 1;
                         if (rango > 12) {
                             valora = ((rmu * (Integer.parseInt(tab_parametros.getValor("porcentaje_descuento_diciembre")))) / 100);
+                            System.out.println(valora);
+                            System.err.println(Double.parseDouble(tab_parametros.getValor("valor_anticipo")));
                             if (valora >= Double.parseDouble(tab_parametros.getValor("valor_anticipo"))) {
+                                
                                 utilitario.agregarMensajeError("Cuota Diciembre Excede Sueldo Anterior", "");
+                                
                             } else {
                                 valorm = (valan - valora) / (Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo")) - 1);
 //                            if(media>=(Math.rint(valorm*100)/100)){

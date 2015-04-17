@@ -85,7 +85,7 @@ public class manauto {
         con_postgres = null;
     }
 
-        public void setDependencias(String nombre) {
+    public void setDependencias(String nombre) {
         String parametro = "insert into mvtipo_dependencias(dependencia_descripcion)\n"
                 + "values ('" + nombre + "')";
         con_postgresql();
@@ -93,9 +93,17 @@ public class manauto {
         con_postgres.desconectar();
         con_postgres = null;
     }
-    
+
     public void deleteTipos(Integer anti) {
         String au_sql = "delete from mvtipo_vehiculo where mvtipo_id =" + anti;
+        con_postgresql();
+        con_postgres.ejecutarSql(au_sql);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+
+    public void setDeleteAbast(Integer anti) {
+        String au_sql = "delete from mvabactecimiento_combustible where abastecimiento_id = " + anti;
         con_postgresql();
         con_postgres.ejecutarSql(au_sql);
         con_postgres.desconectar();
@@ -137,14 +145,14 @@ public class manauto {
         con_postgres = null;
     }
 
-        public void deleteDependencias(Integer anti) {
+    public void deleteDependencias(Integer anti) {
         String au_sql = "delete from mvtipo_dependencias where dependencia_codigo =" + anti;
         con_postgresql();
         con_postgres.ejecutarSql(au_sql);
         con_postgres.desconectar();
         con_postgres = null;
     }
-    
+
     public void deleteaccesorios(Integer anti) {
         String au_sql = "update mvdetalle_vehiculo set mve_estado = '0' where mdv_codigo = " + anti;
         con_postgresql();
@@ -570,6 +578,24 @@ public class manauto {
                 + "abastecimiento_valorhora\n"
                 + "FROM mvabactecimiento_combustible\n"
                 + "where abastecimiento_id =" + codigo + " and mve_secuencial=" + vehiculo + " and abastecimiento_numero_vale='" + vale + "' and abastecimiento_ingreso = 'HT'");
+        tab_persona.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_persona;
+    }
+
+    public TablaGenerica setRegistroAbas(Integer registro) {
+        con_postgresql();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql("select * from (\n"
+                + "SELECT\n"
+                + "abastecimiento_id,\n"
+                + "abastecimiento_kilometraje\n"
+                + "FROM mvabactecimiento_combustible\n"
+                + "where mve_secuencial = " + registro + "\n"
+                + "order by abastecimiento_id desc limit 2) as a\n"
+                + "order by abastecimiento_id limit 1");
         tab_persona.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
