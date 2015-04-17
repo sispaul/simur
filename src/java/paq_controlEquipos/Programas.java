@@ -54,23 +54,22 @@ public class Programas extends Pantalla {
     }
 
     public void ActiCasillas() {
-        
-        
-        if (tabLicencia.getValor("tipo_licencia_codigo").equals("4")) {
-            tabLicencia.getColumna("licen_fecha_compra").setLectura(false);
-            tabLicencia.getColumna("licen_numero_licencia").setLectura(false);
-            tabLicencia.getColumna("licen_tiempo_vigencia").setLectura(false);
-            tabLicencia.getColumna("licen_cantidad").setLectura(false);
-            utilitario.addUpdate("tabLicencia");
-        } else {
-            tabLicencia.getColumna("licen_fecha_compra").setLectura(true);
-            tabLicencia.getColumna("licen_numero_licencia").setLectura(true);
-            tabLicencia.getColumna("licen_tiempo_vigencia").setLectura(true);
-            tabLicencia.getColumna("licen_cantidad").setLectura(true);
-            utilitario.addUpdate("tabLicencia");
+        TablaGenerica tadDato = accesoDatos.getTipoLicencia(Integer.parseInt(tabLicencia.getValor("tipo_licencia_codigo")));
+        if (!tadDato.isEmpty()) {
+            if (tadDato.getValor("TIPO_LICENCIA_DESCRIPCION").equals("PAGADA")) {
+                tabLicencia.getColumna("licen_fecha_compra").setLectura(false);
+                tabLicencia.getColumna("licen_numero_licencia").setLectura(false);
+                tabLicencia.getColumna("licen_tiempo_vigencia").setLectura(false);
+                tabLicencia.getColumna("licen_cantidad").setLectura(false);
+                utilitario.addUpdate("tabLicencia");
+            } else {
+                tabLicencia.getColumna("licen_fecha_compra").setLectura(true);
+                tabLicencia.getColumna("licen_numero_licencia").setLectura(true);
+                tabLicencia.getColumna("licen_tiempo_vigencia").setLectura(true);
+                tabLicencia.getColumna("licen_cantidad").setLectura(true);
+                utilitario.addUpdate("tabLicencia");
+            }
         }
-        
-        
     }
 
     @Override

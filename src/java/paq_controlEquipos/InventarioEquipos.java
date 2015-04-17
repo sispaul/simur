@@ -8,6 +8,7 @@ import framework.aplicacion.TablaGenerica;
 import framework.componentes.Division;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
+import framework.componentes.Tabulador;
 import javax.ejb.EJB;
 import paq_controlEquipos.ejb.Procesos;
 import paq_sistema.aplicacion.Pantalla;
@@ -20,10 +21,15 @@ public class InventarioEquipos extends Pantalla {
 
     private Tabla tabEquipo = new Tabla();
     private Tabla tabAccesorio = new Tabla();
+    private Tabla tabAsignacion = new Tabla();
+    
     @EJB
     private Procesos accesoDatos = (Procesos) utilitario.instanciarEJB(Procesos.class);
 
     public InventarioEquipos() {
+
+        Tabulador tabTabulador = new Tabulador();
+        tabTabulador.setId("tabTabulador");
 
         tabEquipo.setId("tabEquipo");
         tabEquipo.setTabla("cei_descripcion_equipos", "desc_codigo", 1);
@@ -38,15 +44,27 @@ public class InventarioEquipos extends Pantalla {
         pte.setPanelTabla(tabEquipo);
 
         tabAccesorio.setId("tabAccesorio");
+        tabAccesorio.setIdCompleto("tabTabulador:tabAccesorio");
         tabAccesorio.setTabla("cei_accesorios", "acce_codigo", 2);
         tabAccesorio.getColumna("acce_serie").setMetodoChange("infAccesorio");
         tabAccesorio.dibujar();
         PanelTabla pta = new PanelTabla();
         pta.setPanelTabla(tabAccesorio);
-
+        
+        tabAsignacion.setId("tabAsignacion");
+        tabAsignacion.setTabla("cei_asignacion", "asignacion_codigo", 3);
+        tabAsignacion.setTipoFormulario(true);
+        tabAsignacion.dibujar();
+        PanelTabla ptas = new PanelTabla();
+        ptas.setPanelTabla(tabAsignacion);
+        
+        
+        tabTabulador.agregarTab("ACCESORIOS", pta);
+        tabTabulador.agregarTab("ASIGNACIÓN", ptas);
+        
         Division divTablas = new Division();
         divTablas.setId("divTablas");
-        divTablas.dividir2(pte, pta, "60%", "H");
+        divTablas.dividir2(pte, tabTabulador, "50%", "H");
         agregarComponente(divTablas);
 
     }
@@ -113,4 +131,13 @@ public class InventarioEquipos extends Pantalla {
     public void setTabAccesorio(Tabla tabAccesorio) {
         this.tabAccesorio = tabAccesorio;
     }
+
+    public Tabla getTabAsignacion() {
+        return tabAsignacion;
+    }
+
+    public void setTabAsignacion(Tabla tabAsignacion) {
+        this.tabAsignacion = tabAsignacion;
+    }
+    
 }
