@@ -5,13 +5,16 @@
 package paq_controlEquipos;
 
 import framework.aplicacion.TablaGenerica;
+import framework.componentes.Dialogo;
 import framework.componentes.Division;
+import framework.componentes.Grid;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
 import javax.ejb.EJB;
 import paq_controlEquipos.ejb.Procesos;
 import paq_sistema.aplicacion.Pantalla;
+import persistencia.Conexion;
 
 /**
  *
@@ -19,15 +22,26 @@ import paq_sistema.aplicacion.Pantalla;
  */
 public class InventarioEquipos extends Pantalla {
 
+    private Conexion conPostgres = new Conexion();
+    private Conexion conSQL = new Conexion();
     private Tabla tabEquipo = new Tabla();
     private Tabla tabAccesorio = new Tabla();
     private Tabla tabAsignacion = new Tabla();
-    
+    private Tabla setDatos = new Tabla();
+    private Dialogo dialogoa = new Dialogo();
+    private Grid grid = new Grid();
+    private Grid grida = new Grid();
     @EJB
     private Procesos accesoDatos = (Procesos) utilitario.instanciarEJB(Procesos.class);
 
     public InventarioEquipos() {
 
+        conPostgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
+        conPostgres.NOMBRE_MARCA_BASE = "postgres";
+
+        conSQL.setUnidad_persistencia(utilitario.getPropiedad("recursojdbc"));
+        conSQL.NOMBRE_MARCA_BASE = "sqlserver";
+        
         Tabulador tabTabulador = new Tabulador();
         tabTabulador.setId("tabTabulador");
 
@@ -37,6 +51,7 @@ public class InventarioEquipos extends Pantalla {
         tabEquipo.getColumna("desc_ultimo_mantenimiento").setLectura(true);
         tabEquipo.getColumna("desc_serie").setMetodoChange("infEquipo");
         tabEquipo.agregarRelacion(tabAccesorio);
+        tabEquipo.agregarRelacion(tabAsignacion);
         tabEquipo.setTipoFormulario(true);
         tabEquipo.getGrid().setColumns(4);
         tabEquipo.dibujar();
@@ -50,22 +65,35 @@ public class InventarioEquipos extends Pantalla {
         tabAccesorio.dibujar();
         PanelTabla pta = new PanelTabla();
         pta.setPanelTabla(tabAccesorio);
-        
+
         tabAsignacion.setId("tabAsignacion");
+        tabAsignacion.setIdCompleto("tabTabulador:tabAsignacion");
         tabAsignacion.setTabla("cei_asignacion", "asignacion_codigo", 3);
-        tabAsignacion.setTipoFormulario(true);
+        tabAsignacion.getColumna("catalogo_codigo").setCombo("select catalogo_codigo,catalogo_descripcion from cei_catalogo_tablas");
+        tabAsignacion.getColumna("catalogo_codigo").setMetodoChange("buscarItem");
+        tabAsignacion.getColumna("asignacion_estado").setCheck();
+        tabAsignacion.getColumna("asignacion_fecha").setValorDefecto(utilitario.getFechaActual());
         tabAsignacion.dibujar();
         PanelTabla ptas = new PanelTabla();
         ptas.setPanelTabla(tabAsignacion);
-        
-        
+
+
         tabTabulador.agregarTab("ACCESORIOS", pta);
         tabTabulador.agregarTab("ASIGNACIÓN", ptas);
-        
+
         Division divTablas = new Division();
         divTablas.setId("divTablas");
         divTablas.dividir2(pte, tabTabulador, "50%", "H");
         agregarComponente(divTablas);
+
+        dialogoa.setId("dialogoa");
+        dialogoa.setTitle("DATOS DE ASIGNACIÓN"); //titulo
+        dialogoa.setWidth("55%"); //siempre en porcentajes  ancho
+        dialogoa.setHeight("40%");//siempre porcentaje   alto
+        dialogoa.setResizable(false); //para que no se pueda cambiar el tamaño
+        dialogoa.getBot_aceptar().setMetodo("aceptoDatos");
+        grid.setColumns(4);
+        agregarComponente(dialogoa);
 
     }
 
@@ -84,7 +112,7 @@ public class InventarioEquipos extends Pantalla {
     }
 
     public void infAccesorio() {
-        TablaGenerica tabDato = accesoDatos.getInfoActivo(tabAccesorio.getValor("desc_serie"));
+        TablaGenerica tabDato = accesoDatos.getInfoActivo(tabAccesorio.getValor("acce_serie"));
         if (!tabDato.isEmpty()) {
             tabAccesorio.setValor("acce_codigo_activo", tabDato.getValor("codigo"));
             tabAccesorio.setValor("acce_marca", tabDato.getValor("marca"));
@@ -95,6 +123,32 @@ public class InventarioEquipos extends Pantalla {
         } else {
             utilitario.agregarMensaje("Accesorio No Localizado en la Base de Activos", null);
         }
+    }
+
+    public void buscarItem() {
+        TablaGenerica tabDato = accesoDatos.getCatalgoTablas(Integer.parseInt(tabAsignacion.getValor("catalogo_codigo")));
+        if (!tabDato.isEmpty()) {
+            dialogoa.Limpiar();
+            dialogoa.setDialogo(grid);
+            grida.getChildren().add(setDatos);
+            setDatos.setId("setDatos");
+            if (tabDato.getValor("CATALOGO_BASE").equals("2")) {
+                setDatos.setConexion(conPostgres);
+            }else{
+                setDatos.setConexion(conSQL);
+            }
+            setDatos.setSql("select * from " + tabDato.getValor("CATALOGO_ORIGEN") + " " + tabDato.getValor("CATALOGO_FILTRO") + "");
+            setDatos.setRows(10);               
+            setDatos.setTipoSeleccion(false);
+            dialogoa.setDialogo(grida);
+            setDatos.dibujar();
+            dialogoa.dibujar();
+        } else {
+            utilitario.agregarMensaje("Selecione una Opción", null);
+        }
+    }
+
+    public void aceptarDatos() {
     }
 
     @Override
@@ -139,5 +193,12 @@ public class InventarioEquipos extends Pantalla {
     public void setTabAsignacion(Tabla tabAsignacion) {
         this.tabAsignacion = tabAsignacion;
     }
-    
+
+    public Tabla getSetDatos() {
+        return setDatos;
+    }
+
+    public void setSetDatos(Tabla setDatos) {
+        this.setDatos = setDatos;
+    }
 }
