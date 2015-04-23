@@ -116,33 +116,35 @@ public class OrdenPago extends Pantalla {
 
         tabDetalle.setId("tabDetalle");
         tabDetalle.setConexion(conPostgres);
-        tabDetalle.setSql("select \n"
-                + "a.tes_ide_orden_pago,\n"
-                + "a.numero_orden,\n"
-                + "a.numero_comprobante,\n"
-                + "(case when b.titular is not null then b.titular when b.titular is null then c.nombres end ) as beneficiario,\n"
-                + "a.asunto,\n"
-                + "a.valor,\n"
-                + "a.concepto,\n"
-                + "a.acuerdo\n"
-                + "from (\n"
-                + "SELECT \n"
-                + "tes_numero_orden AS numero_orden,\n"
-                + "tes_comprobante_egreso AS numero_comprobante,\n"
-                + "tes_asunto AS asunto,\n"
-                + "tes_valor AS valor,\n"
-                + "tes_concepto AS concepto,\n"
-                + "tes_acuerdo AS acuerdo,\n"
-                + "tes_ide_orden_pago,\n"
-                + "(case when tes_id_proveedor is null then tes_cod_empleado when tes_id_proveedor is not null then tes_id_proveedor end) as cod_benefi\n"
-                + "FROM tes_orden_pago where tes_estado_doc = '1' and tes_anio='" + utilitario.getAnio(utilitario.getFechaActual()) + "') as a\n"
-                + "left join \n"
-                + "(SELECT ide_proveedor,titular FROM tes_proveedores) as b\n"
-                + "on a.cod_benefi = b.ide_proveedor\n"
-                + "left join \n"
-                + "(SELECT cedula_pass,nombres,cod_empleado FROM srh_empleado) as c\n"
-                + "on a.cod_benefi = c.cod_empleado\n"
-                + "order by numero_orden desc");
+        tabDetalle.setSql("select   \n"
+                + " a.tes_ide_orden_pago,  \n"
+                + " a.numero_orden,  \n"
+                + " a.numero_comprobante,\n"
+                + "(case when  a.tes_cod_empleado is null then b.titular when a.tes_cod_empleado is not null then c.nombres end)  \n"
+                + "as beneficiario,  \n"
+                + " a.asunto,  \n"
+                + " a.valor,  \n"
+                + " a.concepto,  \n"
+                + " a.acuerdo  \n"
+                + " from (  \n"
+                + " SELECT   \n"
+                + " tes_numero_orden AS numero_orden,  \n"
+                + " tes_comprobante_egreso AS numero_comprobante,  \n"
+                + " tes_asunto AS asunto,  \n"
+                + " tes_valor AS valor,  \n"
+                + " tes_concepto AS concepto,  \n"
+                + " tes_acuerdo AS acuerdo,  \n"
+                + " tes_ide_orden_pago,  \n"
+                + " tes_cod_empleado, \n"
+                + " (case when tes_id_proveedor is null then tes_cod_empleado when tes_id_proveedor is not null then tes_id_proveedor end) as cod_benefi  \n"
+                + " FROM tes_orden_pago where tes_estado_doc = '1' and tes_anio='" + utilitario.getAnio(utilitario.getFechaActual()) + "') as a  \n"
+                + " left join   \n"
+                + " (SELECT ide_proveedor,titular FROM tes_proveedores) as b  \n"
+                + " on a.cod_benefi = b.ide_proveedor  \n"
+                + " left join   \n"
+                + " (SELECT cedula_pass,nombres,cod_empleado FROM srh_empleado) as c  \n"
+                + " on a.cod_benefi = c.cod_empleado  \n"
+                + " order by numero_orden desc");
         tabDetalle.getColumna("tes_ide_orden_pago").setVisible(false);
         tabDetalle.getColumna("numero_orden").setFiltroContenido();
         tabDetalle.getColumna("beneficiario").setFiltroContenido();
@@ -167,7 +169,7 @@ public class OrdenPago extends Pantalla {
         sef_formato.setId("sef_formato");
         sef_formato.setConexion(conPostgres);
         agregarComponente(sef_formato);
-        
+
         dia_dialogo.setId("dia_dialogo");
         dia_dialogo.setTitle("¿ MOTIVO DE ANULACIÓN ?"); //titulo
         dia_dialogo.setWidth("30%"); //siempre en porcentajes  ancho
