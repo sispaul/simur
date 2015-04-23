@@ -33,6 +33,19 @@ public class Procesos {
 
     }
 
+    public TablaGenerica getCatalgoTablas(Integer codigo) {
+        conSql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conSql();
+        tab_funcionario.setConexion(conSql);
+        tab_funcionario.setSql("SELECT CATALOGO_CODIGO,CATALOGO_DESCRIPCION,CATALOGO_BASE,CATALOGO_ORIGEN,CATALOGO_FILTRO FROM CEI_CATALOGO_TABLAS WHERE CATALOGO_CODIGO=" + codigo);
+        tab_funcionario.ejecutarSql();
+        conSql.desconectar();
+        conSql = null;
+        return tab_funcionario;
+
+    }
+    
     public TablaGenerica getInfoActivo(String codigo) {
         conPostgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();

@@ -45,15 +45,15 @@ public class pre_arriendo extends Pantalla {
         agregarComponente(sec_rango);
 
         aut_busca.setId("aut_busca");
-        aut_busca.setAutoCompletar("SELECT \n" +
-"a.IDE_CMARE, \n" +
-"a.NOMBRE_INHUMADO_CMARE,\n" +
-"(case when a.NICHO_SITIO_CMARE =1  then 'nicho' when a.NICHO_SITIO_CMARE = 2 then 'suelo' end ) AS sitio, \n" +
-"r.NOMBRES_APELLIDOS_CMREP, \n" +
-"r.DOCUMENTO_IDENTIDAD_CMREP \n" +
-"FROM \n" +
-"dbo.CMT_ARRENDAMIENTO a \n" +
-"LEFT JOIN dbo.CMT_REPRESENTANTE r ON r.IDE_CMARE = a.IDE_CMARE");
+        aut_busca.setAutoCompletar("SELECT \n"
+                + "a.IDE_CMARE, \n"
+                + "a.NOMBRE_INHUMADO_CMARE,\n"
+                + "(case when a.NICHO_SITIO_CMARE =1  then 'nicho' when a.NICHO_SITIO_CMARE = 2 then 'suelo' end ) AS sitio, \n"
+                + "r.NOMBRES_APELLIDOS_CMREP, \n"
+                + "r.DOCUMENTO_IDENTIDAD_CMREP \n"
+                + "FROM \n"
+                + "dbo.CMT_ARRENDAMIENTO a \n"
+                + "LEFT JOIN dbo.CMT_REPRESENTANTE r ON r.IDE_CMARE = a.IDE_CMARE");
         aut_busca.setMetodoChange("buscarPersona");
         aut_busca.setSize(70);
         rep_reporte.setId("rep_reporte");
@@ -132,7 +132,7 @@ public class pre_arriendo extends Pantalla {
         tab_tabla4.getColumna("IDE_CMACC").setCombo("SELECT IDE_CMACC,DETALLE_CMACC FROM CMT_ACCION");
         tab_tabla4.getColumna("IDE_CMACC").setMetodoChange("cambioEstado");
         tab_tabla4.getColumna("FECHA_HORA_ACCION_CMDEA").setCalendarioFechaHora();
-        tab_tabla4.getColumna("FECHA_HORA_ACCION_CMDEA").setValorDefecto(utilitario.getFechaHoraActual());        
+        tab_tabla4.getColumna("FECHA_HORA_ACCION_CMDEA").setValorDefecto(utilitario.getFechaHoraActual());
         tab_tabla4.dibujar();
         PanelTabla pat_panel4 = new PanelTabla();
         pat_panel4.setPanelTabla(tab_tabla4);
@@ -172,7 +172,7 @@ public class pre_arriendo extends Pantalla {
         Map p_parametros = new HashMap();
         if (rep_reporte.getReporteSelecionado().equals("Arrendamiento Cementerio")) {
             if (tab_tabla1.getValorSeleccionado() != null) {
-                if (tab_tabla2.getTotalFilas()>0) {
+                if (tab_tabla2.getTotalFilas() > 0) {
                     p_parametros.put("titulo", "INFORME PARA ARRENDAMIENTO EN EL CEMENTERIO MUNICIPAL");
                     p_parametros.put("par_para", "JEFE DE RENTAS");
                     p_parametros.put("par_de", "Lic. Nelson Loachamin");

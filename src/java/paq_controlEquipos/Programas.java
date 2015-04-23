@@ -37,11 +37,12 @@ public class Programas extends Pantalla {
         tabLicencia.setHeader("LISTADO DE LICENCIAS POR PROGRAMAS");
         tabLicencia.getColumna("tipo_licencia_codigo").setCombo("SELECT TIPO_LICENCIA_CODIGO,TIPO_LICENCIA_DESCRIPCION FROM CEI_TIPO_LICENCIA");
         tabLicencia.getColumna("tipo_licencia_codigo").setMetodoChange("ActiCasillas");
-        tabLicencia.getColumna("licen_fecha_compra").setValorDefecto(utilitario.getFechaActual());
         tabLicencia.getColumna("licen_fecha_compra").setLectura(true);
         tabLicencia.getColumna("licen_numero_licencia").setLectura(true);
         tabLicencia.getColumna("licen_tiempo_vigencia").setLectura(true);
         tabLicencia.getColumna("licen_cantidad").setLectura(true);
+        
+        tabLicencia.getColumna("licen_fecha_compra").setValorDefecto(utilitario.getFechaActual());
         tabLicencia.setTipoFormulario(true);
         tabLicencia.dibujar();
         PanelTabla ptl = new PanelTabla();
