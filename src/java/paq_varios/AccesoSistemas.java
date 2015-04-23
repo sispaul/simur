@@ -149,7 +149,7 @@ public class AccesoSistemas extends Pantalla {
         if (calFechaInicio.getValue() != null && calFechaFin.getValue() != null) {
             setTabla.getTab_seleccion().setSql("SELECT id_solicitud_acceso,fechaing_solicitante as fecha_solicitud,nombre_usuario,nombre_solicitante,direccion_solicitante\n"
                     + "FROM sca_solicitud_acceso\n"
-                    + "where fechaing_solicitante between '" + calFechaInicio.getFecha()+ "' and '" + calFechaFin.getFecha() + "' ORDER BY id_solicitud_acceso desc");
+                    + "where fechaing_solicitante between '" + calFechaInicio.getFecha() + "' and '" + calFechaFin.getFecha() + "' ORDER BY id_solicitud_acceso desc");
             setTabla.getTab_seleccion().getColumna("direccion_solicitante").setCombo("select cod_direccion,nombre_dir from srh_direccion");
             setTabla.getTab_seleccion().getColumna("direccion_solicitante").setLongitud(40);
             setTabla.getTab_seleccion().getColumna("nombre_usuario").setLongitud(40);
@@ -311,7 +311,7 @@ public class AccesoSistemas extends Pantalla {
     }
 
     public void estadoAcceso() {
-        tab_solicitud.setValor("estado_solicitud", "Solicitud");
+        tab_solicitud.setValor("estado_solicitud", "Asignada");
         utilitario.addUpdate("tab_solicitud");
     }
 
@@ -334,7 +334,7 @@ public class AccesoSistemas extends Pantalla {
 
     @Override
     public void guardar() {
-        if (tab_solicitud.getValor("estado_solicitud").equals("Asignada")) {
+        if (tab_solicitud.getValor("id_solicitud_acceso") != null) {
             TablaGenerica tab_dato = datosEmpledo.getSolicitudAcceso(Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
             if (!tab_dato.isEmpty()) {
                 if (tab_dato.getValor("login_acceso_usuario") != tab_solicitud.getValor("login_acceso_usuario")) {

@@ -614,9 +614,34 @@ public class pre_ingresoauto_maqui extends Pantalla {
 
     @Override
     public void guardar() {
-        if (tab_tabla.guardar()) {
-            if (tab_accesorios.guardar()) {
-                con_postgres.guardarPantalla();
+        if (tab_tabla.getValor("mve_secuencial") != null) {
+            TablaGenerica tab_dato = aCombustible.getVehiculoDa(Integer.parseInt(tab_tabla.getValor("mve_secuencial")));
+            if (!tab_dato.isEmpty()) {
+                if (tab_tabla.getValor("mve_kilometros_actual")!=(tab_dato.getValor("mve_kilometros_actual"))) {
+                    System.err.println("");
+                    aCombustible.setUpdateVehi1(Integer.parseInt(tab_tabla.getValor("mve_secuencial")), "mve_kilometros_actual", Double.valueOf(tab_tabla.getValor("mve_kilometros_actual")));
+                }
+                if (tab_tabla.getValor("mve_capacidad_tanque")!=(tab_dato.getValor("mve_capacidad_tanque"))) {
+                    aCombustible.setUpdateVehi1(Integer.parseInt(tab_tabla.getValor("mve_secuencial")), "mve_capacidad_tanque", Double.valueOf(tab_tabla.getValor("mve_capacidad_tanque")));
+                }
+                if (tab_tabla.getValor("mve_horometro")!=(tab_dato.getValor("mve_horometro"))) {
+                    aCombustible.setUpdateVehi(Integer.parseInt(tab_tabla.getValor("mve_secuencial")), "mve_horometro", tab_tabla.getValor("mve_horometro"));
+                }
+                if (tab_tabla.getValor("mve_rendimientogl_h")!=(tab_dato.getValor("mve_rendimientogl_h"))) {
+                    aCombustible.setUpdateVehi(Integer.parseInt(tab_tabla.getValor("mve_secuencial")), "mve_rendimientogl_h", tab_tabla.getValor("mve_rendimientogl_h"));
+                }
+                if (tab_tabla.getValor("mve_duracion_llanta")!=(tab_dato.getValor("mve_duracion_llanta"))) {
+                    aCombustible.setUpdateVehi(Integer.parseInt(tab_tabla.getValor("mve_secuencial")), "mve_duracion_llanta", tab_tabla.getValor("mve_duracion_llanta"));
+                }
+                utilitario.agregarMensaje("Registro Actualizado", null);
+            } else {
+                utilitario.agregarMensajeInfo("No existen Datos", "");
+            }
+        } else if (tab_tabla.guardar()) {
+            if (tab_tabla.guardar()) {
+                if (tab_accesorios.guardar()) {
+                    con_postgres.guardarPantalla();
+                }
             }
         }
     }
