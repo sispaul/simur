@@ -195,7 +195,7 @@ public class AbastecimientoAutomotores extends Pantalla {
         tabTabla.getColumna("abastecimiento_total").setLectura(true);
         tabTabla.getColumna("mve_secuencial").setLectura(true);
         tabTabla.getColumna("abastecimiento_cod_dependencia").setLectura(true);
-        tabTabla.getColumna("abastecimiento_comentario").setLectura(true);
+//        tabTabla.getColumna("abastecimiento_comentario").setLectura(true);
         tabTabla.getColumna("abastecimiento_fechaing").setVisible(false);
         List list = new ArrayList();
         Object fila1[] = {
@@ -256,13 +256,13 @@ public class AbastecimientoAutomotores extends Pantalla {
             tabTabla.getColumna("abastecimiento_kilometraje").setLectura(false);
             tabTabla.getColumna("tipo_combustible_id").setLectura(true);
             tabTabla.getColumna("abastecimiento_cod_dependencia").setLectura(true);
-            tabTabla.getColumna("abastecimiento_comentario").setLectura(true);
+//            tabTabla.getColumna("abastecimiento_comentario").setLectura(true);
             utilitario.addUpdate("tabTabla");
         } else {
             tabTabla.getColumna("mve_secuencial").setLectura(true);
             tabTabla.getColumna("abastecimiento_kilometraje").setLectura(true);
             tabTabla.getColumna("abastecimiento_cod_dependencia").setLectura(false);
-            tabTabla.getColumna("abastecimiento_comentario").setLectura(false);
+//            tabTabla.getColumna("abastecimiento_comentario").setLectura(false);
             tabTabla.getColumna("tipo_combustible_id").setLectura(false);
             tabTabla.setValor("abastecimiento_tipo_ingreso", "A");
             utilitario.addUpdate("tabTabla");
