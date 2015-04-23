@@ -508,6 +508,24 @@ public class manauto {
         return tab_persona;
     }
 
+    public TablaGenerica getVehiculoDa(Integer periodo) {
+        con_postgresql();
+        TablaGenerica tab_persona = new TablaGenerica();
+        tab_persona.setConexion(con_postgres);
+        tab_persona.setSql(" SELECT mve_secuencial,\n"
+                + "mve_kilometros_actual,\n"
+                + "mve_capacidad_tanque,\n"
+                + "mve_duracion_llanta,\n"
+                + "mve_horometro,\n"
+                + "mve_rendimientogl_h\n"
+                + "FROM mv_vehiculo\n"
+                + "where mve_secuencial= " + periodo);
+        tab_persona.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_persona;
+    }
+
     public void set_updatepedido(Integer codigo) {
         String au_sql = "update mvasignar_vehiculo\n"
                 + "set mav_estado_tramite = 'Terminado'\n"
@@ -522,6 +540,26 @@ public class manauto {
         String au_sql = "update mvabactecimiento_combustible\n"
                 + "set " + descrip + " ='" + valor + "'\n"
                 + "where abastecimiento_id =" + codigo + " and mve_secuencial=" + vehiculo + " and abastecimiento_numero_vale='" + vale + "' and abastecimiento_ingreso = 'HT'";
+        con_postgresql();
+        con_postgres.ejecutarSql(au_sql);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+
+    public void setUpdateVehi(Integer codigo, String vale, String descrip) {
+        String au_sql = "update mv_vehiculo\n"
+                + "set " + vale + "='" + descrip + "' \n"
+                + "where mve_secuencial =" + codigo;
+        con_postgresql();
+        con_postgres.ejecutarSql(au_sql);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+
+    public void setUpdateVehi1(Integer codigo, String vale, Double descrip) {
+        String au_sql = "update mv_vehiculo\n"
+                + "set " + vale + "=" + descrip + " \n"
+                + "where mve_secuencial =" + codigo;
         con_postgresql();
         con_postgres.ejecutarSql(au_sql);
         con_postgres.desconectar();
