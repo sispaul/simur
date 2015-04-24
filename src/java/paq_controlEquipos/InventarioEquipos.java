@@ -5,13 +5,19 @@
 package paq_controlEquipos;
 
 import framework.aplicacion.TablaGenerica;
+import framework.componentes.AutoCompletar;
 import framework.componentes.Dialogo;
 import framework.componentes.Division;
+import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
+import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.EJB;
+import org.primefaces.event.SelectEvent;
 import paq_controlEquipos.ejb.Procesos;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
@@ -31,6 +37,8 @@ public class InventarioEquipos extends Pantalla {
     private Dialogo dialogoa = new Dialogo();
     private Grid grid = new Grid();
     private Grid grida = new Grid();
+    private Panel panOpcion = new Panel();
+    private AutoCompletar autBusca = new AutoCompletar();
     @EJB
     private Procesos accesoDatos = (Procesos) utilitario.instanciarEJB(Procesos.class);
 
@@ -41,9 +49,40 @@ public class InventarioEquipos extends Pantalla {
 
         conSQL.setUnidad_persistencia(utilitario.getPropiedad("recursojdbc"));
         conSQL.NOMBRE_MARCA_BASE = "sqlserver";
-        
-        Tabulador tabTabulador = new Tabulador();
-        tabTabulador.setId("tabTabulador");
+
+        autBusca.setId("autBusca");
+        autBusca.setAutoCompletar("SELECT e.DESC_CODIGO,\n"
+                + "e.DESC_CODIGO_ACTIVO as Codigo_Activo,\n"
+                + "e.DESC_MARCA + ' ' +e.DESC_MODELO ,\n"
+                + "e.DESC_SERIE as Serie,\n"
+                + "t.TIPO_DESCRIPCION as Tipo\n"
+                + "FROM CEI_DESCRIPCION_EQUIPOS e\n"
+                + "INNER JOIN CEI_TIPO_EQUIPOS t ON  e.TIPO_CODIGO =  t.TIPO_CODIGO");
+        autBusca.setMetodoChange("filtrarEquipo");
+        autBusca.setSize(80);
+
+        bar_botones.agregarComponente(new Etiqueta("Buscar Equipo:"));
+        bar_botones.agregarComponente(autBusca);
+
+        panOpcion.setId("panOpcion");
+        panOpcion.setTransient(true);
+        panOpcion.setHeader("INGRESO DE EQUIPOS Y ASIGNACIÓN");
+        agregarComponente(panOpcion);
+
+        dialogoa.setId("dialogoa");
+        dialogoa.setTitle("DATOS DE ASIGNACIÓN"); //titulo
+        dialogoa.setWidth("55%"); //siempre en porcentajes  ancho
+        dialogoa.setHeight("40%");//siempre porcentaje   alto
+        dialogoa.setResizable(false); //para que no se pueda cambiar el tamaño
+        dialogoa.getBot_aceptar().setMetodo("aceptarDatos");
+        grid.setColumns(4);
+        agregarComponente(dialogoa);
+        dibujaPantalla();
+
+    }
+
+    public void dibujaPantalla() {
+        limpiarPanel();
 
         tabEquipo.setId("tabEquipo");
         tabEquipo.setTabla("cei_descripcion_equipos", "desc_codigo", 1);
@@ -58,6 +97,9 @@ public class InventarioEquipos extends Pantalla {
         PanelTabla pte = new PanelTabla();
         pte.setPanelTabla(tabEquipo);
 
+        Tabulador tabTabulador = new Tabulador();
+        tabTabulador.setId("tabTabulador");
+
         tabAccesorio.setId("tabAccesorio");
         tabAccesorio.setIdCompleto("tabTabulador:tabAccesorio");
         tabAccesorio.setTabla("cei_accesorios", "acce_codigo", 2);
@@ -71,12 +113,21 @@ public class InventarioEquipos extends Pantalla {
         tabAsignacion.setTabla("cei_asignacion", "asignacion_codigo", 3);
         tabAsignacion.getColumna("catalogo_codigo").setCombo("select catalogo_codigo,catalogo_descripcion from cei_catalogo_tablas");
         tabAsignacion.getColumna("catalogo_codigo").setMetodoChange("buscarItem");
-        tabAsignacion.getColumna("asignacion_estado").setCheck();
+        tabAsignacion.getColumna("asignacion_estado").setLongitud(5);
+        List list = new ArrayList();
+        Object fila1[] = {
+            "1", "SI"
+        };
+        Object fila2[] = {
+            "2", "NO"
+        };
+        list.add(fila1);
+        list.add(fila2);
+        tabAsignacion.getColumna("asignacion_estado").setCombo(list);
         tabAsignacion.getColumna("asignacion_fecha").setValorDefecto(utilitario.getFechaActual());
         tabAsignacion.dibujar();
         PanelTabla ptas = new PanelTabla();
         ptas.setPanelTabla(tabAsignacion);
-
 
         tabTabulador.agregarTab("ACCESORIOS", pta);
         tabTabulador.agregarTab("ASIGNACIÓN", ptas);
@@ -84,17 +135,24 @@ public class InventarioEquipos extends Pantalla {
         Division divTablas = new Division();
         divTablas.setId("divTablas");
         divTablas.dividir2(pte, tabTabulador, "50%", "H");
-        agregarComponente(divTablas);
+        panOpcion.getChildren().add(divTablas);
+    }
 
-        dialogoa.setId("dialogoa");
-        dialogoa.setTitle("DATOS DE ASIGNACIÓN"); //titulo
-        dialogoa.setWidth("55%"); //siempre en porcentajes  ancho
-        dialogoa.setHeight("40%");//siempre porcentaje   alto
-        dialogoa.setResizable(false); //para que no se pueda cambiar el tamaño
-        dialogoa.getBot_aceptar().setMetodo("aceptoDatos");
-        grid.setColumns(4);
-        agregarComponente(dialogoa);
+    private void limpiarPanel() {
+        panOpcion.getChildren().clear();
+    }
 
+    public void limpiar() {
+        autBusca.limpiar();
+        utilitario.addUpdate("autBusca");
+        limpiarPanel();
+        utilitario.addUpdate("panOpcion");
+    }
+
+    public void filtrarEquipo(SelectEvent evt) {
+        limpiar();
+        autBusca.onSelect(evt);
+        dibujaPantalla();
     }
 
     public void infEquipo() {
@@ -119,7 +177,7 @@ public class InventarioEquipos extends Pantalla {
             tabAccesorio.setValor("acce_modelo", tabDato.getValor("modelo"));
             tabAccesorio.setValor("acce_estado", tabDato.getValor("estado"));
             tabAccesorio.setValor("acce_descripcion", tabDato.getValor("des_activo"));
-            utilitario.addUpdate("tabAccesorio");
+            utilitario.addUpdate("tabTabulador:tabAccesorio");
         } else {
             utilitario.agregarMensaje("Accesorio No Localizado en la Base de Activos", null);
         }
@@ -134,11 +192,12 @@ public class InventarioEquipos extends Pantalla {
             setDatos.setId("setDatos");
             if (tabDato.getValor("CATALOGO_BASE").equals("2")) {
                 setDatos.setConexion(conPostgres);
-            }else{
+            } else {
                 setDatos.setConexion(conSQL);
             }
-            setDatos.setSql("select * from " + tabDato.getValor("CATALOGO_ORIGEN") + " " + tabDato.getValor("CATALOGO_FILTRO") + "");
-            setDatos.setRows(10);               
+            setDatos.setSql("select " + tabDato.getValor("CATALOGO_CAMPOS") + " from " + tabDato.getValor("CATALOGO_ORIGEN") + " " + tabDato.getValor("CATALOGO_FILTRO") + "");
+            setDatos.getColumna("descripcion").setFiltroContenido();
+            setDatos.setRows(10);
             setDatos.setTipoSeleccion(false);
             dialogoa.setDialogo(grida);
             setDatos.dibujar();
@@ -149,6 +208,32 @@ public class InventarioEquipos extends Pantalla {
     }
 
     public void aceptarDatos() {
+        TablaGenerica tabDato = accesoDatos.getCatalgoTablas(Integer.parseInt(tabAsignacion.getValor("catalogo_codigo")));
+        if (!tabDato.isEmpty()) {
+            if (tabDato.getValor("CATALOGO_BASE").equals("2")) {
+                TablaGenerica tabDatoposql = accesoDatos.getCatalogoDatoposgres(tabDato.getValor("catalogo_campos"), tabDato.getValor("catalogo_origen"), "" + tabDato.getValor("catalogo_primaria") + " =" + setDatos.getValorSeleccionado() + "");
+                if (!tabDatoposql.isEmpty()) {
+                    tabAsignacion.setValor("asignacion_detalle", tabDatoposql.getValor("codigo"));
+                    tabAsignacion.setValor("ASIGNACION_DESCRIPCION", tabDatoposql.getValor("descripcion"));
+                    tabAsignacion.setValor("asignacion_estado", "1");
+                    utilitario.addUpdate("tabTabulador:tabAsignacion");
+                    dialogoa.cerrar();
+                } else {
+                }
+            } else {
+                TablaGenerica tabDatosql = accesoDatos.getCatalogoDatosql(tabDato.getValor("catalogo_campos"), tabDato.getValor("catalogo_origen"), "" + tabDato.getValor("catalogo_primaria") + " = " + setDatos.getValorSeleccionado() + "");
+                if (!tabDatosql.isEmpty()) {
+                    tabAsignacion.setValor("asignacion_detalle", tabDatosql.getValor("codigo"));
+                    tabAsignacion.setValor("asignacion_descripcion", tabDatosql.getValor("descripcion"));
+                    tabAsignacion.setValor("asignacion_estado", "1");
+                    utilitario.addUpdate("tabTabulador:tabAsignacion");
+                    dialogoa.cerrar();
+                } else {
+                }
+            }
+        } else {
+            utilitario.agregarMensaje("Selecione una Opción", null);
+        }
     }
 
     @Override
@@ -160,7 +245,9 @@ public class InventarioEquipos extends Pantalla {
     public void guardar() {
         if (tabEquipo.guardar()) {
             if (tabAccesorio.guardar()) {
-                guardarPantalla();
+                if (tabAsignacion.guardar()) {
+                    guardarPantalla();
+                }
             }
         }
     }
@@ -200,5 +287,13 @@ public class InventarioEquipos extends Pantalla {
 
     public void setSetDatos(Tabla setDatos) {
         this.setDatos = setDatos;
+    }
+
+    public AutoCompletar getAutBusca() {
+        return autBusca;
+    }
+
+    public void setAutBusca(AutoCompletar autBusca) {
+        this.autBusca = autBusca;
     }
 }

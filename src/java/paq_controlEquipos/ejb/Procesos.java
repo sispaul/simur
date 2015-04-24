@@ -38,14 +38,40 @@ public class Procesos {
         TablaGenerica tab_funcionario = new TablaGenerica();
         conSql();
         tab_funcionario.setConexion(conSql);
-        tab_funcionario.setSql("SELECT CATALOGO_CODIGO,CATALOGO_DESCRIPCION,CATALOGO_BASE,CATALOGO_ORIGEN,CATALOGO_FILTRO FROM CEI_CATALOGO_TABLAS WHERE CATALOGO_CODIGO=" + codigo);
+        tab_funcionario.setSql("SELECT * FROM CEI_CATALOGO_TABLAS WHERE CATALOGO_CODIGO=" + codigo);
         tab_funcionario.ejecutarSql();
         conSql.desconectar();
         conSql = null;
         return tab_funcionario;
 
     }
-    
+
+    public TablaGenerica getCatalogoDatosql(String datos, String tabla, String condicion) {
+        conSql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conSql();
+        tab_funcionario.setConexion(conSql);
+        tab_funcionario.setSql("select " + datos + " from " + tabla + " where " + condicion + "");
+        tab_funcionario.ejecutarSql();
+        conSql.desconectar();
+        conSql = null;
+        return tab_funcionario;
+
+    }
+
+    public TablaGenerica getCatalogoDatoposgres(String datos, String tabla, String condicion) {
+        conPostgresql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conPostgresql();
+        tab_funcionario.setConexion(conPostgres);
+        tab_funcionario.setSql("select " + datos + " from " + tabla + " where " + condicion + "");
+        tab_funcionario.ejecutarSql();
+        conPostgres.desconectar();
+        conPostgres = null;
+        return tab_funcionario;
+
+    }
+
     public TablaGenerica getInfoActivo(String codigo) {
         conPostgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
