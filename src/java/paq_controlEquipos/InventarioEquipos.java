@@ -213,17 +213,42 @@ public class InventarioEquipos extends Pantalla {
             if (tabDato.getValor("CATALOGO_BASE").equals("2")) {
                 TablaGenerica tabDatoposql = accesoDatos.getCatalogoDatoposgres(tabDato.getValor("catalogo_campos"), tabDato.getValor("catalogo_origen"), "" + tabDato.getValor("catalogo_primaria") + " =" + setDatos.getValorSeleccionado() + "");
                 if (!tabDatoposql.isEmpty()) {
-                    tabAsignacion.setValor("asignacion_detalle", tabDatoposql.getValor("codigo"));
-                    tabAsignacion.setValor("ASIGNACION_DESCRIPCION", tabDatoposql.getValor("descripcion"));
-                    tabAsignacion.setValor("asignacion_estado", "1");
-                    utilitario.addUpdate("tabTabulador:tabAsignacion");
-                    dialogoa.cerrar();
+                    if (tabDato.getValor("catalogo_origen").equals("srh_empleado")) {
+                        TablaGenerica tabDatosemp = accesoDatos.getInfoEmpleado(tabDatoposql.getValor("codigo"));
+                        if (!tabDatosemp.isEmpty()) {
+                            tabAsignacion.setValor("asignacion_nombre", tabDatosemp.getValor("nombres"));
+                            tabAsignacion.setValor("asignacion_descripcion", tabDatosemp.getValor("nombre_cargo"));
+                            tabAsignacion.setValor("asignacion_descripcion1", tabDatosemp.getValor("nombre_dir"));
+                            tabAsignacion.setValor("asignacion_estado", "1");
+                            utilitario.addUpdate("tabTabulador:tabAsignacion");
+                            dialogoa.cerrar();
+                        }
+                    } else {
+                        tabAsignacion.setValor("asignacion_nombre", tabDatoposql.getValor("codigo"));
+                        tabAsignacion.setValor("asignacion_descripcion", tabDatoposql.getValor("descripcion"));
+                        tabAsignacion.setValor("asignacion_estado", "1");
+                        utilitario.addUpdate("tabTabulador:tabAsignacion");
+                        dialogoa.cerrar();
+                    }
+
+
                 } else {
                 }
             } else {
                 TablaGenerica tabDatosql = accesoDatos.getCatalogoDatosql(tabDato.getValor("catalogo_campos"), tabDato.getValor("catalogo_origen"), "" + tabDato.getValor("catalogo_primaria") + " = " + setDatos.getValorSeleccionado() + "");
                 if (!tabDatosql.isEmpty()) {
-                    tabAsignacion.setValor("asignacion_detalle", tabDatosql.getValor("codigo"));
+                    if (tabDato.getValor("catalogo_origen").equals("cei_programas")) {
+                        TablaGenerica tabDatosqlic = accesoDatos.getInfoLicencia(Integer.parseInt(setDatos.getValorSeleccionado()));
+                        if (!tabDatosqlic.isEmpty()) {
+                            tabAsignacion.setValor("asignacion_nombre", tabDatosqlic.getValor("LICEN_NUMERO_LICENCIA"));
+                            
+                            tabAsignacion.setValor("asignacion_descripcion", tabDatosqlic.getValor("nombre_cargo"));
+                            tabAsignacion.setValor("asignacion_descripcion1", tabDatosqlic.getValor("nombre_dir"));
+                            tabAsignacion.setValor("asignacion_estado", "1");
+                            utilitario.addUpdate("tabTabulador:tabAsignacion");
+                        }
+                    }
+                    tabAsignacion.setValor("asignacion_nombre", tabDatosql.getValor("codigo"));
                     tabAsignacion.setValor("asignacion_descripcion", tabDatosql.getValor("descripcion"));
                     tabAsignacion.setValor("asignacion_estado", "1");
                     utilitario.addUpdate("tabTabulador:tabAsignacion");
