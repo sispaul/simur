@@ -8,6 +8,8 @@ import framework.aplicacion.TablaGenerica;
 import framework.componentes.Division;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.EJB;
 import paq_controlEquipos.ejb.Procesos;
 import paq_sistema.aplicacion.Pantalla;
@@ -37,6 +39,16 @@ public class Programas extends Pantalla {
         tabLicencia.setHeader("LISTADO DE LICENCIAS POR PROGRAMAS");
         tabLicencia.getColumna("tipo_licencia_codigo").setCombo("SELECT TIPO_LICENCIA_CODIGO,TIPO_LICENCIA_DESCRIPCION FROM CEI_TIPO_LICENCIA");
         tabLicencia.getColumna("tipo_licencia_codigo").setMetodoChange("ActiCasillas");
+        List list = new ArrayList();
+        Object fila1[] = {
+            "1", "OIGN"
+        };
+        Object fila2[] = {
+            "2", "VOLUMEN"
+        };
+        list.add(fila1);
+        list.add(fila2);
+        tabLicencia.getColumna("licen_modelo_licencia").setCombo(list);
         tabLicencia.getColumna("licen_fecha_compra").setLectura(true);
         tabLicencia.getColumna("licen_numero_licencia").setLectura(true);
         tabLicencia.getColumna("licen_tiempo_vigencia").setLectura(true);

@@ -25,7 +25,7 @@ public class Procesos {
         TablaGenerica tab_funcionario = new TablaGenerica();
         conSql();
         tab_funcionario.setConexion(conSql);
-        tab_funcionario.setSql("SELECT TIPO_LICENCIA_CODIGO,TIPO_LICENCIA_DESCRIPCION from CEI_TIPO_LICENCIA where TIPO_LICENCIA_CODIGO =" + codigo);
+        tab_funcionario.setSql("SELECT TIPO_LICENCIA_CODIGO,TIPO_LICENCIA_DESCRIPCION FROM CEI_TIPO_LICENCIA where TIPO_LICENCIA_CODIGO =" + codigo);
         tab_funcionario.ejecutarSql();
         conSql.desconectar();
         conSql = null;
@@ -102,6 +102,51 @@ public class Procesos {
         tab_funcionario.ejecutarSql();
         conPostgres.desconectar();
         conPostgres = null;
+        return tab_funcionario;
+
+    }
+
+    public TablaGenerica getInfoEmpleado(String codigo) {
+        conPostgresql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conPostgresql();
+        tab_funcionario.setConexion(conPostgres);
+        tab_funcionario.setSql("SELECT e.cod_empleado,\n"
+                + "e.nombres,\n"
+                + "c.nombre_cargo,\n"
+                + "d.nombre_dir\n"
+                + "FROM srh_empleado e\n"
+                + "INNER JOIN srh_cargos c ON e.cod_cargo = c.cod_cargo \n"
+                + "INNER JOIN srh_direccion d on e.cod_direccion = d.cod_direccion\n"
+                + "where e.cod_empleado = '" + codigo + "'");
+        tab_funcionario.ejecutarSql();
+        conPostgres.desconectar();
+        conPostgres = null;
+        return tab_funcionario;
+
+    }
+
+    public TablaGenerica getInfoLicencia(Integer codigo) {
+        conSql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conPostgresql();
+        tab_funcionario.setConexion(conSql);
+        tab_funcionario.setSql("SELECT  top 1 \n"
+                + "l.LICEN_CODIGO,\n"
+                + "l.LICEN_NUMERO_LICENCIA,\n"
+                + "l.LICEN_FECHA_COMPRA,\n"
+                + "l.LICEN_TIEMPO_VIGENCIA,\n"
+                + "l.LICEN_CANTIDAD,\n"
+                + "t.TIPO_LICENCIA_DESCRIPCION\n"
+                + "FROM CEI_LICENCIA_PROGRAMAS AS l\n"
+                + "INNER JOIN dbo.CEI_PROGRAMAS AS p ON l.PROGS_CODIGO = p.PROGS_CODIGO\n"
+                + "INNER JOIN dbo.CEI_TIPO_LICENCIA t ON l.TIPO_LICENCIA_CODIGO = t.TIPO_LICENCIA_CODIGO\n"
+                + "WHERE t.TIPO_LICENCIA_DESCRIPCION='PAGADA' AND\n"
+                + "l.LICEN_CANTIDAD > 0 AND\n"
+                + "l.PROGS_CODIGO = " + codigo);
+        tab_funcionario.ejecutarSql();
+        conSql.desconectar();
+        conSql = null;
         return tab_funcionario;
 
     }
