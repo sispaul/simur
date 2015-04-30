@@ -5,6 +5,8 @@
 package paq_controlEquipos.ejb;
 
 import framework.aplicacion.TablaGenerica;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import javax.ejb.Stateless;
 import paq_sistema.aplicacion.Utilitario;
 import persistencia.Conexion;
@@ -19,6 +21,7 @@ public class Procesos {
     private Conexion conSql,
             conPostgres;//Conexion a la base de sigag
     private Utilitario utilitario = new Utilitario();
+    private Statement smt;
 
     public TablaGenerica getTipoLicencia(Integer codigo) {
         conSql();
@@ -52,6 +55,54 @@ public class Procesos {
         conSql();
         tab_funcionario.setConexion(conSql);
         tab_funcionario.setSql("select " + datos + " from " + tabla + " where " + condicion + "");
+        tab_funcionario.ejecutarSql();
+        conSql.desconectar();
+        conSql = null;
+        return tab_funcionario;
+    }
+
+    public TablaGenerica getInfoLicencia(Integer codigo, Integer cod, String valor) {
+        conSql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conSql();
+        tab_funcionario.setConexion(conSql);
+        tab_funcionario.setSql("SELECT top 1\n"
+                + "d.DETALLE_CODIGO,\n"
+                + "p.PROGS_DESCRIPCION,\n"
+                + "t.TIPO_LICENCIA_DESCRIPCION,\n"
+                + "d.DETALLE_NUMERO_LICENCIA,\n"
+                + "d.DETALLE_CANTIDAD\n"
+                + "FROM CEI_DETALLE_PROGRAMAS d\n"
+                + "left join CEI_PROGRAMAS p on d.PROGS_CODIGO = p.PROGS_CODIGO\n"
+                + "left join CEI_TIPO_LICENCIA t on d.LICEN_CODIGO = t.TIPO_LICENCIA_CODIGO\n"
+                + "left join CEI_MODELO_LICENCIA m on d.MODELO_CODIGO = m.MODELO_CODIGO\n"
+                + "where p.PROGS_CODIGO=" + codigo + " and m.MODELO_CODIGO " + valor + " and t.TIPO_LICENCIA_CODIGO =" + cod);
+        tab_funcionario.ejecutarSql();
+        conSql.desconectar();
+        conSql = null;
+        return tab_funcionario;
+
+    }
+
+    public TablaGenerica getInfoModelo(Integer codigo) {
+        conSql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conSql();
+        tab_funcionario.setConexion(conSql);
+        tab_funcionario.setSql("SELECT MODELO_CODIGO,MODELO_DESCRIPCION FROM CEI_MODELO_LICENCIA where MODELO_CODIGO =" + codigo);
+        tab_funcionario.ejecutarSql();
+        conSql.desconectar();
+        conSql = null;
+        return tab_funcionario;
+
+    }
+
+    public TablaGenerica getInfoPrograma(Integer codigo) {
+        conSql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conSql();
+        tab_funcionario.setConexion(conSql);
+        tab_funcionario.setSql("SELECT PROGS_CODIGO,PROGS_DESCRIPCION FROM CEI_PROGRAMAS where PROGS_CODIGO =" + codigo);
         tab_funcionario.ejecutarSql();
         conSql.desconectar();
         conSql = null;
@@ -126,29 +177,16 @@ public class Procesos {
 
     }
 
-    public TablaGenerica getInfoLicencia(Integer codigo) {
-        conSql();
+    public TablaGenerica getInfoProveedor(String cod) {
+        conPostgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
         conPostgresql();
-        tab_funcionario.setConexion(conSql);
-        tab_funcionario.setSql("SELECT  top 1 \n"
-                + "l.LICEN_CODIGO,\n"
-                + "l.LICEN_NUMERO_LICENCIA,\n"
-                + "l.LICEN_FECHA_COMPRA,\n"
-                + "l.LICEN_TIEMPO_VIGENCIA,\n"
-                + "l.LICEN_CANTIDAD,\n"
-                + "t.TIPO_LICENCIA_DESCRIPCION\n"
-                + "FROM CEI_LICENCIA_PROGRAMAS AS l\n"
-                + "INNER JOIN dbo.CEI_PROGRAMAS AS p ON l.PROGS_CODIGO = p.PROGS_CODIGO\n"
-                + "INNER JOIN dbo.CEI_TIPO_LICENCIA t ON l.TIPO_LICENCIA_CODIGO = t.TIPO_LICENCIA_CODIGO\n"
-                + "WHERE t.TIPO_LICENCIA_DESCRIPCION='PAGADA' AND\n"
-                + "l.LICEN_CANTIDAD > 0 AND\n"
-                + "l.PROGS_CODIGO = " + codigo);
+        tab_funcionario.setConexion(conPostgres);
+        tab_funcionario.setSql("SELECT ide_proveedor,ruc,titular from tes_proveedores where ide_proveedor='"+cod+"'order by titular");
         tab_funcionario.ejecutarSql();
-        conSql.desconectar();
-        conSql = null;
+        conPostgres.desconectar();
+        conPostgres = null;
         return tab_funcionario;
-
     }
 
     private void conSql() {
