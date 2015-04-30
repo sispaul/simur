@@ -127,6 +127,16 @@ public class InventarioEquipos extends Pantalla {
         tabAccesorio.setIdCompleto("tabTabulador:tabAccesorio");
         tabAccesorio.setTabla("cei_accesorios", "acce_codigo", 2);
         tabAccesorio.getColumna("acce_serie").setMetodoChange("infAccesorio");
+         List lista = new ArrayList();
+        Object fil1[] = {
+            "1", "Incluir"
+        };
+        Object fil2[] = {
+            "2", "NO"
+        };
+        lista.add(fil1);
+        lista.add(fil2);
+        tabAccesorio.getColumna("acce_estado").setCombo(lista);
         tabAccesorio.dibujar();
         PanelTabla pta = new PanelTabla();
         pta.setPanelTabla(tabAccesorio);
@@ -152,8 +162,10 @@ public class InventarioEquipos extends Pantalla {
         PanelTabla ptas = new PanelTabla();
         ptas.setPanelTabla(tabAsignacion);
 
-        tabTabulador.agregarTab("ACCESORIOS", pta);
-        tabTabulador.agregarTab("ASIGNACIÓN", ptas);
+        tabTabulador.agregarTab("COMPONENTES", pta);
+        tabTabulador.agregarTab("PROGRAMAS", null);
+        tabTabulador.agregarTab("ASIGNACIÓN", null);
+        tabTabulador.agregarTab("HISTORIAL", null);
 
         Division divTablas = new Division();
         divTablas.setId("divTablas");
@@ -340,6 +352,12 @@ public class InventarioEquipos extends Pantalla {
         }
     }
 
+    public void programa(){
+        for(int i=0; i<tabAsignacion.getTotalFilas(); i++){
+            
+        }
+    }
+    
     @Override
     public void eliminar() {
         utilitario.getTablaisFocus().eliminar();
