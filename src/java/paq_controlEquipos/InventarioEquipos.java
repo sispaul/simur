@@ -13,10 +13,14 @@ import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
 import paq_controlEquipos.ejb.Procesos;
@@ -34,6 +38,7 @@ public class InventarioEquipos extends Pantalla {
     private Tabla tabEquipo = new Tabla();
     private Tabla tabAccesorio = new Tabla();
     private Tabla tabAsignacion = new Tabla();
+    private Tabla tabCambios = new Tabla();
     private Tabla setDatos = new Tabla();
     private Tabla setDatost = new Tabla();
     private Dialogo dialogoa = new Dialogo();
@@ -48,6 +53,10 @@ public class InventarioEquipos extends Pantalla {
     private AutoCompletar autBusca = new AutoCompletar();
     @EJB
     private Procesos accesoDatos = (Procesos) utilitario.instanciarEJB(Procesos.class);
+    //Declaración para reportes
+    private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
+    private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
+    private Map p_parametros = new HashMap();
 
     public InventarioEquipos() {
 
@@ -102,11 +111,15 @@ public class InventarioEquipos extends Pantalla {
 
         dibujaPantalla();
 
+        //Configuración de Objeto Reporte
+        bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
+        agregarComponente(rep_reporte); //2 agregar el listado de reportes
+        sef_formato.setId("sef_formato");
+        agregarComponente(sef_formato);
     }
 
     public void dibujaPantalla() {
         limpiarPanel();
-
         tabEquipo.setId("tabEquipo");
         tabEquipo.setTabla("cei_descripcion_equipos", "desc_codigo", 1);
         tabEquipo.getColumna("tipo_codigo").setCombo("SELECT TIPO_CODIGO,TIPO_DESCRIPCION FROM CEI_TIPO_EQUIPOS");
@@ -114,6 +127,7 @@ public class InventarioEquipos extends Pantalla {
         tabEquipo.getColumna("desc_serie").setMetodoChange("infEquipo");
         tabEquipo.agregarRelacion(tabAccesorio);
         tabEquipo.agregarRelacion(tabAsignacion);
+        tabEquipo.agregarRelacion(tabCambios);
         tabEquipo.setTipoFormulario(true);
         tabEquipo.getGrid().setColumns(4);
         tabEquipo.dibujar();
@@ -127,16 +141,18 @@ public class InventarioEquipos extends Pantalla {
         tabAccesorio.setIdCompleto("tabTabulador:tabAccesorio");
         tabAccesorio.setTabla("cei_accesorios", "acce_codigo", 2);
         tabAccesorio.getColumna("acce_serie").setMetodoChange("infAccesorio");
-         List lista = new ArrayList();
+        tabAccesorio.getColumna("acce_fecha_asignacion").setValorDefecto(utilitario.getFechaActual());
+        List lista = new ArrayList();
         Object fil1[] = {
-            "1", "Incluir"
+            "Asignar", "Asignar"
         };
         Object fil2[] = {
-            "2", "NO"
+            "De Baja", "De Baja"
         };
         lista.add(fil1);
         lista.add(fil2);
         tabAccesorio.getColumna("acce_estado").setCombo(lista);
+        tabAccesorio.getColumna("acce_estado").setMetodoChange("deBaja");
         tabAccesorio.dibujar();
         PanelTabla pta = new PanelTabla();
         pta.setPanelTabla(tabAccesorio);
@@ -146,27 +162,14 @@ public class InventarioEquipos extends Pantalla {
         tabAsignacion.setTabla("cei_asignacion", "asignacion_codigo", 3);
         tabAsignacion.getColumna("catalogo_codigo").setCombo("select catalogo_codigo,catalogo_descripcion from cei_catalogo_tablas");
         tabAsignacion.getColumna("catalogo_codigo").setMetodoChange("buscarItem");
-        tabAsignacion.getColumna("asignacion_estado").setLongitud(5);
-        List list = new ArrayList();
-        Object fila1[] = {
-            "1", "SI"
-        };
-        Object fila2[] = {
-            "2", "NO"
-        };
-        list.add(fila1);
-        list.add(fila2);
-        tabAsignacion.getColumna("asignacion_estado").setCombo(list);
         tabAsignacion.getColumna("asignacion_fecha").setValorDefecto(utilitario.getFechaActual());
+        tabAsignacion.getColumna("asignacion_cod_empleado").setVisible(false);
         tabAsignacion.dibujar();
         PanelTabla ptas = new PanelTabla();
         ptas.setPanelTabla(tabAsignacion);
 
         tabTabulador.agregarTab("COMPONENTES", pta);
-        tabTabulador.agregarTab("PROGRAMAS", null);
-        tabTabulador.agregarTab("ASIGNACIÓN", null);
-        tabTabulador.agregarTab("HISTORIAL", null);
-
+        tabTabulador.agregarTab("ASIGNACIÓN", ptas);
         Division divTablas = new Division();
         divTablas.setId("divTablas");
         divTablas.dividir2(pte, tabTabulador, "50%", "H");
@@ -218,6 +221,16 @@ public class InventarioEquipos extends Pantalla {
         }
     }
 
+    public void deBaja() {
+        if (tabAccesorio.getValor("acce_estado").equals("De Baja")) {
+            tabAccesorio.setValor("acce_fecha_baja", utilitario.getFechaActual());
+            utilitario.addUpdate("tabTabulador:tabAccesorio");
+        } else {
+            tabAccesorio.setValor("acce_fecha_baja", null);
+            utilitario.addUpdate("tabTabulador:tabAccesorio");
+        }
+    }
+
     public void buscarItem() {
         TablaGenerica tabDato = accesoDatos.getCatalgoTablas(Integer.parseInt(tabAsignacion.getValor("catalogo_codigo")));
         if (!tabDato.isEmpty()) {
@@ -251,17 +264,16 @@ public class InventarioEquipos extends Pantalla {
                     if (tabDato.getValor("catalogo_origen").equals("srh_empleado")) {
                         TablaGenerica tabDatosemp = accesoDatos.getInfoEmpleado(tabDatoposql.getValor("codigo"));
                         if (!tabDatosemp.isEmpty()) {
+                            tabAsignacion.setValor("asignacion_cod_empleado", tabDatosemp.getValor("cod_empleado"));
                             tabAsignacion.setValor("asignacion_nombre", tabDatosemp.getValor("nombres"));
                             tabAsignacion.setValor("asignacion_descripcion", tabDatosemp.getValor("nombre_cargo"));
                             tabAsignacion.setValor("asignacion_descripcion1", tabDatosemp.getValor("nombre_dir"));
-                            tabAsignacion.setValor("asignacion_estado", "1");
                             utilitario.addUpdate("tabTabulador:tabAsignacion");
                             dialogoa.cerrar();
                         }
                     } else {
                         tabAsignacion.setValor("asignacion_nombre", tabDatoposql.getValor("codigo"));
                         tabAsignacion.setValor("asignacion_descripcion", tabDatoposql.getValor("descripcion"));
-                        tabAsignacion.setValor("asignacion_estado", "1");
                         utilitario.addUpdate("tabTabulador:tabAsignacion");
                         dialogoa.cerrar();
                     }
@@ -275,7 +287,6 @@ public class InventarioEquipos extends Pantalla {
                     } else {
                         tabAsignacion.setValor("asignacion_nombre", tabDatosql.getValor("codigo"));
                         tabAsignacion.setValor("asignacion_descripcion", tabDatosql.getValor("descripcion"));
-                        tabAsignacion.setValor("asignacion_estado", "1");
                         utilitario.addUpdate("tabTabulador:tabAsignacion");
                         dialogoa.cerrar();
                     }
@@ -308,14 +319,13 @@ public class InventarioEquipos extends Pantalla {
                     if (cmbModelo.getValue() != null) {
                         cadena = "=" + cmbModelo.getValue();
                     } else {
-                        cadena = "is "+String.valueOf(cmbModelo.getValue());
+                        cadena = "is " + String.valueOf(cmbModelo.getValue());
                     }
                     TablaGenerica tabDatosqlic = accesoDatos.getInfoLicencia(Integer.parseInt(setDatos.getValorSeleccionado()), Integer.parseInt(cmbLicencia.getValue().toString()), cadena);
                     if (!tabDatosqlic.isEmpty()) {
                         tabAsignacion.setValor("asignacion_nombre", tabDatosqlic.getValor("PROGS_DESCRIPCION"));
                         tabAsignacion.setValor("asignacion_descripcion", tabDatosqlic.getValor("DETALLE_NUMERO_LICENCIA"));
                         tabAsignacion.setValor("asignacion_descripcion1", tabDatosqlic.getValor("TIPO_LICENCIA_DESCRIPCION"));
-                        tabAsignacion.setValor("asignacion_estado", "1");
                         utilitario.addUpdate("tabTabulador:tabAsignacion");
                     } else {
                         TablaGenerica tabDatopro = accesoDatos.getInfoPrograma(Integer.parseInt(setDatos.getValorSeleccionado()));
@@ -323,7 +333,6 @@ public class InventarioEquipos extends Pantalla {
                             tabAsignacion.setValor("asignacion_nombre", tabDatopro.getValor("PROGS_DESCRIPCION"));
                             tabAsignacion.setValor("asignacion_descripcion", null);
                             tabAsignacion.setValor("asignacion_descripcion1", null);
-                            tabAsignacion.setValor("asignacion_estado", "1");
                             utilitario.addUpdate("tabTabulador:tabAsignacion");
                         }
                     }
@@ -352,15 +361,35 @@ public class InventarioEquipos extends Pantalla {
         }
     }
 
-    public void programa(){
-        for(int i=0; i<tabAsignacion.getTotalFilas(); i++){
-            
+    public void programa() {
+        for (int i = 0; i < tabAsignacion.getTotalFilas(); i++) {
         }
     }
-    
+
     @Override
     public void eliminar() {
         utilitario.getTablaisFocus().eliminar();
+    }
+
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+    }
+
+    @Override
+    public void aceptarReporte() {
+        rep_reporte.cerrar();
+        switch (rep_reporte.getNombre()) {
+            case "HISTORICO DE ASIGNACIONES":
+                break;
+        }
+    }
+
+    public void aceptarDialogo() {
+        switch (rep_reporte.getNombre()) {
+            case "HISTORICO DE ASIGNACIONES":
+                break;
+        }
     }
 
     public Tabla getTabEquipo() {
@@ -409,5 +438,37 @@ public class InventarioEquipos extends Pantalla {
 
     public void setSetDatost(Tabla setDatost) {
         this.setDatost = setDatost;
+    }
+
+    public Tabla getTabCambios() {
+        return tabCambios;
+    }
+
+    public void setTabCambios(Tabla tabCambios) {
+        this.tabCambios = tabCambios;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSef_formato() {
+        return sef_formato;
+    }
+
+    public void setSef_formato(SeleccionFormatoReporte sef_formato) {
+        this.sef_formato = sef_formato;
+    }
+
+    public Map getP_parametros() {
+        return p_parametros;
+    }
+
+    public void setP_parametros(Map p_parametros) {
+        this.p_parametros = p_parametros;
     }
 }

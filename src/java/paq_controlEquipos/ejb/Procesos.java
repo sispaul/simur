@@ -49,6 +49,19 @@ public class Procesos {
 
     }
 
+    public TablaGenerica getCatalgoTab(String codigo) {
+        conSql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conSql();
+        tab_funcionario.setConexion(conSql);
+        tab_funcionario.setSql("SELECT * FROM CEI_CATALOGO_TABLAS WHERE CATALOGO_ORIGEN='"+codigo+"'");
+        tab_funcionario.ejecutarSql();
+        conSql.desconectar();
+        conSql = null;
+        return tab_funcionario;
+
+    }
+
     public TablaGenerica getCatalogoDatosql(String datos, String tabla, String condicion) {
         conSql();
         TablaGenerica tab_funcionario = new TablaGenerica();
@@ -182,7 +195,7 @@ public class Procesos {
         TablaGenerica tab_funcionario = new TablaGenerica();
         conPostgresql();
         tab_funcionario.setConexion(conPostgres);
-        tab_funcionario.setSql("SELECT ide_proveedor,ruc,titular from tes_proveedores where ide_proveedor='"+cod+"'order by titular");
+        tab_funcionario.setSql("SELECT ide_proveedor,ruc,titular from tes_proveedores where ide_proveedor='" + cod + "'order by titular");
         tab_funcionario.ejecutarSql();
         conPostgres.desconectar();
         conPostgres = null;
