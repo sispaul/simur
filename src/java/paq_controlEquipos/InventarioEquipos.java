@@ -362,7 +362,7 @@ public class InventarioEquipos extends Pantalla {
                         if (!tabDatopro.isEmpty()) {
                             tabAsignacion.setValor("asignacion_nombre", tabDatopro.getValor("PROGS_DESCRIPCION"));
                             tabAsignacion.setValor("asignacion_descripcion", null);
-                            tabAsignacion.setValor("asignacion_descripcion1", null);
+                            tabAsignacion.setValor("asignacion_descripcion1", tabDatosqlic.getValor("TIPO_LICENCIA_DESCRIPCION"));
                             utilitario.addUpdate("tabTabulador:tabAsignacion");
                         }
                     }
