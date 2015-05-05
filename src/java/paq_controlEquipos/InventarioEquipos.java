@@ -39,6 +39,7 @@ public class InventarioEquipos extends Pantalla {
     private Tabla tabAccesorio = new Tabla();
     private Tabla tabAsignacion = new Tabla();
     private Tabla tabCambios = new Tabla();
+    private Tabla tabConsulta = new Tabla();
     private Tabla setDatos = new Tabla();
     private Tabla setDatost = new Tabla();
     private Dialogo dialogoa = new Dialogo();
@@ -59,6 +60,14 @@ public class InventarioEquipos extends Pantalla {
     private Map p_parametros = new HashMap();
 
     public InventarioEquipos() {
+
+        //datos de usuario actual del sistema
+        tabConsulta.setId("tab_consulta");
+        tabConsulta.setSql("SELECT u.IDE_USUA,u.NOM_USUA,u.NICK_USUA,u.IDE_PERF,p.NOM_PERF,p.PERM_UTIL_PERF\n"
+                + "FROM SIS_USUARIO u,SIS_PERFIL p where u.IDE_PERF = p.IDE_PERF and IDE_USUA=" + utilitario.getVariable("IDE_USUA"));
+        tabConsulta.setCampoPrimaria("IDE_USUA");
+        tabConsulta.setLectura(true);
+        tabConsulta.dibujar();
 
         conPostgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         conPostgres.NOMBRE_MARCA_BASE = "postgres";
@@ -163,6 +172,17 @@ public class InventarioEquipos extends Pantalla {
         tabAsignacion.getColumna("catalogo_codigo").setCombo("select catalogo_codigo,catalogo_descripcion from cei_catalogo_tablas");
         tabAsignacion.getColumna("catalogo_codigo").setMetodoChange("buscarItem");
         tabAsignacion.getColumna("asignacion_fecha").setValorDefecto(utilitario.getFechaActual());
+        List list = new ArrayList();
+        Object fila[] = {
+            "Asignar", "Asignar"
+        };
+        Object fila2[] = {
+            "De Baja", "De Baja"
+        };
+        list.add(fil1);
+        list.add(fil2);
+        tabAsignacion.getColumna("asignacion_estado").setCombo(list);
+        tabAsignacion.getColumna("asignacion_estado").setMetodoChange("deBaja1");
         tabAsignacion.getColumna("asignacion_cod_empleado").setVisible(false);
         tabAsignacion.dibujar();
         PanelTabla ptas = new PanelTabla();
@@ -228,6 +248,16 @@ public class InventarioEquipos extends Pantalla {
         } else {
             tabAccesorio.setValor("acce_fecha_baja", null);
             utilitario.addUpdate("tabTabulador:tabAccesorio");
+        }
+    }
+
+    public void deBaja1() {
+        if (tabAsignacion.getValor("asignacion_estado").equals("De Baja")) {
+            tabAsignacion.setValor("asignacion_fecha_baja", utilitario.getFechaActual());
+            utilitario.addUpdate("tabTabulador:tabAsignacion");
+        } else {
+            tabAsignacion.setValor("asignacion_fecha_baja", null);
+            utilitario.addUpdate("tabTabulador:tabAsignacion");
         }
     }
 
@@ -361,11 +391,6 @@ public class InventarioEquipos extends Pantalla {
         }
     }
 
-    public void programa() {
-        for (int i = 0; i < tabAsignacion.getTotalFilas(); i++) {
-        }
-    }
-
     @Override
     public void eliminar() {
         utilitario.getTablaisFocus().eliminar();
@@ -381,6 +406,7 @@ public class InventarioEquipos extends Pantalla {
         rep_reporte.cerrar();
         switch (rep_reporte.getNombre()) {
             case "HISTORICO DE ASIGNACIONES":
+                aceptarDialogo();
                 break;
         }
     }
@@ -388,6 +414,12 @@ public class InventarioEquipos extends Pantalla {
     public void aceptarDialogo() {
         switch (rep_reporte.getNombre()) {
             case "HISTORICO DE ASIGNACIONES":
+                p_parametros.put("codigo", Integer.parseInt(tabEquipo.getValor("desc_codigo")) + "");
+                p_parametros.put("activo", tabEquipo.getValor("desc_codigo_activo") + "");
+                p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
+                rep_reporte.cerrar();
+                sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                sef_formato.dibujar();
                 break;
         }
     }
