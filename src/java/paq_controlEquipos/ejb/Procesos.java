@@ -54,7 +54,20 @@ public class Procesos {
         TablaGenerica tab_funcionario = new TablaGenerica();
         conSql();
         tab_funcionario.setConexion(conSql);
-        tab_funcionario.setSql("SELECT * FROM CEI_CATALOGO_TABLAS WHERE CATALOGO_ORIGEN='"+codigo+"'");
+        tab_funcionario.setSql("SELECT * FROM CEI_CATALOGO_TABLAS WHERE CATALOGO_ORIGEN='" + codigo + "'");
+        tab_funcionario.ejecutarSql();
+        conSql.desconectar();
+        conSql = null;
+        return tab_funcionario;
+
+    }
+
+    public TablaGenerica getCatalgoProg(Integer codigo) {
+        conSql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conSql();
+        tab_funcionario.setConexion(conSql);
+        tab_funcionario.setSql("SELECT * FROM CEI_DETALLE_PROGRAMAS where DETALLE_CODIGO = " + codigo);
         tab_funcionario.ejecutarSql();
         conSql.desconectar();
         conSql = null;
@@ -84,7 +97,8 @@ public class Procesos {
                 + "p.PROGS_DESCRIPCION,\n"
                 + "t.TIPO_LICENCIA_DESCRIPCION,\n"
                 + "d.DETALLE_NUMERO_LICENCIA,\n"
-                + "d.DETALLE_CANTIDAD\n"
+                + "d.DETALLE_CANTIDAD,\n"
+                + "m.MODELO_DESCRIPCION\n"
                 + "FROM CEI_DETALLE_PROGRAMAS d\n"
                 + "left join CEI_PROGRAMAS p on d.PROGS_CODIGO = p.PROGS_CODIGO\n"
                 + "left join CEI_TIPO_LICENCIA t on d.LICEN_CODIGO = t.TIPO_LICENCIA_CODIGO\n"
@@ -115,12 +129,32 @@ public class Procesos {
         TablaGenerica tab_funcionario = new TablaGenerica();
         conSql();
         tab_funcionario.setConexion(conSql);
-        tab_funcionario.setSql("SELECT PROGS_CODIGO,PROGS_DESCRIPCION FROM CEI_PROGRAMAS where PROGS_CODIGO =" + codigo);
+        tab_funcionario.setSql("SELECT\n"
+                + "d.DETALLE_CODIGO,\n"
+                + "p.PROGS_DESCRIPCION,\n"
+                + "t.TIPO_LICENCIA_DESCRIPCION,\n"
+                + "d.DETALLE_NUMERO_LICENCIA,\n"
+                + "d.DETALLE_CANTIDAD,\n"
+                + "m.MODELO_DESCRIPCION\n"
+                + "FROM CEI_DETALLE_PROGRAMAS d \n"
+                + "left join CEI_PROGRAMAS p on d.PROGS_CODIGO = p.PROGS_CODIGO \n"
+                + "left join CEI_TIPO_LICENCIA t on d.LICEN_CODIGO = t.TIPO_LICENCIA_CODIGO \n"
+                + "left join CEI_MODELO_LICENCIA m on d.MODELO_CODIGO = m.MODELO_CODIGO\n"
+                + "where d.DETALLE_CODIGO = " + codigo);
         tab_funcionario.ejecutarSql();
         conSql.desconectar();
         conSql = null;
         return tab_funcionario;
+    }
 
+    public void setActuaProve(Integer codigo, String desc, String dato, String valor, String cadena) {
+        String au_sql = "update " + desc + " set\n"
+                + "" + dato + " ='" + valor + "'\n" +//mve_horometro
+                "where " + cadena + "=" + codigo;
+        conSql();
+        conSql.ejecutarSql(au_sql);
+        conSql.desconectar();
+        conSql = null;
     }
 
     public TablaGenerica getCatalogoDatoposgres(String datos, String tabla, String condicion) {
