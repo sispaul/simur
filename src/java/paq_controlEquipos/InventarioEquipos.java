@@ -38,7 +38,6 @@ public class InventarioEquipos extends Pantalla {
     private Tabla tabEquipo = new Tabla();
     private Tabla tabAccesorio = new Tabla();
     private Tabla tabAsignacion = new Tabla();
-    private Tabla tabCambios = new Tabla();
     private Tabla tabConsulta = new Tabla();
     private Tabla setDatos = new Tabla();
     private Tabla setDatost = new Tabla();
@@ -136,7 +135,6 @@ public class InventarioEquipos extends Pantalla {
         tabEquipo.getColumna("desc_serie").setMetodoChange("infEquipo");
         tabEquipo.agregarRelacion(tabAccesorio);
         tabEquipo.agregarRelacion(tabAsignacion);
-        tabEquipo.agregarRelacion(tabCambios);
         tabEquipo.setTipoFormulario(true);
         tabEquipo.getGrid().setColumns(4);
         tabEquipo.dibujar();
@@ -190,6 +188,7 @@ public class InventarioEquipos extends Pantalla {
 
         tabTabulador.agregarTab("COMPONENTES", pta);
         tabTabulador.agregarTab("ASIGNACIÓN", ptas);
+
         Division divTablas = new Division();
         divTablas.setId("divTablas");
         divTablas.dividir2(pte, tabTabulador, "50%", "H");
@@ -208,9 +207,11 @@ public class InventarioEquipos extends Pantalla {
     }
 
     public void filtrarEquipo(SelectEvent evt) {
-        limpiar();
         autBusca.onSelect(evt);
-        dibujaPantalla();
+        if (autBusca.getValor() != null) {
+            tabEquipo.setFilaActual(autBusca.getValor());
+            utilitario.addUpdate("tabEquipo");
+        }
     }
 
     public void infEquipo() {
@@ -362,7 +363,7 @@ public class InventarioEquipos extends Pantalla {
                         if (!tabDatopro.isEmpty()) {
                             tabAsignacion.setValor("asignacion_nombre", tabDatopro.getValor("PROGS_DESCRIPCION"));
                             tabAsignacion.setValor("asignacion_descripcion", null);
-                            tabAsignacion.setValor("asignacion_descripcion1", tabDatosqlic.getValor("TIPO_LICENCIA_DESCRIPCION"));
+                            tabAsignacion.setValor("asignacion_descripcion1", tabDatopro.getValor("TIPO_LICENCIA_DESCRIPCION"));
                             utilitario.addUpdate("tabTabulador:tabAsignacion");
                         }
                     }
@@ -470,14 +471,6 @@ public class InventarioEquipos extends Pantalla {
 
     public void setSetDatost(Tabla setDatost) {
         this.setDatost = setDatost;
-    }
-
-    public Tabla getTabCambios() {
-        return tabCambios;
-    }
-
-    public void setTabCambios(Tabla tabCambios) {
-        this.tabCambios = tabCambios;
     }
 
     public Reporte getRep_reporte() {

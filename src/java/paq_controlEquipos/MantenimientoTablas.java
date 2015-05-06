@@ -48,7 +48,7 @@ public class MantenimientoTablas extends Pantalla {
         botBuscar.setIcon("ui-icon-search");
         botBuscar.setMetodo("proveedor");
         bar_botones.agregarBoton(botBuscar);
-        
+
         tabDetalle.setId("tabDetalle");
         tabDetalle.setIdCompleto("tabTabulador:tabDetalle");
         tabDetalle.setTabla("cei_detalle_programas", "detalle_codigo", 1);
@@ -181,6 +181,20 @@ public class MantenimientoTablas extends Pantalla {
                     }
                 }
             }
+            if (tabDetalle.getValor("detalle_codigo") != null) {
+                TablaGenerica tadDato = accesoDatos.getCatalgoProg(Integer.parseInt(tabDetalle.getValor("detalle_cod_proveedor")));
+                if (tadDato.isEmpty()) {
+                    if (tabDetalle.getValor("detalle_cod_proveedor").equals(tadDato.getValor("detalle_cod_proveedor"))) {
+                    } else {
+                        accesoDatos.setActuaProve(Integer.parseInt(tabDetalle.getValor("detalle_codigo")), tabDetalle.getTabla(), "detalle_cod_proveedor", tabDetalle.getValor("detalle_cod_proveedor"), tabDetalle.getCampoPrimaria());
+                    }
+                    if (tabDetalle.getValor("detalle_proveedor").equals(tadDato.getValor("detalle_proveedor"))) {
+                    } else {
+                        accesoDatos.setActuaProve(Integer.parseInt(tabDetalle.getValor("detalle_codigo")), tabDetalle.getTabla(), "detalle_proveedor", tabDetalle.getValor("detalle_proveedor"), tabDetalle.getCampoPrimaria());
+                    }
+                    utilitario.agregarMensajeInfo("Registro Actualizado", null);
+                }
+            }
         }
     }
 
@@ -236,5 +250,4 @@ public class MantenimientoTablas extends Pantalla {
     public void setConPostgres(Conexion conPostgres) {
         this.conPostgres = conPostgres;
     }
-    
 }
