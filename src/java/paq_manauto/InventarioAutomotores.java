@@ -68,7 +68,7 @@ public class InventarioAutomotores extends Pantalla {
     private AutoCompletar autBusca = new AutoCompletar();
     private Integer pk;
     @EJB
-    private manauto aCombustible = (SQLManauto) utilitario.instanciarEJB(SQLManauto.class);
+    private SQLManauto aCombustible = (SQLManauto) utilitario.instanciarEJB(SQLManauto.class);
     //Contiene todos los elementos de la plantilla
     private Panel panOpcion = new Panel();
 
