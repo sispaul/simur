@@ -434,10 +434,10 @@ public class InventarioAutomotores extends Pantalla {
             campos.put("tipo", tipo.getText());
 
             if (pk == 0) {
-                aCombustible.insertar("armas", campos);
+                aCombustible.insertar(tabAutomotores.getTabla(), campos);
 
             } else {
-                aCombustible.actualizar("armas", "armas_id", pk, campos);
+                aCombustible.actualizar(tabAutomotores.getTabla(), tabAutomotores.getValor(""), pk, campos);
             }
         } catch (Exception ex) {
         }
