@@ -6,6 +6,7 @@ package paq_controlEquipos;
 
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
+import framework.componentes.Boton;
 import framework.componentes.Combo;
 import framework.componentes.Dialogo;
 import framework.componentes.Division;
@@ -15,6 +16,7 @@ import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
+import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Tabulador;
 import java.util.ArrayList;
@@ -41,6 +43,7 @@ public class InventarioEquipos extends Pantalla {
     private Tabla tabConsulta = new Tabla();
     private Tabla setDatos = new Tabla();
     private Tabla setDatost = new Tabla();
+    private SeleccionTabla setRegistros = new SeleccionTabla();
     private Dialogo dialogoa = new Dialogo();
     private Dialogo dialogot = new Dialogo();
     private Grid grid = new Grid();
@@ -50,6 +53,7 @@ public class InventarioEquipos extends Pantalla {
     private Panel panOpcion = new Panel();
     private Combo cmbLicencia = new Combo();
     private Combo cmbModelo = new Combo();
+    private Combo cmbTipo = new Combo();
     private AutoCompletar autBusca = new AutoCompletar();
     @EJB
     private Procesos accesoDatos = (Procesos) utilitario.instanciarEJB(Procesos.class);
@@ -80,14 +84,27 @@ public class InventarioEquipos extends Pantalla {
         cmbModelo.setId("cmbModelo");
         cmbModelo.setCombo("SELECT MODELO_CODIGO,MODELO_DESCRIPCION FROM CEI_MODELO_LICENCIA");
 
+        cmbTipo.setId("cmbTipo");
+        cmbTipo.setCombo("SELECT distinct DESC_TIPO_EQUIPO as id,DESC_TIPO_EQUIPO FROM CEI_DESCRIPCION_EQUIPOS");
+
+        Boton bot_busca = new Boton();
+        bot_busca.setValue("Busqueda Avanzada");
+        bot_busca.setExcluirLectura(true);
+        bot_busca.setIcon("ui-icon-search");
+        bot_busca.setMetodo("buscaRegistro");
+        bar_botones.agregarBoton(bot_busca);
+
         autBusca.setId("autBusca");
         autBusca.setAutoCompletar("SELECT e.DESC_CODIGO,\n"
-                + "e.DESC_CODIGO_ACTIVO as Codigo_Activo,\n"
-                + "e.DESC_MARCA + ' ' +e.DESC_MODELO ,\n"
-                + "e.DESC_SERIE as Serie,\n"
-                + "t.TIPO_DESCRIPCION as Tipo\n"
-                + "FROM CEI_DESCRIPCION_EQUIPOS e\n"
-                + "INNER JOIN CEI_TIPO_EQUIPOS t ON  e.TIPO_CODIGO =  t.TIPO_CODIGO");
+                + "e.DESC_CODIGO_ACTIVO AS Codigo_Activo,\n"
+                + "(case when DESC_MARCA is not null then DESC_MARCA when DESC_MARCA is null then '' end) +' '+\n"
+                + "(case when DESC_MODELO is not null then DESC_MODELO when DESC_MODELO is null then '' end) AS descripcion,\n"
+                + "e.DESC_SERIE AS Serie,\n"
+                + "e.DESC_TIPO_EQUIPO AS Tipo,\n"
+                + "a.ASIGNACION_NOMBRE\n"
+                + "FROM dbo.CEI_DESCRIPCION_EQUIPOS e\n"
+                + "INNER JOIN dbo.CEI_ASIGNACION a ON a.DESC_CODIGO = e.DESC_CODIGO\n"
+                + "where a.CATALOGO_CODIGO = (SELECT CATALOGO_CODIGO FROM CEI_CATALOGO_TABLAS where CATALOGO_DESCRIPCION = 'FUNCIONARIO') ");
         autBusca.setMetodoChange("filtrarEquipo");
         autBusca.setSize(80);
 
@@ -124,15 +141,96 @@ public class InventarioEquipos extends Pantalla {
         agregarComponente(rep_reporte); //2 agregar el listado de reportes
         sef_formato.setId("sef_formato");
         agregarComponente(sef_formato);
+
+        //Ingreso y busqueda de solicitudes 
+        Grid gri_busca = new Grid();
+        gri_busca.setColumns(2);
+        Boton bot_buscar = new Boton();
+        bot_buscar.setValue("Buscar");
+        bot_buscar.setIcon("ui-icon-search");
+        bot_buscar.setMetodo("mostrarDatos");
+        bar_botones.agregarBoton(bot_buscar);
+        gri_busca.getChildren().add(cmbTipo);
+        gri_busca.getChildren().add(bot_buscar);
+
+        setRegistros.setId("setRegistros");
+        setRegistros.setSeleccionTabla("SELECT e.DESC_CODIGO,\n"
+                + "e.DESC_CODIGO_ACTIVO AS Codigo_Activo,\n"
+                + "(case when DESC_MARCA is not null then DESC_MARCA when DESC_MARCA is null then '' end) +' '+\n"
+                + "(case when DESC_MODELO is not null then DESC_MODELO when DESC_MODELO is null then '' end) AS Descripcion,\n"
+                + "e.DESC_SERIE AS Serie,\n"
+                + "a.ASIGNACION_NOMBRE\n"
+                + "FROM dbo.CEI_DESCRIPCION_EQUIPOS e\n"
+                + "INNER JOIN dbo.CEI_ASIGNACION a ON a.DESC_CODIGO = e.DESC_CODIGO\n"
+                + "where a.CATALOGO_CODIGO = (SELECT CATALOGO_CODIGO FROM CEI_CATALOGO_TABLAS where CATALOGO_DESCRIPCION = 'FUNCIONARIO') and e.DESC_CODIGO=-1 order by Codigo_Activo", "DESC_CODIGO");
+        setRegistros.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
+        setRegistros.getTab_seleccion().getColumna("Codigo_Activo").setFiltro(true);
+        setRegistros.getTab_seleccion().getColumna("Descripcion").setFiltro(true);
+        setRegistros.getTab_seleccion().getColumna("Serie").setFiltro(true);
+        setRegistros.getTab_seleccion().getColumna("ASIGNACION_NOMBRE").setFiltro(true);
+        setRegistros.getTab_seleccion().setRows(12);
+        setRegistros.setWidth("75%");
+        setRegistros.setRadio();
+        setRegistros.getGri_cuerpo().setHeader(gri_busca);
+        setRegistros.getBot_aceptar().setMetodo("aceptarBusqueda");
+        setRegistros.setHeader("BUSCAR EQUIPOS");
+        agregarComponente(setRegistros);
+
+    }
+
+    public void buscaRegistro() {
+        setRegistros.dibujar();
+    }
+
+    public void mostrarDatos() {
+        if (cmbTipo.getValue() != null && cmbTipo.getValue().toString().isEmpty() == false) {
+            setRegistros.getTab_seleccion().setSql("SELECT e.DESC_CODIGO,\n"
+                    + "e.DESC_CODIGO_ACTIVO AS Codigo_Activo,\n"
+                    + "(case when DESC_MARCA is not null then DESC_MARCA when DESC_MARCA is null then '' end) +' '+\n"
+                    + "(case when DESC_MODELO is not null then DESC_MODELO when DESC_MODELO is null then '' end) AS Descripcion,\n"
+                    + "e.DESC_SERIE AS Serie,\n"
+                    + "a.ASIGNACION_NOMBRE\n"
+                    + "FROM dbo.CEI_DESCRIPCION_EQUIPOS e\n"
+                    + "INNER JOIN dbo.CEI_ASIGNACION a ON a.DESC_CODIGO = e.DESC_CODIGO\n"
+                    + "where a.CATALOGO_CODIGO = (SELECT CATALOGO_CODIGO FROM CEI_CATALOGO_TABLAS where CATALOGO_DESCRIPCION = 'FUNCIONARIO') and e.DESC_TIPO_EQUIPO ='" + cmbTipo.getValue() + "'");
+            setRegistros.getTab_seleccion().ejecutarSql();
+        } else {
+            utilitario.agregarMensajeInfo("Debe ingresar un valor en el texto", "");
+        }
+    }
+
+    public void aceptarBusqueda() {
+        if (setRegistros.getValorSeleccionado() != null) {
+            autBusca.setValor(setRegistros.getValorSeleccionado());
+            setRegistros.cerrar();
+            tabEquipo.setFilaActual(autBusca.getValor());
+            utilitario.addUpdate("tabEquipo,autBusca");
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar una Registro", "");
+        }
     }
 
     public void dibujaPantalla() {
         limpiarPanel();
         tabEquipo.setId("tabEquipo");
         tabEquipo.setTabla("cei_descripcion_equipos", "desc_codigo", 1);
-        tabEquipo.getColumna("tipo_codigo").setCombo("SELECT TIPO_CODIGO,TIPO_DESCRIPCION FROM CEI_TIPO_EQUIPOS");
+        List lista1 = new ArrayList();
+        Object fil11[] = {
+            "Bueno", "Bueno"
+        };
+        Object fil21[] = {
+            "De Baja", "De Baja"
+        };
+        Object fil31[] = {
+            "Regular", "Regular"
+        };
+        lista1.add(fil11);
+        lista1.add(fil21);
+        lista1.add(fil31);
+        tabEquipo.getColumna("desc_estado").setCombo(lista1);
         tabEquipo.getColumna("desc_ultimo_mantenimiento").setLectura(true);
         tabEquipo.getColumna("desc_serie").setMetodoChange("infEquipo");
+        tabEquipo.getColumna("desc_codigo_activo").setMetodoChange("infEquipo1");
         tabEquipo.agregarRelacion(tabAccesorio);
         tabEquipo.agregarRelacion(tabAsignacion);
         tabEquipo.setTipoFormulario(true);
@@ -148,6 +246,7 @@ public class InventarioEquipos extends Pantalla {
         tabAccesorio.setIdCompleto("tabTabulador:tabAccesorio");
         tabAccesorio.setTabla("cei_accesorios", "acce_codigo", 2);
         tabAccesorio.getColumna("acce_serie").setMetodoChange("infAccesorio");
+        tabAccesorio.getColumna("acce_codigo_activo").setMetodoChange("infAccesorio1");
         tabAccesorio.getColumna("acce_fecha_asignacion").setValorDefecto(utilitario.getFechaActual());
         List lista = new ArrayList();
         Object fil1[] = {
@@ -220,8 +319,22 @@ public class InventarioEquipos extends Pantalla {
             tabEquipo.setValor("desc_codigo_activo", tabDato.getValor("codigo"));
             tabEquipo.setValor("desc_marca", tabDato.getValor("marca"));
             tabEquipo.setValor("desc_modelo", tabDato.getValor("modelo"));
-            tabEquipo.setValor("desc_estado", tabDato.getValor("estado"));
             tabEquipo.setValor("desc_descripcion", tabDato.getValor("des_activo"));
+            tabEquipo.setValor("desc_tipo_equipo", tabDato.getValor("nombre"));
+            utilitario.addUpdate("tabEquipo");
+        } else {
+            utilitario.agregarMensaje("Equipo No Localizado en la Base de Activos", null);
+        }
+    }
+
+    public void infEquipo1() {
+        TablaGenerica tabDato = accesoDatos.getInfoActivo1(tabEquipo.getValor("desc_codigo_activo"));
+        if (!tabDato.isEmpty()) {
+            tabEquipo.setValor("desc_codigo_activo", tabDato.getValor("codigo"));
+            tabEquipo.setValor("desc_marca", tabDato.getValor("marca"));
+            tabEquipo.setValor("desc_modelo", tabDato.getValor("modelo"));
+            tabEquipo.setValor("desc_descripcion", tabDato.getValor("des_activo"));
+            tabEquipo.setValor("desc_tipo_equipo", tabDato.getValor("nombre"));
             utilitario.addUpdate("tabEquipo");
         } else {
             utilitario.agregarMensaje("Equipo No Localizado en la Base de Activos", null);
@@ -234,7 +347,19 @@ public class InventarioEquipos extends Pantalla {
             tabAccesorio.setValor("acce_codigo_activo", tabDato.getValor("codigo"));
             tabAccesorio.setValor("acce_marca", tabDato.getValor("marca"));
             tabAccesorio.setValor("acce_modelo", tabDato.getValor("modelo"));
-            tabAccesorio.setValor("acce_estado", tabDato.getValor("estado"));
+            tabAccesorio.setValor("acce_descripcion", tabDato.getValor("des_activo"));
+            utilitario.addUpdate("tabTabulador:tabAccesorio");
+        } else {
+            utilitario.agregarMensaje("Accesorio No Localizado en la Base de Activos", null);
+        }
+    }
+
+    public void infAccesorio1() {
+        TablaGenerica tabDato = accesoDatos.getInfoActivo1(tabAccesorio.getValor("acce_serie"));
+        if (!tabDato.isEmpty()) {
+            tabAccesorio.setValor("acce_codigo_activo", tabDato.getValor("codigo"));
+            tabAccesorio.setValor("acce_marca", tabDato.getValor("marca"));
+            tabAccesorio.setValor("acce_modelo", tabDato.getValor("modelo"));
             tabAccesorio.setValor("acce_descripcion", tabDato.getValor("des_activo"));
             utilitario.addUpdate("tabTabulador:tabAccesorio");
         } else {
@@ -495,5 +620,13 @@ public class InventarioEquipos extends Pantalla {
 
     public void setP_parametros(Map p_parametros) {
         this.p_parametros = p_parametros;
+    }
+
+    public SeleccionTabla getSetRegistros() {
+        return setRegistros;
+    }
+
+    public void setSetRegistros(SeleccionTabla setRegistros) {
+        this.setRegistros = setRegistros;
     }
 }
