@@ -177,7 +177,7 @@ order by mve_placa,mve_codigo]]>
 				<text><![CDATA[PLACA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="579b1625-f06e-438c-892c-ab887ad06488" x="311" y="6" width="55" height="20" forecolor="#FFFFFF"/>
+				<reportElement uuid="579b1625-f06e-438c-892c-ab887ad06488" x="341" y="6" width="55" height="20" forecolor="#FFFFFF"/>
 				<textElement textAlignment="Right">
 					<font size="9" isBold="true"/>
 				</textElement>
@@ -212,7 +212,7 @@ order by mve_placa,mve_codigo]]>
 				<text><![CDATA[TOTAL GASTO]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="a871c15d-8200-4c49-925e-8e348dbb5446" x="368" y="6" width="42" height="20" forecolor="#FFFFFF"/>
+				<reportElement uuid="a871c15d-8200-4c49-925e-8e348dbb5446" x="398" y="6" width="42" height="20" forecolor="#FFFFFF"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
@@ -226,7 +226,7 @@ order by mve_placa,mve_codigo]]>
 				<text><![CDATA[CODIGO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e1f63176-00f5-46e3-8628-b364a8fa8a47" x="161" y="6" width="147" height="20" forecolor="#FFFFFF"/>
+				<reportElement uuid="e1f63176-00f5-46e3-8628-b364a8fa8a47" x="158" y="6" width="177" height="20" forecolor="#FFFFFF"/>
 				<textElement>
 					<font size="9" isBold="true"/>
 				</textElement>
@@ -251,7 +251,7 @@ order by mve_placa,mve_codigo]]>
 				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="621948b2-0aae-410b-8e98-0615f66d699a" x="308" y="1" width="100" height="20" forecolor="#000000"/>
+				<reportElement uuid="621948b2-0aae-410b-8e98-0615f66d699a" x="335" y="1" width="81" height="20" forecolor="#000000"/>
 				<textElement textAlignment="Right">
 					<font size="9"/>
 				</textElement>
@@ -292,7 +292,7 @@ order by mve_placa,mve_codigo]]>
 				<textFieldExpression><![CDATA[$F{mve_codigo}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="82561126-9c47-4b74-8024-c06b6dac9e0a" x="161" y="0" width="147" height="20"/>
+				<reportElement uuid="82561126-9c47-4b74-8024-c06b6dac9e0a" x="158" y="0" width="177" height="20"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
