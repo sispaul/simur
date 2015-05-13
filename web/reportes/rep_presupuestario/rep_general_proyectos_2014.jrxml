@@ -10,6 +10,7 @@
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["C:\\Users\\p-sistemas\\Documents\\NetBeansProjects\\simur\\web\\"]]></defaultValueExpression>
 	</parameter>
+	<parameter name="fecha" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select
 (case when Left(Right(partida_cuenta,10),2)>= Right(Left(partida_cuenta,5),2) and Left(Right(partida_cuenta,10),2)>= Right(Left(partida_cuenta,8),2)
@@ -46,6 +47,7 @@ pago_cod_proyecto,
 Sum(pago_compromiso) AS compromiso,
 Sum(pago_obligacion) AS obligacion
 FROM finan_pagos
+where pago_fecha < $P{fecha} or pago_fecha is null
 GROUP BY pago_cod_proyecto) as b
 on a.proyecto_codigo = b.pago_cod_proyecto
 GROUP BY (case when Left(Right(partida_cuenta,10),2)>= Right(Left(partida_cuenta,5),2) and Left(Right(partida_cuenta,10),2)>= Right(Left(partida_cuenta,8),2)

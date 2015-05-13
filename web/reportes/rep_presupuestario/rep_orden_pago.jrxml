@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_orden_pago" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="85d05d48-a7e2-4ae1-91f0-f33944a8be7f">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="48"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<parameter name="id_orden" class="java.lang.String"/>
 	<parameter name="id_documento" class="java.lang.Integer"/>
@@ -10,17 +10,49 @@
 		<defaultValueExpression><![CDATA["el que imprimio"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT tes_numero_orden,
-(case when tes_proveedor is null then tes_empleado when tes_proveedor is not null then tes_proveedor end) as beneficiario
-,(case when tes_proveedor is null then 'Empleado' when tes_proveedor is not null then 'Proveedor' end) as tipo
-,tes_valor,tes_valor_letras,tes_asunto,tes_acuerdo,tes_nota,
-tes_comprobante_egreso,tes_fecha_ingreso,tes_fecha_comprobante,tes_ide_orden_pago,tes_anio,tes_mes,tes_concepto,tes_estado
+		<![CDATA[select a.tes_numero_orden,
+a.tes_valor AS tes_valor,
+a.tes_valor_letras,
+a.tes_asunto,
+a.tes_acuerdo,
+a.tes_nota,
+a.tes_comprobante_egreso,
+a.tes_fecha_ingreso,
+a.tes_fecha_comprobante,
+a.tes_ide_orden_pago,
+a.tes_anio,
+a.tes_mes,
+a.tes_concepto,
+a.tes_estado,
+(case when  a.tes_cod_empleado is null then b.titular when a.tes_cod_empleado is not null then c.nombres end) as beneficiario,
+(case when b.titular is not null then 'Proveedor' when b.titular is null then 'Empleado' end ) as tipo
+from (
+SELECT tes_numero_orden,
+tes_valor AS tes_valor,
+tes_valor_letras,
+tes_asunto,
+tes_acuerdo,
+tes_nota,
+tes_comprobante_egreso,
+tes_fecha_ingreso,
+tes_fecha_comprobante,
+tes_ide_orden_pago,
+tes_cod_empleado,
+tes_anio,
+tes_mes,
+tes_concepto,
+tes_estado,
+(case when tes_id_proveedor is null then tes_cod_empleado when tes_id_proveedor is not null then tes_id_proveedor end) as cod_benefi
 FROM tes_orden_pago
-WHERE  tes_numero_orden = $P{id_orden} and tes_ide_orden_pago = $P{id_documento}]]>
+WHERE  tes_numero_orden = $P{id_orden} and tes_ide_orden_pago = $P{id_documento}) as a
+left join
+(SELECT ide_proveedor,titular FROM tes_proveedores) as b
+on a.cod_benefi = b.ide_proveedor
+left join
+(SELECT cedula_pass,nombres,cod_empleado FROM srh_empleado) as c
+on a.cod_benefi = c.cod_empleado]]>
 	</queryString>
 	<field name="tes_numero_orden" class="java.lang.String"/>
-	<field name="beneficiario" class="java.lang.String"/>
-	<field name="tipo" class="java.lang.String"/>
 	<field name="tes_valor" class="java.math.BigDecimal"/>
 	<field name="tes_valor_letras" class="java.lang.String"/>
 	<field name="tes_asunto" class="java.lang.String"/>
@@ -34,6 +66,8 @@ WHERE  tes_numero_orden = $P{id_orden} and tes_ide_orden_pago = $P{id_documento}
 	<field name="tes_mes" class="java.lang.String"/>
 	<field name="tes_concepto" class="java.lang.String"/>
 	<field name="tes_estado" class="java.lang.String"/>
+	<field name="beneficiario" class="java.lang.String"/>
+	<field name="tipo" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
