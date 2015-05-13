@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_solicitud_acceso" language="groovy" pageWidth="595" pageHeight="842" columnWidth="541" leftMargin="34" rightMargin="20" topMargin="0" bottomMargin="20" uuid="fe8236fd-e961-457c-939e-7655f19ada20">
 	<property name="ireport.zoom" value="1.331000000000001"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="480"/>
+	<property name="ireport.y" value="617"/>
 	<parameter name="fecha" class="java.lang.String"/>
 	<parameter name="solicitud" class="java.lang.Integer"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
@@ -17,7 +17,7 @@ s.observaciones_perfil_usuario,
 s.fecha_acceso_usuario,
 s.login_acceso_usuario,
 s.password_acceso_usuario,
-s.nombre_asigna_acceso,
+(case when s.nombre_asigna_acceso is null then s.codigo_asigna_acceso when s.nombre_asigna_acceso is not null then s.nombre_asigna_acceso end ) as nombre_asigna_acceso,
 s.fechaing_solicitante,
 s.estado_solicitud,
 s.lectura_perfil_usuario,

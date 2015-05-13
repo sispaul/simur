@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_accesorio_equipos" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="0" bottomMargin="20" uuid="de461d6d-dcd1-476e-ba5a-f07d79a2f70d">
+	<property name="ireport.zoom" value="1.4641000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="codigo" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT DESC_CODIGO,
+ACCE_CODIGO_ACTIVO,
+ACCE_DESCRIPCION,
+ACCE_SERIE,
+ACCE_MARCA,
+ACCE_MODELO,
+ACCE_ESTADO,
+ACCE_FECHA_BAJA
+FROM CEI_ACCESORIOS
+where DESC_CODIGO = $P{codigo}]]>
+	</queryString>
+	<field name="DESC_CODIGO" class="java.lang.Integer"/>
+	<field name="ACCE_CODIGO_ACTIVO" class="java.lang.String"/>
+	<field name="ACCE_DESCRIPCION" class="java.lang.String"/>
+	<field name="ACCE_SERIE" class="java.lang.String"/>
+	<field name="ACCE_MARCA" class="java.lang.String"/>
+	<field name="ACCE_MODELO" class="java.lang.String"/>
+	<field name="ACCE_ESTADO" class="java.lang.String"/>
+	<field name="ACCE_FECHA_BAJA" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="28" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="39479a57-a3b8-4840-9662-010bfd8ddee6" x="0" y="3" width="750" height="23" backcolor="#999999"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="3b4476b6-9302-4fb5-a184-ac247137941b" x="641" y="5" width="100" height="20" forecolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a5263dd6-0ccc-4c71-beee-26a558dfe76a" x="6" y="5" width="100" height="20" forecolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Codigo Activo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="36b6ac65-cbba-4271-b5ce-d391949c7025" x="532" y="5" width="109" height="20" forecolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Modelo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="89fd0acd-3c6c-4c0a-b700-a92a23d78219" x="282" y="5" width="138" height="20" forecolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Serie]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8a12d3eb-cdac-4071-b148-a34ff65eda49" x="106" y="5" width="176" height="20" forecolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descripción]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ff95ce1d-9e4c-443c-8d0b-24af717d0bec" x="420" y="5" width="112" height="20" forecolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Marca]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="7b9c9644-d61a-4709-829d-1d6006e2fb28" x="106" y="0" width="176" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ACCE_DESCRIPCION}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8f47a7c3-060a-49a1-8783-f2a50d8f4d13" x="282" y="0" width="138" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ACCE_SERIE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="693517c0-d2cb-49e6-910d-421aca6c3e8f" x="420" y="0" width="112" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ACCE_MARCA}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8b2e5724-8e23-42dc-ab66-60bcecaa4db9" x="532" y="0" width="109" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ACCE_MODELO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="b3aa7802-c4aa-42fb-ad49-26e8124f7976" x="6" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ACCE_CODIGO_ACTIVO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="4ba71ef7-15b2-46b7-b10d-d55aced1685f" x="641" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ACCE_ESTADO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

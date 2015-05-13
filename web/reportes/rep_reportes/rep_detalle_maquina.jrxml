@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_detalle_maquina" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="822" leftMargin="0" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a408b0d5-32bf-4c7d-8f5e-d759e1372a11">
+	<property name="ireport.zoom" value="1.6105100000000012"/>
+	<property name="ireport.x" value="18"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="codigo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT a.ASIGNACION_CODIGO,
+a.DESC_CODIGO,
+a.ASIGNACION_FECHA,
+a.ASIGNACION_NOMBRE,
+a.ASIGNACION_DESCRIPCION,
+a.ASIGNACION_DESCRIPCION1,
+a.ASIGNACION_COD_EMPLEADO,
+c.CATALOGO_DESCRIPCION,
+a.ASIGNACION_FECHA_BAJA,
+a.ASIGNACION_ESTADO,
+a.ASIGNACION_OBSERVACION
+FROM CEI_CATALOGO_TABLAS c
+INNER JOIN CEI_ASIGNACION a ON a.CATALOGO_CODIGO = c.CATALOGO_CODIGO
+where DESC_CODIGO = $P{codigo}
+order by c.CATALOGO_DESCRIPCION]]>
+	</queryString>
+	<field name="ASIGNACION_CODIGO" class="java.lang.Integer"/>
+	<field name="DESC_CODIGO" class="java.lang.Integer"/>
+	<field name="ASIGNACION_FECHA" class="java.lang.String"/>
+	<field name="ASIGNACION_NOMBRE" class="java.lang.String"/>
+	<field name="ASIGNACION_DESCRIPCION" class="java.lang.String"/>
+	<field name="ASIGNACION_DESCRIPCION1" class="java.lang.String"/>
+	<field name="ASIGNACION_COD_EMPLEADO" class="java.lang.String"/>
+	<field name="CATALOGO_DESCRIPCION" class="java.lang.String"/>
+	<field name="ASIGNACION_FECHA_BAJA" class="java.lang.String"/>
+	<field name="ASIGNACION_ESTADO" class="java.lang.String"/>
+	<field name="ASIGNACION_OBSERVACION" class="java.lang.String"/>
+	<group name="CATALOGO">
+		<groupExpression><![CDATA[$F{CATALOGO_DESCRIPCION}]]></groupExpression>
+		<groupHeader>
+			<band height="48">
+				<rectangle>
+					<reportElement uuid="af9b922e-fac7-4c2a-b1df-e76d6186f9ae" x="0" y="22" width="821" height="26"/>
+				</rectangle>
+				<textField>
+					<reportElement uuid="24fe0f90-3ab8-4824-bd3c-aea93844f7a9" x="0" y="3" width="140" height="20" backcolor="#646464"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{CATALOGO_DESCRIPCION}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="3f55748b-0abd-4c7c-866b-8aa5ac18f8be" x="0" y="22" width="62" height="26"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Fecha Asignación]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="b64d8465-2008-4545-b387-9515dfa08f1c" x="62" y="22" width="65" height="26"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Codigo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="db53f4d8-468b-4e22-af42-d0136fea89e8" x="109" y="22" width="150" height="26"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Nombre]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="a625c3ee-438b-4a69-82b3-b6ef6de93a5a" x="257" y="22" width="153" height="26"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Descripción]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="3d8ce09e-7581-4172-a629-aa4600c483b8" x="394" y="22" width="179" height="26"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[ Descripción 2]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="cd6b8f21-4596-4827-a238-a92f9bbe795b" x="625" y="22" width="67" height="26"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Fecha de   Baja]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="c08788a9-d8bf-4baa-a877-ecf24da871b5" x="677" y="22" width="144" height="26"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Observaciones]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="9b33c1ab-c790-4188-bea5-22104ec330aa" x="566" y="22" width="67" height="26"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Estado]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="8a06fa44-a21f-4b21-8695-99048ebc8a79" x="109" y="0" width="150" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ASIGNACION_NOMBRE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="3bb56b8a-2d69-4161-bfe9-2c5f88268a09" x="0" y="0" width="62" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ASIGNACION_FECHA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="d9f245ac-7271-4dff-b702-2b651e47e83a" x="394" y="0" width="179" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ASIGNACION_DESCRIPCION1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="ec88777c-9cd9-4468-a92c-80d3c4562dac" x="625" y="0" width="67" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ASIGNACION_FECHA_BAJA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="4a3e7720-72d4-4126-9f73-bf826e395c78" x="676" y="0" width="145" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ASIGNACION_OBSERVACION}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="247f6ed5-b41e-478f-841f-50016f18df1c" x="257" y="0" width="153" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ASIGNACION_DESCRIPCION}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="586f4596-c2e9-4067-a833-286765d29536" x="62" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ASIGNACION_COD_EMPLEADO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="b2a0c04e-40e3-4fa7-ba37-f8c6f13cef5d" x="566" y="0" width="67" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ASIGNACION_ESTADO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
