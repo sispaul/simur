@@ -27,14 +27,13 @@ SELECT p.proyectos_COD_PROYECTO,
 p.proyectos_COD_PARTIDA,
 p.proyectos_PROY_TOTAL
 FROM finan_proyectos AS p) as a
-inner join (SELECT p.pago_cod_partida,
-p.pago_cod_proyecto,
-Sum(p.pago_compromiso) AS compromiso,
-Sum(p.pago_obligacion) AS obligacion
-FROM finan_pagos AS p
-INNER JOIN finan_PROYECTO AS r ON p.pago_cod_proyecto = r.proyecto_codigo
-GROUP BY p.pago_COD_PARTIDA, p.pago_COD_PROYECTO) as b
-on a.proyectos_COD_PROYECTO =b.pago_cod_proyecto and a.proyectos_COD_PARTIDA =b.pago_cod_partida
+inner join (SELECT
+pago_cod_proyecto,
+Sum(pago_compromiso) AS compromiso,
+Sum(pago_obligacion) AS obligacion
+FROM finan_pagos
+GROUP BY pago_cod_proyecto) as b
+on a.proyectos_COD_PROYECTO =b.pago_cod_proyecto
 )as a
 inner join
 (SELECT
@@ -48,7 +47,7 @@ p.partida_cuenta
 FROM FINAN_PARTIDA p
 INNER JOIN FINAN_PROYECTOS r ON r.proyectos_cod_partida = p.partida_codigo
 INNER JOIN FINAN_PROYECTO o ON r.proyectos_cod_proyecto = o.proyecto_codigo) as b
-on a.proyectos_COD_PARTIDA = b.partida_codigo and a.proyectos_COD_PROYECTO= b.proyecto_codigo
+on a.proyectos_COD_PROYECTO= b.proyecto_codigo
 where b.proyecto_financiamiento like $P{financiamiento}]]>
 	</queryString>
 	<field name="proyectos_COD_PROYECTO" class="java.lang.Long"/>
@@ -354,7 +353,7 @@ where b.proyecto_financiamiento like $P{financiamiento}]]>
 				<text><![CDATA[TOTAL PROYECTOS:]]></text>
 			</staticText>
 			<subreport>
-				<reportElement uuid="9c17c725-384b-4051-85ce-4c61acc27b31" x="0" y="18" width="726" height="30"/>
+				<reportElement uuid="82718d32-7b26-4d5b-8a17-e3ffdb9eb9d1" x="3" y="18" width="723" height="39"/>
 				<subreportParameter name="financiamiento">
 					<subreportParameterExpression><![CDATA[$P{financiamiento}]]></subreportParameterExpression>
 				</subreportParameter>

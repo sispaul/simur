@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_financiamientos_partidas_general" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7cd1845e-fc4b-49bb-b5ac-cada8db72537">
-	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.zoom" value="1.5026296018031553"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="nom_resp" class="java.lang.String" isForPrompting="false">
@@ -10,6 +10,7 @@
 		<defaultValueExpression><![CDATA["C:\\Users\\p-sistemas\\Documents\\NetBeansProjects\\simur\\web\\"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="anio" class="java.lang.String"/>
+	<parameter name="fecha" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select
 (case when Left(Right(partida_cuenta,10),2)>= Right(Left(partida_cuenta,5),2) and Left(Right(partida_cuenta,10),2)>= Right(Left(partida_cuenta,8),2)
@@ -35,6 +36,7 @@ left join
 Sum(pago_compromiso) AS compromiso,
 Sum(pago_obligacion) AS obligacion
 FROM finan_pagos
+where pago_fecha < $P{fecha} or pago_fecha is null
 GROUP BY pago_cod_proyecto) as b
 on a.proyectos_cod_proyecto = b.pago_cod_proyecto
 GROUP BY (case when Left(Right(partida_cuenta,10),2)>= Right(Left(partida_cuenta,5),2) and Left(Right(partida_cuenta,10),2)>= Right(Left(partida_cuenta,8),2)
