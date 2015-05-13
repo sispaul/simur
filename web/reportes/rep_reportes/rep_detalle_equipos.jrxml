@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_detalle_equipos" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="0" bottomMargin="20" uuid="feec31fc-91a4-46f7-b6cf-a421b8b7873a">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="codigo" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT
+DESC_CODIGO,
+ASIGNACION_NOMBRE,
+ASIGNACION_DESCRIPCION,
+ASIGNACION_DESCRIPCION1,
+ASIGNACION_ESTADO
+FROM CEI_ASIGNACION
+WHERE CATALOGO_CODIGO = (SELECT CATALOGO_CODIGO FROM CEI_CATALOGO_TABLAS where CATALOGO_DESCRIPCION = 'PROGRAMAS')
+and DESC_CODIGO = $P{codigo}]]>
+	</queryString>
+	<field name="DESC_CODIGO" class="java.lang.Integer"/>
+	<field name="ASIGNACION_NOMBRE" class="java.lang.String"/>
+	<field name="ASIGNACION_DESCRIPCION" class="java.lang.String"/>
+	<field name="ASIGNACION_DESCRIPCION1" class="java.lang.String"/>
+	<field name="ASIGNACION_ESTADO" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="26" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="a98fe01b-c00b-46ab-aedc-96553daea28f" x="1" y="2" width="750" height="23" backcolor="#999999"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="68027adc-ce3b-4c6f-8dfb-52fc9a0c4d3a" x="8" y="5" width="236" height="20" forecolor="#FFFFFF"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Programa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a7ed8553-1644-4d5a-99df-846f6da3ded8" x="254" y="5" width="204" height="20" forecolor="#FFFFFF"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[N° Licencia]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8c9830c3-0b4a-4f8d-a2c9-879b1d793a4f" x="458" y="5" width="188" height="20" forecolor="#FFFFFF"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo de Licencia]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0ec8b298-143c-4ed3-ad06-8c6f518918a8" x="646" y="5" width="100" height="20" forecolor="#FFFFFF"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estado]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="06b07108-76dc-44c6-9bd2-f1e83005355a" x="646" y="1" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ASIGNACION_ESTADO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="75ea2579-982d-4a5d-89a9-d9e5e7f0e1e6" x="8" y="0" width="236" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ASIGNACION_NOMBRE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="e330f326-9377-4d88-9a01-cd21d21bba75" x="254" y="1" width="204" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ASIGNACION_DESCRIPCION}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="36775617-0d24-4517-8c22-6b16b8dfddb2" x="458" y="1" width="188" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ASIGNACION_DESCRIPCION1}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
