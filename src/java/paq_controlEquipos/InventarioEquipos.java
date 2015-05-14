@@ -402,6 +402,29 @@ public class InventarioEquipos extends Pantalla {
     public void buscarItem() {
         TablaGenerica tabDato = accesoDatos.getCatalgoTablas(Integer.parseInt(tabAsignacion.getValor("catalogo_codigo")));
         if (!tabDato.isEmpty()) {
+            if (tabDato.getValor("catalogo_descripcion").endsWith("FUNCIONARIO")) {
+                TablaGenerica tabDato1 = accesoDatos.getEsatdoReg(Integer.parseInt(tabAsignacion.getValor("catalogo_codigo")), Integer.parseInt(tabAsignacion.getValor("desc_codigo")));
+                System.err.println("ing");
+                if (!tabDato1.isEmpty()) {
+                    if (tabDato1.getValor("asignacion_estado").endsWith("Asignar")) {
+                        utilitario.agregarMensaje("Dar de Baja al Funcionario Anterior", null);
+                    } else {
+                        ventana();
+                    }
+                } else {
+                    System.err.println("ing2");
+                }
+            } else {
+                ventana();
+            }
+        } else {
+            utilitario.agregarMensaje("Selecione una Opción", null);
+        }
+    }
+
+    public void ventana() {
+        TablaGenerica tabDato = accesoDatos.getCatalgoTablas(Integer.parseInt(tabAsignacion.getValor("catalogo_codigo")));
+        if (!tabDato.isEmpty()) {
             dialogoa.Limpiar();
             dialogoa.setDialogo(grid);
             grida.getChildren().add(setDatos);
@@ -554,17 +577,20 @@ public class InventarioEquipos extends Pantalla {
             }
         } else if (tabAsignacion.isFocus()) {
             if (tabAsignacion.getValor("asignacion_codigo") != null) {
-                TablaGenerica tabDatopro = accesoDatos.getCatalogoDatosql("*", tabAsignacion.getTabla(), "asignacion_codigo=" + tabAsignacion.getValor("asignacion_codigo") + "");
-                if (!tabDatopro.isEmpty()) {
-                    TablaGenerica tabInfo = accesoDatos.getInfoTabla(tabAsignacion.getTabla());
-                    if (!tabInfo.isEmpty()) {
-                        for (int i = 1; i < Integer.parseInt(tabInfo.getValor("NumeroCampos") + 1); i++) {
-                            if (i != 1) {
-                                TablaGenerica tabInfoColum = accesoDatos.getInfoCampoTabla(tabAsignacion.getTabla(), i);
-                                if (!tabInfoColum.isEmpty()) {
-                                    if (tabAsignacion.getValor(tabInfoColum.getValor("Column_Name")).equals(tabDatopro.getValor(tabInfoColum.getValor("Column_Name")))) {
-                                    } else {
-                                        accesoDatos.setActuaProve(Integer.parseInt(tabAsignacion.getValor("asignacion_codigo")), tabAsignacion.getTabla(), tabInfoColum.getValor("Column_Name"), tabAsignacion.getValor(tabInfoColum.getValor("Column_Name")), "asignacion_codigo");
+                TablaGenerica tabDatopro1 = accesoDatos.getCatalogoDatosql("*", tabAsignacion.getTabla(), "asignacion_codigo=" + tabAsignacion.getValor("asignacion_codigo") + "");
+                if (!tabDatopro1.isEmpty()) {
+                    TablaGenerica tabInfo1 = accesoDatos.getInfoTabla(tabAsignacion.getTabla());
+                    if (!tabInfo1.isEmpty()) {
+                        for (int j = 1; j < Integer.parseInt(tabInfo1.getValor("NumeroCampos")); j++) {
+                            if (j != 1) {
+                                TablaGenerica tabInfoColum1 = accesoDatos.getInfoCampoTabla(tabAsignacion.getTabla(), j);
+                                if (!tabInfoColum1.isEmpty()) {
+                                    try {
+                                        if (tabAsignacion.getValor(tabInfoColum1.getValor("Column_Name")).equals(tabDatopro1.getValor(tabInfoColum1.getValor("Column_Name")))) {
+                                        } else {
+                                            accesoDatos.setActuaProve(Integer.parseInt(tabAsignacion.getValor("asignacion_codigo")), tabAsignacion.getTabla(), tabInfoColum1.getValor("Column_Name"), tabAsignacion.getValor(tabInfoColum1.getValor("Column_Name")), "asignacion_codigo");
+                                        }
+                                    } catch (NullPointerException e) {
                                     }
                                 }
                             }
