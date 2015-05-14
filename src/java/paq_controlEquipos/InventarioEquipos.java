@@ -46,14 +46,18 @@ public class InventarioEquipos extends Pantalla {
     private SeleccionTabla setRegistros = new SeleccionTabla();
     private Dialogo dialogoa = new Dialogo();
     private Dialogo dialogot = new Dialogo();
+    private Dialogo dialogor = new Dialogo();
     private Grid grid = new Grid();
     private Grid gridt = new Grid();
     private Grid grida = new Grid();
+    private Grid gridr = new Grid();
     private Grid gridat = new Grid();
+    private Grid gridrt = new Grid();
     private Panel panOpcion = new Panel();
     private Combo cmbLicencia = new Combo();
     private Combo cmbModelo = new Combo();
     private Combo cmbTipo = new Combo();
+    private Combo cmbFuncionarios = new Combo();
     private AutoCompletar autBusca = new AutoCompletar();
     @EJB
     private Procesos accesoDatos = (Procesos) utilitario.instanciarEJB(Procesos.class);
@@ -86,6 +90,14 @@ public class InventarioEquipos extends Pantalla {
 
         cmbTipo.setId("cmbTipo");
         cmbTipo.setCombo("SELECT distinct DESC_TIPO_EQUIPO as id,DESC_TIPO_EQUIPO FROM CEI_DESCRIPCION_EQUIPOS");
+
+        cmbFuncionarios.setId("cmbFuncionarios");
+        cmbFuncionarios.setCombo("SELECT DISTINCT\n"
+                + "ASIGNACION_NOMBRE,\n"
+                + "ASIGNACION_NOMBRE as Funcionario\n"
+                + "FROM CEI_ASIGNACION\n"
+                + "WHERE CATALOGO_CODIGO = (SELECT CATALOGO_CODIGO FROM CEI_CATALOGO_TABLAS where CATALOGO_DESCRIPCION = 'FUNCIONARIO')\n"
+                + "and ASIGNACION_NOMBRE is not null");
 
         Boton bot_busca = new Boton();
         bot_busca.setValue("Busqueda Avanzada");
@@ -133,6 +145,15 @@ public class InventarioEquipos extends Pantalla {
         dialogot.getBot_aceptar().setMetodo("aceptDato");
         gridt.setColumns(4);
         agregarComponente(dialogot);
+
+        dialogor.setId("dialogor");
+        dialogor.setTitle("ESCOGA FUNCIONARIO"); //titulo
+        dialogor.setWidth("45%"); //siempre en porcentajes  ancho
+        dialogor.setHeight("40%");//siempre porcentaje   alto
+        dialogor.setResizable(false); //para que no se pueda cambiar el tamaño
+        dialogor.getBot_aceptar().setMetodo("aceptarDialogo");
+        gridr.setColumns(4);
+        agregarComponente(dialogor);
 
         dibujaPantalla();
 
@@ -214,23 +235,8 @@ public class InventarioEquipos extends Pantalla {
         limpiarPanel();
         tabEquipo.setId("tabEquipo");
         tabEquipo.setTabla("cei_descripcion_equipos", "desc_codigo", 1);
-        List lista1 = new ArrayList();
-        Object fil11[] = {
-            "Bueno", "Bueno"
-        };
-        Object fil21[] = {
-            "De Baja", "De Baja"
-        };
-        Object fil31[] = {
-            "Regular", "Regular"
-        };
-        lista1.add(fil11);
-        lista1.add(fil21);
-        lista1.add(fil31);
-        tabEquipo.getColumna("desc_estado").setCombo(lista1);
-        tabEquipo.getColumna("desc_ultimo_mantenimiento").setLectura(true);
-        tabEquipo.getColumna("desc_serie").setMetodoChange("infEquipo");
-        tabEquipo.getColumna("desc_codigo_activo").setMetodoChange("infEquipo1");
+        tabEquipo.getColumna("desc_serie").setMetodoChange("infEquipo1");
+        tabEquipo.getColumna("desc_codigo_activo").setMetodoChange("infEquipo");
         tabEquipo.agregarRelacion(tabAccesorio);
         tabEquipo.agregarRelacion(tabAsignacion);
         tabEquipo.setTipoFormulario(true);
@@ -314,13 +320,16 @@ public class InventarioEquipos extends Pantalla {
     }
 
     public void infEquipo() {
-        TablaGenerica tabDato = accesoDatos.getInfoActivo(tabEquipo.getValor("desc_serie"));
+        TablaGenerica tabDato = accesoDatos.getInfoActivo(tabEquipo.getValor("desc_codigo_activo"));
         if (!tabDato.isEmpty()) {
-            tabEquipo.setValor("desc_codigo_activo", tabDato.getValor("codigo"));
+            tabEquipo.setValor("desc_serie", tabDato.getValor("serie"));
             tabEquipo.setValor("desc_marca", tabDato.getValor("marca"));
             tabEquipo.setValor("desc_modelo", tabDato.getValor("modelo"));
             tabEquipo.setValor("desc_descripcion", tabDato.getValor("des_activo"));
             tabEquipo.setValor("desc_tipo_equipo", tabDato.getValor("nombre"));
+            tabEquipo.setValor("desc_estado", tabDato.getValor("estado"));
+            tabEquipo.setValor("desc_proveedor", tabDato.getValor("casa_comercial"));
+            tabEquipo.setValor("desc_fecha_compra", tabDato.getValor("fec_alta"));
             utilitario.addUpdate("tabEquipo");
         } else {
             utilitario.agregarMensaje("Equipo No Localizado en la Base de Activos", null);
@@ -328,13 +337,16 @@ public class InventarioEquipos extends Pantalla {
     }
 
     public void infEquipo1() {
-        TablaGenerica tabDato = accesoDatos.getInfoActivo1(tabEquipo.getValor("desc_codigo_activo"));
+        TablaGenerica tabDato = accesoDatos.getInfoActivo1(tabEquipo.getValor("desc_serie"));
         if (!tabDato.isEmpty()) {
             tabEquipo.setValor("desc_codigo_activo", tabDato.getValor("codigo"));
             tabEquipo.setValor("desc_marca", tabDato.getValor("marca"));
             tabEquipo.setValor("desc_modelo", tabDato.getValor("modelo"));
             tabEquipo.setValor("desc_descripcion", tabDato.getValor("des_activo"));
             tabEquipo.setValor("desc_tipo_equipo", tabDato.getValor("nombre"));
+            tabEquipo.setValor("desc_estado", tabDato.getValor("estado"));
+            tabEquipo.setValor("desc_proveedor", tabDato.getValor("casa_comercial"));
+            tabEquipo.setValor("desc_fecha_compra", tabDato.getValor("fec_alta"));
             utilitario.addUpdate("tabEquipo");
         } else {
             utilitario.agregarMensaje("Equipo No Localizado en la Base de Activos", null);
@@ -342,7 +354,7 @@ public class InventarioEquipos extends Pantalla {
     }
 
     public void infAccesorio() {
-        TablaGenerica tabDato = accesoDatos.getInfoActivo(tabAccesorio.getValor("acce_serie"));
+        TablaGenerica tabDato = accesoDatos.getInfoActivo1(tabAccesorio.getValor("acce_serie"));
         if (!tabDato.isEmpty()) {
             tabAccesorio.setValor("acce_codigo_activo", tabDato.getValor("codigo"));
             tabAccesorio.setValor("acce_marca", tabDato.getValor("marca"));
@@ -355,7 +367,7 @@ public class InventarioEquipos extends Pantalla {
     }
 
     public void infAccesorio1() {
-        TablaGenerica tabDato = accesoDatos.getInfoActivo1(tabAccesorio.getValor("acce_serie"));
+        TablaGenerica tabDato = accesoDatos.getInfoActivo(tabAccesorio.getValor("acce_codigo_activo"));
         if (!tabDato.isEmpty()) {
             tabAccesorio.setValor("acce_codigo_activo", tabDato.getValor("codigo"));
             tabAccesorio.setValor("acce_marca", tabDato.getValor("marca"));
@@ -508,13 +520,72 @@ public class InventarioEquipos extends Pantalla {
 
     @Override
     public void guardar() {
-        if (tabEquipo.guardar()) {
-            if (tabAccesorio.guardar()) {
+        if (tabEquipo.isFocus()) {
+//            if (tabEquipo.getValor("desc_codigo") != null) {
+//            } else {
+            if (tabEquipo.guardar()) {
+                guardarPantalla();
+            }
+//            }
+        } else if (tabAccesorio.isFocus()) {
+            if (tabAccesorio.getValor("acce_codigo") != null) {
+                TablaGenerica tabDatopro = accesoDatos.getCatalogoDatosql("*", tabAccesorio.getTabla(), "acce_codigo=" + tabAccesorio.getValor("acce_codigo") + "");
+                if (!tabDatopro.isEmpty()) {
+                    TablaGenerica tabInfo = accesoDatos.getInfoTabla(tabAccesorio.getTabla());
+                    if (!tabInfo.isEmpty()) {
+                        for (int i = 1; i < Integer.parseInt(tabInfo.getValor("NumeroCampos") + 1); i++) {
+                            if (i != 1) {
+                                TablaGenerica tabInfoColum = accesoDatos.getInfoCampoTabla(tabAccesorio.getTabla(), i);
+                                if (!tabInfoColum.isEmpty()) {
+                                    if (tabAccesorio.getValor(tabInfoColum.getValor("Column_Name")).equals(tabDatopro.getValor(tabInfoColum.getValor("Column_Name")))) {
+                                    } else {
+                                        accesoDatos.setActuaProve(Integer.parseInt(tabAccesorio.getValor("acce_codigo")), tabAccesorio.getTabla(), tabInfoColum.getValor("Column_Name"), tabAccesorio.getValor(tabInfoColum.getValor("Column_Name")), "acce_codigo");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                utilitario.agregarMensaje("Registro Actalizado", null);
+            } else {
+                if (tabAccesorio.guardar()) {
+                    guardarPantalla();
+                }
+            }
+        } else if (tabAsignacion.isFocus()) {
+            if (tabAsignacion.getValor("asignacion_codigo") != null) {
+                TablaGenerica tabDatopro = accesoDatos.getCatalogoDatosql("*", tabAsignacion.getTabla(), "asignacion_codigo=" + tabAsignacion.getValor("asignacion_codigo") + "");
+                if (!tabDatopro.isEmpty()) {
+                    TablaGenerica tabInfo = accesoDatos.getInfoTabla(tabAsignacion.getTabla());
+                    if (!tabInfo.isEmpty()) {
+                        for (int i = 1; i < Integer.parseInt(tabInfo.getValor("NumeroCampos") + 1); i++) {
+                            if (i != 1) {
+                                TablaGenerica tabInfoColum = accesoDatos.getInfoCampoTabla(tabAsignacion.getTabla(), i);
+                                if (!tabInfoColum.isEmpty()) {
+                                    if (tabAsignacion.getValor(tabInfoColum.getValor("Column_Name")).equals(tabDatopro.getValor(tabInfoColum.getValor("Column_Name")))) {
+                                    } else {
+                                        accesoDatos.setActuaProve(Integer.parseInt(tabAsignacion.getValor("asignacion_codigo")), tabAsignacion.getTabla(), tabInfoColum.getValor("Column_Name"), tabAsignacion.getValor(tabInfoColum.getValor("Column_Name")), "asignacion_codigo");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                utilitario.agregarMensaje("Registro Actalizado", null);
+            } else {
                 if (tabAsignacion.guardar()) {
                     guardarPantalla();
                 }
             }
         }
+    }
+
+    public void abrirFuncionario() {
+        dialogor.Limpiar();
+        dialogor.setDialogo(gridr);
+        gridrt.getChildren().add(cmbFuncionarios);
+        dialogor.setDialogo(gridrt);
+        dialogor.dibujar();
     }
 
     @Override
@@ -534,7 +605,11 @@ public class InventarioEquipos extends Pantalla {
             case "HISTORICO DE ASIGNACIONES":
                 aceptarDialogo();
                 break;
+            case "ASIGNACION FUNCIONARIO":
+                abrirFuncionario();
+                break;
         }
+
     }
 
     public void aceptarDialogo() {
@@ -542,6 +617,13 @@ public class InventarioEquipos extends Pantalla {
             case "HISTORICO DE ASIGNACIONES":
                 p_parametros.put("codigo", Integer.parseInt(tabEquipo.getValor("desc_codigo")) + "");
                 p_parametros.put("activo", tabEquipo.getValor("desc_codigo_activo") + "");
+                p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
+                rep_reporte.cerrar();
+                sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                sef_formato.dibujar();
+                break;
+            case "ASIGNACION FUNCIONARIO":
+                p_parametros.put("nombre", cmbFuncionarios.getValue() + "");
                 p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
                 rep_reporte.cerrar();
                 sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
