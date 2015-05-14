@@ -36,6 +36,36 @@ public class Procesos {
 
     }
 
+    public TablaGenerica getInfoTabla(String codigo) {
+        conSql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conSql();
+        tab_funcionario.setConexion(conSql);
+        tab_funcionario.setSql("SELECT Table_Name, COUNT(*) As NumeroCampos\n"
+                + "FROM Information_Schema.Columns\n"
+                + "WHERE Table_Name = '" + codigo + "'\n"
+                + "GROUP BY Table_Name");
+        tab_funcionario.ejecutarSql();
+        conSql.desconectar();
+        conSql = null;
+        return tab_funcionario;
+    }
+
+    public TablaGenerica getInfoCampoTabla(String codigo, Integer valor) {
+        conSql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conSql();
+        tab_funcionario.setConexion(conSql);
+        tab_funcionario.setSql("SELECT ordinal_position,Column_Name,data_type\n"
+                + "FROM Information_Schema.Columns\n"
+                + "WHERE Table_Name = '" + codigo + "' and ordinal_position =" + valor + "\n"
+                + "ORDER BY ordinal_position");
+        tab_funcionario.ejecutarSql();
+        conSql.desconectar();
+        conSql = null;
+        return tab_funcionario;
+    }
+
     public TablaGenerica getCatalgoTablas(Integer codigo) {
         conSql();
         TablaGenerica tab_funcionario = new TablaGenerica();
@@ -175,28 +205,24 @@ public class Procesos {
         TablaGenerica tab_funcionario = new TablaGenerica();
         conPostgresql();
         tab_funcionario.setConexion(conPostgres);
-        tab_funcionario.setSql("select  \n"
-                + "ide_activo,codigo, \n"
-                + "nombre,des_activo, \n"
-                + "marca,modelo,serie, \n"
-                + "(select ide_descripcion from afi_estado where ide_estado_activo = a.ide_estado_activo)as estado \n"
-                + ",des_oficina,  \n"
-                + "vida_util, \n"
-                + "(select des_custodio from afi_custodio where ide_custodio = a.ide_custodio) as responsable, \n"
-                + "egreso_bodega, \n"
-                + "des_direccion,des_dependencia  \n"
-                + "from afi_activos a  \n"
-                + "inner join afi_ubicacion d on a.ide_ubicacion= d.ide_ubicacion  \n"
-                + "inner join afi_tipo_activo b on a.ide_tipo_activo = b.ide_tipo_activo  \n"
-                + "inner join afi_estado c on a.ide_estado_activo= c.ide_estado_activo  \n"
-                + "left join (Select a.id_ubica, \n"
-                + "b.des_oficina,c.des_direccion,d.des_dependencia  from afi_ubica a,afi_oficina b,afi_direccion c, \n"
-                + "afi_dependencia d  \n"
-                + "where b.id_oficina=a.id_oficina and  \n"
-                + "a.id_direccion =c.id_direccion and  \n"
-                + "a.id_dependencia=d.id_dependencia order by des_oficina)p  \n"
-                + "on p.id_ubica =a.id_ubica\n"
-                + "where serie = '" + codigo + "'");
+        tab_funcionario.setSql("select ide_activo,codigo,nombre,des_activo,marca,modelo,serie,\n"
+                + "(select ide_descripcion from afi_estado where ide_estado_activo = a.ide_estado_activo)as estado,\n"
+                + "fec_alta,\n"
+                + "(case when casa_comercial is null then 'S/CC' else casa_comercial end)as casa_comercial,\n"
+                + "(select des_custodio from afi_custodio where ide_custodio = a.ide_custodio) as responsable,\n"
+                + "(select cod_empleado from srh_empleado where nombres like (select des_custodio from afi_custodio where ide_custodio = a.ide_custodio)) as cod_empleado,\n"
+                + "(case when tipo ='A' then 'ACTIVO' when tipo ='BC' then 'BIENES DE CONTROL' when tipo='BM' then 'BIENES SALIDOS DE LA MUNICIPALIDAD' end) as des_ti,\n"
+                + "departamento,des_direccion,id_direccion,id_dependencia\n"
+                + "from afi_activos a \n"
+                + "inner join afi_ubicacion d on a.ide_ubicacion= d.ide_ubicacion \n"
+                + "inner join afi_tipo_activo b on a.ide_tipo_activo = b.ide_tipo_activo \n"
+                + "inner join afi_estado c on a.ide_estado_activo= c.ide_estado_activo \n"
+                + "left join (Select a.id_ubica,b.des_oficina as departamento,b.des_oficina,c.des_direccion,d.des_dependencia,c.id_direccion,\n"
+                + "d.id_dependencia  \n"
+                + "from afi_ubica a,afi_oficina b,afi_direccion c,afi_dependencia d \n"
+                + "where b.id_oficina=a.id_oficina and a.id_direccion =c.id_direccion and a.id_dependencia=d.id_dependencia \n"
+                + "order by des_oficina)p on p.id_ubica =a.id_ubica \n"
+                + "where codigo = '" + codigo + "'");
         tab_funcionario.ejecutarSql();
         conPostgres.desconectar();
         conPostgres = null;
@@ -209,28 +235,24 @@ public class Procesos {
         TablaGenerica tab_funcionario = new TablaGenerica();
         conPostgresql();
         tab_funcionario.setConexion(conPostgres);
-        tab_funcionario.setSql("select  \n"
-                + "ide_activo,codigo, \n"
-                + "nombre,des_activo, \n"
-                + "marca,modelo,serie, \n"
-                + "(select ide_descripcion from afi_estado where ide_estado_activo = a.ide_estado_activo)as estado \n"
-                + ",des_oficina,  \n"
-                + "vida_util, \n"
-                + "(select des_custodio from afi_custodio where ide_custodio = a.ide_custodio) as responsable, \n"
-                + "egreso_bodega, \n"
-                + "des_direccion,des_dependencia  \n"
-                + "from afi_activos a  \n"
-                + "inner join afi_ubicacion d on a.ide_ubicacion= d.ide_ubicacion  \n"
-                + "inner join afi_tipo_activo b on a.ide_tipo_activo = b.ide_tipo_activo  \n"
-                + "inner join afi_estado c on a.ide_estado_activo= c.ide_estado_activo  \n"
-                + "left join (Select a.id_ubica, \n"
-                + "b.des_oficina,c.des_direccion,d.des_dependencia  from afi_ubica a,afi_oficina b,afi_direccion c, \n"
-                + "afi_dependencia d  \n"
-                + "where b.id_oficina=a.id_oficina and  \n"
-                + "a.id_direccion =c.id_direccion and  \n"
-                + "a.id_dependencia=d.id_dependencia order by des_oficina)p  \n"
-                + "on p.id_ubica =a.id_ubica\n"
-                + "where codigo = '" + codigo + "'");
+        tab_funcionario.setSql("select ide_activo,codigo,nombre,des_activo,marca,modelo,serie,\n"
+                + "(select ide_descripcion from afi_estado where ide_estado_activo = a.ide_estado_activo)as estado,\n"
+                + "fec_alta,\n"
+                + "(case when casa_comercial is null then 'S/CC' else casa_comercial end)as casa_comercial,\n"
+                + "(select des_custodio from afi_custodio where ide_custodio = a.ide_custodio) as responsable,\n"
+                + "(select cod_empleado from srh_empleado where nombres like (select des_custodio from afi_custodio where ide_custodio = a.ide_custodio)) as cod_empleado,\n"
+                + "(case when tipo ='A' then 'ACTIVO' when tipo ='BC' then 'BIENES DE CONTROL' when tipo='BM' then 'BIENES SALIDOS DE LA MUNICIPALIDAD' end) as des_ti,\n"
+                + "departamento,des_direccion,id_direccion,id_dependencia\n"
+                + "from afi_activos a \n"
+                + "inner join afi_ubicacion d on a.ide_ubicacion= d.ide_ubicacion \n"
+                + "inner join afi_tipo_activo b on a.ide_tipo_activo = b.ide_tipo_activo \n"
+                + "inner join afi_estado c on a.ide_estado_activo= c.ide_estado_activo \n"
+                + "left join (Select a.id_ubica,b.des_oficina as departamento,b.des_oficina,c.des_direccion,d.des_dependencia,c.id_direccion,\n"
+                + "d.id_dependencia  \n"
+                + "from afi_ubica a,afi_oficina b,afi_direccion c,afi_dependencia d \n"
+                + "where b.id_oficina=a.id_oficina and a.id_direccion =c.id_direccion and a.id_dependencia=d.id_dependencia \n"
+                + "order by des_oficina)p on p.id_ubica =a.id_ubica \n"
+                + "where serie = '" + codigo + "'");
         tab_funcionario.ejecutarSql();
         conPostgres.desconectar();
         conPostgres = null;
