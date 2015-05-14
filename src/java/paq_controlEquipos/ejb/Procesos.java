@@ -105,6 +105,19 @@ public class Procesos {
 
     }
 
+    public TablaGenerica getEsatdoReg(Integer codigo,Integer catalogo) {
+        conSql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        conSql();
+        tab_funcionario.setConexion(conSql);
+        tab_funcionario.setSql("SELECT ASIGNACION_CODIGO,ASIGNACION_ESTADO FROM dbo.CEI_ASIGNACION where CATALOGO_CODIGO= "+codigo+" and DESC_CODIGO=" + catalogo);
+        tab_funcionario.ejecutarSql();
+        conSql.desconectar();
+        conSql = null;
+        return tab_funcionario;
+
+    }
+
     public TablaGenerica getCatalogoDatosql(String datos, String tabla, String condicion) {
         conSql();
         TablaGenerica tab_funcionario = new TablaGenerica();
