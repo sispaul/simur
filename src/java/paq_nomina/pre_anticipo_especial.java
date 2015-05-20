@@ -57,7 +57,6 @@ public class pre_anticipo_especial extends Pantalla {
     //buscar solicitud
     private AutoCompletar aut_busca = new AutoCompletar();
     //Cuadros para texto, busqueda reportes
-    private Texto txt_cedula = new Texto();
     private Texto tex_busqueda = new Texto();
     //Dialogo Busca 
     private Dialogo dia_dialogo = new Dialogo();
@@ -541,10 +540,10 @@ public class pre_anticipo_especial extends Pantalla {
 
     // BUSCAR GARANTE POR CEDULA
     public void llenarGarante() {
-        TablaGenerica tab_dato = iAnticipos.VerifGaranteid(tab_garante.getValor("ci_garante"));
-        if (!tab_dato.isEmpty()) {
-            utilitario.agregarMensaje("Garante No Disponible", "Se Encuentra En Otra Solicitud...");
-        } else {
+//        TablaGenerica tab_dato = iAnticipos.VerifGaranteid(tab_garante.getValor("ci_garante"));
+//        if (!tab_dato.isEmpty()) {
+//            utilitario.agregarMensaje("Garante No Disponible", "Se Encuentra En Otra Solicitud...");
+//        } else {
             if (utilitario.validarCedula(tab_garante.getValor("ci_garante"))) {
                 TablaGenerica tab_dato1 = iAnticipos.Garantemple1(tab_garante.getValor("ci_garante"));
                 if (!tab_dato1.isEmpty()) {
@@ -568,7 +567,7 @@ public class pre_anticipo_especial extends Pantalla {
             } else {
                 utilitario.agregarMensajeError("El Número de Cédula no es válido", "");
             }
-        }
+//        }
     }
 
     //BUSQUEDA POR NOMBRE DE GARANTE
@@ -592,10 +591,10 @@ public class pre_anticipo_especial extends Pantalla {
 
     public void aceptoColaborador() {
         if (set_colaborador.getValorSeleccionado() != null) {
-            TablaGenerica tab_dato1 = iAnticipos.VerifGaranteCod(Integer.parseInt(set_colaborador.getValorSeleccionado()));
-            if (!tab_dato1.isEmpty()) {
-                utilitario.agregarMensajeInfo("Garante, No Se Encuentra Disponible", "");
-            } else {
+//            TablaGenerica tab_dato1 = iAnticipos.VerifGaranteCod(Integer.parseInt(set_colaborador.getValorSeleccionado()));
+//            if (!tab_dato1.isEmpty()) {
+//                utilitario.agregarMensajeInfo("Garante, No Se Encuentra Disponible", "");
+//            } else {
                 TablaGenerica tab_dato = iAnticipos.GaranteNom(Integer.parseInt(set_colaborador.getValorSeleccionado()));
                 if (!tab_dato.isEmpty()) {
                     tab_garante.setValor("ide_empleado_garante", tab_dato.getValor("cod_empleado"));
@@ -617,7 +616,7 @@ public class pre_anticipo_especial extends Pantalla {
                         utilitario.agregarMensajeInfo("Garante No Cumple Requisitos", "");
                     }
                 }
-            }
+//            }
         } else {
             utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
         }

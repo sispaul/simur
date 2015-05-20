@@ -220,7 +220,7 @@ public class pre_reporte_anticipos extends Pantalla {
 
         } else {
             utilitario.agregarMensajeInfo("Filtros no válidos",
-                    "Debe ingresar los fitros de vehiculo y servicio");
+                    "Debe seleccionar valor");
         }
         return str_filtros;
     }

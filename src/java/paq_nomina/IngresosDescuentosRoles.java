@@ -127,6 +127,8 @@ public class IngresosDescuentosRoles extends Pantalla {
         tabTabla.setId("tabTabla");
         tabTabla.setConexion(conPostgres);
         tabTabla.setTabla("srh_descuento", "ide_descuento", 1);
+        tabTabla.getColumna("cedula").setFiltro(true);
+        tabTabla.getColumna("nombres").setFiltro(true);
         List listas = new ArrayList();
         Object filass1[] = {
             "1", "ROL"
@@ -427,36 +429,7 @@ public class IngresosDescuentosRoles extends Pantalla {
                         mDescuento.setFondosReserva(Integer.parseInt(setRoles.getValorSeleccionado()), Double.valueOf(tabDato.getValor("porcentaje_subsidio")), Integer.parseInt(comboDistributivo.getValue() + ""), "75,76", 0, 40, Integer.parseInt(tabDato1.getValor(i, "cod_empleado")));
                     }
                 }
-            } else //                if (setRoles.getValorSeleccionado().equals("92")) {// horas ext 100 empleado
-            //                for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
-            //                    try {
-            //                        mDescuento.setHoras100_50(tabTabla.getValor(i, "cedula"), Integer.parseInt(setRoles.getValorSeleccionado()), Integer.parseInt(comboDistributivo.getValue() + ""), Double.parseDouble(tabTabla.getValor(i, "valor")), Double.parseDouble("2"));
-            //                    } catch (NumberFormatException e) {
-            //                    }
-            //                }
-            //            } else if (setRoles.getValorSeleccionado().equals("75")) {// horas ext 100 trabajador
-            //                for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
-            //                    try {
-            //                        mDescuento.setHoras100_50(tabTabla.getValor(i, "cedula"), Integer.parseInt(setRoles.getValorSeleccionado()), Integer.parseInt(comboDistributivo.getValue() + ""), Double.parseDouble(tabTabla.getValor(i, "valor")), Double.parseDouble("2"));
-            //                    } catch (NumberFormatException e) {
-            //                    }
-            //                }
-            //            } else if (setRoles.getValorSeleccionado().equals("93")) {// horas ext 25 empleado
-            //                for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
-            //                    try {
-            //                        mDescuento.setHoras25(tabTabla.getValor(i, "cedula"), Integer.parseInt(setRoles.getValorSeleccionado()), Integer.parseInt(comboDistributivo.getValue() + ""), Double.parseDouble(tabTabla.getValor(i, "valor")));
-            //                    } catch (NumberFormatException e) {
-            //                    }
-            //                }
-            //            } else if (setRoles.getValorSeleccionado().equals("76")) {// horas ext 50 trabajador
-            //                for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
-            //                    try {
-            //                        mDescuento.setHoras100_50(tabTabla.getValor(i, "cedula"), Integer.parseInt(setRoles.getValorSeleccionado()), Integer.parseInt(comboDistributivo.getValue() + ""), Double.parseDouble(tabTabla.getValor(i, "valor")), Double.parseDouble("1.5"));
-            //                    } catch (NumberFormatException e) {
-            //                    }
-            //                }
-            //                tabTabla.actualizar();
-            //            } else 
+            } else 
             {
                 for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
                     mDescuento.ActualizaDatos(tabTabla.getValor(i, "cedula"), Integer.parseInt(setRoles.getValorSeleccionado()), Integer.parseInt(comboDistributivo.getValue() + ""));
