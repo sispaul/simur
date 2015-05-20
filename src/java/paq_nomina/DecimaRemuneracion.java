@@ -27,7 +27,6 @@ public class DecimaRemuneracion extends Pantalla {
     private Tabla tabDecimos = new Tabla();
     private Conexion conPostgres = new Conexion();
     private Panel panOpcion = new Panel();
-    private Combo comboParametros = new Combo();
     private Combo comboDistributivo = new Combo();
     private Combo comboAcciones = new Combo();
     @EJB
@@ -55,20 +54,6 @@ public class DecimaRemuneracion extends Pantalla {
         bar_botones.agregarComponente(comboAcciones);
         bar_botones.agregarSeparador();
 
-        comboParametros.setId("comboParametros");
-        List lista = new ArrayList();
-        Object fila1[] = {
-            "1", "Empleados"
-        };
-        Object fila2[] = {
-            "2", "Trabajadores"
-        };
-        lista.add(fila1);;
-        lista.add(fila2);;
-        comboParametros.setCombo(lista);
-        bar_botones.agregarComponente(new Etiqueta("Tipo : "));
-        bar_botones.agregarComponente(comboParametros);
-
         comboDistributivo.setId("comboDistributivo");
         comboDistributivo.setConexion(conPostgres);
         comboDistributivo.setCombo("select periodo_columna as columna,periodo_columna from srh_periodo_sueldo where periodo_estado = 'S'");
@@ -86,9 +71,6 @@ public class DecimaRemuneracion extends Pantalla {
         tabDecimos.setConexion(conPostgres);
         tabDecimos.setTabla("srh_decimo_cuarto_tercero", "decimo_id", 1);
         tabDecimos.getColumna("decimo_cod_empleado").setLectura(true);
-        tabDecimos.getColumna("decimo_columna").setVisible(false);
-        tabDecimos.getColumna("decimo_tipo_empleado").setVisible(false);
-        tabDecimos.getColumna("decimo_columna").setVisible(false);
         tabDecimos.setRows(20);
         tabDecimos.dibujar();
 
@@ -116,21 +98,6 @@ public class DecimaRemuneracion extends Pantalla {
     public void setMigraRoles() {
         TablaGenerica tabDato = mDescuento.VerificarRol();
         if (!tabDato.isEmpty()) {
-            if (comboParametros.getValue().equals("1")) {
-                if (comboDistributivo.getValue().equals("D3")) {
-                } else if (comboDistributivo.getValue().equals("D4")) {
-                } else {
-                    utilitario.agregarMensaje("Debe Escoger Remuneración a Calcular", "");
-                }
-            } else if (comboParametros.getValue().equals("2")) {
-                if (comboDistributivo.getValue().equals("D3")) {
-                } else if (comboDistributivo.getValue().equals("D4")) {
-                } else {
-                    utilitario.agregarMensaje("Debe Escoger Remuneración a Calcular", "");
-                }
-            } else {
-                utilitario.agregarMensaje("Debe escoger un Tipo Servidor", "");
-            }
         } else {
             utilitario.agregarMensaje("No Puede Ser Subido a Rol", "Periodo de Rol Aun No Creado");
         }
