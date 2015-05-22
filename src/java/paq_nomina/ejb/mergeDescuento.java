@@ -5,6 +5,7 @@
 package paq_nomina.ejb;
 
 import framework.aplicacion.TablaGenerica;
+import java.math.BigDecimal;
 import javax.ejb.Stateless;
 import paq_sistema.aplicacion.Utilitario;
 import persistencia.Conexion;
@@ -367,8 +368,32 @@ public class mergeDescuento {
     }
 
     public void setDatosServidor(String login) {
-        String strSql = "insert into srh_autorizacion_acumulacion (autoriza_cod_empleado,autoriza_empleado,autoriza_id_distributivo,autoriza_anio,autoriza_login_ingreso,autoriza_fecha_ingreso) \n"
-                + "SELECT cod_empleado,nombres,id_distributivo,'" + utilitario.getAnio(utilitario.getFechaActual()) + "' ,'"+login+"' ,'" + utilitario.getFechaActual() + "'  from srh_empleado where estado = 1 order by nombres";
+        String strSql = "insert into srh_autorizacion_acumulacion (autoriza_cod_empleado,autoriza_empleado,autoriza_id_distributivo,autoriza_fecha_ingreso,autoriza_fecha_final,autoriza_anio,autoriza_decimo_tercero,autoriza_decimo_cuarto,autoriza_fondos_reserva,autoriza_login_ingreso,autoriza_fecha_creacion)\n"
+                + "SELECT\n"
+                + "cod_empleado,\n"
+                + "nombres,\n"
+                + "id_distributivo,\n"
+                + "(SELECT max( fecha_contrato ) from srh_num_contratos where cod_empleado = srh_empleado.cod_empleado ) as fecha_contrato, \n"
+                + "(SELECT max(fecha_fin) from srh_num_contratos where cod_empleado = srh_empleado.cod_empleado) as fecha_fin,\n"
+                + "'" + utilitario.getAnio(utilitario.getFechaActual()) + "',\n"
+                + "'1',\n"
+                + "'1',\n"
+                + "'1',\n"
+                + "'" + login + "' ,\n"
+                + "'" + utilitario.getFechaActual() + "'  \n"
+                + "FROM srh_empleado\n"
+                + "WHERE estado = 1\n"
+                + "ORDER BY id_distributivo,nombres";
+        conPostgresql();
+        conPostgres.ejecutarSql(strSql);
+        conPostgres.desconectar();
+        conPostgres = null;
+    }
+
+    public void setDatosCalculo(String codigo, String empleado, String columna, Double valor, String estado,
+            Double rmu, Double hxe, Double subrogacion, String distributivo) {
+        String strSql = "insert into srh_decimo_cuarto_tercero (decimo_cod_empleado,decimo_empleado,decimo_columna,decimo_anio,decimo_periodo,decimo_valor,decimo_estado,decimo_rmu,decimo_horas_extra,decimo_subrogacion,decimo_id_distributivo)\n"
+                + "values ('" + codigo + "','" + empleado + "','" + columna + "','" + utilitario.getAnio(utilitario.getFechaActual()) + "','" + utilitario.getMes(utilitario.getFechaActual()) + "'," + valor + ",'" + estado + "'," + rmu + "," + hxe + "," + subrogacion + ",'" + distributivo + "')";
         conPostgresql();
         conPostgres.ejecutarSql(strSql);
         conPostgres.desconectar();
@@ -525,6 +550,116 @@ public class mergeDescuento {
         tabFuncionario.setSql("SELECT ano,ide_periodo,descuento,cedula,nombres,ide_empleado,fondos_reserva\n"
                 + "from srh_valor_roles_historial\n"
                 + "where ide_periodo=" + codigo + " and ano = '" + anio + "' and ide_empleado= '" + empleado + "'");
+        tabFuncionario.ejecutarSql();
+        conPostgres.desconectar();
+        conPostgres = null;
+        return tabFuncionario;
+    }
+
+    public TablaGenerica getInfoD3T(String anio, Integer codigo, String empleado) {
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT ano,ide_periodo,descuento,cedula,nombres,ide_empleado,fondos_reserva\n"
+                + "from srh_valor_roles_historial\n"
+                + "where ide_periodo=" + codigo + " and ano = '" + anio + "' and ide_empleado= '" + empleado + "'");
+        tabFuncionario.ejecutarSql();
+        conPostgres.desconectar();
+        conPostgres = null;
+        return tabFuncionario;
+    }
+
+    public TablaGenerica getInfoD4T(String anio, Integer codigo, String empleado) {
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT ano,ide_periodo,descuento,cedula,nombres,ide_empleado,fondos_reserva\n"
+                + "from srh_valor_roles_historial\n"
+                + "where ide_periodo=" + codigo + " and ano = '" + anio + "' and ide_empleado= '" + empleado + "'");
+        tabFuncionario.ejecutarSql();
+        conPostgres.desconectar();
+        conPostgres = null;
+        return tabFuncionario;
+    }
+
+    public TablaGenerica getCalculoD3T(Integer anio, Integer periodo) {
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("select  \n"
+                + "a.autoriza_cod_empleado, \n"
+                + "a.autoriza_empleado, \n"
+                + "a.remuneracion , \n"
+                + "a.autoriza_id_distributivo, \n"
+                + "a.autoriza_anio, \n"
+                + "a.autoriza_decimo_tercero, \n"
+                + "(case when b.horas_extras is null then 0 when b.horas_extras is not null then b.horas_extras end) as hxe , \n"
+                + "(case when c.sub_rogacion is null then 0 when c.sub_rogacion is not null then c.sub_rogacion end) as sbr,\n"
+                + "autoriza_fecha_ingreso\n"
+                + " from ( \n"
+                + "SELECT\n"
+                + "autoriza_cod_empleado,\n"
+                + "autoriza_empleado,\n"
+                + "(SELECT remuneracion from srh_empleado \n"
+                + "where cast(srh_empleado.cod_empleado as VARCHAR) = srh_autorizacion_acumulacion.autoriza_cod_empleado) AS remuneracion,\n"
+                + "autoriza_id_distributivo,\n"
+                + "autoriza_anio,\n"
+                + "autoriza_decimo_tercero,\n"
+                + "autoriza_fecha_ingreso\n"
+                + "from srh_autorizacion_acumulacion\n"
+                + " ) as a \n"
+                + " left join  \n"
+                + " (select e.cod_empleado,sum(r.valor) as horas_extras  \n"
+                + " from srh_roles as r, prec_programas as  p, srh_empleado as e  \n"
+                + " where e.cod_empleado=r.ide_empleado  \n"
+                + " and ano= " + anio + " \n"
+                + " and id_distributivo_roles=2 \n"
+                + " and ide_periodo=" + periodo + " \n"
+                + " and ide_columnas in (75,76) \n"
+                + " and r.ide_programa=p.ide_programa \n"
+                + " and valor>0 \n"
+                + " group by e.cod_empleado \n"
+                + " )as b \n"
+                + " on a.autoriza_cod_empleado = cast(b.cod_empleado as VARCHAR) \n"
+                + " left join  \n"
+                + " (select e.cod_empleado,sum(r.valor) as sub_rogacion  \n"
+                + " from srh_roles as r, prec_programas as  p, srh_empleado as e \n"
+                + " where e.cod_empleado=r.ide_empleado \n"
+                + " and ano= " + anio + " \n"
+                + " and id_distributivo_roles=1 \n"
+                + " and ide_periodo=" + periodo + " \n"
+                + " and ide_columnas in (18) \n"
+                + " and r.ide_programa=p.ide_programa \n"
+                + " and valor>0 \n"
+                + " group by e.cod_empleado \n"
+                + " )as c \n"
+                + " on a.autoriza_cod_empleado = cast(c.cod_empleado as VARCHAR) \n"
+                + " order by autoriza_id_distributivo,autoriza_empleado");
+        tabFuncionario.ejecutarSql();
+        conPostgres.desconectar();
+        conPostgres = null;
+        return tabFuncionario;
+    }
+
+    public TablaGenerica getCalculoD4T() {
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT \n"
+                + "autoriza_cod_empleado, \n"
+                + "autoriza_empleado, \n"
+                + "(SELECT remuneracion from srh_empleado \n"
+                + "where cast(srh_empleado.cod_empleado as VARCHAR) = srh_autorizacion_acumulacion.autoriza_cod_empleado) as remuneracion, \n"
+                + "autoriza_id_distributivo, \n"
+                + "autoriza_anio, \n"
+                + "autoriza_decimo_cuarto, \n"
+                + "((SELECT porcentaje_subsidio from srh_columnas where ide_col in (25,70) and cast(distributivo as VARCHAR)=srh_autorizacion_acumulacion.autoriza_id_distributivo))as valor ,\n"
+                + "autoriza_fecha_ingreso\n"
+                + "from srh_autorizacion_acumulacion ");
         tabFuncionario.ejecutarSql();
         conPostgres.desconectar();
         conPostgres = null;
