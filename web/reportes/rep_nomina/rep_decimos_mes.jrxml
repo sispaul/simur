@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep]_decimos_mes" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8b94848f-173b-4ca3-8cf5-18764b7dd4dd">
+	<property name="ireport.zoom" value="1.7715610000000017"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="nom_resp" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["el que imprimio"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="anio" class="java.lang.String"/>
+	<parameter name="periodo" class="java.lang.String"/>
+	<parameter name="servidor" class="java.lang.String"/>
+	<parameter name="parametro" class="java.lang.String"/>
+	<parameter name="acumula" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+decimo_id,
+decimo_cod_empleado,
+decimo_empleado,
+decimo_rmu,
+decimo_horas_extra,
+decimo_subrogacion,
+(SELECT descripcion_col from srh_columnas where cast(ide_col as VARCHAR) = srh_decimo_cuarto_tercero.decimo_columna) as columna,
+decimo_anio,
+decimo_periodo,
+decimo_valor,
+(case when decimo_estado = '1' then 'Acumula' when decimo_estado = '0' then 'Pago Mes' end) as estado,
+(case when decimo_id_distributivo = '1' then 'Empleado' when decimo_id_distributivo = '2' then 'Trabajador' end) as distibutivo
+from srh_decimo_cuarto_tercero
+where decimo_anio= $P{anio} and decimo_periodo=$P{periodo} and decimo_columna=$P{parametro} and decimo_estado =$P{acumula}]]>
+	</queryString>
+	<field name="decimo_id" class="java.lang.Integer"/>
+	<field name="decimo_cod_empleado" class="java.lang.String"/>
+	<field name="decimo_empleado" class="java.lang.String"/>
+	<field name="decimo_rmu" class="java.math.BigDecimal"/>
+	<field name="decimo_horas_extra" class="java.math.BigDecimal"/>
+	<field name="decimo_subrogacion" class="java.math.BigDecimal"/>
+	<field name="columna" class="java.lang.String"/>
+	<field name="decimo_anio" class="java.lang.String"/>
+	<field name="decimo_periodo" class="java.lang.String"/>
+	<field name="decimo_valor" class="java.math.BigDecimal"/>
+	<field name="estado" class="java.lang.String"/>
+	<field name="distibutivo" class="java.lang.String"/>
+	<variable name="Suma" class="java.math.BigDecimal" resetType="Group" resetGroup="Acumula_Mes" calculation="Sum">
+		<variableExpression><![CDATA[$F{decimo_valor}]]></variableExpression>
+	</variable>
+	<variable name="general" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{decimo_valor}]]></variableExpression>
+	</variable>
+	<group name="Acumula_Mes">
+		<groupExpression><![CDATA[$F{estado}]]></groupExpression>
+		<groupHeader>
+			<band height="59">
+				<rectangle>
+					<reportElement uuid="e6b09ff3-36ab-4132-b6e7-180989154c99" x="0" y="37" width="555" height="22" forecolor="#999999" backcolor="#999999"/>
+				</rectangle>
+				<textField>
+					<reportElement uuid="f1f14e79-4a62-4c1f-b9c2-1cf099720ebf" x="80" y="0" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{estado}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="c1222cea-7089-4597-8324-6a1212156661" x="20" y="39" width="65" height="20" forecolor="#FFFFFF"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[CODIGO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="6e7c58f4-f2e7-431c-804c-a0ff04f3e3cf" x="85" y="39" width="215" height="20" forecolor="#FFFFFF"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[NOMBRES]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="680d3a73-9914-4756-b38b-38b3c56f5933" x="290" y="39" width="62" height="20" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[RMU]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="69b8b3a9-08f3-4900-bfd1-56ece6853ebd" x="362" y="39" width="62" height="20" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[HORAS EXT]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="bd7cc846-8c2d-4da9-a9c3-0ad43e07529f" x="424" y="39" width="62" height="20" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[SUBROGA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="5d1a16e9-4840-466f-96ce-cda2e207dfce" x="494" y="39" width="61" height="20" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[VALOR]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="60ba8441-d2f0-4bb1-8fb6-1bb7425f23ef" x="0" y="0" width="100" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Estado en Rol : ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="9d751df1-aa4f-482e-b567-85665c2c1ba1" x="0" y="39" width="34" height="20" forecolor="#FFFFFF"/>
+					<textElement verticalAlignment="Bottom">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[#]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="21">
+				<rectangle>
+					<reportElement uuid="d88d4476-a8ed-485a-93ad-ad4581d48cc0" x="239" y="1" width="296" height="20" backcolor="#999999"/>
+				</rectangle>
+				<textField>
+					<reportElement uuid="b1302188-275d-4dbe-a34f-42f89e6a0985" x="239" y="0" width="196" height="20" forecolor="#FFFFFF"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Total  Estado Rol  : "+$F{estado}+" : "]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="9181b86a-2450-4f24-bfbe-a3ca645d2f5d" x="435" y="1" width="100" height="20" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$V{Suma}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="73" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="cbf7a773-5113-4c02-9ffb-65f106983a81" x="10" y="0" width="270" height="42"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Gobierno Autónomo Descentralizado del Cantón Rumiñahui]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f5399a85-8bfc-494a-89c1-491f7a81e352" x="10" y="42" width="270" height="22"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Reporte de Decimos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="30b2e222-9247-44db-9454-e4cc70f340d7" x="332" y="11" width="57" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Año :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="97bdb9e1-6f80-4273-aca9-25e9f377a1e6" x="332" y="31" width="57" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Periodo : ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="114d3a26-1b8e-4533-8949-167a940e8ae9" x="332" y="51" width="57" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Servidor :]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="d6c8ea2e-89d3-49d1-8cb5-a5bf2ab410b0" x="389" y="32" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{decimo_periodo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1fca6d13-870b-4b33-9a21-55771c1a51f5" x="389" y="12" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{decimo_anio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3c4fdd2f-e68b-46b9-a349-4d3821988252" x="389" y="51" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{distibutivo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="3" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="3" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement uuid="e1f265e4-c193-4ae1-9825-b969ba6955be" x="20" y="1" width="65" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{decimo_cod_empleado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="379262e7-4eda-4ff3-b1ef-ad1c928506d2" x="85" y="0" width="215" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{decimo_empleado}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="bce7cbf5-17e9-4592-95c9-65d62e81581e" x="295" y="1" width="62" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{decimo_rmu}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="e856bdbd-fd01-4093-b3a4-29193998d804" x="362" y="1" width="62" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{decimo_horas_extra}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="6f9f8153-3925-4a0b-bd87-4e064b99202c" x="424" y="1" width="62" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{decimo_subrogacion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5c57216d-e295-405d-b85d-a345132e801d" x="494" y="1" width="61" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{decimo_valor}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="71a34220-3a1c-442a-9b8e-035578171da9" x="0" y="1" width="20" height="19"/>
+				<textElement verticalAlignment="Top">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="4" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17" splitType="Stretch">
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
+				<reportElement uuid="32a509bf-2fe8-468d-a756-df5ffdc382fc" key="textField" x="516" y="0" width="36" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="2fcca17f-b74f-40a3-8c39-87f32e6a19c4" key="textField" x="342" y="0" width="170" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="373b835f-c63d-40a4-a5f2-dc62ce16dde8" key="textField-1" x="198" y="0" width="90" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nom_resp}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="162d5727-6dbf-41db-a11a-a07059808031" key="textField-5" x="0" y="0" width="100" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="a4c93e3a-c4c2-48da-99bd-0907374e4030" x="304" y="0" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total General : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="1ae669d7-e1af-4537-88e4-deaa964de340" x="404" y="0" width="100" height="20"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{general}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
