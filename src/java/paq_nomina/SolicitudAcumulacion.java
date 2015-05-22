@@ -65,7 +65,7 @@ public class SolicitudAcumulacion extends Pantalla {
         bar_botones.agregarComponente(comboServidor);
 
         Boton botBuscar = new Boton();
-        botBuscar.setValue("Cargar Listado");
+        botBuscar.setValue("Filtar Listado");
         botBuscar.setExcluirLectura(true);
         botBuscar.setIcon("ui-icon-search");
         botBuscar.setMetodo("actuliLista");
@@ -75,12 +75,13 @@ public class SolicitudAcumulacion extends Pantalla {
         tabAcumulacion.setId("tabAcumulacion");
         tabAcumulacion.setConexion(conPostgres);
         tabAcumulacion.setTabla("srh_autorizacion_acumulacion", "autoriza_id", 1);
+        tabAcumulacion.getColumna("autoriza_empleado").setFiltro(true);
         List li = new ArrayList();
         Object fi1[] = {
             "1", "SI"
         };
         Object fi2[] = {
-            "2", "NO"
+            "0", "NO"
         };
         li.add(fi1);;
         li.add(fi2);;
@@ -90,7 +91,7 @@ public class SolicitudAcumulacion extends Pantalla {
             "1", "SI"
         };
         Object fil2[] = {
-            "2", "NO"
+            "0", "NO"
         };
         lis.add(fil1);;
         lis.add(fil2);;
@@ -100,17 +101,17 @@ public class SolicitudAcumulacion extends Pantalla {
             "1", "SI"
         };
         Object fils2[] = {
-            "2", "NO"
+            "0", "NO"
         };
         Object fils3[] = {
-            "3", "NO PAGO"
+            "2", "NO PAGO"
         };
         list.add(fils1);;
         list.add(fils2);;
         list.add(fils3);;
         tabAcumulacion.getColumna("autoriza_fondos_reserva").setRadio(list, "1");
         tabAcumulacion.getColumna("autoriza_login_ingreso").setVisible(false);
-        tabAcumulacion.getColumna("autoriza_fecha_ingreso").setVisible(false);
+        tabAcumulacion.getColumna("autoriza_fecha_creacion").setVisible(false);
         tabAcumulacion.setRows(20);
         tabAcumulacion.dibujar();
         PanelTabla pnt = new PanelTabla();

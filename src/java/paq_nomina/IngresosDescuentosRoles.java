@@ -429,8 +429,7 @@ public class IngresosDescuentosRoles extends Pantalla {
                         mDescuento.setFondosReserva(Integer.parseInt(setRoles.getValorSeleccionado()), Double.valueOf(tabDato.getValor("porcentaje_subsidio")), Integer.parseInt(comboDistributivo.getValue() + ""), "75,76", 0, 40, Integer.parseInt(tabDato1.getValor(i, "cod_empleado")));
                     }
                 }
-            } else 
-            {
+            } else {
                 for (int i = 0; i < tabTabla.getTotalFilas(); i++) {
                     mDescuento.ActualizaDatos(tabTabla.getValor(i, "cedula"), Integer.parseInt(setRoles.getValorSeleccionado()), Integer.parseInt(comboDistributivo.getValue() + ""));
                 }
@@ -535,6 +534,7 @@ public class IngresosDescuentosRoles extends Pantalla {
                                 p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
                                 rep_reporte.cerrar();
                                 sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                                System.err.println(p_parametros);
                                 sef_formato.dibujar();
                                 setRol.cerrar();
                             } else {
@@ -561,6 +561,7 @@ public class IngresosDescuentosRoles extends Pantalla {
                     p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
                     rep_reporte.cerrar();
                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+
                     sef_formato.dibujar();
                 } else {
                     utilitario.agregarMensajeInfo("no existe en la base de datos", "");
