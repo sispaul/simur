@@ -2,21 +2,21 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_detalle_acceso" language="groovy" pageWidth="595" pageHeight="842" columnWidth="575" leftMargin="0" rightMargin="20" topMargin="20" bottomMargin="0" uuid="5628f724-9f4b-41f5-b81f-5a105a22abf9">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="221"/>
+	<property name="ireport.y" value="242"/>
 	<parameter name="solicitud" class="java.lang.Integer"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
 s.id_solicitud_acceso,
-s.nombre_solicitante,
-s.nombre_usuario,
+(case when s.codigo_solicitante= '100' then funciones_usuario when s.codigo_solicitante<> '100' then s.nombre_solicitante end) as nombre_solicitante,
+(case when s.codigo_usuario= '100' then s.observaciones_perfil_usuario when s.codigo_usuario<> '100' then s.nombre_usuario end) as nombre_usuario,
 s.direccion_usuario,
-s.funciones_usuario,
+(case when s.codigo_usuario= '100' then null when s.codigo_usuario<> '100' then s.funciones_usuario end) as funciones_usuario,
 s.observaciones_perfil_usuario,
 s.fecha_acceso_usuario,
 s.login_acceso_usuario,
 s.password_acceso_usuario,
-s.nombre_asigna_acceso,
+(case when s.nombre_asigna_acceso is null then s.codigo_asigna_acceso when s.nombre_asigna_acceso is not null then s.nombre_asigna_acceso end ) as nombre_asigna_acceso,
 s.fechaing_solicitante,
 s.estado_solicitud,
 s.lectura_perfil_usuario,
@@ -29,16 +29,16 @@ m.nombre_modulo,
 d.nombre_dir,
 c.nombre_cargo,
 a.nombre_cargo AS cargo_usu,
-s.cedula_solicitante,
-s.cedula_usuario,
+(case when a.nombre_cargo is null then null when a.nombre_cargo is not null then s.cedula_solicitante end) as cedula_solicitante,
+(case when d.nombre_dir is null then null when d.nombre_dir is not null then s.cedula_usuario end) as cedula_usuario,
 s.memorando_acceso_usuario
 FROM sca_solicitud_acceso AS s
-INNER JOIN sca_sistemas AS i ON s.id_sistema = i.id_sistema
-INNER JOIN sca_perfiles AS p ON s.id_perfil = p.id_perfil
-INNER JOIN sca_modulos AS m ON m.id_sistema = i.id_sistema AND s.id_modulo = m.id_modulo AND p.id_modulo = m.id_modulo
-INNER JOIN srh_direccion as d ON d.cod_direccion = cast(s.direccion_solicitante as int4)
-INNER JOIN srh_cargos as c ON c.cod_cargo = cast(s.cargo_solicitante as int4)
-INNER JOIN srh_cargos as a ON a.cod_cargo = cast(s.cargo_usuario as int4)
+LEFT JOIN sca_sistemas AS i ON s.id_sistema = i.id_sistema
+LEFT JOIN sca_perfiles AS p ON s.id_perfil = p.id_perfil
+LEFT JOIN sca_modulos AS m ON m.id_sistema = i.id_sistema AND s.id_modulo = m.id_modulo AND p.id_modulo = m.id_modulo
+LEFT JOIN srh_direccion as d ON d.cod_direccion = cast(s.direccion_solicitante as int4)
+LEFT JOIN srh_cargos as c ON c.cod_cargo = cast(s.cargo_solicitante as int4)
+LEFT JOIN srh_cargos as a ON a.cod_cargo = cast(s.cargo_usuario as int4)
 where s.id_solicitud_acceso = $P{solicitud}]]>
 	</queryString>
 	<field name="id_solicitud_acceso" class="java.lang.Integer"/>
@@ -152,7 +152,7 @@ where s.id_solicitud_acceso = $P{solicitud}]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombre_usuario}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement uuid="a9964b58-a07f-4061-b8ae-6c281ae2201c" x="78" y="85" width="100" height="20"/>
 				<textElement>
 					<font size="9" isUnderline="false"/>

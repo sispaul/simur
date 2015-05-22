@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_historico_maquina" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a453e58d-dc9c-4aa8-83c3-a0dae19de4cb">
-	<property name="ireport.zoom" value="1.210000000000001"/>
+	<property name="ireport.zoom" value="1.5394743546921197"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="17"/>
+	<property name="ireport.y" value="53"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["C:\\Users\\p-sistemas\\Documents\\NetBeansProjects\\simur\\web\\reportes\\rep_reportes\\"]]></defaultValueExpression>
 	</parameter>
@@ -37,10 +37,12 @@ b.ACCE_MODELO,
 b.ACCE_ESTADO,
 b.ACCE_COMENTARIO,
 b.ACCE_FECHA_ASIGNACION,
-b.ACCE_FECHA_BAJA
+b.ACCE_FECHA_BAJA,
+a.DESC_NOMBRE_EQUIPO,
+a.DESC_PROVEEDOR,
+a.DESC_FECHA_COMPRA
 from
-(SELECT
-DESC_CODIGO,
+(SELECT DESC_CODIGO,
 DESC_CODIGO_ACTIVO,
 DESC_MARCA,
 DESC_MODELO,
@@ -52,7 +54,10 @@ DESC_RAM,
 DESC_PROCESADOR,
 DESC_VELOCIDAD_PROCESADOR,
 DESC_SUBRED,
-DESC_TIPO_EQUIPO
+DESC_TIPO_EQUIPO,
+DESC_NOMBRE_EQUIPO,
+DESC_PROVEEDOR,
+DESC_FECHA_COMPRA
 FROM CEI_DESCRIPCION_EQUIPOS
 where DESC_CODIGO = $P{codigo} and DESC_CODIGO_ACTIVO = $P{activo}
 ) as a
@@ -95,6 +100,9 @@ order by ACCE_ESTADO]]>
 	<field name="ACCE_COMENTARIO" class="java.lang.String"/>
 	<field name="ACCE_FECHA_ASIGNACION" class="java.lang.String"/>
 	<field name="ACCE_FECHA_BAJA" class="java.lang.String"/>
+	<field name="DESC_NOMBRE_EQUIPO" class="java.lang.String"/>
+	<field name="DESC_PROVEEDOR" class="java.lang.String"/>
+	<field name="DESC_FECHA_COMPRA" class="java.lang.String"/>
 	<group name="Funcionario">
 		<groupExpression><![CDATA[]]></groupExpression>
 	</group>
@@ -113,15 +121,15 @@ order by ACCE_ESTADO]]>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="180" splitType="Stretch">
+		<band height="192" splitType="Stretch">
 			<rectangle>
 				<reportElement uuid="8f98483e-073e-4bb8-86dd-2541c093a69b" x="2" y="0" width="271" height="40"/>
 			</rectangle>
 			<rectangle>
-				<reportElement uuid="ff677e22-2504-41be-92c6-c88d57e3b13b" x="0" y="160" width="802" height="20"/>
+				<reportElement uuid="ff677e22-2504-41be-92c6-c88d57e3b13b" x="0" y="172" width="802" height="20"/>
 			</rectangle>
 			<rectangle>
-				<reportElement uuid="d7bc281b-e3e7-435b-82c9-d25877ec9192" x="103" y="61" width="579" height="85"/>
+				<reportElement uuid="d7bc281b-e3e7-435b-82c9-d25877ec9192" x="103" y="61" width="579" height="109"/>
 			</rectangle>
 			<staticText>
 				<reportElement uuid="be078211-7f96-478e-8f5f-5a176b87c9c6" x="2" y="1" width="85" height="15"/>
@@ -232,7 +240,7 @@ order by ACCE_ESTADO]]>
 				<textFieldExpression><![CDATA[$F{DESC_RAM}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="667884ad-d9d8-4132-9fa7-e537702d2a2e" x="286" y="160" width="245" height="20"/>
+				<reportElement uuid="667884ad-d9d8-4132-9fa7-e537702d2a2e" x="292" y="172" width="245" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -256,6 +264,30 @@ order by ACCE_ESTADO]]>
 				<reportElement uuid="0efff804-1470-4ac8-b03a-abbf76e3c405" x="215" y="123" width="100" height="20"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{DESC_ESTADO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="900a48ca-1f62-4032-9c4c-08e3980fe95a" x="115" y="150" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Proveedor :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e42d068b-6f94-4b48-bb29-9a966f7a82da" x="469" y="150" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Compra :]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="9fec2995-5c97-49c3-8878-693faf29b1a6" x="215" y="150" width="237" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{DESC_PROVEEDOR}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="c20cc88e-064d-4691-8146-8d856de3af4b" x="569" y="150" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{DESC_FECHA_COMPRA}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
