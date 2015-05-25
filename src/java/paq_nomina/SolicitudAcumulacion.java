@@ -4,6 +4,7 @@
  // */
 package paq_nomina;
 
+import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
 import framework.componentes.Combo;
 import framework.componentes.Etiqueta;
@@ -96,20 +97,6 @@ public class SolicitudAcumulacion extends Pantalla {
         lis.add(fil1);;
         lis.add(fil2);;
         tabAcumulacion.getColumna("autoriza_decimo_tercero").setRadio(lis, "1");
-        List list = new ArrayList();
-        Object fils1[] = {
-            "1", "SI"
-        };
-        Object fils2[] = {
-            "0", "NO"
-        };
-        Object fils3[] = {
-            "2", "NO PAGO"
-        };
-        list.add(fils1);;
-        list.add(fils2);;
-        list.add(fils3);;
-        tabAcumulacion.getColumna("autoriza_fondos_reserva").setRadio(list, "1");
         tabAcumulacion.getColumna("autoriza_login_ingreso").setVisible(false);
         tabAcumulacion.getColumna("autoriza_fecha_creacion").setVisible(false);
         tabAcumulacion.setRows(20);
@@ -126,7 +113,16 @@ public class SolicitudAcumulacion extends Pantalla {
     }
 
     public void listado() {
-        mDescuento.setDatosServidor(utilitario.getVariable("NICK"));
+        TablaGenerica tabDato = mDescuento.getNumeroFilas();
+        if (!tabDato.isEmpty()) {
+            for (int i = 0; i < tabDato.getTotalFilas(); i++) {
+                TablaGenerica tabDatos = mDescuento.getNumFilas(tabDato.getValor(i, "cod_empleado"), String.valueOf(utilitario.getAnio(utilitario.getFechaActual())));
+                if (!tabDatos.isEmpty()) {
+                } else {
+                    mDescuento.setDatosServidor(utilitario.getVariable("NICK"), tabDato.getValor(i, "cod_empleado"));
+                }
+            }
+        }
         tabAcumulacion.actualizar();
     }
 
@@ -142,10 +138,10 @@ public class SolicitudAcumulacion extends Pantalla {
         // Forma y valida las condiciones de fecha y hora
         String str_filtros = "";
         if (tabAcumulacion.getValorSeleccionado() != null) {
-            str_filtros = "autoriza_anio ='" + String.valueOf(utilitario.getAnio(utilitario.getFechaActual()))+"'";
+            str_filtros = "autoriza_anio ='" + String.valueOf(utilitario.getAnio(utilitario.getFechaActual())) + "'";
 
         } else {
-            utilitario.agregarMensajeInfo("Información No Disponible  \n"+utilitario.getAnio(utilitario.getFechaActual())+" ",
+            utilitario.agregarMensajeInfo("Información No Disponible  \n" + utilitario.getAnio(utilitario.getFechaActual()) + " ",
                     "");
         }
         return str_filtros;
@@ -163,7 +159,7 @@ public class SolicitudAcumulacion extends Pantalla {
         // Forma y valida las condiciones de fecha y hora
         String str_filtros = "";
         if (tabAcumulacion.getValorSeleccionado() != null) {
-            str_filtros = "autoriza_id_distributivo ='" + String.valueOf(comboServidor.getValue())+"'";
+            str_filtros = "autoriza_id_distributivo ='" + String.valueOf(comboServidor.getValue()) + "'";
 
         } else {
             utilitario.agregarMensajeInfo("Filtros no válidos",
