@@ -367,8 +367,8 @@ public class mergeDescuento {
         conPostgres = null;
     }
 
-    public void setDatosServidor(String login) {
-        String strSql = "insert into srh_autorizacion_acumulacion (autoriza_cod_empleado,autoriza_empleado,autoriza_id_distributivo,autoriza_fecha_ingreso,autoriza_fecha_final,autoriza_anio,autoriza_decimo_tercero,autoriza_decimo_cuarto,autoriza_fondos_reserva,autoriza_login_ingreso,autoriza_fecha_creacion)\n"
+    public void setDatosServidor(String login, String codigo) {
+        String strSql = "insert into srh_autorizacion_acumulacion (autoriza_cod_empleado,autoriza_empleado,autoriza_id_distributivo,autoriza_fecha_ingreso,autoriza_fecha_final,autoriza_anio,autoriza_decimo_tercero,autoriza_decimo_cuarto,autoriza_login_ingreso,autoriza_fecha_creacion)\n"
                 + "SELECT\n"
                 + "cod_empleado,\n"
                 + "nombres,\n"
@@ -378,11 +378,10 @@ public class mergeDescuento {
                 + "'" + utilitario.getAnio(utilitario.getFechaActual()) + "',\n"
                 + "'1',\n"
                 + "'1',\n"
-                + "'1',\n"
                 + "'" + login + "' ,\n"
                 + "'" + utilitario.getFechaActual() + "'  \n"
                 + "FROM srh_empleado\n"
-                + "WHERE estado = 1\n"
+                + "WHERE estado = 1 and cod_empleado = '" + codigo + "'\n"
                 + "ORDER BY id_distributivo,nombres";
         conPostgresql();
         conPostgres.ejecutarSql(strSql);
@@ -660,6 +659,59 @@ public class mergeDescuento {
                 + "((SELECT porcentaje_subsidio from srh_columnas where ide_col in (25,70) and cast(distributivo as VARCHAR)=srh_autorizacion_acumulacion.autoriza_id_distributivo))as valor ,\n"
                 + "autoriza_fecha_ingreso\n"
                 + "from srh_autorizacion_acumulacion ");
+        tabFuncionario.ejecutarSql();
+        conPostgres.desconectar();
+        conPostgres = null;
+        return tabFuncionario;
+    }
+
+    public TablaGenerica getListEmpleados() {
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT\n"
+                + "cod_empleado, \n"
+                + "nombres, \n"
+                + "id_distributivo,\n"
+                + "(case when \n"
+                + "(SELECT max(fecha_contrato) from srh_num_contratos where cod_empleado = srh_empleado.cod_empleado) is NULL\n"
+                + "then srh_empleado.fecha_ingreso when (SELECT max(fecha_contrato) from srh_num_contratos where cod_empleado = srh_empleado.cod_empleado) is not NULL\n"
+                + "then (SELECT max(fecha_contrato) from srh_num_contratos where cod_empleado = srh_empleado.cod_empleado)end)\n"
+                + "as fecha_contrato,  \n"
+                + "(SELECT max(fecha_fin) from srh_num_contratos where cod_empleado = srh_empleado.cod_empleado) as fecha_fin \n"
+                + "FROM srh_empleado \n"
+                + "WHERE estado = 1  and id_distributivo is not null\n"
+                + "ORDER BY id_distributivo,nombres");
+        tabFuncionario.ejecutarSql();
+        conPostgres.desconectar();
+        conPostgres = null;
+        return tabFuncionario;
+    }
+
+    public TablaGenerica getNumeroFilas() {
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT cod_empleado,nombres,id_distributivo\n"
+                + "FROM srh_empleado \n"
+                + "WHERE estado = 1  and id_distributivo is not null\n"
+                + "ORDER BY id_distributivo,nombres");
+        tabFuncionario.ejecutarSql();
+        conPostgres.desconectar();
+        conPostgres = null;
+        return tabFuncionario;
+    }
+
+    public TablaGenerica getNumFilas(String codigo, String anio) {
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT autoriza_cod_empleado,autoriza_empleado,autoriza_id_distributivo\n"
+                + "from srh_autorizacion_acumulacion\n"
+                + "where autoriza_anio = '" + anio + "' and autoriza_cod_empleado = '" + codigo + "'");
         tabFuncionario.ejecutarSql();
         conPostgres.desconectar();
         conPostgres = null;
