@@ -39,6 +39,7 @@ public class DecimaRemuneracion extends Pantalla {
     private Conexion conPostgres = new Conexion();
     private Panel panOpcion = new Panel();
     private Combo comboDistributivo = new Combo();
+    private Combo comboDistributivo1 = new Combo();
     private Combo comboAcciones = new Combo();
     private Combo comboEmpleados = new Combo();
     private Combo comboEmpleados1 = new Combo();
@@ -73,12 +74,8 @@ public class DecimaRemuneracion extends Pantalla {
         Object filas2[] = {
             "2", "MIGRAR A ROL"
         };
-        Object filas3[] = {
-            "3", "LIMPIAR"
-        };
         list.add(filas1);;
         list.add(filas2);;
-        list.add(filas3);;
         comboAcciones.setCombo(list);
         bar_botones.agregarComponente(new Etiqueta("Acción : "));
         bar_botones.agregarComponente(comboAcciones);
@@ -96,6 +93,30 @@ public class DecimaRemuneracion extends Pantalla {
         bar_botones.agregarBoton(bot);
         bar_botones.agregarSeparador();
 
+
+        Grid gri_busca = new Grid();
+        gri_busca.setColumns(5);
+
+        gri_busca.getChildren().add(new Etiqueta("Tipo Servidor :"));
+        comboEmpleados1.setId("comboEmpleados1");
+        comboEmpleados1.setConexion(conPostgres);
+        comboEmpleados1.setCombo("SELECT id_distributivo,descripcion FROM srh_tdistributivo ORDER BY id_distributivo");
+        gri_busca.getChildren().add(comboEmpleados1);
+
+        gri_busca.getChildren().add(new Etiqueta("Sobre Sueldo :"));
+        comboDistributivo1.setId("comboDistributivo1");
+        comboDistributivo1.setConexion(conPostgres);
+        comboDistributivo1.setCombo("select periodo_columna as columna,periodo_columna from srh_periodo_sueldo where periodo_estado = 'S'");
+
+        Boton botb = new Boton();
+        botb.setValue("Filtra");
+        botb.setIcon("ui-icon-search"); //pone icono de jquery temeroller
+        botb.setMetodo("filtarLista");
+        bar_botones.agregarBoton(botb);
+
+        gri_busca.getChildren().add(comboDistributivo1);
+        gri_busca.getChildren().add(botb);
+
         tabDecimos.setId("tabDecimos");
         tabDecimos.setConexion(conPostgres);
         tabDecimos.setTabla("srh_decimo_cuarto_tercero", "decimo_id", 1);
@@ -112,10 +133,11 @@ public class DecimaRemuneracion extends Pantalla {
         tabDecimos.getColumna("decimo_cod_empleado").setLectura(true);
         tabDecimos.getColumna("decimo_id_distributivo").setVisible(false);
         tabDecimos.getColumna("decimo_empleado").setFiltro(true);
-        tabDecimos.setRows(20);
+        tabDecimos.setRows(18);
         tabDecimos.dibujar();
 
         PanelTabla pnt = new PanelTabla();
+        pnt.getChildren().add(gri_busca);
         pnt.setPanelTabla(tabDecimos);
 
         panOpcion.setId("panOpcion");
@@ -130,7 +152,6 @@ public class DecimaRemuneracion extends Pantalla {
         sef_formato.setConexion(conPostgres);
         agregarComponente(sef_formato);
 
-
         diaDialogosr.setId("diaDialogosr");
         diaDialogosr.setTitle("PARAMETROS DE REPORTE"); //titulo
         diaDialogosr.setWidth("35%"); //siempre en porcentajes  ancho
@@ -143,18 +164,6 @@ public class DecimaRemuneracion extends Pantalla {
         comboEmpleados.setId("comboEmpleados");
         comboEmpleados.setConexion(conPostgres);
         comboEmpleados.setCombo("SELECT id_distributivo,descripcion FROM srh_tdistributivo ORDER BY id_distributivo");
-
-        comboEmpleados1.setId("comboEmpleados1");
-        comboEmpleados1.setConexion(conPostgres);
-        comboEmpleados1.setCombo("SELECT id_distributivo,descripcion FROM srh_tdistributivo ORDER BY id_distributivo");
-        bar_botones.agregarComponente(comboEmpleados1);
-
-        Boton botb = new Boton();
-        botb.setValue("Filtra");
-        botb.setIcon("ui-icon-search"); //pone icono de jquery temeroller
-        botb.setMetodo("filtarLista");
-        bar_botones.agregarBoton(botb);
-        bar_botones.agregarSeparador();
 
         comboAnio.setId("comboAnio");
         comboAnio.setConexion(conPostgres);
@@ -192,6 +201,7 @@ public class DecimaRemuneracion extends Pantalla {
 
     public void cargarInfo() {
         if (comboAcciones.getValue().equals("1")) {//Información que Subira
+            
             if (comboDistributivo.getValue().equals("D3")) {
                 TablaGenerica tabDato3 = mDescuento.getCalculoD3T(utilitario.getAnio(utilitario.getFechaActual()), utilitario.getAnio(utilitario.getFechaActual()));
                 if (!tabDato3.isEmpty()) {
@@ -261,9 +271,9 @@ public class DecimaRemuneracion extends Pantalla {
                 }
                 tabDecimos.actualizar();
             }
+            
         } else if (comboAcciones.getValue().equals("2")) {//Subida a Roles
             setMigraRoles();
-        } else if (comboAcciones.getValue().equals("3")) {//Limpiar Datos
         } else {
             utilitario.agregarMensaje("Debe escoger una Acción a realizar", "");
         }
@@ -278,6 +288,15 @@ public class DecimaRemuneracion extends Pantalla {
                             tabDecimos.getValor(i, "decimo_cod_empleado"), Integer.parseInt(tabDecimos.getValor(i, "decimo_id_distributivo")));
                     if (!tabDatos.isEmpty()) {
                         mDescuento.setmigrarDescuento(tabDecimos.getValor(i, "decimo_cod_empleado"), Integer.parseInt(tabDecimos.getValor(i, "decimo_periodo")), Integer.parseInt(tabDecimos.getValor(i, "decimo_id_distributivo")), Integer.parseInt(tabDecimos.getValor(i, "decimo_columna")), tabConsulta.getValor("NICK_USUA"), "valor_ingreso", Integer.parseInt(tabDecimos.getValor(i, "decimo_anio")), Double.valueOf(tabDecimos.getValor(i, "decimo_valor")));
+                        utilitario.agregarMensaje("REGISTRO SUBIDO CON EXITO A ROLES", " ");
+                    } else {
+                        utilitario.agregarMensaje("Datos No Concuerdan en el Rol", tabDecimos.getValor(i, "decimo_empleado"));
+                    }
+                } else {
+                    TablaGenerica tabDatos = mDescuento.getConfirmaDatos(tabDecimos.getValor(i, "decimo_anio"), Integer.parseInt(tabDecimos.getValor(i, "decimo_periodo")),
+                            tabDecimos.getValor(i, "decimo_cod_empleado"), Integer.parseInt(tabDecimos.getValor(i, "decimo_id_distributivo")));
+                    if (!tabDatos.isEmpty()) {
+                        mDescuento.setmigrarDescuento(tabDecimos.getValor(i, "decimo_cod_empleado"), Integer.parseInt(tabDecimos.getValor(i, "decimo_periodo")), Integer.parseInt(tabDecimos.getValor(i, "decimo_id_distributivo")), Integer.parseInt(tabDecimos.getValor(i, "decimo_columna")), tabConsulta.getValor("NICK_USUA"), "valor_ingreso", Integer.parseInt(tabDecimos.getValor(i, "decimo_anio")), Double.valueOf(0.0));
                         utilitario.agregarMensaje("REGISTRO SUBIDO CON EXITO A ROLES", " ");
                     } else {
                         utilitario.agregarMensaje("Datos No Concuerdan en el Rol", tabDecimos.getValor(i, "decimo_empleado"));
@@ -335,21 +354,25 @@ public class DecimaRemuneracion extends Pantalla {
 
     private String getFiltroLista() {
         // Forma y valida las condiciones de fecha y hora
-        String str_filtros = "",valor ="";
+        String str_filtros = "", valor = "";
         if (tabDecimos.getValorSeleccionado() != null) {
-            if (comboDecimo.getValue().equals("1") && comboEmpleados1.getValue().equals("1")) {
-                valor ="15";
-            } else if (comboDecimo.getValue().equals("2") && comboEmpleados1.getValue().equals("1")) {
-                valor = "16";
-            } else if (comboDecimo.getValue().equals("1") && comboEmpleados1.getValue().equals("2")) {
-                valor = "42";
-            } else if (comboDecimo.getValue().equals("2") && comboEmpleados1.getValue().equals("2")) {
-               valor ="43";
+            if (comboEmpleados1.getValue().equals("1")) {
+                if (comboDistributivo1.getValue().equals("D3")) {
+                    valor = "15";
+                } else if (comboDistributivo1.getValue().equals("D4")) {
+                    valor = "16";
+                }
+            } else if (comboEmpleados1.getValue().equals("2")) {
+                if (comboDistributivo1.getValue().equals("D3")) {
+                    valor = "42";
+                } else if (comboDistributivo1.getValue().equals("D4")) {
+                    valor = "43";
+                }
             }
             str_filtros = "decimo_anio ='" + String.valueOf(utilitario.getAnio(utilitario.getFechaActual())) + "'"
                     + "and decimo_periodo = '" + String.valueOf(utilitario.getMes(utilitario.getFechaActual())) + "' and "
-                    + "decimo_id_distributivo = '" + comboEmpleados1.getValue() + "'"
-                    + "and decimo_columna = '"+valor+"'";
+                    + "decimo_id_distributivo = '" + comboEmpleados1.getValue() + "' "
+                    + "and decimo_columna ='" + valor + "'";
 
         } else {
             utilitario.agregarMensajeInfo("No ahi informacion disponible",
