@@ -66,6 +66,10 @@ public class DecimaRemuneracion extends Pantalla {
         conPostgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         conPostgres.NOMBRE_MARCA_BASE = "postgres";
 
+        Grid gri_busca = new Grid();
+        gri_busca.setColumns(8);
+
+        gri_busca.getChildren().add(new Etiqueta("Acciones :"));
         comboAcciones.setId("comboAcciones");
         List list = new ArrayList();
         Object filas1[] = {
@@ -74,28 +78,14 @@ public class DecimaRemuneracion extends Pantalla {
         Object filas2[] = {
             "2", "MIGRAR A ROL"
         };
+        Object filas3[] = {
+            "3", "CONSULTAR"
+        };
         list.add(filas1);;
         list.add(filas2);;
+        list.add(filas3);;
         comboAcciones.setCombo(list);
-        bar_botones.agregarComponente(new Etiqueta("Acción : "));
-        bar_botones.agregarComponente(comboAcciones);
-
-        comboDistributivo.setId("comboDistributivo");
-        comboDistributivo.setConexion(conPostgres);
-        comboDistributivo.setCombo("select periodo_columna as columna,periodo_columna from srh_periodo_sueldo where periodo_estado = 'S'");
-        bar_botones.agregarComponente(new Etiqueta("Remuneración : "));
-        bar_botones.agregarComponente(comboDistributivo);
-
-        Boton bot = new Boton();
-        bot.setValue("Ejecutar");
-        bot.setIcon("ui-icon-extlink"); //pone icono de jquery temeroller
-        bot.setMetodo("cargarInfo");
-        bar_botones.agregarBoton(bot);
-        bar_botones.agregarSeparador();
-
-
-        Grid gri_busca = new Grid();
-        gri_busca.setColumns(5);
+        gri_busca.getChildren().add(comboAcciones);
 
         gri_busca.getChildren().add(new Etiqueta("Tipo Servidor :"));
         comboEmpleados1.setId("comboEmpleados1");
@@ -103,19 +93,19 @@ public class DecimaRemuneracion extends Pantalla {
         comboEmpleados1.setCombo("SELECT id_distributivo,descripcion FROM srh_tdistributivo ORDER BY id_distributivo");
         gri_busca.getChildren().add(comboEmpleados1);
 
-        gri_busca.getChildren().add(new Etiqueta("Sobre Sueldo :"));
-        comboDistributivo1.setId("comboDistributivo1");
-        comboDistributivo1.setConexion(conPostgres);
-        comboDistributivo1.setCombo("select periodo_columna as columna,periodo_columna from srh_periodo_sueldo where periodo_estado = 'S'");
+        gri_busca.getChildren().add(new Etiqueta("Tipo Columna :"));
+        comboDistributivo.setId("comboDistributivo");
+        comboDistributivo.setConexion(conPostgres);
+        comboDistributivo.setCombo("select periodo_columna as columna,periodo_columna from srh_periodo_sueldo where periodo_estado = 'S'");
+        gri_busca.getChildren().add(comboDistributivo);
 
-        Boton botb = new Boton();
-        botb.setValue("Filtra");
-        botb.setIcon("ui-icon-search"); //pone icono de jquery temeroller
-        botb.setMetodo("filtarLista");
-        bar_botones.agregarBoton(botb);
+        Boton bot = new Boton();
+        bot.setValue("Ejecutar");
+        bot.setIcon("ui-icon-extlink"); //pone icono de jquery temeroller
+        bot.setMetodo("cargarInfo");
+        gri_busca.getChildren().add(bot);
+        bar_botones.agregarComponente(gri_busca);
 
-        gri_busca.getChildren().add(comboDistributivo1);
-        gri_busca.getChildren().add(botb);
 
         tabDecimos.setId("tabDecimos");
         tabDecimos.setConexion(conPostgres);
@@ -137,7 +127,6 @@ public class DecimaRemuneracion extends Pantalla {
         tabDecimos.dibujar();
 
         PanelTabla pnt = new PanelTabla();
-        pnt.getChildren().add(gri_busca);
         pnt.setPanelTabla(tabDecimos);
 
         panOpcion.setId("panOpcion");
@@ -200,80 +189,125 @@ public class DecimaRemuneracion extends Pantalla {
     }
 
     public void cargarInfo() {
+        Integer fecha = 0;
+        fecha = utilitario.getMes(utilitario.getFechaActual());
         if (comboAcciones.getValue().equals("1")) {//Información que Subira
-            
-            if (comboDistributivo.getValue().equals("D3")) {
-                TablaGenerica tabDato3 = mDescuento.getCalculoD3T(utilitario.getAnio(utilitario.getFechaActual()), utilitario.getAnio(utilitario.getFechaActual()));
-                if (!tabDato3.isEmpty()) {
-                    for (int i = 0; i < tabDato3.getTotalFilas(); i++) {
-
-                        if (calcularDias(new GregorianCalendar(utilitario.getAnio(tabDato3.getValor(i, "autoriza_fecha_ingreso")), utilitario.getMes(tabDato3.getValor(i, "autoriza_fecha_ingreso")), utilitario.getDia(tabDato3.getValor(i, "autoriza_fecha_ingreso"))),
-                                new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()), utilitario.getMes(utilitario.getFechaActual()), 30)) >= 30) {
-                            BigDecimal bd;
-                            double val = 0.0;
-                            bd = new BigDecimal((Double.valueOf(tabDato3.getValor(i, "hxe"))
-                                    + Double.valueOf(tabDato3.getValor(i, "sbr"))
-                                    + Double.valueOf(tabDato3.getValor(i, "remuneracion"))) / 12);
-                            val = bd.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
-                            if (tabDato3.getValor(i, "autoriza_id_distributivo").equals("1")) {
-                                mDescuento.setDatosCalculo(tabDato3.getValor(i, "autoriza_cod_empleado"), tabDato3.getValor(i, "autoriza_empleado"), "15", val, tabDato3.getValor(i, "autoriza_decimo_tercero"), Double.valueOf(tabDato3.getValor(i, "remuneracion")), Double.valueOf(tabDato3.getValor(i, "hxe")), Double.valueOf(tabDato3.getValor(i, "sbr")), tabDato3.getValor(i, "autoriza_id_distributivo"));
-                            } else if (tabDato3.getValor(i, "autoriza_id_distributivo").equals("2")) {
-                                mDescuento.setDatosCalculo(tabDato3.getValor(i, "autoriza_cod_empleado"), tabDato3.getValor(i, "autoriza_empleado"), "42", val, tabDato3.getValor(i, "autoriza_decimo_tercero"), Double.valueOf(tabDato3.getValor(i, "remuneracion")), Double.valueOf(tabDato3.getValor(i, "hxe")), Double.valueOf(tabDato3.getValor(i, "sbr")), tabDato3.getValor(i, "autoriza_id_distributivo"));
-                            }
+            TablaGenerica tabDato = mDescuento.getInfoAcumulacion(comboEmpleados1.getValue() + "");
+            if (!tabDato.isEmpty()) {
+                for (int i = 0; i < tabDato.getTotalFilas(); i++) {
+                    if (comboDistributivo.getValue().equals("D3")) {
+                        String valor = "";
+                        if (comboEmpleados1.getValue().equals("1")) {
+                            valor = "15";
+                        } else if (comboEmpleados1.getValue().equals("2")) {
+                            valor = "42";
+                        }
+                        TablaGenerica tabDatos = mDescuento.getInfoListaPago(tabDato.getValor(i, "autoriza_cod_empleado"), String.valueOf(utilitario.getAnio(utilitario.getFechaActual())),
+                                String.valueOf(utilitario.getMes(utilitario.getFechaActual())), valor);
+                        if (!tabDatos.isEmpty()) {
                         } else {
-                            Integer valor = calcularDias(new GregorianCalendar(utilitario.getAnio(tabDato3.getValor(i, "autoriza_fecha_ingreso")), utilitario.getMes(tabDato3.getValor(i, "autoriza_fecha_ingreso")), utilitario.getDia(tabDato3.getValor(i, "autoriza_fecha_ingreso"))),
-                                    new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()), utilitario.getMes(utilitario.getFechaActual()), 30)) + 1;
-                            BigDecimal bd;
-                            double val = 0.0;
-                            bd = new BigDecimal(((Double.valueOf(tabDato3.getValor(i, "hxe"))
-                                    + Double.valueOf(tabDato3.getValor(i, "sbr"))
-                                    + Double.valueOf(tabDato3.getValor(i, "remuneracion"))) / 360) * valor);
-                            val = bd.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
-                            if (tabDato3.getValor(i, "autoriza_id_distributivo").equals("1")) {
-                                mDescuento.setDatosCalculo(tabDato3.getValor(i, "autoriza_cod_empleado"), tabDato3.getValor(i, "autoriza_empleado"), "15", val, tabDato3.getValor(i, "autoriza_decimo_tercero"), Double.valueOf(tabDato3.getValor(i, "remuneracion")), Double.valueOf(tabDato3.getValor(i, "hxe")), Double.valueOf(tabDato3.getValor(i, "sbr")), tabDato3.getValor(i, "autoriza_id_distributivo"));
-                            } else if (tabDato3.getValor(i, "autoriza_id_distributivo").equals("2")) {
-                                mDescuento.setDatosCalculo(tabDato3.getValor(i, "autoriza_cod_empleado"), tabDato3.getValor(i, "autoriza_empleado"), "42", val, tabDato3.getValor(i, "autoriza_decimo_tercero"), Double.valueOf(tabDato3.getValor(i, "remuneracion")), Double.valueOf(tabDato3.getValor(i, "hxe")), Double.valueOf(tabDato3.getValor(i, "sbr")), tabDato3.getValor(i, "autoriza_id_distributivo"));
+                            TablaGenerica tabD3T = mDescuento.getCalculoD3T(utilitario.getAnio(utilitario.getFechaActual()), utilitario.getMes(utilitario.getFechaActual()), tabDato.getValor(i, "autoriza_cod_empleado"));
+                            if (!tabD3T.isEmpty()) {
+                                if (calcularDias(new GregorianCalendar(utilitario.getAnio(tabDato.getValor(i, "autoriza_fecha_ingreso")), utilitario.getMes(tabDato.getValor(i, "autoriza_fecha_ingreso")), utilitario.getDia(tabDato.getValor(i, "autoriza_fecha_ingreso"))),
+                                        new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()), utilitario.getMes(utilitario.getFechaActual()), 30)) >= 30) {
+                                    System.err.println(tabDato.getValor(i, "autoriza_cod_empleado"));
+                                    System.err.println(tabD3T.getValor(i, "valor"));
+                                    BigDecimal bd;
+                                    double val = 0.0;
+                                    bd = new BigDecimal(Double.valueOf(tabD3T.getValor(i, "valor")) / 12);
+                                    System.err.println(bd);
+//                                    val = bd.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
+//                                    if (tabDato.getValor(i, "autoriza_id_distributivo").equals("1")) {
+//                                        if (fecha.compareTo(11) == 0) {
+//                                        } else {
+//                                            mDescuento.setDatosCalculo(tabDato.getValor(i, "autoriza_cod_empleado"), tabDato.getValor(i, "autoriza_empleado"), valor, val, tabDato.getValor(i, "autoriza_decimo_tercero"), Double.valueOf(tabD3T.getValor(i, "remuneracion")), Double.valueOf(tabD3T.getValor(i, "hxe")), Double.valueOf(tabD3T.getValor(i, "sbr")), tabDato.getValor(i, "autoriza_id_distributivo"));
+//                                        }
+//                                    } else if (tabDato.getValor(i, "autoriza_id_distributivo").equals("2")) {
+//                                        if (fecha.compareTo(11) == 0) {
+//                                        } else {
+//                                            mDescuento.setDatosCalculo(tabDato.getValor(i, "autoriza_cod_empleado"), tabDato.getValor(i, "autoriza_empleado"), valor, val, tabDato.getValor(i, "autoriza_decimo_tercero"), Double.valueOf(tabD3T.getValor(i, "remuneracion")), Double.valueOf(tabD3T.getValor(i, "hxe")), Double.valueOf(tabD3T.getValor(i, "sbr")), tabDato.getValor(i, "autoriza_id_distributivo"));
+//                                        }
+//                                    }
+                                } else {
+//                                    Integer valo = calcularDias(new GregorianCalendar(utilitario.getAnio(tabDato.getValor(i, "autoriza_fecha_ingreso")), utilitario.getMes(tabDato.getValor(i, "autoriza_fecha_ingreso")), utilitario.getDia(tabDato.getValor(i, "autoriza_fecha_ingreso"))),
+//                                            new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()), utilitario.getMes(utilitario.getFechaActual()), 30)) + 1;
+//                                    BigDecimal bd;
+//                                    double val = 0.0;
+//                                    bd = new BigDecimal((Double.valueOf(tabD3T.getValor(i, "valor")) / 360) * valo);
+//                                    val = bd.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
+//                                    if (tabDato.getValor(i, "autoriza_id_distributivo").equals("1")) {
+//                                        if (fecha.compareTo(11) == 0) {
+//                                        } else {
+//                                            mDescuento.setDatosCalculo(tabDato.getValor(i, "autoriza_cod_empleado"), tabDato.getValor(i, "autoriza_empleado"), valor, val, tabDato.getValor(i, "autoriza_decimo_tercero"), Double.valueOf(tabD3T.getValor(i, "remuneracion")), Double.valueOf(tabD3T.getValor(i, "hxe")), Double.valueOf(tabD3T.getValor(i, "sbr")), tabDato.getValor(i, "autoriza_id_distributivo"));
+//                                        }
+//                                    } else if (tabDato.getValor(i, "autoriza_id_distributivo").equals("2")) {
+//                                        if (fecha.compareTo(11) == 0) {
+//                                        } else {
+//                                            mDescuento.setDatosCalculo(tabDato.getValor(i, "autoriza_cod_empleado"), tabDato.getValor(i, "autoriza_empleado"), valor, val, tabDato.getValor(i, "autoriza_decimo_tercero"), Double.valueOf(tabD3T.getValor(i, "remuneracion")), Double.valueOf(tabD3T.getValor(i, "hxe")), Double.valueOf(tabD3T.getValor(i, "sbr")), tabDato.getValor(i, "autoriza_id_distributivo"));
+//                                        }
+//                                    }
+                                }
+                            }
+                        }//
+                    } else if (comboDistributivo.getValue().equals("D4")) {
+                        String valor = "";
+                        if (tabDato.getValor(i, "autoriza_id_distributivo").equals("1")) {
+                            valor = "16";
+                        } else if (tabDato.getValor(i, "autoriza_id_distributivo").equals("2")) {
+                            valor = "43";
+                        }
+                        TablaGenerica tabDatos = mDescuento.getInfoListaPago(tabDato.getValor(i, "autoriza_cod_empleado"), String.valueOf(utilitario.getAnio(utilitario.getFechaActual())),
+                                String.valueOf(utilitario.getMes(utilitario.getFechaActual())), valor);
+                        if (!tabDatos.isEmpty()) {
+                        } else {
+                            TablaGenerica tabD4T = mDescuento.getCalculoD4T(tabDato.getValor(i, "autoriza_cod_empleado"));
+                            if (!tabD4T.isEmpty()) {
+                                if (calcularDias(new GregorianCalendar(utilitario.getAnio(tabDato.getValor(i, "autoriza_fecha_ingreso")), utilitario.getMes(tabDato.getValor(i, "autoriza_fecha_ingreso")), utilitario.getDia(tabDato.getValor(i, "autoriza_fecha_ingreso"))),
+                                        new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()), utilitario.getMes(utilitario.getFechaActual()), 30)) >= 30) {
+                                    BigDecimal bd;
+                                    double val = 0.0;
+                                    bd = new BigDecimal(Double.valueOf(tabD4T.getValor(i, "sbu")) / 12);
+                                    val = bd.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
+                                    if (tabDato.getValor(i, "autoriza_id_distributivo").equals("1")) {
+                                        if (fecha.compareTo(7) == 0) {
+                                        } else {
+                                            mDescuento.setDatosCalculo(tabDato.getValor(i, "autoriza_cod_empleado"), tabDato.getValor(i, "autoriza_empleado"), valor, val, tabDato.getValor(i, "autoriza_decimo_tercero"), Double.valueOf(tabDato.getValor(i, "remuneracion")), 0.0, 0.0, tabDato.getValor(i, "autoriza_id_distributivo"));
+                                        }
+                                    } else if (tabDato.getValor(i, "autoriza_id_distributivo").equals("2")) {
+                                        if (fecha.compareTo(7) == 0) {
+                                        } else {
+                                            mDescuento.setDatosCalculo(tabDato.getValor(i, "autoriza_cod_empleado"), tabDato.getValor(i, "autoriza_empleado"), valor, val, tabDato.getValor(i, "autoriza_decimo_tercero"), Double.valueOf(tabDato.getValor(i, "remuneracion")), 0.0, 0.0, tabDato.getValor(i, "autoriza_id_distributivo"));
+                                        }
+                                    }
+                                } else {
+                                    Integer valo = calcularDias(new GregorianCalendar(utilitario.getAnio(tabDato.getValor(i, "autoriza_fecha_ingreso")), utilitario.getMes(tabDato.getValor(i, "autoriza_fecha_ingreso")), utilitario.getDia(tabDato.getValor(i, "autoriza_fecha_ingreso"))),
+                                            new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()), utilitario.getMes(utilitario.getFechaActual()), 30)) + 1;
+                                    BigDecimal bd;
+                                    double val = 0.0;
+                                    bd = new BigDecimal((Double.valueOf(tabD4T.getValor(i, "sbu")) / 360) * valo);
+                                    val = bd.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
+                                    if (tabDato.getValor(i, "autoriza_id_distributivo").equals("1")) {
+                                        if (fecha.compareTo(7) == 0) {
+                                        } else {
+                                            mDescuento.setDatosCalculo(tabDato.getValor(i, "autoriza_cod_empleado"), tabDato.getValor(i, "autoriza_empleado"), valor, val, tabDato.getValor(i, "autoriza_decimo_tercero"), Double.valueOf(tabDato.getValor(i, "remuneracion")), 0.0, 0.0, tabDato.getValor(i, "autoriza_id_distributivo"));
+                                        }
+                                    } else if (tabDato.getValor(i, "autoriza_id_distributivo").equals("2")) {
+                                        if (fecha.compareTo(7) == 0) {
+                                        } else {
+                                            mDescuento.setDatosCalculo(tabDato.getValor(i, "autoriza_cod_empleado"), tabDato.getValor(i, "autoriza_empleado"), valor, val, tabDato.getValor(i, "autoriza_decimo_tercero"), Double.valueOf(tabDato.getValor(i, "remuneracion")), 0.0, 0.0, tabDato.getValor(i, "autoriza_id_distributivo"));
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
                 }
-                tabDecimos.actualizar();
-            } else if (comboDistributivo.getValue().equals("D4")) {
-                TablaGenerica tabDato4 = mDescuento.getCalculoD4T();
-                if (!tabDato4.isEmpty()) {
-                    for (int i = 0; i < tabDato4.getTotalFilas(); i++) {
-
-                        if (calcularDias(new GregorianCalendar(utilitario.getAnio(tabDato4.getValor(i, "autoriza_fecha_ingreso")), utilitario.getMes(tabDato4.getValor(i, "autoriza_fecha_ingreso")), utilitario.getDia(tabDato4.getValor(i, "autoriza_fecha_ingreso"))),
-                                new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()), utilitario.getMes(utilitario.getFechaActual()), 30)) >= 30) {
-                            BigDecimal bd;
-                            double val = 0.0;
-                            bd = new BigDecimal(Double.valueOf(tabDato4.getValor(i, "valor")) / 12);
-                            val = bd.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
-                            if (tabDato4.getValor(i, "autoriza_id_distributivo").equals("1")) {
-                                mDescuento.setDatosCalculo(tabDato4.getValor(i, "autoriza_cod_empleado"), tabDato4.getValor(i, "autoriza_empleado"), "16", val, tabDato4.getValor(i, "autoriza_decimo_cuarto"), Double.valueOf(tabDato4.getValor(i, "remuneracion")), null, null, tabDato4.getValor(i, "autoriza_id_distributivo"));
-                            } else if (tabDato4.getValor(i, "autoriza_id_distributivo").equals("2")) {
-                                mDescuento.setDatosCalculo(tabDato4.getValor(i, "autoriza_cod_empleado"), tabDato4.getValor(i, "autoriza_empleado"), "43", val, tabDato4.getValor(i, "autoriza_decimo_cuarto"), Double.valueOf(tabDato4.getValor(i, "remuneracion")), null, null, tabDato4.getValor(i, "autoriza_id_distributivo"));
-                            }
-                        } else {
-                            Integer valor = calcularDias(new GregorianCalendar(utilitario.getAnio(tabDato4.getValor(i, "autoriza_fecha_ingreso")), utilitario.getMes(tabDato4.getValor(i, "autoriza_fecha_ingreso")), utilitario.getDia(tabDato4.getValor(i, "autoriza_fecha_ingreso"))),
-                                    new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()), utilitario.getMes(utilitario.getFechaActual()), 30)) + 1;
-                            BigDecimal bd;
-                            double val = 0.0;
-                            bd = new BigDecimal((Double.valueOf(tabDato4.getValor(i, "valor")) / 360) * valor);
-                            val = bd.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
-                            if (tabDato4.getValor(i, "autoriza_id_distributivo").equals("1")) {
-                                mDescuento.setDatosCalculo(tabDato4.getValor(i, "autoriza_cod_empleado"), tabDato4.getValor(i, "autoriza_empleado"), "16", val, tabDato4.getValor(i, "autoriza_decimo_cuarto"), Double.valueOf(tabDato4.getValor(i, "remuneracion")), null, null, tabDato4.getValor(i, "autoriza_id_distributivo"));
-                            } else if (tabDato4.getValor(i, "autoriza_id_distributivo").equals("2")) {
-                                mDescuento.setDatosCalculo(tabDato4.getValor(i, "autoriza_cod_empleado"), tabDato4.getValor(i, "autoriza_empleado"), "43", val, tabDato4.getValor(i, "autoriza_decimo_cuarto"), Double.valueOf(tabDato4.getValor(i, "remuneracion")), null, null, tabDato4.getValor(i, "autoriza_id_distributivo"));
-                            }
-                        }
-                    }
-                }
-                tabDecimos.actualizar();
             }
-            
+            tabDecimos.actualizar();
         } else if (comboAcciones.getValue().equals("2")) {//Subida a Roles
             setMigraRoles();
+        } else if (comboAcciones.getValue().equals("3")) {
+            filtarLista();
         } else {
             utilitario.agregarMensaje("Debe escoger una Acción a realizar", "");
         }
@@ -357,15 +391,15 @@ public class DecimaRemuneracion extends Pantalla {
         String str_filtros = "", valor = "";
         if (tabDecimos.getValorSeleccionado() != null) {
             if (comboEmpleados1.getValue().equals("1")) {
-                if (comboDistributivo1.getValue().equals("D3")) {
+                if (comboDistributivo.getValue().equals("D3")) {
                     valor = "15";
-                } else if (comboDistributivo1.getValue().equals("D4")) {
+                } else if (comboDistributivo.getValue().equals("D4")) {
                     valor = "16";
                 }
             } else if (comboEmpleados1.getValue().equals("2")) {
-                if (comboDistributivo1.getValue().equals("D3")) {
+                if (comboDistributivo.getValue().equals("D3")) {
                     valor = "42";
-                } else if (comboDistributivo1.getValue().equals("D4")) {
+                } else if (comboDistributivo.getValue().equals("D4")) {
                     valor = "43";
                 }
             }

@@ -310,10 +310,21 @@ public class pre_anticipo_sueldo extends Pantalla {
 
     //proceso automatico que permita llenar los detalles de anticipos
     public void descontar() {
-        if (utilitario.getMes(utilitario.getFechaActual()) != 1) {
-            iAnticipos.ActualizarDetalleAnticipo(utilitario.getAnio(utilitario.getFechaActual()), (utilitario.getMes(utilitario.getFechaActual()) - 1));
+
+        if (utilitario.getDia(utilitario.getFechaActual()) == 25
+                || utilitario.getDia(utilitario.getFechaActual()) == 26
+                || utilitario.getDia(utilitario.getFechaActual()) == 27
+                || utilitario.getDia(utilitario.getFechaActual()) == 28
+                || utilitario.getDia(utilitario.getFechaActual()) == 29
+                || utilitario.getDia(utilitario.getFechaActual()) == 30
+                || utilitario.getDia(utilitario.getFechaActual()) == 31) {
+            iAnticipos.ActualizarDetalleAnticipo(utilitario.getAnio(utilitario.getFechaActual()), (utilitario.getMes(utilitario.getFechaActual())));
         } else {
-            iAnticipos.ActualizarDetalleAnticipo((utilitario.getAnio(utilitario.getFechaActual()) - 1), (utilitario.getMes(utilitario.getFechaActual()) + 11));
+            if (utilitario.getMes(utilitario.getFechaActual()) != 1) {
+                iAnticipos.ActualizarDetalleAnticipo(utilitario.getAnio(utilitario.getFechaActual()), (utilitario.getMes(utilitario.getFechaActual()) - 1));
+            } else {
+                iAnticipos.ActualizarDetalleAnticipo((utilitario.getAnio(utilitario.getFechaActual()) - 1), (utilitario.getMes(utilitario.getFechaActual()) + 11));
+            }
         }
         actuPago();
     }
