@@ -371,6 +371,31 @@ public class OrdenPago extends Pantalla {
                 } catch (NullPointerException ex) {
                     System.err.println(tabOrden.getValor("tes_fecha_envio"));
                 }
+
+                try {
+                    if (tabOrden.getValor("tes_valor_letras") != null || tabOrden.getValor("tes_valor_letras").equals(tabDato.getValor("tes_valor_letras"))) {
+                        programas.setOrdenPago(tabOrden.getValor("tes_numero_orden"), Integer.parseInt(tabOrden.getValor("tes_ide_orden_pago")), "tes_valor_letras", "'" + tabOrden.getValor("tes_valor_letras") + "'");
+                    }
+                } catch (NullPointerException ex) {
+                    System.err.println(tabOrden.getValor("tes_fecha_envio"));
+                }
+
+                try {
+                    if (tabOrden.getValor("tes_concepto") != null || tabOrden.getValor("tes_concepto").equals(tabDato.getValor("tes_concepto"))) {
+                        programas.setOrdenPago(tabOrden.getValor("tes_numero_orden"), Integer.parseInt(tabOrden.getValor("tes_ide_orden_pago")), "tes_concepto", "'" + tabOrden.getValor("tes_concepto") + "'");
+                    }
+                } catch (NullPointerException ex) {
+                    System.err.println(tabOrden.getValor("tes_fecha_envio"));
+                }
+
+                try {
+                    if (tabOrden.getValor("tes_acuerdo") != null || tabOrden.getValor("tes_acuerdo").equals(tabDato.getValor("tes_acuerdo"))) {
+                        programas.setOrdenPago(tabOrden.getValor("tes_numero_orden"), Integer.parseInt(tabOrden.getValor("tes_ide_orden_pago")), "tes_acuerdo", "'" + tabOrden.getValor("tes_acuerdo") + "'");
+                    }
+                } catch (NullPointerException ex) {
+                    System.err.println(tabOrden.getValor("tes_fecha_envio"));
+                }
+
                 reg = tabOrden.getValorSeleccionado();
                 tabDetalle.actualizar();
                 tabDetalle.setFilaActual(reg);
