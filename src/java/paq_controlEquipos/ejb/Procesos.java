@@ -21,7 +21,6 @@ public class Procesos {
     private Conexion conSql,
             conPostgres;//Conexion a la base de sigag
     private Utilitario utilitario = new Utilitario();
-    private Statement smt;
 
     public TablaGenerica getTipoLicencia(Integer codigo) {
         conSql();
