@@ -190,12 +190,12 @@ public class AccesoSistemas extends Pantalla {
         tab_solicitud.getColumna("id_sistema").setCombo("SELECT id_sistema,nombre_sistema FROM sca_sistemas order by nombre_sistema");
         tab_solicitud.getColumna("id_modulo").setCombo("SELECT id_modulo,nombre_modulo FROM sca_modulos order by nombre_modulo");
         tab_solicitud.getColumna("id_perfil").setCombo("SELECT id_perfil,nombre_perfil FROM sca_perfiles order by nombre_perfil");
-        tab_solicitud.getColumna("codigo_usuario").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where estado = 1 order by nombres");
+        tab_solicitud.getColumna("codigo_usuario").setCombo("SELECT cod_empleado,nombres FROM srh_empleado order by nombres");
         tab_solicitud.getColumna("direccion_solicitante").setCombo("select cod_direccion,nombre_dir from srh_direccion order by nombre_dir");
         tab_solicitud.getColumna("cargo_solicitante").setCombo("select cod_cargo,nombre_cargo from srh_cargos order by nombre_cargo");
         tab_solicitud.getColumna("cargo_usuario").setCombo("select cod_cargo,nombre_cargo from srh_cargos order by nombre_cargo");
-        tab_solicitud.getColumna("codigo_solicitante").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where estado = 1 order by nombres");
-        tab_solicitud.getColumna("codigo_asigna_acceso").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where estado = 1 order by nombres");
+        tab_solicitud.getColumna("codigo_solicitante").setCombo("SELECT cod_empleado,nombres FROM srh_empleado order by nombres");
+        tab_solicitud.getColumna("codigo_asigna_acceso").setCombo("SELECT cod_empleado,nombres FROM srh_empleado order by nombres");
         tab_solicitud.getColumna("ingreso_perfil_usuario").setCheck();
         tab_solicitud.getColumna("actualizacion_perfil_usuario").setCheck();
         tab_solicitud.getColumna("lectura_perfil_usuario").setCheck();
