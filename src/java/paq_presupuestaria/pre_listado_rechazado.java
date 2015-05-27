@@ -88,9 +88,9 @@ public class pre_listado_rechazado extends Pantalla{
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
         
-        Imagen quinde = new Imagen();
-        quinde.setValue("imagenes/logo_financiero.png");
-        agregarComponente(quinde);
+//        Imagen quinde = new Imagen();
+//        quinde.setValue("imagenes/logo_financiero.png");
+//        agregarComponente(quinde);
         
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         con_postgres.NOMBRE_MARCA_BASE = "postgres";
