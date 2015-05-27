@@ -388,14 +388,14 @@ public class InventarioAutomotores extends Pantalla {
 
     //DATOS PARA CONDUCTOR
     public void conductor() {
-        TablaGenerica tabDato = aCombustible.getChofer(tabAutomotores.getValor("mve_cod_conductor"));
-        if (!tabDato.isEmpty()) {
-            tabAutomotores.setValor("mve_conductor", tabDato.getValor("nombres"));
-            tabAutomotores.setValor("mve_asignacion", tabDato.getValor("activo"));
-            utilitario.addUpdate("tabAutomotores");
-        } else {
-            utilitario.agregarMensajeInfo("No existen Datos", "");
-        }
+//        TablaGenerica tabDato = aCombustible.getChofer(tabAutomotores.getValor("mve_cod_conductor"));
+//        if (!tabDato.isEmpty()) {
+//            tabAutomotores.setValor("mve_conductor", tabDato.getValor("nombres"));
+//            tabAutomotores.setValor("mve_asignacion", tabDato.getValor("activo"));
+//            utilitario.addUpdate("tabAutomotores");
+//        } else {
+//            utilitario.agregarMensajeInfo("No existen Datos", "");
+//        }
     }
 
     //COMPONENTES ADICIONALES ACTIVAR
@@ -427,11 +427,11 @@ public class InventarioAutomotores extends Pantalla {
         Map campos = new HashMap();
 
         try {
-            campos.put("marca", marca.getText());
-            campos.put("calibre", calibre.getText());
-            campos.put("serie", serie.getText());
-            campos.put("fecha_registro", fechaRegistro.getCalendar().getTime());
-            campos.put("tipo", tipo.getText());
+//            campos.put("marca", marca.getText());
+//            campos.put("calibre", calibre.getText());
+//            campos.put("serie", serie.getText());
+//            campos.put("fecha_registro", fechaRegistro.getCalendar().getTime());
+//            campos.put("tipo", tipo.getText());
 
             if (pk == 0) {
                 aCombustible.insertar(tabAutomotores.getTabla(), campos);

@@ -10,7 +10,6 @@ import framework.componentes.Combo;
 import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
-import framework.componentes.Imagen;
 import framework.componentes.Panel;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
@@ -59,10 +58,6 @@ public class pre_reportes_abastecimiento extends Pantalla {
     private manauto aCombustible = (manauto) utilitario.instanciarEJB(manauto.class);
 
     public pre_reportes_abastecimiento() {
-        // Imagen de encabezado
-        Imagen quinde = new Imagen();
-        quinde.setValue("imagenes/logo_transporte.png");
-        agregarComponente(quinde);
 
         //datos de usuario actual del sistema
         tab_consulta.setId("tab_consulta");
@@ -92,7 +87,7 @@ public class pre_reportes_abastecimiento extends Pantalla {
         gri_search.getChildren().add(new Etiqueta("AÑO: "));
         cmb_anos.setId("cmb_anos");
         cmb_anos.setConexion(con_postgres);
-        cmb_anos.setCombo("select ano_curso, ano_curso from conc_ano order by ano_curso");
+        cmb_anos.setCombo("select ano_curso, ano_curso from conc_ano order by ano_curso desc");
         gri_search.getChildren().add(cmb_anos);
 
         gri_search.getChildren().add(new Etiqueta("PERIODO: "));
@@ -109,8 +104,12 @@ public class pre_reportes_abastecimiento extends Pantalla {
         Object filase2[] = {
             "H", "Maquinaria"
         };
+        Object filase3[] = {
+            "A", "Otros"
+        };
         lista.add(filase1);;
         lista.add(filase2);;
+        lista.add(filase3);;
         cmb_general.setCombo(lista);
         gri_search.getChildren().add(cmb_general);
 
@@ -148,7 +147,7 @@ public class pre_reportes_abastecimiento extends Pantalla {
         gri_busca1.getChildren().add(new Etiqueta("AÑO:"));
         cmb_ano.setId("cmb_ano");
         cmb_ano.setConexion(con_postgres);
-        cmb_ano.setCombo("select ano_curso, ano_curso from conc_ano order by ano_curso");
+        cmb_ano.setCombo("select ano_curso, ano_curso from conc_ano order by ano_curso desc");
         gri_busca1.getChildren().add(cmb_ano);
 
         gri_busca1.getChildren().add(new Etiqueta("PERIODO:"));
@@ -187,15 +186,19 @@ public class pre_reportes_abastecimiento extends Pantalla {
         Object filas2[] = {
             "H", "Maquinaria"
         };
+        Object filas3[] = {
+            "A", "Otros"
+        };
         listas.add(filas1);;
         listas.add(filas2);;
+        listas.add(filas3);;
         cmb_general1.setCombo(lista);
         gri_busca.getChildren().add(cmb_general1);
 
         gri_busca.getChildren().add(new Etiqueta("AÑO:"));
         cmb_anio.setId("cmb_anio");
         cmb_anio.setConexion(con_postgres);
-        cmb_anio.setCombo("select ano_curso, ano_curso from conc_ano order by ano_curso");
+        cmb_anio.setCombo("select ano_curso, ano_curso from conc_ano order by ano_curso desc");
         gri_busca.getChildren().add(cmb_anio);
 
         gri_busca.getChildren().add(new Etiqueta("PERIODO:"));
@@ -251,11 +254,17 @@ public class pre_reportes_abastecimiento extends Pantalla {
                     p_parametros.put("tipo", cmb_general.getValue() + "");
                     if (cmb_general.getValue().equals("H")) {
                         p_parametros.put("tipo_desc", "MAQUINARIAS");
-                    } else {
+                    }
+                    if (cmb_general.getValue().equals("K")) {
                         p_parametros.put("tipo_desc", "AUTOMOTORES");
+                    }
+                    if (cmb_general.getValue().equals("A")) {
+                        p_parametros.put("tipo_desc", "OTROS");
                     }
                     rep_reporte.cerrar();
                     sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    System.err.println(p_parametros);
+                    System.err.println(rep_reporte.getPath());
                     sef_formato.dibujar();
                 } else {
                     utilitario.agregarMensajeError("Usuario", "No Disponible");
@@ -291,10 +300,14 @@ public class pre_reportes_abastecimiento extends Pantalla {
                     p_parametros.put("periodo", cmb_periodo.getValue() + "");
                     p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA") + "");
                     p_parametros.put("tipo", cmb_general1.getValue() + "");
-                    if (cmb_general1.getValue().equals("H")) {
+                    if (cmb_general.getValue().equals("H")) {
                         p_parametros.put("tipo_desc", "MAQUINARIAS");
-                    } else {
+                    }
+                    if (cmb_general.getValue().equals("K")) {
                         p_parametros.put("tipo_desc", "AUTOMOTORES");
+                    }
+                    if (cmb_general.getValue().equals("A")) {
+                        p_parametros.put("tipo_desc", "OTROS");
                     }
                     if (cmb_general1.getValue().equals("H")) {
                         p_parametros.put("medida", "HORAS");
