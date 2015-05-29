@@ -88,6 +88,18 @@ public class mergeDescuento {
         conPostgres = null;
     }
 
+    public void setAcumulado(String codigo, Double descuento) {
+        // Forma el sql para el ingreso
+
+        String strSql = "update srh_autorizacion_acumulacion\n"
+                + "set autoriza_acumulado_cuarto ="+descuento+" \n"
+                + "where autoriza_cod_empleado = '"+codigo+"'";
+        conPostgresql();
+        conPostgres.ejecutarSql(strSql);
+        conPostgres.desconectar();
+        conPostgres = null;
+    }
+
     public void setmigrarDescuento(String empleado, Integer ide_periodo, Integer id_distributivo_roles, Integer ide_columna,
             String nombre, String desc, Integer anio, Double valor) {
         // Forma el sql para el ingreso
@@ -592,9 +604,7 @@ public class mergeDescuento {
                 + "a.cod_empleado,"
                 + "remuneracion,\n"
                 + "(case when b.horas_extras is null then 0 when b.horas_extras is not null then b.horas_extras end) as hxe ,\n"
-                + "(case when c.sub_rogacion is null then 0 when c.sub_rogacion is not null then c.sub_rogacion end) as sbr,\n"
-                + "(a.remuneracion +(case when b.horas_extras is null then 0 when b.horas_extras is not null then b.horas_extras end)\n"
-                + "+(case when c.sub_rogacion is null then 0 when c.sub_rogacion is not null then c.sub_rogacion end)) as valor\n"
+                + "(case when c.sub_rogacion is null then 0 when c.sub_rogacion is not null then c.sub_rogacion end) as sbr\n"
                 + "from \n"
                 + "(SELECT\n"
                 + "cod_empleado,\n"
@@ -641,7 +651,7 @@ public class mergeDescuento {
                 + "where ide_col in (25,70)\n"
                 + "and distributivo = srh_empleado.id_distributivo)as sbu  \n"
                 + "from srh_empleado \n"
-                + "where cod_empleado = '"+codigo+"'");
+                + "where cod_empleado = '" + codigo + "'");
         tabFuncionario.ejecutarSql();
         conPostgres.desconectar();
         conPostgres = null;
@@ -706,17 +716,19 @@ public class mergeDescuento {
         TablaGenerica tabFuncionario = new TablaGenerica();
         conPostgresql();
         tabFuncionario.setConexion(conPostgres);
-        tabFuncionario.setSql("SELECT autoriza_cod_empleado,\n"
-                + "autoriza_id_distributivo,\n"
-                + "autoriza_empleado,\n"
-                + "(SELECT remuneracion from srh_empleado  \n"
-                + "where cast(srh_empleado.cod_empleado as VARCHAR) = srh_autorizacion_acumulacion.autoriza_cod_empleado) AS remuneracion,\n"
-                + "autoriza_fecha_ingreso,\n"
-                + "autoriza_fecha_final,\n"
-                + "autoriza_anio,\n"
-                + "autoriza_decimo_tercero,\n"
-                + "autoriza_decimo_cuarto\n"
-                + "from srh_autorizacion_acumulacion\n"
+        tabFuncionario.setSql("SELECT autoriza_cod_empleado, \n"
+                + "autoriza_id_distributivo, \n"
+                + "autoriza_empleado, \n"
+                + "(select remuneracion from srh_empleado where cast(cod_empleado as VARCHAR) = srh_autorizacion_acumulacion.autoriza_cod_empleado) AS remuneracion, \n"
+                + "autoriza_fecha_ingreso, \n"
+                + "autoriza_fecha_final, \n"
+                + "autoriza_anio, \n"
+                + "autoriza_decimo_tercero, \n"
+                + "autoriza_fecha_creacion, \n"
+                + "autoriza_acumulado_tercero, \n"
+                + "autoriza_acumulado_cuarto, \n"
+                + "autoriza_decimo_cuarto \n"
+                + "from srh_autorizacion_acumulacion \n"
                 + "where autoriza_id_distributivo = '" + codigo + "'");
         tabFuncionario.ejecutarSql();
         conPostgres.desconectar();
@@ -740,6 +752,21 @@ public class mergeDescuento {
         conPostgres = null;
         return tabFuncionario;
     }
+
+    public TablaGenerica getPeriodos(String codigo) {
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT periodo_fecha_inicial,periodo_fecha_final\n"
+                + "from srh_periodo_sueldo\n"
+                + "where periodo_columna = '" + codigo + "' and periodo_estado = 'S'");
+        tabFuncionario.ejecutarSql();
+        conPostgres.desconectar();
+        conPostgres = null;
+        return tabFuncionario;
+    }
+
 
     private void conPostgresql() {
         if (conPostgres == null) {
