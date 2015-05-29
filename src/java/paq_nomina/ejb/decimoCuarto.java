@@ -210,7 +210,7 @@ public class decimoCuarto {
         TablaGenerica tab_funcionario = new TablaGenerica();
         con_postgresql();
         tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT id_solicitud_acceso,login_acceso_usuario,password_acceso_usuario,fecha_acceso_usuario,cedula_asigna_acceso,codigo_asigna_acceso,nombre_asigna_acceso,cargo_solicitante,direccion_solicitante\n"
+        tab_funcionario.setSql("SELECT id_solicitud_acceso,id_sistema,id_perfil,id_modulo,login_acceso_usuario,password_acceso_usuario,fecha_acceso_usuario,cedula_asigna_acceso,codigo_asigna_acceso,nombre_asigna_acceso,cargo_solicitante,direccion_solicitante\n"
                 + "from sca_solicitud_acceso\n"
                 + "where id_solicitud_acceso = " + colum);
         tab_funcionario.ejecutarSql();
