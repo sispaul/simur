@@ -99,6 +99,8 @@ public class SolicitudAcumulacion extends Pantalla {
         tabAcumulacion.getColumna("autoriza_decimo_tercero").setRadio(lis, "1");
         tabAcumulacion.getColumna("autoriza_login_ingreso").setVisible(false);
         tabAcumulacion.getColumna("autoriza_fecha_creacion").setVisible(false);
+        tabAcumulacion.getColumna("autoriza_acumulado_tercero").setVisible(false);
+        tabAcumulacion.getColumna("autoriza_acumulado_cuarto").setVisible(false);
         tabAcumulacion.setRows(20);
         tabAcumulacion.dibujar();
         PanelTabla pnt = new PanelTabla();
