@@ -280,7 +280,7 @@ public class DecimaRemuneracion extends Pantalla {
                                         val = bd.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
                                     }
                                     if (tabDato.getValor(i, "autoriza_id_distributivo").equals("1")) {
-                                        if (fecha.compareTo(5) == 0) {
+                                        if (fecha.compareTo(7) == 0) {
                                             if (calcularMeses(new GregorianCalendar(utilitario.getAnio(tabDato.getValor(i, "autoriza_fecha_ingreso")), utilitario.getMes(tabDato.getValor(i, "autoriza_fecha_ingreso")), utilitario.getDia(tabDato.getValor(i, "autoriza_fecha_ingreso"))),
                                                     new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()), utilitario.getMes(utilitario.getFechaActual()), 30)) >= 12) {
                                                 if (tabDato.getValor(i, "autoriza_decimo_cuarto").equals("1")) {
@@ -311,7 +311,7 @@ public class DecimaRemuneracion extends Pantalla {
                                             }
                                         }
                                     } else if (tabDato.getValor(i, "autoriza_id_distributivo").equals("2")) {
-                                        if (fecha.compareTo(5) == 0) {
+                                        if (fecha.compareTo(7) == 0) {
                                             if (calcularMeses(new GregorianCalendar(utilitario.getAnio(tabDato.getValor(i, "autoriza_fecha_ingreso")), utilitario.getMes(tabDato.getValor(i, "autoriza_fecha_ingreso")), utilitario.getDia(tabDato.getValor(i, "autoriza_fecha_ingreso"))),
                                                     new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()), utilitario.getMes(utilitario.getFechaActual()), 30)) >= 12) {
                                                 if (tabDato.getValor(i, "autoriza_decimo_cuarto").equals("1")) {
