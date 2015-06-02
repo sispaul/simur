@@ -824,6 +824,61 @@ public class AntiSueldos {
         return tab_funcionario;
     }
 
+    public TablaGenerica getReCalculo(Integer codigo) {
+        con_postgresql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        con_postgresql();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT s.ide_solicitud_anticipo,\n"
+                + "s.ci_solicitante,\n"
+                + "s.solicitante,\n"
+                + "(select remuneracion from srh_empleado where cod_empleado = s.ide_empleado_solicitante) AS remuneracion,\n"
+                + "c.valor_anticipo,\n"
+                + "c.numero_cuotas_anticipo,\n"
+                + "c.valor_cuota_mensual,\n"
+                + "c.val_cuo_adi,\n"
+                + "c.valor_pagado,\n"
+                + "c.porcentaje_descuento_diciembre,\n"
+                + "c.numero_cuotas_pagadas\n"
+                + "from srh_solicitud_anticipo s\n"
+                + "inner join srh_calculo_anticipo c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n"
+                + "where c.ide_estado_anticipo in (1,2,3) and s.ide_solicitud_anticipo = " + codigo + "\n"
+                + "order by s.ide_solicitud_anticipo ASC");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+    }
+
+    public TablaGenerica getDetalleReCalculo(Integer codigo) {
+        con_postgresql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        con_postgresql();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("select * from srh_detalle_anticipo\n"
+                + "where ide_anticipo = " + codigo + " and ide_periodo_descontado is null\n"
+                + "order by ide_detalle_anticipo");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+    }
+
+    public TablaGenerica getIdDetalleReCalculo(Integer codigo) {
+        con_postgresql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        con_postgresql();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("select 0 as id, ide_detalle_anticipo from srh_detalle_anticipo\n"
+                + "where ide_anticipo = " + codigo + " and ide_periodo_descontado is null\n"
+                + "order by ide_detalle_anticipo desc\n"
+                + "limit 1");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+    }
+
     public TablaGenerica getTotalAnt(String anio) {
         con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
@@ -946,6 +1001,39 @@ public class AntiSueldos {
         String au_sql = "UPDATE srh_calculo_anticipo\n"
                 + "SET ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado ='NEGADO') ,\n"
                 + "usu_anulacion = '" + usu + "' where ide_calculo_anticipo = " + cal + " and ide_solicitud_anticipo = " + anti;
+        con_postgresql();
+        con_postgres.ejecutarSql(au_sql);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+
+    public void setRecacular(Integer codigo, Double cal, Double usu) {
+        String au_sql = "update srh_calculo_anticipo\n"
+                + "set valor_cuota_mensual = " + cal + ", \n"
+                + "val_cuo_adi = " + usu + "\n"
+                + "where ide_solicitud_anticipo = " + codigo;
+        con_postgresql();
+        con_postgres.ejecutarSql(au_sql);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+
+    public void setResolicitud(Integer codigo, String cal, String usu) {
+        String au_sql = "update srh_solicitud_anticipo\n"
+                + "set recal_usuario = '" + usu + "',\n"
+                + "recal_ip = '" + cal + "'\n"
+                + "where ide_solicitud_anticipo = " + codigo;
+        con_postgresql();
+        con_postgres.ejecutarSql(au_sql);
+        con_postgres.desconectar();
+        con_postgres = null;
+    }
+
+    public void setRecalculo(Integer codigo, Double valor, Integer detalle) {
+        String au_sql = "update srh_detalle_anticipo\n"
+                + "set valor = " + valor + "\n"
+                + "where ide_detalle_anticipo = " + detalle + "\n"
+                + "and ide_anticipo =" + codigo;
         con_postgresql();
         con_postgres.ejecutarSql(au_sql);
         con_postgres.desconectar();

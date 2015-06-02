@@ -427,6 +427,8 @@ public class pre_anticipo_sueldo extends Pantalla {
         tab_anticipo.getColumna("usu_anulacion").setVisible(false);
         tab_anticipo.getColumna("comen_anulacion").setVisible(false);
         tab_anticipo.getColumna("fecha_anulacion").setVisible(false);
+        tab_anticipo.getColumna("recal_usuario").setVisible(false);
+        tab_anticipo.getColumna("recal_ip").setVisible(false);
 
         tab_anticipo.setTipoFormulario(true);
         tab_anticipo.agregarRelacion(tab_garante);
