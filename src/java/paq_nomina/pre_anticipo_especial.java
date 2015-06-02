@@ -16,22 +16,16 @@ import framework.componentes.Grupo;
 import framework.componentes.Imagen;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
-import framework.componentes.Reporte;
-import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
 import paq_nomina.ejb.AntiSueldos;
-import static paq_nomina.pre_anticipo_sueldo.calcularAnios;
-import static paq_nomina.pre_anticipo_sueldo.calcularMes;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
@@ -51,6 +45,7 @@ public class pre_anticipo_especial extends Pantalla {
     private Tabla set_colaborador = new Tabla();
     private Tabla set_solicitante = new Tabla();
     private Tabla set_solicitu = new Tabla();
+    private Tabla set_listado = new Tabla();
     private SeleccionTabla set_solicitud = new SeleccionTabla();
     //PARA ASIGNACION DE MES
     String selec_mes = new String();
@@ -64,14 +59,17 @@ public class pre_anticipo_especial extends Pantalla {
     private Dialogo dia_dialogoca = new Dialogo();
     private Dialogo dia_dialogoso = new Dialogo();
     private Dialogo dia_dialogosr = new Dialogo();
+    private Dialogo dia_dialogorec = new Dialogo();
     private Grid grid_d = new Grid();
     private Grid grid_ca = new Grid();
     private Grid grid_so = new Grid();
     private Grid grid_ds = new Grid();
+    private Grid grid_rec = new Grid();
     private Grid grid = new Grid();
     private Grid grids = new Grid();
     private Grid gridso = new Grid();
     private Grid gridr = new Grid();
+    private Grid gridrec = new Grid();
     //Contiene todos los elementos de la plantilla
     private Panel pan_opcion = new Panel();
     //para seleciconar opcines para el reporte
@@ -126,6 +124,13 @@ public class pre_anticipo_especial extends Pantalla {
 
         bar_botones.agregarComponente(new Etiqueta("Buscar Solicitud:"));
         bar_botones.agregarComponente(aut_busca);
+
+        Boton bot_recalculo = new Boton();
+        bot_recalculo.setValue("Recalculo");
+        bot_recalculo.setExcluirLectura(true);
+        bot_recalculo.setIcon("ui-icon-clock");
+        bot_recalculo.setMetodo("listRecalculo");
+        bar_botones.agregarBoton(bot_recalculo);
 
         //Ingreso y busqueda de solicitudes 
         Grid gri_busca = new Grid();
@@ -209,6 +214,15 @@ public class pre_anticipo_especial extends Pantalla {
         gridr.setColumns(4);
         agregarComponente(dia_dialogosr);
 
+        dia_dialogorec.setId("dia_dialogorec");
+        dia_dialogorec.setTitle("BUSQUEDA DE SERVIDOR POR ANTICIPO"); //titulo
+        dia_dialogorec.setWidth("55%"); //siempre en porcentajes  ancho
+        dia_dialogorec.setHeight("50%");//siempre porcentaje   alto
+        dia_dialogorec.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogorec.getBot_aceptar().setMetodo("aceptoListado");
+        grid_rec.setColumns(4);
+        agregarComponente(dia_dialogorec);
+
         dibujarSolicitud();
     }
 
@@ -291,6 +305,8 @@ public class pre_anticipo_especial extends Pantalla {
         tab_anticipo.getColumna("usu_anulacion").setVisible(false);
         tab_anticipo.getColumna("comen_anulacion").setVisible(false);
         tab_anticipo.getColumna("fecha_anulacion").setVisible(false);
+        tab_anticipo.getColumna("recal_usuario").setVisible(false);
+        tab_anticipo.getColumna("recal_ip").setVisible(false);
         tab_anticipo.setTipoFormulario(true);
         tab_anticipo.agregarRelacion(tab_garante);
         tab_anticipo.agregarRelacion(tab_parametros);
@@ -544,29 +560,29 @@ public class pre_anticipo_especial extends Pantalla {
 //        if (!tab_dato.isEmpty()) {
 //            utilitario.agregarMensaje("Garante No Disponible", "Se Encuentra En Otra Solicitud...");
 //        } else {
-            if (utilitario.validarCedula(tab_garante.getValor("ci_garante"))) {
-                TablaGenerica tab_dato1 = iAnticipos.Garantemple1(tab_garante.getValor("ci_garante"));
-                if (!tab_dato1.isEmpty()) {
+        if (utilitario.validarCedula(tab_garante.getValor("ci_garante"))) {
+            TablaGenerica tab_dato1 = iAnticipos.Garantemple1(tab_garante.getValor("ci_garante"));
+            if (!tab_dato1.isEmpty()) {
+                tab_garante.setValor("garante", tab_dato1.getValor("nombres"));
+                tab_garante.setValor("ide_empleado_garante", tab_dato1.getValor("cod_empleado"));
+                tab_garante.setValor("cod_tipo", tab_dato1.getValor("cod_tipo"));
+                tab_garante.setValor("id_distributivo", tab_dato1.getValor("id_distributivo"));
+                utilitario.addUpdate("tab_garante");
+            } else {
+                TablaGenerica tab_dato2 = iAnticipos.GarNumConat1(Integer.parseInt(tab_dato1.getValor("cod_empleado")));
+                if (!tab_dato2.isEmpty()) {
                     tab_garante.setValor("garante", tab_dato1.getValor("nombres"));
-                    tab_garante.setValor("ide_empleado_garante", tab_dato1.getValor("cod_empleado"));
+                    tab_garante.setValor("ide_empleado_garante", tab_dato2.getValor("cod_empleado"));
                     tab_garante.setValor("cod_tipo", tab_dato1.getValor("cod_tipo"));
                     tab_garante.setValor("id_distributivo", tab_dato1.getValor("id_distributivo"));
                     utilitario.addUpdate("tab_garante");
                 } else {
-                    TablaGenerica tab_dato2 = iAnticipos.GarNumConat1(Integer.parseInt(tab_dato1.getValor("cod_empleado")));
-                    if (!tab_dato2.isEmpty()) {
-                        tab_garante.setValor("garante", tab_dato1.getValor("nombres"));
-                        tab_garante.setValor("ide_empleado_garante", tab_dato2.getValor("cod_empleado"));
-                        tab_garante.setValor("cod_tipo", tab_dato1.getValor("cod_tipo"));
-                        tab_garante.setValor("id_distributivo", tab_dato1.getValor("id_distributivo"));
-                        utilitario.addUpdate("tab_garante");
-                    } else {
-                        utilitario.agregarMensajeInfo("Garante No Cumple Requisitos", "");
-                    }
+                    utilitario.agregarMensajeInfo("Garante No Cumple Requisitos", "");
                 }
-            } else {
-                utilitario.agregarMensajeError("El Número de Cédula no es válido", "");
             }
+        } else {
+            utilitario.agregarMensajeError("El Número de Cédula no es válido", "");
+        }
 //        }
     }
 
@@ -595,27 +611,27 @@ public class pre_anticipo_especial extends Pantalla {
 //            if (!tab_dato1.isEmpty()) {
 //                utilitario.agregarMensajeInfo("Garante, No Se Encuentra Disponible", "");
 //            } else {
-                TablaGenerica tab_dato = iAnticipos.GaranteNom(Integer.parseInt(set_colaborador.getValorSeleccionado()));
-                if (!tab_dato.isEmpty()) {
-                    tab_garante.setValor("ide_empleado_garante", tab_dato.getValor("cod_empleado"));
-                    tab_garante.setValor("ci_garante", tab_dato.getValor("cedula_pass"));
+            TablaGenerica tab_dato = iAnticipos.GaranteNom(Integer.parseInt(set_colaborador.getValorSeleccionado()));
+            if (!tab_dato.isEmpty()) {
+                tab_garante.setValor("ide_empleado_garante", tab_dato.getValor("cod_empleado"));
+                tab_garante.setValor("ci_garante", tab_dato.getValor("cedula_pass"));
+                tab_garante.setValor("garante", tab_dato.getValor("nombres"));
+                tab_garante.setValor("id_distributivo", tab_dato.getValor("id_distributivo"));
+                tab_garante.setValor("cod_tipo", tab_dato.getValor("cod_tipo"));
+                utilitario.addUpdate("tab_garante");
+                dia_dialogo.cerrar();
+            } else {
+                TablaGenerica tab_dato2 = iAnticipos.GarNumConat(Integer.parseInt(tab_dato.getValor("cod_empleado")));
+                if (!tab_dato2.isEmpty()) {
                     tab_garante.setValor("garante", tab_dato.getValor("nombres"));
-                    tab_garante.setValor("id_distributivo", tab_dato.getValor("id_distributivo"));
+                    tab_garante.setValor("ide_empleado_garante", tab_dato2.getValor("cod_empleado"));
                     tab_garante.setValor("cod_tipo", tab_dato.getValor("cod_tipo"));
+                    tab_garante.setValor("id_distributivo", tab_dato.getValor("id_distributivo"));
                     utilitario.addUpdate("tab_garante");
-                    dia_dialogo.cerrar();
                 } else {
-                    TablaGenerica tab_dato2 = iAnticipos.GarNumConat(Integer.parseInt(tab_dato.getValor("cod_empleado")));
-                    if (!tab_dato2.isEmpty()) {
-                        tab_garante.setValor("garante", tab_dato.getValor("nombres"));
-                        tab_garante.setValor("ide_empleado_garante", tab_dato2.getValor("cod_empleado"));
-                        tab_garante.setValor("cod_tipo", tab_dato.getValor("cod_tipo"));
-                        tab_garante.setValor("id_distributivo", tab_dato.getValor("id_distributivo"));
-                        utilitario.addUpdate("tab_garante");
-                    } else {
-                        utilitario.agregarMensajeInfo("Garante No Cumple Requisitos", "");
-                    }
+                    utilitario.agregarMensajeInfo("Garante No Cumple Requisitos", "");
                 }
+            }
 //            }
         } else {
             utilitario.agregarMensajeInfo("No se a seleccionado ningun registro ", "");
@@ -1318,9 +1334,9 @@ public class pre_anticipo_especial extends Pantalla {
                             System.out.println(valora);
                             System.err.println(Double.parseDouble(tab_parametros.getValor("valor_anticipo")));
                             if (valora >= Double.parseDouble(tab_parametros.getValor("valor_anticipo"))) {
-                                
+
                                 utilitario.agregarMensajeError("Cuota Diciembre Excede Sueldo Anterior", "");
-                                
+
                             } else {
                                 valorm = (valan - valora) / (Integer.parseInt(tab_parametros.getValor("numero_cuotas_anticipo")) - 1);
 //                            if(media>=(Math.rint(valorm*100)/100)){
@@ -1462,7 +1478,6 @@ public class pre_anticipo_especial extends Pantalla {
         }
     }
 
-    //Dibuja la Pantalla
     public void aceptarBusqueda() {
         if (cmb_seleccion.getValue().equals("1")) {
             if (set_solicitud.getValorSeleccionado() != null) {
@@ -1485,6 +1500,98 @@ public class pre_anticipo_especial extends Pantalla {
                 utilitario.agregarMensajeInfo("Debe seleccionar una Solicitud", "");
             }
         }
+    }
+
+    public void listRecalculo() {
+
+        dia_dialogorec.Limpiar();
+        dia_dialogorec.setDialogo(gridrec);
+        grid_rec.getChildren().add(set_listado);
+        set_listado.setId("set_listado");
+        set_listado.setConexion(con_postgres);
+        set_listado.setHeader("LISTADO ANTICIPOS VIGENTES");
+        set_listado.setSql("select s.ide_solicitud_anticipo,\n"
+                + "s.ci_solicitante,\n"
+                + "s.solicitante,\n"
+                + "c.valor_anticipo,\n"
+                + "c.numero_cuotas_anticipo,\n"
+                + "c.valor_cuota_mensual,\n"
+                + "c.val_cuo_adi,\n"
+                + "c.valor_pagado\n"
+                + "from srh_solicitud_anticipo s\n"
+                + "inner join srh_calculo_anticipo c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n"
+                + "where c.ide_estado_anticipo in (1,2,3)\n"
+                + "order by s.ide_solicitud_anticipo ASC");
+        set_listado.getColumna("ci_solicitante").setFiltro(true);
+        set_listado.getColumna("solicitante").setFiltro(true);
+        set_listado.setRows(10);
+        set_listado.setTipoSeleccion(false);
+        dia_dialogorec.setDialogo(grid_rec);
+        set_listado.dibujar();
+        dia_dialogorec.dibujar();
+    }
+
+    public void aceptoListado() {
+        double anticipo = 0.0, pagado, remuneracion = 0.0, cuota = 0.0, cuota1 = 0.0, diferencia = 0.0, cuotan = 0.0;
+        BigDecimal bd, acu, cuo;
+        TablaGenerica tabLista = iAnticipos.getReCalculo(Integer.parseInt(set_listado.getValorSeleccionado()));
+        if (!tabLista.isEmpty()) {
+            anticipo = Double.parseDouble(tabLista.getValor("valor_anticipo"));
+            pagado = Double.parseDouble(tabLista.getValor("valor_pagado"));
+            remuneracion = Double.parseDouble(tabLista.getValor("remuneracion"));
+            if (tabLista.getValor("porcentaje_descuento_diciembre") != null) {
+                bd = new BigDecimal((remuneracion * (Integer.parseInt(tabLista.getValor("porcentaje_descuento_diciembre"))) / 100));
+                cuota = bd.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
+                diferencia = ((anticipo - pagado) - cuota);
+                TablaGenerica tabDetalle = iAnticipos.getDetalleReCalculo(Integer.parseInt(set_listado.getValorSeleccionado()));
+                if (!tabDetalle.isEmpty()) {
+                    for (int i = 0; i < tabDetalle.getTotalFilas() - 1; i++) {
+                        if (tabDetalle.getValor(i, "periodo").equals("12")) {
+                            iAnticipos.setRecalculo(Integer.parseInt(set_listado.getValorSeleccionado()), cuota, Integer.parseInt(tabDetalle.getValor(i, "ide_detalle_anticipo")));
+                        } else {
+                            cuo = new BigDecimal(diferencia / (tabDetalle.getTotalFilas() - 1));
+                            cuotan = cuo.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
+                            iAnticipos.setRecalculo(Integer.parseInt(set_listado.getValorSeleccionado()), cuotan, Integer.parseInt(tabDetalle.getValor(i, "ide_detalle_anticipo")));
+                        }
+                    }
+                    TablaGenerica tabIdDetalle = iAnticipos.getIdDetalleReCalculo(Integer.parseInt(set_listado.getValorSeleccionado()));
+                    if (!tabIdDetalle.isEmpty()) {
+                        acu = new BigDecimal((anticipo - (((((cuotan)) * (tabDetalle.getTotalFilas() - 2)) + cuota) + pagado)));
+                        cuota1 = acu.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
+                        iAnticipos.setRecalculo(Integer.parseInt(set_listado.getValorSeleccionado()), cuota1, Integer.parseInt(tabIdDetalle.getValor(" ide_detalle_anticipo")));
+                        iAnticipos.setRecacular(Integer.parseInt(set_listado.getValorSeleccionado()), cuotan, cuota);
+                        iAnticipos.setResolicitud(Integer.parseInt(set_listado.getValorSeleccionado()), utilitario.getIp(), utilitario.getVariable("NICK"));
+                    }
+                }
+            } else {
+                bd = new BigDecimal(remuneracion / 100);
+                cuota = bd.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
+                diferencia = ((anticipo - pagado) - cuota);
+                TablaGenerica tabDetalle = iAnticipos.getDetalleReCalculo(Integer.parseInt(set_listado.getValorSeleccionado()));
+                if (!tabDetalle.isEmpty()) {
+                    for (int i = 0; i < tabDetalle.getTotalFilas() - 1; i++) {
+                        if (tabDetalle.getValor(i, "periodo").equals("12")) {
+                            iAnticipos.setRecalculo(Integer.parseInt(set_listado.getValorSeleccionado()), cuota, Integer.parseInt(tabDetalle.getValor(i, "ide_detalle_anticipo")));
+                        } else {
+                            cuo = new BigDecimal(diferencia / (tabDetalle.getTotalFilas() - 1));
+                            cuotan = cuo.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
+                            iAnticipos.setRecalculo(Integer.parseInt(set_listado.getValorSeleccionado()), cuotan, Integer.parseInt(tabDetalle.getValor(i, "ide_detalle_anticipo")));
+                        }
+                    }
+                    TablaGenerica tabIdDetalle = iAnticipos.getIdDetalleReCalculo(Integer.parseInt(set_listado.getValorSeleccionado()));
+                    if (!tabIdDetalle.isEmpty()) {
+                        acu = new BigDecimal((anticipo - (((((cuotan)) * (tabDetalle.getTotalFilas() - 2)) + cuota) + pagado)));
+                        cuota1 = acu.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
+                        iAnticipos.setRecalculo(Integer.parseInt(set_listado.getValorSeleccionado()), cuota1, Integer.parseInt(tabIdDetalle.getValor(" ide_detalle_anticipo")));
+                        iAnticipos.setRecacular(Integer.parseInt(set_listado.getValorSeleccionado()), cuotan, cuota);
+                        iAnticipos.setResolicitud(Integer.parseInt(set_listado.getValorSeleccionado()), utilitario.getIp(), utilitario.getVariable("NICK"));
+                    }
+                }
+            }
+        } else {
+            utilitario.agregarMensaje("Anticipo No Encontrado", null);
+        }
+        set_listado.actualizar();
     }
 
     @Override
@@ -1687,5 +1794,13 @@ public class pre_anticipo_especial extends Pantalla {
 
     public void setCon_postgres(Conexion con_postgres) {
         this.con_postgres = con_postgres;
+    }
+
+    public Tabla getSet_listado() {
+        return set_listado;
+    }
+
+    public void setSet_listado(Tabla set_listado) {
+        this.set_listado = set_listado;
     }
 }
