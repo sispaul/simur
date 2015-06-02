@@ -424,27 +424,22 @@ public class InventarioAutomotores extends Pantalla {
 
     @Override
     public void guardar() {
-        Map campos = new HashMap();
-
-        try {
-//            campos.put("marca", marca.getText());
-//            campos.put("calibre", calibre.getText());
-//            campos.put("serie", serie.getText());
-//            campos.put("fecha_registro", fechaRegistro.getCalendar().getTime());
-//            campos.put("tipo", tipo.getText());
-
-            if (pk == 0) {
-                aCombustible.insertar(tabAutomotores.getTabla(), campos);
-
-            } else {
-                aCombustible.actualizar(tabAutomotores.getTabla(), tabAutomotores.getValor(""), pk, campos);
+        if (tabAutomotores.getValor("mve_secuencial") != null) {
+            TablaGenerica tabDato = aCombustible.getEstrucTabla(tabAutomotores.getTabla());
+            if (!tabDato.isEmpty()) {
+                for (int i = 0; i < tabDato.getTotalFilas(); i++) {
+                    if(i!=1){
+                        
+                    }
+                }
             }
-        } catch (Exception ex) {
+        } else {
+            tabAutomotores.guardar();
+            conPostgres.guardarPantalla();
         }
     }
 
     @Override
     public void eliminar() {
     }
-
 }
