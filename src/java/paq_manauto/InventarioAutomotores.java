@@ -16,14 +16,8 @@ import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
-import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
 import paq_manauto.ejb.SQLManauto;
@@ -45,7 +39,6 @@ public class InventarioAutomotores extends Pantalla {
     private Tabla setVersion = new Tabla();
     private Tabla tabAutomotores = new Tabla();
     private Tabla tabConsulta = new Tabla();
-    private Tabla tabAccesorios = new Tabla();
     //Dialogo de Ingreso de tablas
     private Dialogo diaDialogo = new Dialogo();
     private Dialogo diaDialogot = new Dialogo();
@@ -66,7 +59,6 @@ public class InventarioAutomotores extends Pantalla {
     private Texto tversion = new Texto();
     //buscar solicitud
     private AutoCompletar autBusca = new AutoCompletar();
-    private Integer pk;
     @EJB
     private SQLManauto aCombustible = (SQLManauto) utilitario.instanciarEJB(SQLManauto.class);
     //Contiene todos los elementos de la plantilla
@@ -242,16 +234,19 @@ public class InventarioAutomotores extends Pantalla {
         tabAutomotores.getColumna("mvmodelo_id").setCombo("SELECT MVMODELO_ID,MVMODELO_DESCRIPCION FROM mvmodelo_vehiculo order by MVMODELO_DESCRIPCION");
         tabAutomotores.getColumna("mvversion_id").setCombo("SELECT mvversion_id,mvversion_descripcion FROM mvversion_vehiculo order by mvversion_descripcion");
         tabAutomotores.getColumna("tipo_combustible_id").setCombo("SELECT tipo_combustible_id,(tipo_combustible_descripcion||''||tipo_valor_galon) as valor FROM mvtipo_combustible order by tipo_combustible_descripcion");
+        tabAutomotores.getColumna("mve_cod_conductor").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where estado = 1 order by nombres");
+        tabAutomotores.getColumna("mve_cod_conductor").setFiltroContenido();
+        tabAutomotores.getColumna("mve_dependencia").setCombo("SELECT id_oficina,des_oficina from afi_oficina order by des_oficina");
+        tabAutomotores.getColumna("mve_dependencia").setFiltroContenido();
         tabAutomotores.getColumna("mvmarca_id").setMetodoChange("cargarTipo");
         tabAutomotores.getColumna("mvtipo_id").setMetodoChange("cargarModelo");
         tabAutomotores.getColumna("mvmodelo_id").setMetodoChange("cargarVersion");
         tabAutomotores.getColumna("mve_tipomedicion").setMetodoChange("activarCasilla");
-        tabAutomotores.getColumna("mve_cod_conductor").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where estado = 1 order by nombres");
         tabAutomotores.getColumna("mve_cod_conductor").setFiltroContenido();
         tabAutomotores.getColumna("mve_cod_conductor").setMetodoChange("conductor");
         tabAutomotores.getColumna("mve_kilometros_actual").setMetodoChange("recorrido");
         tabAutomotores.getColumna("MVE_HOROMETRO").setMetodoChange("recorrido");
-        tabAutomotores.getColumna("MVE_TIPOCODIGO").setMetodoChange("activarTipo");
+        tabAutomotores.getColumna("mve_tipocodigo").setMetodoChange("activarTipo");
         tabAutomotores.getColumna("MVE_HOROMETRO").setMascara("9999:99");
         tabAutomotores.getColumna("mve_rendimientogl_h").setMascara("9/1");
         tabAutomotores.getColumna("MVE_LOGININGRESO").setValorDefecto(tabConsulta.getValor("NICK_USUA"));
@@ -273,10 +268,13 @@ public class InventarioAutomotores extends Pantalla {
         Object fila2[] = {
             "2", "Maquinaria"
         };
+        Object fila3[] = {
+            "3", "Otros"
+        };
         lista.add(fila1);;
         lista.add(fila2);;
+        lista.add(fila3);;
         tabAutomotores.getColumna("MVE_TIPOCODIGO").setCombo(lista);
-        tabAutomotores.getColumna("MVE_ESTADO_REGISTRO").setVisible(false);
         List listes = new ArrayList();
         Object filase1[] = {
             "BUENO", "BUENO"
@@ -296,12 +294,10 @@ public class InventarioAutomotores extends Pantalla {
         tabAutomotores.getColumna("MVE_HOROMETRO").setLectura(true);
         tabAutomotores.getColumna("mve_kilometros_actual").setLectura(true);
         tabAutomotores.getColumna("mve_asignacion").setVisible(false);
-        tabAutomotores.getColumna("mve_observcaciones").setVisible(false);
         tabAutomotores.getColumna("mve_tipo_ingreso").setVisible(false);
         tabAutomotores.getColumna("mve_loginingreso").setVisible(false);
         tabAutomotores.getColumna("mve_fechaingreso").setVisible(false);
         tabAutomotores.getColumna("mve_conductor").setVisible(false);
-        tabAutomotores.getColumna("mve_numimr").setVisible(false);
         tabAutomotores.getColumna("mve_secuencial").setVisible(false);
         tabAutomotores.getColumna("mve_rendimientogl_h").setLectura(true);
         tabAutomotores.setTipoFormulario(true);
@@ -343,7 +339,13 @@ public class InventarioAutomotores extends Pantalla {
             tabAutomotores.getColumna("mve_codigo").setLectura(false);
             tabAutomotores.setValor("mve_codigo", null);
             utilitario.addUpdate("tabAutomotores");
-        } else {
+        } else if (tabAutomotores.getValor("MVE_TIPOCODIGO").equals("2")) {
+            tabAutomotores.getColumna("MVE_PLACA").setLectura(false);
+            tabAutomotores.setValor("MVE_PLACA", null);
+            tabAutomotores.getColumna("mve_codigo").setLectura(false);
+            tabAutomotores.setValor("mve_codigo", null);
+            utilitario.addUpdate("tabAutomotores");
+        } else if (tabAutomotores.getValor("MVE_TIPOCODIGO").equals("3")) {
             tabAutomotores.getColumna("MVE_PLACA").setLectura(false);
             tabAutomotores.setValor("MVE_PLACA", null);
             tabAutomotores.getColumna("mve_codigo").setLectura(false);
@@ -362,6 +364,209 @@ public class InventarioAutomotores extends Pantalla {
             } else {
                 utilitario.agregarMensaje("Minutos No Deben Ser Mayor", "60");
             }
+        }
+    }
+
+    //DATOS PARA CONDUCTOR
+    public void conductor() {
+        TablaGenerica tabDato = aCombustible.getChofer(tabAutomotores.getValor("mve_cod_conductor"));
+        if (!tabDato.isEmpty()) {
+            tabAutomotores.setValor("mve_conductor", tabDato.getValor("nombres"));
+            tabAutomotores.setValor("mve_asignacion", tabDato.getValor("activo"));
+            utilitario.addUpdate("tabAutomotores");
+        } else {
+            utilitario.agregarMensajeInfo("No existen Datos", "");
+        }
+    }
+
+    //COMPONENTES ADICIONALES ACTIVAR
+    public void activarCasilla() {
+        if (tabAutomotores.getValor("mve_tipomedicion").equals("1")) {
+            tabAutomotores.getColumna("mve_kilometros_actual").setLectura(true);
+            tabAutomotores.getColumna("mve_horometro").setLectura(false);
+            tabAutomotores.setValor("mve_tipo_ingreso", "A");
+            tabAutomotores.getColumna("mve_rendimientogl_h").setLectura(false);
+            utilitario.addUpdate("tabAutomotores");
+        } else if (tabAutomotores.getValor("mve_tipomedicion").equals("2")) {
+            tabAutomotores.getColumna("mve_kilometros_actual").setLectura(false);
+            tabAutomotores.getColumna("mve_horometro").setLectura(true);
+            tabAutomotores.setValor("mve_tipo_ingreso", "M");
+            tabAutomotores.getColumna("mve_rendimientogl_h").setLectura(true);
+            utilitario.addUpdate("tabAutomotores");
+        } else if (tabAutomotores.getValor("mve_tipomedicion").equals("3")) {
+            tabAutomotores.getColumna("mve_kilometros_actual").setLectura(false);
+            tabAutomotores.getColumna("mve_horometro").setLectura(true);
+            tabAutomotores.setValor("mve_tipo_ingreso", "O");
+            tabAutomotores.getColumna("mve_rendimientogl_h").setLectura(true);
+            utilitario.addUpdate("tabAutomotores");
+        }
+    }
+
+    //PARAMETROS PARA VEHICULO
+    //MARCA
+    public void ing_marcas() {
+        diaDialogo.Limpiar();
+        diaDialogo.setDialogo(grid);
+        gridO.getChildren().add(setMarca);
+        diaDialogo.setDialogo(gridO);
+        setMarca.dibujar();
+        diaDialogo.dibujar();
+    }
+
+    public void insMarca() {
+        TablaGenerica tab_dato = aCombustible.getDuplicaMarca(tmarca.getValue() + "");
+        if (!tab_dato.isEmpty()) {
+            utilitario.agregarMensaje("Marca ya se Encuentra Registrada", "");
+        } else {
+            if (tmarca.getValue() != null && tmarca.toString().isEmpty() == false) {
+                aCombustible.setMarca(tmarca.getValue() + "", utilitario.getVariable("NICK"));
+                tmarca.limpiar();
+                utilitario.agregarMensaje("Registro Guardado", "Marca");
+                setMarca.actualizar();
+                cargarMarca();
+            }
+        }
+    }
+
+    public void endMarca() {
+        if (setMarca.getValorSeleccionado() != null && setMarca.getValorSeleccionado().isEmpty() == false) {
+            aCombustible.setDeleteMarcas(Integer.parseInt(setMarca.getValorSeleccionado()));
+            utilitario.agregarMensaje("Registro eliminado", "Marca");
+            setMarca.actualizar();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
+        }
+    }
+    //TIPO
+
+    public void acep_marcas() {
+        if (setMarca.getValorSeleccionado() != null && setMarca.getValorSeleccionado().isEmpty() == false) {
+            diaDialogot.Limpiar();
+            diaDialogot.setDialogo(gridT);
+            gridti.getChildren().add(setTipo);
+            setTipo.setId("setTipo");
+            setTipo.setConexion(conPostgres);
+            setTipo.setSql("SELECT mvtipo_id,mvtipo_descripcion FROM mvtipo_vehiculo where mvmarca_id =" + setMarca.getValorSeleccionado() + " order by mvtipo_descripcion");
+            setTipo.getColumna("mvtipo_descripcion").setFiltro(true);
+            setTipo.setTipoSeleccion(false);
+            setTipo.setRows(10);
+            setTipo.dibujar();
+            diaDialogot.setDialogo(gridti);
+            diaDialogot.dibujar();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
+        }
+    }
+
+    public void insTipo() {
+        TablaGenerica tab_dato1 = aCombustible.getDuplicaTipo(ttipo.getValue() + "", Integer.parseInt(setMarca.getValorSeleccionado()));
+        if (!tab_dato1.isEmpty()) {
+            utilitario.agregarMensaje("Tipo ya se Encuentra Registrado", "");
+        } else {
+            if (ttipo.getValue() != null && ttipo.toString().isEmpty() == false) {
+                aCombustible.setTipo(ttipo.getValue() + "", utilitario.getVariable("NICK"), Integer.parseInt(setMarca.getValorSeleccionado()));
+                ttipo.limpiar();
+                utilitario.agregarMensaje("Registro Guardado", "Tipo");
+                setTipo.actualizar();
+            }
+        }
+    }
+
+    public void endTipo() {
+        if (setTipo.getValorSeleccionado() != null && setTipo.getValorSeleccionado().isEmpty() == false) {
+            aCombustible.setDeleteTipos(Integer.parseInt(setTipo.getValorSeleccionado()));
+            utilitario.agregarMensaje("Registro eliminado", "Tipo");
+            setTipo.actualizar();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
+        }
+    }
+    //MODELO
+
+    public void acepta_tipo() {
+        if (setTipo.getValorSeleccionado() != null && setTipo.getValorSeleccionado().isEmpty() == false) {
+            diaDialogom.Limpiar();
+            diaDialogom.setDialogo(gridM);
+            gridma.getChildren().add(setModelo);
+            setModelo.setId("setModelo");
+            setModelo.setConexion(conPostgres);
+            setModelo.setSql("SELECT mvmodelo_id,mvmodelo_descripcion FROM mvmodelo_vehiculo where mvtipo_id =" + setTipo.getValorSeleccionado() + "  order by mvmodelo_descripcion");
+            setModelo.getColumna("mvmodelo_descripcion").setFiltro(true);
+            setModelo.setTipoSeleccion(false);
+            setModelo.setRows(10);
+            setModelo.dibujar();
+            diaDialogom.setDialogo(gridma);
+            diaDialogom.dibujar();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
+        }
+    }
+
+    public void insModelo() {
+        TablaGenerica tab_dato2 = aCombustible.getDuplicaModelo(tmodelo.getValue() + "", Integer.parseInt(setTipo.getValorSeleccionado()));
+        if (!tab_dato2.isEmpty()) {
+            utilitario.agregarMensaje("Modelo ya se Encuentra Registrado", "");
+        } else {
+            if (tmodelo.getValue() != null && tmodelo.toString().isEmpty() == false) {
+                aCombustible.setModelo(tmodelo.getValue() + "", utilitario.getVariable("NICK"), Integer.parseInt(setTipo.getValorSeleccionado()));
+                tmodelo.limpiar();
+                utilitario.agregarMensaje("Registro Guardado", "Modelo");
+                setModelo.actualizar();
+            }
+        }
+    }
+
+    public void endModelo() {
+        if (setModelo.getValorSeleccionado() != null && setModelo.getValorSeleccionado().isEmpty() == false) {
+            aCombustible.setDeleteModelos(Integer.parseInt(setModelo.getValorSeleccionado()));
+            utilitario.agregarMensaje("Registro eliminado", "Modelo");
+            setModelo.actualizar();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
+        }
+    }
+    //VERSIÓN
+
+    public void acepta_modelo() {
+        if (setModelo.getValorSeleccionado() != null && setModelo.getValorSeleccionado().isEmpty() == false) {
+            diaDialogov.Limpiar();
+            diaDialogov.setDialogo(gridV);
+            gridve.getChildren().add(setVersion);
+            setVersion.setId("setVersion");
+            setVersion.setConexion(conPostgres);
+            setVersion.setSql("SELECT mvversion_id,mvversion_descripcion FROM mvversion_vehiculo where mvmodelo_id =" + setModelo.getValorSeleccionado() + " order by mvversion_descripcion");
+            setVersion.getColumna("mvversion_descripcion").setFiltro(true);
+            setVersion.setTipoSeleccion(false);
+            setVersion.setRows(10);
+            setVersion.dibujar();
+            diaDialogov.setDialogo(gridve);
+            diaDialogov.dibujar();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
+        }
+    }
+
+    public void insVersion() {
+        TablaGenerica tab_dato3 = aCombustible.getDuplicaVersion(tversion.getValue() + "", Integer.parseInt(setModelo.getValorSeleccionado()));
+        if (!tab_dato3.isEmpty()) {
+            utilitario.agregarMensaje("Modelo ya se Encuentra Registrado", "");
+        } else {
+            if (tversion.getValue() != null && tversion.toString().isEmpty() == false) {
+                aCombustible.setVersion(tversion.getValue() + "", utilitario.getVariable("NICK"), Integer.parseInt(setModelo.getValorSeleccionado()));
+                tversion.limpiar();
+                utilitario.agregarMensaje("Registro Guardado", "Versión");
+                setVersion.actualizar();
+            }
+        }
+    }
+
+    public void endVersion() {
+        if (setVersion.getValorSeleccionado() != null && setVersion.getValorSeleccionado().isEmpty() == false) {
+            aCombustible.setDeleteversion(Integer.parseInt(setVersion.getValorSeleccionado()));
+            utilitario.agregarMensaje("Registro eliminado", "Versión");
+            setVersion.actualizar();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
         }
     }
 
@@ -386,37 +591,6 @@ public class InventarioAutomotores extends Pantalla {
         utilitario.addUpdateTabla(tabAutomotores, "mvversion_id", "");//actualiza solo componentes
     }
 
-    //DATOS PARA CONDUCTOR
-    public void conductor() {
-//        TablaGenerica tabDato = aCombustible.getChofer(tabAutomotores.getValor("mve_cod_conductor"));
-//        if (!tabDato.isEmpty()) {
-//            tabAutomotores.setValor("mve_conductor", tabDato.getValor("nombres"));
-//            tabAutomotores.setValor("mve_asignacion", tabDato.getValor("activo"));
-//            utilitario.addUpdate("tabAutomotores");
-//        } else {
-//            utilitario.agregarMensajeInfo("No existen Datos", "");
-//        }
-    }
-
-    //COMPONENTES ADICIONALES ACTIVAR
-    public void activarCasilla() {
-        if (tabAutomotores.getValor("mve_tipomedicion").equals("2")) {
-            tabAutomotores.getColumna("mve_kilometros_actual").setLectura(true);
-            tabAutomotores.getColumna("mve_horometro").setLectura(false);
-            tabAutomotores.setValor("mve_tipo_ingreso", "M");
-            tabAutomotores.setValor("MVE_NUMIMR", "H");
-            tabAutomotores.getColumna("mve_rendimientogl_h").setLectura(false);
-            utilitario.addUpdate("tabAutomotores");
-        } else {
-            tabAutomotores.getColumna("mve_kilometros_actual").setLectura(false);
-            tabAutomotores.getColumna("mve_horometro").setLectura(true);
-            tabAutomotores.setValor("mve_tipo_ingreso", "A");
-            tabAutomotores.setValor("MVE_NUMIMR", "K");
-            tabAutomotores.getColumna("mve_rendimientogl_h").setLectura(true);
-            utilitario.addUpdate("tabAutomotores");
-        }
-    }
-
     @Override
     public void insertar() {
         utilitario.getTablaisFocus().insertar();
@@ -425,21 +599,92 @@ public class InventarioAutomotores extends Pantalla {
     @Override
     public void guardar() {
         if (tabAutomotores.getValor("mve_secuencial") != null) {
-            TablaGenerica tabDato = aCombustible.getEstrucTabla(tabAutomotores.getTabla());
-            if (!tabDato.isEmpty()) {
-                for (int i = 0; i < tabDato.getTotalFilas(); i++) {
-                    if(i!=1){
-                        
+            TablaGenerica tabInfo = aCombustible.getCatalogoDato("*", tabAutomotores.getTabla(), "mve_secuencial = " + tabAutomotores.getValor("mve_secuencial") + "");
+            if (!tabInfo.isEmpty()) {
+                TablaGenerica tabDato = aCombustible.getNumeroCampos(tabAutomotores.getTabla());
+                if (!tabDato.isEmpty()) {
+                    for (int i = 1; i < Integer.parseInt(tabDato.getValor("NumeroCampos")); i++) {
+                        if (i != 1) {
+                            TablaGenerica tabInfoColum1 = aCombustible.getEstrucTabla(tabAutomotores.getTabla(), i);
+                            if (!tabInfoColum1.isEmpty()) {
+                                try {
+                                    if (tabAutomotores.getValor(tabInfoColum1.getValor("Column_Name")).equals(tabInfo.getValor(tabInfoColum1.getValor("Column_Name")))) {
+                                    } else {
+                                        aCombustible.setActuaRegis(Integer.parseInt(tabAutomotores.getValor("mve_secuencial")), tabAutomotores.getTabla(), tabInfoColum1.getValor("Column_Name"), tabAutomotores.getValor(tabInfoColum1.getValor("Column_Name")), "mve_secuencial");
+                                    }
+                                } catch (NullPointerException e) {
+                                }
+                            }
+                        }
                     }
                 }
             }
+            utilitario.agregarMensaje("Registro Actalizado", null);
         } else {
-            tabAutomotores.guardar();
-            conPostgres.guardarPantalla();
+            if (tabAutomotores.guardar()) {
+                conPostgres.guardarPantalla();
+            }
         }
     }
 
     @Override
     public void eliminar() {
+        tabAutomotores.eliminar();
+    }
+
+    public Conexion getConPostgres() {
+        return conPostgres;
+    }
+
+    public void setConPostgres(Conexion conPostgres) {
+        this.conPostgres = conPostgres;
+    }
+
+    public Tabla getTabAutomotores() {
+        return tabAutomotores;
+    }
+
+    public void setTabAutomotores(Tabla tabAutomotores) {
+        this.tabAutomotores = tabAutomotores;
+    }
+
+    public AutoCompletar getAutBusca() {
+        return autBusca;
+    }
+
+    public void setAutBusca(AutoCompletar autBusca) {
+        this.autBusca = autBusca;
+    }
+
+    public Tabla getSetMarca() {
+        return setMarca;
+    }
+
+    public void setSetMarca(Tabla setMarca) {
+        this.setMarca = setMarca;
+    }
+
+    public Tabla getSetTipo() {
+        return setTipo;
+    }
+
+    public void setSetTipo(Tabla setTipo) {
+        this.setTipo = setTipo;
+    }
+
+    public Tabla getSetModelo() {
+        return setModelo;
+    }
+
+    public void setSetModelo(Tabla setModelo) {
+        this.setModelo = setModelo;
+    }
+
+    public Tabla getSetVersion() {
+        return setVersion;
+    }
+
+    public void setSetVersion(Tabla setVersion) {
+        this.setVersion = setVersion;
     }
 }
