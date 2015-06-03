@@ -337,6 +337,15 @@ public class AccesoSistemas extends Pantalla {
         if (tab_solicitud.getValor("id_solicitud_acceso") != null) {
             TablaGenerica tab_dato = datosEmpledo.getSolicitudAcceso(Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
             if (!tab_dato.isEmpty()) {
+                if (tab_dato.getValor("ID_SISTEMA") != tab_solicitud.getValor("ID_SISTEMA")) {
+                    datosEmpledo.setAccesoSistemas("ID_SISTEMA", tab_solicitud.getValor("ID_SISTEMA"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
+                }
+                if (tab_dato.getValor("ID_PERFIL") != tab_solicitud.getValor("ID_PERFIL")) {
+                    datosEmpledo.setAccesoSistemas("ID_PERFIL", tab_solicitud.getValor("ID_PERFIL"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
+                }
+                if (tab_dato.getValor("ID_MODULO") != tab_solicitud.getValor("ID_MODULO")) {
+                    datosEmpledo.setAccesoSistemas("ID_MODULO", tab_solicitud.getValor("ID_MODULO"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
+                }
                 if (tab_dato.getValor("login_acceso_usuario") != tab_solicitud.getValor("login_acceso_usuario")) {
                     datosEmpledo.setAccesoSistemas("login_acceso_usuario", tab_solicitud.getValor("login_acceso_usuario"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
                 }
