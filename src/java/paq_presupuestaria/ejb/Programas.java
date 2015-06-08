@@ -393,10 +393,7 @@ public class Programas {
     public void actuaComprobante(String cuenta, String nombre, String tipo, String usu, String comprobante, Integer lista, Integer detalle) {
 
         String str_sqlg = "UPDATE tes_detalle_comprobante_pago_listado\n"
-                + "set numero_cuenta='" + cuenta + "',\n"
-                + "ban_nombre ='" + nombre + "' ,\n"
-                + "tipo_cuenta='" + tipo + "',\n"
-                + "usuario_ingre_envia='" + usu + "',\n"
+                + "set usuario_ingre_envia='" + usu + "',\n"
                 + "ip_ingre_envia='" + utilitario.getIp() + "',\n"
                 + "ide_estado_listado=(SELECT ide_estado_listado FROM tes_estado_listado WHERE estado like 'PAGADO')\n"
                 + "WHERE comprobante like '" + comprobante + "' and ide_listado =" + lista + " and ide_detalle_listado =" + detalle;
@@ -724,7 +721,19 @@ public class Programas {
         con_postgres = null;
     }
 
-    public void actuOrdenPag() {
+    public void setActuDetallePag(Integer codigo, String cuenta, String banco, String nombre, Integer detalle, String comprobante, Integer item,String cuentan) {
+        // Forma el sql para actualizacion
+        String str_sql2 = "update tes_detalle_comprobante_pago_listado\n"
+                + "set ban_codigo=" + codigo + ",\n"
+                + "tipo_cuenta ='" + cuenta + "',\n"
+                + "codigo_banco='" + banco + "',\n"
+                + "numero_cuenta='" + cuentan + "',\n"
+                + "ban_nombre='" + nombre + "'\n"
+                + "where ide_listado=" + detalle + " and comprobante ='" + comprobante + "'  and item=" + item;
+        con_postgresql();
+        con_postgres.ejecutarSql(str_sql2);
+        con_postgres.desconectar();
+        con_postgres = null;
     }
 
     public TablaGenerica periodo(Integer periodo) {
@@ -984,6 +993,62 @@ public class Programas {
                 + "FROM\n"
                 + "tes_detalle_comprobante_pago_listado\n"
                 + "where ide_listado =" + item);
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+
+    }
+
+    public TablaGenerica getDatos(String codigo) {
+        con_postgresql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        con_postgresql();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("select  \n"
+                + "(case when a.identificacion is null then b.identificacion when a.identificacion is not null then a.identificacion end) as identificacion, \n"
+                + "(case when a.nombres is null then b.nombres when a.nombres is not null then a.nombres end) as nombres,\n"
+                + "(case when a.ban_codigo is null then b.ban_codigo when a.ban_codigo is not null then a.ban_codigo end) as ban_codigo, \n"
+                + "b.codigo_banco,\n"
+                + "(case when a.numero_cuenta is null then b.numero_cuenta when a.numero_cuenta is not null then a.numero_cuenta end) as numero_cuenta, \n"
+                + "(case when a.cod_cuenta is null then b.cod_cuenta when a.cod_cuenta is not null then a.cod_cuenta end) as cod_cuenta \n"
+                + "from  \n"
+                + "(SELECT \n"
+                + "cast(cedula_pass as varchar) as identificacion, \n"
+                + "nombres, \n"
+                + "cast(cod_banco as varchar)as ban_codigo, \n"
+                + "cast(numero_cuenta as varchar) as numero_cuenta, \n"
+                + "cast(cod_cuenta as varchar) as cod_cuenta\n"
+                + "from srh_empleado \n"
+                + "where cedula_pass = '" + codigo + "' and \n"
+                + "estado = 1)as a \n"
+                + "full outer join \n"
+                + "(SELECT \n"
+                + "cast(p.ruc as varchar) AS identificacion, \n"
+                + "p.titular AS nombres,\n"
+                + "cast(p.ban_codigo as varchar) AS ban_codigo,\n"
+                + "p.codigo_banco, \n"
+                + "cast(p.numero_cuenta as varchar) AS numero_cuenta, \n"
+                + "(case when p.tipo_cuenta = 'C' then '1'  when p.tipo_cuenta = 'A' then '2' end) AS cod_cuenta \n"
+                + "FROM tes_proveedores AS p \n"
+                + "where p.ruc = '" + codigo + "'\n"
+                + ") as b  \n"
+                + "on a.identificacion = b.identificacion");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+
+    }
+
+    public TablaGenerica getBanco(String codigo, Integer banco) {
+        con_postgresql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        con_postgresql();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT ban_codigo,ban_nombre,codigo_banco\n"
+                + "from ocebanco\n"
+                + "where ban_codigo = " + banco + " or codigo_banco = '" + codigo + "'");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;
