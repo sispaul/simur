@@ -7,6 +7,8 @@ package paq_transportes;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
+import framework.componentes.Combo;
+import framework.componentes.Dialogo;
 import paq_sistema.aplicacion.Pantalla;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
@@ -46,6 +48,7 @@ public class pre_empresa extends Pantalla {
     private Tabla tab_recorrido;
     private Tabla tab_seguro;
     private Tabla tab_revision;
+    private Tabla tab_consulta = new Tabla();
     private AutoCompletar aut_empresas = new AutoCompletar();
     private Panel pan_opcion = new Panel();
     private String str_opcion = "";// sirve para identificar la opcion que se encuentra dibujada en pantalla
@@ -56,12 +59,44 @@ public class pre_empresa extends Pantalla {
     private SeleccionTabla sel_tab_tipo_vehiculo = new SeleccionTabla();
     private SeleccionTabla sel_tab_empresa = new SeleccionTabla();
     private SeleccionTabla sel_tab_estado_socio = new SeleccionTabla();
+    private Combo cmb_seleccion = new Combo();
+    //dialogo para reporte
+    private Dialogo dia_dialogo = new Dialogo();
+    private Grid grid = new Grid();
+    private Grid grid_d = new Grid();
     @EJB
     private ServicioRegistros ser_registros = (ServicioRegistros) utilitario.instanciarEJB(ServicioRegistros.class);
     private SeleccionTabla set_empresa = new SeleccionTabla();
     private Texto tex_busqueda = new Texto();
 
     public pre_empresa() {
+
+        //Mostrar el usuario 
+        tab_consulta.setId("tab_consulta");
+        tab_consulta.setSql("select IDE_USUA, NOM_USUA, NICK_USUA from SIS_USUARIO where IDE_USUA=" + utilitario.getVariable("IDE_USUA"));
+        tab_consulta.setCampoPrimaria("IDE_USUA");
+        tab_consulta.setLectura(true);
+        tab_consulta.dibujar();
+
+        List list = new ArrayList();
+        Object filas1[] = {
+            "TAXI", "TAXI"
+        };
+        Object filas2[] = {
+            "CAMIONETA", "CAMIONETA"
+        };
+        list.add(filas1);;
+        list.add(filas2);;
+        cmb_seleccion.setCombo(list);
+
+        dia_dialogo.setId("dia_dialogo");
+        dia_dialogo.setTitle("Parametros de Busqueda"); //titulo
+        dia_dialogo.setWidth("20%"); //siempre en porcentajes  ancho
+        dia_dialogo.setHeight("25%");//siempre porcentaje   alto
+        dia_dialogo.setResizable(false); //para que no se pueda cambiar el tamaño
+        dia_dialogo.getBot_aceptar().setMetodo("aceptarReporte");
+        grid_d.setColumns(4);
+        agregarComponente(dia_dialogo);
 
         Boton bot_busca = new Boton();
         bot_busca.setValue("Busqueda Avanzada");
@@ -788,6 +823,22 @@ public class pre_empresa extends Pantalla {
                 } else {
                     utilitario.agregarMensajeInfo("No se puede continuar", "Debe seleccionar al Menos un Estado de Socios");
                 }
+            }
+
+        } else if (rep_reporte.getReporteSelecionado().equals("Total Vehiculos")) {
+            if (rep_reporte.isVisible()) {
+                rep_reporte.cerrar();
+                dia_dialogo.Limpiar();
+                grid.getChildren().add(new Etiqueta("Seleccione :"));
+                grid.getChildren().add(cmb_seleccion);
+                dia_dialogo.setDialogo(grid);
+                dia_dialogo.dibujar();
+            } else if (dia_dialogo.isVisible()) {
+                p_parametros.put("tipo", cmb_seleccion.getValue() + "");
+                p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA") + "");
+                dia_dialogo.cerrar();
+                sef_reporte.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                sef_reporte.dibujar();
             }
 
         }
