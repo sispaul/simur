@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_vehiculos_modelo" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0ca2ac8f-53cc-41f1-925d-9b8031a4e290">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="nom_resp" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["el que imprimio"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="tipo" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select a.marca,b.des_modelo,a.anio,a.conteo from (
+SELECT count(v.anio) AS conteo,
+v.anio,
+v.marca,
+v.ide_modelo
+FROM trans_empresa AS e
+LEFT JOIN dbo.trans_socios AS s ON s.ide_empresa = e.ide_empresa
+LEFT JOIN dbo.trans_vehiculos AS v ON v.ide_socios = s.ide_socios
+WHERE v.anio IS NOT null AND
+e.nombre LIKE '%$P!{tipo}%'
+GROUP BY v.anio,v.ide_modelo,v.marca) as a
+inner join
+(SELECT des_modelo,ide_modelo FROM trans_modelos) as b
+on a.ide_modelo = b.ide_modelo
+order by a.marca,b.des_modelo]]>
+	</queryString>
+	<field name="marca" class="java.lang.String"/>
+	<field name="des_modelo" class="java.lang.String"/>
+	<field name="anio" class="java.lang.Integer"/>
+	<field name="conteo" class="java.lang.Integer"/>
+	<group name="marca">
+		<groupExpression><![CDATA[$F{marca}]]></groupExpression>
+		<groupHeader>
+			<band height="21">
+				<textField>
+					<reportElement uuid="997c27ae-df96-4c94-91fd-3932fc780afa" x="53" y="1" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{marca}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="1"/>
+		</groupFooter>
+	</group>
+	<group name="modelo">
+		<groupExpression><![CDATA[$F{des_modelo}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement uuid="7af76759-183c-400d-b4bf-7166e5ade7c1" x="153" y="0" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{des_modelo}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="1"/>
+		</groupFooter>
+	</group>
+	<group name="anio">
+		<groupExpression><![CDATA[$F{anio}]]></groupExpression>
+		<groupHeader>
+			<band height="21">
+				<textField>
+					<reportElement uuid="25342e82-dc31-45d2-9735-019e07fdf513" x="253" y="0" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{anio}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="476dd6fd-ce24-4a85-9b0b-b4f4ce159ca2" x="353" y="0" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{conteo}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="1"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="81" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="f634376b-8882-426d-a76e-dab3a8703939" x="0" y="0" width="275" height="39"/>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DIRECCIÓN DE TRANSPORTES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="de96d2f0-e598-4ffc-8450-844a72144381" x="0" y="49" width="109" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo de Vehiculo :]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="c989a770-5a6c-47d4-a500-2b5c51e14d5a" x="110" y="49" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{tipo}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement uuid="c1495e97-3ed6-4437-bafe-7f3c075f4f12" x="353" y="0" width="177" height="81"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageFooter>
+		<band height="14" splitType="Stretch">
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="3cb03dcb-79df-44e5-9419-44da71c5bcb1" key="textField-5" x="7" y="0" width="92" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="4fa4a17c-06e3-4151-af99-51b65a5e3d16" key="textField-1" x="210" y="0" width="90" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nom_resp}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
+				<reportElement uuid="25568853-0266-4c13-a831-1965c954b771" key="textField" x="519" y="0" width="36" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="341ef499-4be1-4548-b7bd-ae4adc3d948d" key="textField" x="345" y="0" width="170" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="1" splitType="Stretch"/>
+	</summary>
+</jasperReport>
