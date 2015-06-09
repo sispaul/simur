@@ -354,28 +354,38 @@ public class InventarioEquipos extends Pantalla {
     }
 
     public void infAccesorio() {
-        TablaGenerica tabDato = accesoDatos.getInfoActivo1(tabAccesorio.getValor("acce_serie"));
-        if (!tabDato.isEmpty()) {
-            tabAccesorio.setValor("acce_codigo_activo", tabDato.getValor("codigo"));
-            tabAccesorio.setValor("acce_marca", tabDato.getValor("marca"));
-            tabAccesorio.setValor("acce_modelo", tabDato.getValor("modelo"));
-            tabAccesorio.setValor("acce_descripcion", tabDato.getValor("des_activo"));
-            utilitario.addUpdate("tabTabulador:tabAccesorio");
+        TablaGenerica tabValido = accesoDatos.getDatoAccesorio(null, tabAccesorio.getTabla(), "acce_serie =" + tabAccesorio.getValor("acce_serie") + " and ACCE_ESTADO <> 'Asignar'");
+        if (!tabValido.isEmpty()) {
+            TablaGenerica tabDato = accesoDatos.getInfoActivo1(tabAccesorio.getValor("acce_serie"));
+            if (!tabDato.isEmpty()) {
+                tabAccesorio.setValor("acce_codigo_activo", tabDato.getValor("codigo"));
+                tabAccesorio.setValor("acce_marca", tabDato.getValor("marca"));
+                tabAccesorio.setValor("acce_modelo", tabDato.getValor("modelo"));
+                tabAccesorio.setValor("acce_descripcion", tabDato.getValor("des_activo"));
+                utilitario.addUpdate("tabTabulador:tabAccesorio");
+            } else {
+                utilitario.agregarMensaje("Accesorio No Localizado en la Base de Activos", null);
+            }
         } else {
-            utilitario.agregarMensaje("Accesorio No Localizado en la Base de Activos", null);
+            utilitario.agregarMensaje("Accesorio Asignado", null);
         }
     }
 
     public void infAccesorio1() {
-        TablaGenerica tabDato = accesoDatos.getInfoActivo(tabAccesorio.getValor("acce_codigo_activo"));
-        if (!tabDato.isEmpty()) {
-            tabAccesorio.setValor("acce_codigo_activo", tabDato.getValor("codigo"));
-            tabAccesorio.setValor("acce_marca", tabDato.getValor("marca"));
-            tabAccesorio.setValor("acce_modelo", tabDato.getValor("modelo"));
-            tabAccesorio.setValor("acce_descripcion", tabDato.getValor("des_activo"));
-            utilitario.addUpdate("tabTabulador:tabAccesorio");
+        TablaGenerica tabValido = accesoDatos.getDatoAccesorio(null, tabAccesorio.getTabla(), "acce_codigo_activo =" + tabAccesorio.getValor("acce_codigo_activo") + " and ACCE_ESTADO <> 'Asignar'");
+        if (!tabValido.isEmpty()) {
+            TablaGenerica tabDato = accesoDatos.getInfoActivo(tabAccesorio.getValor("acce_codigo_activo"));
+            if (!tabDato.isEmpty()) {
+                tabAccesorio.setValor("acce_codigo_activo", tabDato.getValor("codigo"));
+                tabAccesorio.setValor("acce_marca", tabDato.getValor("marca"));
+                tabAccesorio.setValor("acce_modelo", tabDato.getValor("modelo"));
+                tabAccesorio.setValor("acce_descripcion", tabDato.getValor("des_activo"));
+                utilitario.addUpdate("tabTabulador:tabAccesorio");
+            } else {
+                utilitario.agregarMensaje("Accesorio No Localizado en la Base de Activos", null);
+            }
         } else {
-            utilitario.agregarMensaje("Accesorio No Localizado en la Base de Activos", null);
+            utilitario.agregarMensaje("Accesorio Asignado", null);
         }
     }
 
@@ -404,7 +414,6 @@ public class InventarioEquipos extends Pantalla {
         if (!tabDato.isEmpty()) {
             if (tabDato.getValor("catalogo_descripcion").endsWith("FUNCIONARIO")) {
                 TablaGenerica tabDato1 = accesoDatos.getEsatdoReg(Integer.parseInt(tabAsignacion.getValor("catalogo_codigo")), Integer.parseInt(tabAsignacion.getValor("desc_codigo")));
-                System.err.println("ing");
                 if (!tabDato1.isEmpty()) {
                     if (tabDato1.getValor("asignacion_estado").endsWith("Asignar")) {
                         utilitario.agregarMensaje("Dar de Baja al Funcionario Anterior", null);
