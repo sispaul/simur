@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_vehiculos_modelo" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0ca2ac8f-53cc-41f1-925d-9b8031a4e290">
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="1.610510000000001"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="nom_resp" class="java.lang.String" isForPrompting="false">
@@ -36,10 +36,17 @@ order by a.marca,b.des_modelo]]>
 		<groupHeader>
 			<band height="21">
 				<textField>
-					<reportElement uuid="997c27ae-df96-4c94-91fd-3932fc780afa" x="53" y="1" width="100" height="20"/>
+					<reportElement uuid="997c27ae-df96-4c94-91fd-3932fc780afa" x="74" y="1" width="100" height="20"/>
 					<textElement/>
 					<textFieldExpression><![CDATA[$F{marca}]]></textFieldExpression>
 				</textField>
+				<staticText>
+					<reportElement uuid="a5ce4acb-cc35-4b91-b136-0aed0fa2d4ab" x="0" y="1" width="100" height="20"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[MARCA : ]]></text>
+				</staticText>
 			</band>
 		</groupHeader>
 		<groupFooter>
@@ -51,10 +58,31 @@ order by a.marca,b.des_modelo]]>
 		<groupHeader>
 			<band height="20">
 				<textField>
-					<reportElement uuid="7af76759-183c-400d-b4bf-7166e5ade7c1" x="153" y="0" width="100" height="20"/>
+					<reportElement uuid="7af76759-183c-400d-b4bf-7166e5ade7c1" x="174" y="0" width="100" height="20"/>
 					<textElement/>
 					<textFieldExpression><![CDATA[$F{des_modelo}]]></textFieldExpression>
 				</textField>
+				<staticText>
+					<reportElement uuid="5e9b12c8-7ea6-4a49-a484-becb0402d2a5" x="74" y="0" width="100" height="20"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[MODELO:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="979a1d67-8a5f-4fb6-bd0c-aa37af7208a5" x="274" y="0" width="100" height="20"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[AÑO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="c38e2199-e639-489c-be61-d5fc5fc7c79b" x="374" y="0" width="100" height="20"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CONTEO]]></text>
+				</staticText>
 			</band>
 		</groupHeader>
 		<groupFooter>
@@ -66,12 +94,12 @@ order by a.marca,b.des_modelo]]>
 		<groupHeader>
 			<band height="21">
 				<textField>
-					<reportElement uuid="25342e82-dc31-45d2-9735-019e07fdf513" x="253" y="0" width="100" height="20"/>
+					<reportElement uuid="25342e82-dc31-45d2-9735-019e07fdf513" x="274" y="0" width="100" height="20"/>
 					<textElement/>
 					<textFieldExpression><![CDATA[$F{anio}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement uuid="476dd6fd-ce24-4a85-9b0b-b4f4ce159ca2" x="353" y="0" width="100" height="20"/>
+					<reportElement uuid="476dd6fd-ce24-4a85-9b0b-b4f4ce159ca2" x="374" y="0" width="100" height="20"/>
 					<textElement/>
 					<textFieldExpression><![CDATA[$F{conteo}]]></textFieldExpression>
 				</textField>
