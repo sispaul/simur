@@ -659,6 +659,29 @@ public class AntiSueldos {
         return tab_funcionario;
     }
 
+    public TablaGenerica getGarante(String ci) {
+        con_postgresql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        con_postgresql();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT\n"
+                + "e.cod_empleado, e.cedula_pass,\n"
+                + "e.nombres,e.fecha_ingreso,\n"
+                + "e.fecha_nombramiento,e.id_distributivo,\n"
+                + "e.cod_tipo,i.tipo\n"
+                + "FROM\n"
+                + "srh_empleado e,\n"
+                + "srh_tipo_empleado i\n"
+                + "WHERE\n"
+                + "e.estado = 1 AND\n"
+                + "e.cod_tipo = i.cod_tipo\n"
+                + "and e.cedula_pass like '" + ci + "'");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+    }
+
     public TablaGenerica GarNumConat(Integer ci) {
         con_postgresql();
         TablaGenerica tab_funcionario = new TablaGenerica();
@@ -858,6 +881,69 @@ public class AntiSueldos {
         tab_funcionario.setSql("select * from srh_detalle_anticipo\n"
                 + "where ide_anticipo = " + codigo + " and ide_periodo_descontado is null\n"
                 + "order by ide_detalle_anticipo");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+    }
+
+    public TablaGenerica getEmpleadoInfo(String cedula, Integer anio, Integer mes) {
+        con_postgresql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        con_postgresql();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("select aa.*,(a.TOTAL_INGRESOS-b.TOTAL_EGRESOS) as liquido from (\n"
+                + "select E.COD_EMPLEADO,e.cod_banco,cod_tipo,cod_cuenta,cod_grupo,e.numero_cuenta,e.cedula_pass,e.nombres,c.cod_cargo,r.valor AS RU,id_distributivo_roles   \n"
+                + "from srh_roles as r inner join prec_programas as  p   \n"
+                + "on r.ide_programa=p.ide_programa   \n"
+                + "inner join srh_empleado as e   \n"
+                + "on e.cod_empleado=r.ide_empleado   \n"
+                + "inner join srh_cargos  as c   \n"
+                + "on c.cod_cargo=e.cod_cargo   \n"
+                + "where ano= " + anio + "  \n"
+                + "and ide_periodo=" + mes + " and ide_columnas in (14,40) and e.cedula_pass like '" + cedula + "'   \n"
+                + "order by p.ide_funcion\n"
+                + ") as aa\n"
+                + "inner join \n"
+                + "(select E.COD_EMPLEADO,SUM(r.valor) AS TOTAL_INGRESOS from srh_roles as r,\n"
+                + "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n"
+                + "ano=" + anio + " \n"
+                + "and ide_periodo=" + mes + " and ide_columnas in\n"
+                + "(86,14,92,93,19,18,20,40,125,45,75,76,89,98,99,100,102,101,107,115)\n"
+                + "and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as a\n"
+                + "on aa.COD_EMPLEADO=a.COD_EMPLEADO\n"
+                + "inner join\n"
+                + "(select E.COD_EMPLEADO,SUM(r.valor) AS TOTAL_EGRESOS from srh_roles as r,\n"
+                + "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and\n"
+                + "ano=2015\n"
+                + " and ide_periodo=1 and ide_columnas in\n"
+                + "(33,22,21,1,7,4,8,6,9,5,2,13,39,3,11,10,111,12,71,59,53,46,72,56,84,74,57,73,47,80,85,48,50,108,55,51,52,106,112,91,110)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY\n"
+                + "E.COD_EMPLEADO) as b\n"
+                + "on aa.COD_EMPLEADO=b.COD_EMPLEADO");
+        tab_funcionario.ejecutarSql();
+        con_postgres.desconectar();
+        con_postgres = null;
+        return tab_funcionario;
+    }
+
+    public TablaGenerica getEmpleadoInf(String cedula) {
+        con_postgresql();
+        TablaGenerica tab_funcionario = new TablaGenerica();
+        con_postgresql();
+        tab_funcionario.setConexion(con_postgres);
+        tab_funcionario.setSql("SELECT cod_empleado,\n"
+                + "cod_banco,\n"
+                + "cod_tipo,\n"
+                + "cod_cuenta,\n"
+                + "cod_grupo,\n"
+                + "numero_cuenta,\n"
+                + "cedula_pass,\n"
+                + "nombres,\n"
+                + "cod_cargo,\n"
+                + "remuneracion,\n"
+                + "id_distributivo\n"
+                + "FROM srh_empleado\n"
+                + "WHERE srh_empleado.cedula_pass = '" + cedula + "'");
         tab_funcionario.ejecutarSql();
         con_postgres.desconectar();
         con_postgres = null;

@@ -354,17 +354,25 @@ public class InventarioEquipos extends Pantalla {
     }
 
     public void infAccesorio() {
-        TablaGenerica tabValido = accesoDatos.getDatoAccesorio(null, tabAccesorio.getTabla(), "acce_serie =" + tabAccesorio.getValor("acce_serie") + " and ACCE_ESTADO <> 'Asignar'");
-        if (!tabValido.isEmpty()) {
-            TablaGenerica tabDato = accesoDatos.getInfoActivo1(tabAccesorio.getValor("acce_serie"));
-            if (!tabDato.isEmpty()) {
+        TablaGenerica tabDato = accesoDatos.getInfoActivo1(tabAccesorio.getValor("acce_serie"));
+        if (!tabDato.isEmpty()) {
+            TablaGenerica tabValido = accesoDatos.getDatoAccesorio("*", tabAccesorio.getTabla(), "acce_serie =" + tabAccesorio.getValor("acce_serie") + "");
+            if (!tabValido.isEmpty()) {
+                if (tabValido.getValor("ACCE_ESTADO").equals("Asignar")) {
+                    utilitario.agregarMensaje("Accesorio No Localizado en la Base de Activos", null);
+                } else {
+                    tabAccesorio.setValor("acce_codigo_activo", tabDato.getValor("codigo"));
+                    tabAccesorio.setValor("acce_marca", tabDato.getValor("marca"));
+                    tabAccesorio.setValor("acce_modelo", tabDato.getValor("modelo"));
+                    tabAccesorio.setValor("acce_descripcion", tabDato.getValor("des_activo"));
+                    utilitario.addUpdate("tabTabulador:tabAccesorio");
+                }
+            } else {
                 tabAccesorio.setValor("acce_codigo_activo", tabDato.getValor("codigo"));
                 tabAccesorio.setValor("acce_marca", tabDato.getValor("marca"));
                 tabAccesorio.setValor("acce_modelo", tabDato.getValor("modelo"));
                 tabAccesorio.setValor("acce_descripcion", tabDato.getValor("des_activo"));
                 utilitario.addUpdate("tabTabulador:tabAccesorio");
-            } else {
-                utilitario.agregarMensaje("Accesorio No Localizado en la Base de Activos", null);
             }
         } else {
             utilitario.agregarMensaje("Accesorio Asignado", null);
@@ -372,17 +380,25 @@ public class InventarioEquipos extends Pantalla {
     }
 
     public void infAccesorio1() {
-        TablaGenerica tabValido = accesoDatos.getDatoAccesorio(null, tabAccesorio.getTabla(), "acce_codigo_activo =" + tabAccesorio.getValor("acce_codigo_activo") + " and ACCE_ESTADO <> 'Asignar'");
-        if (!tabValido.isEmpty()) {
-            TablaGenerica tabDato = accesoDatos.getInfoActivo(tabAccesorio.getValor("acce_codigo_activo"));
-            if (!tabDato.isEmpty()) {
+        TablaGenerica tabDato = accesoDatos.getInfoActivo(tabAccesorio.getValor("acce_codigo_activo"));
+        if (!tabDato.isEmpty()) {
+            TablaGenerica tabValido = accesoDatos.getDatoAccesorio("*", tabAccesorio.getTabla(), "acce_codigo_activo =" + tabAccesorio.getValor("acce_codigo_activo") + "");
+            if (!tabValido.isEmpty()) {
+                if (tabValido.getValor("ACCE_ESTADO").equals("Asignar")) {
+                    utilitario.agregarMensaje("Accesorio No Localizado en la Base de Activos", null);
+                } else {
+                    tabAccesorio.setValor("acce_codigo_activo", tabDato.getValor("codigo"));
+                    tabAccesorio.setValor("acce_marca", tabDato.getValor("marca"));
+                    tabAccesorio.setValor("acce_modelo", tabDato.getValor("modelo"));
+                    tabAccesorio.setValor("acce_descripcion", tabDato.getValor("des_activo"));
+                    utilitario.addUpdate("tabTabulador:tabAccesorio");
+                }
+            } else {
                 tabAccesorio.setValor("acce_codigo_activo", tabDato.getValor("codigo"));
                 tabAccesorio.setValor("acce_marca", tabDato.getValor("marca"));
                 tabAccesorio.setValor("acce_modelo", tabDato.getValor("modelo"));
                 tabAccesorio.setValor("acce_descripcion", tabDato.getValor("des_activo"));
                 utilitario.addUpdate("tabTabulador:tabAccesorio");
-            } else {
-                utilitario.agregarMensaje("Accesorio No Localizado en la Base de Activos", null);
             }
         } else {
             utilitario.agregarMensaje("Accesorio Asignado", null);
@@ -553,12 +569,30 @@ public class InventarioEquipos extends Pantalla {
     @Override
     public void guardar() {
         if (tabEquipo.isFocus()) {
-//            if (tabEquipo.getValor("desc_codigo") != null) {
-//            } else {
-            if (tabEquipo.guardar()) {
-                guardarPantalla();
+            if (tabEquipo.getValor("desc_codigo") != null) {
+                TablaGenerica tabDatopro = accesoDatos.getCatalogoDatosql("*", tabEquipo.getTabla(), "desc_codigo=" + tabEquipo.getValor("desc_codigo") + "");
+                if (!tabDatopro.isEmpty()) {
+                    TablaGenerica tabInfo = accesoDatos.getInfoTabla(tabEquipo.getTabla());
+                    if (!tabInfo.isEmpty()) {
+                        for (int i = 1; i < Integer.parseInt(tabInfo.getValor("NumeroCampos") + 1); i++) {
+                            if (i != 1) {
+                                TablaGenerica tabInfoColum = accesoDatos.getInfoCampoTabla(tabEquipo.getTabla(), i);
+                                if (!tabInfoColum.isEmpty()) {
+                                    if (tabEquipo.getValor(tabInfoColum.getValor("Column_Name")).equals(tabDatopro.getValor(tabInfoColum.getValor("Column_Name")))) {
+                                    } else {
+                                        accesoDatos.setActuaProve(Integer.parseInt(tabEquipo.getValor("desc_codigo")), tabEquipo.getTabla(), tabInfoColum.getValor("Column_Name"), tabEquipo.getValor(tabInfoColum.getValor("Column_Name")), "desc_codigo");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                utilitario.agregarMensaje("Registro Actualizado", null);
+            } else {
+                if (tabEquipo.guardar()) {
+                    guardarPantalla();
+                }
             }
-//            }
         } else if (tabAccesorio.isFocus()) {
             if (tabAccesorio.getValor("acce_codigo") != null) {
                 TablaGenerica tabDatopro = accesoDatos.getCatalogoDatosql("*", tabAccesorio.getTabla(), "acce_codigo=" + tabAccesorio.getValor("acce_codigo") + "");
@@ -578,7 +612,7 @@ public class InventarioEquipos extends Pantalla {
                         }
                     }
                 }
-                utilitario.agregarMensaje("Registro Actalizado", null);
+                utilitario.agregarMensaje("Registro Actualizado", null);
             } else {
                 if (tabAccesorio.guardar()) {
                     guardarPantalla();
@@ -606,7 +640,7 @@ public class InventarioEquipos extends Pantalla {
                         }
                     }
                 }
-                utilitario.agregarMensaje("Registro Actalizado", null);
+                utilitario.agregarMensaje("Registro Actualizado", null);
             } else {
                 if (tabAsignacion.guardar()) {
                     guardarPantalla();
