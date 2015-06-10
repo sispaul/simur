@@ -131,8 +131,8 @@ public class AbastecimientoAutomotor extends Pantalla {
         tabTabla.getColumna("mve_secuencial").setCombo("SELECT v.mve_secuencial,\n"
                 + "((case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end )||'/'||m.mvmarca_descripcion ||'/'||o.mvmodelo_descripcion)as descripcion\n"
                 + "FROM mv_vehiculo v\n"
-                + "INNER JOIN mvmarca_vehiculo m ON v.mvmarca_id = m.mvmarca_id\n"
-                + "INNER JOIN mvmodelo_vehiculo o ON v.mvmodelo_id = o.mvmodelo_id\n"
+                + "left JOIN mvmarca_vehiculo m ON v.mvmarca_id = m.mvmarca_id\n"
+                + "left JOIN mvmodelo_vehiculo o ON v.mvmodelo_id = o.mvmodelo_id\n"
                 + "WHERE v.mve_tipo_ingreso in('A','O')");
         tabTabla.getColumna("abastecimiento_cod_conductor").setCombo("SELECT cod_empleado,nombres FROM srh_empleado where estado = 1 order by nombres");
         tabTabla.getColumna("mve_secuencial").setFiltroContenido();
@@ -142,10 +142,10 @@ public class AbastecimientoAutomotor extends Pantalla {
         tabTabla.getColumna("abastecimiento_tipo_medicion").setValorDefecto("1");
         tabTabla.getColumna("abastecimiento_logining").setValorDefecto(tabConsulta.getValor("NICK_USUA"));
         tabTabla.getColumna("abastecimiento_fechaing").setValorDefecto(utilitario.getFechaActual());
-        tabTabla.getColumna("tipo_combustible_id").setLectura(true);
-        tabTabla.getColumna("abastecimiento_numero").setLectura(true);
-        tabTabla.getColumna("abastecimiento_total").setLectura(true);
-        tabTabla.getColumna("mve_secuencial").setLectura(true);
+//        tabTabla.getColumna("tipo_combustible_id").setLectura(true);
+//        tabTabla.getColumna("abastecimiento_numero").setLectura(true);
+//        tabTabla.getColumna("abastecimiento_total").setLectura(true);
+//        tabTabla.getColumna("mve_secuencial").setLectura(true);
         tabTabla.getColumna("abastecimiento_fechaing").setVisible(false);
         tabTabla.getColumna("abastecimiento_logining").setVisible(false);
         tabTabla.getColumna("abastecimiento_tipo_medicion").setVisible(false);

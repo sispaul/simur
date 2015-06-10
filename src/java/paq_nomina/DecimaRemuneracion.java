@@ -39,7 +39,6 @@ public class DecimaRemuneracion extends Pantalla {
     private Conexion conPostgres = new Conexion();
     private Panel panOpcion = new Panel();
     private Combo comboDistributivo = new Combo();
-    private Combo comboDistributivo1 = new Combo();
     private Combo comboAcciones = new Combo();
     private Combo comboEmpleados = new Combo();
     private Combo comboEmpleados1 = new Combo();

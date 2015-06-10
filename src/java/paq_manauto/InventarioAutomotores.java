@@ -136,7 +136,7 @@ public class InventarioAutomotores extends Pantalla {
         griTipos.getChildren().add(botTipos);
         griTipos.getChildren().add(botTipoxs);
         diaDialogot.setId("diaDialogot");
-        diaDialogot.setTitle("IINGRESO DE TIPO"); //titulo
+        diaDialogot.setTitle("INGRESO DE TIPO"); //titulo
         diaDialogot.setWidth("30%"); //siempre en porcentajes  ancho
         diaDialogot.setHeight("40%");//siempre porcentaje   alto
         diaDialogot.setResizable(false); //para que no se pueda cambiar el tamaño
@@ -208,8 +208,9 @@ public class InventarioAutomotores extends Pantalla {
         autBusca.setId("autBusca");
         autBusca.setConexion(conPostgres);
         autBusca.setAutoCompletar("SELECT v.MVE_SECUENCIAL,mve_codigo,v.MVE_PLACA,m.MVMARCA_DESCRIPCION,o.MVMODELO_DESCRIPCION,v.MVE_CHASIS\n"
-                + "FROM MV_VEHICULO AS v ,mvmarca_vehiculo AS m ,mvmodelo_vehiculo o\n"
-                + "WHERE v.mvmarca_id = m.mvmarca_id and v.mvmodelo_id = o.mvmodelo_id");
+                + "FROM MV_VEHICULO AS v \n"
+                + "left join mvmarca_vehiculo m on v.mvmarca_id = m.mvmarca_id\n"
+                + "left join mvmodelo_vehiculo o on v.mvmodelo_id = o.mvmodelo_id");
         autBusca.setMetodoChange("filtrarSolicitud");
         autBusca.setSize(70);
         bar_botones.agregarComponente(new Etiqueta("Buscar Solicitud:"));
@@ -349,6 +350,7 @@ public class InventarioAutomotores extends Pantalla {
             tabAutomotores.getColumna("MVE_PLACA").setLectura(false);
             tabAutomotores.setValor("MVE_PLACA", null);
             tabAutomotores.getColumna("mve_codigo").setLectura(false);
+            tabAutomotores.setValor("mve_tipo_ingreso", "O");
             tabAutomotores.setValor("mve_codigo", null);
             utilitario.addUpdate("tabAutomotores");
         }
@@ -404,7 +406,7 @@ public class InventarioAutomotores extends Pantalla {
 
     //PARAMETROS PARA VEHICULO
     //MARCA
-    public void ing_marcas() {
+    public void ingMarcas() {
         diaDialogo.Limpiar();
         diaDialogo.setDialogo(grid);
         gridO.getChildren().add(setMarca);
@@ -439,7 +441,7 @@ public class InventarioAutomotores extends Pantalla {
     }
     //TIPO
 
-    public void acep_marcas() {
+    public void acepMarcas() {
         if (setMarca.getValorSeleccionado() != null && setMarca.getValorSeleccionado().isEmpty() == false) {
             diaDialogot.Limpiar();
             diaDialogot.setDialogo(gridT);
@@ -483,7 +485,7 @@ public class InventarioAutomotores extends Pantalla {
     }
     //MODELO
 
-    public void acepta_tipo() {
+    public void aceptaTipo() {
         if (setTipo.getValorSeleccionado() != null && setTipo.getValorSeleccionado().isEmpty() == false) {
             diaDialogom.Limpiar();
             diaDialogom.setDialogo(gridM);
@@ -527,7 +529,7 @@ public class InventarioAutomotores extends Pantalla {
     }
     //VERSIÓN
 
-    public void acepta_modelo() {
+    public void aceptaModelo() {
         if (setModelo.getValorSeleccionado() != null && setModelo.getValorSeleccionado().isEmpty() == false) {
             diaDialogov.Limpiar();
             diaDialogov.setDialogo(gridV);
@@ -599,28 +601,28 @@ public class InventarioAutomotores extends Pantalla {
     @Override
     public void guardar() {
         if (tabAutomotores.getValor("mve_secuencial") != null) {
-            TablaGenerica tabInfo = aCombustible.getCatalogoDato("*", tabAutomotores.getTabla(), "mve_secuencial = " + tabAutomotores.getValor("mve_secuencial") + "");
-            if (!tabInfo.isEmpty()) {
-                TablaGenerica tabDato = aCombustible.getNumeroCampos(tabAutomotores.getTabla());
-                if (!tabDato.isEmpty()) {
-                    for (int i = 1; i < Integer.parseInt(tabDato.getValor("NumeroCampos")); i++) {
-                        if (i != 1) {
-                            TablaGenerica tabInfoColum1 = aCombustible.getEstrucTabla(tabAutomotores.getTabla(), i);
-                            if (!tabInfoColum1.isEmpty()) {
-                                try {
-                                    if (tabAutomotores.getValor(tabInfoColum1.getValor("Column_Name")).equals(tabInfo.getValor(tabInfoColum1.getValor("Column_Name")))) {
-                                    } else {
-                                        aCombustible.setActuaRegis(Integer.parseInt(tabAutomotores.getValor("mve_secuencial")), tabAutomotores.getTabla(), tabInfoColum1.getValor("Column_Name"), tabAutomotores.getValor(tabInfoColum1.getValor("Column_Name")), "mve_secuencial");
+                TablaGenerica tabInfo = aCombustible.getCatalogoDato("*", tabAutomotores.getTabla(), "mve_secuencial = " + tabAutomotores.getValor("mve_secuencial") + "");
+                if (!tabInfo.isEmpty()) {
+                    TablaGenerica tabDato = aCombustible.getNumeroCampos(tabAutomotores.getTabla());
+                    if (!tabDato.isEmpty()) {
+                        for (int i = 1; i < Integer.parseInt(tabDato.getValor("NumeroCampos")); i++) {
+                            if (i != 1) {
+                                TablaGenerica tabInfoColum1 = aCombustible.getEstrucTabla(tabAutomotores.getTabla(), i);
+                                if (!tabInfoColum1.isEmpty()) {
+                                    try {
+                                        if (tabAutomotores.getValor(tabInfoColum1.getValor("Column_Name")).equals(tabInfo.getValor(tabInfoColum1.getValor("Column_Name")))) {
+                                        } else {
+                                            aCombustible.setActuaRegis(Integer.parseInt(tabAutomotores.getValor("mve_secuencial")), tabAutomotores.getTabla(), tabInfoColum1.getValor("Column_Name"), tabAutomotores.getValor(tabInfoColum1.getValor("Column_Name")), "mve_secuencial");
+                                        }
+                                    } catch (Exception e) {
                                     }
-                                } catch (NullPointerException e) {
                                 }
                             }
                         }
                     }
                 }
-            }
-            utilitario.agregarMensaje("Registro Actalizado", null);
-        } else {
+                utilitario.agregarMensaje("Registro Actalizado", null);
+            }  else {
             if (tabAutomotores.guardar()) {
                 conPostgres.guardarPantalla();
             }
