@@ -356,9 +356,10 @@ public class InventarioEquipos extends Pantalla {
     public void infAccesorio() {
         TablaGenerica tabDato = accesoDatos.getInfoActivo1(tabAccesorio.getValor("acce_serie"));
         if (!tabDato.isEmpty()) {
-            TablaGenerica tabValido = accesoDatos.getDatoAccesorio("*", tabAccesorio.getTabla(), "acce_serie =" + tabAccesorio.getValor("acce_serie") + "");
+            TablaGenerica tabValido = accesoDatos.getDatoAccesorio("top 1 *", tabAccesorio.getTabla(), "acce_serie =" + tabAccesorio.getValor("acce_serie") + " order by acce_fecha_asignacion desc");
             if (!tabValido.isEmpty()) {
                 if (tabValido.getValor("ACCE_ESTADO").equals("Asignar")) {
+                    System.err.println("Mensaje de salida");
                     utilitario.agregarMensaje("Accesorio No Localizado en la Base de Activos", null);
                 } else {
                     tabAccesorio.setValor("acce_codigo_activo", tabDato.getValor("codigo"));
@@ -382,10 +383,11 @@ public class InventarioEquipos extends Pantalla {
     public void infAccesorio1() {
         TablaGenerica tabDato = accesoDatos.getInfoActivo(tabAccesorio.getValor("acce_codigo_activo"));
         if (!tabDato.isEmpty()) {
-            TablaGenerica tabValido = accesoDatos.getDatoAccesorio("*", tabAccesorio.getTabla(), "acce_codigo_activo =" + tabAccesorio.getValor("acce_codigo_activo") + "");
+            TablaGenerica tabValido = accesoDatos.getDatoAccesorio("top 1 *", tabAccesorio.getTabla(), "acce_codigo_activo =" + tabAccesorio.getValor("acce_codigo_activo") + " order by acce_fecha_asignacion desc");
             if (!tabValido.isEmpty()) {
                 if (tabValido.getValor("ACCE_ESTADO").equals("Asignar")) {
-                    utilitario.agregarMensaje("Accesorio No Localizado en la Base de Activos", null);
+                    System.err.println("Mensaje de salida");
+                    utilitario.agregarMensaje("Accesorio Asignado en Otro Equipo", null);
                 } else {
                     tabAccesorio.setValor("acce_codigo_activo", tabDato.getValor("codigo"));
                     tabAccesorio.setValor("acce_marca", tabDato.getValor("marca"));
