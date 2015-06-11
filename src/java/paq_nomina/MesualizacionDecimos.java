@@ -6,6 +6,7 @@ package paq_nomina;
 
 import framework.componentes.Boton;
 import framework.componentes.Combo;
+import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Panel;
@@ -17,6 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ejb.EJB;
+import paq_nomina.ejb.mergeDescuento;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
@@ -26,20 +29,26 @@ import persistencia.Conexion;
  */
 public class MesualizacionDecimos extends Pantalla {
 
-    private Conexion conPostgres = new Conexion();
     private Tabla tabDecimos = new Tabla();
     private Tabla tabConsulta = new Tabla();
+    private Conexion conPostgres = new Conexion();
     private Panel panOpcion = new Panel();
-
     private Combo comboDistributivo = new Combo();
     private Combo comboAcciones = new Combo();
     private Combo comboEmpleados = new Combo();
     private Combo comboEmpleados1 = new Combo();
-    
+    private Combo comboAnio = new Combo();
+    private Combo comboPeriodo = new Combo();
+    private Combo comboAccion = new Combo();
+    private Combo comboDecimo = new Combo();
     private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
     private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
     private Map p_parametros = new HashMap();
-    
+    private Dialogo diaDialogosr = new Dialogo();
+    private Grid gridr = new Grid();
+    @EJB
+    private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(mergeDescuento.class);
+
     public MesualizacionDecimos() {
 
         tabConsulta.setId("tabConsulta");
@@ -50,10 +59,10 @@ public class MesualizacionDecimos extends Pantalla {
 
         conPostgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         conPostgres.NOMBRE_MARCA_BASE = "postgres";
-        
-         Grid gri_busca = new Grid();
-        gri_busca.setColumns(8);
 
+        //barra de tareas para busqueda y carga
+        Grid gri_busca = new Grid();
+        gri_busca.setColumns(8);
         gri_busca.getChildren().add(new Etiqueta("Acciones :"));
         comboAcciones.setId("comboAcciones");
         List list = new ArrayList();
@@ -86,11 +95,12 @@ public class MesualizacionDecimos extends Pantalla {
 
         Boton bot = new Boton();
         bot.setValue("Ejecutar");
-        bot.setIcon("ui-icon-extlink"); //pone icono de jquery temeroller
+        bot.setIcon("ui-icon-extlink");
         bot.setMetodo("cargarInfo");
         gri_busca.getChildren().add(bot);
         bar_botones.agregarComponente(gri_busca);
 
+        //tabla de registro, formulario que se llena
         tabDecimos.setId("tabDecimos");
         tabDecimos.setConexion(conPostgres);
         tabDecimos.setTabla("srh_decimo_cuarto_tercero", "decimo_id", 1);
@@ -119,18 +129,73 @@ public class MesualizacionDecimos extends Pantalla {
         panOpcion.getChildren().add(pnt);
         agregarComponente(panOpcion);
 
+        //para reportes
         bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
         agregarComponente(rep_reporte); //2 agregar el listado de reportes
         sef_formato.setId("sef_formato");
         sef_formato.setConexion(conPostgres);
         agregarComponente(sef_formato);
 
+        diaDialogosr.setId("diaDialogosr");
+        diaDialogosr.setTitle("PARAMETROS DE REPORTE"); //titulo
+        diaDialogosr.setWidth("35%"); //siempre en porcentajes  ancho
+        diaDialogosr.setHeight("35%");//siempre porcentaje   alto
+        diaDialogosr.setResizable(false); //para que no se pueda cambiar el tamaño
+        diaDialogosr.getBot_aceptar().setMetodo("aceptoDecimo");
+        gridr.setColumns(4);
+        agregarComponente(diaDialogosr);
+
+        comboEmpleados.setId("comboEmpleados");
+        comboEmpleados.setConexion(conPostgres);
+        comboEmpleados.setCombo("SELECT id_distributivo,descripcion FROM srh_tdistributivo ORDER BY id_distributivo");
+
+        comboAnio.setId("comboAnio");
+        comboAnio.setConexion(conPostgres);
+        comboAnio.setCombo("select ano_curso, ano_curso from conc_ano order by ano_curso");
+
+        comboPeriodo.setId("comboPeriodo");
+        comboPeriodo.setConexion(conPostgres);
+        comboPeriodo.setCombo("SELECT ide_periodo,per_descripcion FROM cont_periodo_actual ORDER BY ide_periodo");
+
+        comboAccion.setId("comboAccion");
+        List lis = new ArrayList();
+        Object fi1[] = {
+            "1", "Acumula"
+        };
+        Object fi2[] = {
+            "0", "Pago Mes"
+        };
+        lis.add(fi1);;
+        lis.add(fi2);;
+        comboAccion.setCombo(lis);
+
+        comboDecimo.setId("comboDecimo");
+        List liss = new ArrayList();
+        Object fis1[] = {
+            "1", "Decimo Tercero"
+        };
+        Object fis2[] = {
+            "2", "Decimo Cuarto"
+        };
+        liss.add(fis1);;
+        liss.add(fis2);;
+        comboDecimo.setCombo(liss);
+
     }
 
-    public void cargaInfo(){
-        
+    public void cargaInfo() {
+        if (comboAcciones.getValue().equals("1")) {//Llenado de formulario
+        } else if (comboAcciones.getValue()
+                .equals("2")) {//Subida a Roles
+//            setMigraRoles();
+        } else if (comboAcciones.getValue()
+                .equals("3")) {
+//            filtarLista();
+        } else {
+            utilitario.agregarMensaje("Debe escoger una Acción a realizar", "");
+        }
     }
-    
+
     @Override
     public void insertar() {
     }
@@ -182,5 +247,4 @@ public class MesualizacionDecimos extends Pantalla {
     public void setP_parametros(Map p_parametros) {
         this.p_parametros = p_parametros;
     }
-    
 }
