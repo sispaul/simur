@@ -4,6 +4,7 @@
  */
 package paq_nomina;
 
+import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
 import framework.componentes.Combo;
 import framework.componentes.Dialogo;
@@ -184,7 +185,20 @@ public class MesualizacionDecimos extends Pantalla {
     }
 
     public void cargaInfo() {
+        Integer fecha = 0, valo = 0, valo1 = 0;
+        String columna = "", fechaIni = "", fechaFin = "";
+        fecha = utilitario.getMes(utilitario.getFechaActual());
         if (comboAcciones.getValue().equals("1")) {//Llenado de formulario
+            TablaGenerica tabDato = mDescuento.getInfoAcumulacion(comboEmpleados1.getValue() + "");
+            if (!tabDato.isEmpty()) {
+                TablaGenerica tabFecha = mDescuento.getPeriodos(comboDistributivo.getValue() + "");
+                if (!tabFecha.isEmpty()) {
+                    fechaIni = tabFecha.getValor("periodo_fecha_inicial");
+                } else {
+                    utilitario.agregarMensajeInfo("No existe Periodo Activo", null);
+                }
+            }
+            tabDecimos.actualizar();
         } else if (comboAcciones.getValue()
                 .equals("2")) {//Subida a Roles
 //            setMigraRoles();
