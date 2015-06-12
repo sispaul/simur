@@ -92,8 +92,8 @@ public class mergeDescuento {
         // Forma el sql para el ingreso
 
         String strSql = "update srh_autorizacion_acumulacion\n"
-                + "set autoriza_acumulado_cuarto ="+descuento+" \n"
-                + "where autoriza_cod_empleado = '"+codigo+"'";
+                + "set autoriza_acumulado_cuarto =" + descuento + " \n"
+                + "where autoriza_cod_empleado = '" + codigo + "'";
         conPostgresql();
         conPostgres.ejecutarSql(strSql);
         conPostgres.desconectar();
@@ -403,8 +403,8 @@ public class mergeDescuento {
 
     public void setDatosCalculo(String codigo, String empleado, String columna, Double valor, String estado,
             Double rmu, Double hxe, Double subrogacion, String distributivo) {
-        String strSql = "insert into srh_decimo_cuarto_tercero (decimo_cod_empleado,decimo_empleado,decimo_columna,decimo_anio,decimo_periodo,decimo_valor,decimo_estado,decimo_rmu,decimo_horas_extra,decimo_subrogacion,decimo_id_distributivo)\n"
-                + "values ('" + codigo + "','" + empleado + "','" + columna + "','" + utilitario.getAnio(utilitario.getFechaActual()) + "','" + utilitario.getMes(utilitario.getFechaActual()) + "'," + valor + ",'" + estado + "'," + rmu + "," + hxe + "," + subrogacion + ",'" + distributivo + "')";
+        String strSql = "insert into srh_decimo_cuarto_tercero (decimo_cod_empleado,decimo_empleado,decimo_columna,decimo_anio,decimo_periodo,decimo_valor,decimo_estado,decimo_rmu,decimo_horas_extra,decimo_subrogacion,decimo_id_distributivo,decimo_fecha)\n"
+                + "values ('" + codigo + "','" + empleado + "','" + columna + "','" + utilitario.getAnio(utilitario.getFechaActual()) + "','" + utilitario.getMes(utilitario.getFechaActual()) + "'," + valor + ",'" + estado + "'," + rmu + "," + hxe + "," + subrogacion + ",'" + distributivo + "','" + utilitario.getFechaActual() + "')";
         conPostgresql();
         conPostgres.ejecutarSql(strSql);
         conPostgres.desconectar();
@@ -767,6 +767,20 @@ public class mergeDescuento {
         return tabFuncionario;
     }
 
+    public TablaGenerica getD4TDiferencia(String codigo, String estado, String columna,String fechain,String fechafin) {
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT sum(decimo_valor) as valor_acumulado,decimo_cod_empleado\n"
+                + "FROM srh_decimo_cuarto_tercero\n"
+                + "WHERE decimo_cod_empleado = '"+codigo+"' and decimo_estado = '"+estado+"' and decimo_columna = '"+columna+"' and decimo_fecha BETWEEN '"+fechain+"'and'"+fechafin+"'\n"
+                + "GROUP BY decimo_valor,decimo_cod_empleado");
+        tabFuncionario.ejecutarSql();
+        conPostgres.desconectar();
+        conPostgres = null;
+        return tabFuncionario;
+    }
 
     private void conPostgresql() {
         if (conPostgres == null) {

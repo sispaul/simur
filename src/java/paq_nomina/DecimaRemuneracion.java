@@ -241,11 +241,11 @@ public class DecimaRemuneracion extends Pantalla {
                                         if (fecha.compareTo(11) == 0) {
                                         } else {
                                             mDescuento.setDatosCalculo(tabDato.getValor(i, "autoriza_cod_empleado"), tabDato.getValor(i, "autoriza_empleado"), columna, val, tabDato.getValor(i, "autoriza_decimo_tercero"), rmu, hxe, sbr, tabDato.getValor(i, "autoriza_id_distributivo"));
-                                            if (tabDato.getValor(i, "autoriza_acumulado_cuarto") != null) {
-                                                mDescuento.setAcumulado(tabDato.getValor(i, "autoriza_cod_empleado"), val + Double.parseDouble(tabDato.getValor(i, "autoriza_acumulado_cuarto")));
-                                            } else {
-                                                mDescuento.setAcumulado(tabDato.getValor(i, "autoriza_cod_empleado"), val + 0.0);
-                                            }
+//                                            if (tabDato.getValor(i, "autoriza_acumulado_cuarto") != null) {
+//                                                mDescuento.setAcumulado(tabDato.getValor(i, "autoriza_cod_empleado"), val + Double.parseDouble(tabDato.getValor(i, "autoriza_acumulado_cuarto")));
+//                                            } else {
+//                                                mDescuento.setAcumulado(tabDato.getValor(i, "autoriza_cod_empleado"), val + 0.0);
+//                                            }
                                         }
                                     }
                                 }
