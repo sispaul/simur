@@ -88,17 +88,6 @@ public class mergeDescuento {
         conPostgres = null;
     }
 
-    public void setAcumulado(String codigo, Double descuento) {
-        // Forma el sql para el ingreso
-
-        String strSql = "update srh_autorizacion_acumulacion\n"
-                + "set autoriza_acumulado_cuarto =" + descuento + " \n"
-                + "where autoriza_cod_empleado = '" + codigo + "'";
-        conPostgresql();
-        conPostgres.ejecutarSql(strSql);
-        conPostgres.desconectar();
-        conPostgres = null;
-    }
 
     public void setmigrarDescuento(String empleado, Integer ide_periodo, Integer id_distributivo_roles, Integer ide_columna,
             String nombre, String desc, Integer anio, Double valor) {
@@ -725,8 +714,6 @@ public class mergeDescuento {
                 + "autoriza_anio, \n"
                 + "autoriza_decimo_tercero, \n"
                 + "autoriza_fecha_creacion, \n"
-                + "autoriza_acumulado_tercero, \n"
-                + "autoriza_acumulado_cuarto, \n"
                 + "autoriza_decimo_cuarto \n"
                 + "from srh_autorizacion_acumulacion \n"
                 + "where autoriza_id_distributivo = '" + codigo + "'");
@@ -767,7 +754,7 @@ public class mergeDescuento {
         return tabFuncionario;
     }
 
-    public TablaGenerica getD4TDiferencia(String codigo, String estado, String columna,String fechain,String fechafin) {
+    public TablaGenerica getDeciAcumulado(String codigo, String estado, String columna,String fechain,String fechafin) {
         conPostgresql();
         TablaGenerica tabFuncionario = new TablaGenerica();
         conPostgresql();
