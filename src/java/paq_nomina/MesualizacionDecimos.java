@@ -311,8 +311,6 @@ public class MesualizacionDecimos extends Pantalla {
                         if (!tabDatos.isEmpty()) {
                         } else {
                             if (tabDato.getValor(i, "autoriza_decimo_cuarto").equals("1")) {
-//                                TablaGenerica tabD4tDife = mDescuento.getDeciAcumulado(tabDato.getValor(i, "autoriza_cod_empleado"), tabDato.getValor(i, "autoriza_decimo_cuarto"), columna, tabFecha.getValor("periodo_fecha_inicial"), tabFecha.getValor("periodo_fecha_final"));
-//                                if (!tabD4tDife.isEmpty()) {
                                 TablaGenerica tabD4T = mDescuento.getCalculoD4T(tabDato.getValor(i, "autoriza_cod_empleado"));
                                 if (!tabD4T.isEmpty()) {
                                     d4t = Double.parseDouble(tabD4T.getValor("sbu"));
@@ -340,7 +338,6 @@ public class MesualizacionDecimos extends Pantalla {
                                         }
                                     }
                                 }
-//                                }
                                 mDescuento.setDatosCalculo(tabDato.getValor(i, "autoriza_cod_empleado"), tabDato.getValor(i, "autoriza_empleado"), columna, valac, tabDato.getValor(i, "autoriza_decimo_cuarto"), rmu, 0.0, 0.0, tabDato.getValor(i, "autoriza_id_distributivo"));
                             } else {
                                 TablaGenerica tabD4T = mDescuento.getCalculoD4T(tabDato.getValor(i, "autoriza_cod_empleado"));
