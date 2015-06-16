@@ -121,6 +121,7 @@ public class MesualizacionDecimos extends Pantalla {
         tabDecimos.getColumna("decimo_cod_empleado").setLectura(true);
         tabDecimos.getColumna("decimo_id_distributivo").setVisible(false);
         tabDecimos.getColumna("decimo_fecha").setVisible(false);
+        tabDecimos.getColumna("decimo_id").setVisible(false);
         tabDecimos.getColumna("decimo_empleado").setFiltro(true);
         tabDecimos.setRows(18);
         tabDecimos.dibujar();
