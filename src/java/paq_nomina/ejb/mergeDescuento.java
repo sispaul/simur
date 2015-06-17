@@ -5,7 +5,6 @@
 package paq_nomina.ejb;
 
 import framework.aplicacion.TablaGenerica;
-import java.math.BigDecimal;
 import javax.ejb.Stateless;
 import paq_sistema.aplicacion.Utilitario;
 import persistencia.Conexion;
@@ -390,9 +389,9 @@ public class mergeDescuento {
     }
 
     public void setDatosCalculo(String codigo, String empleado, String columna, Double valor, String estado,
-            Double rmu, Double hxe, Double subrogacion, String distributivo) {
-        String strSql = "insert into srh_decimo_cuarto_tercero (decimo_cod_empleado,decimo_empleado,decimo_columna,decimo_anio,decimo_periodo,decimo_valor,decimo_estado,decimo_rmu,decimo_horas_extra,decimo_subrogacion,decimo_id_distributivo,decimo_fecha)\n"
-                + "values ('" + codigo + "','" + empleado + "','" + columna + "','" + utilitario.getAnio(utilitario.getFechaActual()) + "','" + utilitario.getMes(utilitario.getFechaActual()) + "'," + valor + ",'" + estado + "'," + rmu + "," + hxe + "," + subrogacion + ",'" + distributivo + "','" + utilitario.getFechaActual() + "')";
+            Double rmu, Double hxe, Double subrogacion, String distributivo, Double acumulado, Double cuota) {
+        String strSql = "insert into srh_decimo_cuarto_tercero (decimo_cod_empleado,decimo_empleado,decimo_columna,decimo_anio,decimo_periodo,decimo_valor,decimo_estado,decimo_rmu,decimo_horas_extra,decimo_subrogacion,decimo_id_distributivo,decimo_fecha,decimo_acumulado,decimo_cuota)\n"
+                + "values ('" + codigo + "','" + empleado + "','" + columna + "','" + utilitario.getAnio(utilitario.getFechaActual()) + "','" + utilitario.getMes(utilitario.getFechaActual()) + "'," + valor + ",'" + estado + "'," + rmu + "," + hxe + "," + subrogacion + ",'" + distributivo + "','" + utilitario.getFechaActual() + "'," + acumulado + "," + cuota + ")";
         conPostgresql();
         conPostgres.ejecutarSql(strSql);
         conPostgres.desconectar();
@@ -713,17 +712,21 @@ public class mergeDescuento {
         TablaGenerica tabFuncionario = new TablaGenerica();
         conPostgresql();
         tabFuncionario.setConexion(conPostgres);
-        tabFuncionario.setSql("SELECT sum(decimo_valor) as acumulado_decimo,decimo_cod_empleado\n"
+        tabFuncionario.setSql("SELECT sum(decimo_valor) as acumulado_decimo\n"
+                + ",sum(decimo_rmu) as acumulado_rmu\n"
+                + ",sum(decimo_horas_extra) as acumulado_hxe\n"
+                + ",sum(decimo_subrogacion) as acumulado_sbr\n"
+                + ",decimo_cod_empleado\n"
                 + "FROM srh_decimo_cuarto_tercero\n"
                 + "WHERE decimo_cod_empleado = '" + codigo + "' and decimo_estado = '" + estado + "' and decimo_columna = '" + columna + "' and decimo_fecha BETWEEN '" + fechain + "'and'" + fechafin + "'\n"
-                + "GROUP BY decimo_valor,decimo_cod_empleado");
+                + "GROUP BY decimo_valor,decimo_rmu,decimo_horas_extra,decimo_subrogacion,decimo_cod_empleado");
         tabFuncionario.ejecutarSql();
         conPostgres.desconectar();
         conPostgres = null;
         return tabFuncionario;
     }
 
-    public TablaGenerica getDeci3roAcumulado(String codigo) {
+    public TablaGenerica getDeci3ro(String codigo) {
         conPostgresql();
         TablaGenerica tabFuncionario = new TablaGenerica();
         conPostgresql();
@@ -765,6 +768,83 @@ public class mergeDescuento {
                 + "and e.cod_empleado = '" + codigo + "' \n"
                 + "GROUP BY E.COD_EMPLEADO) as f \n"
                 + "on a.COD_EMPLEADO=f.COD_EMPLEADO");
+        tabFuncionario.ejecutarSql();
+        conPostgres.desconectar();
+        conPostgres = null;
+        return tabFuncionario;
+    }
+
+    public TablaGenerica getDeci3roAcum(String codigo,Integer anioAc, Integer anioAn,String parametro,String parametros) {
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("select a.*,  \n"
+                + "(case when b.RMU is NULL then '0' when b.RMU > 0 then b.RMU end )+ (case when c.RMU is NULL then '0' when c.RMU > 0 then c.RMU end )as rmu_acum,  \n"
+                + "(case when d.HORAS_EXTRAS is NULL then '0' when d.HORAS_EXTRAS > 0 then d.HORAS_EXTRAS end ) + (case when e.HORAS_EXTRAS is NULL then '0' when e.HORAS_EXTRAS > 0 then e.HORAS_EXTRAS end )as hxe_acum,  \n"
+                + "(case when f.SUB_ROGACION is NULL then '0' when f.SUB_ROGACION > 0 then f.SUB_ROGACION end ) + (case when g.SUB_ROGACION is NULL then '0' when g.SUB_ROGACION > 0 then g.SUB_ROGACION end )as sbr_acum  \n"
+                + "from  \n"
+                + "(SELECT  \n"
+                + "e.cod_empleado,  \n"
+                + "e.cedula_pass,  \n"
+                + "e.nombres,  \n"
+                + "c.nombre_cargo  \n"
+                + "FROM srh_empleado AS e  \n"
+                + "INNER JOIN srh_cargos AS c ON c.cod_cargo = e.cod_cargo  \n"
+                + "where e.cod_empleado = '"+codigo+"') as a  \n"
+                + "left join  \n"
+                + "(select E.COD_EMPLEADO,SUM(r.valor) AS RMU from srh_roles as r,  \n"
+                + "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and  \n"
+                + "ano="+anioAc+" and ide_periodo in("+parametro+") and ide_columnas in (40,14)  \n"
+                + "and r.ide_programa=p.ide_programa and valor>0   \n"
+                + "and e.cod_empleado = '"+codigo+"'  \n"
+                + "GROUP BY E.COD_EMPLEADO) as b  \n"
+                + "on a.COD_EMPLEADO=b.COD_EMPLEADO  \n"
+                + "\n"
+                + "left join  \n"
+                + "(select E.COD_EMPLEADO,SUM(r.valor) AS RMU from srh_roles as r,  \n"
+                + "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and  \n"
+                + "ano="+anioAn+" and ide_periodo in("+parametros+") and ide_columnas in (40,14)  \n"
+                + "and r.ide_programa=p.ide_programa and valor>0   \n"
+                + "and e.cod_empleado = '"+codigo+"'  \n"
+                + "GROUP BY E.COD_EMPLEADO) as c  \n"
+                + "on a.COD_EMPLEADO=c.COD_EMPLEADO  \n"
+                + "\n"
+                + "left join  \n"
+                + "(select E.COD_EMPLEADO,SUM(r.valor) AS HORAS_EXTRAS from srh_roles as r,  \n"
+                + "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and  \n"
+                + "ano="+anioAc+" and id_distributivo_roles = 2 and ide_periodo in("+parametro+") and ide_columnas in (75,76,92,93)  \n"
+                + "and r.ide_programa=p.ide_programa and valor>0   \n"
+                + "and e.cod_empleado = '"+codigo+"'  \n"
+                + "GROUP BY E.COD_EMPLEADO) as d  \n"
+                + "on a.COD_EMPLEADO=d.COD_EMPLEADO\n"
+                + "\n"
+                + "left join  \n"
+                + "(select E.COD_EMPLEADO,SUM(r.valor) AS HORAS_EXTRAS from srh_roles as r,  \n"
+                + "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and  \n"
+                + "ano="+anioAn+" and id_distributivo_roles = 2 and ide_periodo in("+parametros+") and ide_columnas in (75,76,92,93)  \n"
+                + "and r.ide_programa=p.ide_programa and valor>0   \n"
+                + "and e.cod_empleado = '"+codigo+"'  \n"
+                + "GROUP BY E.COD_EMPLEADO) as e\n"
+                + "on a.COD_EMPLEADO=e.COD_EMPLEADO\n"
+                + "\n"
+                + "left join  \n"
+                + "(select E.COD_EMPLEADO,SUM(r.valor) AS SUB_ROGACION from srh_roles as r,  \n"
+                + "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and  \n"
+                + "ano="+anioAc+" and ide_periodo in("+parametro+") and ide_columnas in (18)  \n"
+                + "and r.ide_programa=p.ide_programa and valor>0   \n"
+                + "and e.cod_empleado = '"+codigo+"'  \n"
+                + "GROUP BY E.COD_EMPLEADO) as f  \n"
+                + "on a.COD_EMPLEADO=f.COD_EMPLEADO\n"
+                + "\n"
+                + "left join  \n"
+                + "(select E.COD_EMPLEADO,SUM(r.valor) AS SUB_ROGACION from srh_roles as r,  \n"
+                + "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and  \n"
+                + "ano="+anioAn+" and ide_periodo in("+parametros+") and ide_columnas in (18)  \n"
+                + "and r.ide_programa=p.ide_programa and valor>0   \n"
+                + "and e.cod_empleado = '"+codigo+"'  \n"
+                + "GROUP BY E.COD_EMPLEADO) as g\n"
+                + "on a.COD_EMPLEADO=g.COD_EMPLEADO");
         tabFuncionario.ejecutarSql();
         conPostgres.desconectar();
         conPostgres = null;
