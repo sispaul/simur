@@ -31,8 +31,7 @@ public class mergeDescuento {
                 + "srh_descuento.IDE_COLUMNA=" + ide_columna + " and srh_empleado.cedula_pass=srh_descuento.cedula";
         conPostgresql();
         conPostgres.ejecutarSql(strSql);
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
     }
 
     public void actualizarDescuento1(Integer ano, Integer ide_periodo, Integer id_distributivo_roles, Integer ide_columna) {
@@ -45,8 +44,7 @@ public class mergeDescuento {
                 + "srh_roles.ide_empleado=srh_descuento.ide_empleado";
         conPostgresql();
         conPostgres.ejecutarSql(strSql);
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
     }
 
     public void borrarDescuento() {
@@ -55,8 +53,7 @@ public class mergeDescuento {
         String strSql = "delete from srh_descuento";
         conPostgresql();
         conPostgres.ejecutarSql(strSql);
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
     }
 
     public void migrarDescuento(String empleado, Integer ide_periodo, Integer id_distributivo_roles, Integer ide_columna, String nombre) {
@@ -69,8 +66,7 @@ public class mergeDescuento {
                 + "srh_roles.ide_empleado='" + empleado + "'";
         conPostgresql();
         conPostgres.ejecutarSql(strSql);
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
     }
 
     public void setActuHisFondos(Integer anio, Integer periodo, Integer persona, Double descuento, String nombre) {
@@ -83,8 +79,7 @@ public class mergeDescuento {
                 + "where ano =" + anio + " and ide_periodo =" + periodo + " and ide_empleado =" + persona;
         conPostgresql();
         conPostgres.ejecutarSql(strSql);
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
     }
 
     public void setmigrarDescuento(String empleado, Integer ide_periodo, Integer id_distributivo_roles, Integer ide_columna,
@@ -105,8 +100,7 @@ public class mergeDescuento {
                 + "AND srh_roles.ide_empleado='" + empleado + "'";
         conPostgresql();
         conPostgres.ejecutarSql(strSql);
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
     }
 
     public void ActualizaDatos(String cedula, Integer colum, Integer dis) {
@@ -130,8 +124,7 @@ public class mergeDescuento {
                 + "where srh_descuento.cedula = d1.cedula_pass and d1.id_distributivo =" + dis;
         conPostgresql();
         conPostgres.ejecutarSql(strSql);
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
     }
 
     public void setHoras100_50(String cedula, Integer colum, Integer dis, Double valor, Double parametro) {
@@ -155,8 +148,7 @@ public class mergeDescuento {
                 + "where srh_descuento.cedula = d1.cedula_pass and d1.id_distributivo =" + dis;
         conPostgresql();
         conPostgres.ejecutarSql(strSql);
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
     }
 
     public void setHoras25(String cedula, Integer colum, Integer dis, Double valor) {
@@ -180,8 +172,7 @@ public class mergeDescuento {
                 + "where srh_descuento.cedula = d1.cedula_pass and d1.id_distributivo =" + dis;
         conPostgresql();
         conPostgres.ejecutarSql(strSql);
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
     }
 
     public void InsertarAnticipo(Integer tipo) {
@@ -249,8 +240,7 @@ public class mergeDescuento {
                 + "having count(a.ci_solicitante)>1 order by a.solicitante) as b ) as c order by solicitante";
         conPostgresql();
         conPostgres.ejecutarSql(strSql);
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
     }
 
     public void setSubsidioFamiliar(Integer tipo, Double porcentaje, Double sueldo) {
@@ -284,8 +274,7 @@ public class mergeDescuento {
                 + "order by a.nombres";
         conPostgresql();
         conPostgres.ejecutarSql(strSql);
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
     }
 
     public void setSubsidioAntiguedad(Integer columna, Double porcentaje, Integer codigo, Integer dis) {
@@ -310,8 +299,7 @@ public class mergeDescuento {
                 + "ORDER BY e.nombres limit 1";
         conPostgresql();
         conPostgres.ejecutarSql(strSql);
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
     }
 
     public void setHistoricoFondos(Integer codigo, String fondos) {
@@ -322,9 +310,7 @@ public class mergeDescuento {
                 + "where ide_empleado =" + codigo;
         conPostgresql();
         conPostgres.ejecutarSql(strSql);
-//        System.err.println(strSql);
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
     }
 
     public void setFondosReserva(Integer columna, Double porcentaje, Integer dis, String col, Integer col1, Integer col2, Integer codigo) {
@@ -362,8 +348,7 @@ public class mergeDescuento {
                 + "order by nombres";
         conPostgresql();
         conPostgres.ejecutarSql(strSql);
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
     }
 
     public void setDatosServidor(String login, String codigo) {
@@ -384,8 +369,7 @@ public class mergeDescuento {
                 + "ORDER BY id_distributivo,nombres";
         conPostgresql();
         conPostgres.ejecutarSql(strSql);
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
     }
 
     public void setDatosCalculo(String codigo, String empleado, String columna, Double valor, String estado,
@@ -394,8 +378,7 @@ public class mergeDescuento {
                 + "values ('" + codigo + "','" + empleado + "','" + columna + "','" + utilitario.getAnio(utilitario.getFechaActual()) + "','" + utilitario.getMes(utilitario.getFechaActual()) + "'," + valor + ",'" + estado + "'," + rmu + "," + hxe + "," + subrogacion + ",'" + distributivo + "','" + utilitario.getFechaActual() + "'," + acumulado + "," + cuota + ")";
         conPostgresql();
         conPostgres.ejecutarSql(strSql);
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
     }
 
     public TablaGenerica sumaPeriodo() {
@@ -415,8 +398,7 @@ public class mergeDescuento {
                 + "q.anio like '" + utilitario.getAnio(utilitario.getFechaActual()) + "'\n"
                 + "GROUP BY q.periodo");
         tabFuncionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tabFuncionario;
     }
 
@@ -427,8 +409,7 @@ public class mergeDescuento {
         tabFuncionario.setConexion(conPostgres);
         tabFuncionario.setSql("SELECT ide_periodo,per_descripcion FROM cont_periodo_actual where ide_periodo=" + periodo);
         tabFuncionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tabFuncionario;
     }
 
@@ -439,8 +420,7 @@ public class mergeDescuento {
         tabFuncionario.setConexion(conPostgres);
         tabFuncionario.setSql("SELECT ide_col,descripcion_col,distributivo,porcentaje_subsidio from srh_columnas where ide_col = " + periodo);
         tabFuncionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tabFuncionario;
     }
 
@@ -453,8 +433,7 @@ public class mergeDescuento {
                 + "from srh_empleado\n"
                 + "where estado=1 and id_distributivo = " + periodo);
         tabFuncionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tabFuncionario;
     }
 
@@ -466,8 +445,7 @@ public class mergeDescuento {
         tabFuncionario.setSql("SELECT sum(descuento) as total \n"
                 + "FROM srh_descuento where ano = '" + utilitario.getAnio(utilitario.getFechaActual()) + "' and ide_periodo =" + utilitario.getMes(utilitario.getFechaActual()));
         tabFuncionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tabFuncionario;
     }
 
@@ -478,8 +456,7 @@ public class mergeDescuento {
         tabFuncionario.setConexion(conPostgres);
         tabFuncionario.setSql("SELECT id_distributivo,descripcion FROM srh_tdistributivo where id_distributivo=" + distri);
         tabFuncionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tabFuncionario;
     }
 
@@ -490,8 +467,7 @@ public class mergeDescuento {
         tabFuncionario.setConexion(conPostgres);
         tabFuncionario.setSql("SELECT ide_col,descripcion_col FROM SRH_COLUMNAS WHERE ide_col=" + colum);
         tabFuncionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tabFuncionario;
     }
 
@@ -502,8 +478,7 @@ public class mergeDescuento {
         tabFuncionario.setConexion(conPostgres);
         tabFuncionario.setSql("SELECT ide_roles,ide_columnas FROM srh_roles where ano = " + utilitario.getAnio(utilitario.getFechaActual()) + " and ide_periodo = " + utilitario.getMes(utilitario.getFechaActual()));
         tabFuncionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tabFuncionario;
     }
 
@@ -521,8 +496,7 @@ public class mergeDescuento {
                 + "INNER JOIN srh_empleado e ON e.cod_cargo = c.cod_cargo\n"
                 + "WHERE c.cod_cargo =" + codigo);//299
         tabFuncionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tabFuncionario;
     }
 
@@ -535,8 +509,7 @@ public class mergeDescuento {
                 + "FROM srh_roles\n"
                 + "where ano = '" + anio + "' and ide_periodo = " + codigo + " and ide_empleado = '" + empleado + "' and id_distributivo_roles = " + distributivo);
         tabFuncionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tabFuncionario;
     }
 
@@ -549,8 +522,7 @@ public class mergeDescuento {
                 + "from srh_valor_roles_historial\n"
                 + "where ide_periodo=" + codigo + " and ano = '" + anio + "' and ide_empleado= '" + empleado + "'");
         tabFuncionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tabFuncionario;
     }
 
@@ -563,8 +535,7 @@ public class mergeDescuento {
                 + "from srh_valor_roles_historial\n"
                 + "where ide_periodo=" + codigo + " and ano = '" + anio + "' and ide_empleado= '" + empleado + "'");
         tabFuncionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tabFuncionario;
     }
 
@@ -577,8 +548,7 @@ public class mergeDescuento {
                 + "from srh_valor_roles_historial\n"
                 + "where ide_periodo=" + codigo + " and ano = '" + anio + "' and ide_empleado= '" + empleado + "'");
         tabFuncionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tabFuncionario;
     }
 
@@ -595,8 +565,7 @@ public class mergeDescuento {
                 + "from srh_empleado \n"
                 + "where cod_empleado = '" + codigo + "'");
         tabFuncionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tabFuncionario;
     }
 
@@ -619,8 +588,7 @@ public class mergeDescuento {
                 + "WHERE estado = 1  and id_distributivo is not null\n"
                 + "ORDER BY id_distributivo,nombres");
         tabFuncionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tabFuncionario;
     }
 
@@ -634,8 +602,7 @@ public class mergeDescuento {
                 + "WHERE estado = 1  and id_distributivo is not null\n"
                 + "ORDER BY id_distributivo,nombres");
         tabFuncionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tabFuncionario;
     }
 
@@ -648,8 +615,7 @@ public class mergeDescuento {
                 + "from srh_autorizacion_acumulacion\n"
                 + "where autoriza_anio = '" + anio + "' and autoriza_cod_empleado = '" + codigo + "'");
         tabFuncionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tabFuncionario;
     }
 
@@ -671,8 +637,7 @@ public class mergeDescuento {
                 + "from srh_autorizacion_acumulacion \n"
                 + "where autoriza_id_distributivo = '" + codigo + "'");
         tabFuncionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tabFuncionario;
     }
 
@@ -688,8 +653,7 @@ public class mergeDescuento {
                 + "FROM srh_decimo_cuarto_tercero\n"
                 + "where decimo_anio = '" + anio + "' and decimo_periodo= '" + periodo + "' and decimo_cod_empleado= '" + codigo + "' and decimo_columna = '" + columna + "'");
         tabFuncionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tabFuncionario;
     }
 
@@ -702,8 +666,7 @@ public class mergeDescuento {
                 + "from srh_periodo_sueldo\n"
                 + "where periodo_columna = '" + codigo + "' and periodo_estado = 'S'");
         tabFuncionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tabFuncionario;
     }
 
@@ -721,8 +684,7 @@ public class mergeDescuento {
                 + "WHERE decimo_cod_empleado = '" + codigo + "' and decimo_estado = '" + estado + "' and decimo_columna = '" + columna + "' and decimo_fecha BETWEEN '" + fechain + "'and'" + fechafin + "'\n"
                 + "GROUP BY decimo_valor,decimo_rmu,decimo_horas_extra,decimo_subrogacion,decimo_cod_empleado");
         tabFuncionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tabFuncionario;
     }
 
@@ -769,12 +731,11 @@ public class mergeDescuento {
                 + "GROUP BY E.COD_EMPLEADO) as f \n"
                 + "on a.COD_EMPLEADO=f.COD_EMPLEADO");
         tabFuncionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tabFuncionario;
     }
 
-    public TablaGenerica getDeci3roAcum(String codigo,Integer anioAc, Integer anioAn,String parametro,String parametros) {
+    public TablaGenerica getDeci3roAcum(String codigo, Integer anioAc, Integer anioAn, String parametro, String parametros) {
         conPostgresql();
         TablaGenerica tabFuncionario = new TablaGenerica();
         conPostgresql();
@@ -791,70 +752,77 @@ public class mergeDescuento {
                 + "c.nombre_cargo  \n"
                 + "FROM srh_empleado AS e  \n"
                 + "INNER JOIN srh_cargos AS c ON c.cod_cargo = e.cod_cargo  \n"
-                + "where e.cod_empleado = '"+codigo+"') as a  \n"
+                + "where e.cod_empleado = '" + codigo + "') as a  \n"
                 + "left join  \n"
                 + "(select E.COD_EMPLEADO,SUM(r.valor) AS RMU from srh_roles as r,  \n"
                 + "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and  \n"
-                + "ano="+anioAc+" and ide_periodo in("+parametro+") and ide_columnas in (40,14)  \n"
+                + "ano=" + anioAc + " and ide_periodo in(" + parametro + ") and ide_columnas in (40,14)  \n"
                 + "and r.ide_programa=p.ide_programa and valor>0   \n"
-                + "and e.cod_empleado = '"+codigo+"'  \n"
+                + "and e.cod_empleado = '" + codigo + "'  \n"
                 + "GROUP BY E.COD_EMPLEADO) as b  \n"
                 + "on a.COD_EMPLEADO=b.COD_EMPLEADO  \n"
                 + "\n"
                 + "left join  \n"
                 + "(select E.COD_EMPLEADO,SUM(r.valor) AS RMU from srh_roles as r,  \n"
                 + "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and  \n"
-                + "ano="+anioAn+" and ide_periodo in("+parametros+") and ide_columnas in (40,14)  \n"
+                + "ano=" + anioAn + " and ide_periodo in(" + parametros + ") and ide_columnas in (40,14)  \n"
                 + "and r.ide_programa=p.ide_programa and valor>0   \n"
-                + "and e.cod_empleado = '"+codigo+"'  \n"
+                + "and e.cod_empleado = '" + codigo + "'  \n"
                 + "GROUP BY E.COD_EMPLEADO) as c  \n"
                 + "on a.COD_EMPLEADO=c.COD_EMPLEADO  \n"
                 + "\n"
                 + "left join  \n"
                 + "(select E.COD_EMPLEADO,SUM(r.valor) AS HORAS_EXTRAS from srh_roles as r,  \n"
                 + "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and  \n"
-                + "ano="+anioAc+" and id_distributivo_roles = 2 and ide_periodo in("+parametro+") and ide_columnas in (75,76,92,93)  \n"
+                + "ano=" + anioAc + " and id_distributivo_roles = 2 and ide_periodo in(" + parametro + ") and ide_columnas in (75,76,92,93)  \n"
                 + "and r.ide_programa=p.ide_programa and valor>0   \n"
-                + "and e.cod_empleado = '"+codigo+"'  \n"
+                + "and e.cod_empleado = '" + codigo + "'  \n"
                 + "GROUP BY E.COD_EMPLEADO) as d  \n"
                 + "on a.COD_EMPLEADO=d.COD_EMPLEADO\n"
                 + "\n"
                 + "left join  \n"
                 + "(select E.COD_EMPLEADO,SUM(r.valor) AS HORAS_EXTRAS from srh_roles as r,  \n"
                 + "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and  \n"
-                + "ano="+anioAn+" and id_distributivo_roles = 2 and ide_periodo in("+parametros+") and ide_columnas in (75,76,92,93)  \n"
+                + "ano=" + anioAn + " and id_distributivo_roles = 2 and ide_periodo in(" + parametros + ") and ide_columnas in (75,76,92,93)  \n"
                 + "and r.ide_programa=p.ide_programa and valor>0   \n"
-                + "and e.cod_empleado = '"+codigo+"'  \n"
+                + "and e.cod_empleado = '" + codigo + "'  \n"
                 + "GROUP BY E.COD_EMPLEADO) as e\n"
                 + "on a.COD_EMPLEADO=e.COD_EMPLEADO\n"
                 + "\n"
                 + "left join  \n"
                 + "(select E.COD_EMPLEADO,SUM(r.valor) AS SUB_ROGACION from srh_roles as r,  \n"
                 + "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and  \n"
-                + "ano="+anioAc+" and ide_periodo in("+parametro+") and ide_columnas in (18)  \n"
+                + "ano=" + anioAc + " and ide_periodo in(" + parametro + ") and ide_columnas in (18)  \n"
                 + "and r.ide_programa=p.ide_programa and valor>0   \n"
-                + "and e.cod_empleado = '"+codigo+"'  \n"
+                + "and e.cod_empleado = '" + codigo + "'  \n"
                 + "GROUP BY E.COD_EMPLEADO) as f  \n"
                 + "on a.COD_EMPLEADO=f.COD_EMPLEADO\n"
                 + "\n"
                 + "left join  \n"
                 + "(select E.COD_EMPLEADO,SUM(r.valor) AS SUB_ROGACION from srh_roles as r,  \n"
                 + "prec_programas as  p, srh_empleado as e where e.cod_empleado=r.ide_empleado and  \n"
-                + "ano="+anioAn+" and ide_periodo in("+parametros+") and ide_columnas in (18)  \n"
+                + "ano=" + anioAn + " and ide_periodo in(" + parametros + ") and ide_columnas in (18)  \n"
                 + "and r.ide_programa=p.ide_programa and valor>0   \n"
-                + "and e.cod_empleado = '"+codigo+"'  \n"
+                + "and e.cod_empleado = '" + codigo + "'  \n"
                 + "GROUP BY E.COD_EMPLEADO) as g\n"
                 + "on a.COD_EMPLEADO=g.COD_EMPLEADO");
         tabFuncionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tabFuncionario;
     }
 
+    //sentencia de conexion a base de datos
     private void conPostgresql() {
         if (conPostgres == null) {
             conPostgres = new Conexion();
             conPostgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
+        }
+    }
+
+    private void desPostgresql() {
+        if (conPostgres != null) {
+            conPostgres.desconectar();
+            conPostgres = null;
         }
     }
 }
