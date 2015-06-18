@@ -19,24 +19,30 @@ public class bloqueoRol {
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     private Utilitario utilitario = new Utilitario();
-    private Conexion con_postgres;
+    private Conexion conPostgres;
 
     public TablaGenerica verifSI(String dato) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT count(*) as cantidad,bloqueo_rol FROM cont_periodo_actual where bloqueo_rol like '" + dato + "' GROUP BY bloqueo_rol");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT count(*) as cantidad,bloqueo_rol FROM cont_periodo_actual where bloqueo_rol like '" + dato + "' GROUP BY bloqueo_rol");
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
-    private void con_postgresql() {
-        if (con_postgres == null) {
-            con_postgres = new Conexion();
-            con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
+    private void conPostgresql() {
+        if (conPostgres == null) {
+            conPostgres = new Conexion();
+            conPostgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
+        }
+    }
+
+    private void desPostgresql() {
+        if (conPostgres != null) {
+            conPostgres.desconectar();
+            conPostgres = null;
         }
     }
 }
