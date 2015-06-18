@@ -19,15 +19,15 @@ public class AntiSueldos {
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     private Utilitario utilitario = new Utilitario();
-    private Conexion con_postgres;
+    private Conexion conPostgres;
 
     //Saca información de los servidores que tiens solicitudes pendientes
     public TablaGenerica VerifEmpleid(String cedu, Integer tipo) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT\n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT\n"
                 + "s.ide_empleado_solicitante,\n"
                 + "s.ci_solicitante,\n"
                 + "s.solicitante,\n"
@@ -40,19 +40,18 @@ public class AntiSueldos {
                 + "and (c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO')OR\n"
                 + "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'APROBADO')OR\n"
                 + "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'PAGANDO'))");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
 //Busqueda en roles de datos de servidor que solicita por numero de cedula
     public TablaGenerica empleadosCed(String cedula, Integer anio, Integer mes) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("select *,(TOTAL_INGRESOS-TOTAL_EGRESOS) as LIQUIDO_RECIBIR from  \n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("select *,(TOTAL_INGRESOS-TOTAL_EGRESOS) as LIQUIDO_RECIBIR from  \n"
                 + " (select aa.*,a.FONDOS_RESERVA,(case when a.FONDOS_RESERVA is NULL then '0' when a.FONDOS_RESERVA > 0 then a.FONDOS_RESERVA end ) as confirma1,  \n"
                 + " b.HORAS_EXTRAS,(case when b.HORAS_EXTRAS is NULL then '0' when b.HORAS_EXTRAS > 0 then b.HORAS_EXTRAS end ) as confirma2,  \n"
                 + " c.OTROS_INGRESOS,(case when c.OTROS_INGRESOS is NULL then '0' when c.OTROS_INGRESOS > 0 then c.OTROS_INGRESOS end ) as confirma3,  \n"
@@ -148,19 +147,18 @@ public class AntiSueldos {
                 + " and  id_distributivo_roles=1 and ide_periodo=" + mes + " and ide_columnas in (33,22,21,1,7,4,8,6,9,5,2,13,39,3,11,10,111,12)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as k  \n"
                 + " on aa.COD_EMPLEADO=k.COD_EMPLEADO) as m  \n"
                 + " order by nombres");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     //trabajador por numero de cedulas
     public TablaGenerica trabajadoresCed(String cedula, Integer anio, Integer mes) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("select *,(TOTAL_INGRESOS-TOTAL_EGRESOS) as LIQUIDO_RECIBIR from\n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("select *,(TOTAL_INGRESOS-TOTAL_EGRESOS) as LIQUIDO_RECIBIR from\n"
                 + "(\n"
                 + "select aa.*,a.FONDOS_RESERVA,b.HORAS_EXTRAS,\n"
                 + "c.SUB_FAMILIAR,d.SUB_ANTIGUEDAD,e.SUB_COMISARIATO,f.OTROS_INGRESOS,h.APORTE_IESS,i.PRESTAMO_IESS,j.ANTICIPOS,k.OTROS_EGRESOS,\n"
@@ -299,19 +297,18 @@ public class AntiSueldos {
                 + "on aa.COD_EMPLEADO=l.COD_EMPLEADO\n"
                 + ") as m\n"
                 + "order by nombres");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     //Busqueda de solicitudes pendientes por codigo de servidor
     public TablaGenerica VerifEmpleCod(Integer codigo, Integer tipo) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT\n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT\n"
                 + "s.ide_empleado_solicitante,\n"
                 + "s.ci_solicitante,\n"
                 + "s.solicitante\n"
@@ -323,19 +320,18 @@ public class AntiSueldos {
                 + "and (c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO')OR\n"
                 + "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'APROBADO')OR\n"
                 + "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'PAGANDO'))");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     //Busqueda de servidor por apellido
     public TablaGenerica empleados(Integer codigo, Integer anio, Integer mes) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("select *,(TOTAL_INGRESOS-TOTAL_EGRESOS) as LIQUIDO_RECIBIR from\n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("select *,(TOTAL_INGRESOS-TOTAL_EGRESOS) as LIQUIDO_RECIBIR from\n"
                 + "(select aa.*,a.FONDOS_RESERVA,(case when a.FONDOS_RESERVA is NULL then '0' when a.FONDOS_RESERVA > 0 then a.FONDOS_RESERVA end ) as confirma1,\n"
                 + "b.HORAS_EXTRAS,(case when b.HORAS_EXTRAS is NULL then '0' when b.HORAS_EXTRAS > 0 then b.HORAS_EXTRAS end ) as confirma2,\n"
                 + "c.OTROS_INGRESOS,(case when c.OTROS_INGRESOS is NULL then '0' when c.OTROS_INGRESOS > 0 then c.OTROS_INGRESOS end ) as confirma3,\n"
@@ -431,18 +427,17 @@ public class AntiSueldos {
                 + "and  id_distributivo_roles=1 and ide_periodo=" + mes + " and ide_columnas in (33,22,21,1,7,4,8,6,9,5,2,13,39,3,11,10,111,12)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY E.COD_EMPLEADO) as k\n"
                 + "on aa.COD_EMPLEADO=k.COD_EMPLEADO) as m\n"
                 + "order by nombres");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     public TablaGenerica trabajadores(Integer codigo, Integer anio, Integer mes) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("select *,(TOTAL_INGRESOS-TOTAL_EGRESOS) as LIQUIDO_RECIBIR from\n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("select *,(TOTAL_INGRESOS-TOTAL_EGRESOS) as LIQUIDO_RECIBIR from\n"
                 + "(\n"
                 + "select aa.*,a.FONDOS_RESERVA,b.HORAS_EXTRAS,\n"
                 + "c.SUB_FAMILIAR,d.SUB_ANTIGUEDAD,e.SUB_COMISARIATO,f.OTROS_INGRESOS,h.APORTE_IESS,i.PRESTAMO_IESS,j.ANTICIPOS,k.OTROS_EGRESOS,\n"
@@ -581,19 +576,18 @@ public class AntiSueldos {
                 + "on aa.COD_EMPLEADO=l.COD_EMPLEADO\n"
                 + ") as m\n"
                 + "order by nombres");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     //Verifica si garante se encuentra disponibles
     public TablaGenerica VerifGaranteid(String cedula) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT\n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT\n"
                 + "g.ci_garante,\n"
                 + "g.garante,\n"
                 + "c.ide_estado_anticipo\n"
@@ -604,19 +598,18 @@ public class AntiSueldos {
                 + "where g.ci_garante like '" + cedula + "' and (c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO')OR \n"
                 + "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'APROBADO')OR \n"
                 + "c.ide_estado_anticipo  = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'PAGANDO'))");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     //busqueda de garante por cedulas
     public TablaGenerica Garantemple(String ci) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT\n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT\n"
                 + "e.cod_empleado, e.cedula_pass,\n"
                 + "e.nombres,e.fecha_ingreso,\n"
                 + "e.fecha_nombramiento,e.id_distributivo,\n"
@@ -629,18 +622,17 @@ public class AntiSueldos {
                 + "e.cod_tipo = i.cod_tipo AND\n"
                 + "e.cod_tipo in (4,7,8,10)\n"
                 + "and e.cedula_pass like '" + ci + "'");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     public TablaGenerica Garantemple1(String ci) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT\n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT\n"
                 + "e.cod_empleado, e.cedula_pass,\n"
                 + "e.nombres,e.fecha_ingreso,\n"
                 + "e.fecha_nombramiento,e.id_distributivo,\n"
@@ -653,18 +645,17 @@ public class AntiSueldos {
                 + "e.cod_tipo = i.cod_tipo AND\n"
                 + "e.cod_tipo in (4,7,8,10,3)\n"
                 + "and e.cedula_pass like '" + ci + "'");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     public TablaGenerica getGarante(String ci) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT\n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT\n"
                 + "e.cod_empleado, e.cedula_pass,\n"
                 + "e.nombres,e.fecha_ingreso,\n"
                 + "e.fecha_nombramiento,e.id_distributivo,\n"
@@ -676,47 +667,44 @@ public class AntiSueldos {
                 + "e.estado = 1 AND\n"
                 + "e.cod_tipo = i.cod_tipo\n"
                 + "and e.cedula_pass like '" + ci + "'");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     public TablaGenerica GarNumConat(Integer ci) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT cod_empleado,cod_tipo \n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT cod_empleado,cod_tipo \n"
                 + "FROM srh_num_contratos\n"
                 + "where cod_tipo in (4,7,8,10) and cod_empleado =" + ci);
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     public TablaGenerica GarNumConat1(Integer ci) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT cod_empleado,cod_tipo \n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT cod_empleado,cod_tipo \n"
                 + "FROM srh_num_contratos\n"
                 + "where cod_tipo in (4,7,8,10,3) and cod_empleado =" + ci);
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     //buscar garante por apellido
     public TablaGenerica VerifGaranteCod(Integer codigo) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT\n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT\n"
                 + "s.ide_empleado_solicitante,\n"
                 + "g.ide_empleado_garante,\n"
                 + "g.ci_garante,\n"
@@ -730,71 +718,66 @@ public class AntiSueldos {
                 + "(c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'INGRESADO') OR\n"
                 + "c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'APROBADO') OR\n"
                 + "c.ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado like 'PAGANDO'))");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     public TablaGenerica GaranteNom(Integer empleado) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT cod_empleado,cedula_pass,nombres,id_distributivo,cod_tipo\n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT cod_empleado,cedula_pass,nombres,id_distributivo,cod_tipo\n"
                 + "FROM srh_empleado WHERE estado = 1 AND cod_tipo IN (4,7,8,3) AND cod_empleado =" + empleado + " order by nombres ");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     //Permite utilizar las fecha de inicio y fin de contrato
     public TablaGenerica FechaContrato(Integer codigoE) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT fecha_contrato,cod_tipo,ide_num_contrato,fecha_fin\n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT fecha_contrato,cod_tipo,ide_num_contrato,fecha_fin\n"
                 + "FROM srh_num_contratos\n"
                 + "where cod_empleado = " + codigoE + "\n"
                 + "ORDER BY fecha_contrato DESC LIMIT 1");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     public TablaGenerica periodos(String mes, String anio) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT ide_periodo_anticipo,periodo,mes,anio FROM srh_periodo_anticipo where mes like '" + mes + "' and anio like '" + anio + "'");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT ide_periodo_anticipo,periodo,mes,anio FROM srh_periodo_anticipo where mes like '" + mes + "' and anio like '" + anio + "'");
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     public TablaGenerica periodos1(Integer id) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT ide_periodo_anticipo,periodo,mes,anio FROM srh_periodo_anticipo where ide_periodo_anticipo =" + id);
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT ide_periodo_anticipo,periodo,mes,anio FROM srh_periodo_anticipo where ide_periodo_anticipo =" + id);
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     public TablaGenerica getCedula(Integer id) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT\n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT\n"
                 + "c.ide_empleado,\n"
                 + "s.ci_solicitante,\n"
                 + "s.solicitante,\n"
@@ -802,18 +785,17 @@ public class AntiSueldos {
                 + "FROM srh_calculo_anticipo c\n"
                 + "INNER JOIN srh_solicitud_anticipo s ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n"
                 + "where c.ide_calculo_anticipo = " + id);
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     public TablaGenerica pagosAndelantados(String cedula) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT\n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT\n"
                 + "s.ide_solicitud_anticipo,\n"
                 + "s.ci_solicitante,\n"
                 + "s.solicitante,\n"
@@ -826,33 +808,31 @@ public class AntiSueldos {
                 + "srh_solicitud_anticipo AS s\n"
                 + "INNER JOIN srh_calculo_anticipo c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n"
                 + "where ci_solicitante = '" + cedula + "'");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     public TablaGenerica VerificarCuota(String anio, String periodo) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT his_codigo,his_ide_empleado,his_nombre,his_periodo,his_anio,his_cuota_roles,his_cuota_anticipo,his_cuota_nueva,\n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT his_codigo,his_ide_empleado,his_nombre,his_periodo,his_anio,his_cuota_roles,his_cuota_anticipo,his_cuota_nueva,\n"
                 + "his_cuotas_faltantes,his_cuotas_anticipo,his_cuotas_pagadas\n"
                 + "FROM srh_historial_cuotas_anticipos\n"
                 + "where his_anio='" + anio + "' and his_periodo='" + periodo + "'");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     public TablaGenerica getReCalculo(Integer codigo) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT s.ide_solicitud_anticipo,\n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT s.ide_solicitud_anticipo,\n"
                 + "s.ci_solicitante,\n"
                 + "s.solicitante,\n"
                 + "(select remuneracion from srh_empleado where cod_empleado = s.ide_empleado_solicitante) AS remuneracion,\n"
@@ -867,32 +847,30 @@ public class AntiSueldos {
                 + "inner join srh_calculo_anticipo c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n"
                 + "where c.ide_estado_anticipo in (1,2,3) and s.ide_solicitud_anticipo = " + codigo + "\n"
                 + "order by s.ide_solicitud_anticipo ASC");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     public TablaGenerica getDetalleReCalculo(Integer codigo) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("select * from srh_detalle_anticipo\n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("select * from srh_detalle_anticipo\n"
                 + "where ide_anticipo = " + codigo + " and ide_periodo_descontado is null\n"
                 + "order by ide_detalle_anticipo");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     public TablaGenerica getEmpleadoInfo(String cedula, Integer anio, Integer mes) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("select aa.*,(a.TOTAL_INGRESOS-b.TOTAL_EGRESOS) as liquido from (\n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("select aa.*,(a.TOTAL_INGRESOS-b.TOTAL_EGRESOS) as liquido from (\n"
                 + "select E.COD_EMPLEADO,e.cod_banco,cod_tipo,cod_cuenta,cod_grupo,e.numero_cuenta,e.cedula_pass,e.nombres,c.cod_cargo,r.valor AS RU,id_distributivo_roles   \n"
                 + "from srh_roles as r inner join prec_programas as  p   \n"
                 + "on r.ide_programa=p.ide_programa   \n"
@@ -920,18 +898,17 @@ public class AntiSueldos {
                 + "(33,22,21,1,7,4,8,6,9,5,2,13,39,3,11,10,111,12,71,59,53,46,72,56,84,74,57,73,47,80,85,48,50,108,55,51,52,106,112,91,110)  and r.ide_programa=p.ide_programa and valor>0 GROUP BY\n"
                 + "E.COD_EMPLEADO) as b\n"
                 + "on aa.COD_EMPLEADO=b.COD_EMPLEADO");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     public TablaGenerica getEmpleadoInf(String cedula) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("SELECT cod_empleado,\n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT cod_empleado,\n"
                 + "cod_banco,\n"
                 + "cod_tipo,\n"
                 + "cod_cuenta,\n"
@@ -944,33 +921,31 @@ public class AntiSueldos {
                 + "id_distributivo\n"
                 + "FROM srh_empleado\n"
                 + "WHERE srh_empleado.cedula_pass = '" + cedula + "'");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     public TablaGenerica getIdDetalleReCalculo(Integer codigo) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("select 0 as id, ide_detalle_anticipo from srh_detalle_anticipo\n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("select 0 as id, ide_detalle_anticipo from srh_detalle_anticipo\n"
                 + "where ide_anticipo = " + codigo + " and ide_periodo_descontado is null\n"
                 + "order by ide_detalle_anticipo desc\n"
                 + "limit 1");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     public TablaGenerica getTotalAnt(String anio) {
-        con_postgresql();
-        TablaGenerica tab_funcionario = new TablaGenerica();
-        con_postgresql();
-        tab_funcionario.setConexion(con_postgres);
-        tab_funcionario.setSql("select a.id,a.anticipo,b.descontar,(a.anticipo-b.descontar)as saldo from\n"
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("select a.id,a.anticipo,b.descontar,(a.anticipo-b.descontar)as saldo from\n"
                 + "(SELECT 0 as id,\n"
                 + "sum(c.valor_anticipo) as anticipo\n"
                 + "FROM srh_calculo_anticipo AS c\n"
@@ -1008,15 +983,14 @@ public class AntiSueldos {
                 + "GROUP BY s.id_distributivo) as c\n"
                 + "on a.id_distributivo = c.id_distributivo) as b\n"
                 + "on a.id = b.id");
-        tab_funcionario.ejecutarSql();
-        con_postgres.desconectar();
-        con_postgres = null;
-        return tab_funcionario;
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     public void InsertarAnticipo(String anio, String periodo) {
         // Forma el sql para el ingreso
-        String str_sql3 = "insert into srh_historial_cuotas_anticipos (his_ide_empleado,his_nombre,his_periodo,his_anio,his_cuota_roles,his_cuota_anticipo,his_cuota_nueva,his_cuotas_faltantes\n"
+        String strSql3 = "insert into srh_historial_cuotas_anticipos (his_ide_empleado,his_nombre,his_periodo,his_anio,his_cuota_roles,his_cuota_anticipo,his_cuota_nueva,his_cuotas_faltantes\n"
                 + ",his_cuotas_anticipo,his_cuotas_pagadas,his_ide_solicitud,his_mes_actual,his_anio_actual,his_distributivo,his_ide_tipo_anticipo,his_cuota_individual,his_cuota_diferencia)\n"
                 + "select ide_empleado,solicitante,periodo,anio,valor_roles,valor_anticipo,\n"
                 + "cast((case when cuota_faltante =1 and valor_roles = 0 then valor_anticipo   \n"
@@ -1077,81 +1051,74 @@ public class AntiSueldos {
                 + "ORDER BY r.ide_empleado ASC)as b\n"
                 + "on a.ide_empleado_solicitante = b.ide_empleado\n"
                 + "where (a.valor- b.valor) <>0) as p";
-        con_postgresql();
-        con_postgres.ejecutarSql(str_sql3);
-        con_postgres.desconectar();
-        con_postgres = null;
+        conPostgresql();
+        conPostgres.ejecutarSql(strSql3);
+        desPostgresql();
     }
 
     public void deleteCalculo(Integer anti, Integer cal, String usu) {
-        String au_sql = "UPDATE srh_calculo_anticipo\n"
+        String auSql = "UPDATE srh_calculo_anticipo\n"
                 + "SET ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado ='NEGADO') ,\n"
                 + "usu_anulacion = '" + usu + "' where ide_calculo_anticipo = " + cal + " and ide_solicitud_anticipo = " + anti;
-        con_postgresql();
-        con_postgres.ejecutarSql(au_sql);
-        con_postgres.desconectar();
-        con_postgres = null;
+        conPostgresql();
+        conPostgres.ejecutarSql(auSql);
+        desPostgresql();
     }
 
     public void setRecacular(Integer codigo, Double cal, Double usu) {
-        String au_sql = "update srh_calculo_anticipo\n"
+        String auSql = "update srh_calculo_anticipo\n"
                 + "set valor_cuota_mensual = " + cal + ", \n"
                 + "val_cuo_adi = " + usu + "\n"
                 + "where ide_solicitud_anticipo = " + codigo;
-        con_postgresql();
-        con_postgres.ejecutarSql(au_sql);
-        con_postgres.desconectar();
-        con_postgres = null;
+        conPostgresql();
+        conPostgres.ejecutarSql(auSql);
+        desPostgresql();
     }
 
     public void setResolicitud(Integer codigo, String cal, String usu) {
-        String au_sql = "update srh_solicitud_anticipo\n"
+        String auSql = "update srh_solicitud_anticipo\n"
                 + "set recal_usuario = '" + usu + "',\n"
                 + "recal_ip = '" + cal + "'\n"
                 + "where ide_solicitud_anticipo = " + codigo;
-        con_postgresql();
-        con_postgres.ejecutarSql(au_sql);
-        con_postgres.desconectar();
-        con_postgres = null;
+        conPostgresql();
+        conPostgres.ejecutarSql(auSql);
+        desPostgresql();
     }
 
     public void setRecalculo(Integer codigo, Double valor, Integer detalle) {
-        String au_sql = "update srh_detalle_anticipo\n"
+        String auSql = "update srh_detalle_anticipo\n"
                 + "set valor = " + valor + "\n"
                 + "where ide_detalle_anticipo = " + detalle + "\n"
                 + "and ide_anticipo =" + codigo;
-        con_postgresql();
-        con_postgres.ejecutarSql(au_sql);
-        con_postgres.desconectar();
-        con_postgres = null;
+        conPostgresql();
+        conPostgres.ejecutarSql(auSql);
+        desPostgresql();
     }
 
     public void deleteSolicitud(Integer anti, String cedula, String usu, String comen, String fecha) {
-        String au_sql = "UPDATE srh_solicitud_anticipo\n"
+        String auSql = "UPDATE srh_solicitud_anticipo\n"
                 + "SET usu_anulacion='" + usu + "',\n"
                 + "comen_anulacion='" + comen + "',\n"
                 + "fecha_anulacion='" + fecha + "',\n"
                 + "aprobado_solicitante =0\n"
                 + "where ide_solicitud_anticipo = " + anti + " and ci_solicitante ='" + cedula + "'";
-        con_postgresql();
-        con_postgres.ejecutarSql(au_sql);
-        con_postgres.desconectar();
-        con_postgres = null;
+        conPostgresql();
+        conPostgres.ejecutarSql(auSql);
+        desPostgresql();
     }
 
     public void deleteDetalle(Integer anti) {
-        String au_sql = "update srh_detalle_anticipo\n"
+        String auSql = "update srh_detalle_anticipo\n"
                 + "set ide_periodo_descontado= 0,\n"
                 + "ide_estado_cuota = 0\n"
                 + "where ide_anticipo =" + anti;
-        con_postgresql();
-        con_postgres.ejecutarSql(au_sql);
-        con_postgres.desconectar();
-        con_postgres = null;
+        conPostgresql();
+        conPostgres.ejecutarSql(auSql);
+        desPostgresql();
     }
 
     public void ActualizaAnticipo(String anioac, String anioan) {
-        String str_sql4 = "update srh_calculo_anticipo   \n"
+        String strSql4 = "update srh_calculo_anticipo   \n"
                 + "set valor_pagado =h.pagado,  \n"
                 + "numero_cuotas_pagadas=cuota,  \n"
                 + "ide_estado_anticipo = 3  \n"
@@ -1163,15 +1130,14 @@ public class AntiSueldos {
                 + "GROUP BY ide_anticipo \n"
                 + "order by ide_anticipo) h  \n"
                 + "where srh_calculo_anticipo.ide_solicitud_anticipo = h.ide_anticipo";
-        con_postgresql();
-        con_postgres.ejecutarSql(str_sql4);
-        con_postgres.desconectar();
-        con_postgres = null;
+        conPostgresql();
+        conPostgres.ejecutarSql(strSql4);
+        desPostgresql();
     }
 
     public void ActualizarDetalleAnticipo(Integer anio, Integer periodo) {
         // Forma el sql para el ingreso
-        String str_sql4 = "update srh_detalle_anticipo \n"
+        String strSql4 = "update srh_detalle_anticipo \n"
                 + "set ide_periodo_descontado = srh_detalle_anticipo.ide_periodo_descuento, \n"
                 + "ide_estado_cuota = 1 \n"
                 + "from  (\n"
@@ -1204,14 +1170,13 @@ public class AntiSueldos {
                 + "srh_detalle_anticipo.valor = d.valor and \n"
                 + "srh_detalle_anticipo.periodo = cast (d.ide_periodo as varchar) and \n"
                 + "srh_detalle_anticipo.anio = cast (d.ano as varchar)";
-        con_postgresql();
-        con_postgres.ejecutarSql(str_sql4);
-        con_postgres.desconectar();
-        con_postgres = null;
+        conPostgresql();
+        conPostgres.ejecutarSql(strSql4);
+        desPostgresql();
     }
 
     public void CamAnticipoF() {
-        String str_sql4 = "update srh_calculo_anticipo \n"
+        String strSql4 = "update srh_calculo_anticipo \n"
                 + "SET ide_estado_anticipo = 4 \n"
                 + "from ( \n"
                 + "SELECT n1.pagado,n2.ide_solicitud_anticipo\n"
@@ -1220,14 +1185,13 @@ public class AntiSueldos {
                 + "inner join (select numero_cuotas_anticipo,ide_solicitud_anticipo from srh_calculo_anticipo order by ide_solicitud_anticipo) n2 \n"
                 + "on n1.ide_anticipo = n2.ide_solicitud_anticipo and n1.pagado = n2.numero_cuotas_anticipo) d1 \n"
                 + "WHERE srh_calculo_anticipo.ide_solicitud_anticipo = d1.ide_solicitud_anticipo";
-        con_postgresql();
-        con_postgres.ejecutarSql(str_sql4);
-        con_postgres.desconectar();
-        con_postgres = null;
+        conPostgresql();
+        conPostgres.ejecutarSql(strSql4);
+        desPostgresql();
     }
 
     public void CamAnticipoSo() {
-        String str_sql4 = "update srh_solicitud_anticipo\n"
+        String strSql4 = "update srh_solicitud_anticipo\n"
                 + "set aprobado_solicitante = 2\n"
                 + "from (\n"
                 + "SELECT n1.pagado,n2.ide_anticipo\n"
@@ -1236,14 +1200,13 @@ public class AntiSueldos {
                 + "inner join (SELECT count(ide_anticipo) as pagando,ide_anticipo FROM srh_detalle_anticipo GROUP BY ide_anticipo) n2\n"
                 + "on n1.ide_anticipo = n2.ide_anticipo and n1.pagado = n2.pagando ) d1\n"
                 + "WHERE srh_solicitud_anticipo.ide_solicitud_anticipo = d1.ide_anticipo";
-        con_postgresql();
-        con_postgres.ejecutarSql(str_sql4);
-        con_postgres.desconectar();
-        con_postgres = null;
+        conPostgresql();
+        conPostgres.ejecutarSql(strSql4);
+        desPostgresql();
     }
 
     public void setCuota(String anio, String periodo) {
-        String str_sql4 = "UPDATE srh_detalle_anticipo\n"
+        String strSql4 = "UPDATE srh_detalle_anticipo\n"
                 + "set ide_periodo_descontado=cast(a.his_periodo as int),\n"
                 + " ide_estado_cuota='1'\n"
                 + "from (SELECT\n"
@@ -1259,14 +1222,13 @@ public class AntiSueldos {
                 + "and srh_detalle_anticipo.valor=a.his_cuota_individual\n"
                 + "and srh_detalle_anticipo.periodo=a.his_periodo\n"
                 + "and srh_detalle_anticipo.anio=a.his_anio";
-        con_postgresql();
-        con_postgres.ejecutarSql(str_sql4);
-        con_postgres.desconectar();
-        con_postgres = null;
+        conPostgresql();
+        conPostgres.ejecutarSql(strSql4);
+        desPostgresql();
     }
 
     public void ProrrogacionCuota(String anio, String periodo, String mes) {
-        String str_sql4 = "update srh_detalle_anticipo\n"
+        String strSql4 = "update srh_detalle_anticipo\n"
                 + "set valor =a.cuota_real\n"
                 + "FROM\n"
                 + "(SELECT\n"
@@ -1288,17 +1250,23 @@ public class AntiSueldos {
                 + "and d.ide_periodo_descuento <> '" + mes + "'\n"
                 + "order by h.his_codigo) as a\n"
                 + "where srh_detalle_anticipo.ide_detalle_anticipo = a.ide_detalle_anticipo";
-        con_postgresql();
-        con_postgres.ejecutarSql(str_sql4);
-        con_postgres.desconectar();
-        con_postgres = null;
+        conPostgresql();
+        conPostgres.ejecutarSql(strSql4);
+        desPostgresql();
     }
 
     //metodo que posee la cadena de conexion a base de datos
-    private void con_postgresql() {
-        if (con_postgres == null) {
-            con_postgres = new Conexion();
-            con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
+    private void conPostgresql() {
+        if (conPostgres == null) {
+            conPostgres = new Conexion();
+            conPostgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
+        }
+    }
+
+    private void desPostgresql() {
+        if (conPostgres != null) {
+            conPostgres.desconectar();
+            conPostgres = null;
         }
     }
 }
