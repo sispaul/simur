@@ -358,6 +358,7 @@ public class MesualizacionDecimos extends Pantalla {
                 utilitario.agregarMensajeInfo("No existe Periodo Activo", null);
             }
             tabDecimos.actualizar();
+            filtarLista();
         }
 
     }
@@ -459,6 +460,7 @@ public class MesualizacionDecimos extends Pantalla {
                 utilitario.agregarMensajeInfo("No existe Periodo Activo", null);
             }
             tabDecimos.actualizar();
+            filtarLista();
         }
     }
 
