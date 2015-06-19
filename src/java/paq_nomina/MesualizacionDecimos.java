@@ -38,13 +38,16 @@ public class MesualizacionDecimos extends Pantalla {
     private Conexion conPostgres = new Conexion();
     private Panel panOpcion = new Panel();
     private Combo comboDistributivo = new Combo();
+    private Combo comboDistributivo1 = new Combo();
     private Combo comboAcciones = new Combo();
     private Combo comboEmpleados = new Combo();
     private Combo comboEmpleados1 = new Combo();
+    private Combo comboEmpleados2 = new Combo();
     private Combo comboAnio = new Combo();
     private Combo comboPeriodo = new Combo();
     private Combo comboAccion = new Combo();
     private Combo comboDecimo = new Combo();
+    private Combo comboParametros = new Combo();
     private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
     private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
     private Map p_parametros = new HashMap();
@@ -63,6 +66,30 @@ public class MesualizacionDecimos extends Pantalla {
 
         conPostgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         conPostgres.NOMBRE_MARCA_BASE = "postgres";
+
+        comboDistributivo1.setId("comboDistributivo1");
+        comboDistributivo1.setConexion(conPostgres);
+        comboDistributivo1.setCombo("SELECT periodo_columna as columna,periodo_columna from srh_periodo_sueldo where periodo_estado = 'S'");
+
+        comboEmpleados2.setId("comboEmpleados2");
+        comboEmpleados2.setConexion(conPostgres);
+        comboEmpleados2.setCombo("SELECT id_distributivo,descripcion FROM srh_tdistributivo ORDER BY id_distributivo");
+
+        comboParametros.setId("comboParametros");
+        List li = new ArrayList();
+        Object fis1s[] = {
+            "1", "ACUMULADO"
+        };
+        Object fis2s[] = {
+            "0", "MENSUAL"
+        };
+        Object fis3s[] = {
+            "2", "TODO"
+        };
+        li.add(fis1s);;
+        li.add(fis2s);;
+        li.add(fis3s);;
+        comboParametros.setCombo(li);
 
         //barra de tareas para busqueda y carga
         Grid gri_busca = new Grid();
@@ -147,7 +174,7 @@ public class MesualizacionDecimos extends Pantalla {
         diaDialogosr.setWidth("35%"); //siempre en porcentajes  ancho
         diaDialogosr.setHeight("35%");//siempre porcentaje   alto
         diaDialogosr.setResizable(false); //para que no se pueda cambiar el tamaño
-        diaDialogosr.getBot_aceptar().setMetodo("aceptoDecimo");
+        diaDialogosr.getBot_aceptar().setMetodo("dibujarReporte");
         gridr.setColumns(4);
         agregarComponente(diaDialogosr);
 
@@ -588,6 +615,83 @@ public class MesualizacionDecimos extends Pantalla {
 
     @Override
     public void eliminar() {
+    }
+
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+
+    }
+
+    @Override
+    public void aceptarReporte() {
+        rep_reporte.cerrar();
+        switch (rep_reporte.getNombre()) {
+            case "DECIMO 4TO":
+                diaDialogosr.Limpiar();
+                gridr.getChildren().add(new Etiqueta("DISTRIBUTIVO :"));
+                gridr.getChildren().add(comboEmpleados2);
+                gridr.getChildren().add(new Etiqueta("TIPO :"));
+                gridr.getChildren().add(comboDistributivo1);
+                gridr.getChildren().add(new Etiqueta("PARAMETROS :"));
+                gridr.getChildren().add(comboParametros);
+                diaDialogosr.setDialogo(gridr);
+                diaDialogosr.dibujar();
+                break;
+            case "DECIMO 3RO":
+                break;
+        }
+    }
+
+    public void dibujarReporte() {
+        rep_reporte.cerrar();
+        switch (rep_reporte.getNombre()) {
+            case "DECIMO 4TO":
+                TablaGenerica tabDatos = mDescuento.getPeriodos(comboDistributivo1.getValue() + "");
+                if (!tabDatos.isEmpty()) {
+                    String columna = "";
+                    if (comboEmpleados2.getValue().equals("1")) {
+                        columna = "16";
+                    } else if (comboEmpleados2.getValue().equals("2")) {
+                        columna = "43";
+                    }
+                    if (comboEmpleados2.getValue().equals("1")) {
+                        p_parametros.put("distributivo", "Empleado");
+                    } else {
+                        p_parametros.put("distributivo", "Trabajador");
+                    }
+                    p_parametros.put("id_distributivo", comboEmpleados2.getValue() + "");
+                    p_parametros.put("columna", columna + "");
+                    p_parametros.put("fecha_inicio", tabDatos.getValor("periodo_fecha_inicial") + "");
+                    p_parametros.put("fecha_fin", tabDatos.getValor("periodo_fecha_final") + "");
+                    if (comboParametros.getValue().equals("1")) {
+                        p_parametros.put("tipo", "1");
+                        p_parametros.put("tip", "1");
+
+                    } else if (comboParametros.getValue().equals("0")) {
+                        p_parametros.put("tipo", "0");
+                        p_parametros.put("tip", "0");
+
+                    } else {
+                        p_parametros.put("tipo", "0");
+                        p_parametros.put("tip", "1");
+
+                    }
+                    p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
+                    rep_reporte.cerrar();
+                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_formato.dibujar();
+                }
+                break;
+
+
+            case "DECIMO 3RO":
+                p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
+                rep_reporte.cerrar();
+                sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                sef_formato.dibujar();
+                break;
+        }
     }
 
     public Conexion getConPostgres() {
