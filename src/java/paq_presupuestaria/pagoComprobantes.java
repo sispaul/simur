@@ -10,8 +10,13 @@ import framework.componentes.Combo;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Panel;
+import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
+import java.util.HashMap;
+import java.util.Map;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
@@ -25,10 +30,18 @@ public class pagoComprobantes extends Pantalla {
     private Conexion conPostgres = new Conexion();
     private AutoCompletar autBusca = new AutoCompletar();
     private Tabla tabConsulta = new Tabla();
+    private Tabla tabComprobante = new Tabla();
+    private Tabla tabDetalle = new Tabla();
+    private Tabla tabListado = new Tabla();
     private SeleccionTabla setComprobante = new SeleccionTabla();
+    private SeleccionTabla setLista = new SeleccionTabla();
     private Combo cmbEstado = new Combo();
     private Panel panOpcion = new Panel();//cabecera
     private Panel panOpcion1 = new Panel();//detalle
+    ///REPORTES
+    private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
+    private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
+    private Map p_parametros = new HashMap();
 
     public pagoComprobantes() {
 
@@ -76,13 +89,28 @@ public class pagoComprobantes extends Pantalla {
         setComprobante.getBot_aceptar().setMetodo("aceptarBusqueda");
         setComprobante.setHeader("SELECCIONE LISTADO A PAGAR");
         agregarComponente(setComprobante);
-        
+
         //Creación de Divisiones
         panOpcion.setId("panOpcion");
         panOpcion.setTransient(true);
         panOpcion.setHeader(" COMPROBANTE DE PAGOS POR LISTADOS ");
         agregarComponente(panOpcion);
 
+        tabComprobante.setId("tabComprobante");
+        tabComprobante.setConexion(conPostgres);
+        tabComprobante.setTabla("tes_comprobante_pago_listado", "ide_listado", 1);
+        tabComprobante.getColumna("ide_listado").setVisible(false);
+        tabComprobante.getColumna("IP_INGRE_ENVIA").setVisible(false);
+        tabComprobante.getColumna("IP_ACTUA_PAGA").setVisible(false);
+        tabComprobante.getColumna("IP_ACTUA_DEVOLUCION").setVisible(false);
+        tabComprobante.getColumna("IP_ACTUA_PAGA").setVisible(false);
+        tabComprobante.getColumna("ESTADO").setCombo("SELECT ide_estado_listado,estado FROM tes_estado_listado");
+        tabComprobante.setTipoFormulario(true);
+        tabComprobante.getGrid().setColumns(6);
+        tabComprobante.dibujar();
+        PanelTabla tcp = new PanelTabla();
+        tcp.setPanelTabla(tabComprobante);
+        agregarComponente(tcp);
     }
 
     public void abrirBusqueda() {
@@ -100,19 +128,16 @@ public class pagoComprobantes extends Pantalla {
         }
     }
 
-    //limpieza paneles y abrir busqueda
     public void limpiar() {
         autBusca.limpiar();
         utilitario.addUpdate("aut_busca");
     }
 
     private void limpiarPanel() {
-        //borra el contenido de la división central
         panOpcion1.getChildren().clear();
         panOpcion.getChildren().clear();
     }
 
-    
     @Override
     public void insertar() {
     }
@@ -139,5 +164,69 @@ public class pagoComprobantes extends Pantalla {
 
     public void setSetComprobante(SeleccionTabla setComprobante) {
         this.setComprobante = setComprobante;
+    }
+
+    public AutoCompletar getAutBusca() {
+        return autBusca;
+    }
+
+    public void setAutBusca(AutoCompletar autBusca) {
+        this.autBusca = autBusca;
+    }
+
+    public Tabla getTabComprobante() {
+        return tabComprobante;
+    }
+
+    public void setTabComprobante(Tabla tabComprobante) {
+        this.tabComprobante = tabComprobante;
+    }
+
+    public Tabla getTabDetalle() {
+        return tabDetalle;
+    }
+
+    public void setTabDetalle(Tabla tabDetalle) {
+        this.tabDetalle = tabDetalle;
+    }
+
+    public Tabla getTabListado() {
+        return tabListado;
+    }
+
+    public void setTabListado(Tabla tabListado) {
+        this.tabListado = tabListado;
+    }
+
+    public SeleccionTabla getSetLista() {
+        return setLista;
+    }
+
+    public void setSetLista(SeleccionTabla setLista) {
+        this.setLista = setLista;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSef_formato() {
+        return sef_formato;
+    }
+
+    public void setSef_formato(SeleccionFormatoReporte sef_formato) {
+        this.sef_formato = sef_formato;
+    }
+
+    public Map getP_parametros() {
+        return p_parametros;
+    }
+
+    public void setP_parametros(Map p_parametros) {
+        this.p_parametros = p_parametros;
     }
 }
