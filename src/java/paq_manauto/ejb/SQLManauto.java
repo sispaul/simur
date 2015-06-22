@@ -196,20 +196,6 @@ public class SQLManauto {
     }
 
     //sentencia de conexion a base de datos
-    private void conSigag() {
-        if (conSql == null) {
-            conSql = new Conexion();
-            conSql.setUnidad_persistencia(utilitario.getPropiedad("recursojdbc"));
-        }
-    }
-
-    private void desSigag() {
-        if (conSql != null) {
-            conSql.desconectar();
-            conSql = null;
-        }
-    }
-
     private void conPostgresql() {
         if (conPostgres == null) {
             conPostgres = new Conexion();
