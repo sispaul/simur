@@ -67,7 +67,7 @@ public class pre_reporte_anticipos extends Pantalla {
         bot_busca.setValue("BUSCAR");
         bot_busca.setExcluirLectura(true);
         bot_busca.setIcon("ui-icon-search");
-        bot_busca.setMetodo("Actualizarlista");
+        bot_busca.setMetodo("actualizaLista");
         bar_botones.agregarBoton(bot_busca);
 
         //Para capturar el usuario que se encuntra utilizando la opción
@@ -193,6 +193,7 @@ public class pre_reporte_anticipos extends Pantalla {
         set_rol.getBot_aceptar().setMetodo("aceptoAnticipo");
         set_rol.setHeader("REPORTES DE DESCUENTOS - SELECCIONE PARAMETROS");
         agregarComponente(set_rol);
+        actualizaLista();
 
     }
 
@@ -202,7 +203,7 @@ public class pre_reporte_anticipos extends Pantalla {
         }
     }
 
-    public void Actualizarlista() {
+    public void actualizaLista() {
         if (!getFiltrosAcceso().isEmpty()) {
             tab_tabla2.setCondicion(getFiltrosAcceso());
             tab_tabla2.ejecutarSql();
