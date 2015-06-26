@@ -37,7 +37,6 @@ public class pre_licencia_anual extends Pantalla {
     private Reporte rep_reporte = new Reporte();
     private SeleccionFormatoReporte sef_reporte = new SeleccionFormatoReporte();
     private Panel pan_opcion = new Panel();
-    private Efecto efecto = new Efecto();
 
     public pre_licencia_anual() {
 
@@ -110,25 +109,14 @@ public class pre_licencia_anual extends Pantalla {
         PanelTabla tabp1 = new PanelTabla();
         tabp1.setPanelTabla(tab_licencia);
         tab_licencia.setStyle(null);
-//        tabp1.setStyle("width:70%;overflow:auto;");
 
-        Imagen quinde = new Imagen();
-        quinde.setStyle("text-align:center;position:absolute;top:100px;left:490px;");
-        quinde.setValue("imagenes/logo.png");
-        tabp1.setWidth("100%");
-        tabp1.getChildren().add(quinde);
 
         pan_opcion.setId("pan_opcion");
         pan_opcion.setStyle("font-size:12px;color:black;text-align:left;");
         pan_opcion.setTransient(true);
         pan_opcion.setHeader("LICENCIA ANUAL DE FUNCIONAMIENTO");
-        efecto.setType("drop");
-        efecto.setSpeed(150);
-        efecto.setPropiedad("mode", "'show'");
-        efecto.setEvent("load");
 
-        pan_opcion.getChildren().add(efecto);
-//        pan_opcion.getChildren().add(quinde);
+
         pan_opcion.getChildren().add(tabp1);
         Division div = new Division();
         div.dividir2(tabp, pan_opcion, "40%", "h");
