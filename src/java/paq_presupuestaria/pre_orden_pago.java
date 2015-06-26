@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
 import paq_presupuestaria.ejb.Programas;
-import paq_presupuestaria.ejb.Letras_Numeros;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
@@ -52,7 +51,6 @@ public class pre_orden_pago extends Pantalla{
     
     @EJB
     private Programas programas =(Programas) utilitario.instanciarEJB(Programas.class);
-    private Letras_Numeros num_letra =(Letras_Numeros) utilitario.instanciarEJB(Letras_Numeros.class);
     //REPORTES
     private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
     private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
@@ -257,8 +255,9 @@ public class pre_orden_pago extends Pantalla{
     }
     
     public void num_letras(){
-        tab_orden.setValor("tes_valor_letras", num_letra.Convertir(tab_orden.getValor("tes_valor"), true));
-        utilitario.addUpdate("tab_orden");//actualiza solo componentes
+        Object objeto = (Object) tab_orden.getValor("tes_valor");
+        tab_orden.setValor("tes_valor_letras", utilitario.getLetrasDolarNumero((objeto)));
+        utilitario.addUpdate("tabOrden");//actualiza solo componentes
     }
     
     public void anular(){

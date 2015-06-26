@@ -8,11 +8,11 @@ import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
+import framework.componentes.Combo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Grupo;
-import framework.componentes.Imagen;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
@@ -44,6 +44,7 @@ public class pre_pago_comprobantes extends Pantalla {
     private Tabla tab_detalle1 = new Tabla();
     private SeleccionTabla set_comprobante = new SeleccionTabla();
     private SeleccionTabla set_lista = new SeleccionTabla();
+    private Combo cmbEstado = new Combo();
     //dibujar cuadros de panel
     private Panel pan_opcion = new Panel();//cabecera
     private Panel pan_opcion1 = new Panel();//detalle
@@ -59,7 +60,6 @@ public class pre_pago_comprobantes extends Pantalla {
     //Calendario
     private Calendario cal_fecha = new Calendario();
     private Calendario cal_fecha1 = new Calendario();
-    private Calendario cal_fecha2 = new Calendario();
     @EJB
     private Programas programas = (Programas) utilitario.instanciarEJB(Programas.class);
 
@@ -75,10 +75,6 @@ public class pre_pago_comprobantes extends Pantalla {
         tab_consulta.setCampoPrimaria("IDE_USUA");
         tab_consulta.setLectura(true);
         tab_consulta.dibujar();
-
-//        Imagen quinde = new Imagen();
-//        quinde.setValue("imagenes/logo_financiero.png");
-//        agregarComponente(quinde);
 
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         con_postgres.NOMBRE_MARCA_BASE = "postgres";
@@ -118,27 +114,31 @@ public class pre_pago_comprobantes extends Pantalla {
         agregarComponente(pan_opcion);
 
         //Busqueda de comprobantes
-        Grid gri_busca1 = new Grid();
-        gri_busca1.setColumns(2);
-        txt_buscar.setSize(20);
-        gri_busca1.getChildren().add(new Etiqueta("# ITEM :"));
-        gri_busca1.getChildren().add(txt_buscar);
-        Boton bot_buscar = new Boton();
-        bot_buscar.setValue("Buscar");
-        bot_buscar.setIcon("ui-icon-search");
-        bot_buscar.setMetodo("buscarEntrega");
-        bar_botones.agregarBoton(bot_buscar);
-        gri_busca1.getChildren().add(bot_buscar);
+        cmbEstado.setId("cmbEstado");
+        cmbEstado.setConexion(con_postgres);
+        cmbEstado.setCombo("SELECT ide_estado_listado,estado from tes_estado_listado");
+
+        Grid griBusca = new Grid();
+        griBusca.setColumns(2);
+        griBusca.getChildren().add(new Etiqueta("Estado :"));
+        griBusca.getChildren().add(cmbEstado);
+        Boton botBuscar = new Boton();
+        botBuscar.setValue("Buscar");
+        botBuscar.setIcon("ui-icon-search");
+        botBuscar.setMetodo("buscarEntrega");
+        bar_botones.agregarBoton(botBuscar);
+        griBusca.getChildren().add(botBuscar);
 
         set_comprobante.setId("set_comprobante");
         set_comprobante.getTab_seleccion().setConexion(con_postgres);//conexion para seleccion con otra base
-        set_comprobante.setSeleccionTabla("SELECT ide_listado,fecha_listado,ci_envia,responsable_envia,devolucion,estado FROM tes_comprobante_pago_listado where IDE_LISTADO=-1", "IDE_LISTADO");
+        set_comprobante.setSeleccionTabla("SELECT ide_listado,fecha_listado,item,ci_envia,(SELECT nombres from srh_empleado where cedula_pass = tes_comprobante_pago_listado\n"
+                + ".ci_envia) as nombre FROM tes_comprobante_pago_listado where IDE_LISTADO=-1", "IDE_LISTADO");
         set_comprobante.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
-        set_comprobante.getTab_seleccion().setRows(5);
+        set_comprobante.getTab_seleccion().setRows(10);
         set_comprobante.setRadio();
-        set_comprobante.setWidth("40%");
-        set_comprobante.setHeight("30%");
-        set_comprobante.getGri_cuerpo().setHeader(gri_busca1);
+//        set_comprobante.setWidth("40%");
+//        set_comprobante.setHeight("30%");
+        set_comprobante.getGri_cuerpo().setHeader(griBusca);
         set_comprobante.getBot_aceptar().setMetodo("aceptarBusqueda");
         set_comprobante.setHeader("BUSCAR LISTADO O ITEM  A PAGAR");
         agregarComponente(set_comprobante);
@@ -166,8 +166,6 @@ public class pre_pago_comprobantes extends Pantalla {
         set_lista.getTab_seleccion().setEmptyMessage("No se encontraron resultados");
         set_lista.getTab_seleccion().setRows(10);
         set_lista.setRadio();
-        set_lista.setWidth("20%");
-        set_lista.setHeight("40%");
         set_lista.getGri_cuerpo().setHeader(gru_lis);
         set_lista.getBot_aceptar().setMetodo("aceptoAnticipo");
         set_lista.setHeader("SELECCIONE LISTADO");
@@ -177,19 +175,17 @@ public class pre_pago_comprobantes extends Pantalla {
     //Buscar Listado de Comprobantes mediante # de listado "ITEM"
     public void abrirBusqueda() {
         set_comprobante.dibujar();
-        txt_buscar.limpiar();
         set_comprobante.getTab_seleccion().limpiar();
         limpiarPanel();
     }
 
     public void buscarEntrega() {
-        if (txt_buscar.getValue() != null && txt_buscar.getValue().toString().isEmpty() == false) {
-            set_comprobante.getTab_seleccion().setSql("SELECT ide_listado,fecha_listado,ci_envia,responsable_envia,devolucion,estado \n"
-                    + "FROM tes_comprobante_pago_listado WHERE item =" + txt_buscar.getValue());
+        if (cmbEstado.getValue() != null && cmbEstado.getValue().toString().isEmpty() == false) {
+            set_comprobante.getTab_seleccion().setSql("SELECT ide_listado,fecha_listado,item,ci_envia,(SELECT nombres from srh_empleado where cedula_pass = tes_comprobante_pago_listado\n"
+                    + ".ci_envia) as nombre FROM tes_comprobante_pago_listado WHERE estado =" + cmbEstado.getValue());
             set_comprobante.getTab_seleccion().ejecutarSql();
-            limpiar();
         } else {
-            utilitario.agregarMensajeInfo("Debe ingresar un valor en el texto", "");
+            utilitario.agregarMensajeInfo("Debe seleccionar un estado", "");
         }
     }
 
@@ -205,13 +201,13 @@ public class pre_pago_comprobantes extends Pantalla {
                             TablaGenerica tabBank = programas.getBanco(null, Integer.parseInt(tabInfo.getValor("ban_codigo")));
                             if (!tabBank.isEmpty()) {
                                 programas.setActuDetallePag(Integer.parseInt(tabInfo.getValor("ban_codigo")), tabInfo.getValor("cod_cuenta"), tabBank.getValor("codigo_banco"), tabBank.getValor("ban_nombre"),
-                                        Integer.parseInt(set_comprobante.getValorSeleccionado()), tabDatos.getValor(i,"comprobante"), Integer.parseInt(tabDatos.getValor(i,"item")),tabInfo.getValor("numero_cuenta"));
+                                        Integer.parseInt(set_comprobante.getValorSeleccionado()), tabDatos.getValor(i, "comprobante"), Integer.parseInt(tabDatos.getValor(i, "item")), tabInfo.getValor("numero_cuenta"));
                             }
                         } else {
                             TablaGenerica tabBank = programas.getBanco(tabInfo.getValor("codigo_banco"), Integer.SIZE);
                             if (!tabBank.isEmpty()) {
                                 programas.setActuDetallePag(Integer.parseInt(tabBank.getValor("ban_codigo")), tabInfo.getValor("cod_cuenta"), tabBank.getValor("codigo_banco"), tabBank.getValor("ban_nombre"),
-                                        Integer.parseInt(set_comprobante.getValorSeleccionado()), tabDatos.getValor(i,"comprobante"), Integer.parseInt(tabDatos.getValor(i,"item")),tabInfo.getValor("numero_cuenta"));
+                                        Integer.parseInt(set_comprobante.getValorSeleccionado()), tabDatos.getValor(i, "comprobante"), Integer.parseInt(tabDatos.getValor(i, "item")), tabInfo.getValor("numero_cuenta"));
                             }
                         }
                     }
@@ -299,21 +295,21 @@ public class pre_pago_comprobantes extends Pantalla {
             //tabla detalle
             tab_detalle.setId("tab_detalle");
             tab_detalle.setConexion(con_postgres);
-            tab_detalle.setSql("SELECT \n"
-                    + "d.ide_detalle_listado,\n"
-                    + "d.ide_listado,  \n"
-                    + "d.comprobante, \n"
-                    + "d.cedula_pass_beneficiario, \n"
-                    + "d.nombre_beneficiario, \n"
-                    + "d.valor,  \n"
-                    + "d.numero_cuenta, \n"
-                    + "d.codigo_banco, \n"
-                    + "d.ban_nombre, \n"
-                    + "d.tipo_cuenta, \n"
-                    + "null as proceso \n"
-                    + "FROM \n"
-                    + "tes_detalle_comprobante_pago_listado AS d \n"
-                    + "where ide_estado_listado = (SELECT ide_estado_listado FROM tes_estado_listado where estado like 'ENVIADO') and item =" + txt_buscar.getValue());
+            tab_detalle.setSql("SELECT  \n"
+                    + "d.ide_detalle_listado, \n"
+                    + "d.ide_listado,   \n"
+                    + "d.comprobante,  \n"
+                    + "d.cedula_pass_beneficiario,  \n"
+                    + "d.nombre_beneficiario,  \n"
+                    + "d.valor,   \n"
+                    + "d.numero_cuenta,  \n"
+                    + "d.codigo_banco,  \n"
+                    + "d.ban_nombre,  \n"
+                    + "d.tipo_cuenta,  \n"
+                    + "null as proceso  \n"
+                    + "FROM  \n"
+                    + "tes_detalle_comprobante_pago_listado AS d  \n"
+                    + " where ide_listado =" + set_comprobante.getValorSeleccionado());
             tab_detalle.setCampoPrimaria("ide_detalle_listado");
             tab_detalle.setCampoOrden("ide_listado");
             List lista = new ArrayList();

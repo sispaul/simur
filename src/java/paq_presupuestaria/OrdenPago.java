@@ -112,7 +112,7 @@ public class OrdenPago extends Pantalla {
         tabOrden.dibujar();
         PanelTabla pto = new PanelTabla();
         pto.setPanelTabla(tabOrden);
-        agregarComponente(pto);
+//        agregarComponente(pto);
 
         tabDetalle.setId("tabDetalle");
         tabDetalle.setConexion(conPostgres);
