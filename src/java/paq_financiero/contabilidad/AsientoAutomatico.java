@@ -115,7 +115,6 @@ public class AsientoAutomatico extends Pantalla {
         setRol.getBot_aceptar().setMetodo("aceptoCarga");
         setRol.setHeader("REPORTES DE DESCUENTOS - SELECCIONE PARAMETROS");
         agregarComponente(setRol);
-
         dibujarPantalla();
     }
 
@@ -124,11 +123,11 @@ public class AsientoAutomatico extends Pantalla {
         tabTabla.setId("tabTabla");
         tabTabla.setConexion(conPostgres);
         tabTabla.setTabla("cont_movimiento", "ide_movimiento", 1);
-//        if (autBusca.getValue() == null) {
-//            tabTabla.setCondicion("ide_movimiento=-1");
-//        } else {
-//            tabTabla.setCondicion("ide_movimiento=" + autBusca.getValor());
-//        }
+        if (autBusca.getValue() == null) {
+            tabTabla.setCondicion("ide_movimiento=-1");
+        } else {
+            tabTabla.setCondicion("ide_movimiento=" + autBusca.getValor());
+        }
         tabTabla.getColumna("ide_movimiento").setVisible(false);
         tabTabla.getColumna("IDE_CENTRO_COSTO").setVisible(false);
         tabTabla.getColumna("MOV_FECHA").setVisible(false);
@@ -167,7 +166,7 @@ public class AsientoAutomatico extends Pantalla {
         tabDetalle.setId("tabDetalle");
         tabDetalle.setConexion(conPostgres);
         tabDetalle.setTabla("cont_detalle_movimiento", "ide_detalle_mov", 2);
-        tabDetalle.getColumna("ide_cuenta").setCombo("SELECT ide_cuenta,cue_codigo,cue_descripcion from conc_catalogo_cuentas");
+//        tabDetalle.getColumna("ide_cuenta").setCombo("SELECT ide_cuenta,cue_codigo,cue_descripcion from conc_catalogo_cuentas");
         tabDetalle.getColumna("ide_tipo_movimiento").setVisible(false);
         tabDetalle.getColumna("doc_deposito").setVisible(false);
         tabDetalle.getColumna("ide_clasificador").setVisible(false);
@@ -210,14 +209,9 @@ public class AsientoAutomatico extends Pantalla {
 
     public void filtrarRegistro(SelectEvent evt) {
         //Filtra el cliente seleccionado en el autocompletar
-        limpiar();
+        limpia();
         autBusca.onSelect(evt);
         dibujarPantalla();
-//        autBusca.onSelect(evt);
-//        if (autBusca.getValor() != null) {
-//            tabDetalle.setFilaActual(autBusca.getValor());
-//            utilitario.addUpdate("tabDetalle");
-//        }
     }
 
     private void limpiarPanel() {
@@ -228,6 +222,9 @@ public class AsientoAutomatico extends Pantalla {
     public void limpiar() {
         autBusca.limpiar();
         utilitario.addUpdate("autBusca");
+    }
+
+    public void limpia() {
         limpiarPanel();
         utilitario.addUpdate("panOpcion");
     }
