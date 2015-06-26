@@ -59,6 +59,32 @@ public class Programas {
 
     }
 
+    public void setCuentaContable(String cuenta, Integer movimiento, Integer anio, Integer periodo, Integer distributivo, Integer columna) {
+        // Forma el sql para el ingreso
+        String strSqlr = "insert into cont_detalle_movimiento (ide_cuenta,ide_movimiento,mov_debe,mov_haber,mov_devengado,mov_descripcion,ide_tipo_movimiento,doc_deposito)\n"
+                + "select(\n"
+                + "select ide_cuenta\n"
+                + "from conc_catalogo_cuentas\n"
+                + "where cue_codigo like '" + cuenta + "%' and cedula = e.cedula_pass\n"
+                + "order by ide_cuenta desc limit 1) as cuenta, \n"
+                + "" + movimiento + " as movimiento,\n"
+                + "" + 0 + " as debe,\n"
+                + "r.valor,\n"
+                + "" + 0 + " as devengado,\n"
+                + "'S/D' as descripcion,\n"
+                + "'F' as tipo_movimiento,\n"
+                + "'S/D' as doc_deposito\n"
+                + "from srh_roles r\n"
+                + "inner join srh_empleado e on r.ide_empleado=e.cod_empleado\n"
+                + "where r.ano=" + anio + " and r.ide_periodo=" + periodo + " and\n"
+                + "r.id_distributivo_roles=" + distributivo + " and r.ide_columnas=" + columna + " and\n"
+                + "r.valor >0";
+        conPostgresql();
+        conPostgres.ejecutarSql(strSqlr);
+        desPostgresql();
+
+    }
+
     public void actualizarIngresos(Integer combo) {
         // Forma el sql para actualizacion
         String strSqlr = "update conc_cedula_presupuestaria_fechas \n"
@@ -991,7 +1017,28 @@ public class Programas {
         tabFuncionario.ejecutarSql();
         desPostgresql();
         return tabFuncionario;
+    }
 
+    public TablaGenerica getAsientoContable(Integer cuenta, Integer movimiento) {
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("select\n"
+                + "ide_detalle_mov,\n"
+                + "ide_cuenta,\n"
+                + "ide_movimiento,\n"
+                + "mov_debe,\n"
+                + "mov_haber,\n"
+                + "mov_devengado,\n"
+                + "mov_descripcion,\n"
+                + "ide_tipo_movimiento,\n"
+                + "doc_deposito\n"
+                + "from cont_detalle_movimiento\n"
+                + "where ide_cuenta =" + cuenta + " and ide_movimiento =" + movimiento);
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
 
     public String listaMax() {

@@ -4,9 +4,11 @@
  */
 package paq_presupuestaria;
 
+import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Combo;
+import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
 import framework.componentes.Panel;
@@ -15,8 +17,12 @@ import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import javax.ejb.EJB;
+import paq_presupuestaria.ejb.Programas;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
@@ -43,6 +49,9 @@ public class pagoComprobantes extends Pantalla {
     private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
     private Map p_parametros = new HashMap();
 
+    @EJB
+    private Programas programas = (Programas) utilitario.instanciarEJB(Programas.class);
+    
     public pagoComprobantes() {
 
         //Mostrar el usuario 
@@ -104,13 +113,59 @@ public class pagoComprobantes extends Pantalla {
         tabComprobante.getColumna("IP_ACTUA_PAGA").setVisible(false);
         tabComprobante.getColumna("IP_ACTUA_DEVOLUCION").setVisible(false);
         tabComprobante.getColumna("IP_ACTUA_PAGA").setVisible(false);
+        tabComprobante.getColumna("CI_ENVIA").setVisible(false);
         tabComprobante.getColumna("ESTADO").setCombo("SELECT ide_estado_listado,estado FROM tes_estado_listado");
         tabComprobante.setTipoFormulario(true);
         tabComprobante.getGrid().setColumns(6);
+        tabComprobante.agregarRelacion(tabDetalle);
         tabComprobante.dibujar();
         PanelTabla tcp = new PanelTabla();
         tcp.setPanelTabla(tabComprobante);
-        agregarComponente(tcp);
+
+        tabDetalle.setId("tabDetalle");
+        tabDetalle.setConexion(conPostgres);
+        tabDetalle.setSql("SELECT  \n"
+                + "d.ide_detalle_listado, \n"
+                + "d.ide_listado,   \n"
+                + "d.comprobante,  \n"
+                + "d.cedula_pass_beneficiario,  \n"
+                + "d.nombre_beneficiario,  \n"
+                + "d.valor,   \n"
+                + "d.numero_cuenta,  \n"
+                + "d.codigo_banco,  \n"
+                + "d.ban_nombre,  \n"
+                + "d.tipo_cuenta,  \n"
+                + "null as proceso  \n"
+                + "FROM  \n"
+                + "tes_detalle_comprobante_pago_listado AS d  \n"
+                + " where ide_listado =" + setComprobante.getValorSeleccionado());
+        tabDetalle.setCampoPrimaria("ide_detalle_listado");
+        tabDetalle.setCampoOrden("ide_listado");
+        List lista = new ArrayList();
+        Object fila2[] = {
+            "2", "ACREDITAR"
+        };
+        Object fila3[] = {
+            "3", "DEVOLVER"
+        };
+        lista.add(fila2);;
+        lista.add(fila3);;
+        tabDetalle.getColumna("proceso").setRadio(lista, " ");
+        tabDetalle.getColumna("ide_detalle_listado").setVisible(false);
+        tabDetalle.getColumna("cedula_pass_beneficiario").setLongitud(20);
+        tabDetalle.getColumna("nombre_beneficiario").setLongitud(20);
+        tabDetalle.getColumna("numero_cuenta").setLongitud(5);
+        tabDetalle.getColumna("ban_nombre").setLongitud(5);
+        tabDetalle.setRows(5);
+        tabDetalle.dibujar();
+        PanelTabla tdd = new PanelTabla();
+        tdd.setPanelTabla(tabDetalle);
+        Division div = new Division();
+        div.dividir2(tcp, tdd, "42%", "h");
+        agregarComponente(div);
+    }
+
+    public void dibujarLista() {
     }
 
     public void abrirBusqueda() {
@@ -128,6 +183,40 @@ public class pagoComprobantes extends Pantalla {
         }
     }
 
+        public void aceptarBusqueda() {
+        limpiarPanel();
+        if (setComprobante.getValorSeleccionado() != null) {
+            TablaGenerica tabDatos = programas.Beneficiarios(Integer.parseInt(setComprobante.getValorSeleccionado()));
+            if (!tabDatos.isEmpty()) {
+                for (int i = 0; i < tabDatos.getTotalFilas(); i++) {
+                    TablaGenerica tabInfo = programas.getDatos(tabDatos.getValor(i, "cedula_pass_beneficiario"));
+                    if (!tabInfo.isEmpty()) {
+                        if (tabInfo.getValor("ban_codigo") != null) {
+                            TablaGenerica tabBank = programas.getBanco(null, Integer.parseInt(tabInfo.getValor("ban_codigo")));
+                            if (!tabBank.isEmpty()) {
+                                programas.setActuDetallePag(Integer.parseInt(tabInfo.getValor("ban_codigo")), tabInfo.getValor("cod_cuenta"), tabBank.getValor("codigo_banco"), tabBank.getValor("ban_nombre"),
+                                        Integer.parseInt(setComprobante.getValorSeleccionado()), tabDatos.getValor(i,"comprobante"), Integer.parseInt(tabDatos.getValor(i,"item")),tabInfo.getValor("numero_cuenta"));
+                            }
+                        } else {
+                            TablaGenerica tabBank = programas.getBanco(tabInfo.getValor("codigo_banco"), Integer.SIZE);
+                            if (!tabBank.isEmpty()) {
+                                programas.setActuDetallePag(Integer.parseInt(tabBank.getValor("ban_codigo")), tabInfo.getValor("cod_cuenta"), tabBank.getValor("codigo_banco"), tabBank.getValor("ban_nombre"),
+                                        Integer.parseInt(setComprobante.getValorSeleccionado()), tabDatos.getValor(i,"comprobante"), Integer.parseInt(tabDatos.getValor(i,"item")),tabInfo.getValor("numero_cuenta"));
+                            }
+                        }
+                    }
+                }
+            }
+//            programas.actualizarComprobante(Integer.parseInt(set_comprobante.getValorSeleccionado()));
+            autBusca.setValor(setComprobante.getValorSeleccionado());
+            setComprobante.cerrar();
+            dibujarLista();
+            utilitario.addUpdate("aut_busca,pan_opcion");
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar un listado", "");
+        }
+    }
+    
     public void limpiar() {
         autBusca.limpiar();
         utilitario.addUpdate("aut_busca");

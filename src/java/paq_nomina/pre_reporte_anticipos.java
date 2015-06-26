@@ -11,21 +11,28 @@ import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
+import framework.componentes.Imagen;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
+import java.awt.Component;
+import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
+import javax.swing.Icon;
+import org.primefaces.component.confirmdialog.ConfirmDialog;
+import org.primefaces.component.imagecompare.ImageCompare;
 import paq_nomina.ejb.AntiSueldos;
 import paq_nomina.ejb.mergeDescuento;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
+import sun.awt.IconInfo;
 
 /**
  *
@@ -49,11 +56,7 @@ public class pre_reporte_anticipos extends Pantalla {
     private Combo cmb_mesfin = new Combo();
     //Dialogos
     private Dialogo dia_dialogo = new Dialogo();
-    private Dialogo dia_dialogovgl = new Dialogo();
-    private Dialogo dia_dialogoinvg = new Dialogo();
     private Grid grid_g = new Grid();
-    private Grid grid_vgl = new Grid();
-    private Grid grid_invg = new Grid();
     @EJB
     private AntiSueldos iAnticipos = (AntiSueldos) utilitario.instanciarEJB(AntiSueldos.class);
     private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(mergeDescuento.class);
@@ -71,13 +74,6 @@ public class pre_reporte_anticipos extends Pantalla {
         bot_busca.setIcon("ui-icon-search");
         bot_busca.setMetodo("actualizaLista");
         bar_botones.agregarBoton(bot_busca);
-
-        Boton bot_migrar = new Boton();
-        bot_migrar.setValue("BUSCAR");
-        bot_migrar.setExcluirLectura(true);
-        bot_migrar.setIcon("ui-icon-gear");
-        bot_migrar.setMetodo("migrarCuentas");
-        bar_botones.agregarBoton(bot_migrar);
 
         //Para capturar el usuario que se encuntra utilizando la opción
         tab_consulta.setId("tab_consulta");
@@ -336,7 +332,7 @@ public class pre_reporte_anticipos extends Pantalla {
                                 p_parametros.put("columnas", Integer.parseInt(set_rol.getValorSeleccionado() + ""));
                                 p_parametros.put("descrip", tab_dato5.getValor("descripcion_col") + "");
                                 p_parametros.put("nom_resp", tab_consulta.getValor("NICK_USUA") + "");
-                                 p_parametros.put("partida", txt_partida.getValue() + "");
+                                p_parametros.put("partida", txt_partida.getValue() + "");
                                 rep_reporte.cerrar();
                                 sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
                                 sef_formato.dibujar();

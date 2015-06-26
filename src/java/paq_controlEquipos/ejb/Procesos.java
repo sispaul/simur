@@ -29,8 +29,7 @@ public class Procesos {
         tab_funcionario.setConexion(conSql);
         tab_funcionario.setSql("SELECT TIPO_LICENCIA_CODIGO,TIPO_LICENCIA_DESCRIPCION FROM CEI_TIPO_LICENCIA where TIPO_LICENCIA_CODIGO =" + codigo);
         tab_funcionario.ejecutarSql();
-        conSql.desconectar();
-        conSql = null;
+        desConSql();
         return tab_funcionario;
 
     }
@@ -45,8 +44,7 @@ public class Procesos {
                 + "WHERE Table_Name = '" + codigo + "'\n"
                 + "GROUP BY Table_Name");
         tab_funcionario.ejecutarSql();
-        conSql.desconectar();
-        conSql = null;
+        desConSql();
         return tab_funcionario;
     }
 
@@ -60,8 +58,7 @@ public class Procesos {
                 + "WHERE Table_Name = '" + codigo + "' and ordinal_position =" + valor + "\n"
                 + "ORDER BY ordinal_position");
         tab_funcionario.ejecutarSql();
-        conSql.desconectar();
-        conSql = null;
+        desConSql();
         return tab_funcionario;
     }
 
@@ -72,8 +69,7 @@ public class Procesos {
         tab_funcionario.setConexion(conSql);
         tab_funcionario.setSql("SELECT * FROM CEI_CATALOGO_TABLAS WHERE CATALOGO_CODIGO=" + codigo);
         tab_funcionario.ejecutarSql();
-        conSql.desconectar();
-        conSql = null;
+        desConSql();
         return tab_funcionario;
 
     }
@@ -85,8 +81,7 @@ public class Procesos {
         tab_funcionario.setConexion(conSql);
         tab_funcionario.setSql("SELECT * FROM CEI_CATALOGO_TABLAS WHERE CATALOGO_ORIGEN='" + codigo + "'");
         tab_funcionario.ejecutarSql();
-        conSql.desconectar();
-        conSql = null;
+        desConSql();
         return tab_funcionario;
 
     }
@@ -98,8 +93,7 @@ public class Procesos {
         tab_funcionario.setConexion(conSql);
         tab_funcionario.setSql("SELECT * FROM CEI_DETALLE_PROGRAMAS where DETALLE_CODIGO = " + codigo);
         tab_funcionario.ejecutarSql();
-        conSql.desconectar();
-        conSql = null;
+        desConSql();
         return tab_funcionario;
 
     }
@@ -111,8 +105,7 @@ public class Procesos {
         tab_funcionario.setConexion(conSql);
         tab_funcionario.setSql("SELECT ASIGNACION_CODIGO,ASIGNACION_ESTADO FROM dbo.CEI_ASIGNACION where CATALOGO_CODIGO= " + codigo + " and DESC_CODIGO=" + catalogo);
         tab_funcionario.ejecutarSql();
-        conSql.desconectar();
-        conSql = null;
+        desConSql();
         return tab_funcionario;
 
     }
@@ -124,8 +117,7 @@ public class Procesos {
         tab_funcionario.setConexion(conSql);
         tab_funcionario.setSql("select " + datos + " from " + tabla + " where " + condicion + "");
         tab_funcionario.ejecutarSql();
-        conSql.desconectar();
-        conSql = null;
+        desConSql();
         return tab_funcionario;
     }
 
@@ -147,8 +139,7 @@ public class Procesos {
                 + "left join CEI_MODELO_LICENCIA m on d.MODELO_CODIGO = m.MODELO_CODIGO\n"
                 + "where p.PROGS_CODIGO=" + codigo + " and m.MODELO_CODIGO " + valor + " and t.TIPO_LICENCIA_CODIGO =" + cod);
         tab_funcionario.ejecutarSql();
-        conSql.desconectar();
-        conSql = null;
+        desConSql();
         return tab_funcionario;
 
     }
@@ -160,8 +151,7 @@ public class Procesos {
         tab_funcionario.setConexion(conSql);
         tab_funcionario.setSql("SELECT MODELO_CODIGO,MODELO_DESCRIPCION FROM CEI_MODELO_LICENCIA where MODELO_CODIGO =" + codigo);
         tab_funcionario.ejecutarSql();
-        conSql.desconectar();
-        conSql = null;
+        desConSql();
         return tab_funcionario;
 
     }
@@ -184,8 +174,7 @@ public class Procesos {
                 + "left join CEI_MODELO_LICENCIA m on d.MODELO_CODIGO = m.MODELO_CODIGO\n"
                 + "where d.DETALLE_CODIGO = " + codigo);
         tab_funcionario.ejecutarSql();
-        conSql.desconectar();
-        conSql = null;
+        desConSql();
         return tab_funcionario;
     }
 
@@ -196,8 +185,7 @@ public class Procesos {
         tab_funcionario.setConexion(conSql);
         tab_funcionario.setSql("select " + datos + " from " + tabla + " where " + condicion + "");
         tab_funcionario.ejecutarSql();
-        conSql.desconectar();
-        conSql = null;
+        desConSql();
         return tab_funcionario;
 
     }
@@ -208,8 +196,7 @@ public class Procesos {
                 "where " + cadena + "=" + codigo;
         conSql();
         conSql.ejecutarSql(au_sql);
-        conSql.desconectar();
-        conSql = null;
+        desConSql();
     }
 
     public TablaGenerica getCatalogoDatoposgres(String datos, String tabla, String condicion) {
@@ -219,8 +206,7 @@ public class Procesos {
         tab_funcionario.setConexion(conPostgres);
         tab_funcionario.setSql("select " + datos + " from " + tabla + " where " + condicion + "");
         tab_funcionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tab_funcionario;
 
     }
@@ -249,8 +235,7 @@ public class Procesos {
                 + "order by des_oficina)p on p.id_ubica =a.id_ubica \n"
                 + "where codigo = '" + codigo + "'");
         tab_funcionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tab_funcionario;
 
     }
@@ -279,8 +264,7 @@ public class Procesos {
                 + "order by des_oficina)p on p.id_ubica =a.id_ubica \n"
                 + "where serie = '" + codigo + "'");
         tab_funcionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tab_funcionario;
 
     }
@@ -299,8 +283,7 @@ public class Procesos {
                 + "INNER JOIN srh_direccion d on e.cod_direccion = d.cod_direccion\n"
                 + "where e.cod_empleado = '" + codigo + "'");
         tab_funcionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tab_funcionario;
 
     }
@@ -312,8 +295,7 @@ public class Procesos {
         tab_funcionario.setConexion(conPostgres);
         tab_funcionario.setSql("SELECT ide_proveedor,ruc,titular from tes_proveedores where ide_proveedor='" + cod + "'order by titular");
         tab_funcionario.ejecutarSql();
-        conPostgres.desconectar();
-        conPostgres = null;
+        desPostgresql();
         return tab_funcionario;
     }
 
@@ -324,10 +306,24 @@ public class Procesos {
         }
     }
 
+    private void desConSql() {
+        if (conSql != null) {
+            conSql.desconectar();
+            conSql=null;
+        }
+    }
+
     private void conPostgresql() {
         if (conPostgres == null) {
             conPostgres = new Conexion();
             conPostgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
+        }
+    }
+
+    private void desPostgresql() {
+        if (conPostgres != null) {
+            conPostgres.desconectar();
+            conPostgres = null;
         }
     }
 }

@@ -39,7 +39,6 @@ public class pre_ingresoauto_maqui extends Pantalla {
     private Tabla set_version = new Tabla();
     private Tabla tab_tabla = new Tabla();
     private Tabla tab_consulta = new Tabla();
-    private Tabla tab_accesorios = new Tabla();
     //Dialogo de Ingreso de tablas
     private Dialogo dia_dialogo = new Dialogo();
     private Dialogo dia_dialogot = new Dialogo();
@@ -77,13 +76,6 @@ public class pre_ingresoauto_maqui extends Pantalla {
         //cadena de conexión para otra base de datos
         con_postgres.setUnidad_persistencia(utilitario.getPropiedad("poolPostgres"));
         con_postgres.NOMBRE_MARCA_BASE = "postgres";
-
-        //ingreso de paramestros de vehiculo
-        Boton bot_marca = new Boton();
-        bot_marca.setValue("INSERTAR MARCA");
-        bot_marca.setIcon("ui-icon-gear");
-        bot_marca.setMetodo("ing_marcas");
-        bar_botones.agregarBoton(bot_marca);
 
         //para marca,tipo,modelo,version
         Grid gri_marcas = new Grid();
@@ -215,6 +207,13 @@ public class pre_ingresoauto_maqui extends Pantalla {
         aut_busca.setSize(70);
         bar_botones.agregarComponente(new Etiqueta("Buscar Solicitud:"));
         bar_botones.agregarComponente(aut_busca);
+
+        //ingreso de paramestros de vehiculo
+        Boton bot_marca = new Boton();
+        bot_marca.setValue("INSERTAR MARCA");
+        bot_marca.setIcon("ui-icon-gear");
+        bot_marca.setMetodo("ing_marcas");
+        bar_botones.agregarBoton(bot_marca);
     }
 
     //PANTALLA DE REGISTRO DE INFORMACIÓN
@@ -268,7 +267,6 @@ public class pre_ingresoauto_maqui extends Pantalla {
         lista.add(fila1);;
         lista.add(fila2);;
         tab_tabla.getColumna("MVE_TIPOCODIGO").setCombo(lista);
-        tab_tabla.getColumna("MVE_ESTADO_REGISTRO").setVisible(false);
         List listes = new ArrayList();
         Object filase1[] = {
             "BUENO", "BUENO"
@@ -293,45 +291,16 @@ public class pre_ingresoauto_maqui extends Pantalla {
         tab_tabla.getColumna("mve_loginingreso").setVisible(false);
         tab_tabla.getColumna("mve_fechaingreso").setVisible(false);
         tab_tabla.getColumna("mve_conductor").setVisible(false);
-        tab_tabla.getColumna("mve_numimr").setVisible(false);
         tab_tabla.getColumna("mve_secuencial").setVisible(false);
         tab_tabla.getColumna("mve_rendimientogl_h").setLectura(true);
-        tab_tabla.agregarRelacion(tab_accesorios);
         tab_tabla.setTipoFormulario(true);
         tab_tabla.getGrid().setColumns(4);
         tab_tabla.dibujar();
         PanelTabla tpg = new PanelTabla();
         tpg.setPanelTabla(tab_tabla);
 
-        tab_accesorios.setId("tab_accesorios");
-        tab_accesorios.setConexion(con_postgres);
-        tab_accesorios.setHeader("Accesorios");
-        tab_accesorios.setTabla("mvdetalle_vehiculo", "mdv_codigo", 2);
-        List listae = new ArrayList();
-        Object filae1[] = {
-            "EXCELENTE", "EXCELENTE"
-        };
-        Object filae2[] = {
-            "BUENO", "BUENO"
-        };
-        Object filae3[] = {
-            "REGULAR", "REGULAR"
-        };
-        Object filae4[] = {
-            "DE BAJA", "DE BAJA"
-        };
-        listae.add(filae1);;
-        listae.add(filae2);;
-        listae.add(filae3);;
-        listae.add(filae4);;
-        tab_accesorios.getColumna("mdv_estado").setCombo(listae);
-        tab_accesorios.setRows(7);
-        tab_accesorios.dibujar();
-        PanelTabla tpa = new PanelTabla();
-        tpa.setPanelTabla(tab_accesorios);
-
         Division div = new Division();
-        div.dividir2(tpg, tpa, "60%", "H");
+        div.dividir1(tpg);
         Grupo gru = new Grupo();
         gru.getChildren().add(div);
         pan_opcion.getChildren().add(gru);
@@ -614,23 +583,26 @@ public class pre_ingresoauto_maqui extends Pantalla {
 
     @Override
     public void guardar() {
+
+
+
         if (tab_tabla.getValor("mve_secuencial") != null) {
             TablaGenerica tab_dato = aCombustible.getVehiculoDa(Integer.parseInt(tab_tabla.getValor("mve_secuencial")));
             if (!tab_dato.isEmpty()) {
-                if (tab_tabla.getValor("mve_kilometros_actual")!=(tab_dato.getValor("mve_kilometros_actual"))) {
+                if (tab_tabla.getValor("mve_kilometros_actual") != (tab_dato.getValor("mve_kilometros_actual"))) {
                     System.err.println("");
                     aCombustible.setUpdateVehi1(Integer.parseInt(tab_tabla.getValor("mve_secuencial")), "mve_kilometros_actual", Double.valueOf(tab_tabla.getValor("mve_kilometros_actual")));
                 }
-                if (tab_tabla.getValor("mve_capacidad_tanque")!=(tab_dato.getValor("mve_capacidad_tanque"))) {
+                if (tab_tabla.getValor("mve_capacidad_tanque") != (tab_dato.getValor("mve_capacidad_tanque"))) {
                     aCombustible.setUpdateVehi1(Integer.parseInt(tab_tabla.getValor("mve_secuencial")), "mve_capacidad_tanque", Double.valueOf(tab_tabla.getValor("mve_capacidad_tanque")));
                 }
-                if (tab_tabla.getValor("mve_horometro")!=(tab_dato.getValor("mve_horometro"))) {
+                if (tab_tabla.getValor("mve_horometro") != (tab_dato.getValor("mve_horometro"))) {
                     aCombustible.setUpdateVehi(Integer.parseInt(tab_tabla.getValor("mve_secuencial")), "mve_horometro", tab_tabla.getValor("mve_horometro"));
                 }
-                if (tab_tabla.getValor("mve_rendimientogl_h")!=(tab_dato.getValor("mve_rendimientogl_h"))) {
+                if (tab_tabla.getValor("mve_rendimientogl_h") != (tab_dato.getValor("mve_rendimientogl_h"))) {
                     aCombustible.setUpdateVehi(Integer.parseInt(tab_tabla.getValor("mve_secuencial")), "mve_rendimientogl_h", tab_tabla.getValor("mve_rendimientogl_h"));
                 }
-                if (tab_tabla.getValor("mve_duracion_llanta")!=(tab_dato.getValor("mve_duracion_llanta"))) {
+                if (tab_tabla.getValor("mve_duracion_llanta") != (tab_dato.getValor("mve_duracion_llanta"))) {
                     aCombustible.setUpdateVehi(Integer.parseInt(tab_tabla.getValor("mve_secuencial")), "mve_duracion_llanta", tab_tabla.getValor("mve_duracion_llanta"));
                 }
                 utilitario.agregarMensaje("Registro Actualizado", null);
@@ -639,9 +611,7 @@ public class pre_ingresoauto_maqui extends Pantalla {
             }
         } else if (tab_tabla.guardar()) {
             if (tab_tabla.guardar()) {
-                if (tab_accesorios.guardar()) {
-                    con_postgres.guardarPantalla();
-                }
+                con_postgres.guardarPantalla();
             }
         }
     }
@@ -704,13 +674,5 @@ public class pre_ingresoauto_maqui extends Pantalla {
 
     public void setAut_busca(AutoCompletar aut_busca) {
         this.aut_busca = aut_busca;
-    }
-
-    public Tabla getTab_accesorios() {
-        return tab_accesorios;
-    }
-
-    public void setTab_accesorios(Tabla tab_accesorios) {
-        this.tab_accesorios = tab_accesorios;
     }
 }

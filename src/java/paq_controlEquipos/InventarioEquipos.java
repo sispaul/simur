@@ -359,7 +359,6 @@ public class InventarioEquipos extends Pantalla {
             TablaGenerica tabValido = accesoDatos.getDatoAccesorio("top 1 *", tabAccesorio.getTabla(), "acce_serie =" + tabAccesorio.getValor("acce_serie") + " order by acce_fecha_asignacion desc");
             if (!tabValido.isEmpty()) {
                 if (tabValido.getValor("ACCE_ESTADO").equals("Asignar")) {
-                    System.err.println("Mensaje de salida");
                     utilitario.agregarMensaje("Accesorio No Localizado en la Base de Activos", null);
                 } else {
                     tabAccesorio.setValor("acce_codigo_activo", tabDato.getValor("codigo"));
@@ -386,7 +385,6 @@ public class InventarioEquipos extends Pantalla {
             TablaGenerica tabValido = accesoDatos.getDatoAccesorio("top 1 *", tabAccesorio.getTabla(), "acce_codigo_activo =" + tabAccesorio.getValor("acce_codigo_activo") + " order by acce_fecha_asignacion desc");
             if (!tabValido.isEmpty()) {
                 if (tabValido.getValor("ACCE_ESTADO").equals("Asignar")) {
-                    System.err.println("Mensaje de salida");
                     utilitario.agregarMensaje("Accesorio Asignado en Otro Equipo", null);
                 } else {
                     tabAccesorio.setValor("acce_codigo_activo", tabDato.getValor("codigo"));
