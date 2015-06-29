@@ -85,6 +85,16 @@ public class Programas {
 
     }
 
+    public void setCuentaConta(Integer cuenta, Integer movimiento, Double debe,Double haber,Double devengado) {
+        // Forma el sql para el ingreso
+        String strSqlr = "insert into cont_detalle_movimiento (ide_cuenta,ide_movimiento,mov_debe,mov_haber,mov_devengado,mov_descripcion,ide_tipo_movimiento,doc_deposito)\n"
+                + "values("+cuenta+","+ movimiento+","+ debe+","+haber+","+devengado+",'S/D','F','0')";
+        conPostgresql();
+        conPostgres.ejecutarSql(strSqlr);
+        desPostgresql();
+
+    }
+
     public void actualizarIngresos(Integer combo) {
         // Forma el sql para actualizacion
         String strSqlr = "update conc_cedula_presupuestaria_fechas \n"
