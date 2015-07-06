@@ -4,6 +4,7 @@
  */
 package paq_financiero.contabilidad;
 
+import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Combo;
@@ -14,11 +15,13 @@ import framework.componentes.Grid;
 import framework.componentes.Grupo;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
 import paq_presupuestaria.ejb.Programas;
@@ -46,7 +49,10 @@ public class AsientosAutomaticos extends Pantalla {
     private Texto txtDevengado = new Texto();
     private Dialogo diaDialogo = new Dialogo();
     private Grid grid = new Grid();
-    private Grid gridD = new Grid();
+    ///REPORTES
+    private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
+    private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
+    private Map p_parametros = new HashMap();
     @EJB
     private Programas programas = (Programas) utilitario.instanciarEJB(Programas.class);
 
@@ -126,6 +132,13 @@ public class AsientosAutomaticos extends Pantalla {
         setRol.setHeader("REPORTES DE DESCUENTOS - SELECCIONE PARAMETROS");
         agregarComponente(setRol);
         dibujarPantalla();
+
+        /*         * CONFIGURACIÓN DE OBJETO REPORTE         */
+        bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
+        agregarComponente(rep_reporte); //2 agregar el listado de reportes
+        sef_formato.setId("sef_formato");
+        sef_formato.setConexion(conPostgres);
+        agregarComponente(sef_formato);
     }
 
     public void dibujarPantalla() {
@@ -175,10 +188,13 @@ public class AsientosAutomaticos extends Pantalla {
 
         txtDebe.setId("txtDebe");
         txtDebe.setSize(8);
+        txtDebe.setValue("0.0");
         txtHaber.setId("txtHaber");
         txtHaber.setSize(8);
+        txtHaber.setValue("0.0");
         txtDevengado.setId("txtDevengado");
         txtDevengado.setSize(8);
+        txtDevengado.setValue("0.0");
         Grid gri_busca = new Grid();
         gri_busca.setColumns(8);
         gri_busca.getChildren().add(new Etiqueta("Cuenta: "));
@@ -196,24 +212,20 @@ public class AsientosAutomaticos extends Pantalla {
         tabDetalle.setSql("SELECT c.ide_detalle_mov,\n"
                 + "c.ide_movimiento,\n"
                 + "o.cue_codigo,\n"
+                + "c.ide_cuenta,\n"
                 + "o.cue_descripcion,\n"
                 + "c.mov_debe,\n"
                 + "c.mov_haber,\n"
-                + "c.mov_devengado,"
-                + "null as regresar  \n"
+                + "o.cedula,\n"
+                + "c.mov_devengado\n"
                 + "FROM cont_detalle_movimiento c\n"
                 + "INNER JOIN public.conc_catalogo_cuentas o ON c.ide_cuenta = o.ide_cuenta\n"
                 + "where c.ide_movimiento = " + tabTabla.getValor("ide_movimiento") + "\n"
                 + "order by c.ide_detalle_mov desc");
         tabDetalle.setCampoPrimaria("ide_detalle_mov");
-        List list = new ArrayList();
-        Object fil1[] = {
-            "1", " "
-        };
-        list.add(fil1);;
-        tabDetalle.getColumna("regresar").setRadio(list, " ");
-        tabDetalle.getColumna("regresar").setLongitud(1);
-        tabDetalle.setRows(10);
+        tabDetalle.setCampoOrden("ide_movimiento");
+        tabDetalle.getColumna("ide_cuenta").setVisible(false);
+        tabDetalle.getColumna("cedula").setVisible(false);
         tabDetalle.dibujar();
         PanelTabla pnd = new PanelTabla();
         pnd.setPanelTabla(tabDetalle);
@@ -263,8 +275,18 @@ public class AsientosAutomaticos extends Pantalla {
     }
 
     public void aceptoCarga() {
-        programas.setCuentaContable(cmbSeleccion.getValue() + "", Integer.parseInt(tabTabla.getValor("ide_movimiento")), Integer.parseInt(tabTabla.getValor("ano")),
+        TablaGenerica tabDatos = programas.getMovimientos(cmbSeleccion.getValue() + "", Integer.parseInt(tabTabla.getValor("ide_movimiento")), Integer.parseInt(tabTabla.getValor("ano")),
                 Integer.parseInt(tabTabla.getValor("ide_periodo")), Integer.parseInt(cmbDistributivo.getValue() + ""), Integer.parseInt(setRol.getValorSeleccionado()));
+        if (!tabDatos.isEmpty()) {
+            for (int i = 0; i < tabDatos.getTotalFilas(); i++) {
+                TablaGenerica tabDato = programas.getDetalleMovimientos(Integer.parseInt(tabDatos.getValor(i, "ide_cuenta")), Integer.parseInt(tabTabla.getValor("ide_movimiento")));
+                if (!tabDato.isEmpty()) {
+                } else {
+                    programas.setCuentaContable(Integer.parseInt(tabDatos.getValor(i, "ide_cuenta")), Integer.parseInt(tabTabla.getValor("ide_movimiento")), Double.parseDouble(tabDatos.getValor(i, "debe")),
+                            Double.parseDouble(tabDatos.getValor(i, "valor")), Double.parseDouble(tabDatos.getValor(i, "devengado")), tabDatos.getValor(i, "descripcion"), tabDatos.getValor(i, "tipo_movimiento"), tabDatos.getValor(i, "doc_deposito"));
+                }
+            }
+        }
         tabTabla.actualizar();
     }
 
@@ -281,15 +303,41 @@ public class AsientosAutomaticos extends Pantalla {
 
     @Override
     public void eliminar() {
-        for (int i = 0; i < tabDetalle.getTotalFilas(); i++) {
-            tabDetalle.getValor(i, "regresar");
-            tabDetalle.getValor(i, "cue_codigo");
-           if(tabDetalle.getValor(i, "regresar").endsWith("1")){
-               
-           }
+        programas.setEiminarMovimiento(Integer.parseInt(tabDetalle.getValorSeleccionado()));
+        utilitario.agregarMensajeInfo("Registro Eliminado", null);
+        tabDetalle.actualizar();
+    }
+
+    /*CREACION DE REPORTES */
+    //llamada a reporte
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+
+    }
+
+    //llamado para seleccionar el reporte
+    @Override
+    public void aceptarReporte() {
+        rep_reporte.cerrar();
+        switch (rep_reporte.getNombre()) {
+            case "LISTADO DE COMPROBANTE":
+                aceptoDescuentos();
+                break;
         }
     }
 
+    // dibujo de reporte y envio de parametros
+    public void aceptoDescuentos() {
+        switch (rep_reporte.getNombre()) {
+            case "LISTADO DE COMPROBANTE":
+                p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
+                rep_reporte.cerrar();
+                sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                sef_formato.dibujar();
+                break;
+        }
+    }
 
     public Conexion getConPostgres() {
         return conPostgres;
@@ -329,5 +377,29 @@ public class AsientosAutomaticos extends Pantalla {
 
     public void setSetRol(SeleccionTabla setRol) {
         this.setRol = setRol;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSef_formato() {
+        return sef_formato;
+    }
+
+    public void setSef_formato(SeleccionFormatoReporte sef_formato) {
+        this.sef_formato = sef_formato;
+    }
+
+    public Map getP_parametros() {
+        return p_parametros;
+    }
+
+    public void setP_parametros(Map p_parametros) {
+        this.p_parametros = p_parametros;
     }
 }
