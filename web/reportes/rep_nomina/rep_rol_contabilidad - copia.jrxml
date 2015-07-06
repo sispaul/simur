@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_gasto_rol_descuentos" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="f895bc07-deaa-488e-946e-4cc8229218d3">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="2.052632472922827"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<parameter name="periodo" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new java.lang.Integer(5)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="columnas" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new java.lang.Integer(7)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pide_ano" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new java.lang.Integer(2015)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="nom_resp" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["paul.chumana"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="distributivo" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="p_nombre" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["MAYO"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="descrip" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Trabajadores"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="descripcion" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["EMPLEADOS"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select a.*,b.cue_codigo,b.cue_descripcion,c.repite,d.partida from(
+select e.cedula_pass,e.nombres,r.valor
+from srh_roles r
+inner join srh_empleado e on r.ide_empleado=e.cod_empleado
+where r.ano=2015 and
+r.ide_periodo=5 and
+r.id_distributivo_roles=1 and
+r.ide_columnas=1 and
+r.valor >0
+)as a
+left join
+(SELECT cue_codigo,cedula,cue_descripcion
+from conc_catalogo_cuentas
+where cue_codigo like '112.01.01%'
+) as b
+on a.cedula_pass=b.cedula
+left join
+(select 'si' as repite,cedula_pass from (
+select a.*,b.cue_codigo from(
+select e.cedula_pass,e.nombres,r.valor
+from srh_roles r
+inner join srh_empleado e on r.ide_empleado=e.cod_empleado
+where r.ano=2015 and
+r.ide_periodo=5 and
+r.id_distributivo_roles=1 and
+r.ide_columnas=1 and
+r.valor >0
+)as a
+left join
+(SELECT cue_codigo,cedula
+from conc_catalogo_cuentas
+where cue_codigo like '112.01.01%'
+) as b
+on a.cedula_pass=b.cedula) as a
+group by cedula_pass
+having count(*) >1) as c
+on a.cedula_pass=c.cedula_pass
+left join
+(SELECT cue_codigo,cedula,cue_descripcion as partida
+from conc_catalogo_cuentas
+where cue_codigo like '112.01.01'
+) as d
+on substr(b.cue_codigo,0,10)=d.cue_codigo
+order by nombres,b.cue_descripcion]]>
+	</queryString>
+	<field name="cedula_pass" class="java.lang.String"/>
+	<field name="nombres" class="java.lang.String"/>
+	<field name="valor" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[VALOR]]></fieldDescription>
+	</field>
+	<field name="cue_codigo" class="java.lang.String"/>
+	<field name="cue_descripcion" class="java.lang.String"/>
+	<field name="repite" class="java.lang.String"/>
+	<field name="partida" class="java.lang.String"/>
+	<variable name="sum_valor" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
+	</variable>
+	<group name="descripcion">
+		<groupExpression><![CDATA[$F{cue_descripcion}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band height="1"/>
+		</groupFooter>
+	</group>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="144" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="2ac232b6-0b69-41b8-8161-6284dd840263" key="staticText-1" x="5" y="0" width="299" height="18" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[VERIFICACIÓN DE PARTIDAS CON EL ROL DE PERSONAL]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="f777e32b-cc0e-4516-894d-54fff6613cef" x="346" y="0" width="161" height="48"/>
+				<imageExpression><![CDATA["C:\\Users\\p-sistemas\\Documents\\NetBeansProjects\\simur\\build\\web\\imagenes\\logo.png"]]></imageExpression>
+			</image>
+			<line>
+				<reportElement uuid="437003a1-7c6a-4381-a69a-d77669675975" key="line" x="0" y="122" width="535" height="1"/>
+			</line>
+			<line direction="BottomUp">
+				<reportElement uuid="570fcc1d-cada-4f28-9665-afb34948323d" key="line" x="0" y="138" width="535" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="f2a6cd37-f54b-4c24-8504-6e92b71c9f9c" key="staticText-3" x="258" y="122" width="49" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[CEDULA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2fd316d5-d016-4e15-9eef-657cd1663591" key="staticText-8" x="311" y="122" width="183" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[APELLIDOS Y NOMBRES]]></text>
+			</staticText>
+			<line direction="BottomUp">
+				<reportElement uuid="b6a209b7-d22b-4501-9220-527a0539e8e9" key="line-1" x="0" y="143" width="535" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="0f309a44-4408-4282-82e4-978a3ea566d2" key="staticText-3" x="3" y="122" width="29" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[#]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6009bb9d-1ea2-4d3d-9a28-baf8594e2a99" key="staticText-3" x="35" y="122" width="59" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[PARTIDA ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e3d2a556-8349-4f9d-b90a-96215248307e" key="staticText-24" x="475" y="122" width="59" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[SE REPITE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bb992802-f25d-434f-b8b9-895ff0e9c161" key="staticText-3" x="5" y="102" width="122" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[NOMBRE DE PARTIDA ]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="47ea408b-17d8-48db-ab4e-be4290ddbc71" key="textField" x="122" y="102" width="245" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{partida}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4db9e7f8-1ac6-4182-b22c-39eef335cd87" x="317" y="57" width="69" height="17"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{pide_ano}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="bfca7bfb-1227-48cb-a0b9-d1aca31b9b1d" key="staticText-17" x="390" y="57" width="71" height="17" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[PERIODO:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="b25a2078-a95e-40d7-beb6-b0219efd3f43" x="452" y="57" width="74" height="17"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{p_nombre}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="c7aad554-4254-4bb8-81f4-1acc7504f8d9" key="staticText-17" x="283" y="57" width="31" height="17" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[AÑO:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="185e9f2b-8bec-4420-9754-913c64a0be1a" x="95" y="57" width="100" height="17"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{descripcion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="57b14168-a402-4ff9-a9fc-fda9b7574d9f" x="5" y="57" width="100" height="17"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DESCRIPCIÓN:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="be5a957a-6389-41c4-89c0-49b60cb6e540" key="staticText-3" x="97" y="123" width="149" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[NOMBRE DE PARTIDA ]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="13" splitType="Stretch">
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="70a45ac2-655c-466b-81e6-ada1db0afdc0" key="textField" x="259" y="0" width="49" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cedula_pass}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ce13caa5-0c23-4f9a-8430-d7463a48568d" x="312" y="0" width="183" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombres}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7e263ecc-22cd-425b-b748-2c06d7a4e8e8" x="3" y="0" width="29" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="de76374f-c779-4ec1-a6ef-5657cb2691ad" key="textField" x="35" y="0" width="59" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cue_codigo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="fe9352d1-08f4-43c1-81b5-fe0f73112f38" x="475" y="1" width="58" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{repite}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="88987c70-bac4-4316-b549-96705b0bb121" key="textField" x="97" y="1" width="149" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cue_descripcion}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="15" splitType="Stretch">
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="79ddcd7b-cfa5-4a79-8784-58670c6fc60e" key="textField" x="320" y="0" width="170" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
+				<reportElement uuid="0ed78682-f160-4266-9a20-cae9792f9348" key="textField" x="494" y="0" width="36" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="491ab951-bc36-45f1-80c9-c1e576183acd" key="line" x="0" y="0" width="530" height="1"/>
+			</line>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="9c5dacc5-fca7-4142-9231-a24e2d0b2113" key="textField-1" x="189" y="1" width="90" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nom_resp}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="94d76423-a4e6-4be8-8e38-c608e709719d" key="textField-5" x="21" y="0" width="92" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<lastPageFooter>
+		<band height="51">
+			<staticText>
+				<reportElement uuid="10f57c52-37cf-41af-a89e-fda175fd2903" x="391" y="5" width="100" height="13"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Aprobado Por.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9fb48f71-eeb7-48d8-9413-184e9f2c0d11" x="11" y="5" width="100" height="13"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Elaborado Por.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="80b22ff7-c2c9-4082-9e11-3af67490e1dc" x="205" y="5" width="100" height="13"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Autorizado Por.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="44b20b29-56ce-4443-b2e6-4d18891f0a31" x="11" y="21" width="100" height="13"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[C.I. :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="424c1887-534a-4111-a50f-8a3f365c4403" x="11" y="37" width="100" height="13"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d40dbd2c-5906-4fcf-9ae0-671f63b68505" x="207" y="21" width="96" height="13"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[C.I. :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e6cc2776-9f4e-4d0b-8c99-c5f45ff89da7" x="207" y="37" width="96" height="13"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="792bc447-dcd3-4548-9465-2d5b35f17b80" x="390" y="21" width="100" height="13"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[C.I. :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1dcac66e-4349-4708-99ec-5c7520be7473" x="390" y="37" width="100" height="13"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre :]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="b43b1841-99f1-41bb-b71a-0c7a7155df10" x="11" y="3" width="100" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="2787e583-d2af-4612-bf54-b36c01e2385f" x="390" y="2" width="100" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="c3e4832e-6449-487f-93fa-d771ff95b22d" x="204" y="2" width="100" height="1"/>
+			</line>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band height="1" splitType="Stretch"/>
+	</summary>
+</jasperReport>
