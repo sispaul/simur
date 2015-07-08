@@ -21,6 +21,7 @@ import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.SeleccionTabla;
 import framework.componentes.Tabla;
 import framework.componentes.Texto;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -267,42 +268,58 @@ public class pre_anticipo_sueldo extends Pantalla {
 
     }
 
-    public void confirma_cuota() {
-        if (utilitario.getMes(utilitario.getFechaActual()) != 1) {
-        } else {
-        }
-    }
-
-    public void confirma_cuotas() {
-        if (utilitario.getMes(utilitario.getFechaActual()) != 1) {
-
-            iAnticipos.InsertarAnticipo(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())), String.valueOf((utilitario.getMes(utilitario.getFechaActual()) - 1)));
-
-            TablaGenerica tab_dato = iAnticipos.VerificarCuota(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())), String.valueOf((utilitario.getMes(utilitario.getFechaActual()) - 1)));
-            if (!tab_dato.isEmpty()) {
-                utilitario.agregarMensaje("Cuotas Modificadas Por No Coincidir con el Descuento", "");
-                iAnticipos.setCuota(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())), String.valueOf(utilitario.getMes(utilitario.getFechaActual())));
-                iAnticipos.ProrrogacionCuota(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())), String.valueOf(utilitario.getMes(utilitario.getFechaActual())), String.valueOf((utilitario.getMes(utilitario.getFechaActual()) - 1)));
-
-                if (tab_dato.getValor("his_cuotas_faltantes").endsWith("1")) {
-                    System.err.println("ing1");
-                } else {
-                    System.err.println("ing2");
+    public void verificarCuotas() {
+        double anticipo = 0.0, pagado, remuneracion = 0.0, cuota = 0.0, cuota1 = 0.0, diferencia = 0.0, cuotan = 0.0;
+        BigDecimal bd, acu, cuo;
+        if (utilitario.getDia(utilitario.getFechaActual()) == 25
+                || utilitario.getDia(utilitario.getFechaActual()) == 26
+                || utilitario.getDia(utilitario.getFechaActual()) == 27
+                || utilitario.getDia(utilitario.getFechaActual()) == 28
+                || utilitario.getDia(utilitario.getFechaActual()) == 29
+                || utilitario.getDia(utilitario.getFechaActual()) == 30
+                || utilitario.getDia(utilitario.getFechaActual()) == 31) {
+            TablaGenerica tabDato = iAnticipos.getListaAnticipos(utilitario.getAnio(utilitario.getFechaActual()), (utilitario.getMes(utilitario.getFechaActual())));
+            if (!tabDato.isEmpty()) {
+                for (int i = 0; i < tabDato.getTotalFilas(); i++) {
+                    TablaGenerica tabDatov = iAnticipos.getDetallaListaAnticipos(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), tabDato.getValor(i, "ide_periodo"), tabDato.getValor(i, "ano"), Double.parseDouble(tabDato.getValor(i, "valor")));
+                    if (!tabDatov.isEmpty()) {
+                        iAnticipos.setActualizacionDatos(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), Double.parseDouble(tabDato.getValor(i, "valor")), tabDato.getValor(i, "ide_periodo"), tabDato.getValor(i, "ano"));
+                    } else {
+                        iAnticipos.setActualizacionDatos(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), Double.parseDouble(tabDato.getValor(i, "valor")), tabDato.getValor(i, "ide_periodo"), tabDato.getValor(i, "ano"));
+                        TablaGenerica tabLista = iAnticipos.getReCalculo(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")));
+                        if (!tabLista.isEmpty()) {
+                        }
+                    }
                 }
             }
         } else {
+            if (utilitario.getMes(utilitario.getFechaActual()) != 1) {
+                TablaGenerica tabDato = iAnticipos.getListaAnticipos(utilitario.getAnio(utilitario.getFechaActual()), (utilitario.getMes(utilitario.getFechaActual()) - 1));
+                if (!tabDato.isEmpty()) {
+                    for (int i = 0; i < tabDato.getTotalFilas(); i++) {
+                        TablaGenerica tabDatov = iAnticipos.getDetallaListaAnticipos(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), tabDato.getValor(i, "ide_periodo"), tabDato.getValor(i, "ano"), Double.parseDouble(tabDato.getValor(i, "valor")));
+                        if (!tabDatov.isEmpty()) {
+                            iAnticipos.setActualizacionDatos(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), Double.parseDouble(tabDato.getValor(i, "valor")), tabDato.getValor(i, "ide_periodo"), tabDato.getValor(i, "ano"));
+                        } else {
+                            iAnticipos.setActualizacionDatos(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), Double.parseDouble(tabDato.getValor(i, "valor")), tabDato.getValor(i, "ide_periodo"), tabDato.getValor(i, "ano"));
 
-            iAnticipos.InsertarAnticipo(String.valueOf((utilitario.getAnio(utilitario.getFechaActual()) - 1)), String.valueOf((utilitario.getMes(utilitario.getFechaActual()) + 11)));
 
-            TablaGenerica tab_dato = iAnticipos.VerificarCuota(String.valueOf((utilitario.getAnio(utilitario.getFechaActual()) - 1)), String.valueOf((utilitario.getMes(utilitario.getFechaActual()) + 11)));
-            if (!tab_dato.isEmpty()) {
-                utilitario.agregarMensaje("Cuotas Modificadas Por no Coincidir con el Descuento", "");
-                iAnticipos.setCuota(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())), String.valueOf(utilitario.getMes(utilitario.getFechaActual())));
-                iAnticipos.ProrrogacionCuota(String.valueOf(utilitario.getAnio(utilitario.getFechaActual())), String.valueOf(utilitario.getMes(utilitario.getFechaActual())), String.valueOf((utilitario.getMes(utilitario.getFechaActual()) + 11)));
-                if (tab_dato.getValor("his_cuotas_faltantes").endsWith("1")) {
-                    System.err.println("ing11");
-                } else {
-                    System.err.println("ing22");
+                        }
+                    }
+                }
+            } else {
+                TablaGenerica tabDato = iAnticipos.getListaAnticipos((utilitario.getAnio(utilitario.getFechaActual()) - 1), (utilitario.getMes(utilitario.getFechaActual()) + 11));
+                if (!tabDato.isEmpty()) {
+                    for (int i = 0; i < tabDato.getTotalFilas(); i++) {
+                        TablaGenerica tabDatov = iAnticipos.getDetallaListaAnticipos(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), tabDato.getValor(i, "ide_periodo"), tabDato.getValor(i, "ano"), Double.parseDouble(tabDato.getValor(i, "valor")));
+                        if (!tabDatov.isEmpty()) {
+                            iAnticipos.setActualizacionDatos(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), Double.parseDouble(tabDato.getValor(i, "valor")), tabDato.getValor(i, "ide_periodo"), tabDato.getValor(i, "ano"));
+                        } else {
+                            iAnticipos.setActualizacionDatos(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), Double.parseDouble(tabDato.getValor(i, "valor")), tabDato.getValor(i, "ide_periodo"), tabDato.getValor(i, "ano"));
+
+
+                        }
+                    }
                 }
             }
         }
