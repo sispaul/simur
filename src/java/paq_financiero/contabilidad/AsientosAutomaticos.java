@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
+import paq_nomina.ejb.mergeDescuento;
 import paq_presupuestaria.ejb.Programas;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
@@ -55,7 +56,8 @@ public class AsientosAutomaticos extends Pantalla {
     private Map p_parametros = new HashMap();
     @EJB
     private Programas programas = (Programas) utilitario.instanciarEJB(Programas.class);
-
+    private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(mergeDescuento.class);
+    
     public AsientosAutomaticos() {
         tabConsulta.setId("tabConsulta");
         tabConsulta.setSql("SELECT u.IDE_USUA,u.NOM_USUA,u.NICK_USUA,u.IDE_PERF,p.NOM_PERF,p.PERM_UTIL_PERF\n"
@@ -270,8 +272,13 @@ public class AsientosAutomaticos extends Pantalla {
     }
 
     public void cargaRegistro() {
-        setRol.dibujar();
-        setRol.getTab_seleccion().limpiar();
+        TablaGenerica tabDato = mDescuento.VerificarRol();
+        if (!tabDato.isEmpty()) {
+            setRol.dibujar();
+            setRol.getTab_seleccion().limpiar();
+        } else {
+            utilitario.agregarMensaje("Información No Disponible", "Rol Aun No Esta Registrado");
+        }
     }
 
     public void aceptoCarga() {
