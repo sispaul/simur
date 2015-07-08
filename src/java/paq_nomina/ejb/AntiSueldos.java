@@ -813,20 +813,6 @@ public class AntiSueldos {
         return tabFuncionario;
     }
 
-    public TablaGenerica VerificarCuota(String anio, String periodo) {
-        conPostgresql();
-        TablaGenerica tabFuncionario = new TablaGenerica();
-        conPostgresql();
-        tabFuncionario.setConexion(conPostgres);
-        tabFuncionario.setSql("SELECT his_codigo,his_ide_empleado,his_nombre,his_periodo,his_anio,his_cuota_roles,his_cuota_anticipo,his_cuota_nueva,\n"
-                + "his_cuotas_faltantes,his_cuotas_anticipo,his_cuotas_pagadas\n"
-                + "FROM srh_historial_cuotas_anticipos\n"
-                + "where his_anio='" + anio + "' and his_periodo='" + periodo + "'");
-        tabFuncionario.ejecutarSql();
-        desPostgresql();
-        return tabFuncionario;
-    }
-
     public TablaGenerica getReCalculo(Integer codigo) {
         conPostgresql();
         TablaGenerica tabFuncionario = new TablaGenerica();
@@ -983,6 +969,51 @@ public class AntiSueldos {
                 + "GROUP BY s.id_distributivo) as c\n"
                 + "on a.id_distributivo = c.id_distributivo) as b\n"
                 + "on a.id = b.id");
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
+    }
+
+    public TablaGenerica getListaAnticipos(Integer anio, Integer periodo) {
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT s.ide_solicitud_anticipo, \n"
+                + "r.ide_empleado, \n"
+                + "r.valor, \n"
+                + "r.ide_periodo, \n"
+                + "r.ano, \n"
+                + "r.id_distributivo_roles \n"
+                + "FROM srh_solicitud_anticipo AS s , \n"
+                + "srh_roles AS r, \n"
+                + "srh_calculo_anticipo c \n"
+                + "WHERE s.ide_empleado_solicitante = r.ide_empleado and \n"
+                + "c.ide_solicitud_anticipo = s.ide_solicitud_anticipo and \n"
+                + "r.ano = " + anio + " and \n"
+                + "r.ide_periodo = " + periodo + " and \n"
+                + "r.ide_columnas IN (1, 46)and \n"
+                + "c.ide_estado_anticipo in (2,3) \n"
+                + "ORDER BY r.id_distributivo_roles");
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
+    }
+
+    public TablaGenerica getDetallaListaAnticipos(Integer solicitud, String anio, String periodo, Double valor) {
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT ide_anticipo,\n"
+                + "valor,\n"
+                + "ide_periodo_descuento,\n"
+                + "ide_estado_cuota,\n"
+                + "cuota,\n"
+                + "periodo,\n"
+                + "anio\n"
+                + "from srh_detalle_anticipo\n"
+                + "where ide_anticipo = " + solicitud + " and periodo = '" + periodo + "' and anio = '" + anio + "' and valor = " + valor);
         tabFuncionario.ejecutarSql();
         desPostgresql();
         return tabFuncionario;
@@ -1250,6 +1281,20 @@ public class AntiSueldos {
                 + "and d.ide_periodo_descuento <> '" + mes + "'\n"
                 + "order by h.his_codigo) as a\n"
                 + "where srh_detalle_anticipo.ide_detalle_anticipo = a.ide_detalle_anticipo";
+        conPostgresql();
+        conPostgres.ejecutarSql(strSql4);
+        desPostgresql();
+    }
+
+    public void setActualizacionDatos(Integer anticipo, Double valor, String periodo, String anio) {
+        String strSql4 = "update srh_detalle_anticipo  \n"
+                + "set ide_periodo_descontado = srh_detalle_anticipo.ide_periodo_descuento, \n"
+                + "valor = "+valor+"\n"
+                + ",ide_estado_cuota = 1  \n"
+                + "WHERE ide_anticipo = "+anticipo+"\n"
+                + "and periodo = '"+periodo+"'\n"
+                + "and anio = '"+anio+"'\n"
+                + "and valor ="+valor;
         conPostgresql();
         conPostgres.ejecutarSql(strSql4);
         desPostgresql();
