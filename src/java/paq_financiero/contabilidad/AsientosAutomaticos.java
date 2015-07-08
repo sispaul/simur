@@ -331,6 +331,7 @@ public class AsientosAutomaticos extends Pantalla {
     public void aceptoDescuentos() {
         switch (rep_reporte.getNombre()) {
             case "LISTADO DE COMPROBANTE":
+                p_parametros.put("comprobante", Integer.parseInt(tabTabla.getValor("ide_movimiento")));
                 p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
                 rep_reporte.cerrar();
                 sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
