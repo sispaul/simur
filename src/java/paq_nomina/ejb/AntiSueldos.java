@@ -818,21 +818,22 @@ public class AntiSueldos {
         TablaGenerica tabFuncionario = new TablaGenerica();
         conPostgresql();
         tabFuncionario.setConexion(conPostgres);
-        tabFuncionario.setSql("SELECT s.ide_solicitud_anticipo,\n"
-                + "s.ci_solicitante,\n"
-                + "s.solicitante,\n"
-                + "(select remuneracion from srh_empleado where cod_empleado = s.ide_empleado_solicitante) AS remuneracion,\n"
-                + "c.valor_anticipo,\n"
-                + "c.numero_cuotas_anticipo,\n"
-                + "c.valor_cuota_mensual,\n"
-                + "c.val_cuo_adi,\n"
-                + "c.valor_pagado,\n"
-                + "c.porcentaje_descuento_diciembre,\n"
-                + "c.numero_cuotas_pagadas\n"
-                + "from srh_solicitud_anticipo s\n"
-                + "inner join srh_calculo_anticipo c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n"
-                + "where c.ide_estado_anticipo in (1,2,3) and s.ide_solicitud_anticipo = " + codigo + "\n"
-                + "order by s.ide_solicitud_anticipo ASC");
+        tabFuncionario.setSql("SELECT s.ide_solicitud_anticipo, \n"
+                + "s.ci_solicitante, \n"
+                + "(select remuneracion from srh_empleado where cod_empleado = s.ide_empleado_solicitante) AS remuneracion, \n"
+                + "c.valor_anticipo, \n"
+                + "c.numero_cuotas_anticipo, \n"
+                + "c.valor_cuota_mensual, \n"
+                + "c.val_cuo_adi, \n"
+                + "c.valor_pagado, \n"
+                + "s.id_distributivo, \n"
+                + "c.porcentaje_descuento_diciembre, \n"
+                + "c.numero_cuotas_pagadas,\n"
+                + "(select sum(valor) as valor from srh_detalle_anticipo \n"
+                + "where ide_anticipo= s.ide_solicitud_anticipo and ide_estado_cuota is not null and usu_pago_anticipado is null and usu_cobro_liquidacion is null) as valor_acumulado \n"
+                + "from srh_solicitud_anticipo s \n"
+                + "inner join srh_calculo_anticipo c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo \n"
+                + "where c.ide_estado_anticipo in (1,2,3) and s.ide_solicitud_anticipo = " + codigo);
         tabFuncionario.ejecutarSql();
         desPostgresql();
         return tabFuncionario;
@@ -1087,6 +1088,36 @@ public class AntiSueldos {
         desPostgresql();
     }
 
+    public void setActuCalculo(Integer anti, Double cuota) {
+        String auSql = "update srh_detalle_anticipo\n"
+                + "set valor = " + cuota + "\n"
+                + "from (SELECT ide_detalle_anticipo,\n"
+                + "ide_estado_cuota,\n"
+                + "periodo,\n"
+                + "anio\n"
+                + "from srh_detalle_anticipo\n"
+                + "where ide_anticipo = " + anti + " and ide_estado_cuota is null and periodo <>'12') as a\n"
+                + "where srh_detalle_anticipo.ide_detalle_anticipo = a.ide_detalle_anticipo";
+        conPostgresql();
+        conPostgres.ejecutarSql(auSql);
+        desPostgresql();
+    }
+
+    public void setActuCalculo1(Integer anti, Double cuota) {
+        String auSql = "update srh_detalle_anticipo\n"
+                + "set valor = " + cuota + "\n"
+                + "from (SELECT ide_detalle_anticipo,\n"
+                + "ide_estado_cuota,\n"
+                + "periodo,\n"
+                + "anio\n"
+                + "from srh_detalle_anticipo\n"
+                + "where ide_anticipo = " + anti + " and ide_estado_cuota is null) as a\n"
+                + "where srh_detalle_anticipo.ide_detalle_anticipo = a.ide_detalle_anticipo";
+        conPostgresql();
+        conPostgres.ejecutarSql(auSql);
+        desPostgresql();
+    }
+
     public void deleteCalculo(Integer anti, Integer cal, String usu) {
         String auSql = "UPDATE srh_calculo_anticipo\n"
                 + "SET ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado ='NEGADO') ,\n"
@@ -1289,12 +1320,12 @@ public class AntiSueldos {
     public void setActualizacionDatos(Integer anticipo, Double valor, String periodo, String anio) {
         String strSql4 = "update srh_detalle_anticipo  \n"
                 + "set ide_periodo_descontado = srh_detalle_anticipo.ide_periodo_descuento, \n"
-                + "valor = "+valor+"\n"
+                + "valor = " + valor + "\n"
                 + ",ide_estado_cuota = 1  \n"
-                + "WHERE ide_anticipo = "+anticipo+"\n"
-                + "and periodo = '"+periodo+"'\n"
-                + "and anio = '"+anio+"'\n"
-                + "and valor ="+valor;
+                + "WHERE ide_anticipo = " + anticipo + "\n"
+                + "and periodo = '" + periodo + "'\n"
+                + "and anio = '" + anio + "'\n"
+                + "and valor =" + valor;
         conPostgresql();
         conPostgres.ejecutarSql(strSql4);
         desPostgresql();
