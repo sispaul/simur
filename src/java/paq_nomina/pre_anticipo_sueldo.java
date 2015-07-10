@@ -150,7 +150,7 @@ public class pre_anticipo_sueldo extends Pantalla {
         bot_des.setValue("Descargo");
         bot_des.setIcon("ui-icon-closethick");
 //        bot_des.setMetodo("descontar");
-        bot_des.setMetodo("verificarCuotas");
+        bot_des.setMetodo("reCalculo");
         bar_botones.agregarBoton(bot_des);
 
         //Ingreso y busqueda de solicitudes 
@@ -269,7 +269,7 @@ public class pre_anticipo_sueldo extends Pantalla {
 
     }
 
-    public void verificarCuotas() {
+    public void reCalculo() {
         double anticipo = 0.0, pagado, cuota = 0.0, diferencia = 0.0, cuotan = 0.0;
         BigDecimal bd;
         if (utilitario.getDia(utilitario.getFechaActual()) == 25
@@ -296,27 +296,27 @@ public class pre_anticipo_sueldo extends Pantalla {
                                 pagado = 0.0;
                             }
                             if (tabLista.getValor("porcentaje_descuento_diciembre") != null) {
-                                if (Integer.parseInt(tabLista.getValor("id_distributivo")) != 1) {
-                                    diferencia = anticipo - pagado;
-                                    if (tabLista.getValor("numero_cuotas_pagadas") != null) {
-                                        cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - (Double.parseDouble(tabLista.getValor("numero_cuotas_pagadas")) + 1.0);
-                                    } else {
-                                        cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - (Double.parseDouble("1.0"));
-                                    }
-                                    bd = new BigDecimal(diferencia / cuota);
-                                    cuotan = bd.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
-                                    iAnticipos.setActuCalculo1(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), cuotan);
-                                }
-                            } else {
                                 diferencia = anticipo - pagado;
                                 if (tabLista.getValor("numero_cuotas_pagadas") != null) {
-                                    cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - (Double.parseDouble(tabLista.getValor("numero_cuotas_pagadas")) + 2.0);
+                                    cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - (Double.parseDouble(tabLista.getValor("numero_cuotas_pagadas")) + 1.0);
                                 } else {
-                                    cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - (Double.parseDouble("2.0"));
+                                    cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - 1;
                                 }
                                 bd = new BigDecimal(diferencia / cuota);
                                 cuotan = bd.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
                                 iAnticipos.setActuCalculo(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), cuotan);
+                                iAnticipos.setActuRedondeo(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), cuotan);
+                            } else {
+                                diferencia = anticipo - pagado;
+                                if (tabLista.getValor("numero_cuotas_pagadas") != null) {
+                                    cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - (Double.parseDouble(tabLista.getValor("numero_cuotas_pagadas")));
+                                } else {
+                                    cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - 1;
+                                }
+                                bd = new BigDecimal(diferencia / cuota);
+                                cuotan = bd.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
+                                iAnticipos.setActuCalculo1(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), cuotan);
+                                iAnticipos.setActuRedondeo(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), cuotan);
                             }
                         }
                     }
@@ -327,15 +327,13 @@ public class pre_anticipo_sueldo extends Pantalla {
                 TablaGenerica tabDato = iAnticipos.getListaAnticipos(utilitario.getAnio(utilitario.getFechaActual()), (utilitario.getMes(utilitario.getFechaActual()) - 1));
                 if (!tabDato.isEmpty()) {
                     for (int i = 0; i < tabDato.getTotalFilas(); i++) {
-                        TablaGenerica tabDatov = iAnticipos.getDetallaListaAnticipos(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), tabDato.getValor(i, "ide_periodo"), tabDato.getValor(i, "ano"), Double.parseDouble(tabDato.getValor(i, "valor")));
-                        if (!tabDatov.isEmpty()) {
+                        TablaGenerica tabDatos = iAnticipos.getDetallaListaAnticipos(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), tabDato.getValor(i, "ano"), tabDato.getValor(i, "ide_periodo"), Double.parseDouble(tabDato.getValor(i, "valor")));
+                        if (!tabDatos.isEmpty()) {
                             iAnticipos.setActualizacionDatos(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), Double.parseDouble(tabDato.getValor(i, "valor")), tabDato.getValor(i, "ide_periodo"), tabDato.getValor(i, "ano"));
                         } else {
-                            System.err.println(tabDato.getValor(i, "ide_solicitud_anticipo"));
-                            iAnticipos.setActualizacionDatos(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), Double.parseDouble(tabDato.getValor(i, "valor")), tabDato.getValor(i, "ide_periodo"), tabDato.getValor(i, "ano"));
+                            iAnticipos.setActualizacionDatos1(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), Double.parseDouble(tabDato.getValor(i, "valor")), tabDato.getValor(i, "ide_periodo"), tabDato.getValor(i, "ano"));
                             TablaGenerica tabLista = iAnticipos.getReCalculo(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")));
                             if (!tabLista.isEmpty()) {
-                                System.err.println(tabLista.getValor("valor_acumulado"));
                                 anticipo = Double.parseDouble(tabLista.getValor("valor_anticipo"));
                                 if (tabLista.getValor("valor_acumulado") != null) {
                                     pagado = Double.parseDouble(tabLista.getValor("valor_acumulado"));
@@ -343,27 +341,27 @@ public class pre_anticipo_sueldo extends Pantalla {
                                     pagado = 0.0;
                                 }
                                 if (tabLista.getValor("porcentaje_descuento_diciembre") != null) {
-                                    if (Integer.parseInt(tabLista.getValor("id_distributivo")) != 1) {
-                                        diferencia = anticipo - pagado;
-                                        if (tabLista.getValor("numero_cuotas_pagadas") != null) {
-                                            cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - (Double.parseDouble(tabLista.getValor("numero_cuotas_pagadas")) + 1.0);
-                                        } else {
-                                            cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - (Double.parseDouble("1.0"));
-                                        }
-                                        bd = new BigDecimal(diferencia / cuota);
-                                        cuotan = bd.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
-                                        iAnticipos.setActuCalculo1(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), cuotan);
-                                    }
-                                } else {
                                     diferencia = anticipo - pagado;
                                     if (tabLista.getValor("numero_cuotas_pagadas") != null) {
-                                        cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - (Double.parseDouble(tabLista.getValor("numero_cuotas_pagadas")) + 2.0);
+                                        cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - (Double.parseDouble(tabLista.getValor("numero_cuotas_pagadas")) + 1.0);
                                     } else {
-                                        cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - (Double.parseDouble("2.0"));
+                                        cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - 1;
                                     }
                                     bd = new BigDecimal(diferencia / cuota);
                                     cuotan = bd.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
                                     iAnticipos.setActuCalculo(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), cuotan);
+                                    iAnticipos.setActuRedondeo(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), cuotan);
+                                } else {
+                                    diferencia = anticipo - pagado;
+                                    if (tabLista.getValor("numero_cuotas_pagadas") != null) {
+                                        cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - (Double.parseDouble(tabLista.getValor("numero_cuotas_pagadas")));
+                                    } else {
+                                        cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - 1;
+                                    }
+                                    bd = new BigDecimal(diferencia / cuota);
+                                    cuotan = bd.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
+                                    iAnticipos.setActuCalculo1(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), cuotan);
+                                    iAnticipos.setActuRedondeo(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), cuotan);
                                 }
                             }
                         }
@@ -387,27 +385,27 @@ public class pre_anticipo_sueldo extends Pantalla {
                                     pagado = 0.0;
                                 }
                                 if (tabLista.getValor("porcentaje_descuento_diciembre") != null) {
-                                    if (Integer.parseInt(tabLista.getValor("id_distributivo")) != 1) {
-                                        diferencia = anticipo - pagado;
-                                        if (tabLista.getValor("numero_cuotas_pagadas") != null) {
-                                            cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - (Double.parseDouble(tabLista.getValor("numero_cuotas_pagadas")) + 1.0);
-                                        } else {
-                                            cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - (Double.parseDouble("1.0"));
-                                        }
-                                        bd = new BigDecimal(diferencia / cuota);
-                                        cuotan = bd.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
-                                        iAnticipos.setActuCalculo1(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), cuotan);
-                                    }
-                                } else {
                                     diferencia = anticipo - pagado;
                                     if (tabLista.getValor("numero_cuotas_pagadas") != null) {
-                                        cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - (Double.parseDouble(tabLista.getValor("numero_cuotas_pagadas")) + 2.0);
+                                        cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - (Double.parseDouble(tabLista.getValor("numero_cuotas_pagadas")) + 1.0);
                                     } else {
-                                        cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - (Double.parseDouble("2.0"));
+                                        cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - 1;
                                     }
                                     bd = new BigDecimal(diferencia / cuota);
                                     cuotan = bd.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
                                     iAnticipos.setActuCalculo(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), cuotan);
+                                    iAnticipos.setActuRedondeo(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), cuotan);
+                                } else {
+                                    diferencia = anticipo - pagado;
+                                    if (tabLista.getValor("numero_cuotas_pagadas") != null) {
+                                        cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - (Double.parseDouble(tabLista.getValor("numero_cuotas_pagadas")));
+                                    } else {
+                                        cuota = Double.parseDouble(tabLista.getValor("numero_cuotas_anticipo")) - 1;
+                                    }
+                                    bd = new BigDecimal(diferencia / cuota);
+                                    cuotan = bd.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
+                                    iAnticipos.setActuCalculo1(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), cuotan);
+                                    iAnticipos.setActuRedondeo(Integer.parseInt(tabDato.getValor(i, "ide_solicitud_anticipo")), cuotan);
                                 }
                             }
                         }
