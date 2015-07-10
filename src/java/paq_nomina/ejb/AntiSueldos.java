@@ -1118,6 +1118,28 @@ public class AntiSueldos {
         desPostgresql();
     }
 
+    public void setActuRedondeo(Integer anti, Double cuota) {
+        String auSql = "update srh_detalle_anticipo\n"
+                + "set valor = b.valor\n"
+                + "from (select a.ide_detalle_anticipo,a.ide_periodo_descuento,\n"
+                + "(case when b.valor >0.0 then b.valor+"+cuota+" when  b.valor <=0.0 then "+cuota+" end ) as valor\n"
+                + "from \n"
+                + "(select ide_detalle_anticipo,ide_periodo_descuento,ide_anticipo from srh_detalle_anticipo\n"
+                + "where ide_anticipo = "+anti+" order by ide_detalle_anticipo desc limit 1) as a\n"
+                + "inner join \n"
+                + "(SELECT s.ide_solicitud_anticipo,\n"
+                + "(c.valor_anticipo-\n"
+                + "(select sum(valor) from srh_detalle_anticipo where ide_anticipo = s.ide_solicitud_anticipo))as valor,c.valor_anticipo\n"
+                + "FROM srh_solicitud_anticipo AS s\n"
+                + "INNER JOIN srh_calculo_anticipo AS c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n"
+                + "WHERE s.ide_solicitud_anticipo = "+anti+") as b\n"
+                + "on a.ide_anticipo =b.ide_solicitud_anticipo) as b\n"
+                + "where srh_detalle_anticipo.ide_detalle_anticipo = b.ide_detalle_anticipo";
+        conPostgresql();
+        conPostgres.ejecutarSql(auSql);
+        desPostgresql();
+    }
+
     public void deleteCalculo(Integer anti, Integer cal, String usu) {
         String auSql = "UPDATE srh_calculo_anticipo\n"
                 + "SET ide_estado_anticipo = (SELECT ide_estado_tipo FROM srh_estado_anticipo where estado ='NEGADO') ,\n"
@@ -1331,7 +1353,20 @@ public class AntiSueldos {
         desPostgresql();
     }
 
+    public void setActualizacionDatos1(Integer anticipo, Double valor, String periodo, String anio) {
+        String strSql4 = "update srh_detalle_anticipo  \n"
+                + "set ide_periodo_descontado = srh_detalle_anticipo.ide_periodo_descuento, \n"
+                + "valor = " + valor + "\n"
+                + ",ide_estado_cuota = 1  \n"
+                + "WHERE ide_anticipo = " + anticipo + "\n"
+                + "and periodo = '" + periodo + "'\n"
+                + "and anio = '" + anio + "'";
+        conPostgresql();
+        conPostgres.ejecutarSql(strSql4);
+        desPostgresql();
+    }
     //metodo que posee la cadena de conexion a base de datos
+
     private void conPostgresql() {
         if (conPostgres == null) {
             conPostgres = new Conexion();
