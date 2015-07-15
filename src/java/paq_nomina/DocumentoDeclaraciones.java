@@ -11,7 +11,13 @@ import framework.componentes.Etiqueta;
 import framework.componentes.Grupo;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.primefaces.event.SelectEvent;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
@@ -29,6 +35,10 @@ public class DocumentoDeclaraciones extends Pantalla {
     private Tabla tabConsulta = new Tabla();
     private Panel panOpcion = new Panel();
 
+    private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
+    private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
+    private Map p_parametros = new HashMap();
+    
     public DocumentoDeclaraciones() {
         //Para capturar el usuario que se encuntra utilizando la opción
         tabConsulta.setId("tabConsulta");
@@ -131,8 +141,21 @@ public class DocumentoDeclaraciones extends Pantalla {
         tabTabla.setConexion(conPostgres);
         tabTabla.setTabla("srh_documentos_declaraciones", "doc_codigo", 1);
         tabTabla.getColumna("doc_codigo").setVisible(false);
+        List lista = new ArrayList();
+        Object fil1[] = {
+            "Inicial", "Inicial"
+        };
+        Object fil2[] = {
+            "Final", "Final"
+        };
+        Object fil3[] = {
+            "Intermedio", "Intermedio"
+        };
+        lista.add(fil1);
+        lista.add(fil2);
+        lista.add(fil3);
+        tabTabla.getColumna("doc_tipo_declaracion").setCombo(lista);
         tabTabla.getColumna("doc_documento").setUpload("logos");
-        tabTabla.getColumna("doc_documento").setImagen("", "");
         tabTabla.dibujar();
         PanelTabla patPanel = new PanelTabla();
         patPanel.setPanelTabla(tabTabla);
@@ -142,11 +165,15 @@ public class DocumentoDeclaraciones extends Pantalla {
         Grupo gru = new Grupo();
         gru.getChildren().add(div);
         panOpcion.getChildren().add(gru);
+        
+        bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
+        agregarComponente(rep_reporte); //2 agregar el listado de reportes
+        sef_formato.setId("sef_formato");
+        sef_formato.setConexion(conPostgres);
+        agregarComponente(sef_formato);
     }
 
     public void buscaEmpleado(SelectEvent evt) {
-        //Filtra el cliente seleccionado en el autocompletar
-//        limpia();
         autBusca.limpiar();
         autBusca.onSelect(evt);
         utilitario.addUpdate("autBusca");
@@ -159,21 +186,21 @@ public class DocumentoDeclaraciones extends Pantalla {
         utilitario.addUpdate("autBusca");
     }
 
-
     @Override
     public void insertar() {
-        tabTabla.insertar();
+        utilitario.getTablaisFocus().insertar();
     }
 
     @Override
     public void guardar() {
-        tabTabla.guardar();
-        conPostgres.guardarPantalla();
+        if (tabTabla.guardar()) {
+            conPostgres.guardarPantalla();
+        }
     }
 
     @Override
     public void eliminar() {
-        tabTabla.eliminar();
+        utilitario.getTablaisFocus().eliminar();
     }
 
     public Conexion getConPostgres() {
@@ -207,4 +234,29 @@ public class DocumentoDeclaraciones extends Pantalla {
     public void setAutBusca(AutoCompletar autBusca) {
         this.autBusca = autBusca;
     }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSef_formato() {
+        return sef_formato;
+    }
+
+    public void setSef_formato(SeleccionFormatoReporte sef_formato) {
+        this.sef_formato = sef_formato;
+    }
+
+    public Map getP_parametros() {
+        return p_parametros;
+    }
+
+    public void setP_parametros(Map p_parametros) {
+        this.p_parametros = p_parametros;
+    }
+    
 }
