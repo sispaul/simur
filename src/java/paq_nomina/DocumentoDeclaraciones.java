@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
+import paq_nomina.ejb.AntiSueldos;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
 
@@ -38,14 +40,26 @@ public class DocumentoDeclaraciones extends Pantalla {
     private Tabla tabEmpleado = new Tabla();
     private Tabla tabTabla = new Tabla();
     private Tabla tabConsulta = new Tabla();
+    private Tabla setNotaria = new Tabla();
+    private Tabla setAbogado = new Tabla();
     private Panel panOpcion = new Panel();
     private Dialogo dialogoDE = new Dialogo();
+    private Dialogo diaDialogo = new Dialogo();
+    private Dialogo diaDialogot = new Dialogo();
     private Grid gridDe = new Grid();
+    private Grid gridO = new Grid();
+    private Grid gridT = new Grid();
+    private Grid grid = new Grid();
+    private Grid gridt = new Grid();
     private Combo cmbDescripcion = new Combo();
     private Combo cmbPendientes = new Combo();
     private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
     private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
     private Map p_parametros = new HashMap();
+    private Texto txtNotaria = new Texto();
+    private Texto txtAbogado = new Texto();
+    @EJB
+    private AntiSueldos iAnticipos = (AntiSueldos) utilitario.instanciarEJB(AntiSueldos.class);
 
     public DocumentoDeclaraciones() {
         //Para capturar el usuario que se encuntra utilizando la opción
@@ -78,6 +92,12 @@ public class DocumentoDeclaraciones extends Pantalla {
         botLimpiar.setIcon("ui-icon-cancel");
         botLimpiar.setMetodo("limpiar");
         bar_botones.agregarBoton(botLimpiar);
+
+        Boton botNotaria = new Boton();
+        botNotaria.setValue("Notaria");
+        botNotaria.setIcon("ui-icon-person");
+        botNotaria.setMetodo("ingNotaria");
+        bar_botones.agregarBoton(botNotaria);
 
         tabEmpleado.setId("tabEmpleado");
         tabEmpleado.setConexion(conPostgres);
@@ -164,6 +184,9 @@ public class DocumentoDeclaraciones extends Pantalla {
         lista.add(fil3);
         tabTabla.getColumna("doc_tipo_declaracion").setCombo(lista);
         tabTabla.getColumna("doc_documento").setUpload("logos");
+        tabTabla.getColumna("doc_notaria").setCombo("select cod_notaria,nombre_registro from srh_notarias_abogados where not_cod_notaria = 1");
+        tabTabla.getColumna("doc_notaria").setMetodoChange("cargarAbogado");
+        tabTabla.getColumna("doc_abogado").setCombo("select cod_notaria,nombre_registro from srh_notarias_abogados");
         tabTabla.dibujar();
         PanelTabla patPanel = new PanelTabla();
         patPanel.setPanelTabla(tabTabla);
@@ -188,6 +211,63 @@ public class DocumentoDeclaraciones extends Pantalla {
         sef_formato.setId("sef_formato");
         sef_formato.setConexion(conPostgres);
         agregarComponente(sef_formato);
+
+        Grid griMarcas = new Grid();
+        griMarcas.setColumns(6);
+        griMarcas.getChildren().add(new Etiqueta("Ingrese Notaria: "));
+        griMarcas.getChildren().add(txtNotaria);
+        Boton botMarcas = new Boton();
+        botMarcas.setValue("Guardar");
+        botMarcas.setIcon("ui-icon-disk");
+        botMarcas.setMetodo("insNotaria");
+        Boton botMarcaxs = new Boton();
+        botMarcaxs.setValue("Eliminar");
+        botMarcaxs.setIcon("ui-icon-closethick");
+        botMarcaxs.setMetodo("endNotaria");
+        griMarcas.getChildren().add(botMarcas);
+        griMarcas.getChildren().add(botMarcaxs);
+        diaDialogo.setId("diaDialogo");
+        diaDialogo.setTitle("INGRESO DE NOTARIA"); //titulo
+        diaDialogo.setWidth("42%"); //siempre en porcentajes  ancho
+        diaDialogo.setHeight("40%");//siempre porcentaje   alto
+        diaDialogo.setResizable(false); //para que no se pueda cambiar el tamaño
+        diaDialogo.getGri_cuerpo().setHeader(griMarcas);
+        diaDialogo.getBot_aceptar().setMetodo("aceptaNotaria");
+        gridO.setColumns(4);
+        agregarComponente(diaDialogo);
+
+        Grid griTipos = new Grid();
+        griTipos.setColumns(6);
+        griTipos.getChildren().add(new Etiqueta("Ingrese Abogado"));
+        griTipos.getChildren().add(txtAbogado);
+        Boton botTipos = new Boton();
+        botTipos.setValue("Guardar");
+        botTipos.setIcon("ui-icon-disk");
+        botTipos.setMetodo("insAbogado");
+        Boton botTipoxs = new Boton();
+        botTipoxs.setValue("Eliminar");
+        botTipoxs.setIcon("ui-icon-closethick");
+        botTipoxs.setMetodo("endAbogado");
+        griTipos.getChildren().add(botTipos);
+        griTipos.getChildren().add(botTipoxs);
+        diaDialogot.setId("diaDialogot");
+        diaDialogot.setTitle("INGRESO DE ABOGADO"); //titulo
+        diaDialogot.setWidth("42%"); //siempre en porcentajes  ancho
+        diaDialogot.setHeight("40%");//siempre porcentaje   alto
+        diaDialogot.setResizable(false); //para que no se pueda cambiar el tamaño
+        diaDialogot.getGri_cuerpo().setHeader(griTipos);
+        diaDialogot.getBot_aceptar().setMetodo("aceptaAbogado");
+        gridT.setColumns(4);
+        agregarComponente(diaDialogot);
+
+        setNotaria.setId("setNotaria");
+        setNotaria.setConexion(conPostgres);
+        setNotaria.setSql("select cod_notaria,nombre_registro from srh_notarias_abogados where not_cod_notaria = 1");
+        setNotaria.getColumna("nombre_registro").setFiltro(true);
+        setNotaria.setTipoSeleccion(false);
+        setNotaria.setRows(10);
+        setNotaria.dibujar();
+
     }
 
     public void buscaEmpleado(SelectEvent evt) {
@@ -201,6 +281,93 @@ public class DocumentoDeclaraciones extends Pantalla {
     public void limpiar() {
         autBusca.limpiar();
         utilitario.addUpdate("autBusca");
+    }
+
+    public void ingNotaria() {
+        diaDialogo.Limpiar();
+        diaDialogo.setDialogo(grid);
+        gridO.getChildren().add(setNotaria);
+        diaDialogo.setDialogo(gridO);
+        setNotaria.dibujar();
+        diaDialogo.dibujar();
+    }
+
+    public void insNotaria() {
+        TablaGenerica tabDato = iAnticipos.getVerifRegistro(1, txtNotaria.getValue() + "");
+        if (!tabDato.isEmpty()) {
+            utilitario.agregarMensaje("Notaria ya se Encuentra Registrada", "");
+        } else {
+            if (txtNotaria.getValue() != null && txtNotaria.toString().isEmpty() == false) {
+                iAnticipos.setNotaria(1, txtNotaria.getValue() + "");
+                txtNotaria.limpiar();
+                utilitario.agregarMensaje("Registro Guardado", null);
+                setNotaria.actualizar();
+                cargarNotaria();
+            }
+        }
+    }
+
+    public void endNotaria() {
+        if (setNotaria.getValorSeleccionado() != null && setNotaria.getValorSeleccionado().isEmpty() == false) {
+            iAnticipos.setDeleteRegistro(Integer.parseInt(setNotaria.getValorSeleccionado()));
+            utilitario.agregarMensaje("Registro eliminado", null);
+            setNotaria.actualizar();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
+        }
+    }
+
+    public void aceptaNotaria() {
+        if (setNotaria.getValorSeleccionado() != null && setNotaria.getValorSeleccionado().isEmpty() == false) {
+            diaDialogot.Limpiar();
+            diaDialogot.setDialogo(gridt);
+            gridT.getChildren().add(setAbogado);
+            setAbogado.setId("setAbogado");
+            setAbogado.setConexion(conPostgres);
+            setAbogado.setSql("select cod_notaria,nombre_registro from srh_notarias_abogados where ab_cod_notaria = " + setNotaria.getValorSeleccionado() + " and not_cod_notaria = 2");
+            setAbogado.getColumna("nombre_registro").setFiltro(true);
+            setAbogado.setTipoSeleccion(false);
+            setAbogado.setRows(10);
+            setAbogado.dibujar();
+            diaDialogot.setDialogo(gridT);
+            diaDialogot.dibujar();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
+        }
+    }
+
+    public void insAbogado() {
+        TablaGenerica tabDato1 = iAnticipos.getVerifRegistro1(2, Integer.parseInt(setNotaria.getValorSeleccionado()), txtAbogado.getValue() + "");
+        if (!tabDato1.isEmpty()) {
+            utilitario.agregarMensaje("Abogado ya se Encuentra Registrado", "");
+        } else {
+            if (txtAbogado.getValue() != null && txtAbogado.toString().isEmpty() == false) {
+                iAnticipos.setAbogado(2, Integer.parseInt(setNotaria.getValorSeleccionado()), txtAbogado.getValue() + "");
+                txtAbogado.limpiar();
+                utilitario.agregarMensaje("Registro Guardado", null);
+                setAbogado.actualizar();
+            }
+        }
+    }
+
+    public void endAbogado() {
+        if (setAbogado.getValorSeleccionado() != null && setAbogado.getValorSeleccionado().isEmpty() == false) {
+            iAnticipos.setDeleteRegistro(Integer.parseInt(setAbogado.getValorSeleccionado()));
+            utilitario.agregarMensaje("Registro eliminado", null);
+            setAbogado.actualizar();
+        } else {
+            utilitario.agregarMensajeInfo("Debe seleccionar al menos un registro", "");
+        }
+    }
+
+    public void cargarNotaria() {
+        tabTabla.getColumna("doc_notaria").setCombo("select cod_notaria,nombre_registro from srh_notarias_abogados where not_cod_notaria = 1");
+        utilitario.addUpdateTabla(tabTabla, "doc_notaria", "");//actualiza solo componentes
+    }
+
+    public void cargarAbogado() {
+        tabTabla.getColumna("doc_abogado").setCombo("select cod_notaria,nombre_registro from srh_notarias_abogados where ab_cod_notaria=" + tabTabla.getValor("doc_notaria"));
+        utilitario.addUpdateTabla(tabTabla, "doc_abogado", "");//actualiza solo componentes
     }
 
     @Override
@@ -217,7 +384,10 @@ public class DocumentoDeclaraciones extends Pantalla {
 
     @Override
     public void eliminar() {
-        utilitario.getTablaisFocus().eliminar();
+         utilitario.getTablaisFocus().eliminar();
+//        iAnticipos.setDeleteNotaria(Integer.parseInt(tabTabla.getValorSeleccionado()));
+//        utilitario.agregarMensajeInfo("Registro Eliminado", null);
+//        tabTabla.actualizar();
     }
 
     @Override
@@ -333,5 +503,21 @@ public class DocumentoDeclaraciones extends Pantalla {
 
     public void setP_parametros(Map p_parametros) {
         this.p_parametros = p_parametros;
+    }
+
+    public Tabla getSetNotaria() {
+        return setNotaria;
+    }
+
+    public void setSetNotaria(Tabla setNotaria) {
+        this.setNotaria = setNotaria;
+    }
+
+    public Tabla getSetAbogado() {
+        return setAbogado;
+    }
+
+    public void setSetAbogado(Tabla setAbogado) {
+        this.setAbogado = setAbogado;
     }
 }
