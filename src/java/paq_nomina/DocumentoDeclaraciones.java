@@ -4,16 +4,21 @@
  */
 package paq_nomina;
 
+import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
+import framework.componentes.Combo;
+import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
+import framework.componentes.Grid;
 import framework.componentes.Grupo;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
 import framework.componentes.Reporte;
 import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
+import framework.componentes.Texto;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,11 +39,14 @@ public class DocumentoDeclaraciones extends Pantalla {
     private Tabla tabTabla = new Tabla();
     private Tabla tabConsulta = new Tabla();
     private Panel panOpcion = new Panel();
-
+    private Dialogo dialogoDE = new Dialogo();
+    private Grid gridDe = new Grid();
+    private Combo cmbDescripcion = new Combo();
+    private Combo cmbPendientes = new Combo();
     private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
     private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
     private Map p_parametros = new HashMap();
-    
+
     public DocumentoDeclaraciones() {
         //Para capturar el usuario que se encuntra utilizando la opción
         tabConsulta.setId("tabConsulta");
@@ -165,7 +173,16 @@ public class DocumentoDeclaraciones extends Pantalla {
         Grupo gru = new Grupo();
         gru.getChildren().add(div);
         panOpcion.getChildren().add(gru);
-        
+
+        dialogoDE.setId("dialogoDE");
+        dialogoDE.setTitle("PARAMETROS DE REPORTE"); //titulo
+        dialogoDE.setWidth("35%"); //siempre en porcentajes  ancho
+        dialogoDE.setHeight("20%");//siempre porcentaje   alto 
+        dialogoDE.setResizable(false); //para que no se pueda cambiar el tamaño
+        dialogoDE.getBot_aceptar().setMetodo("aceptoDescuentos");
+        gridDe.setColumns(4);
+        agregarComponente(dialogoDE);
+
         bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
         agregarComponente(rep_reporte); //2 agregar el listado de reportes
         sef_formato.setId("sef_formato");
@@ -201,6 +218,65 @@ public class DocumentoDeclaraciones extends Pantalla {
     @Override
     public void eliminar() {
         utilitario.getTablaisFocus().eliminar();
+    }
+
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+
+    }
+
+    //llamado para seleccionar el reporte
+    @Override
+    public void aceptarReporte() {
+        rep_reporte.cerrar();
+        switch (rep_reporte.getNombre()) {
+            case "DECLARACIONES JURAMENTADAS":
+                dialogoDE.Limpiar();
+                Grid griComp = new Grid();
+                griComp.setColumns(2);
+                griComp.getChildren().add(new Etiqueta("DISTRIBUTIVO: "));
+                cmbDescripcion.setId("cmbDescripcion");
+                cmbDescripcion.setConexion(conPostgres);
+                cmbDescripcion.setCombo("SELECT id_distributivo,descripcion FROM srh_tdistributivo ORDER BY id_distributivo");
+                griComp.getChildren().add(cmbDescripcion);
+                griComp.getChildren().add(new Etiqueta("Parametro: "));
+                List lista = new ArrayList();
+                Object fila1[] = {
+                    "1", "Entregados"
+                };
+                Object fila2[] = {
+                    "2", "Pendientes"
+                };
+                lista.add(fila1);
+                lista.add(fila2);
+                cmbPendientes.setCombo(lista);
+                griComp.getChildren().add(cmbPendientes);
+                gridDe.getChildren().add(griComp);
+                dialogoDE.setDialogo(gridDe);
+                dialogoDE.dibujar();
+                break;
+        }
+    }
+
+    // dibujo de reporte y envio de parametros
+    public void aceptoDescuentos() {
+        switch (rep_reporte.getNombre()) {
+            case "DECLARACIONES JURAMENTADAS":
+                String cadena = "";
+                if (cmbPendientes.getValue().equals("1")) {
+                    cadena = "not null";
+                } else {
+                    cadena = "null";
+                }
+                p_parametros.put("cadena", cadena + "");
+                p_parametros.put("distributivo", Integer.parseInt(cmbDescripcion.getValue() + ""));
+                p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
+                rep_reporte.cerrar();
+                sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                sef_formato.dibujar();
+                break;
+        }
     }
 
     public Conexion getConPostgres() {
@@ -258,5 +334,4 @@ public class DocumentoDeclaraciones extends Pantalla {
     public void setP_parametros(Map p_parametros) {
         this.p_parametros = p_parametros;
     }
-    
 }
