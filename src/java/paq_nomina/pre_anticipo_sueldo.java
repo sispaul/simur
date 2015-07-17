@@ -2077,10 +2077,10 @@ public class pre_anticipo_sueldo extends Pantalla {
                 + "c.numero_cuotas_anticipo as plazo,\n"
                 + "c.fecha_anticipo,\n"
                 + "e.estado\n"
-                + "FROM \"public\".srh_solicitud_anticipo AS s\n"
-                + "INNER JOIN \"public\".srh_garante_anticipo AS \"g\" ON \"g\".ide_solicitud_anticipo = s.ide_solicitud_anticipo\n"
-                + "INNER JOIN \"public\".srh_calculo_anticipo AS \"c\" ON \"c\".ide_solicitud_anticipo = s.ide_solicitud_anticipo\n"
-                + "INNER JOIN \"public\".srh_estado_anticipo AS e ON \"e\".ide_estado_tipo = c.ide_estado_anticipo\n"
+                + "FROM srh_solicitud_anticipo AS s\n"
+                + "INNER JOIN srh_garante_anticipo AS g ON g.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n"
+                + "INNER JOIN srh_calculo_anticipo AS c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n"
+                + "INNER JOIN srh_estado_anticipo AS e ON e.ide_estado_tipo = c.ide_estado_anticipo\n"
                 + "where c.ide_estado_anticipo in (1,3,2)");
         set_garante.getColumna("cedula").setFiltro(true);
         set_garante.getColumna("garante").setFiltro(true);

@@ -21,6 +21,28 @@ public class AntiSueldos {
     private Utilitario utilitario = new Utilitario();
     private Conexion conPostgres;
 
+    public TablaGenerica getVerifRegistro(Integer registro, String nombre) {
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("select cod_notaria,nombre_registro from srh_notarias_abogados where not_cod_notaria= " + registro + " and nombre_registro = '" + nombre + "'");
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
+    }
+
+    public TablaGenerica getVerifRegistro1(Integer registro, Integer codigo, String nombre) {
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("select cod_notaria,nombre_registro from srh_notarias_abogados where not_cod_notaria= " + registro + " and cod_notaria= " + registro + " and nombre_registro = '" + nombre + "'");
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
+    }
+
     //Saca información de los servidores que tiens solicitudes pendientes
     public TablaGenerica VerifEmpleid(String cedu, Integer tipo) {
         conPostgresql();
@@ -1088,6 +1110,22 @@ public class AntiSueldos {
         desPostgresql();
     }
 
+    public void setNotaria(Integer codigo, String nombre) {
+        String parametro = "insert into srh_notarias_abogados (not_cod_notaria,nombre_registro)\n"
+                + "values (" + codigo + ",'" + nombre + "')";
+        conPostgresql();
+        conPostgres.ejecutarSql(parametro);
+        desPostgresql();
+    }
+
+    public void setAbogado(Integer codigo, Integer abogado, String nombre) {
+        String parametro = "insert into srh_notarias_abogados (not_cod_notaria,ab_cod_notaria,nombre_registro)\n"
+                + "values (" + codigo + "," + abogado + ",'" + nombre + "')";
+        conPostgresql();
+        conPostgres.ejecutarSql(parametro);
+        desPostgresql();
+    }
+
     public void setActuCalculo(Integer anti, Double cuota) {
         String auSql = "update srh_detalle_anticipo\n"
                 + "set valor = " + cuota + "\n"
@@ -1122,17 +1160,17 @@ public class AntiSueldos {
         String auSql = "update srh_detalle_anticipo\n"
                 + "set valor = b.valor\n"
                 + "from (select a.ide_detalle_anticipo,a.ide_periodo_descuento,\n"
-                + "(case when b.valor >0.0 then b.valor+"+cuota+" when  b.valor <=0.0 then "+cuota+" end ) as valor\n"
+                + "(case when b.valor >0.0 then b.valor+" + cuota + " when  b.valor <=0.0 then " + cuota + " end ) as valor\n"
                 + "from \n"
                 + "(select ide_detalle_anticipo,ide_periodo_descuento,ide_anticipo from srh_detalle_anticipo\n"
-                + "where ide_anticipo = "+anti+" order by ide_detalle_anticipo desc limit 1) as a\n"
+                + "where ide_anticipo = " + anti + " order by ide_detalle_anticipo desc limit 1) as a\n"
                 + "inner join \n"
                 + "(SELECT s.ide_solicitud_anticipo,\n"
                 + "(c.valor_anticipo-\n"
                 + "(select sum(valor) from srh_detalle_anticipo where ide_anticipo = s.ide_solicitud_anticipo))as valor,c.valor_anticipo\n"
                 + "FROM srh_solicitud_anticipo AS s\n"
                 + "INNER JOIN srh_calculo_anticipo AS c ON c.ide_solicitud_anticipo = s.ide_solicitud_anticipo\n"
-                + "WHERE s.ide_solicitud_anticipo = "+anti+") as b\n"
+                + "WHERE s.ide_solicitud_anticipo = " + anti + ") as b\n"
                 + "on a.ide_anticipo =b.ide_solicitud_anticipo) as b\n"
                 + "where srh_detalle_anticipo.ide_detalle_anticipo = b.ide_detalle_anticipo";
         conPostgresql();
@@ -1365,8 +1403,22 @@ public class AntiSueldos {
         conPostgres.ejecutarSql(strSql4);
         desPostgresql();
     }
-    //metodo que posee la cadena de conexion a base de datos
 
+    public void setDeleteRegistro(Integer anti) {
+        String auSql = "delete from srh_notarias_abogados where cod_notaria = " + anti;
+        conPostgresql();
+        conPostgres.ejecutarSql(auSql);
+        desPostgresql();
+    }
+
+    public void setDeleteNotaria(Integer anti) {
+        String auSql = "delete from srh_documentos_declaraciones where doc_codigo = " + anti;
+        conPostgresql();
+        conPostgres.ejecutarSql(auSql);
+        desPostgresql();
+    }
+
+    //metodo que posee la cadena de conexion a base de datos
     private void conPostgresql() {
         if (conPostgres == null) {
             conPostgres = new Conexion();

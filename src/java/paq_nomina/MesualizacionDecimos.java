@@ -395,7 +395,7 @@ public class MesualizacionDecimos extends Pantalla {
         fecha = utilitario.getMes(utilitario.getFechaActual());
         Integer valorDias = 0;
         String columna = "", autoriza = "";
-        double d4t = 0.0, rmu = 0.0, valac = 0.0, valac1 = 0.0;
+        double d4t = 0.0, rmu = 0.0, valac = 0.0, valac1 = 0.0, acumulado = 0.0;
         BigDecimal bd, bd1;
         TablaGenerica tabDato = mDescuento.getInfoAcumulacion(comboEmpleados1.getValue() + "");
         if (!tabDato.isEmpty()) {
@@ -416,7 +416,7 @@ public class MesualizacionDecimos extends Pantalla {
                             TablaGenerica tabD4T = mDescuento.getCalculoD4T(tabDato.getValor(i, "autoriza_cod_empleado"));
                             if (!tabD4T.isEmpty()) {
                                 d4t = Double.parseDouble(tabD4T.getValor("sbu"));
-                                if (fecha.compareTo(8) == 0) {// se paga en agosto
+                                if (fecha.compareTo(7) == 0) {// se paga en agosto
                                     autoriza = "0";
                                     if (calcularMeses(new GregorianCalendar(utilitario.getAnio(tabDato.getValor(i, "autoriza_fecha_ingreso")), utilitario.getMes(tabDato.getValor(i, "autoriza_fecha_ingreso")), utilitario.getDia(tabDato.getValor(i, "autoriza_fecha_ingreso"))),
                                             new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()), utilitario.getMes(utilitario.getFechaActual()), 30)) >= 12) {
@@ -450,21 +450,24 @@ public class MesualizacionDecimos extends Pantalla {
                                 if (!tabD4tDife.isEmpty()) {
                                     d4t = Double.parseDouble(tabD4T.getValor("sbu"));
                                     if (fecha.compareTo(7) == 0) {//se paga en julio
+                                        acumulado = Double.parseDouble(tabD4tDife.getValor("acumulado_decimo"));
                                         if (calcularDias(new GregorianCalendar(utilitario.getAnio(tabDato.getValor(i, "autoriza_fecha_ingreso")), utilitario.getMes(tabDato.getValor(i, "autoriza_fecha_ingreso")), utilitario.getDia(tabDato.getValor(i, "autoriza_fecha_ingreso"))),
                                                 new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()), utilitario.getMes(utilitario.getFechaActual()), 30)) >= 30) {
                                             bd = new BigDecimal(d4t / 12);
                                             valac1 = bd.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
-                                            bd1 = new BigDecimal((d4t - Double.parseDouble(tabD4tDife.getValor("valor_acumulado"))) + valac1);
+                                            bd1 = new BigDecimal((d4t - Double.parseDouble(tabD4tDife.getValor("acumulado_decimo"))));
                                             valac = bd1.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
                                         } else {
                                             valorDias = calcularDias(new GregorianCalendar(utilitario.getAnio(tabDato.getValor(i, "autoriza_fecha_ingreso")), utilitario.getMes(tabDato.getValor(i, "autoriza_fecha_ingreso")), utilitario.getDia(tabDato.getValor(i, "autoriza_fecha_ingreso"))),
                                                     new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()), utilitario.getMes(utilitario.getFechaActual()), 30)) + 1;
                                             bd = new BigDecimal((d4t / 360) * valorDias);
                                             valac1 = bd.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
-                                            bd1 = new BigDecimal((d4t - Double.parseDouble(tabD4tDife.getValor("valor_acumulado"))) + valac1);
+                                            bd1 = new BigDecimal((d4t - Double.parseDouble(tabD4tDife.getValor("acumulado_decimo"))));
                                             valac = bd1.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
                                         }
                                     } else {
+                                        valac1 = 0.0;
+                                        acumulado = Double.parseDouble(tabD4tDife.getValor("acumulado_decimo"));
                                         if (calcularDias(new GregorianCalendar(utilitario.getAnio(tabDato.getValor(i, "autoriza_fecha_ingreso")), utilitario.getMes(tabDato.getValor(i, "autoriza_fecha_ingreso")), utilitario.getDia(tabDato.getValor(i, "autoriza_fecha_ingreso"))),
                                                 new GregorianCalendar(utilitario.getAnio(utilitario.getFechaActual()), utilitario.getMes(utilitario.getFechaActual()), 30)) >= 30) {
                                             bd = new BigDecimal(d4t / 12);
@@ -479,7 +482,7 @@ public class MesualizacionDecimos extends Pantalla {
                                     }
                                 }
                             }
-                            mDescuento.setDatosCalculo(tabDato.getValor(i, "autoriza_cod_empleado"), tabDato.getValor(i, "autoriza_empleado"), columna, valac, tabDato.getValor(i, "autoriza_decimo_cuarto"), rmu, 0.0, 0.0, tabDato.getValor(i, "autoriza_id_distributivo"), 0.0, valac);
+                            mDescuento.setDatosCalculo(tabDato.getValor(i, "autoriza_cod_empleado"), tabDato.getValor(i, "autoriza_empleado"), columna, valac, tabDato.getValor(i, "autoriza_decimo_cuarto"), rmu, 0.0, 0.0, tabDato.getValor(i, "autoriza_id_distributivo"), acumulado, valac1);
                         }
                     }
                 }
