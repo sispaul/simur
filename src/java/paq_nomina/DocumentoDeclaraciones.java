@@ -195,7 +195,7 @@ public class DocumentoDeclaraciones extends Pantalla {
         div.dividir2(patEmp, patPanel, "%30", "h");
         Grupo gru = new Grupo();
         gru.getChildren().add(div);
-        panOpcion.getChildren().add(gru);
+        agregarComponente(gru);
         
         dialogoDE.setId("dialogoDE");
         dialogoDE.setTitle("PARAMETROS DE REPORTE"); //titulo
