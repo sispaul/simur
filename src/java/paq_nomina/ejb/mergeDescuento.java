@@ -662,7 +662,7 @@ public class mergeDescuento {
         TablaGenerica tabFuncionario = new TablaGenerica();
         conPostgresql();
         tabFuncionario.setConexion(conPostgres);
-        tabFuncionario.setSql("SELECT periodo_fecha_inicial,periodo_fecha_final\n"
+        tabFuncionario.setSql("SELECT periodo_columna,periodo_fecha_inicial,periodo_fecha_final\n"
                 + "from srh_periodo_sueldo\n"
                 + "where periodo_columna = '" + codigo + "' and periodo_estado = 'S'");
         tabFuncionario.ejecutarSql();
