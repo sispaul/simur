@@ -20,7 +20,7 @@ l.doc_codigo,
 l.doc_fecha_declaracion,
 l.doc_tipo_declaracion,
 (SELECT nombre_registro from srh_notarias_abogados where not_cod_notaria = cast(l.doc_notaria as integer)) as doc_notaria,
-(SELECT nombre_registro from srh_notarias_abogados where ab_cod_notaria = cast(l.doc_abogado as integer))as doc_abogado,
+(SELECT nombre_registro from srh_notarias_abogados where ab_cod_notaria = cast(l.doc_notaria as integer))as doc_abogado,
 l.doc_documento,
 extract(year from age(current_date::date ,l.doc_fecha_declaracion::date)) as anio
 FROM srh_empleado AS e
@@ -55,29 +55,29 @@ order by d.descripcion,extract(year from age(current_date::date ,l.doc_fecha_dec
 					<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement uuid="ea34f568-b7d1-45ef-af59-dee2dcd111b3" x="25" y="44" width="100" height="20"/>
-					<textElement>
+					<reportElement uuid="ea34f568-b7d1-45ef-af59-dee2dcd111b3" x="25" y="29" width="100" height="35"/>
+					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Cedula]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="128a259b-9c8c-4ff8-bbea-84ca864c033f" x="108" y="44" width="215" height="20"/>
-					<textElement>
+					<reportElement uuid="128a259b-9c8c-4ff8-bbea-84ca864c033f" x="108" y="29" width="215" height="35"/>
+					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Nombres]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="ca684b2d-72b4-43ab-a949-0df4e6b2550f" x="334" y="44" width="47" height="20"/>
-					<textElement>
+					<reportElement uuid="ca684b2d-72b4-43ab-a949-0df4e6b2550f" x="334" y="29" width="47" height="35"/>
+					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Fecha]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="7c9543b8-c14f-4199-a5b9-5dfc90cba902" x="381" y="44" width="184" height="20"/>
-					<textElement>
+					<reportElement uuid="7c9543b8-c14f-4199-a5b9-5dfc90cba902" x="381" y="29" width="184" height="35"/>
+					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Notaria]]></text>
@@ -90,18 +90,18 @@ order by d.descripcion,extract(year from age(current_date::date ,l.doc_fecha_dec
 					<text><![CDATA[Distributivo]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="53dbc37d-afce-47ca-b275-8756ae1f02ae" x="564" y="44" width="190" height="20"/>
-					<textElement>
+					<reportElement uuid="53dbc37d-afce-47ca-b275-8756ae1f02ae" x="564" y="29" width="190" height="35"/>
+					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Abogado]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="ce93eb89-3607-47e8-84b4-e0fc80cb1529" x="754" y="44" width="48" height="20"/>
+					<reportElement uuid="ce93eb89-3607-47e8-84b4-e0fc80cb1529" x="747" y="29" width="55" height="35"/>
 					<textElement>
 						<font size="9" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Años]]></text>
+					<text><![CDATA[Años Antiguedad]]></text>
 				</staticText>
 			</band>
 		</groupHeader>
@@ -180,7 +180,7 @@ order by d.descripcion,extract(year from age(current_date::date ,l.doc_fecha_dec
 				</graphicElement>
 			</line>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="4f5fa4e5-3bb8-4133-ba69-fb9033d93bb8" x="754" y="0" width="48" height="14"/>
+				<reportElement uuid="4f5fa4e5-3bb8-4133-ba69-fb9033d93bb8" x="747" y="0" width="55" height="14"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{anio}]]></textFieldExpression>
 			</textField>
