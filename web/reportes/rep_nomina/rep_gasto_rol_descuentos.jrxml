@@ -35,7 +35,8 @@ where r.ano=$P{pide_ano} and
 r.ide_periodo=$P{periodo} and
 r.id_distributivo_roles=$P{distributivo} and
 r.ide_columnas=$P{columnas} and
-r.valor >0]]>
+r.valor >0
+order by e.nombres]]>
 	</queryString>
 	<field name="cedula_pass" class="java.lang.String"/>
 	<field name="nombres" class="java.lang.String"/>
@@ -86,7 +87,7 @@ r.valor >0]]>
 				<text><![CDATA[INCONSISTENCIAS DE DESCUENTOS A EMPLEADOS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="f2a6cd37-f54b-4c24-8504-6e92b71c9f9c" key="staticText-3" x="117" y="78" width="49" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="f2a6cd37-f54b-4c24-8504-6e92b71c9f9c" key="staticText-3" x="108" y="78" width="49" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -99,7 +100,7 @@ r.valor >0]]>
 				<text><![CDATA[CEDULA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="2fd316d5-d016-4e15-9eef-657cd1663591" key="staticText-8" x="187" y="78" width="243" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="2fd316d5-d016-4e15-9eef-657cd1663591" key="staticText-8" x="178" y="78" width="243" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -128,7 +129,7 @@ r.valor >0]]>
 				<text><![CDATA[AÑO:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="f0f8bf4d-13cf-4a04-8c0d-cea808e8565b" key="staticText-24" x="460" y="79" width="67" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="f0f8bf4d-13cf-4a04-8c0d-cea808e8565b" key="staticText-24" x="451" y="79" width="67" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -208,7 +209,7 @@ r.valor >0]]>
 	<detail>
 		<band height="13" splitType="Stretch">
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement uuid="70a45ac2-655c-466b-81e6-ada1db0afdc0" key="textField" x="117" y="0" width="49" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="70a45ac2-655c-466b-81e6-ada1db0afdc0" key="textField" x="108" y="0" width="49" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -221,14 +222,14 @@ r.valor >0]]>
 				<textFieldExpression><![CDATA[$F{cedula_pass}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="ce13caa5-0c23-4f9a-8430-d7463a48568d" x="187" y="0" width="243" height="12"/>
+				<reportElement uuid="ce13caa5-0c23-4f9a-8430-d7463a48568d" x="178" y="0" width="243" height="12"/>
 				<textElement>
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombres}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00;###0.00-">
-				<reportElement uuid="9cfd69d1-a824-4738-9eaf-3af4efbf8297" x="460" y="0" width="67" height="12"/>
+				<reportElement uuid="9cfd69d1-a824-4738-9eaf-3af4efbf8297" x="451" y="0" width="67" height="12"/>
 				<textElement textAlignment="Right">
 					<font size="7"/>
 				</textElement>
