@@ -1,68 +1,470 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_decimo_tercero" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f8b2cc3f-bb7a-408d-b9aa-66df9088ff6e">
-	<property name="ireport.zoom" value="1.3636363636363635"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_decimo_tercero" language="groovy" pageWidth="595" pageHeight="842" columnWidth="575" leftMargin="20" rightMargin="0" topMargin="20" bottomMargin="20" uuid="0829cc80-9ace-4f91-949c-391f48551b30">
+	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="nom_resp" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["el que imprimio"]]></defaultValueExpression>
 	</parameter>
+	<parameter name="id_distributivo" class="java.lang.String">
+		<defaultValueExpression><![CDATA["1"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="columna" class="java.lang.String">
+		<defaultValueExpression><![CDATA["16"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_inicio" class="java.lang.String">
+		<defaultValueExpression><![CDATA["2014-12-01"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_fin" class="java.lang.String">
+		<defaultValueExpression><![CDATA["2015-11-30"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="descripcion" class="java.lang.String">
+		<defaultValueExpression><![CDATA["D3"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_distributivo" class="java.lang.Integer"/>
+	<parameter name="fecha_decimo" class="java.lang.String"/>
+	<parameter name="anio" class="java.lang.String"/>
+	<parameter name="anioa" class="java.lang.Integer"/>
+	<parameter name="anioan" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select cod_empleado,cedula_pass,nombres,distributivo,id_distributivo,dias,valor,acumulado,autoriza_fecha_ingreso,
+cast((case when dias >= 360 and  id_distributivo = 1 then ((sub+sub1+rmu+rmu1)/12)
+when dias < 360 and  id_distributivo = 1 then ((sub+rmu)/12)
+when dias >= 360 and  id_distributivo = 2 then ((hxe100+hxe1001+hxe50+hxe501+rmu+rmu1)/12)
+when dias < 360 and  id_distributivo = 2 then ((hxe100+hxe50+rmu)/12) end)as numeric (7,2)) as decimo,
+(case when acumulado = 'SI' then cast((case when dias >= 360 and  id_distributivo = 1 then ((sub+sub1+rmu+rmu1)/12)
+when dias < 360 and  id_distributivo = 1 then ((sub+rmu)/12)
+when dias >= 360 and  id_distributivo = 2 then ((hxe100+hxe1001+hxe50+hxe501+rmu+rmu1)/12)
+when dias < 360 and  id_distributivo = 2 then ((hxe100+hxe50+rmu)/12) end)as numeric (7,2))
+when acumulado = 'NO' then  (cast((case when dias >= 360 and  id_distributivo = 1 then ((sub+sub1+rmu+rmu1)/12)
+when dias < 360 and  id_distributivo = 1 then ((sub+rmu)/12)
+when dias >= 360 and  id_distributivo = 2 then ((hxe100+hxe1001+hxe50+hxe501+rmu+rmu1)/12)
+when dias < 360 and  id_distributivo = 2 then ((hxe100+hxe50+rmu)/12) end)as numeric (7,2))-valor)end) as saldo
+ from (
+select a.*,b.acumulado,c.dias,h.valor,b.autoriza_fecha_ingreso,
+(case when d.horas100 is null then 0 when d.horas100 is not null then d.horas100 end) as HXE100,
+(case when d.horas1001 is null then 0 when d.horas1001 is not null then d.horas1001 end) as HXE1001,
+(case when e.horas50 is null  then 0 when e.horas50 is not null then e.horas50 end) as HXE50,
+(case when e.horas501 is null  then 0 when e.horas501 is not null then e.horas501 end) as HXE501,
+(case when f.sub is null then 0 when f.sub is not null then f.sub end) as SUB,
+(case when f.sub1 is null then 0 when f.sub1 is not null then f.sub1 end) as SUB1,
+(case when g.rmu  is null then 0 when g.rmu is not null then g.rmu end) as RMU,
+(case when g.rmu1 is null then 0 when g.rmu1 is not null then g.rmu1 end) as RMU1
+ from (SELECT
+cod_empleado,
+cedula_pass,
+nombres,
+id_distributivo,
+(SELECT descripcion from srh_tdistributivo where id_distributivo = srh_empleado.id_distributivo) as distributivo
+FROM srh_empleado)as a
+inner join (SELECT autoriza_cod_empleado,(case when autoriza_decimo_tercero = '1' then 'SI' when autoriza_decimo_tercero = '0' then  'NO' end) AS acumulado,
+autoriza_fecha_ingreso
+from srh_autorizacion_acumulacion where autoriza_anio = $P{anio} and autoriza_id_distributivo = $P{id_distributivo})as b
+on a.cod_empleado = cast(b.autoriza_cod_empleado as integer)
+inner join (select autoriza_cod_empleado, (case when  (to_date('$P!{fecha_decimo}','dd-mm-yyyy') - autoriza_fecha_ingreso) >=360 then 360
+when (to_date('$P!{fecha_decimo}','dd-mm-yyyy') - autoriza_fecha_ingreso) <360 then to_date('$P!{fecha_decimo}','dd-mm-yyyy') - autoriza_fecha_ingreso end ) as dias
+from srh_autorizacion_acumulacion where autoriza_anio = $P{anio} and autoriza_id_distributivo = $P{id_distributivo}) as c
+on a.cod_empleado = cast(c.autoriza_cod_empleado as integer)
+inner join
+(select a.*,b.horas100,c.horas1001 from (
+SELECT cod_empleado,nombres
+FROM srh_empleado where id_distributivo = $P{ide_distributivo} and estado = 1) as a
+left join
+(SELECT sum(valor) AS horas100,ide_empleado
+FROM srh_roles
+WHERE ano = $P{anioa} AND
+ide_periodo IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11) AND
+ide_columnas IN (92,75) AND valor > 0
+group by ide_empleado) as b
+on a.cod_empleado = b.ide_empleado
+left join
+(SELECT sum(valor) AS horas1001,ide_empleado
+FROM srh_roles
+WHERE ano = $P{anioan} AND
+ide_periodo IN (12) AND
+ide_columnas IN (92,75) AND valor > 0
+group by ide_empleado) as c
+on a.cod_empleado = c.ide_empleado) as d
+on a.cod_empleado = d.cod_empleado
+inner join
+(select a.*,b.horas50,c.horas501 from (
+SELECT cod_empleado,nombres
+FROM srh_empleado where id_distributivo = $P{ide_distributivo} and estado = 1) as a
+left join
+(SELECT sum(valor) AS horas50,ide_empleado
+FROM srh_roles
+WHERE ano = 2015 AND
+ide_periodo IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11) AND
+ide_columnas IN (93,76) AND valor > 0
+group by ide_empleado) as b
+on a.cod_empleado = b.ide_empleado
+left join
+(SELECT sum(valor) AS horas501,ide_empleado
+FROM srh_roles
+WHERE ano = $P{anioan} AND
+ide_periodo IN (12) AND
+ide_columnas IN (93,76) AND valor > 0
+group by ide_empleado) as c
+on a.cod_empleado = c.ide_empleado) as e
+on a.cod_empleado = e.cod_empleado
+inner join
+(select a.*,b.SUB,c.SUB1 from (
+SELECT cod_empleado,nombres
+FROM srh_empleado where id_distributivo = $P{ide_distributivo} and estado = 1) as a
+left join
+(SELECT sum(valor) AS SUB,ide_empleado
+FROM srh_roles
+WHERE ano = $P{anioa} AND
+ide_periodo IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11) AND
+ide_columnas IN (18) AND valor > 0
+group by ide_empleado) as b
+on a.cod_empleado = b.ide_empleado
+left join
+(SELECT sum(valor) AS SUB1,ide_empleado
+FROM srh_roles
+WHERE ano = $P{anioan} AND
+ide_periodo IN (12) AND
+ide_columnas IN (18) AND valor > 0
+group by ide_empleado) as c
+on a.cod_empleado = c.ide_empleado) as f
+on a.cod_empleado = f.cod_empleado
+inner join
+(select a.*,b.RMU,c.RMU1 from (
+SELECT cod_empleado,nombres
+FROM srh_empleado where id_distributivo = $P{ide_distributivo} and estado = 1) as a
+left join
+(SELECT sum(valor) AS RMU,ide_empleado
+FROM srh_roles
+WHERE ano = $P{anioa} AND
+ide_periodo IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11) AND
+ide_columnas IN (14,40) AND valor > 0
+group by ide_empleado) as b
+on a.cod_empleado = b.ide_empleado
+left join
+(SELECT sum(valor) AS RMU1,ide_empleado
+FROM srh_roles
+WHERE ano = $P{anioan} AND
+ide_periodo IN (12) AND
+ide_columnas IN (14,40) AND valor > 0
+group by ide_empleado) as c
+on a.cod_empleado = c.ide_empleado) as g
+on a.cod_empleado = g.cod_empleado
+inner join (SELECT a.autoriza_cod_empleado,sum (d.decimo_valor) as valor
+FROM srh_autorizacion_acumulacion a
+inner join srh_decimo_cuarto_tercero d on a.autoriza_cod_empleado = d.decimo_cod_empleado
+WHERE a.autoriza_id_distributivo = $P{id_distributivo} and d.decimo_columna = $P{columna} and d.decimo_fecha between '$P!{fecha_inicio}' and '$P!{fecha_fin}'
+group by a.autoriza_cod_empleado)as h
+on a.cod_empleado = cast(h.autoriza_cod_empleado as integer)
+) as z
+order by acumulado,nombres]]>
+	</queryString>
+	<field name="cod_empleado" class="java.lang.Long"/>
+	<field name="cedula_pass" class="java.lang.String"/>
+	<field name="nombres" class="java.lang.String"/>
+	<field name="distributivo" class="java.lang.String"/>
+	<field name="id_distributivo" class="java.lang.Integer"/>
+	<field name="dias" class="java.lang.Integer"/>
+	<field name="valor" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[VALOR]]></fieldDescription>
+	</field>
+	<field name="acumulado" class="java.lang.String"/>
+	<field name="autoriza_fecha_ingreso" class="java.sql.Date"/>
+	<field name="decimo" class="java.math.BigDecimal"/>
+	<field name="saldo" class="java.math.BigDecimal"/>
+	<variable name="sumAcu" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
+	</variable>
+	<variable name="sumDe" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{decimo}]]></variableExpression>
+	</variable>
+	<variable name="sumSa" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{saldo}]]></variableExpression>
+	</variable>
+	<variable name="subValor" class="java.math.BigDecimal" resetType="Group" resetGroup="acumulado" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
+	</variable>
+	<variable name="subDecimo" class="java.math.BigDecimal" resetType="Group" resetGroup="acumulado" calculation="Sum">
+		<variableExpression><![CDATA[$F{decimo}]]></variableExpression>
+	</variable>
+	<variable name="subSaldo" class="java.math.BigDecimal" resetType="Group" resetGroup="acumulado" calculation="Sum">
+		<variableExpression><![CDATA[$F{saldo}]]></variableExpression>
+	</variable>
+	<group name="acumulado">
+		<groupExpression><![CDATA[$F{acumulado}]]></groupExpression>
+		<groupHeader>
+			<band height="50">
+				<textField>
+					<reportElement uuid="cb14fac5-b3a4-47d0-a19f-1f08f9ac63db" x="82" y="7" width="49" height="18"/>
+					<textElement textAlignment="Right">
+						<font size="13"/>
+					</textElement>
+					<textFieldExpression><![CDATA[": "+$F{acumulado}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="9c29f22a-900b-4c84-8115-c70795d8c7fd" x="0" y="0" width="89" height="31" forecolor="#000000"/>
+					<textElement>
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ACUMULACIÓN DE DECIMO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="7c50535e-857f-4f97-a94c-1b7f53049e69" x="430" y="34" width="60" height="16" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[DECIMO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="d210d662-b58c-41be-aa05-f5a1deabc508" x="23" y="34" width="59" height="16" forecolor="#FFFFFF"/>
+					<textElement>
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CODIGO : ]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement uuid="b6288c8c-2e43-4373-b2bf-d688a74d8cd8" x="1" y="34" width="569" height="16" backcolor="#666666"/>
+				</rectangle>
+				<staticText>
+					<reportElement uuid="a6896685-9daa-49c6-aac8-8a67ab25b430" x="136" y="34" width="174" height="16" forecolor="#FFFFFF"/>
+					<textElement>
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[NOMBRES : ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="1e97f7b6-c925-4524-b6d8-e0819377c461" x="395" y="34" width="48" height="16" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[VAL. ACU.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="eabe7f62-62c0-422b-b4d4-9bc5fe37999e" x="1" y="34" width="22" height="16" forecolor="#FFFFFF"/>
+					<textElement>
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[#]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="67fbbdf4-16ec-48e1-8943-77f88a229677" x="474" y="34" width="60" height="16" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[SALDO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="e0753bfe-5535-459b-91bb-74943cd0d4dc" x="542" y="34" width="24" height="16" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[DIAS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="dd5e4f27-a997-40b3-b41e-3a6074f2f330" x="320" y="34" width="77" height="16" forecolor="#FFFFFF"/>
+					<textElement>
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[FEC. INGRESO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="9540669f-d3c7-46f6-a825-bba72aea759d" x="73" y="34" width="76" height="16" forecolor="#FFFFFF"/>
+					<textElement>
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CEDULA : ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="18a8a2a5-282d-40d7-878d-8a85bbb1b405" x="24" y="34" width="59" height="16" forecolor="#FFFFFF"/>
+					<textElement>
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CODIGO : ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="9a2fce4d-1aa9-46d6-9146-bb913aa4875c" x="430" y="34" width="60" height="16" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[DECIMO]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="17">
+				<staticText>
+					<reportElement uuid="8d34f862-2fb0-4c69-8af1-47d2d7ddf637" x="340" y="0" width="55" height="17"/>
+					<textElement verticalAlignment="Bottom">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[ Sub Total : ]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="394244eb-c0d3-4638-b576-77c155760501" x="500" y="0" width="60" height="17"/>
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{subSaldo}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="6235588c-d26e-4229-ad37-4d8902345f59" x="443" y="0" width="60" height="17"/>
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{subDecimo}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="5c9aa64b-f954-4913-a638-7735285c8225" x="397" y="0" width="48" height="17"/>
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{subValor}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="79" splitType="Stretch">
-			<staticText>
-				<reportElement uuid="753fa34b-0706-406c-b926-bfaa52171a63" key="staticText" x="0" y="0" width="365" height="25" forecolor="#000000" backcolor="#FFFFFF"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Left">
-					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="68" splitType="Stretch">
+			<textField>
+				<reportElement uuid="4a790b17-bbc9-470b-bc02-628dd44a2f2e" x="0" y="10" width="271" height="20"/>
+				<textElement>
+					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Gobierno Autónomo Descentralizado del Cantón Rumiñahui]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="3df4f522-7f70-4232-9e8a-9b164d6abefe" key="staticText-1" x="0" y="16" width="272" height="18" forecolor="#000000" backcolor="#FFFFFF"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Left">
-					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				<textFieldExpression><![CDATA["Decima "+ $P{descripcion} +" Remuneración"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4d8d92e0-6466-4963-9627-9737377ebee2" x="38" y="48" width="104" height="20"/>
+				<textElement>
+					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[DECIMO 3ra REMUNERACIÓN]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA["Desde : "+$P{fecha_inicio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9afd0bd7-faf4-4fd5-a5b5-1353e6d2a432" x="142" y="48" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Hasta : " +$P{fecha_fin}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7e06496c-fc17-4e66-b510-02447ae8cf98" x="72" y="29" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{distributivo}]]></textFieldExpression>
+			</textField>
 			<staticText>
-				<reportElement uuid="40fa18b2-cc75-4e96-9431-b8714cd8f998" x="1" y="34" width="100" height="20"/>
+				<reportElement uuid="2ba154bc-59b7-44e5-ba54-0e09bf53bb50" x="0" y="29" width="100" height="20"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Distributivo : ]]></text>
 			</staticText>
+			<staticText>
+				<reportElement uuid="df6400fb-f023-4ea8-932c-be7365a9976a" x="1" y="48" width="36" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="4637de2d-2e8b-43c2-9840-580ebe7c2471" x="357" y="0" width="146" height="66"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo_reporte.png"]]></imageExpression>
+			</image>
 		</band>
-	</title>
+	</pageHeader>
 	<columnHeader>
-		<band height="61" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="125" splitType="Stretch"/>
+		<band height="16" splitType="Stretch">
+			<textField>
+				<reportElement uuid="e227d88f-54f5-4099-ab22-f2ea55e91a56" x="136" y="0" width="174" height="16"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombres}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7c20e70d-70d1-48dc-8c4f-bee414e60ba0" x="73" y="0" width="76" height="16"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cedula_pass}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0e103679-db32-4b2e-924a-7c50ec15ea23" x="542" y="0" width="24" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dias}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="dc234c8e-3d5f-451d-8981-a240797a4616" x="395" y="0" width="48" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e8ba30cd-7b4e-459f-8d66-658338cc8003" x="430" y="0" width="60" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{decimo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="c44e3935-a4ac-4671-8e07-3924584b8a9c" x="320" y="0" width="77" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{autoriza_fecha_ingreso}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="77cc1ebf-5da7-4368-a54d-ec0780305924" x="474" y="0" width="60" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{saldo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bf2826e6-d582-4e2e-b51c-50b992807f30" x="23" y="0" width="59" height="15"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cod_empleado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7bfaa9b4-8069-4a88-9b68-15edeb904327" x="1" y="0" width="22" height="15"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{acumulado_COUNT}]]></textFieldExpression>
+			</textField>
+		</band>
 	</detail>
 	<columnFooter>
-		<band height="45" splitType="Stretch">
-			<line>
-				<reportElement uuid="86601ce4-c7a2-467a-a0d7-9abd2a5bf266" key="line" x="5" y="44" width="530" height="1"/>
-			</line>
-		</band>
+		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="14" splitType="Stretch">
+		<band height="15" splitType="Stretch">
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement uuid="a3fd42fc-e393-422a-b0ec-663c32391e93" key="textField-1" x="194" y="0" width="90" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="3f9a56f6-2680-4a4d-bca5-eaf539b4105c" key="textField" x="326" y="3" width="170" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="a4db0812-71bb-4640-b3bd-c919701c1b84" key="textField-1" x="195" y="3" width="90" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -74,21 +476,8 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{nom_resp}]]></textFieldExpression>
 			</textField>
-			<textField pattern="" isBlankWhenNull="false">
-				<reportElement uuid="c39ae3ba-9706-41d1-b797-9971f98ce863" key="textField-5" x="13" y="0" width="92" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
-			</textField>
 			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
-				<reportElement uuid="a5fd6154-2325-4a4c-b7ac-37568cc3a0da" key="textField" x="499" y="0" width="36" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="69035cc1-18e1-42ca-93c6-617bb5030f5f" key="textField" x="500" y="3" width="36" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -101,21 +490,53 @@
 				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement uuid="6bffbebe-2e3f-474f-99d5-e38a8529a859" key="textField" x="325" y="0" width="170" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement uuid="0a9b2106-7088-4e04-be00-fa9674b57578" key="textField-5" x="14" y="3" width="92" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Right">
+				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
 			</textField>
+			<line>
+				<reportElement uuid="c7d3da34-3f28-455f-8ac7-35df876f0374" key="line" x="6" y="0" width="530" height="1"/>
+			</line>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="42" splitType="Stretch"/>
+		<band height="17" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="158e54e3-13b4-4787-bbba-bb13594a5f24" x="326" y="0" width="55" height="17"/>
+				<textElement verticalAlignment="Bottom">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[ Totales : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="a853fa9d-bc90-48e2-b209-7c5321584335" x="430" y="0" width="50" height="17"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sumDe}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ddcb4629-7d5d-481a-a97e-ae8f0e2e7f34" x="380" y="0" width="48" height="17"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sumAcu}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e3cae048-76d6-426b-818c-15aa8c714181" x="480" y="0" width="60" height="17"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sumSa}]]></textFieldExpression>
+			</textField>
+		</band>
 	</summary>
 </jasperReport>
