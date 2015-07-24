@@ -181,7 +181,7 @@ order by nombres,b.cue_descripcion]]>
 				<textElement>
 					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
-				<text><![CDATA[PARTIDA ]]></text>
+				<text><![CDATA[CUENTA]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="e3d2a556-8349-4f9d-b90a-96215248307e" key="staticText-24" x="475" y="122" width="59" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
