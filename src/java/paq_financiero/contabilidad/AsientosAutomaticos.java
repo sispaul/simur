@@ -57,7 +57,7 @@ public class AsientosAutomaticos extends Pantalla {
     @EJB
     private Programas programas = (Programas) utilitario.instanciarEJB(Programas.class);
     private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(mergeDescuento.class);
-    
+
     public AsientosAutomaticos() {
         tabConsulta.setId("tabConsulta");
         tabConsulta.setSql("SELECT u.IDE_USUA,u.NOM_USUA,u.NICK_USUA,u.IDE_PERF,p.NOM_PERF,p.PERM_UTIL_PERF\n"
@@ -286,11 +286,14 @@ public class AsientosAutomaticos extends Pantalla {
                 Integer.parseInt(tabTabla.getValor("ide_periodo")), Integer.parseInt(cmbDistributivo.getValue() + ""), Integer.parseInt(setRol.getValorSeleccionado()));
         if (!tabDatos.isEmpty()) {
             for (int i = 0; i < tabDatos.getTotalFilas(); i++) {
-                TablaGenerica tabDato = programas.getDetalleMovimientos(Integer.parseInt(tabDatos.getValor(i, "ide_cuenta")), Integer.parseInt(tabTabla.getValor("ide_movimiento")));
-                if (!tabDato.isEmpty()) {
-                } else {
-                    programas.setCuentaContable(Integer.parseInt(tabDatos.getValor(i, "ide_cuenta")), Integer.parseInt(tabTabla.getValor("ide_movimiento")), Double.parseDouble(tabDatos.getValor(i, "debe")),
-                            Double.parseDouble(tabDatos.getValor(i, "valor")), Double.parseDouble(tabDatos.getValor(i, "devengado")), tabDatos.getValor(i, "descripcion"), tabDatos.getValor(i, "tipo_movimiento"), tabDatos.getValor(i, "doc_deposito"));
+                try {
+                    TablaGenerica tabDato = programas.getDetalleMovimientos(Integer.parseInt(tabDatos.getValor(i, "cuenta")), Integer.parseInt(tabTabla.getValor("ide_movimiento")));
+                    if (!tabDato.isEmpty()) {
+                    } else {
+                        programas.setCuentaContable(Integer.parseInt(tabDatos.getValor(i, "cuenta")), Integer.parseInt(tabTabla.getValor("ide_movimiento")), Double.parseDouble(tabDatos.getValor(i, "debe")),
+                                Double.parseDouble(tabDatos.getValor(i, "valor")), Double.parseDouble(tabDatos.getValor(i, "devengado")), tabDatos.getValor(i, "descripcion"), tabDatos.getValor(i, "tipo_movimiento"), tabDatos.getValor(i, "doc_deposito"));
+                    }
+                } catch (Exception e) {
                 }
             }
         }
