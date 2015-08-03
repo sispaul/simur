@@ -808,19 +808,27 @@ public class Programas {
         return tabFuncionario;
     }
 
-    public TablaGenerica getCuentas(Integer codigo,Integer anio){
-        return null;
+    public TablaGenerica getCuentas(Integer codigo, Integer anio) {
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT ide_conc,conc_descripcion,substr(conc_cuentas,0,10) as cuenta,substr(conc_cuentas,11,20)as cuenta1,conc_columnas  FROM conc_distributivo where ide_conc = " + codigo + " and ano = " + anio);
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
     }
-    public TablaGenerica getMovimiento(String cuenta, String cuenta1,Integer movimiento, Integer anio, Integer periodo, Integer distributivo, Integer columna) {
+
+    public TablaGenerica getMovimiento(String cuenta, String cuenta1, Integer movimiento, Integer anio, Integer periodo, Integer distributivo, String columna) {
         conPostgresql();
         TablaGenerica tabFuncionario = new TablaGenerica();
         conPostgresql();
         tabFuncionario.setConexion(conPostgres);
         tabFuncionario.setSql("select\n"
-                + "(case when (select ide_cuenta from conc_catalogo_cuentas where cedula = e.cedula_pass and cue_codigo like '"+cuenta+"%' order by ide_cuenta desc limit 1) is not null \n"
-                + "then (select ide_cuenta from conc_catalogo_cuentas where cedula = e.cedula_pass and cue_codigo like '"+cuenta+"%' order by ide_cuenta desc limit 1)\n"
-                + "when (select ide_cuenta from conc_catalogo_cuentas where cedula = e.cedula_pass and cue_codigo like '"+cuenta+"%' order by ide_cuenta desc limit 1) is null\n"
-                + "then (select ide_cuenta from conc_catalogo_cuentas where cedula = e.cedula_pass and cue_codigo like '"+cuenta1+"%' order by ide_cuenta desc limit 1) end) as cuenta,   \n"
+                + "(case when (select ide_cuenta from conc_catalogo_cuentas where cedula = e.cedula_pass and cue_codigo like '" + cuenta + "%' order by ide_cuenta desc limit 1) is not null \n"
+                + "then (select ide_cuenta from conc_catalogo_cuentas where cedula = e.cedula_pass and cue_codigo like '" + cuenta + "%' order by ide_cuenta desc limit 1)\n"
+                + "when (select ide_cuenta from conc_catalogo_cuentas where cedula = e.cedula_pass and cue_codigo like '" + cuenta + "%' order by ide_cuenta desc limit 1) is null\n"
+                + "then (select ide_cuenta from conc_catalogo_cuentas where cedula = e.cedula_pass and cue_codigo like '" + cuenta1 + "%' order by ide_cuenta desc limit 1) end) as cuenta,   \n"
                 + "" + movimiento + " as movimiento,  \n"
                 + "0 as debe,  \n"
                 + "r.valor,  \n"
@@ -831,7 +839,7 @@ public class Programas {
                 + "from srh_roles r  \n"
                 + "inner join srh_empleado e on r.ide_empleado=e.cod_empleado  \n"
                 + "where r.ano=" + anio + " and r.ide_periodo=" + periodo + " and  \n"
-                + "r.id_distributivo_roles=" + distributivo + " and r.ide_columnas=" + columna + " and \n"
+                + "r.id_distributivo_roles=" + distributivo + " and r.ide_columnas in (" + columna + ") and \n"
                 + "r.valor >0\n"
                 + "order by e.nombres");
         tabFuncionario.ejecutarSql();
