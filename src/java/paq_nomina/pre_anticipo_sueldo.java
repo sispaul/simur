@@ -149,8 +149,8 @@ public class pre_anticipo_sueldo extends Pantalla {
         Boton bot_des = new Boton();
         bot_des.setValue("Descargo");
         bot_des.setIcon("ui-icon-closethick");
-//        bot_des.setMetodo("descontar");
-        bot_des.setMetodo("reCalculo");
+        bot_des.setMetodo("descontar");
+//        bot_des.setMetodo("reCalculo");
         bar_botones.agregarBoton(bot_des);
 
         //Ingreso y busqueda de solicitudes 
