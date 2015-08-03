@@ -69,7 +69,7 @@ public class Programas {
     public void setCuentaContable(Integer cuenta, Integer movimiento, Double debe, Double haber, Double devengado, String descripcion, String tipo, String deposito) {
         // Forma el sql para el ingreso
         String strSqlr = "insert into cont_detalle_movimiento (ide_cuenta,ide_movimiento,mov_debe,mov_haber,mov_devengado,mov_descripcion,ide_tipo_movimiento,doc_deposito)\n"
-                + "values ()";
+                + "values (" + cuenta + "," + movimiento + "," + debe + "," + haber + "," + devengado + ",'" + descripcion + "','" + tipo + "','" + deposito + "')";
         conPostgresql();
         conPostgres.ejecutarSql(strSqlr);
         desPostgresql();
@@ -808,6 +808,37 @@ public class Programas {
         return tabFuncionario;
     }
 
+    public TablaGenerica getCuentas(Integer codigo,Integer anio){
+        return null;
+    }
+    public TablaGenerica getMovimiento(String cuenta, String cuenta1,Integer movimiento, Integer anio, Integer periodo, Integer distributivo, Integer columna) {
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("select\n"
+                + "(case when (select ide_cuenta from conc_catalogo_cuentas where cedula = e.cedula_pass and cue_codigo like '"+cuenta+"%' order by ide_cuenta desc limit 1) is not null \n"
+                + "then (select ide_cuenta from conc_catalogo_cuentas where cedula = e.cedula_pass and cue_codigo like '"+cuenta+"%' order by ide_cuenta desc limit 1)\n"
+                + "when (select ide_cuenta from conc_catalogo_cuentas where cedula = e.cedula_pass and cue_codigo like '"+cuenta+"%' order by ide_cuenta desc limit 1) is null\n"
+                + "then (select ide_cuenta from conc_catalogo_cuentas where cedula = e.cedula_pass and cue_codigo like '"+cuenta1+"%' order by ide_cuenta desc limit 1) end) as cuenta,   \n"
+                + "" + movimiento + " as movimiento,  \n"
+                + "0 as debe,  \n"
+                + "r.valor,  \n"
+                + "0 as devengado,  \n"
+                + "'S/D' as descripcion,  \n"
+                + "'F' as tipo_movimiento,  \n"
+                + "'S/D' as doc_deposito  \n"
+                + "from srh_roles r  \n"
+                + "inner join srh_empleado e on r.ide_empleado=e.cod_empleado  \n"
+                + "where r.ano=" + anio + " and r.ide_periodo=" + periodo + " and  \n"
+                + "r.id_distributivo_roles=" + distributivo + " and r.ide_columnas=" + columna + " and \n"
+                + "r.valor >0\n"
+                + "order by e.nombres");
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
+    }
+
     public TablaGenerica getMovimientos(String cuenta, Integer movimiento, Integer anio, Integer periodo, Integer distributivo, Integer columna) {
         conPostgresql();
         TablaGenerica tabFuncionario = new TablaGenerica();
@@ -816,7 +847,7 @@ public class Programas {
         tabFuncionario.setSql("select( \n"
                 + "select ide_cuenta \n"
                 + "from conc_catalogo_cuentas \n"
-                + "where cue_codigo like '" + cuenta + "%' and cedula = e.cedula_pass \n"
+                + "where cedula = e.cedula_pass \n"
                 + "order by ide_cuenta desc limit 1) as cuenta,  \n"
                 + "" + movimiento + " as movimiento, \n"
                 + "0 as debe, \n"
@@ -829,7 +860,8 @@ public class Programas {
                 + "inner join srh_empleado e on r.ide_empleado=e.cod_empleado \n"
                 + "where r.ano=" + anio + " and r.ide_periodo=" + periodo + " and \n"
                 + "r.id_distributivo_roles=" + distributivo + " and r.ide_columnas=" + columna + " and\n"
-                + "r.valor >0");
+                + "r.valor >0"
+                + "order by e.nombres");
         tabFuncionario.ejecutarSql();
         desPostgresql();
         return tabFuncionario;
