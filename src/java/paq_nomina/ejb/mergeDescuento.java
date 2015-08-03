@@ -476,7 +476,7 @@ public class mergeDescuento {
         TablaGenerica tabFuncionario = new TablaGenerica();
         conPostgresql();
         tabFuncionario.setConexion(conPostgres);
-        tabFuncionario.setSql("SELECT ide_roles,ide_columnas FROM srh_roles where ano = " + utilitario.getAnio(utilitario.getFechaActual()) + " and ide_periodo = " + utilitario.getMes(utilitario.getFechaActual()));
+        tabFuncionario.setSql("SELECT ide_roles,ide_columnas FROM srh_roles where ano = " + utilitario.getAnio(utilitario.getFechaActual()) + " and ide_periodo = " + (utilitario.getMes(utilitario.getFechaActual())-1));
         tabFuncionario.ejecutarSql();
         desPostgresql();
         return tabFuncionario;
