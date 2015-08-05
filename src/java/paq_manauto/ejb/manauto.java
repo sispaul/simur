@@ -206,19 +206,17 @@ public class manauto {
         conPostgresql();
         TablaGenerica tabPersona = new TablaGenerica();
         tabPersona.setConexion(conPostgres);
-        tabPersona.setSql("SELECT v.mve_secuencial, \n"
-                + "v.mve_placa, \n"
-                + "c.tipo_combustible_id, \n"
-                + "v.mve_conductor, \n"
-                + "v.mve_cod_conductor, \n"
-                + "(case when to_char(v.mve_kilometros_actual, '999999999.99') is null then v.mve_horometro when to_char(v.mve_kilometros_actual, '999999999.99') is not null then to_char(v.mve_kilometros_actual, '999999999.99') end) as rendimiento,\n"
-                + "v.mve_capacidad_tanque, \n"
-                + "v.mve_kilometros_actual, \n"
-                + "v.mve_departamento, \n"
-                + "v.mve_numimr \n"
-                + "FROM mv_vehiculo AS v  \n"
-                + "INNER JOIN  mvtipo_combustible AS c   \n"
-                + "ON v.tipo_combustible_id = c.tipo_combustible_id\n"
+        tabPersona.setSql("SELECT v.mve_secuencial,  \n"
+                + "v.placa,  \n"
+                + "c.tipo_combustible_id,  \n"
+                + "v.cod_conductor,  \n"
+                + "(case when to_char(v.kilometros_actual, '999999999.99') is null then v.horometro when to_char(v.kilometros_actual, '999999999.99') is not null then to_char(v.kilometros_actual, '999999999.99') end) as rendimiento, \n"
+                + "v.capacidad_tanque,  \n"
+                + "v.kilometros_actual,  \n"
+                + "v.departamento_pertenece\n"
+                + "FROM mv_vehiculo AS v   \n"
+                + "INNER JOIN  mvtipo_combustible AS c    \n"
+                + "ON v.tipo_combustible_id = c.tipo_combustible_id \n"
                 + "where v.mve_secuencial =" + placa);
         tabPersona.ejecutarSql();
         desPostgresql();
@@ -538,7 +536,7 @@ public class manauto {
         conPostgresql();
         TablaGenerica tabPersona = new TablaGenerica();
         tabPersona.setConexion(conPostgres);
-        tabPersona.setSql("SELECT mve_secuencial,mve_horometro FROM mv_vehiculo where mve_secuencial =" + periodo);
+        tabPersona.setSql("SELECT mve_secuencial,horometro FROM mv_vehiculo where mve_secuencial =" + periodo);
         tabPersona.ejecutarSql();
         desPostgresql();
         return tabPersona;
@@ -606,5 +604,9 @@ public class manauto {
             conPostgres.desconectar();
             conPostgres = null;
         }
+    }
+
+    public void setMarca(String string, String variable) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

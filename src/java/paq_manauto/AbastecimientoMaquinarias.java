@@ -365,6 +365,7 @@ public class AbastecimientoMaquinarias extends Pantalla {
             utilitario.addUpdate("tabTabla");
             utilitario.agregarMensaje("Ingresar Fecha de Abastecimiento", "");
         }
+//        hora_actu();
     }
 
     public void hora_actu() {

@@ -554,7 +554,7 @@ public class ListadoAbastecimiento extends Pantalla {
                 }
             }
             utilitario.agregarMensaje("Registro Actalizado", null);
-        } else if (tabTabla.guardar()) {
+        } else {
             if (tabTabla.guardar()) {
                 conPostgres.guardarPantalla();
             }
