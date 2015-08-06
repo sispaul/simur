@@ -10,88 +10,57 @@
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<parameter name="tipo_desc" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select mve_placa||' / '||
-mve_codigo as placa,descripcion,galones,total,recorrido,valor_mantenimiento from
-(select y.*,
-(case when a.galones is null then '0' when a.galones is not null then a.galones end) as galones,
-(case when b.total is null then '0' when b.total is not null then b.total end) as total,
-(case when c.kilometros is null then '0' when c.kilometros is not null then c.kilometros end) as recorrido,
-(case when d.mantenimiento is null then '0' when d.mantenimiento is not null then d.mantenimiento end) as valor_mantenimiento from
-(SELECT v.mve_placa,
-v.mve_codigo,
+		<![CDATA[select a.placa,a.codigo_activo,b.galones,(case when d.total is null then e.total when d.total is not null then d.total  end) as total,
+(case when a.descripcion is null then b.dependencia_descripcion when a.descripcion is not null then a.descripcion end)as descripcion
+from (
+SELECT v.mve_secuencial,v.placa,v.codigo_activo,
 m.mvmarca_descripcion||' / '||
 o.mvmodelo_descripcion as descripcion
 FROM mv_vehiculo v
-INNER JOIN mvmarca_vehiculo m ON v.mvmarca_id = m.mvmarca_id
-INNER JOIN mvmodelo_vehiculo o ON v.mvmodelo_id = o.mvmodelo_id
-order by v.mve_placa,v.mve_codigo) as y
+left JOIN mvmarca_vehiculo m ON v.marca_id = m.mvmarca_id
+left JOIN mvmodelo_vehiculo o ON v.modelo_id = o.mvmodelo_id) as a
+inner join
+(SELECT
+a.mve_secuencial,
+round(sum(cast(a.abastecimiento_galones as NUMERIC)),2) AS galones,
+t.dependencia_descripcion,
+t.dependencia_codigo
+FROM mvabactecimiento_combustible AS a
+inner join mv_vehiculo AS v ON a.mve_secuencial = v.mve_secuencial
+left join mvtipo_dependencias as t on a.abastecimiento_cod_dependencia = t.dependencia_codigo
+WHERE a.abastecimiento_anio = $P{anio} AND
+a.abastecimiento_periodo = $P{mes} AND
+a.abastecimiento_tipo_ingreso = $P{tipo}
+group by a.mve_secuencial,t.dependencia_descripcion,t.dependencia_codigo
+)as b
+on a.mve_secuencial = b.mve_secuencial
 left join
-(select round(sum(cast(a.abastecimiento_galones as NUMERIC)),2) as galones,(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa
-FROM mvabactecimiento_combustible a
-INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
-where a.abastecimiento_anio = $P{anio} and a.abastecimiento_periodo =$P{periodo} and a.abastecimiento_tipo_ingreso =$P{tipo}
-GROUP BY v.mve_placa,v.mve_codigo) as a
-on (case when y.mve_placa is NULL then y.mve_codigo when y.mve_placa is not null then y.mve_placa end )=a.placa
+(SELECT a.mve_secuencial,round(sum(a.abastecimiento_total),2) AS total
+FROM mvabactecimiento_combustible AS a
+INNER JOIN mv_vehiculo AS v ON "a".mve_secuencial = v.mve_secuencial
+WHERE a.abastecimiento_anio = $P{anio} AND
+a.abastecimiento_periodo = $P{mes} AND
+a.abastecimiento_tipo_ingreso = 'K'
+GROUP BY a.mve_secuencial) as d
+on a.mve_secuencial = d.mve_secuencial
 left join
-(select round(sum(abastecimiento_total),2) as total,(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa
-FROM mvabactecimiento_combustible a
-INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
-where a.abastecimiento_anio = $P{anio} and a.abastecimiento_periodo =$P{periodo} and a.abastecimiento_tipo_ingreso =$P{tipo}
-GROUP BY v.mve_placa,v.mve_codigo) as b
-on (case when y.mve_placa is NULL then y.mve_codigo when y.mve_placa is not null then y.mve_placa end )=b.placa
-left join
-(select * from
-(select z.*,
-(case when a.recorrido is null then cast(substring(b.recorrido,0,5) as numeric) when a.recorrido is not null then (cast(b.recorrido as numeric)-cast(a.recorrido as numeric)) end)
- as kilometros
-from
-(select (case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa
-FROM mvabactecimiento_combustible a
-INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
-where a.abastecimiento_anio = $P{anio} and a.abastecimiento_periodo =$P{periodo} and a.abastecimiento_tipo_ingreso =$P{tipo}
-GROUP BY v.mve_placa,v.mve_codigo) as z
-left join
-(select
-(case when a.abastecimiento_tipo_ingreso =$P{tipo} then round(min(a.abastecimiento_kilometraje),2) end) as recorrido
-,(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa
-FROM mvabactecimiento_combustible a
-INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
-where a.abastecimiento_anio = $P{anio} and a.abastecimiento_periodo =$P{periodo} and a.abastecimiento_tipo_ingreso =$P{tipo}
-GROUP BY v.mve_placa,v.mve_codigo,a.abastecimiento_tipo_ingreso) as a
-on z.placa=a.placa
-left JOIN
-(select
-(case when max(a.abastecimiento_kilometraje) is null then max(a.abastecimiento_horasto)
-when max(a.abastecimiento_kilometraje) is not null then cast(round(max(a.abastecimiento_kilometraje),2)as varchar) end )as recorrido
-,(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa
-FROM mvabactecimiento_combustible a
-INNER JOIN mv_vehiculo v ON a.mve_secuencial = v.mve_secuencial
-where a.abastecimiento_anio = $P{anio} and a.abastecimiento_periodo =$P{periodo} and a.abastecimiento_tipo_ingreso =$P{tipo}
-GROUP BY v.mve_placa,v.mve_codigo)as b
-on z.placa=b.placa
-) as p
-order by placa) as c
-on (case when y.mve_placa is NULL then y.mve_codigo when y.mve_placa is not null then y.mve_placa end )=c.placa
-left join
-(SELECT round(sum(cast(d.mde_total as NUMERIC)),2)
-as mantenimiento,(case when v.mve_placa is NULL then v.mve_codigo when v.mve_placa is not null then v.mve_placa end ) as placa
-FROM mvdetalle_mantenimiento d
-INNER JOIN mvcab_mantenimiento c ON d.mca_codigo = c.mca_codigo
-INNER JOIN mv_vehiculo v ON c.mve_secuencial = v.mve_secuencial
-where c.mca_anio = $P{anio} and c.mca_periodo = $P{periodo}
-and c.mca_tipo_registro =$P{tipo}
-GROUP BY v.mve_placa,v.mve_codigo) as d
-on (case when y.mve_placa is NULL then y.mve_codigo when y.mve_placa is not null then y.mve_placa end )=d.placa
-) as x
-where galones >0 and total>0 and recorrido >0 or valor_mantenimiento>0
-order by mve_placa,mve_codigo]]>
+(SELECT a.mve_secuencial,
+round(sum(a.abastecimiento_total),2) AS total,
+t.dependencia_codigo
+FROM mvabactecimiento_combustible AS a
+inner join mv_vehiculo AS v ON a.mve_secuencial = v.mve_secuencial
+left join mvtipo_dependencias as t on a.abastecimiento_cod_dependencia = t.dependencia_codigo
+WHERE a.abastecimiento_anio = $P{anio} AND
+a.abastecimiento_periodo = $P{mes} AND
+a.abastecimiento_tipo_ingreso = 'O'
+group by a.mve_secuencial,t.dependencia_descripcion,t.dependencia_codigo) as e
+on a.mve_secuencial = e.mve_secuencial and b.dependencia_codigo = e.dependencia_codigo]]>
 	</queryString>
 	<field name="placa" class="java.lang.String"/>
-	<field name="descripcion" class="java.lang.String"/>
+	<field name="codigo_activo" class="java.lang.String"/>
 	<field name="galones" class="java.math.BigDecimal"/>
 	<field name="total" class="java.math.BigDecimal"/>
-	<field name="recorrido" class="java.math.BigDecimal"/>
-	<field name="valor_mantenimiento" class="java.math.BigDecimal"/>
+	<field name="descripcion" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
