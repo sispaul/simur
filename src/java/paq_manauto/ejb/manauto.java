@@ -215,7 +215,7 @@ public class manauto {
                 + "v.kilometros_actual,  \n"
                 + "v.departamento_pertenece\n"
                 + "FROM mv_vehiculo AS v   \n"
-                + "INNER JOIN  mvtipo_combustible AS c    \n"
+                + "left JOIN  mvtipo_combustible AS c    \n"
                 + "ON v.tipo_combustible_id = c.tipo_combustible_id \n"
                 + "where v.mve_secuencial =" + placa);
         tabPersona.ejecutarSql();
