@@ -78,8 +78,9 @@ public class ListadoAbastecimiento extends Pantalla {
         autBusca.setId("autBusca");
         autBusca.setConexion(conPostgres);
         autBusca.setAutoCompletar("select v.mve_secuencial,codigo_activo,v.placa,m.mvmarca_descripcion,o.mvmodelo_descripcion,v.chasis\n"
-                + "from mv_vehiculo as v ,mvmarca_vehiculo as m ,mvmodelo_vehiculo o\n"
-                + "where v.marca_id = m.mvmarca_id and v.modelo_id = o.mvmodelo_id");
+                + "from mv_vehiculo as v \n"
+                + "left join mvmarca_vehiculo as m  on v.marca_id = m.mvmarca_id \n"
+                + "left join mvmodelo_vehiculo as o on v.modelo_id = o.mvmodelo_id");
         autBusca.setMetodoChange("filtrarSolicitud");
         autBusca.setSize(70);
         bar_botones.agregarComponente(new Etiqueta("Buscar Solicitud:"));
