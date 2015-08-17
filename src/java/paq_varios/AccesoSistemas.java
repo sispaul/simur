@@ -8,7 +8,6 @@ import framework.aplicacion.TablaGenerica;
 import framework.componentes.AutoCompletar;
 import framework.componentes.Boton;
 import framework.componentes.Calendario;
-import framework.componentes.Dialogo;
 import framework.componentes.Division;
 import framework.componentes.Etiqueta;
 import framework.componentes.Grid;
@@ -23,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
 import org.primefaces.event.SelectEvent;
+import paq_manauto.ejb.SQLManauto;
 import paq_nomina.ejb.decimoCuarto;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
@@ -45,6 +45,7 @@ public class AccesoSistemas extends Pantalla {
     private Panel pan_opcion = new Panel();
     @EJB
     private decimoCuarto datosEmpledo = (decimoCuarto) utilitario.instanciarEJB(decimoCuarto.class);
+    private SQLManauto aCombustible = (SQLManauto) utilitario.instanciarEJB(SQLManauto.class);
     //REPORTES
     private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
     private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
@@ -196,6 +197,7 @@ public class AccesoSistemas extends Pantalla {
         tab_solicitud.getColumna("cargo_usuario").setCombo("select cod_cargo,nombre_cargo from srh_cargos order by nombre_cargo");
         tab_solicitud.getColumna("codigo_solicitante").setCombo("SELECT cod_empleado,nombres FROM srh_empleado order by nombres");
         tab_solicitud.getColumna("codigo_asigna_acceso").setCombo("SELECT cod_empleado,nombres FROM srh_empleado order by nombres");
+        tab_solicitud.getColumna("codigo_asigna_acceso").setMetodoChange("cargaDatos");
         tab_solicitud.getColumna("ingreso_perfil_usuario").setCheck();
         tab_solicitud.getColumna("actualizacion_perfil_usuario").setCheck();
         tab_solicitud.getColumna("lectura_perfil_usuario").setCheck();
@@ -327,6 +329,17 @@ public class AccesoSistemas extends Pantalla {
         }
     }
 
+    public void cargaDatos() {
+        TablaGenerica tab_dato = datosEmpledo.getDatoEmpleado(tab_solicitud.getValor("codigo_asigna_acceso"));
+        if (!tab_dato.isEmpty()) {
+            tab_solicitud.setValor("cedula_asigna_acceso", tab_dato.getValor("cedula_pass"));
+            tab_solicitud.setValor("nombre_asigna_acceso", tab_dato.getValor("nombres"));
+            utilitario.addUpdate("tab_solicitud");
+        } else {
+            utilitario.agregarMensaje("Solicitante Sin Datos", "");
+        }
+    }
+
     @Override
     public void insertar() {
         utilitario.getTablaisFocus().insertar();
@@ -335,37 +348,27 @@ public class AccesoSistemas extends Pantalla {
     @Override
     public void guardar() {
         if (tab_solicitud.getValor("id_solicitud_acceso") != null) {
-            TablaGenerica tab_dato = datosEmpledo.getSolicitudAcceso(Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
-            if (!tab_dato.isEmpty()) {
-                if (tab_dato.getValor("ID_SISTEMA") != tab_solicitud.getValor("ID_SISTEMA")) {
-                    datosEmpledo.setAccesoSistemas("ID_SISTEMA", tab_solicitud.getValor("ID_SISTEMA"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
+            TablaGenerica tabInfo = aCombustible.getCatalogoDato("*", tab_solicitud.getTabla(), "id_solicitud_acceso = " + tab_solicitud.getValor("id_solicitud_acceso") + "");
+            if (!tabInfo.isEmpty()) {
+                TablaGenerica tabDato = aCombustible.getNumeroCampos(tab_solicitud.getTabla());
+                if (!tabDato.isEmpty()) {
+                    for (int i = 1; i < Integer.parseInt(tabDato.getValor("NumeroCampos")); i++) {
+                        if (i != 1) {
+                            TablaGenerica tabInfoColum1 = aCombustible.getEstrucTabla(tab_solicitud.getTabla(), i);
+                            if (!tabInfoColum1.isEmpty()) {
+                                try {
+                                    if (tab_solicitud.getValor(tabInfoColum1.getValor("Column_Name")).equals(tabInfo.getValor(tabInfoColum1.getValor("Column_Name")))) {
+                                    } else {
+                                        aCombustible.setActuaRegis(Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")), tab_solicitud.getTabla(), tabInfoColum1.getValor("Column_Name"), tab_solicitud.getValor(tabInfoColum1.getValor("Column_Name")), "id_solicitud_acceso");
+                                    }
+                                } catch (NullPointerException e) {
+                                }
+                            }
+                        }
+                    }
                 }
-                if (tab_dato.getValor("ID_PERFIL") != tab_solicitud.getValor("ID_PERFIL")) {
-                    datosEmpledo.setAccesoSistemas("ID_PERFIL", tab_solicitud.getValor("ID_PERFIL"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
-                }
-                if (tab_dato.getValor("ID_MODULO") != tab_solicitud.getValor("ID_MODULO")) {
-                    datosEmpledo.setAccesoSistemas("ID_MODULO", tab_solicitud.getValor("ID_MODULO"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
-                }
-                if (tab_dato.getValor("login_acceso_usuario") != tab_solicitud.getValor("login_acceso_usuario")) {
-                    datosEmpledo.setAccesoSistemas("login_acceso_usuario", tab_solicitud.getValor("login_acceso_usuario"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
-                }
-                if (tab_dato.getValor("password_acceso_usuario") != tab_solicitud.getValor("password_acceso_usuario")) {
-                    datosEmpledo.setAccesoSistemas("password_acceso_usuario", tab_solicitud.getValor("password_acceso_usuario"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
-                }
-                if (tab_dato.getValor("fecha_acceso_usuario") != tab_solicitud.getValor("fecha_acceso_usuario")) {
-                    datosEmpledo.setAccesoSistemas("fecha_acceso_usuario", tab_solicitud.getValor("fecha_acceso_usuario"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
-                }
-                if (tab_dato.getValor("codigo_asigna_acceso") != tab_solicitud.getValor("codigo_asigna_acceso")) {
-                    datosEmpledo.setAccesoSistemas("codigo_asigna_acceso", tab_solicitud.getValor("codigo_asigna_acceso"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
-                }
-                if (tab_dato.getValor("cargo_solicitante") != tab_solicitud.getValor("cargo_solicitante")) {
-                    datosEmpledo.setAccesoSistemas("cargo_solicitante", tab_solicitud.getValor("cargo_solicitante"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
-                }
-                if (tab_dato.getValor("direccion_solicitante") != tab_solicitud.getValor("direccion_solicitante")) {
-                    datosEmpledo.setAccesoSistemas("direccion_solicitante", tab_solicitud.getValor("direccion_solicitante"), Integer.parseInt(tab_solicitud.getValor("id_solicitud_acceso")));
-                }
-                utilitario.agregarMensaje("Registro Guardado", null);
             }
+            utilitario.agregarMensaje("Registro Actualizado", null);
         } else {
             estadoAcceso();
             if (tab_solicitud.guardar()) {
