@@ -32,7 +32,7 @@ import paq_nomina.ejb.AntiSueldos;
 import paq_nomina.ejb.mergeDescuento;
 import paq_sistema.aplicacion.Pantalla;
 import persistencia.Conexion;
-import sun.awt.IconInfo;
+
 
 /**
  *
