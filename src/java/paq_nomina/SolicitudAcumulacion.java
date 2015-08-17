@@ -7,12 +7,18 @@ package paq_nomina;
 import framework.aplicacion.TablaGenerica;
 import framework.componentes.Boton;
 import framework.componentes.Combo;
+import framework.componentes.Dialogo;
 import framework.componentes.Etiqueta;
+import framework.componentes.Grid;
 import framework.componentes.Panel;
 import framework.componentes.PanelTabla;
+import framework.componentes.Reporte;
+import framework.componentes.SeleccionFormatoReporte;
 import framework.componentes.Tabla;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import paq_nomina.ejb.mergeDescuento;
 import paq_sistema.aplicacion.Pantalla;
@@ -31,6 +37,13 @@ public class SolicitudAcumulacion extends Pantalla {
     private Combo comboServidor = new Combo();
     @EJB
     private mergeDescuento mDescuento = (mergeDescuento) utilitario.instanciarEJB(mergeDescuento.class);
+    private Reporte rep_reporte = new Reporte(); //siempre se debe llamar rep_reporte
+    private SeleccionFormatoReporte sef_formato = new SeleccionFormatoReporte();
+    private Map p_parametros = new HashMap();
+    private Dialogo diaDialogosr = new Dialogo();
+    private Grid gridr = new Grid();
+    private Combo comboDecimo = new Combo();
+    private Combo comboDistributivo = new Combo();
 
     public SolicitudAcumulacion() {
 
@@ -97,10 +110,14 @@ public class SolicitudAcumulacion extends Pantalla {
         lis.add(fil1);;
         lis.add(fil2);;
         tabAcumulacion.getColumna("autoriza_decimo_tercero").setRadio(lis, "1");
+        List liss = new ArrayList();
+        Object fisl1[] = {
+            "1", "SI"
+        };
+        liss.add(fisl1);;
+        tabAcumulacion.getColumna("autoriza_quitar").setRadio(liss, "1");
         tabAcumulacion.getColumna("autoriza_login_ingreso").setVisible(false);
         tabAcumulacion.getColumna("autoriza_fecha_creacion").setVisible(false);
-//        tabAcumulacion.getColumna("autoriza_acumulado_tercero").setVisible(false);
-//        tabAcumulacion.getColumna("autoriza_acumulado_cuarto").setVisible(false);
         tabAcumulacion.setRows(20);
         tabAcumulacion.dibujar();
         PanelTabla pnt = new PanelTabla();
@@ -110,6 +127,30 @@ public class SolicitudAcumulacion extends Pantalla {
         panOpcion.setTitle("LISTADO PARA PAGOS DE SOBRESUELDOS / FONDOS DE RESERVA PARA LOS SERVIDORES DE GADMUR");
         panOpcion.getChildren().add(pnt);
         agregarComponente(panOpcion);
+
+        //para reportes
+        bar_botones.agregarReporte(); //1 para aparesca el boton de reportes 
+        agregarComponente(rep_reporte); //2 agregar el listado de reportes
+        sef_formato.setId("sef_formato");
+        sef_formato.setConexion(conPostgres);
+        agregarComponente(sef_formato);
+
+        diaDialogosr.setId("diaDialogosr");
+        diaDialogosr.setTitle("PARAMETROS DE REPORTE"); //titulo
+        diaDialogosr.setWidth("25%"); //siempre en porcentajes  ancho
+        diaDialogosr.setHeight("20%");//siempre porcentaje   alto
+        diaDialogosr.setResizable(false); //para que no se pueda cambiar el tamaño
+        diaDialogosr.getBot_aceptar().setMetodo("dibujarReporte");
+        gridr.setColumns(4);
+        agregarComponente(diaDialogosr);
+
+        comboDecimo.setId("comboDecimo");
+        comboDecimo.setConexion(conPostgres);
+        comboDecimo.setCombo("SELECT periodo_columna as columna,periodo_columna from srh_periodo_sueldo where periodo_estado = 'S'");
+
+        comboDistributivo.setId("comboDistributivo");
+        comboDistributivo.setConexion(conPostgres);
+        comboDistributivo.setCombo("SELECT id_distributivo,descripcion FROM srh_tdistributivo ORDER BY id_distributivo");
 
         actuli();
     }
@@ -185,6 +226,64 @@ public class SolicitudAcumulacion extends Pantalla {
     public void eliminar() {
     }
 
+    @Override
+    public void abrirListaReportes() {
+        rep_reporte.dibujar();
+
+    }
+
+    @Override
+    public void aceptarReporte() {
+        rep_reporte.cerrar();
+        switch (rep_reporte.getNombre()) {
+            case "LISTADO DECIMOS":
+                diaDialogosr.Limpiar();
+                Grid griBusca = new Grid();
+                griBusca.setColumns(2);
+                griBusca.getChildren().add(new Etiqueta("DISTRIBUTIVO :"));
+                griBusca.getChildren().add(comboDistributivo);
+                griBusca.getChildren().add(new Etiqueta("DECIMO :"));
+                griBusca.getChildren().add(comboDecimo);
+                gridr.getChildren().add(griBusca);
+                diaDialogosr.setDialogo(gridr);
+                diaDialogosr.dibujar();
+                break;
+        }
+    }
+
+    public void dibujarReporte() {
+        rep_reporte.cerrar();
+        switch (rep_reporte.getNombre()) {
+            case "LISTADO DECIMOS":
+                TablaGenerica tabDatos = mDescuento.getPeriodos(comboDecimo.getValue() + "");
+                if (!tabDatos.isEmpty()) {
+                    String columna = "";
+                    if (comboDistributivo.getValue().equals("1")) {
+                        if (comboDecimo.getValue().equals("D3")) {
+                            columna = "2";
+                        } else if (comboDecimo.getValue().equals("D4")) {
+                            columna = "1";
+                        }
+                    } else if (comboDistributivo.getValue().equals("2")) {
+                        if (comboDecimo.getValue().equals("D3")) {
+                            columna = "2";
+                        } else if (comboDecimo.getValue().equals("D4")) {
+                            columna = "1";
+                        }
+                    }
+                    p_parametros.put("descripcion", tabDatos.getValor("periodo_columna") + "");
+                    p_parametros.put("anio", utilitario.getAnio(tabDatos.getValor("periodo_fecha_final") + ""));
+                    p_parametros.put("distributivo", comboDistributivo.getValue() + "");
+                    p_parametros.put("tipo", Integer.parseInt(columna + ""));
+                    p_parametros.put("nom_resp", tabConsulta.getValor("NICK_USUA") + "");
+                    rep_reporte.cerrar();
+                    sef_formato.setSeleccionFormatoReporte(p_parametros, rep_reporte.getPath());
+                    sef_formato.dibujar();
+                }
+                break;
+        }
+    }
+
     public Conexion getConPostgres() {
         return conPostgres;
     }
@@ -199,5 +298,29 @@ public class SolicitudAcumulacion extends Pantalla {
 
     public void setTabAcumulacion(Tabla tabAcumulacion) {
         this.tabAcumulacion = tabAcumulacion;
+    }
+
+    public Reporte getRep_reporte() {
+        return rep_reporte;
+    }
+
+    public void setRep_reporte(Reporte rep_reporte) {
+        this.rep_reporte = rep_reporte;
+    }
+
+    public SeleccionFormatoReporte getSef_formato() {
+        return sef_formato;
+    }
+
+    public void setSef_formato(SeleccionFormatoReporte sef_formato) {
+        this.sef_formato = sef_formato;
+    }
+
+    public Map getP_parametros() {
+        return p_parametros;
+    }
+
+    public void setP_parametros(Map p_parametros) {
+        this.p_parametros = p_parametros;
     }
 }
