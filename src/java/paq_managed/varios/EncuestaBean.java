@@ -152,7 +152,7 @@ public class EncuestaBean {
             this.listaCantones.clear();
             Oceubica oceObjeto = adminEncuesta.buscarPorId(idProv);
             encuesta.setProvincia(Integer.valueOf(oceObjeto.toString()));
-
+            
             for (Oceubica cantTMP : adminEncuesta.buscarCanton(1)) {
                 this.listaCantones.add(new SelectItem(cantTMP.getUbiCodigo(), cantTMP.getUbiDescri()));
             }
