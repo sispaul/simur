@@ -1,0 +1,62 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package paq_negocio.varios;
+
+import java.util.List;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import paq_modelo.varios.EncuestaVolcan;
+import paq_modelo.varios.Oceubica;
+
+/**
+ *
+ * @author p-sistemas
+ */
+@Stateless
+public class EncuestaFacade {
+
+    @PersistenceContext(unitName = "PruebaSIGAG")
+    private EntityManager em;
+
+    public String guardarEncuesta(EncuestaVolcan encuesta) throws Exception {
+        em.persist(encuesta);
+        return "Registro Guardado Correctamente";
+    }
+
+    public String actualizarEncuesta(EncuestaVolcan encuesta) throws Exception {
+        em.merge(encuesta);
+        return "Registro Actualizado Correctamente";
+    }
+
+    public List<Oceubica> buscarProvincia(Integer pais) throws Exception {
+        CriteriaBuilder criBui = em.getCriteriaBuilder();
+        CriteriaQuery<Oceubica> criUsu = criBui.createQuery(Oceubica.class);
+        Query conTodUsu = em.createQuery(criUsu);
+        return conTodUsu.getResultList();
+    }
+
+    public List<Oceubica> buscarCanton(Integer provincia) throws Exception {
+        CriteriaBuilder criBui = em.getCriteriaBuilder();
+        CriteriaQuery<Oceubica> criUsu = criBui.createQuery(Oceubica.class);
+        Query conTodUsu = em.createQuery(criUsu);
+        return conTodUsu.getResultList();
+    }
+
+    public List<Oceubica> buscarParroquia(Integer Canton) throws Exception {
+        CriteriaBuilder criBui = em.getCriteriaBuilder();
+        CriteriaQuery<Oceubica> criUsu = criBui.createQuery(Oceubica.class);
+        Query conTodUsu = em.createQuery(criUsu);
+        return conTodUsu.getResultList();
+    }
+
+    public Oceubica buscarPorId(Integer idRol) throws Exception {
+        Oceubica rolDev = em.find(Oceubica.class, idRol);
+        return rolDev;
+    }
+}
