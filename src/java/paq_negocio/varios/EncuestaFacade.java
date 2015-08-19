@@ -11,6 +11,10 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.Metamodel;
 import paq_modelo.varios.EncuestaVolcan;
 import paq_modelo.varios.Oceubica;
 
@@ -37,6 +41,9 @@ public class EncuestaFacade {
     public List<Oceubica> buscarProvincia(Integer pais) throws Exception {
         CriteriaBuilder criBui = em.getCriteriaBuilder();
         CriteriaQuery<Oceubica> criUsu = criBui.createQuery(Oceubica.class);
+        Root<Oceubica> utente = criUsu.from(Oceubica.class);
+        Predicate predicate = criBui.equal(utente.get("oceUbiCodigo"), pais);
+        criUsu.where(predicate);
         Query conTodUsu = em.createQuery(criUsu);
         return conTodUsu.getResultList();
     }
@@ -44,13 +51,19 @@ public class EncuestaFacade {
     public List<Oceubica> buscarCanton(Integer provincia) throws Exception {
         CriteriaBuilder criBui = em.getCriteriaBuilder();
         CriteriaQuery<Oceubica> criUsu = criBui.createQuery(Oceubica.class);
+        Root<Oceubica> utente = criUsu.from(Oceubica.class);
+        Predicate predicate = criBui.equal(utente.get("oceUbiCodigo"), provincia);
+        criUsu.where(predicate);
         Query conTodUsu = em.createQuery(criUsu);
         return conTodUsu.getResultList();
     }
 
-    public List<Oceubica> buscarParroquia(Integer Canton) throws Exception {
+    public List<Oceubica> buscarParroquia(Integer canton) throws Exception {
         CriteriaBuilder criBui = em.getCriteriaBuilder();
         CriteriaQuery<Oceubica> criUsu = criBui.createQuery(Oceubica.class);
+        Root<Oceubica> utente = criUsu.from(Oceubica.class);
+        Predicate predicate = criBui.equal(utente.get("oceUbiCodigo"), canton);
+        criUsu.where(predicate);
         Query conTodUsu = em.createQuery(criUsu);
         return conTodUsu.getResultList();
     }
