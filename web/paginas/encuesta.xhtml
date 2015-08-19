@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Encuesta Volcán</title>
+    </h:head>
+    <h:body>
+        <header>
+            <h:graphicImage library="img" name="encuesta.png"/> 
+        </header>
+        <h:form id="frmEncues" prependId="false">
+            <fieldset>
+                <legend>Datos Generales</legend>
+                <fieldset>
+                    <legend>Datos de Ecuestado</legend>
+                    <h:inputHidden value="#{encuestaBean.encuesta.fechaRegistro}">
+                        <f:convertDateTime pattern="yyyy-MM-dd" type="date" />
+                    </h:inputHidden>
+                    <h:panelGrid id="panGriDatEncu" columns="2">
+                        <h:outputLabel value="Cédula :"/>
+                        <h:inputText size="13" value="#{encuestaBean.encuesta.cedulaEncuestado}"/>
+                        <h:outputLabel value="Nombre :"/>
+                        <h:inputText size="40" value="#{encuestaBean.encuesta.nombreEncuestado}"/>
+                    </h:panelGrid>
+                    <h:outputLabel value="Tipo de Vivienda :"/>
+                    <h:selectOneMenu id ="tipo" value="#{encuestaBean.encuesta.tipoVivienda}">
+                        <f:selectItem itemValue="0" itemLabel="Seleccione Opción"/>
+                        <f:selectItem itemValue="Propia" itemLabel="Propia"/>
+                        <f:selectItem itemValue="Arrendada" itemLabel="Arrendada"/>
+                        <f:selectItem itemValue="Con Familiar" itemLabel="Con Familiar"/>
+                        <f:selectItem itemValue="Otros" itemLabel="Otros"/>
+                    </h:selectOneMenu>
+                </fieldset>
+                <fieldset>
+                    <legend>Datos de Propietario</legend>
+                    <h:panelGrid id="panGriDatPro" columns="2">
+                        <h:outputLabel value="Cédula / Clave Catastral:"/>
+                        <h:inputText  value="#{encuestaBean.encuesta.cedulaPropietario}"/>
+                        <h:outputLabel value="Nombre :"/>
+                        <h:inputText size="40" value="#{encuestaBean.encuesta.nombrePropietario}"/>
+                        <h:outputLabel value="Dirección :"/>
+                        <h:inputText size="100" value="#{encuestaBean.encuesta.propietarioDireccion}"/>
+                    </h:panelGrid>
+                </fieldset>
+                <fieldset>
+                    <legend>Descripción Familiar del Encuestado</legend>
+                    <h:panelGrid id="panGriDatFam" columns="2">
+                        <h:outputLabel value="Número de Integrantes de la Familia :"/>
+                        <h:inputText size="5" value="#{encuestaBean.encuesta.numeroIntegrantes}"/>
+                        <h:outputLabel value="Número de Niños/as (0 - 13 años) :"/>
+                        <h:inputText size="5" value="#{encuestaBean.encuesta.numeroNinos}"/>
+                        <h:outputLabel value="Número de Adultos Mayores (>65años) :"/>
+                        <h:inputText size="5" value="#{encuestaBean.encuesta.numeroAdultos}"/>
+                        <h:outputLabel value="Número de Discapacitados :"/>
+                        <h:inputText size="5" value="#{encuestaBean.encuesta.numeroDiscapacitados}"/>
+                    </h:panelGrid>
+                </fieldset>
+                <fieldset>
+                    <legend>Datos de Evacuación</legend>
+                    <h:panelGrid id="panGriDatEva" columns="2">
+                        <h:outputLabel value="¿En Caso de Erupción del Volcan cotopaxi tiene lugar a donde ir ? "/>
+                        <h:selectOneMenu id="lugar" value="#{encuestaBean.encuesta.lugarRefugiarse}">
+                            <f:selectItem itemValue="0" itemLabel="Seleccione Opción"/>
+                            <f:selectItem itemValue="1" itemLabel="Si" />
+                            <f:selectItem itemValue="2" itemLabel="No"/>
+                        </h:selectOneMenu>
+                        <h:outputLabel value="En Caso de Contestar (SI), indicar la ubicación del tipo de sitio. "/>
+                        <h:selectOneMenu id="refugio" value="#{encuestaBean.encuesta.tipoRefugio}">
+                            <f:selectItem itemValue="0" itemLabel="Seleccione Opción"/>
+                            <f:selectItem itemValue="Donde Un Familiar" itemLabel="Donde Un Familiar"/>
+                            <f:selectItem itemValue="Albergue" itemLabel="Albergue"/>
+                            <f:selectItem itemValue="Otro" itemLabel="Otro"/>
+                        </h:selectOneMenu>
+                    </h:panelGrid>
+                    <h:panelGrid id="panGriDatEa" columns="2">
+                        <h:outputLabel value="Parentesco :"/>
+                        <h:selectOneMenu id="Pare" value="#{encuestaBean.encuesta.parentesco}">
+                            <f:selectItem itemValue="0" itemLabel="Seleccione Opción"/>
+                            <f:selectItem itemValue="Hermana/o" itemLabel="Hermana/o" />
+                            <f:selectItem itemValue="Tio/a" itemLabel="Tio/a"/>
+                            <f:selectItem itemValue="Abuelo/a" itemLabel="Abuelo/a" />
+                            <f:selectItem itemValue="Primo/a" itemLabel="Primo/a"/>
+                        </h:selectOneMenu>
+                        <h:outputLabel value="Provincia :"/>
+                        <h:selectOneMenu id="Prov" value="#{encuestaBean.idProv}">
+                            <f:selectItem itemValue="0" itemLabel="Seleccione Opción" noSelectionOption="true"/>
+                            <f:selectItems value="#{encuestaBean.listaProvincias}" />
+                        </h:selectOneMenu>
+                        <h:outputLabel value="Canton :"/>
+                        <h:selectOneMenu id="Cant" value="#{encuestaBean.idCan}">
+                            <f:selectItem itemValue="0" itemLabel="Seleccione Opción" noSelectionOption="true"/>
+                            <f:selectItems value="#{encuestaBean.listaCantones}" />
+                        </h:selectOneMenu>
+                        <h:outputLabel value="Parroquia :"/>
+                        <h:selectOneMenu id="Parr" value="#{encuestaBean.idPar}">
+                            <f:selectItem itemValue="0" itemLabel="Seleccione Opción" noSelectionOption="true"/>
+                            <f:selectItems value="#{encuestaBean.listaParroquias}" />
+                        </h:selectOneMenu>
+                        <h:outputLabel value="Barrio :"/>
+                        <h:inputText value="#{encuestaBean.encuesta.barrio}"/>
+                    </h:panelGrid>
+                </fieldset>
+            </fieldset>
+            <fieldset>
+                <h:panelGrid columns="4">
+                    <h:commandButton value="Nuevo" type="reset"/>
+                    <h:commandButton value="Guardar" action="#{encuestaBean.guardarEncuesta()}"/>
+                </h:panelGrid>
+            </fieldset>  
+        </h:form>
+    </h:body>
+</html>
