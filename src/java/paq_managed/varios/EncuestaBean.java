@@ -4,7 +4,6 @@
  */
 package paq_managed.varios;
 
-import java.sql.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,7 +32,7 @@ public class EncuestaBean {
     private EncuestaVolcan encuesta;
     private List<EncuestaVolcan> listaEncuesta;
     private List<SelectItem> listaProvincias;
-    private List<SelectItem> listaCantones;
+    private List<SelectItem> listaCanton;
     private List<SelectItem> listaParroquias;
     private Integer idProv;
     private Integer idCan;
@@ -46,7 +45,7 @@ public class EncuestaBean {
         this.encuesta = new EncuestaVolcan();
         this.listaEncuesta = new ArrayList<>();
         this.listaProvincias = new ArrayList<>();
-        this.listaCantones = new ArrayList<>();
+        this.listaCanton = new ArrayList<>();
         this.listaParroquias = new ArrayList<>();
     }
 
@@ -98,12 +97,12 @@ public class EncuestaBean {
         this.listaProvincias = listaProvincias;
     }
 
-    public List<SelectItem> getListaCantones() {
-        return listaCantones;
+    public List<SelectItem> getListaCanton() {
+        return listaCanton;
     }
 
-    public void setListaCantones(List<SelectItem> listaCantones) {
-        this.listaCantones = listaCantones;
+    public void setListaCanton(List<SelectItem> listaCanton) {
+        this.listaCanton = listaCanton;
     }
 
     public List<SelectItem> getListaParroquias() {
@@ -112,6 +111,41 @@ public class EncuestaBean {
 
     public void setListaParroquias(List<SelectItem> listaParroquias) {
         this.listaParroquias = listaParroquias;
+    }
+
+    private void cargarProvincias() {
+        try {
+            this.listaProvincias.clear();
+            for (Oceubica provTMP : adminEncuesta.buscarProvincia(2)) {
+                this.listaProvincias.add(new SelectItem(provTMP.getUbiCodigo(), provTMP.getUbiDescri()));
+            }
+        } catch (Exception ex) {
+        }
+    }
+
+    public void cargarCantones() {
+        try {
+            if (idProv != null && !idProv.equals("")) {
+                this.listaCanton.clear();
+                for (Oceubica provTMP : adminEncuesta.buscarCanton(idProv)) {
+                    this.listaCanton.add(new SelectItem(provTMP.getUbiCodigo(), provTMP.getUbiDescri()));
+                }
+            }
+        } catch (Exception ex) {
+        }
+    }
+
+    public void cargarParroquias() {
+        System.err.println(idCan);
+        try {
+            if (idCan != null && !idCan.equals("")) {
+                this.listaParroquias.clear();
+                for (Oceubica provTMP : adminEncuesta.buscarParroquia(idCan)) {
+                    this.listaParroquias.add(new SelectItem(provTMP.getUbiCodigo(), provTMP.getUbiDescri()));
+                }
+            }
+        } catch (Exception ex) {
+        }
     }
 
     public void onDateSelect(SelectEvent event) {
@@ -136,44 +170,6 @@ public class EncuestaBean {
         this.currentDate = currentDate;
     }
 
-    private void cargarProvincias() {
-        try {
-            this.listaProvincias.clear();
-            for (Oceubica provTMP : adminEncuesta.buscarProvincia(2)) {
-                this.listaProvincias.add(new SelectItem(provTMP.getUbiCodigo(), provTMP.getUbiDescri()));
-            }
-        } catch (Exception ex) {
-        }
-    }
-
-    private void cargarCantones() {
-        try {
-            Integer idPro = 0;
-            this.listaCantones.clear();
-            Oceubica oceObjeto = adminEncuesta.buscarPorId(idProv);
-            encuesta.setProvincia(Integer.valueOf(oceObjeto.toString()));
-            
-            for (Oceubica cantTMP : adminEncuesta.buscarCanton(1)) {
-                this.listaCantones.add(new SelectItem(cantTMP.getUbiCodigo(), cantTMP.getUbiDescri()));
-            }
-        } catch (Exception ex) {
-        }
-    }
-
-    private void cargarParroquias() {
-        try {
-            Integer idCan = 0;
-            this.listaParroquias.clear();
-            Oceubica oceObjeto = adminEncuesta.buscarPorId(idCan);
-            encuesta.setCanton(Integer.valueOf(oceObjeto.toString()));
-
-            for (Oceubica parrTMP : adminEncuesta.buscarParroquia(1)) {
-                this.listaParroquias.add(new SelectItem(parrTMP.getUbiCodigo(), parrTMP.getUbiDescri()));
-            }
-        } catch (Exception ex) {
-        }
-    }
-
     public String guardarEncuesta() {
         try {
             String mensaje = null;
@@ -183,18 +179,33 @@ public class EncuestaBean {
                 mensaje = adminEncuesta.guardarEncuesta(encuesta);
             }
             resetearFoormulario();
-            FacesUtil.anadirMensaje(1, mensaje);
+//            FacesUtil.anadirMensaje(1, mensaje);
         } catch (Exception ex) {
-            FacesUtil.anadirMensaje(3, "Error al guardar" + ex.getMessage());
+//            FacesUtil.anadirMensaje(3, "Error al guardar" + ex.getMessage());
         }
         return null;
+    }
+
+    public String validarResgistro() {
+        try {
+            String mensaje = null;
+            if (encuesta.getCedulaEncuestado() != null) {
+                System.err.println("Holas");
+//                EncuestaVolcan registro = adminEncuesta.validarResgistro(encuesta.getCedulaEncuestado());
+//                System.err.println(registro);
+            } else {
+                System.err.println("NO");
+            }
+        } catch (Exception ex) {
+        }
+        return null;
+//            EncuestaVolcan registro = adminEncuesta.validarResgistro(encuesta.getCedulaEncuestado());
+//            System.err.println(registro);
     }
 
     @PostConstruct
     public void init() {
         currentDate = new Date();
         cargarProvincias();
-        cargarCantones();
-        cargarParroquias();
     }
 }

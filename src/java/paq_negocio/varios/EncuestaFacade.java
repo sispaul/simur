@@ -7,6 +7,7 @@ package paq_negocio.varios;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -27,6 +28,13 @@ public class EncuestaFacade {
 
     @PersistenceContext(unitName = "PruebaSIGAG")
     private EntityManager em;
+
+    public static List<Oceubica> getModelosByCompany(Integer companyId) {
+        Query query = Persistence.createEntityManagerFactory("PruebaSIGAG").createEntityManager().createNamedQuery("Oceubica.findByOceUbiCodigo", Oceubica.class);
+        query.setParameter("oceUbiCodigo", companyId);
+
+        return (List<Oceubica>) query.getResultList();
+    }
 
     public String guardarEncuesta(EncuestaVolcan encuesta) throws Exception {
         em.persist(encuesta);
@@ -69,6 +77,16 @@ public class EncuestaFacade {
     }
 
     public Oceubica buscarPorId(Integer idRol) throws Exception {
+        Oceubica rolDev = em.find(Oceubica.class, idRol);
+        return rolDev;
+    }
+
+    public Oceubica buscarPorCedula(String idRol) throws Exception {
+        Oceubica rolDev = em.find(Oceubica.class, idRol);
+        return rolDev;
+    }
+
+    public Oceubica buscarClave(String idRol) throws Exception {
         Oceubica rolDev = em.find(Oceubica.class, idRol);
         return rolDev;
     }
