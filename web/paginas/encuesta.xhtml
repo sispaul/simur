@@ -23,12 +23,12 @@ and open the template in the editor.
                     <h:inputHidden value="#{encuestaBean.encuesta.fechaRegistro}">
                         <f:convertDateTime pattern="yyyy-MM-dd" type="date" />
                     </h:inputHidden>
-                    <h:panelGrid id="panGriDatEncu" columns="2">
+                    <h:panelGrid id="panGriDatEncu" columns="3">
                         <h:outputLabel value="Cédula :"/>
                         <h:inputText size="13" value="#{encuestaBean.encuesta.cedulaEncuestado}"/>
-                        <h:outputLabel value="Nombre :"/>
-                        <h:inputText size="40" value="#{encuestaBean.encuesta.nombreEncuestado}"/>
                     </h:panelGrid>
+                    <h:outputLabel value="Nombre :"/>
+                    <h:inputText size="40" value="#{encuestaBean.encuesta.nombreEncuestado}"/>
                     <h:outputLabel value="Tipo de Vivienda :"/>
                     <h:selectOneMenu id ="tipo" value="#{encuestaBean.encuesta.tipoVivienda}">
                         <f:selectItem itemValue="0" itemLabel="Seleccione Opción"/>
@@ -40,9 +40,11 @@ and open the template in the editor.
                 </fieldset>
                 <fieldset>
                     <legend>Datos de Propietario</legend>
-                    <h:panelGrid id="panGriDatPro" columns="2">
+                    <h:panelGrid id="panGriDatPro" columns="3">
                         <h:outputLabel value="Cédula / Clave Catastral:"/>
                         <h:inputText  value="#{encuestaBean.encuesta.cedulaPropietario}"/>
+                    </h:panelGrid>
+                    <h:panelGrid id="panGriDatPro1" columns="2">
                         <h:outputLabel value="Nombre :"/>
                         <h:inputText size="40" value="#{encuestaBean.encuesta.nombrePropietario}"/>
                         <h:outputLabel value="Dirección :"/>
@@ -89,17 +91,19 @@ and open the template in the editor.
                             <f:selectItem itemValue="Primo/a" itemLabel="Primo/a"/>
                         </h:selectOneMenu>
                         <h:outputLabel value="Provincia :"/>
-                        <h:selectOneMenu id="Prov" value="#{encuestaBean.idProv}">
+                        <h:selectOneMenu id="Prov" value="#{encuestaBean.idProv}" >
+                            <p:ajax listener="#{encuestaBean.cargarCantones}" update="canton" />
                             <f:selectItem itemValue="0" itemLabel="Seleccione Opción" noSelectionOption="true"/>
                             <f:selectItems value="#{encuestaBean.listaProvincias}" />
                         </h:selectOneMenu>
                         <h:outputLabel value="Canton :"/>
-                        <h:selectOneMenu id="Cant" value="#{encuestaBean.idCan}">
+                        <h:selectOneMenu id="canton" value="#{encuestaBean.idCan}">
+                            <p:ajax listener="#{encuestaBean.cargarParroquias}" update="parroquia" />
                             <f:selectItem itemValue="0" itemLabel="Seleccione Opción" noSelectionOption="true"/>
-                            <f:selectItems value="#{encuestaBean.listaCantones}" />
+                            <f:selectItems value="#{encuestaBean.listaCanton}" />
                         </h:selectOneMenu>
                         <h:outputLabel value="Parroquia :"/>
-                        <h:selectOneMenu id="Parr" value="#{encuestaBean.idPar}">
+                        <h:selectOneMenu id="parroquia" value="#{encuestaBean.idPar}">
                             <f:selectItem itemValue="0" itemLabel="Seleccione Opción" noSelectionOption="true"/>
                             <f:selectItems value="#{encuestaBean.listaParroquias}" />
                         </h:selectOneMenu>
