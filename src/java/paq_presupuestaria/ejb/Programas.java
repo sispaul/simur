@@ -598,6 +598,16 @@ public class Programas {
         desPostgresql();
     }
 
+    public void actCertificado(String tipo, Integer numero, String usu, String comentario) {
+        // Forma el sql para actualizacion
+        String strSqlr = "update cer_fondos "
+                + "set estado='Anulacion' , login_anulacion ='" + usu + "',observacion='" + comentario + "',fecha_anulacion='" + utilitario.getFechaActual() + "' "
+                + "where ide_codigo=" + numero + " and numero_certificado='" + tipo + "'";
+        conPostgresql();
+        conPostgres.ejecutarSql(strSqlr);
+        desPostgresql();
+    }
+
     public void setOrdenPago(String tipo, Integer numero, String etiqueta, String campo) {
         String str_sql = "update tes_orden_pago\n"
                 + "set " + etiqueta + "=" + campo + " \n"
@@ -1130,6 +1140,17 @@ public class Programas {
         return tabFuncionario;
     }
 
+    public TablaGenerica getCertificado(Integer movimiento) {
+        conPostgresql();
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("SELECT nombres,cod_cargo,cod_tipo,cod_empleado,cod_direccion from srh_empleado where cod_empleado = "+movimiento);
+        tabFuncionario.ejecutarSql();
+        desPostgresql();
+        return tabFuncionario;
+    }
+
     public String listaMax() {
         conPostgresql();
 
@@ -1155,6 +1176,21 @@ public class Programas {
         tabFuncionario.setConexion(conPostgres);
         tabFuncionario.setSql("select 0 as id ,(case when max(tes_numero_orden) is null then '0' when max(tes_numero_orden)is not null then max(tes_numero_orden) end) AS maximo\n"
                 + "from tes_orden_pago where tes_estado_doc = '1'");
+        tabFuncionario.ejecutarSql();
+        ValorMax = tabFuncionario.getValor("maximo");
+        desPostgresql();
+        return ValorMax;
+    }
+
+    public String maxCertificados() {
+        conPostgresql();
+
+        String ValorMax;
+        TablaGenerica tabFuncionario = new TablaGenerica();
+        conPostgresql();
+        tabFuncionario.setConexion(conPostgres);
+        tabFuncionario.setSql("select 0 as id ,(case when max(numero_certificado) is null then '0' when max(numero_certificado)is not null then max(numero_certificado) end) AS maximo\n"
+                + "from cert_fondos");
         tabFuncionario.ejecutarSql();
         ValorMax = tabFuncionario.getValor("maximo");
         desPostgresql();

@@ -15,7 +15,7 @@ and open the template in the editor.
         <header>
             <h:graphicImage library="img" name="encuesta.png"/> 
         </header>
-        <h:form id="frmEncues" prependId="false">
+        <h:form id="frmEncues" prependId="false"  onkeypress="return event.keyCode != 13">
             <fieldset>
                 <legend>Datos Generales</legend>
                 <fieldset>
@@ -25,7 +25,8 @@ and open the template in the editor.
                     </h:inputHidden>
                     <h:panelGrid id="panGriDatEncu" columns="3">
                         <h:outputLabel value="Cédula :"/>
-                        <h:inputText size="13" value="#{encuestaBean.encuesta.cedulaEncuestado}"/>
+                        <h:inputText size="13" value="#{encuestaBean.encuesta.cedulaEncuestado} "/>
+                        <h:commandButton value="Validar" action="#{encuestaBean.validarCedula()}"/>
                     </h:panelGrid>
                     <h:outputLabel value="Nombre :"/>
                     <h:inputText size="40" value="#{encuestaBean.encuesta.nombreEncuestado}"/>
@@ -43,6 +44,7 @@ and open the template in the editor.
                     <h:panelGrid id="panGriDatPro" columns="3">
                         <h:outputLabel value="Cédula / Clave Catastral:"/>
                         <h:inputText  value="#{encuestaBean.encuesta.cedulaPropietario}"/>
+                        <h:commandButton value="Validar" action="#{encuestaBean.validarClave()}"/>
                     </h:panelGrid>
                     <h:panelGrid id="panGriDatPro1" columns="2">
                         <h:outputLabel value="Nombre :"/>
@@ -92,15 +94,16 @@ and open the template in the editor.
                         </h:selectOneMenu>
                         <h:outputLabel value="Provincia :"/>
                         <h:selectOneMenu id="Prov" value="#{encuestaBean.idProv}" >
-                            <p:ajax listener="#{encuestaBean.cargarCantones}" update="canton" />
+                            <p:ajax  process="Prov"  event="change" listener="#{encuestaBean.cargarCantones}" 
+                                     update="canton" />
                             <f:selectItem itemValue="0" itemLabel="Seleccione Opción" noSelectionOption="true"/>
                             <f:selectItems value="#{encuestaBean.listaProvincias}" />
                         </h:selectOneMenu>
                         <h:outputLabel value="Canton :"/>
                         <h:selectOneMenu id="canton" value="#{encuestaBean.idCan}">
-                            <p:ajax listener="#{encuestaBean.cargarParroquias}" update="parroquia" />
                             <f:selectItem itemValue="0" itemLabel="Seleccione Opción" noSelectionOption="true"/>
                             <f:selectItems value="#{encuestaBean.listaCanton}" />
+                            <p:ajax process="canton"  event="change" listener="#{encuestaBean.cargarParroquias}" update=":frmEncues:parroquia" />
                         </h:selectOneMenu>
                         <h:outputLabel value="Parroquia :"/>
                         <h:selectOneMenu id="parroquia" value="#{encuestaBean.idPar}">

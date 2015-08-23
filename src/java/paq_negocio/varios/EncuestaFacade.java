@@ -26,7 +26,7 @@ import paq_modelo.varios.Oceubica;
 @Stateless
 public class EncuestaFacade {
 
-    @PersistenceContext(unitName = "PruebaSIGAG")
+    @PersistenceContext(unitName = "SIGAG")
     private EntityManager em;
 
     public static List<Oceubica> getModelosByCompany(Integer companyId) {

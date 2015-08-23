@@ -19,6 +19,7 @@ import org.primefaces.event.SelectEvent;
 import paq_modelo.varios.EncuestaVolcan;
 import paq_modelo.varios.Oceubica;
 import paq_negocio.varios.EncuestaFacade;
+import paq_sistema.aplicacion.Utilitario;
 import paq_utilitario.varios.FacesUtil;
 
 /**
@@ -39,6 +40,7 @@ public class EncuestaBean {
     private Integer idPar;
     @EJB
     private EncuestaFacade adminEncuesta;
+    private Utilitario utilitario;
     private Date currentDate;
 
     public EncuestaBean() {
@@ -136,7 +138,6 @@ public class EncuestaBean {
     }
 
     public void cargarParroquias() {
-        System.err.println(idCan);
         try {
             if (idCan != null && !idCan.equals("")) {
                 this.listaParroquias.clear();
@@ -186,21 +187,28 @@ public class EncuestaBean {
         return null;
     }
 
-    public String validarResgistro() {
+    public String validarCedula() {
         try {
-            String mensaje = null;
             if (encuesta.getCedulaEncuestado() != null) {
-                System.err.println("Holas");
-//                EncuestaVolcan registro = adminEncuesta.validarResgistro(encuesta.getCedulaEncuestado());
-//                System.err.println(registro);
+                System.err.println("inhg");
             } else {
-                System.err.println("NO");
+                System.err.println("inhg22");
             }
         } catch (Exception ex) {
         }
         return null;
-//            EncuestaVolcan registro = adminEncuesta.validarResgistro(encuesta.getCedulaEncuestado());
-//            System.err.println(registro);
+    }
+
+    public String validarClave() {
+        try {
+            if (encuesta.getCedulaPropietario() != null) {
+                System.err.println("inhg");
+            } else {
+                System.err.println("inhg22");
+            }
+        } catch (Exception ex) {
+        }
+        return null;
     }
 
     @PostConstruct
